@@ -1,4 +1,4 @@
-import { Facebook, Twitter, Instagram, Youtube } from "lucide-react";
+import { Facebook, Twitter, Instagram, Youtube, Mail, Phone, MapPin } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -7,20 +7,34 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           {/* Company Info */}
           <div>
-            <h3 className="text-xl font-bold mb-4 text-primary">MTelecom</h3>
-            <p className="text-sm text-muted-foreground">
-              Leading telecommunications provider offering mobile, internet, and digital services.
+            <h3 className="text-xl font-bold mb-4 text-primary">Innerspark Africa</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Africa's digital wellness hub — making mental health support affordable, accessible, and stigma-free.
             </p>
+            <div className="space-y-2 text-sm">
+              <div className="flex items-start gap-2">
+                <MapPin className="w-4 h-4 mt-0.5 text-primary flex-shrink-0" />
+                <span className="text-muted-foreground">Kampala, Uganda</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Phone className="w-4 h-4 text-primary flex-shrink-0" />
+                <span className="text-muted-foreground">+256 XXX XXX XXX</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Mail className="w-4 h-4 text-primary flex-shrink-0" />
+                <span className="text-muted-foreground">hello@innerspark.africa</span>
+              </div>
+            </div>
           </div>
 
           {/* Quick Links */}
           <div>
             <h4 className="font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2 text-sm">
-              <li><a href="#" className="hover:text-primary transition-colors">About Us</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Coverage Map</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Help Center</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Contact Us</a></li>
+              <li><a href="#about" className="hover:text-primary transition-colors">About Us</a></li>
+              <li><a href="#app" className="hover:text-primary transition-colors">Our App</a></li>
+              <li><a href="#therapists" className="hover:text-primary transition-colors">Find a Therapist</a></li>
+              <li><a href="#contact" className="hover:text-primary transition-colors">Contact Us</a></li>
             </ul>
           </div>
 
@@ -28,17 +42,17 @@ const Footer = () => {
           <div>
             <h4 className="font-semibold mb-4">Services</h4>
             <ul className="space-y-2 text-sm">
-              <li><a href="#" className="hover:text-primary transition-colors">Mobile Data</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">WakaNet Fibre</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Mobile Money</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Business Solutions</a></li>
+              <li><a href="#services" className="hover:text-primary transition-colors">Virtual Therapy</a></li>
+              <li><a href="#services" className="hover:text-primary transition-colors">Support Groups</a></li>
+              <li><a href="#services" className="hover:text-primary transition-colors">Wellness Resources</a></li>
+              <li><a href="#corporate" className="hover:text-primary transition-colors">Corporate Wellness</a></li>
             </ul>
           </div>
 
           {/* Social Media */}
           <div>
-            <h4 className="font-semibold mb-4">Follow Us</h4>
-            <div className="flex gap-4">
+            <h4 className="font-semibold mb-4">Connect With Us</h4>
+            <div className="flex gap-4 mb-4">
               <a href="#" className="w-10 h-10 bg-primary rounded-full flex items-center justify-center hover:bg-primary/90 transition-colors">
                 <Facebook className="w-5 h-5 text-primary-foreground" />
               </a>
@@ -52,16 +66,19 @@ const Footer = () => {
                 <Youtube className="w-5 h-5 text-primary-foreground" />
               </a>
             </div>
+            <p className="text-sm text-muted-foreground">
+              Join our community and stay updated on wellness tips and events.
+            </p>
           </div>
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-muted pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-          <p>&copy; 2024 MTelecom. All rights reserved.</p>
+        <div className="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
+          <p>&copy; 2024 Innerspark Africa. All rights reserved.</p>
           <div className="flex gap-6">
-            <a href="#" className="hover:text-primary transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-primary transition-colors">Terms of Service</a>
-            <a href="#" className="hover:text-primary transition-colors">Cookie Policy</a>
+            <a href="#privacy" className="hover:text-primary transition-colors">Privacy Policy</a>
+            <a href="#terms" className="hover:text-primary transition-colors">Terms of Service</a>
+            <a href="#cookies" className="hover:text-primary transition-colors">Cookie Policy</a>
           </div>
         </div>
       </div>

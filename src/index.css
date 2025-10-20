@@ -17,76 +17,76 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 0%;
 
-    /* MTN Yellow - Primary Brand Color */
-    --primary: 45 100% 50%;
-    --primary-foreground: 0 0% 0%;
+    /* Innerspark Blue - Primary Brand Color */
+    --primary: 234 62% 62%;
+    --primary-foreground: 0 0% 100%;
 
-    /* Dark background for contrast */
-    --secondary: 0 0% 13%;
-    --secondary-foreground: 0 0% 100%;
+    /* Light secondary for contrast */
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
 
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 45%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
 
-    --accent: 45 100% 50%;
-    --accent-foreground: 0 0% 0%;
+    --accent: 234 62% 92%;
+    --accent-foreground: 222 47% 11%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
-    --ring: 45 100% 50%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 234 62% 62%;
 
     --radius: 0.5rem;
 
-    /* Custom design tokens */
-    --yellow-bright: 45 100% 50%;
-    --yellow-glow: 45 100% 65%;
-    --black-primary: 0 0% 13%;
-    --black-secondary: 0 0% 20%;
-    --grey-dark: 0 0% 25%;
+    /* Custom design tokens for wellness theme */
+    --blue-primary: 234 62% 62%;
+    --blue-light: 234 62% 82%;
+    --teal-calm: 173 58% 39%;
+    --green-wellness: 142 76% 36%;
+    --purple-deep: 260 60% 65%;
     
     /* Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(0 0% 13%) 0%, hsl(0 0% 25%) 100%);
-    --gradient-yellow: linear-gradient(135deg, hsl(45 100% 50%) 0%, hsl(45 100% 65%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(234 62% 62%) 0%, hsl(260 60% 65%) 100%);
+    --gradient-calm: linear-gradient(135deg, hsl(173 58% 39%) 0%, hsl(234 62% 62%) 100%);
     
     /* Shadows */
-    --shadow-yellow: 0 8px 32px hsla(45 100% 50% / 0.3);
-    --shadow-card: 0 4px 16px hsla(0 0% 0% / 0.1);
+    --shadow-primary: 0 8px 32px hsla(234 62% 62% / 0.2);
+    --shadow-card: 0 4px 16px hsla(234 62% 62% / 0.08);
     
     /* Transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .dark {
-    --background: 0 0% 13%;
-    --foreground: 0 0% 100%;
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%;
 
-    --card: 0 0% 20%;
-    --card-foreground: 0 0% 100%;
+    --card: 222 47% 11%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: 0 0% 20%;
-    --popover-foreground: 0 0% 100%;
+    --popover: 222 47% 11%;
+    --popover-foreground: 210 40% 98%;
 
-    --primary: 45 100% 50%;
-    --primary-foreground: 0 0% 0%;
+    --primary: 234 62% 62%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 0 0% 25%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 98%;
 
-    --muted: 0 0% 25%;
-    --muted-foreground: 0 0% 65%;
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
 
-    --accent: 45 100% 50%;
-    --accent-foreground: 0 0% 0%;
+    --accent: 217 33% 17%;
+    --accent-foreground: 210 40% 98%;
 
     --destructive: 0 62% 50%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive-foreground: 210 40% 98%;
 
-    --border: 0 0% 25%;
-    --input: 0 0% 25%;
-    --ring: 45 100% 50%;
+    --border: 217 33% 17%;
+    --input: 217 33% 17%;
+    --ring: 234 62% 62%;
   }
 }
 

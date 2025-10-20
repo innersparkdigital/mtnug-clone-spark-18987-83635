@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Menu, X, Search, ChevronDown } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import logo from "@/assets/innerspark-logo.png";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -10,42 +11,42 @@ const Header = () => {
       {/* Top Bar */}
       <div className="bg-secondary text-secondary-foreground py-2 px-4 text-sm">
         <div className="container mx-auto flex justify-end items-center gap-6">
-          <a href="#" className="hover:text-primary transition-colors">PERSONAL</a>
-          <a href="#" className="hover:text-primary transition-colors">BUSINESS</a>
-          <a href="#" className="hover:text-primary transition-colors">MOBILE MONEY</a>
-          <a href="#" className="hover:text-primary transition-colors">INVESTORS</a>
-          <a href="#" className="hover:text-primary transition-colors">ABOUT</a>
+          <a href="#personal" className="hover:text-primary transition-colors">FOR INDIVIDUALS</a>
+          <a href="#corporate" className="hover:text-primary transition-colors">FOR BUSINESS</a>
+          <a href="#about" className="hover:text-primary transition-colors">ABOUT US</a>
+          <a href="#contact" className="hover:text-primary transition-colors">CONTACT</a>
         </div>
       </div>
 
       {/* Main Navigation */}
-      <header className="bg-primary text-primary-foreground sticky top-0 z-50 shadow-lg">
+      <header className="bg-background border-b border-border sticky top-0 z-50 shadow-sm">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <a href="/" className="flex items-center gap-2">
-              <div className="w-12 h-12 bg-secondary rounded-full flex items-center justify-center font-bold text-primary text-xl">
-                MT
+            <a href="/" className="flex items-center gap-3">
+              <img src={logo} alt="Innerspark Africa" className="h-10 w-10" />
+              <div className="hidden sm:block">
+                <span className="text-xl font-bold text-foreground block">Innerspark Africa</span>
+                <span className="text-xs text-muted-foreground">Africa's Digital Wellness Hub</span>
               </div>
-              <span className="text-2xl font-bold hidden sm:block">MTelecom</span>
             </a>
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center gap-8">
-              <a href="#about" className="hover:opacity-80 transition-opacity font-medium">
-                About MTelecom
+              <a href="#app" className="hover:text-primary transition-colors font-medium">
+                Our App
               </a>
-              <a href="#wakanet" className="hover:opacity-80 transition-opacity font-medium">
-                WakaNet Fibre
+              <a href="#services" className="hover:text-primary transition-colors font-medium">
+                Services
               </a>
-              <a href="#devices" className="hover:opacity-80 transition-opacity font-medium">
-                Devices and Bundles
+              <a href="#therapists" className="hover:text-primary transition-colors font-medium">
+                Find a Therapist
               </a>
-              <a href="#contact" className="hover:opacity-80 transition-opacity font-medium">
-                Contact
+              <a href="#community" className="hover:text-primary transition-colors font-medium">
+                Community
               </a>
-              <Button variant="ghost" size="icon" className="hover:bg-secondary/10">
-                <Search className="h-5 w-5" />
+              <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
+                Get Started
               </Button>
             </nav>
 
@@ -62,19 +63,22 @@ const Header = () => {
 
           {/* Mobile Menu */}
           {isMenuOpen && (
-            <nav className="md:hidden py-4 space-y-4 border-t border-secondary/20">
-              <a href="#about" className="block hover:opacity-80 transition-opacity font-medium">
-                About MTelecom
+            <nav className="md:hidden py-4 space-y-4 border-t border-border">
+              <a href="#app" className="block hover:text-primary transition-colors font-medium">
+                Our App
               </a>
-              <a href="#wakanet" className="block hover:opacity-80 transition-opacity font-medium">
-                WakaNet Fibre
+              <a href="#services" className="block hover:text-primary transition-colors font-medium">
+                Services
               </a>
-              <a href="#devices" className="block hover:opacity-80 transition-opacity font-medium">
-                Devices and Bundles
+              <a href="#therapists" className="block hover:text-primary transition-colors font-medium">
+                Find a Therapist
               </a>
-              <a href="#contact" className="block hover:opacity-80 transition-opacity font-medium">
-                Contact
+              <a href="#community" className="block hover:text-primary transition-colors font-medium">
+                Community
               </a>
+              <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
+                Get Started
+              </Button>
             </nav>
           )}
         </div>

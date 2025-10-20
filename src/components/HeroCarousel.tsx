@@ -8,24 +8,24 @@ import heroSlide3 from "@/assets/hero-slide-3.jpg";
 const slides = [
   {
     image: heroSlide1,
-    title: "Boosta Bundle",
-    subtitle: "Triple your blast with our amazing offers!",
-    cta: "Learn More",
-    link: "#boosta"
+    title: "Your Digital Partner for Mental Wellness",
+    subtitle: "Connect with licensed therapists from anywhere, anytime. Affordable, accessible, stigma-free support.",
+    cta: "Start Your Journey",
+    link: "#app"
   },
   {
     image: heroSlide2,
-    title: "WakaNet Fibre",
-    subtitle: "Get the Deal of Deals - Ultra-fast internet for your home",
-    cta: "Click Here",
-    link: "#wakanet"
+    title: "Join Safe Support Groups",
+    subtitle: "Share, heal, and grow together in professionally moderated peer communities.",
+    cta: "Find Your Community",
+    link: "#community"
   },
   {
     image: heroSlide3,
-    title: "Mobile Money",
-    subtitle: "The Power to Be More - Send, receive, and save money instantly",
-    cta: "Get the App",
-    link: "#momo"
+    title: "Track Your Wellness Journey",
+    subtitle: "Mood check-ins, journaling, and personalized insights to build emotional awareness.",
+    cta: "Download the App",
+    link: "#app"
   }
 ];
 
@@ -76,7 +76,7 @@ const HeroCarousel = () => {
                 <Button
                   asChild
                   size="lg"
-                  className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold px-8 py-6 text-lg rounded-full shadow-yellow animate-in fade-in slide-in-from-left duration-700 delay-200"
+                  className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold px-8 py-6 text-lg rounded-full animate-in fade-in slide-in-from-left duration-700 delay-200"
                 >
                   <a href={slide.link}>{slide.cta}</a>
                 </Button>
