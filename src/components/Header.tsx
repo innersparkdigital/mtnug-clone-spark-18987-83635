@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 import logo from "@/assets/innerspark-logo.png";
 
 const Header = () => {
@@ -23,31 +24,30 @@ const Header = () => {
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <a href="/" className="flex items-center gap-3">
+            <Link to="/" className="flex items-center gap-3">
               <img src={logo} alt="Innerspark Africa" className="h-10 w-10" />
               <div className="hidden sm:block">
                 <span className="text-xl font-bold text-foreground block">Innerspark Africa</span>
                 <span className="text-xs text-muted-foreground">Africa's Digital Wellness Hub</span>
               </div>
-            </a>
+            </Link>
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center gap-8">
-              <a href="#app" className="hover:text-primary transition-colors font-medium">
-                Our App
-              </a>
-              <a href="#services" className="hover:text-primary transition-colors font-medium">
+              <Link to="/services" className="hover:text-primary transition-colors font-medium">
                 Services
-              </a>
-              <a href="#therapists" className="hover:text-primary transition-colors font-medium">
-                Find a Therapist
-              </a>
-              <a href="#community" className="hover:text-primary transition-colors font-medium">
-                Community
-              </a>
-              <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
-                Get Started
-              </Button>
+              </Link>
+              <Link to="/about" className="hover:text-primary transition-colors font-medium">
+                About
+              </Link>
+              <Link to="/contact" className="hover:text-primary transition-colors font-medium">
+                Contact
+              </Link>
+              <Link to="/contact">
+                <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
+                  Get Started
+                </Button>
+              </Link>
             </nav>
 
             {/* Mobile Menu Button */}
@@ -64,21 +64,20 @@ const Header = () => {
           {/* Mobile Menu */}
           {isMenuOpen && (
             <nav className="md:hidden py-4 space-y-4 border-t border-border">
-              <a href="#app" className="block hover:text-primary transition-colors font-medium">
-                Our App
-              </a>
-              <a href="#services" className="block hover:text-primary transition-colors font-medium">
+              <Link to="/services" className="block hover:text-primary transition-colors font-medium">
                 Services
-              </a>
-              <a href="#therapists" className="block hover:text-primary transition-colors font-medium">
-                Find a Therapist
-              </a>
-              <a href="#community" className="block hover:text-primary transition-colors font-medium">
-                Community
-              </a>
-              <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
-                Get Started
-              </Button>
+              </Link>
+              <Link to="/about" className="block hover:text-primary transition-colors font-medium">
+                About
+              </Link>
+              <Link to="/contact" className="block hover:text-primary transition-colors font-medium">
+                Contact
+              </Link>
+              <Link to="/contact">
+                <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
+                  Get Started
+                </Button>
+              </Link>
             </nav>
           )}
         </div>

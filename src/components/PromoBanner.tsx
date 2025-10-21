@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Heart } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const PromoBanner = () => {
   return (
@@ -13,12 +14,14 @@ const PromoBanner = () => {
             <p className="text-lg md:text-xl text-white/90 mb-6">
               Breaking stigma, building resilience. Join thousands taking charge of their mental wellness journey.
             </p>
-            <Button
-              size="lg"
-              className="bg-white text-primary hover:bg-white/90 font-semibold px-8 py-6 text-lg rounded-full"
-            >
-              Get Started Today
-            </Button>
+            <Link to="/contact">
+              <Button
+                size="lg"
+                className="bg-white text-primary hover:bg-white/90 font-semibold px-8 py-6 text-lg rounded-full"
+              >
+                Get Started Today
+              </Button>
+            </Link>
           </div>
           <div className="flex-1 flex justify-center">
             <div className="w-64 h-64 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm">
