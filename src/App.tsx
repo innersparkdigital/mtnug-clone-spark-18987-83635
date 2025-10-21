@@ -17,6 +17,9 @@ import WellnessReports from "./pages/WellnessReports";
 import Meditations from "./pages/Meditations";
 import FindTherapist from "./pages/FindTherapist";
 import ProfileSettings from "./pages/ProfileSettings";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
+import CookiePolicy from "./pages/CookiePolicy";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +43,9 @@ const App = () => (
           <Route path="/meditations" element={<Meditations />} />
           <Route path="/find-therapist" element={<FindTherapist />} />
           <Route path="/profile-settings" element={<ProfileSettings />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms-of-service" element={<TermsOfService />} />
+          <Route path="/cookie-policy" element={<CookiePolicy />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

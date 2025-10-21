@@ -3,6 +3,7 @@ import HeroCarousel from "@/components/HeroCarousel";
 import ServicesGrid from "@/components/ServicesGrid";
 import PromoBanner from "@/components/PromoBanner";
 import Footer from "@/components/Footer";
+import CookieConsent from "@/components/CookieConsent";
 
 const Index = () => {
   return (
@@ -12,6 +13,7 @@ const Index = () => {
       <ServicesGrid />
       <PromoBanner />
       <Footer />
+      <CookieConsent />
     </div>
   );
 };
