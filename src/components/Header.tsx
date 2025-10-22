@@ -57,9 +57,17 @@ const Header = () => {
                         <ul className="grid gap-3">
                           <li>
                             <NavigationMenuLink asChild>
-                              <Link to="/mood-check-in" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                                <div className="text-sm font-medium leading-none">Mood Check-In</div>
-                                <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">Track your daily emotional well-being</p>
+                              <Link to="/virtual-therapy" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                                <div className="text-sm font-medium leading-none">Virtual Therapy</div>
+                                <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">Access professional therapy from anywhere</p>
+                              </Link>
+                            </NavigationMenuLink>
+                          </li>
+                          <li>
+                            <NavigationMenuLink asChild>
+                              <Link to="/support-groups" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                                <div className="text-sm font-medium leading-none">Support Groups</div>
+                                <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">Join communities for shared experiences</p>
                               </Link>
                             </NavigationMenuLink>
                           </li>
@@ -76,46 +84,6 @@ const Header = () => {
                               <Link to="/find-therapist" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
                                 <div className="text-sm font-medium leading-none">Find a Therapist</div>
                                 <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">Browse and connect with therapists</p>
-                              </Link>
-                            </NavigationMenuLink>
-                          </li>
-                          <li>
-                            <NavigationMenuLink asChild>
-                              <Link to="/meditations" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                                <div className="text-sm font-medium leading-none">Meditations</div>
-                                <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">Guided meditation sessions</p>
-                              </Link>
-                            </NavigationMenuLink>
-                          </li>
-                          <li>
-                            <NavigationMenuLink asChild>
-                              <Link to="/my-goals" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                                <div className="text-sm font-medium leading-none">My Goals</div>
-                                <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">Set and track wellness goals</p>
-                              </Link>
-                            </NavigationMenuLink>
-                          </li>
-                          <li>
-                            <NavigationMenuLink asChild>
-                              <Link to="/wellness-reports" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                                <div className="text-sm font-medium leading-none">Wellness Reports</div>
-                                <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">View your progress and insights</p>
-                              </Link>
-                            </NavigationMenuLink>
-                          </li>
-                          <li>
-                            <NavigationMenuLink asChild>
-                              <Link to="/emergency-support" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                                <div className="text-sm font-medium leading-none">Emergency Support</div>
-                                <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">Get immediate help when needed</p>
-                              </Link>
-                            </NavigationMenuLink>
-                          </li>
-                          <li>
-                            <NavigationMenuLink asChild>
-                              <Link to="/profile-settings" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                                <div className="text-sm font-medium leading-none">Profile Settings</div>
-                                <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">Manage your account preferences</p>
                               </Link>
                             </NavigationMenuLink>
                           </li>
@@ -165,29 +133,17 @@ const Header = () => {
               </Link>
               <div className="space-y-2">
                 <div className="font-medium text-sm text-muted-foreground">Our App</div>
-                <Link to="/mood-check-in" className="block pl-4 hover:text-primary transition-colors text-sm">
-                  Mood Check-In
+                <Link to="/virtual-therapy" className="block pl-4 hover:text-primary transition-colors text-sm">
+                  Virtual Therapy
+                </Link>
+                <Link to="/support-groups" className="block pl-4 hover:text-primary transition-colors text-sm">
+                  Support Groups
                 </Link>
                 <Link to="/chat-sessions" className="block pl-4 hover:text-primary transition-colors text-sm">
                   Chat Sessions
                 </Link>
                 <Link to="/find-therapist" className="block pl-4 hover:text-primary transition-colors text-sm">
                   Find a Therapist
-                </Link>
-                <Link to="/meditations" className="block pl-4 hover:text-primary transition-colors text-sm">
-                  Meditations
-                </Link>
-                <Link to="/my-goals" className="block pl-4 hover:text-primary transition-colors text-sm">
-                  My Goals
-                </Link>
-                <Link to="/wellness-reports" className="block pl-4 hover:text-primary transition-colors text-sm">
-                  Wellness Reports
-                </Link>
-                <Link to="/emergency-support" className="block pl-4 hover:text-primary transition-colors text-sm">
-                  Emergency Support
-                </Link>
-                <Link to="/profile-settings" className="block pl-4 hover:text-primary transition-colors text-sm">
-                  Profile Settings
                 </Link>
               </div>
               <Link to="/about" className="block hover:text-primary transition-colors font-medium">
