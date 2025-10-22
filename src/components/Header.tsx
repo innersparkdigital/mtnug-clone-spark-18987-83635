@@ -1,8 +1,16 @@
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import logo from "@/assets/innerspark-logo.png";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -37,6 +45,54 @@ const Header = () => {
               <Link to="/services" className="hover:text-primary transition-colors font-medium">
                 Services
               </Link>
+              <NavigationMenu>
+                <NavigationMenuList>
+                  <NavigationMenuItem>
+                    <NavigationMenuTrigger className="hover:text-primary font-medium">
+                      Our App
+                    </NavigationMenuTrigger>
+                    <NavigationMenuContent>
+                      <div className="w-[400px] p-4">
+                        <h3 className="font-semibold text-lg mb-4">Everything You Need for Mental Wellness</h3>
+                        <ul className="grid gap-3">
+                          <li>
+                            <NavigationMenuLink asChild>
+                              <Link to="/mood-check-in" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                                <div className="text-sm font-medium leading-none">Mood Check-In</div>
+                                <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">Track your daily emotional well-being</p>
+                              </Link>
+                            </NavigationMenuLink>
+                          </li>
+                          <li>
+                            <NavigationMenuLink asChild>
+                              <Link to="/meditations" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                                <div className="text-sm font-medium leading-none">Meditations</div>
+                                <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">Guided meditation sessions</p>
+                              </Link>
+                            </NavigationMenuLink>
+                          </li>
+                          <li>
+                            <NavigationMenuLink asChild>
+                              <Link to="/my-goals" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                                <div className="text-sm font-medium leading-none">My Goals</div>
+                                <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">Set and track wellness goals</p>
+                              </Link>
+                            </NavigationMenuLink>
+                          </li>
+                          <li>
+                            <NavigationMenuLink asChild>
+                              <Link to="/wellness-reports" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                                <div className="text-sm font-medium leading-none">Wellness Reports</div>
+                                <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">View your progress and insights</p>
+                              </Link>
+                            </NavigationMenuLink>
+                          </li>
+                        </ul>
+                      </div>
+                    </NavigationMenuContent>
+                  </NavigationMenuItem>
+                </NavigationMenuList>
+              </NavigationMenu>
               <Link to="/about" className="hover:text-primary transition-colors font-medium">
                 About
               </Link>
@@ -75,6 +131,21 @@ const Header = () => {
               <Link to="/services" className="block hover:text-primary transition-colors font-medium">
                 Services
               </Link>
+              <div className="space-y-2">
+                <div className="font-medium text-sm text-muted-foreground">Our App</div>
+                <Link to="/mood-check-in" className="block pl-4 hover:text-primary transition-colors text-sm">
+                  Mood Check-In
+                </Link>
+                <Link to="/meditations" className="block pl-4 hover:text-primary transition-colors text-sm">
+                  Meditations
+                </Link>
+                <Link to="/my-goals" className="block pl-4 hover:text-primary transition-colors text-sm">
+                  My Goals
+                </Link>
+                <Link to="/wellness-reports" className="block pl-4 hover:text-primary transition-colors text-sm">
+                  Wellness Reports
+                </Link>
+              </div>
               <Link to="/about" className="block hover:text-primary transition-colors font-medium">
                 About
               </Link>
