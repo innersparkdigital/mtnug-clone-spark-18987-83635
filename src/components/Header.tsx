@@ -65,6 +65,22 @@ const Header = () => {
                           </li>
                           <li>
                             <NavigationMenuLink asChild>
+                              <Link to="/chat-sessions" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                                <div className="text-sm font-medium leading-none">Chat Sessions</div>
+                                <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">Connect with mental health professionals</p>
+                              </Link>
+                            </NavigationMenuLink>
+                          </li>
+                          <li>
+                            <NavigationMenuLink asChild>
+                              <Link to="/find-therapist" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                                <div className="text-sm font-medium leading-none">Find a Therapist</div>
+                                <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">Browse and connect with therapists</p>
+                              </Link>
+                            </NavigationMenuLink>
+                          </li>
+                          <li>
+                            <NavigationMenuLink asChild>
                               <Link to="/meditations" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
                                 <div className="text-sm font-medium leading-none">Meditations</div>
                                 <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">Guided meditation sessions</p>
@@ -84,6 +100,22 @@ const Header = () => {
                               <Link to="/wellness-reports" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
                                 <div className="text-sm font-medium leading-none">Wellness Reports</div>
                                 <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">View your progress and insights</p>
+                              </Link>
+                            </NavigationMenuLink>
+                          </li>
+                          <li>
+                            <NavigationMenuLink asChild>
+                              <Link to="/emergency-support" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                                <div className="text-sm font-medium leading-none">Emergency Support</div>
+                                <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">Get immediate help when needed</p>
+                              </Link>
+                            </NavigationMenuLink>
+                          </li>
+                          <li>
+                            <NavigationMenuLink asChild>
+                              <Link to="/profile-settings" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                                <div className="text-sm font-medium leading-none">Profile Settings</div>
+                                <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">Manage your account preferences</p>
                               </Link>
                             </NavigationMenuLink>
                           </li>
@@ -136,6 +168,12 @@ const Header = () => {
                 <Link to="/mood-check-in" className="block pl-4 hover:text-primary transition-colors text-sm">
                   Mood Check-In
                 </Link>
+                <Link to="/chat-sessions" className="block pl-4 hover:text-primary transition-colors text-sm">
+                  Chat Sessions
+                </Link>
+                <Link to="/find-therapist" className="block pl-4 hover:text-primary transition-colors text-sm">
+                  Find a Therapist
+                </Link>
                 <Link to="/meditations" className="block pl-4 hover:text-primary transition-colors text-sm">
                   Meditations
                 </Link>
@@ -144,6 +182,12 @@ const Header = () => {
                 </Link>
                 <Link to="/wellness-reports" className="block pl-4 hover:text-primary transition-colors text-sm">
                   Wellness Reports
+                </Link>
+                <Link to="/emergency-support" className="block pl-4 hover:text-primary transition-colors text-sm">
+                  Emergency Support
+                </Link>
+                <Link to="/profile-settings" className="block pl-4 hover:text-primary transition-colors text-sm">
+                  Profile Settings
                 </Link>
               </div>
               <Link to="/about" className="block hover:text-primary transition-colors font-medium">
