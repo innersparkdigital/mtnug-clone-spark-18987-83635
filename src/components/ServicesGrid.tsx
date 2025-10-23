@@ -2,15 +2,7 @@ import {
   Video, 
   Users, 
   MessageSquare, 
-  Heart, 
-  Target, 
-  AlertCircle, 
-  Calendar, 
-  DollarSign,
-  BarChart3,
-  Headphones,
-  UserCheck,
-  Settings
+  UserCheck
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -18,15 +10,7 @@ const services = [
   { icon: Video, title: "Virtual Therapy", description: "One-on-one counseling with licensed therapists", link: "/virtual-therapy" },
   { icon: Users, title: "Support Groups", description: "Safe peer spaces for sharing and healing", link: "/support-groups" },
   { icon: MessageSquare, title: "Chat Sessions", description: "Private text-based emotional support", link: "/chat-sessions" },
-  { icon: Heart, title: "Mood Check-In", description: "Daily reflections and emotional tracking", link: "/mood-check-in" },
-  { icon: Target, title: "My Goals", description: "Set and track your wellness goals", link: "/my-goals" },
-  { icon: AlertCircle, title: "Emergency Support", description: "One-tap access to crisis counselors", link: "/emergency-support" },
-  { icon: Calendar, title: "Events & Training", description: "Workshops and community programs", link: "/events-training" },
-  { icon: DollarSign, title: "Donate Therapy", description: "Help others access mental health care", link: "/donate-therapy" },
-  { icon: BarChart3, title: "Wellness Reports", description: "Weekly summaries of your progress", link: "/wellness-reports" },
-  { icon: Headphones, title: "Meditations", description: "Guided audio for relaxation and calm", link: "/meditations" },
   { icon: UserCheck, title: "Find a Therapist", description: "Browse qualified mental health professionals", link: "/find-therapist" },
-  { icon: Settings, title: "Profile & Settings", description: "Manage your preferences securely", link: "/profile-settings" },
 ];
 
 const ServicesGrid = () => {
