@@ -17,8 +17,8 @@ const Header = () => {
 
   return (
     <>
-      {/* Top Bar */}
-      <div className="bg-secondary text-secondary-foreground py-2 px-4 text-sm">
+      {/* Top Bar - Hidden on mobile */}
+      <div className="hidden md:block bg-secondary text-secondary-foreground py-2 px-4 text-sm">
         <div className="container mx-auto flex justify-end items-center gap-6">
           <Link to="/services" className="hover:text-primary transition-colors">FOR INDIVIDUALS</Link>
           <Link to="/events-training" className="hover:text-primary transition-colors">FOR BUSINESS</Link>
@@ -27,13 +27,13 @@ const Header = () => {
 
       {/* Main Navigation */}
       <header className="bg-background border-b border-border sticky top-0 z-50 shadow-sm">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
+        <div className="container mx-auto px-3 md:px-4">
+          <div className="flex items-center justify-between h-14 md:h-16">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-3">
-              <img src={logo} alt="Innerspark Africa" className="h-10 w-10" />
+            <Link to="/" className="flex items-center gap-2">
+              <img src={logo} alt="Innerspark Africa" className="h-8 w-8 md:h-10 md:w-10" />
               <div className="hidden sm:block">
-                <span className="text-xl font-bold text-foreground block">Innerspark Africa</span>
+                <span className="text-base md:text-xl font-bold text-foreground block">Innerspark Africa</span>
                 <span className="text-xs text-muted-foreground">Africa's Digital Wellness Hub</span>
               </div>
             </Link>
