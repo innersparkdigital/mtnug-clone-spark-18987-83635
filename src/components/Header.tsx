@@ -20,10 +20,8 @@ const Header = () => {
       {/* Top Bar */}
       <div className="bg-secondary text-secondary-foreground py-2 px-4 text-sm">
         <div className="container mx-auto flex justify-end items-center gap-6">
-          <a href="#personal" className="hover:text-primary transition-colors">FOR INDIVIDUALS</a>
-          <a href="#corporate" className="hover:text-primary transition-colors">FOR BUSINESS</a>
-          <a href="#about" className="hover:text-primary transition-colors">ABOUT US</a>
-          <a href="#contact" className="hover:text-primary transition-colors">CONTACT</a>
+          <Link to="/services" className="hover:text-primary transition-colors">FOR INDIVIDUALS</Link>
+          <Link to="/events-training" className="hover:text-primary transition-colors">FOR BUSINESS</Link>
         </div>
       </div>
 
