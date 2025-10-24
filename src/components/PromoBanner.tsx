@@ -1,17 +1,28 @@
 import { Button } from "@/components/ui/button";
-import { Heart } from "lucide-react";
 import { Link } from "react-router-dom";
+import promoBannerBg from "@/assets/hero-slide-2.jpg";
 
 const PromoBanner = () => {
   return (
-    <section className="bg-gradient-to-r from-primary via-purple-deep to-primary py-16 text-white">
-      <div className="container mx-auto px-4">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-          <div className="flex-1">
-            <h2 className="text-3xl md:text-5xl font-bold mb-4">
+    <section className="relative h-[400px] md:h-[500px] overflow-hidden">
+      {/* Background Image */}
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/40 z-10" />
+        <img
+          src={promoBannerBg}
+          alt="Mental Health Support"
+          className="w-full h-full object-cover"
+        />
+      </div>
+
+      {/* Content */}
+      <div className="absolute inset-0 z-20 flex items-center">
+        <div className="container mx-auto px-4">
+          <div className="max-w-2xl text-white">
+            <h2 className="text-3xl md:text-5xl font-bold mb-4 leading-tight">
               Mental Health Support for Every African
             </h2>
-            <p className="text-lg md:text-xl text-white/90 mb-6">
+            <p className="text-lg md:text-xl text-white/90 mb-8">
               Breaking stigma, building resilience. Join thousands taking charge of their mental wellness journey.
             </p>
             <Link to="/contact">
@@ -22,13 +33,6 @@ const PromoBanner = () => {
                 Get Started Today
               </Button>
             </Link>
-          </div>
-          <div className="flex-1 flex justify-center">
-            <div className="w-64 h-64 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm">
-              <div className="w-48 h-48 bg-white/20 rounded-full flex items-center justify-center">
-                <Heart className="w-24 h-24 text-white" fill="white" />
-              </div>
-            </div>
           </div>
         </div>
       </div>
