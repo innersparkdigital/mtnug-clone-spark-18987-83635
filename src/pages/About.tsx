@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import AppDownload from "@/components/AppDownload";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Heart, Target, Eye, Users, Zap, Shield, Globe } from "lucide-react";
@@ -319,6 +320,7 @@ const About = () => {
         </div>
       </section>
 
+      <AppDownload />
       <Footer />
     </div>
   );
