@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import AppDownload from "@/components/AppDownload";
 import { Button } from "@/components/ui/button";
 import { AlertCircle, Check, Phone } from "lucide-react";
 
@@ -102,6 +103,7 @@ const EmergencySupport = () => {
         </div>
       </section>
 
+      <AppDownload />
       <Footer />
     </div>
   );

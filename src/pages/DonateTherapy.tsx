@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import AppDownload from "@/components/AppDownload";
 import { Button } from "@/components/ui/button";
 import { DollarSign, Check, Heart } from "lucide-react";
 
@@ -95,6 +96,7 @@ const DonateTherapy = () => {
         </div>
       </section>
 
+      <AppDownload />
       <Footer />
     </div>
   );

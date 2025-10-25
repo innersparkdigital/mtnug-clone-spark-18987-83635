@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import AppDownload from "@/components/AppDownload";
 import { Button } from "@/components/ui/button";
 import { Users, Check } from "lucide-react";
 
@@ -94,6 +95,7 @@ const SupportGroups = () => {
         </div>
       </section>
 
+      <AppDownload />
       <Footer />
     </div>
   );

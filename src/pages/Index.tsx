@@ -2,6 +2,7 @@ import Header from "@/components/Header";
 import HeroCarousel from "@/components/HeroCarousel";
 import ServicesGrid from "@/components/ServicesGrid";
 import PromoBanner from "@/components/PromoBanner";
+import AppDownload from "@/components/AppDownload";
 import Footer from "@/components/Footer";
 import CookieConsent from "@/components/CookieConsent";
 
@@ -12,6 +13,7 @@ const Index = () => {
       <HeroCarousel />
       <ServicesGrid />
       <PromoBanner />
+      <AppDownload />
       <Footer />
       <CookieConsent />
     </div>

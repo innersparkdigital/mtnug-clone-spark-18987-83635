@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import AppDownload from "@/components/AppDownload";
 import { Button } from "@/components/ui/button";
 import { MessageSquare, Check } from "lucide-react";
 
@@ -94,6 +95,7 @@ const ChatSessions = () => {
         </div>
       </section>
 
+      <AppDownload />
       <Footer />
     </div>
   );
