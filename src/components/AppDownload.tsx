@@ -33,48 +33,32 @@ const AppDownload = () => {
                   className="h-12 md:h-14"
                 />
               </a>
-              <a 
-                href="#" 
-                className="inline-block bg-black/30 hover:bg-black/40 transition-colors rounded-lg px-6 py-3 flex items-center gap-2"
-                aria-label="Explore it on AppGallery"
-              >
-                <div className="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center">
-                  <span className="text-white text-xs font-bold">H</span>
-                </div>
-                <div className="text-left">
-                  <div className="text-[10px] uppercase tracking-wide opacity-90">Explore it on</div>
-                  <div className="text-sm font-semibold">AppGallery</div>
-                </div>
-              </a>
             </div>
           </div>
 
           {/* Right side - Device mockups */}
-          <div className="flex-1 flex justify-center items-center gap-4 relative">
+          <div className="flex-1 flex justify-center items-end gap-6 relative">
             {/* Mobile mockup */}
-            <div className="relative w-32 md:w-40 lg:w-48">
-              <div className="bg-white rounded-[2rem] md:rounded-[2.5rem] p-2 md:p-3 shadow-2xl">
-                <div className="bg-gray-100 rounded-[1.5rem] md:rounded-[2rem] overflow-hidden aspect-[9/19] flex items-center justify-center relative">
-                  {/* Notch */}
-                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 md:w-24 h-4 md:h-6 bg-white rounded-b-2xl z-10"></div>
-                  {/* Logo */}
+            <div className="relative" style={{ width: '3.5cm' }}>
+              <div className="bg-white rounded-[1.5rem] p-2 shadow-2xl border-8 border-gray-800">
+                <div className="bg-white rounded-[0.75rem] overflow-hidden aspect-[9/19] flex items-center justify-center">
                   <img 
                     src={innersparkLogo} 
                     alt="Innerspark" 
-                    className="w-16 md:w-20 lg:w-24 object-contain"
+                    className="w-16 object-contain"
                   />
                 </div>
               </div>
             </div>
 
             {/* Tablet mockup */}
-            <div className="relative w-40 md:w-52 lg:w-64">
-              <div className="bg-white rounded-[1.5rem] md:rounded-[2rem] p-2 md:p-3 shadow-2xl">
-                <div className="bg-gray-100 rounded-[1rem] md:rounded-[1.5rem] overflow-hidden aspect-[4/3] flex items-center justify-center">
+            <div className="relative" style={{ width: '5.5cm' }}>
+              <div className="bg-white rounded-[1.5rem] p-2 shadow-2xl border-8 border-gray-800">
+                <div className="bg-white rounded-[0.75rem] overflow-hidden aspect-[4/3] flex items-center justify-center">
                   <img 
                     src={innersparkLogo} 
                     alt="Innerspark" 
-                    className="w-24 md:w-32 lg:w-40 object-contain"
+                    className="w-24 object-contain"
                   />
                 </div>
               </div>
