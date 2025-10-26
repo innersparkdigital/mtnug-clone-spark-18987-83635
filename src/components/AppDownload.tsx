@@ -2,7 +2,7 @@ import innersparkLogo from "@/assets/innerspark-logo.png";
 
 const AppDownload = () => {
   return (
-    <section className="bg-gradient-to-r from-[#002855] to-[#003d7a] h-[150px] flex items-center">
+    <section className="bg-gradient-to-r from-[#002855] to-[#003d7a] h-[150px] flex items-center relative overflow-visible">
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           {/* Left side - Text and buttons */}
@@ -36,10 +36,10 @@ const AppDownload = () => {
             </div>
           </div>
 
-          {/* Right side - Device mockups */}
+          {/* Right side - Device mockups - positioned to overflow upward */}
           <div className="flex-1 flex justify-center items-end gap-4 relative">
             {/* Mobile mockup */}
-            <div className="relative" style={{ width: '3.5cm' }}>
+            <div className="relative -mt-24" style={{ width: '3.5cm' }}>
               <div className="bg-white rounded-[1.5rem] p-2 shadow-2xl border-4 border-gray-800">
                 <div className="bg-white rounded-[0.75rem] overflow-hidden aspect-[9/19] flex items-center justify-center">
                   <img 
@@ -52,7 +52,7 @@ const AppDownload = () => {
             </div>
 
             {/* Tablet mockup */}
-            <div className="relative" style={{ width: '5.5cm' }}>
+            <div className="relative -mt-16" style={{ width: '5.5cm' }}>
               <div className="bg-white rounded-[1.5rem] p-2 shadow-2xl border-4 border-gray-800">
                 <div className="bg-white rounded-[0.75rem] overflow-hidden aspect-[4/3] flex items-center justify-center">
                   <img 
