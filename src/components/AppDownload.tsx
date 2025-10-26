@@ -2,7 +2,7 @@ import innersparkLogo from "@/assets/innerspark-logo.png";
 
 const AppDownload = () => {
   return (
-    <section className="bg-gradient-to-r from-[#002855] to-[#003d7a] py-6">
+    <section className="bg-gradient-to-r from-[#002855] to-[#003d7a] h-[150px] flex items-center">
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           {/* Left side - Text and buttons */}
