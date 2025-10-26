@@ -1,4 +1,4 @@
-import innersparkLogo from "@/assets/innerspark-logo.png";
+import appScreenshot from "@/assets/app-screenshot.jpg";
 
 const AppDownload = () => {
   return (
@@ -43,11 +43,11 @@ const AppDownload = () => {
             {/* Mobile mockup */}
             <div className="relative -mt-24" style={{ width: '3.5cm' }}>
               <div className="bg-white rounded-[1.5rem] p-2 shadow-2xl border-4 border-gray-800">
-                <div className="bg-white rounded-[0.75rem] overflow-hidden aspect-[9/19] flex items-center justify-center">
+                <div className="bg-white rounded-[0.75rem] overflow-hidden aspect-[9/19]">
                   <img 
-                    src={innersparkLogo} 
-                    alt="Innerspark" 
-                    className="w-12 object-contain"
+                    src={appScreenshot} 
+                    alt="Innerspark App" 
+                    className="w-full h-full object-cover"
                   />
                 </div>
               </div>
@@ -56,11 +56,11 @@ const AppDownload = () => {
             {/* Tablet mockup */}
             <div className="relative -mt-16" style={{ width: '5.5cm' }}>
               <div className="bg-white rounded-[1.5rem] p-2 shadow-2xl border-4 border-gray-800">
-                <div className="bg-white rounded-[0.75rem] overflow-hidden aspect-[4/3] flex items-center justify-center">
+                <div className="bg-white rounded-[0.75rem] overflow-hidden aspect-[4/3]">
                   <img 
-                    src={innersparkLogo} 
-                    alt="Innerspark" 
-                    className="w-20 object-contain"
+                    src={appScreenshot} 
+                    alt="Innerspark App" 
+                    className="w-full h-full object-cover"
                   />
                 </div>
               </div>
