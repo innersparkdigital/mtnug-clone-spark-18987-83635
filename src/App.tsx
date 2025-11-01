@@ -25,6 +25,7 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import TruckDriversPost from "./pages/blog/TruckDriversPost";
 import FoundersPost from "./pages/blog/FoundersPost";
+import ChildrenMentalHealthPost from "./pages/blog/ChildrenMentalHealthPost";
 
 const queryClient = new QueryClient();
 
@@ -56,6 +57,7 @@ const App = () => (
           <Route path="/contact" element={<Contact />} />
           <Route path="/events-training/truck-drivers-retirement-training" element={<TruckDriversPost />} />
           <Route path="/events-training/founders-mindset-training" element={<FoundersPost />} />
+          <Route path="/events-training/children-mental-health-awareness" element={<ChildrenMentalHealthPost />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

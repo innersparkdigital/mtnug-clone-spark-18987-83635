@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import truckDriversImage from "@/assets/truck-drivers-training.png";
 import foundersMindsetImage from "@/assets/founders-mindset-training.png";
+import childrenMentalHealthImage from "@/assets/children-mental-health.jpg";
 
 const blogPosts = [
   {
@@ -23,6 +24,14 @@ const blogPosts = [
     date: "September 2024",
     title: "Shaping the Founder's Mindset at the National ICT Innovation Hub",
     excerpt: "Through our Startup Wellness Program, Innerspark in partnership with Dr. Lisa Tumwine from LILA Haven and Martin Tumwine from Zaantu Capital had the privilege of engaging with 30+ startup founders.",
+  },
+  {
+    id: 3,
+    slug: "children-mental-health-awareness",
+    image: childrenMentalHealthImage,
+    date: "August 2025",
+    title: "Innerspark Brings Mental Health Awareness to Children at Full Gospel Primary School, Nsambya CDC",
+    excerpt: "At Innerspark, we believe that building emotionally healthy communities begins with our children. Our team recently held a Children's Mental Health Awareness Session at Full Gospel Primary School.",
   },
 ];
 
