@@ -8,15 +8,21 @@ import CookieConsent from "@/components/CookieConsent";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      <HeroCarousel />
-      <ServicesGrid />
-      <PromoBanner />
-      <AppDownload />
-      <Footer />
-      <CookieConsent />
-    </div>
+    <>
+      {/* SEO meta tags for homepage */}
+      <head>
+        <link rel="canonical" href="https://innerspark.africa/" />
+      </head>
+      <div className="min-h-screen bg-background">
+        <Header />
+        <HeroCarousel />
+        <ServicesGrid />
+        <PromoBanner />
+        <AppDownload />
+        <Footer />
+        <CookieConsent />
+      </div>
+    </>
   );
 };
 
