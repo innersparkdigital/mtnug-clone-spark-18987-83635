@@ -30,6 +30,7 @@ import MIICPost from "./pages/blog/MIICPost";
 import MTNPost from "./pages/blog/MTNPost";
 import WorldMentalHealthDayPost from "./pages/blog/WorldMentalHealthDayPost";
 import UICTPost from "./pages/blog/UICTPost";
+import UICTWellnessPost from "./pages/blog/UICTWellnessPost";
 
 const queryClient = new QueryClient();
 
@@ -66,6 +67,7 @@ const App = () => (
           <Route path="/events-training/mtn-internship-anxiety" element={<MTNPost />} />
           <Route path="/events-training/world-mental-health-day-2024" element={<WorldMentalHealthDayPost />} />
           <Route path="/events-training/uict-mental-health-training" element={<UICTPost />} />
+          <Route path="/events-training/uict-wellness-activity-day" element={<UICTWellnessPost />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

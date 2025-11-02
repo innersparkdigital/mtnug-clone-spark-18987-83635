@@ -20,10 +20,19 @@ import miicImage from "@/assets/miic-mental-health.png";
 import mtnImage from "@/assets/mtn-internship.png";
 import worldMentalHealthImage from "@/assets/world-mental-health-day.png";
 import uictImage from "@/assets/uict-training.png";
+import uictWellnessImage from "@/assets/uict-wellness-activity.jpg";
 
 const blogPosts = [
   {
     id: 1,
+    slug: "uict-wellness-activity-day",
+    image: uictWellnessImage,
+    date: "October 29-30, 2025",
+    title: "UICT Wellness Activity Day – Mental Health Is in the Palm of Your Hands",
+    excerpt: "The two-day event combined interactive mental health training with individual counseling sessions, empowering participants to prioritize their physical, emotional, and cognitive wellness.",
+  },
+  {
+    id: 2,
     slug: "children-mental-health-awareness",
     image: childrenMentalHealthImage,
     date: "August 9, 2025",
@@ -31,7 +40,7 @@ const blogPosts = [
     excerpt: "At Innerspark, we believe that building emotionally healthy communities begins with our children. Our team recently held a Children's Mental Health Awareness Session at Full Gospel Primary School.",
   },
   {
-    id: 2,
+    id: 3,
     slug: "miic-wellness-innovation",
     image: miicImage,
     date: "August 1, 2025",
@@ -39,7 +48,7 @@ const blogPosts = [
     excerpt: "At the heart of every thriving startup ecosystem lies a simple truth — innovation flourishes where minds are healthy and supported.",
   },
   {
-    id: 3,
+    id: 4,
     slug: "mtn-internship-anxiety",
     image: mtnImage,
     date: "July 11, 2025",
@@ -47,7 +56,7 @@ const blogPosts = [
     excerpt: "As part of MTN Uganda's Career ACE Internship Program, Innerspark facilitated an engaging session on managing anxiety designed to equip young professionals with emotional resilience.",
   },
   {
-    id: 4,
+    id: 5,
     slug: "uict-mental-health-training",
     image: uictImage,
     date: "March 19, 2025",
@@ -55,7 +64,7 @@ const blogPosts = [
     excerpt: "Innerspark conducted a Mental Health Awareness Training at UICT, providing students with a safe space to explore their emotional well-being and learn practical coping strategies.",
   },
   {
-    id: 5,
+    id: 6,
     slug: "world-mental-health-day-2024",
     image: worldMentalHealthImage,
     date: "October 8, 2024",
@@ -63,7 +72,7 @@ const blogPosts = [
     excerpt: "In commemoration of World Mental Health Day 2024, Innerspark hosted a transformative workshop bringing together diverse professionals to discuss workplace mental wellness.",
   },
   {
-    id: 6,
+    id: 7,
     slug: "founders-mindset-training",
     image: foundersMindsetImage,
     date: "September 2024",
@@ -71,7 +80,7 @@ const blogPosts = [
     excerpt: "Through our Startup Wellness Program, Innerspark in partnership with Dr. Lisa Tumwine from LILA Haven and Martin Tumwine from Zaantu Capital had the privilege of engaging with 30+ startup founders.",
   },
   {
-    id: 7,
+    id: 8,
     slug: "truck-drivers-retirement-training",
     image: truckDriversImage,
     date: "July 2024",
