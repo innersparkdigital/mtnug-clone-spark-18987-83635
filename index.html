@@ -37,48 +37,128 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "MedicalOrganization",
-      "name": "Innerspark Africa",
-      "alternateName": "Innerspark",
-      "url": "https://innerspark.africa",
-      "logo": "https://innerspark.africa/innerspark-logo.png",
-      "description": "Leading mental health services provider in Uganda offering virtual therapy, counseling, and wellness programs",
-      "address": {
-        "@type": "PostalAddress",
-        "addressCountry": "UG",
-        "addressRegion": "Kampala"
-      },
-      "areaServed": {
-        "@type": "Country",
-        "name": "Uganda"
-      },
-      "medicalSpecialty": [
-        "Mental Health",
-        "Psychotherapy",
-        "Counseling",
-        "Psychology"
-      ],
-      "availableService": [
+      "@graph": [
         {
-          "@type": "MedicalTherapy",
-          "name": "Virtual Therapy",
-          "description": "Online therapy sessions with licensed therapists"
+          "@type": "MedicalOrganization",
+          "@id": "https://innerspark.africa/#organization",
+          "name": "Innerspark Africa",
+          "alternateName": "Innerspark",
+          "url": "https://innerspark.africa",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://innerspark.africa/innerspark-logo.png",
+            "width": 250,
+            "height": 250
+          },
+          "description": "Leading mental health services provider in Uganda offering virtual therapy, counseling, and wellness programs. Affordable, professional mental health support for everyone.",
+          "address": {
+            "@type": "PostalAddress",
+            "addressCountry": "UG",
+            "addressRegion": "Kampala",
+            "addressLocality": "Kampala"
+          },
+          "areaServed": {
+            "@type": "Country",
+            "name": "Uganda"
+          },
+          "medicalSpecialty": [
+            "Mental Health",
+            "Psychotherapy",
+            "Counseling",
+            "Psychology",
+            "Clinical Psychology"
+          ],
+          "availableService": [
+            {
+              "@type": "MedicalTherapy",
+              "name": "Virtual Therapy Sessions",
+              "description": "One-on-one online therapy sessions with licensed therapists available 24/7"
+            },
+            {
+              "@type": "MedicalTherapy",
+              "name": "Professional Counseling Services",
+              "description": "Expert counseling for depression, anxiety, stress, and relationship issues"
+            },
+            {
+              "@type": "Service",
+              "name": "Mental Health Support Groups",
+              "description": "Community-led support groups for mental wellness and peer support"
+            },
+            {
+              "@type": "Service",
+              "name": "Corporate Wellness Programs",
+              "description": "Mental health training and wellness programs for organizations"
+            },
+            {
+              "@type": "Service",
+              "name": "Emergency Mental Health Support",
+              "description": "24/7 crisis support and emergency mental health services"
+            }
+          ],
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "telephone": "+256-XXX-XXXXXX",
+            "contactType": "customer support",
+            "areaServed": "UG",
+            "availableLanguage": ["English", "Luganda"]
+          },
+          "sameAs": [
+            "https://www.facebook.com/innersparkafrica",
+            "https://twitter.com/innersparkafrica",
+            "https://www.instagram.com/innersparkafrica",
+            "https://www.linkedin.com/company/innersparkafrica"
+          ]
         },
         {
-          "@type": "MedicalTherapy",
-          "name": "Counseling Services",
-          "description": "Professional counseling for mental health support"
+          "@type": "WebSite",
+          "@id": "https://innerspark.africa/#website",
+          "url": "https://innerspark.africa",
+          "name": "Innerspark Africa",
+          "description": "Mental Health Services, Therapy & Counseling in Uganda",
+          "publisher": {
+            "@id": "https://innerspark.africa/#organization"
+          },
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": {
+              "@type": "EntryPoint",
+              "urlTemplate": "https://innerspark.africa/search?q={search_term_string}"
+            },
+            "query-input": "required name=search_term_string"
+          }
         },
         {
-          "@type": "Service",
-          "name": "Support Groups",
-          "description": "Community support groups for mental wellness"
+          "@type": "WebPage",
+          "@id": "https://innerspark.africa/#webpage",
+          "url": "https://innerspark.africa",
+          "name": "Home - Innerspark Africa",
+          "description": "Leading mental health services in Uganda. Access affordable virtual therapy, professional counseling, support groups & wellness programs. Licensed therapists available 24/7.",
+          "isPartOf": {
+            "@id": "https://innerspark.africa/#website"
+          },
+          "about": {
+            "@id": "https://innerspark.africa/#organization"
+          },
+          "primaryImageOfPage": {
+            "@type": "ImageObject",
+            "url": "https://innerspark.africa/innerspark-logo.png"
+          },
+          "breadcrumb": {
+            "@id": "https://innerspark.africa/#breadcrumb"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://innerspark.africa/#breadcrumb",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://innerspark.africa"
+            }
+          ]
         }
-      ],
-      "sameAs": [
-        "https://www.facebook.com/innersparkafrica",
-        "https://twitter.com/innersparkafrica",
-        "https://www.instagram.com/innersparkafrica"
       ]
     }
     </script>
