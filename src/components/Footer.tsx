@@ -1,4 +1,4 @@
-import { Facebook, Twitter, Instagram, Youtube, Mail, Phone, MapPin } from "lucide-react";
+import { Facebook, Twitter, Instagram, Youtube, Linkedin, Mail, Phone, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Footer = () => {
@@ -54,16 +54,19 @@ const Footer = () => {
           <div>
             <h4 className="font-semibold mb-4">Connect With Us</h4>
             <div className="flex gap-4 mb-4">
-              <a href="https://facebook.com/innersparkrecover" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-primary rounded-full flex items-center justify-center hover:bg-primary/90 transition-colors">
+              <a href="https://www.facebook.com/innersparkrecover" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-primary rounded-full flex items-center justify-center hover:bg-primary/90 transition-colors">
                 <Facebook className="w-5 h-5 text-primary-foreground" />
               </a>
-              <a href="https://twitter.com/innersparkrcv" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-primary rounded-full flex items-center justify-center hover:bg-primary/90 transition-colors">
+              <a href="https://x.com/innersparkrcv" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-primary rounded-full flex items-center justify-center hover:bg-primary/90 transition-colors">
                 <Twitter className="w-5 h-5 text-primary-foreground" />
+              </a>
+              <a href="https://www.linkedin.com/in/inner-spark-581014326/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-primary rounded-full flex items-center justify-center hover:bg-primary/90 transition-colors">
+                <Linkedin className="w-5 h-5 text-primary-foreground" />
               </a>
               <a href="https://instagram.com/innersparkrecover" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-primary rounded-full flex items-center justify-center hover:bg-primary/90 transition-colors">
                 <Instagram className="w-5 h-5 text-primary-foreground" />
               </a>
-              <a href="https://youtube.com/@innersparktv" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-primary rounded-full flex items-center justify-center hover:bg-primary/90 transition-colors">
+              <a href="https://www.youtube.com/@INNERSPARK36" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-primary rounded-full flex items-center justify-center hover:bg-primary/90 transition-colors">
                 <Youtube className="w-5 h-5 text-primary-foreground" />
               </a>
             </div>
