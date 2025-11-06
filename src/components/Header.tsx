@@ -142,6 +142,9 @@ const Header = () => {
               <Link to="/about" className="hover:text-primary transition-colors font-medium">
                 About
               </Link>
+              <Link to="/leadership" className="hover:text-primary transition-colors font-medium">
+                Leadership
+              </Link>
               <Link to="/events-training" className="hover:text-primary transition-colors font-medium">
                 Events & Training
               </Link>
@@ -212,6 +215,9 @@ const Header = () => {
               </div>
               <Link to="/about" className="block hover:text-primary transition-colors font-medium">
                 About
+              </Link>
+              <Link to="/leadership" className="block hover:text-primary transition-colors font-medium">
+                Leadership
               </Link>
               <Link to="/events-training" className="block hover:text-primary transition-colors font-medium">
                 Events & Training
