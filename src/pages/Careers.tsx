@@ -10,25 +10,28 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Heart, Users, TrendingUp, Briefcase, CheckCircle2, Award } from "lucide-react";
+import { Heart, Users, TrendingUp, Briefcase, CheckCircle2, Award, Upload } from "lucide-react";
 
 const formSchema = z.object({
   full_name: z.string().trim().min(2, "Name must be at least 2 characters").max(100),
   email: z.string().trim().email("Invalid email address").max(255),
   phone: z.string().trim().min(10, "Phone number must be at least 10 digits").max(20),
-  position: z.string().min(1, "Please select a position"),
+  position: z.string().trim().min(2, "Position must be at least 2 characters").max(100),
+  country: z.string().trim().min(2, "Country is required").max(100),
   experience_years: z.string().min(1, "Please enter years of experience"),
   specialization: z.string().trim().max(200).optional(),
   linkedin_url: z.string().trim().url("Invalid URL").max(500).optional().or(z.literal("")),
+  resume: z.instanceof(File).refine((file) => file.size <= 5 * 1024 * 1024, "Resume must be less than 5MB")
+    .refine((file) => ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"].includes(file.type), "Only PDF and DOC/DOCX files are allowed"),
   cover_letter: z.string().trim().min(50, "Cover letter must be at least 50 characters").max(2000),
 });
 
 export default function Careers() {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [resumeFile, setResumeFile] = useState<File | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -37,24 +40,45 @@ export default function Careers() {
       email: "",
       phone: "",
       position: "",
+      country: "Uganda",
       experience_years: "",
       specialization: "",
       linkedin_url: "",
       cover_letter: "",
+      resume: undefined as unknown as File,
     },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsSubmitting(true);
     try {
+      // Upload resume to Supabase Storage
+      const fileExt = values.resume.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+      const filePath = `${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('resumes')
+        .upload(filePath, values.resume);
+
+      if (uploadError) throw uploadError;
+
+      // Get public URL for the resume
+      const { data: { publicUrl } } = supabase.storage
+        .from('resumes')
+        .getPublicUrl(filePath);
+
+      // Insert application data
       const { error } = await supabase.from("career_applications").insert({
         full_name: values.full_name,
         email: values.email,
         phone: values.phone,
         position: values.position,
+        country: values.country,
         experience_years: parseInt(values.experience_years),
         specialization: values.specialization || null,
         linkedin_url: values.linkedin_url || null,
+        resume_url: publicUrl,
         cover_letter: values.cover_letter,
       });
 
@@ -65,6 +89,7 @@ export default function Careers() {
         description: "Thank you for your interest. We'll review your application and get back to you soon.",
       });
       form.reset();
+      setResumeFile(null);
     } catch (error) {
       console.error("Error submitting application:", error);
       toast({
@@ -76,29 +101,6 @@ export default function Careers() {
       setIsSubmitting(false);
     }
   };
-
-  const positions = [
-    {
-      title: "Licensed Clinical Therapist",
-      type: "Full-time",
-      description: "Provide virtual therapy sessions to clients dealing with mental health challenges.",
-    },
-    {
-      title: "Child & Adolescent Therapist",
-      type: "Full-time",
-      description: "Specialize in supporting children and teenagers with mental health and emotional wellbeing.",
-    },
-    {
-      title: "Trauma Counselor",
-      type: "Full-time / Part-time",
-      description: "Work with individuals who have experienced trauma and require specialized support.",
-    },
-    {
-      title: "Corporate Wellness Therapist",
-      type: "Contract",
-      description: "Deliver mental health programs and workshops to corporate clients.",
-    },
-  ];
 
   const benefits = [
     { icon: Heart, title: "Meaningful Work", description: "Make a real difference in people's lives every day" },
@@ -161,36 +163,9 @@ export default function Careers() {
             </div>
           </section>
 
-          {/* Open Positions */}
+          {/* Application Form */}
           <section className="py-16 px-4">
             <div className="max-w-6xl mx-auto">
-              <div className="text-center mb-12">
-                <h2 className="text-3xl font-bold mb-4">Open Positions</h2>
-                <p className="text-lg text-muted-foreground">
-                  Explore our current therapist opportunities
-                </p>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-6 mb-16">
-                {positions.map((position, index) => (
-                  <Card key={index}>
-                    <CardHeader>
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <CardTitle className="text-xl mb-2">{position.title}</CardTitle>
-                          <CardDescription className="text-sm font-medium">{position.type}</CardDescription>
-                        </div>
-                        <Briefcase className="w-6 h-6 text-primary" />
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-muted-foreground">{position.description}</p>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-
-              {/* Application Form */}
               <Card className="max-w-3xl mx-auto">
                 <CardHeader>
                   <CardTitle className="text-2xl">Apply Now</CardTitle>
@@ -248,28 +223,65 @@ export default function Careers() {
 
                         <FormField
                           control={form.control}
-                          name="position"
+                          name="country"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Position *</FormLabel>
-                              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Select position" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  <SelectItem value="licensed-clinical-therapist">Licensed Clinical Therapist</SelectItem>
-                                  <SelectItem value="child-adolescent-therapist">Child & Adolescent Therapist</SelectItem>
-                                  <SelectItem value="trauma-counselor">Trauma Counselor</SelectItem>
-                                  <SelectItem value="corporate-wellness-therapist">Corporate Wellness Therapist</SelectItem>
-                                </SelectContent>
-                              </Select>
+                              <FormLabel>Country *</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Uganda" {...field} />
+                              </FormControl>
                               <FormMessage />
                             </FormItem>
                           )}
                         />
                       </div>
+
+                      <FormField
+                        control={form.control}
+                        name="resume"
+                        render={({ field: { value, onChange, ...field } }) => (
+                          <FormItem>
+                            <FormLabel>Resume/CV * (PDF or DOC, max 5MB)</FormLabel>
+                            <FormControl>
+                              <div className="space-y-2">
+                                <Input
+                                  type="file"
+                                  accept=".pdf,.doc,.docx"
+                                  {...field}
+                                  onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    if (file) {
+                                      setResumeFile(file);
+                                      onChange(file);
+                                    }
+                                  }}
+                                />
+                                {resumeFile && (
+                                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                    <Upload className="w-4 h-4" />
+                                    <span>{resumeFile.name} ({(resumeFile.size / 1024 / 1024).toFixed(2)} MB)</span>
+                                  </div>
+                                )}
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="position"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Position Applying For *</FormLabel>
+                            <FormControl>
+                              <Input placeholder="e.g., Licensed Clinical Therapist" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
                       <div className="grid md:grid-cols-2 gap-6">
                         <FormField

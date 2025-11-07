@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       career_applications: {
         Row: {
+          country: string
           cover_letter: string
           created_at: string
           email: string
@@ -29,6 +30,7 @@ export type Database = {
           specialization: string | null
         }
         Insert: {
+          country?: string
           cover_letter: string
           created_at?: string
           email: string
@@ -42,6 +44,7 @@ export type Database = {
           specialization?: string | null
         }
         Update: {
+          country?: string
           cover_letter?: string
           created_at?: string
           email?: string
