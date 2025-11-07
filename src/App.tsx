@@ -24,6 +24,7 @@ import Services from "./pages/Services";
 import About from "./pages/About";
 import Leadership from "./pages/Leadership";
 import Contact from "./pages/Contact";
+import Careers from "./pages/Careers";
 import TruckDriversPost from "./pages/blog/TruckDriversPost";
 import FoundersPost from "./pages/blog/FoundersPost";
 import ChildrenMentalHealthPost from "./pages/blog/ChildrenMentalHealthPost";
@@ -62,6 +63,7 @@ const App = () => (
           <Route path="/about" element={<About />} />
           <Route path="/leadership" element={<Leadership />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/careers" element={<Careers />} />
           <Route path="/events-training/truck-drivers-retirement-training" element={<TruckDriversPost />} />
           <Route path="/events-training/founders-mindset-training" element={<FoundersPost />} />
           <Route path="/events-training/children-mental-health-awareness" element={<ChildrenMentalHealthPost />} />

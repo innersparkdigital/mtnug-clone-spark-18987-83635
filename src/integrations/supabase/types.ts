@@ -14,7 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      career_applications: {
+        Row: {
+          cover_letter: string
+          created_at: string
+          email: string
+          experience_years: number
+          full_name: string
+          id: string
+          linkedin_url: string | null
+          phone: string
+          position: string
+          resume_url: string | null
+          specialization: string | null
+        }
+        Insert: {
+          cover_letter: string
+          created_at?: string
+          email: string
+          experience_years: number
+          full_name: string
+          id?: string
+          linkedin_url?: string | null
+          phone: string
+          position: string
+          resume_url?: string | null
+          specialization?: string | null
+        }
+        Update: {
+          cover_letter?: string
+          created_at?: string
+          email?: string
+          experience_years?: number
+          full_name?: string
+          id?: string
+          linkedin_url?: string | null
+          phone?: string
+          position?: string
+          resume_url?: string | null
+          specialization?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
