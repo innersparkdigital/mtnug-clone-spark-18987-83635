@@ -28,10 +28,10 @@ const Services = () => {
                 At Innerspark Africa, we make therapy, community support, and wellness resources accessible anytime, anywhere. Whether you're an individual, student, or organization, we have the right tools to help you heal, grow, and thrive.
               </p>
               <div className="flex flex-wrap gap-4">
-                <a href="https://wa.me/256780570987" target="_blank" rel="noopener noreferrer">
+                <a href="https://wa.me/256780570987?text=Hi,%20I%20would%20like%20to%20book%20a%20therapy%20session" target="_blank" rel="noopener noreferrer">
                   <Button size="lg">Book a Session</Button>
                 </a>
-                <a href="https://wa.me/256780570987" target="_blank" rel="noopener noreferrer">
+                <a href="https://wa.me/256780570987?text=Hi,%20I%20would%20like%20to%20join%20a%20support%20group" target="_blank" rel="noopener noreferrer">
                   <Button size="lg" variant="outline">Join a Support Group</Button>
                 </a>
               </div>
@@ -263,12 +263,12 @@ const Services = () => {
             Whether for yourself, your team, or your community — Innerspark Africa is here to support you every step of the way.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
-            <a href="https://wa.me/256780570987" target="_blank" rel="noopener noreferrer">
+            <a href="https://wa.me/256780570987?text=Hi,%20I%20would%20like%20to%20book%20a%20therapy%20session" target="_blank" rel="noopener noreferrer">
               <Button size="lg" className="bg-white text-primary hover:bg-white/90">
                 Book a Session
               </Button>
             </a>
-            <a href="https://wa.me/256780570987" target="_blank" rel="noopener noreferrer">
+            <a href="https://wa.me/256780570987?text=Hi,%20I%20would%20like%20to%20join%20a%20support%20group" target="_blank" rel="noopener noreferrer">
               <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
                 Join a Group
               </Button>

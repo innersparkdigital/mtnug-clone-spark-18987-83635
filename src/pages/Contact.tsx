@@ -72,6 +72,15 @@ const Contact = () => {
                 Reach out to us for inquiries, support, or partnership opportunities. We're here to help you on your mental wellness journey.
               </p>
               
+              {/* Quick WhatsApp Contact */}
+              <div className="mb-8">
+                <a href="https://wa.me/256780570987?text=Hi,%20I%20would%20like%20to%20get%20in%20touch%20with%20Innerspark%20Africa" target="_blank" rel="noopener noreferrer">
+                  <Button size="lg" className="w-full md:w-auto">
+                    Chat with Us on WhatsApp
+                  </Button>
+                </a>
+              </div>
+              
               {/* Contact Info */}
               <div className="space-y-6">
                 <div className="flex items-start gap-4">

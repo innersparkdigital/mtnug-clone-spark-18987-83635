@@ -22,10 +22,12 @@ const EmergencySupport = () => {
               One-tap access to counselors, crisis lines, and emergency contacts. Immediate help when you need it most.
             </p>
             <div className="flex gap-4 justify-center">
-              <Button size="lg" variant="destructive" className="gap-2">
-                <Phone className="w-5 h-5" />
-                Call Crisis Line Now
-              </Button>
+              <a href="https://wa.me/256780570987?text=URGENT:%20I%20need%20immediate%20mental%20health%20support" target="_blank" rel="noopener noreferrer">
+                <Button size="lg" variant="destructive" className="gap-2">
+                  <Phone className="w-5 h-5" />
+                  Get Immediate Help on WhatsApp
+                </Button>
+              </a>
               <Button size="lg" variant="outline">Emergency Resources</Button>
             </div>
           </div>

@@ -22,7 +22,7 @@ const SupportGroups = () => {
               Safe peer spaces to share and heal together under professional moderation. Connect with others who understand your journey.
             </p>
             <div className="flex gap-4 justify-center">
-              <a href="https://wa.me/256780570987" target="_blank" rel="noopener noreferrer">
+              <a href="https://wa.me/256780570987?text=Hi,%20I%20would%20like%20to%20join%20a%20support%20group" target="_blank" rel="noopener noreferrer">
                 <Button size="lg">Join a Group</Button>
               </a>
               <Button size="lg" variant="outline">Browse Groups</Button>
@@ -91,9 +91,11 @@ const SupportGroups = () => {
           <p className="text-xl mb-8 opacity-90">
             Join a supportive community today
           </p>
-          <Button size="lg" variant="secondary">
-            Explore Support Groups
-          </Button>
+          <a href="https://wa.me/256780570987?text=Hi,%20I%20want%20to%20explore%20support%20groups%20and%20connect%20with%20a%20community" target="_blank" rel="noopener noreferrer">
+            <Button size="lg" variant="secondary">
+              Explore Support Groups
+            </Button>
+          </a>
         </div>
       </section>
 

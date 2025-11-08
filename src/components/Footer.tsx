@@ -1,5 +1,6 @@
 import { Facebook, Twitter, Instagram, Youtube, Linkedin, Mail, Phone, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 const Footer = () => {
   return (
@@ -53,6 +54,11 @@ const Footer = () => {
           {/* Social Media */}
           <div>
             <h4 className="font-semibold mb-4">Connect With Us</h4>
+            <div className="mb-4">
+              <a href="https://wa.me/256780570987?text=Hi,%20I%20would%20like%20to%20connect%20with%20Innerspark%20Africa" target="_blank" rel="noopener noreferrer" className="inline-block">
+                <Button size="sm" className="w-full">Chat on WhatsApp</Button>
+              </a>
+            </div>
             <div className="flex gap-4 mb-4">
               <a href="https://www.facebook.com/innersparkrecover" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-primary rounded-full flex items-center justify-center hover:bg-primary/90 transition-colors">
                 <Facebook className="w-5 h-5 text-primary-foreground" />

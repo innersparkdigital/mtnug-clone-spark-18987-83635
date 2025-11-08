@@ -306,8 +306,13 @@ const About = () => {
             Whether you're seeking support or want to partner with us, we're here to help.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
-            <Link to="/services">
+            <a href="https://wa.me/256780570987?text=Hi,%20I%20would%20like%20to%20learn%20more%20about%20Innerspark%20Africa's%20services" target="_blank" rel="noopener noreferrer">
               <Button size="lg" className="bg-white text-primary hover:bg-white/90">
+                Chat with Us on WhatsApp
+              </Button>
+            </a>
+            <Link to="/services">
+              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
                 Explore Our Services
               </Button>
             </Link>

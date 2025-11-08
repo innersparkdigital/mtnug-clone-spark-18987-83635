@@ -22,7 +22,9 @@ const FindTherapist = () => {
               Browse qualified mental health professionals by specialty and availability. Find the perfect match for your therapeutic journey.
             </p>
             <div className="flex gap-4 justify-center">
-              <Button size="lg">Search Therapists</Button>
+              <a href="https://wa.me/256780570987?text=Hi,%20I%20would%20like%20to%20find%20a%20therapist" target="_blank" rel="noopener noreferrer">
+                <Button size="lg">Search Therapists</Button>
+              </a>
               <Button size="lg" variant="outline">Filter by Specialty</Button>
             </div>
           </div>
@@ -89,9 +91,11 @@ const FindTherapist = () => {
           <p className="text-xl mb-8 opacity-90">
             Browse our network of qualified professionals
           </p>
-          <Button size="lg" variant="secondary">
-            Start Searching
-          </Button>
+          <a href="https://wa.me/256780570987?text=Hi,%20I'm%20looking%20for%20a%20therapist.%20Can%20you%20help%20me%20find%20the%20right%20match?" target="_blank" rel="noopener noreferrer">
+            <Button size="lg" variant="secondary">
+              Start Searching
+            </Button>
+          </a>
         </div>
       </section>
 

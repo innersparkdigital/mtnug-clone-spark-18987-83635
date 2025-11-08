@@ -25,7 +25,7 @@ const PromoBanner = () => {
             <p className="text-lg md:text-xl text-white/90 mb-8">
               Breaking stigma, building resilience. Join thousands taking charge of their mental wellness journey.
             </p>
-            <a href="https://wa.me/256780570987" target="_blank" rel="noopener noreferrer">
+            <a href="https://wa.me/256780570987?text=Hi,%20I%20would%20like%20to%20get%20started%20with%20Innerspark%20Africa's%20mental%20health%20services" target="_blank" rel="noopener noreferrer">
               <Button
                 size="lg"
                 className="bg-white text-primary hover:bg-white/90 font-semibold px-8 py-6 text-lg rounded-full"
