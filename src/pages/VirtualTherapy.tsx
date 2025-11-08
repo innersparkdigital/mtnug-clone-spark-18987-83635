@@ -23,7 +23,9 @@ const VirtualTherapy = () => {
               Connect one-on-one with licensed therapists from anywhere, anytime. Get professional mental health support through secure video or chat sessions.
             </p>
             <div className="flex gap-4 justify-center">
-              <Button size="lg">Book a Session</Button>
+              <a href="https://wa.me/256700000000" target="_blank" rel="noopener noreferrer">
+                <Button size="lg">Book a Session</Button>
+              </a>
               <Button size="lg" variant="outline">Learn More</Button>
             </div>
           </div>
@@ -93,9 +95,11 @@ const VirtualTherapy = () => {
           <p className="text-xl mb-8 opacity-90">
             Take the first step towards better mental health today
           </p>
-          <Button size="lg" variant="secondary">
-            Get Started Now
-          </Button>
+          <a href="https://wa.me/256700000000" target="_blank" rel="noopener noreferrer">
+            <Button size="lg" variant="secondary">
+              Get Started Now
+            </Button>
+          </a>
         </div>
       </section>
 

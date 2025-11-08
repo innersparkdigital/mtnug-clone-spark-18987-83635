@@ -22,7 +22,9 @@ const SupportGroups = () => {
               Safe peer spaces to share and heal together under professional moderation. Connect with others who understand your journey.
             </p>
             <div className="flex gap-4 justify-center">
-              <Button size="lg">Join a Group</Button>
+              <a href="https://wa.me/256700000000" target="_blank" rel="noopener noreferrer">
+                <Button size="lg">Join a Group</Button>
+              </a>
               <Button size="lg" variant="outline">Browse Groups</Button>
             </div>
           </div>
