@@ -25,7 +25,7 @@ const PromoBanner = () => {
             <p className="text-lg md:text-xl text-white/90 mb-8">
               Breaking stigma, building resilience. Join thousands taking charge of their mental wellness journey.
             </p>
-            <a href="https://wa.me/256700000000" target="_blank" rel="noopener noreferrer">
+            <a href="https://wa.me/256780570987" target="_blank" rel="noopener noreferrer">
               <Button
                 size="lg"
                 className="bg-white text-primary hover:bg-white/90 font-semibold px-8 py-6 text-lg rounded-full"
