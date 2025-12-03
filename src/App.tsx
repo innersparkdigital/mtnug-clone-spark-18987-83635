@@ -33,6 +33,8 @@ import MTNPost from "./pages/blog/MTNPost";
 import WorldMentalHealthDayPost from "./pages/blog/WorldMentalHealthDayPost";
 import UICTPost from "./pages/blog/UICTPost";
 import UICTWellnessPost from "./pages/blog/UICTWellnessPost";
+import Blog from "./pages/Blog";
+import HowToHandleStressPost from "./pages/blog/HowToHandleStressPost";
 
 const queryClient = new QueryClient();
 
@@ -64,6 +66,8 @@ const App = () => (
           <Route path="/leadership" element={<Leadership />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/careers" element={<Careers />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/how-to-handle-stress" element={<HowToHandleStressPost />} />
           <Route path="/events-training/truck-drivers-retirement-training" element={<TruckDriversPost />} />
           <Route path="/events-training/founders-mindset-training" element={<FoundersPost />} />
           <Route path="/events-training/children-mental-health-awareness" element={<ChildrenMentalHealthPost />} />
