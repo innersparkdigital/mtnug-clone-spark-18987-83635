@@ -1,9 +1,10 @@
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Calendar, Clock, Share2, MessageCircle } from "lucide-react";
+import { ArrowLeft, Calendar, Clock } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AppDownload from "@/components/AppDownload";
+import SocialShareButtons from "@/components/SocialShareButtons";
 import heroImage from "@/assets/blog/stress-management-hero.jpg";
 import stressTypesImage from "@/assets/blog/stress-types-infographic.png";
 import groundingImage from "@/assets/blog/grounding-technique-infographic.png";
@@ -160,7 +161,7 @@ const HowToHandleStressPost = () => {
                 <h1 className="text-3xl md:text-5xl font-bold text-foreground mb-4 max-w-4xl">
                   How Should I Handle Stress? Your Easy, Expert-Backed Guide to Feeling Calmer Today
                 </h1>
-                <div className="flex items-center gap-6 text-muted-foreground">
+                <div className="flex flex-wrap items-center gap-6 text-muted-foreground">
                   <span className="flex items-center gap-2">
                     <Calendar className="h-5 w-5" />
                     December 3, 2025
@@ -169,6 +170,13 @@ const HowToHandleStressPost = () => {
                     <Clock className="h-5 w-5" />
                     8 min read
                   </span>
+                  <div className="ml-auto">
+                    <SocialShareButtons 
+                      url="https://innerspark.africa/blog/how-to-handle-stress"
+                      title="How Should I Handle Stress? Expert-Backed, Simple & Practical Ways to Regain Control"
+                      description="Discover how to handle stress with practical, expert-approved tools."
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -535,23 +543,17 @@ const HowToHandleStressPost = () => {
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-8 py-4 rounded-full font-semibold hover:bg-primary/90 transition-colors"
                   >
-                    <MessageCircle className="h-5 w-5" />
                     Book a Session on WhatsApp
                   </a>
                 </section>
 
                 {/* Share */}
-                <div className="flex items-center justify-center gap-4 mt-12 pt-8 border-t border-border">
-                  <span className="text-muted-foreground font-medium">Share this article:</span>
-                  <a 
-                    href={`https://twitter.com/intent/tweet?url=${encodeURIComponent("https://innerspark.africa/blog/how-to-handle-stress")}&text=${encodeURIComponent("How Should I Handle Stress? Expert-Backed Guide")}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-secondary p-3 rounded-full hover:bg-accent transition-colors"
-                    aria-label="Share on Twitter"
-                  >
-                    <Share2 className="h-5 w-5 text-foreground" />
-                  </a>
+                <div className="flex items-center justify-center mt-12 pt-8 border-t border-border">
+                  <SocialShareButtons 
+                    url="https://innerspark.africa/blog/how-to-handle-stress"
+                    title="How Should I Handle Stress? Expert-Backed, Simple & Practical Ways to Regain Control"
+                    description="Discover how to handle stress with practical, expert-approved tools."
+                  />
                 </div>
               </div>
             </div>

@@ -4,6 +4,7 @@ import { ArrowLeft, Calendar, Clock, ArrowRight } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AppDownload from "@/components/AppDownload";
+import NewsletterForm from "@/components/NewsletterForm";
 import stressHeroImage from "@/assets/blog/stress-management-hero.jpg";
 
 interface BlogPost {
@@ -144,6 +145,9 @@ const Blog = () => {
             )}
           </div>
         </section>
+
+        {/* Newsletter Section */}
+        <NewsletterForm />
 
         {/* CTA Section */}
         <section className="py-16 bg-primary/5">
