@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import AppDownload from "@/components/AppDownload";
 import SocialShareButtons from "@/components/SocialShareButtons";
 import heroImage from "@/assets/blog/workplace-wellness-hero.jpg";
+import burnoutInfographic from "@/assets/blog/burnout-signs-infographic.png";
 
 const WorkplaceWellnessPost = () => {
   const postUrl = "https://innerspark.africa/blog/how-to-improve-mental-health-at-work";
@@ -263,6 +264,15 @@ const WorkplaceWellnessPost = () => {
               <p>
                 If you recognize these signs, take action early. Talk to your manager, take time off if possible, and consider professional support.
               </p>
+
+              <div className="my-8">
+                <img 
+                  src={burnoutInfographic} 
+                  alt="Workplace Burnout Warning Signs Infographic"
+                  className="w-full max-w-lg mx-auto rounded-xl shadow-md"
+                />
+                <p className="text-center text-sm text-muted-foreground mt-2">Workplace Burnout Warning Signs</p>
+              </div>
 
               <h2>For Employers and Managers</h2>
               <p>Creating a mentally healthy workplace benefits everyone:</p>
