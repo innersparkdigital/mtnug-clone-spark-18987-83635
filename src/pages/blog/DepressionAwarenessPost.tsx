@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import AppDownload from "@/components/AppDownload";
 import SocialShareButtons from "@/components/SocialShareButtons";
 import heroImage from "@/assets/blog/depression-awareness-hero.jpg";
+import depressionSignsInfographic from "@/assets/blog/depression-signs-infographic.png";
 
 const DepressionAwarenessPost = () => {
   const postUrl = "https://innerspark.africa/blog/what-is-depression";
@@ -190,6 +191,15 @@ const DepressionAwarenessPost = () => {
                 <li>Negative thought patterns</li>
                 <li>Thoughts of death or suicide</li>
               </ul>
+
+              <div className="my-8">
+                <img 
+                  src={depressionSignsInfographic} 
+                  alt="Signs of Depression Infographic showing common symptoms"
+                  className="w-full max-w-lg mx-auto rounded-xl shadow-md"
+                />
+                <p className="text-center text-sm text-muted-foreground mt-2">Common Signs of Depression</p>
+              </div>
 
               <p>
                 If you experience several of these symptoms for more than two weeks, consider reaching out to a mental health professional. Learn more from the{" "}
