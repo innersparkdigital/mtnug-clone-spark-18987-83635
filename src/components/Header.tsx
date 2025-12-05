@@ -3,6 +3,7 @@ import { Menu, X, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import logo from "@/assets/innerspark-logo.png";
+import AppDownloadPopup from "@/components/AppDownloadPopup";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -157,6 +158,7 @@ const Header = () => {
               <Link to="/contact" className="hover:text-primary transition-colors font-medium">
                 Contact
               </Link>
+              <AppDownloadPopup />
               <Link to="/donate-therapy">
                 <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground">
                   Donate Therapy
@@ -237,6 +239,9 @@ const Header = () => {
               <Link to="/contact" className="block hover:text-primary transition-colors font-medium">
                 Contact
               </Link>
+              <div className="pt-2">
+                <AppDownloadPopup />
+              </div>
               <Link to="/donate-therapy">
                 <Button variant="outline" className="w-full border-primary text-primary hover:bg-primary hover:text-primary-foreground">
                   Donate Therapy
