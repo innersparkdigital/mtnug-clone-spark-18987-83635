@@ -35,6 +35,7 @@ import UICTPost from "./pages/blog/UICTPost";
 import UICTWellnessPost from "./pages/blog/UICTWellnessPost";
 import Blog from "./pages/Blog";
 import HowToHandleStressPost from "./pages/blog/HowToHandleStressPost";
+import PanicAttackPost from "./pages/blog/PanicAttackPost";
 
 const queryClient = new QueryClient();
 
@@ -68,6 +69,7 @@ const App = () => (
           <Route path="/careers" element={<Careers />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/how-to-handle-stress" element={<HowToHandleStressPost />} />
+          <Route path="/blog/how-to-stop-a-panic-attack" element={<PanicAttackPost />} />
           <Route path="/events-training/truck-drivers-retirement-training" element={<TruckDriversPost />} />
           <Route path="/events-training/founders-mindset-training" element={<FoundersPost />} />
           <Route path="/events-training/children-mental-health-awareness" element={<ChildrenMentalHealthPost />} />

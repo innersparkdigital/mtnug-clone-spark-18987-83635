@@ -19,6 +19,15 @@ interface BlogPost {
 
 const blogPosts: BlogPost[] = [
   {
+    slug: "how-to-stop-a-panic-attack",
+    title: "How Do I Stop a Panic Attack? Simple, Fast Techniques to Regain Control",
+    excerpt: "Panic attacks can feel terrifying, but with the right tools, you can ease their intensity and return to balance. Learn expert-backed grounding techniques and breathing exercises.",
+    date: "December 6, 2025",
+    readTime: "10 min read",
+    image: stressHeroImage,
+    category: "Mental Health"
+  },
+  {
     slug: "how-to-handle-stress",
     title: "How Should I Handle Stress? Expert-Backed, Simple & Practical Ways to Regain Control",
     excerpt: "Stress doesn't have to run the show. Learn how to understand your stress, break it down, and manage it using simple tools backed by mental health experts.",
