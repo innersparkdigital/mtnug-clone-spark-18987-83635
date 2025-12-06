@@ -35,10 +35,6 @@ import UICTPost from "./pages/blog/UICTPost";
 import UICTWellnessPost from "./pages/blog/UICTWellnessPost";
 import Blog from "./pages/Blog";
 import HowToHandleStressPost from "./pages/blog/HowToHandleStressPost";
-import HowToStopPanicAttackPost from "./pages/blog/HowToStopPanicAttackPost";
-import AnxietyManagementPost from "./pages/blog/AnxietyManagementPost";
-import DepressionAwarenessPost from "./pages/blog/DepressionAwarenessPost";
-import WorkplaceWellnessPost from "./pages/blog/WorkplaceWellnessPost";
 
 const queryClient = new QueryClient();
 
@@ -72,10 +68,6 @@ const App = () => (
           <Route path="/careers" element={<Careers />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/how-to-handle-stress" element={<HowToHandleStressPost />} />
-          <Route path="/blog/how-to-stop-a-panic-attack" element={<HowToStopPanicAttackPost />} />
-          <Route path="/blog/anxiety-management" element={<AnxietyManagementPost />} />
-          <Route path="/blog/depression-awareness" element={<DepressionAwarenessPost />} />
-          <Route path="/blog/workplace-wellness" element={<WorkplaceWellnessPost />} />
           <Route path="/events-training/truck-drivers-retirement-training" element={<TruckDriversPost />} />
           <Route path="/events-training/founders-mindset-training" element={<FoundersPost />} />
           <Route path="/events-training/children-mental-health-awareness" element={<ChildrenMentalHealthPost />} />

@@ -6,10 +6,6 @@ import Footer from "@/components/Footer";
 import AppDownload from "@/components/AppDownload";
 import NewsletterForm from "@/components/NewsletterForm";
 import stressHeroImage from "@/assets/blog/stress-management-hero.jpg";
-import panicAttackHeroImage from "@/assets/blog/panic-attack-hero.jpg";
-import anxietyHeroImage from "@/assets/blog/anxiety-management-hero.jpg";
-import depressionHeroImage from "@/assets/blog/depression-awareness-hero.jpg";
-import workplaceHeroImage from "@/assets/blog/workplace-wellness-hero.jpg";
 
 interface BlogPost {
   slug: string;
@@ -30,42 +26,6 @@ const blogPosts: BlogPost[] = [
     readTime: "8 min read",
     image: stressHeroImage,
     category: "Stress Management"
-  },
-  {
-    slug: "how-to-stop-a-panic-attack",
-    title: "How Do I Stop a Panic Attack? Expert-Backed Tools to Calm Your Mind and Body Fast",
-    excerpt: "Panic attacks can feel terrifying, but with the right tools, you can ease their intensity and return to balance. Here's what mental health professionals say.",
-    date: "December 4, 2025",
-    readTime: "10 min read",
-    image: panicAttackHeroImage,
-    category: "Panic & Anxiety"
-  },
-  {
-    slug: "anxiety-management",
-    title: "How Do I Manage Anxiety? Practical Tools to Feel Calmer Every Day",
-    excerpt: "Anxiety is one of the most common mental health challenges, but it doesn't have to control your life. Learn evidence-based strategies to reduce worry.",
-    date: "December 4, 2025",
-    readTime: "12 min read",
-    image: anxietyHeroImage,
-    category: "Anxiety Management"
-  },
-  {
-    slug: "depression-awareness",
-    title: "What Is Depression? Understanding the Signs and Finding Hope",
-    excerpt: "Depression is more than feeling sad—it's a complex mental health condition that affects millions. Understanding depression is the first step toward healing.",
-    date: "December 4, 2025",
-    readTime: "11 min read",
-    image: depressionHeroImage,
-    category: "Depression Awareness"
-  },
-  {
-    slug: "workplace-wellness",
-    title: "How Can I Improve My Mental Health at Work? Practical Strategies for Workplace Wellness",
-    excerpt: "We spend a significant portion of our lives at work, making workplace mental health crucial. Learn practical strategies to reduce stress and prevent burnout.",
-    date: "December 4, 2025",
-    readTime: "10 min read",
-    image: workplaceHeroImage,
-    category: "Workplace Wellness"
   }
 ];
 
