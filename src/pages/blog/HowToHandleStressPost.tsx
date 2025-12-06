@@ -7,8 +7,6 @@ import AppDownload from "@/components/AppDownload";
 import SocialShareButtons from "@/components/SocialShareButtons";
 import heroImage from "@/assets/blog/stress-management-hero.jpg";
 import stressTypesImage from "@/assets/blog/stress-types-infographic.png";
-import groundingImage from "@/assets/blog/grounding-technique-infographic.png";
-import boxBreathingImage from "@/assets/blog/box-breathing-infographic.png";
 
 const HowToHandleStressPost = () => {
   const articleSchema = {
@@ -339,18 +337,6 @@ const HowToHandleStressPost = () => {
                     ))}
                   </div>
 
-                  <figure className="my-8">
-                    <img 
-                      src={boxBreathingImage} 
-                      alt="Box breathing technique diagram showing 4 steps"
-                      className="w-full max-w-md mx-auto rounded-xl shadow-lg"
-                      loading="lazy"
-                    />
-                    <figcaption className="text-center text-sm text-muted-foreground mt-3">
-                      The Box Breathing Technique - Learn more at{" "}
-                      <a href="https://www.webmd.com/balance/what-is-box-breathing" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">WebMD</a>
-                    </figcaption>
-                  </figure>
 
                   <p className="text-muted-foreground font-medium">
                     Stress management isn't about never feeling stressed—it's about having a toolbox ready when you need it.
@@ -377,18 +363,6 @@ const HowToHandleStressPost = () => {
                     </ul>
                   </div>
 
-                  <figure className="my-8">
-                    <img 
-                      src={groundingImage} 
-                      alt="5-4-3-2-1 Grounding technique infographic"
-                      className="w-full max-w-lg mx-auto rounded-xl shadow-lg"
-                      loading="lazy"
-                    />
-                    <figcaption className="text-center text-sm text-muted-foreground mt-3">
-                      The 5-4-3-2-1 Grounding Technique - Learn more at{" "}
-                      <a href="https://www.healthline.com/health/grounding-techniques" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Healthline</a>
-                    </figcaption>
-                  </figure>
 
                   <h3 className="text-2xl font-semibold text-foreground mt-10 mb-4">2. Practice Self-Trust</h3>
                   <p className="text-muted-foreground mb-4">
