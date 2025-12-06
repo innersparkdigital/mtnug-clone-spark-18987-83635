@@ -62,17 +62,12 @@ const Header = () => {
               <Link to="/contact" className="hover:text-primary transition-colors font-medium">
                 Contact
               </Link>
-              <AppDownloadPopup />
               <Link to="/donate-therapy">
                 <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground">
                   Donate Therapy
                 </Button>
               </Link>
-              <Link to="/contact">
-                <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
-                  Get Started
-                </Button>
-              </Link>
+              <AppDownloadPopup />
             </nav>
 
             {/* Mobile Menu Button */}
@@ -110,19 +105,14 @@ const Header = () => {
               <Link to="/contact" className="block hover:text-primary transition-colors font-medium">
                 Contact
               </Link>
-              <div className="pt-2">
-                <AppDownloadPopup />
-              </div>
               <Link to="/donate-therapy">
                 <Button variant="outline" className="w-full border-primary text-primary hover:bg-primary hover:text-primary-foreground">
                   Donate Therapy
                 </Button>
               </Link>
-              <Link to="/contact">
-                <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
-                  Get Started
-                </Button>
-              </Link>
+              <div className="pt-2">
+                <AppDownloadPopup />
+              </div>
             </nav>
           )}
         </div>
