@@ -7,6 +7,7 @@ import AppDownload from "@/components/AppDownload";
 import NewsletterForm from "@/components/NewsletterForm";
 import stressHeroImage from "@/assets/blog/stress-management-hero.jpg";
 import panicHeroImage from "@/assets/blog/panic-attack-hero.jpg";
+import depressionHeroImage from "@/assets/blog/depression-hero.jpg";
 
 interface BlogPost {
   slug: string;
@@ -19,6 +20,15 @@ interface BlogPost {
 }
 
 const blogPosts: BlogPost[] = [
+  {
+    slug: "how-to-deal-with-depression",
+    title: "How to Deal With Depression? Simple, Compassionate Strategies That Actually Help",
+    excerpt: "Depression can feel heavy and isolating, but you're not alone—and you're not stuck. Here's a clear, gentle, research-backed guide to dealing with depression.",
+    date: "December 8, 2025",
+    readTime: "12 min read",
+    image: depressionHeroImage,
+    category: "Depression Support"
+  },
   {
     slug: "how-to-stop-a-panic-attack",
     title: "How Do I Stop a Panic Attack? Simple, Fast Techniques to Regain Control",
