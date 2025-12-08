@@ -154,7 +154,7 @@ const PanicAttackPost = () => {
                   </Link>
                 </nav>
                 <span className="inline-block bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-medium mb-4">
-                  Mental Health
+                  Panic Management
                 </span>
                 <h1 className="text-3xl md:text-5xl font-bold text-foreground mb-4 max-w-4xl">
                   How Do I Stop a Panic Attack? Simple, Fast Techniques to Regain Control
