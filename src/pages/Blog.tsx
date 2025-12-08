@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import AppDownload from "@/components/AppDownload";
 import NewsletterForm from "@/components/NewsletterForm";
 import stressHeroImage from "@/assets/blog/stress-management-hero.jpg";
+import panicHeroImage from "@/assets/blog/panic-attack-hero.jpg";
 
 interface BlogPost {
   slug: string;
@@ -24,8 +25,8 @@ const blogPosts: BlogPost[] = [
     excerpt: "Panic attacks can feel terrifying, but with the right tools, you can ease their intensity and return to balance. Learn expert-backed grounding techniques and breathing exercises.",
     date: "December 6, 2025",
     readTime: "10 min read",
-    image: stressHeroImage,
-    category: "Mental Health"
+    image: panicHeroImage,
+    category: "Panic Management"
   },
   {
     slug: "how-to-handle-stress",
