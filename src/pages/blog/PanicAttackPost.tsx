@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import AppDownload from "@/components/AppDownload";
 import SocialShareButtons from "@/components/SocialShareButtons";
 import groundingImage from "@/assets/blog/grounding-5-4-3-2-1-infographic.png";
+import panicHeroImage from "@/assets/blog/panic-attack-hero.jpg";
 
 const PanicAttackPost = () => {
   const articleSchema = {
@@ -137,8 +138,13 @@ const PanicAttackPost = () => {
       <main>
         {/* Hero Section */}
         <article className="bg-background">
-          <div className="relative h-[50vh] md:h-[60vh] overflow-hidden bg-gradient-to-br from-primary/20 via-accent to-secondary">
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
+          <div className="relative h-[50vh] md:h-[60vh] overflow-hidden">
+            <img 
+              src={panicHeroImage} 
+              alt="Person meditating peacefully by a window with soft morning light - representing calm and recovery from panic attacks"
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/20" />
             <div className="absolute bottom-0 left-0 right-0 p-6 md:p-12">
               <div className="container mx-auto">
                 <nav className="mb-4">
