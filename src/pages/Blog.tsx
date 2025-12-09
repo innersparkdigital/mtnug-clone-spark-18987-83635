@@ -9,6 +9,7 @@ import stressHeroImage from "@/assets/blog/stress-management-hero.jpg";
 import panicHeroImage from "@/assets/blog/panic-attack-hero.jpg";
 import depressionHeroImage from "@/assets/blog/depression-hero.jpg";
 import mentalHealthHeroImage from "@/assets/blog/mental-health-hero.jpg";
+import anxietyHeroImage from "@/assets/blog/anxiety-management-hero.jpg";
 
 interface BlogPost {
   slug: string;
@@ -21,6 +22,15 @@ interface BlogPost {
 }
 
 const blogPosts: BlogPost[] = [
+  {
+    slug: "how-to-manage-anxiety",
+    title: "How to Manage Anxiety: Expert-Backed Strategies for Finding Calm",
+    excerpt: "Anxiety can feel overwhelming, but you don't have to face it alone. Discover practical, research-backed strategies to help you manage anxiety, find calm, and reclaim your peace of mind.",
+    date: "December 9, 2025",
+    readTime: "14 min read",
+    image: anxietyHeroImage,
+    category: "Anxiety Management"
+  },
   {
     slug: "what-is-mental-health",
     title: "What Is Mental Health? A Complete Guide to Conditions, Warning Signs & Everyday Wellness",
