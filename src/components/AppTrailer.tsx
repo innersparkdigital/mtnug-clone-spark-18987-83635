@@ -11,12 +11,21 @@ import bookSession from "@/assets/mockups/book-session.jpeg";
 import emergencyHelp from "@/assets/mockups/emergency-help.jpeg";
 import therapyFund from "@/assets/mockups/therapy-fund.jpeg";
 
+// Import team avatars
+import hellenAvatar from "@/assets/hellen-aturo.jpg";
+import jamesAvatar from "@/assets/james-niwamanya.jpg";
+import reaganAvatar from "@/assets/mutebi-reagan.jpg";
+import raymondAvatar from "@/assets/talemwa-raymond.jpg";
+
 interface Slide {
   image: string;
   title: string;
   subtitle: string;
   bgColor: string;
   tooltip: string;
+  avatar: string;
+  avatarName: string;
+  avatarRole: string;
 }
 
 const slides: Slide[] = [
@@ -26,6 +35,9 @@ const slides: Slide[] = [
     subtitle: "Africa's Digital Wellness Hub",
     bgColor: "bg-primary",
     tooltip: "Your mental wellness journey starts here",
+    avatar: hellenAvatar,
+    avatarName: "Hellen",
+    avatarRole: "Founder",
   },
   {
     image: findTherapists,
@@ -33,6 +45,9 @@ const slides: Slide[] = [
     subtitle: "Connect with verified mental health professionals",
     bgColor: "bg-primary",
     tooltip: "Find and book sessions with verified therapists",
+    avatar: jamesAvatar,
+    avatarName: "James",
+    avatarRole: "Therapist",
   },
   {
     image: bookSession,
@@ -40,6 +55,9 @@ const slides: Slide[] = [
     subtitle: "Schedule therapy with ease",
     bgColor: "bg-primary",
     tooltip: "Schedule appointments in just a few taps",
+    avatar: reaganAvatar,
+    avatarName: "Reagan",
+    avatarRole: "User",
   },
   {
     image: supportGroups,
@@ -47,6 +65,9 @@ const slides: Slide[] = [
     subtitle: "Share and learn with like-minded communities",
     bgColor: "bg-primary",
     tooltip: "Join communities that understand you",
+    avatar: raymondAvatar,
+    avatarName: "Raymond",
+    avatarRole: "Member",
   },
   {
     image: wellnessVault,
@@ -54,6 +75,9 @@ const slides: Slide[] = [
     subtitle: "Use MoMo or points to pay for therapy securely",
     bgColor: "bg-primary",
     tooltip: "Secure payments with Mobile Money or wellness points",
+    avatar: hellenAvatar,
+    avatarName: "Hellen",
+    avatarRole: "Guide",
   },
   {
     image: therapyFund,
@@ -61,6 +85,9 @@ const slides: Slide[] = [
     subtitle: "Donate to make therapy accessible to all",
     bgColor: "bg-primary",
     tooltip: "Help someone access mental health support",
+    avatar: jamesAvatar,
+    avatarName: "James",
+    avatarRole: "Advocate",
   },
   {
     image: emergencyHelp,
@@ -68,6 +95,9 @@ const slides: Slide[] = [
     subtitle: "Crisis support when you need it most",
     bgColor: "bg-orange-500",
     tooltip: "24/7 crisis support at your fingertips",
+    avatar: reaganAvatar,
+    avatarName: "Reagan",
+    avatarRole: "Support",
   },
 ];
 
@@ -212,14 +242,37 @@ const AppTrailer = () => {
           {/* Phone Mockup */}
           <div className="flex-1 flex justify-center lg:justify-end">
             <div className="relative">
-              {/* Tooltip Speech Bubble */}
+              {/* Avatar leaning on phone - positioned to the left */}
+              <div
+                key={`avatar-${currentSlide}`}
+                className="absolute -left-16 md:-left-20 lg:-left-24 top-1/3 z-30 animate-fade-in hidden sm:block"
+              >
+                <div className="relative">
+                  {/* Avatar image */}
+                  <div className="w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 rounded-full overflow-hidden border-4 border-white shadow-2xl transform -rotate-6 hover:rotate-0 transition-transform duration-300">
+                    <img
+                      src={slides[currentSlide].avatar}
+                      alt={slides[currentSlide].avatarName}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  {/* Name badge */}
+                  <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-white px-3 py-1 rounded-full shadow-lg">
+                    <p className="text-xs font-semibold text-foreground whitespace-nowrap">
+                      {slides[currentSlide].avatarName}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Tooltip Speech Bubble - now connected to avatar */}
               <div
                 key={`tooltip-${currentSlide}`}
-                className="absolute -top-4 left-1/2 -translate-x-1/2 z-20 animate-fade-in"
+                className="absolute -top-8 left-1/2 -translate-x-1/2 z-20 animate-fade-in"
               >
-                <div className="bg-white text-foreground px-4 py-2 rounded-lg shadow-lg text-sm font-medium whitespace-nowrap relative">
+                <div className="bg-white text-foreground px-4 py-2 rounded-xl shadow-lg text-sm font-medium max-w-[280px] text-center relative">
                   {slides[currentSlide].tooltip}
-                  {/* Speech bubble arrow */}
+                  {/* Speech bubble arrow pointing down */}
                   <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-l-transparent border-r-transparent border-t-white" />
                 </div>
               </div>
