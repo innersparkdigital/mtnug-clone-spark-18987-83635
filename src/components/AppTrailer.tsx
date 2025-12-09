@@ -16,6 +16,7 @@ interface Slide {
   title: string;
   subtitle: string;
   bgColor: string;
+  tooltip: string;
 }
 
 const slides: Slide[] = [
@@ -24,42 +25,49 @@ const slides: Slide[] = [
     title: "Innerspark Africa",
     subtitle: "Africa's Digital Wellness Hub",
     bgColor: "bg-primary",
+    tooltip: "Your mental wellness journey starts here",
   },
   {
     image: findTherapists,
     title: "Find Therapists",
     subtitle: "Connect with verified mental health professionals",
     bgColor: "bg-primary",
+    tooltip: "Find and book sessions with verified therapists",
   },
   {
     image: bookSession,
     title: "Book Sessions",
     subtitle: "Schedule therapy with ease",
     bgColor: "bg-primary",
+    tooltip: "Schedule appointments in just a few taps",
   },
   {
     image: supportGroups,
     title: "Support Groups",
     subtitle: "Share and learn with like-minded communities",
     bgColor: "bg-primary",
+    tooltip: "Join communities that understand you",
   },
   {
     image: wellnessVault,
     title: "Wellness Vault",
     subtitle: "Use MoMo or points to pay for therapy securely",
     bgColor: "bg-primary",
+    tooltip: "Secure payments with Mobile Money or wellness points",
   },
   {
     image: therapyFund,
     title: "Therapy Fund",
     subtitle: "Donate to make therapy accessible to all",
     bgColor: "bg-primary",
+    tooltip: "Help someone access mental health support",
   },
   {
     image: emergencyHelp,
     title: "Emergency Help",
     subtitle: "Crisis support when you need it most",
     bgColor: "bg-orange-500",
+    tooltip: "24/7 crisis support at your fingertips",
   },
 ];
 
@@ -204,6 +212,18 @@ const AppTrailer = () => {
           {/* Phone Mockup */}
           <div className="flex-1 flex justify-center lg:justify-end">
             <div className="relative">
+              {/* Tooltip Speech Bubble */}
+              <div
+                key={`tooltip-${currentSlide}`}
+                className="absolute -top-4 left-1/2 -translate-x-1/2 z-20 animate-fade-in"
+              >
+                <div className="bg-white text-foreground px-4 py-2 rounded-lg shadow-lg text-sm font-medium whitespace-nowrap relative">
+                  {slides[currentSlide].tooltip}
+                  {/* Speech bubble arrow */}
+                  <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-l-transparent border-r-transparent border-t-white" />
+                </div>
+              </div>
+
               {/* Phone Frame Shadow */}
               <div className="absolute -inset-4 bg-black/20 rounded-[3rem] blur-2xl transform rotate-3" />
               
