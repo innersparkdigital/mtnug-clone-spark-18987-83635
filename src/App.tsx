@@ -37,6 +37,7 @@ import Blog from "./pages/Blog";
 import HowToHandleStressPost from "./pages/blog/HowToHandleStressPost";
 import PanicAttackPost from "./pages/blog/PanicAttackPost";
 import DepressionPost from "./pages/blog/DepressionPost";
+import MentalHealthPost from "./pages/blog/MentalHealthPost";
 
 const queryClient = new QueryClient();
 
@@ -72,6 +73,7 @@ const App = () => (
           <Route path="/blog/how-to-handle-stress" element={<HowToHandleStressPost />} />
           <Route path="/blog/how-to-stop-a-panic-attack" element={<PanicAttackPost />} />
           <Route path="/blog/how-to-deal-with-depression" element={<DepressionPost />} />
+          <Route path="/blog/what-is-mental-health" element={<MentalHealthPost />} />
           <Route path="/events-training/truck-drivers-retirement-training" element={<TruckDriversPost />} />
           <Route path="/events-training/founders-mindset-training" element={<FoundersPost />} />
           <Route path="/events-training/children-mental-health-awareness" element={<ChildrenMentalHealthPost />} />

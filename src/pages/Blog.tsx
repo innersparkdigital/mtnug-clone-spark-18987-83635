@@ -8,6 +8,7 @@ import NewsletterForm from "@/components/NewsletterForm";
 import stressHeroImage from "@/assets/blog/stress-management-hero.jpg";
 import panicHeroImage from "@/assets/blog/panic-attack-hero.jpg";
 import depressionHeroImage from "@/assets/blog/depression-hero.jpg";
+import mentalHealthHeroImage from "@/assets/blog/mental-health-hero.jpg";
 
 interface BlogPost {
   slug: string;
@@ -20,6 +21,15 @@ interface BlogPost {
 }
 
 const blogPosts: BlogPost[] = [
+  {
+    slug: "what-is-mental-health",
+    title: "What Is Mental Health? A Complete Guide to Conditions, Warning Signs & Everyday Wellness",
+    excerpt: "Mental health influences how we think, feel, and act every day. This guide explains what mental health is, common conditions, early warning signs, and proven tools to strengthen your emotional well-being.",
+    date: "December 9, 2025",
+    readTime: "15 min read",
+    image: mentalHealthHeroImage,
+    category: "Mental Health"
+  },
   {
     slug: "how-to-deal-with-depression",
     title: "How to Deal With Depression? Simple, Compassionate Strategies That Actually Help",
