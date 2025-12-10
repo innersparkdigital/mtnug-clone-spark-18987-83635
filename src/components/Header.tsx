@@ -44,6 +44,9 @@ const Header = () => {
               <Link to="/services" className="hover:text-primary transition-colors font-medium">
                 Services
               </Link>
+              <Link to="/specialists" className="hover:text-primary transition-colors font-medium">
+                Specialists
+              </Link>
               <Link to="/about" className="hover:text-primary transition-colors font-medium">
                 About
               </Link>
@@ -86,6 +89,9 @@ const Header = () => {
             <nav className="md:hidden py-4 space-y-4 border-t border-border">
               <Link to="/services" className="block hover:text-primary transition-colors font-medium">
                 Services
+              </Link>
+              <Link to="/specialists" className="block hover:text-primary transition-colors font-medium">
+                Specialists
               </Link>
               <Link to="/about" className="block hover:text-primary transition-colors font-medium">
                 About
