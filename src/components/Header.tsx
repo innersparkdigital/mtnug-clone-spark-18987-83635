@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown, Stethoscope, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import logo from "@/assets/innerspark-logo.png";
@@ -164,10 +164,12 @@ const Header = () => {
           {/* Mobile Menu */}
           {isMenuOpen && (
             <nav className="md:hidden py-4 space-y-4 border-t border-border">
-              <Link to="/for-professionals" className="block text-primary font-semibold">
+              <Link to="/for-professionals" className="flex items-center gap-2 text-primary font-semibold">
+                <Stethoscope className="w-4 h-4" />
                 {translations.forProfessionals}
               </Link>
-              <Link to="/for-business" className="block text-primary font-semibold">
+              <Link to="/for-business" className="flex items-center gap-2 text-primary font-semibold">
+                <Building2 className="w-4 h-4" />
                 {translations.forBusiness}
               </Link>
               <div className="border-t border-border pt-4">
