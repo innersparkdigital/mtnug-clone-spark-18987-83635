@@ -1,57 +1,21 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import findTherapistsMockup from "@/assets/mockups/find-therapists-mockup.png";
-import bookSessionMockup from "@/assets/mockups/book-session.jpeg";
-import supportGroupsMockup from "@/assets/mockups/support-groups.jpeg";
-import appHomeMockup from "@/assets/mockups/app-home.jpeg";
 
 const HowItWorks = () => {
-  const [activeTab, setActiveTab] = useState(0);
-
-  const tabs = [
-    { 
-      label: "Video", 
-      mockup: findTherapistsMockup, 
-      alt: "InnerSpark App - Video Consultation",
-      steps: [
-        { title: "Download the InnerSpark App", description: "Get started by downloading our app from Google Play or the App Store. Create your profile in minutes." },
-        { title: "Choose Your Therapist", description: "Browse our network of licensed therapists. Filter by specialty, price, and availability to find your perfect match." },
-        { title: "Start Your Video Session", description: "Connect via secure video call from anywhere. Experience face-to-face therapy from the comfort of your home." }
-      ]
+  const steps = [
+    {
+      title: "Download the InnerSpark App",
+      description: "Get started by downloading our app from Google Play or the App Store. Create your profile in minutes."
     },
-    { 
-      label: "Chat", 
-      mockup: appHomeMockup, 
-      alt: "InnerSpark App - Chat Support",
-      steps: [
-        { title: "Download the InnerSpark App", description: "Get started by downloading our app from Google Play or the App Store. Create your profile in minutes." },
-        { title: "Select Chat Therapy", description: "Choose text-based therapy for flexible communication with your therapist at your own pace." },
-        { title: "Message Anytime", description: "Send messages whenever you need support. Your therapist will respond within 24 hours." }
-      ]
+    {
+      title: "Choose Your Therapist",
+      description: "Browse our network of licensed therapists. Filter by specialty, price, and availability to find your perfect match."
     },
-    { 
-      label: "Appointment", 
-      mockup: bookSessionMockup, 
-      alt: "InnerSpark App - Book Appointment",
-      steps: [
-        { title: "Download the InnerSpark App", description: "Get started by downloading our app from Google Play or the App Store. Create your profile in minutes." },
-        { title: "Browse Available Slots", description: "View your therapist's calendar and find a time that works perfectly with your schedule." },
-        { title: "Confirm Your Booking", description: "Book your session instantly and receive confirmation. Get reminders before your appointment." }
-      ]
-    },
-    { 
-      label: "Support Groups", 
-      mockup: supportGroupsMockup, 
-      alt: "InnerSpark App - Support Groups",
-      steps: [
-        { title: "Download the InnerSpark App", description: "Get started by downloading our app from Google Play or the App Store. Create your profile in minutes." },
-        { title: "Explore Support Groups", description: "Find groups that match your needs - anxiety, depression, grief, relationships, and more." },
-        { title: "Join & Connect", description: "Participate in moderated group sessions. Share experiences and heal together with others who understand." }
-      ]
+    {
+      title: "Book & Start Your Session",
+      description: "Schedule a session at your convenience. Connect via video call and begin your healing journey from anywhere."
     }
   ];
-
-  const currentTab = tabs[activeTab];
 
   return (
     <section className="py-8 lg:py-10 bg-background relative overflow-hidden">
@@ -76,20 +40,18 @@ const HowItWorks = () => {
 
         {/* Service Tabs */}
         <div className="flex flex-wrap justify-center gap-3 mb-4">
-          {tabs.map((tab, index) => (
-            <Button
-              key={tab.label}
-              onClick={() => setActiveTab(index)}
-              className={`rounded-full px-6 transition-all duration-300 ${
-                activeTab === index
-                  ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                  : "bg-transparent border border-border text-foreground hover:bg-muted"
-              }`}
-              variant={activeTab === index ? "default" : "outline"}
-            >
-              {tab.label}
-            </Button>
-          ))}
+          <Button className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 px-6">
+            Video
+          </Button>
+          <Button variant="outline" className="rounded-full px-6 hover:bg-muted">
+            Chat
+          </Button>
+          <Button variant="outline" className="rounded-full px-6 hover:bg-muted">
+            Appointment
+          </Button>
+          <Button variant="outline" className="rounded-full px-6 hover:bg-muted">
+            Support Groups
+          </Button>
         </div>
 
         {/* How it works content */}
@@ -105,7 +67,7 @@ const HowItWorks = () => {
                 
                 {/* Steps */}
                 <div className="space-y-8">
-                  {currentTab.steps.map((step, index) => (
+                  {steps.map((step, index) => (
                     <div key={index} className="relative pl-10 group">
                       {/* Dot */}
                       <div className="absolute left-0 top-1.5 w-6 h-6 rounded-full bg-primary flex items-center justify-center shadow-lg shadow-primary/30 group-hover:scale-110 transition-transform">
@@ -163,23 +125,12 @@ const HowItWorks = () => {
             {/* Right: Phone Mockup */}
             <div className="flex justify-center lg:justify-end">
               <div className="relative">
-                {/* Phone device frame */}
-                <div className="relative w-[240px] md:w-[280px]">
-                  {/* Phone bezel */}
-                  <div className="bg-gray-900 rounded-[2.5rem] p-2 shadow-2xl">
-                    {/* Notch */}
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-6 bg-gray-900 rounded-b-2xl z-10" />
-                    {/* Screen */}
-                    <div className="relative bg-white rounded-[2rem] overflow-hidden">
-                      <img 
-                        key={activeTab}
-                        src={currentTab.mockup} 
-                        alt={currentTab.alt} 
-                        className="w-full h-auto animate-fade-in"
-                      />
-                    </div>
-                  </div>
-                </div>
+                {/* Phone mockup image */}
+                <img 
+                  src={findTherapistsMockup} 
+                  alt="InnerSpark App - Find Therapists" 
+                  className="w-[240px] md:w-[280px] h-auto drop-shadow-2xl"
+                />
                 
                 {/* Decorative elements */}
                 <div className="absolute -top-4 -right-4 w-20 h-20 bg-primary/10 rounded-full blur-2xl" />
