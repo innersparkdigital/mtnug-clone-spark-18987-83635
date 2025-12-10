@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import findTherapistsMockup from "@/assets/mockups/find-therapists-mockup.png";
 import chatSessionMockup from "@/assets/mockups/chat-session.png";
 import supportGroupsMockup from "@/assets/mockups/support-groups.jpeg";
-import wellnessVaultMockup from "@/assets/mockups/wellness-vault.jpeg";
+import appointmentMockup from "@/assets/mockups/appointment-mockup.png";
 
 const HowItWorks = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -49,7 +49,7 @@ const HowItWorks = () => {
     },
     {
       label: "Appointment",
-      image: wellnessVaultMockup,
+      image: appointmentMockup,
       alt: "InnerSpark App - Book Appointment",
       steps: [
         {
