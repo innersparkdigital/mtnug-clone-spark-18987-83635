@@ -316,6 +316,9 @@ Please confirm availability. Thank you!`;
               <div className="flex-1">
                 <div className="flex flex-wrap items-center gap-3 mb-2">
                   <h1 className="text-3xl md:text-4xl font-bold text-foreground">{specialist.name}</h1>
+                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded text-sm bg-muted text-muted-foreground" title="Uganda">
+                    🇺🇬 Uganda
+                  </span>
                   <Badge variant="secondary" className="capitalize">{specialist.type}</Badge>
                 </div>
 

@@ -110,7 +110,12 @@ Please confirm availability. Thank you!`;
             )}
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-foreground text-lg truncate">{specialist.name}</h3>
+            <div className="flex items-center gap-2">
+              <h3 className="font-semibold text-foreground text-lg truncate">{specialist.name}</h3>
+              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs bg-muted text-muted-foreground shrink-0" title="Uganda">
+                🇺🇬
+              </span>
+            </div>
             <Link 
               to={`/specialists/${specialist.id}`}
               className="text-primary text-sm hover:underline flex items-center gap-1"
