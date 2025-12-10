@@ -2,11 +2,39 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AppDownload from "@/components/AppDownload";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { Heart, Target, Eye, Users, Zap, Shield, Globe } from "lucide-react";
 import aboutHero from "@/assets/about-hero.jpg";
+import talemwaRaymond from "@/assets/talemwa-raymond.jpg";
+import hellenAturo from "@/assets/hellen-aturo.jpg";
+import mutebiReagan from "@/assets/mutebi-reagan.jpg";
+import jamesNiwamanya from "@/assets/james-niwamanya.jpg";
 
 const About = () => {
+  const leaders = [
+    {
+      name: "Talemwa Raymond",
+      position: "Founder and CEO",
+      image: talemwaRaymond,
+    },
+    {
+      name: "Hellen Aturo",
+      position: "Co-founder and Business Development & Partnership Manager",
+      image: hellenAturo,
+    },
+    {
+      name: "Mutebi Reagan",
+      position: "Therapist and Director Virtual Therapy",
+      image: mutebiReagan,
+    },
+    {
+      name: "James Niwamanya",
+      position: "Brand Digital Marketing Lead",
+      image: jamesNiwamanya,
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -291,6 +319,59 @@ const About = () => {
                   Digital health innovations are transforming care globally. We are positioning Uganda as a regional leader in tech-based wellness.
                 </p>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Leadership Team Section */}
+      <section id="leadership" className="py-20 bg-background">
+        <div className="container mx-auto px-4 max-w-7xl">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-foreground">
+              Leadership Team
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+              Meet the passionate individuals leading Innerspark's mission to transform 
+              mental health and wellness across Uganda.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {leaders.map((leader, index) => (
+              <Card 
+                key={index} 
+                className="overflow-hidden group hover:shadow-lg transition-all duration-300"
+              >
+                <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-primary/10 to-primary/5">
+                  <img
+                    src={leader.image}
+                    alt={leader.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+                <CardContent className="p-6 text-center">
+                  <h3 className="text-xl font-bold mb-2 text-foreground">
+                    {leader.name}
+                  </h3>
+                  <p className="text-muted-foreground">
+                    {leader.position}
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          <div className="mt-16 text-center">
+            <div className="bg-primary/5 rounded-lg p-8 max-w-4xl mx-auto">
+              <h3 className="text-2xl md:text-3xl font-bold mb-4 text-foreground">
+                Our Commitment
+              </h3>
+              <p className="text-lg text-muted-foreground">
+                Together, our leadership team is committed to making mental health support 
+                accessible, affordable, and effective for everyone in Uganda. We believe in 
+                the power of compassion, innovation, and community to transform lives.
+              </p>
             </div>
           </div>
         </div>

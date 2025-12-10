@@ -22,7 +22,6 @@ import TermsOfService from "./pages/TermsOfService";
 import CookiePolicy from "./pages/CookiePolicy";
 import Services from "./pages/Services";
 import About from "./pages/About";
-import Leadership from "./pages/Leadership";
 import Contact from "./pages/Contact";
 import Careers from "./pages/Careers";
 import TruckDriversPost from "./pages/blog/TruckDriversPost";
@@ -73,7 +72,6 @@ const App = () => (
           <Route path="/cookie-policy" element={<CookiePolicy />} />
           <Route path="/services" element={<Services />} />
           <Route path="/about" element={<About />} />
-          <Route path="/leadership" element={<Leadership />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/careers" element={<Careers />} />
           <Route path="/for-business" element={<ForBusiness />} />
