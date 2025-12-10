@@ -112,36 +112,36 @@ const Header = () => {
       </div>
 
       {/* Main Navigation */}
-      <header className="bg-primary border-b border-primary shadow-sm">
+      <header className="bg-background border-b border-border shadow-sm">
         <div className="container mx-auto px-3 md:px-4">
           <div className="flex items-center justify-between h-14 md:h-16">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2">
               <img src={logo} alt="Innerspark Africa" className="h-8 w-8 md:h-10 md:w-10" />
               <div className="hidden sm:block">
-                <span className="text-base md:text-xl font-bold text-primary-foreground block">Innerspark Africa</span>
-                <span className="text-xs text-primary-foreground/80">{translations.tagline}</span>
+                <span className="text-base md:text-xl font-bold text-foreground block">Innerspark Africa</span>
+                <span className="text-xs text-muted-foreground">{translations.tagline}</span>
               </div>
             </Link>
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center gap-8">
-              <Link to="/services" className="text-primary-foreground hover:text-primary-foreground/80 transition-colors font-medium">
+              <Link to="/services" className="text-foreground hover:text-primary transition-colors font-medium">
                 {navLabels.services}
               </Link>
-              <Link to="/specialists" className="text-primary-foreground hover:text-primary-foreground/80 transition-colors font-medium">
+              <Link to="/specialists" className="text-foreground hover:text-primary transition-colors font-medium">
                 {navLabels.specialists}
               </Link>
-              <Link to="/about" className="text-primary-foreground hover:text-primary-foreground/80 transition-colors font-medium">
+              <Link to="/about" className="text-foreground hover:text-primary transition-colors font-medium">
                 {navLabels.about}
               </Link>
-              <Link to="/blog" className="text-primary-foreground hover:text-primary-foreground/80 transition-colors font-medium">
+              <Link to="/blog" className="text-foreground hover:text-primary transition-colors font-medium">
                 {navLabels.blog}
               </Link>
-              <Link to="/events-training" className="text-primary-foreground hover:text-primary-foreground/80 transition-colors font-medium">
+              <Link to="/events-training" className="text-foreground hover:text-primary transition-colors font-medium">
                 {navLabels.events}
               </Link>
-              <Link to="/contact" className="text-primary-foreground hover:text-primary-foreground/80 transition-colors font-medium">
+              <Link to="/contact" className="text-foreground hover:text-primary transition-colors font-medium">
                 {navLabels.contact}
               </Link>
               <AppDownloadPopup />
@@ -151,7 +151,7 @@ const Header = () => {
             <Button
               variant="ghost"
               size="icon"
-              className="md:hidden text-primary-foreground hover:bg-primary-foreground/10"
+              className="md:hidden text-foreground"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -160,27 +160,27 @@ const Header = () => {
 
           {/* Mobile Menu */}
           {isMenuOpen && (
-            <nav className="md:hidden py-4 space-y-4 border-t border-primary-foreground/20">
-              <Link to="/services" className="block text-primary-foreground hover:text-primary-foreground/80 transition-colors font-medium">
+            <nav className="md:hidden py-4 space-y-4 border-t border-border">
+              <Link to="/services" className="block text-foreground hover:text-primary transition-colors font-medium">
                 {navLabels.services}
               </Link>
-              <Link to="/specialists" className="block text-primary-foreground hover:text-primary-foreground/80 transition-colors font-medium">
+              <Link to="/specialists" className="block text-foreground hover:text-primary transition-colors font-medium">
                 {navLabels.specialists}
               </Link>
-              <Link to="/about" className="block text-primary-foreground hover:text-primary-foreground/80 transition-colors font-medium">
+              <Link to="/about" className="block text-foreground hover:text-primary transition-colors font-medium">
                 {navLabels.about}
               </Link>
-              <Link to="/blog" className="block text-primary-foreground hover:text-primary-foreground/80 transition-colors font-medium">
+              <Link to="/blog" className="block text-foreground hover:text-primary transition-colors font-medium">
                 {navLabels.blog}
               </Link>
-              <Link to="/events-training" className="block text-primary-foreground hover:text-primary-foreground/80 transition-colors font-medium">
+              <Link to="/events-training" className="block text-foreground hover:text-primary transition-colors font-medium">
                 {navLabels.events}
               </Link>
-              <Link to="/contact" className="block text-primary-foreground hover:text-primary-foreground/80 transition-colors font-medium">
+              <Link to="/contact" className="block text-foreground hover:text-primary transition-colors font-medium">
                 {navLabels.contact}
               </Link>
               <Link to="/donate-therapy">
-                <Button variant="outline" className="w-full border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary">
+                <Button variant="outline" className="w-full border-primary text-primary hover:bg-primary hover:text-primary-foreground">
                   {translations.donateTherapy}
                 </Button>
               </Link>
