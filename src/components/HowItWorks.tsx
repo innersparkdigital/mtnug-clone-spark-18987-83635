@@ -28,8 +28,8 @@ const HowItWorks = () => {
 
       <div className="container mx-auto px-4 relative z-10">
         {/* Section Header */}
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+        <div className="text-center mb-6">
+          <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-3">
             A virtual consultation that feels{" "}
             <span className="text-primary">less virtual</span>
           </h2>
@@ -39,7 +39,7 @@ const HowItWorks = () => {
         </div>
 
         {/* Service Tabs */}
-        <div className="flex flex-wrap justify-center gap-3 mb-16">
+        <div className="flex flex-wrap justify-center gap-3 mb-8">
           <Button className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 px-6">
             Video
           </Button>
