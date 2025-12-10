@@ -6,6 +6,7 @@ import logo from "@/assets/innerspark-logo.png";
 import AppDownloadPopup from "@/components/AppDownloadPopup";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { useLanguage } from "@/contexts/LanguageContext";
+import PromoSlider from "@/components/PromoSlider";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -97,6 +98,8 @@ const Header = () => {
 
   return (
     <div className="sticky top-0 z-50">
+      {/* Promo Slider */}
+      <PromoSlider />
       {/* Top Bar - Hidden on mobile */}
       <div className="hidden md:block bg-gradient-to-r from-primary/90 via-primary to-primary/90 text-primary-foreground py-2 px-4 text-sm">
         <div className="container mx-auto flex justify-end items-center gap-6">
