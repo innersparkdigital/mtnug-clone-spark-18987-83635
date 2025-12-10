@@ -40,6 +40,7 @@ import DepressionPost from "./pages/blog/DepressionPost";
 import MentalHealthPost from "./pages/blog/MentalHealthPost";
 import AnxietyManagementPost from "./pages/blog/AnxietyManagementPost";
 import ForBusiness from "./pages/ForBusiness";
+import ForProfessionals from "./pages/ForProfessionals";
 
 const queryClient = new QueryClient();
 
@@ -72,6 +73,7 @@ const App = () => (
           <Route path="/contact" element={<Contact />} />
           <Route path="/careers" element={<Careers />} />
           <Route path="/for-business" element={<ForBusiness />} />
+          <Route path="/for-professionals" element={<ForProfessionals />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/how-to-handle-stress" element={<HowToHandleStressPost />} />
           <Route path="/blog/how-to-stop-a-panic-attack" element={<PanicAttackPost />} />
