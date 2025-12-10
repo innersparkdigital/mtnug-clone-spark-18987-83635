@@ -1,9 +1,103 @@
+import { useState, useEffect } from "react";
 import { Facebook, Twitter, Instagram, Youtube, Linkedin, Mail, Phone, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { LanguageSelector } from "@/components/LanguageSelector";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Footer = () => {
+  const { language, translateBatch } = useLanguage();
+  const [t, setT] = useState({
+    description: "Africa's digital wellness hub — making mental health support affordable, accessible, and stigma-free.",
+    quickLinks: "Quick Links",
+    aboutUs: "About Us",
+    ourApp: "Our App",
+    findTherapist: "Find a Therapist",
+    contactUs: "Contact Us",
+    services: "Services",
+    virtualTherapy: "Virtual Therapy",
+    supportGroups: "Support Groups",
+    wellnessResources: "Wellness Resources",
+    corporateWellness: "Corporate Wellness",
+    connectWithUs: "Connect With Us",
+    chatWhatsApp: "Chat on WhatsApp",
+    communityText: "Join our community and stay updated on wellness tips and events.",
+    allRights: "All rights reserved.",
+    privacyPolicy: "Privacy Policy",
+    termsOfService: "Terms of Service",
+    cookiePolicy: "Cookie Policy",
+  });
+
+  useEffect(() => {
+    if (language === "en") {
+      setT({
+        description: "Africa's digital wellness hub — making mental health support affordable, accessible, and stigma-free.",
+        quickLinks: "Quick Links",
+        aboutUs: "About Us",
+        ourApp: "Our App",
+        findTherapist: "Find a Therapist",
+        contactUs: "Contact Us",
+        services: "Services",
+        virtualTherapy: "Virtual Therapy",
+        supportGroups: "Support Groups",
+        wellnessResources: "Wellness Resources",
+        corporateWellness: "Corporate Wellness",
+        connectWithUs: "Connect With Us",
+        chatWhatsApp: "Chat on WhatsApp",
+        communityText: "Join our community and stay updated on wellness tips and events.",
+        allRights: "All rights reserved.",
+        privacyPolicy: "Privacy Policy",
+        termsOfService: "Terms of Service",
+        cookiePolicy: "Cookie Policy",
+      });
+      return;
+    }
+
+    const texts = [
+      "Africa's digital wellness hub — making mental health support affordable, accessible, and stigma-free.",
+      "Quick Links",
+      "About Us",
+      "Our App",
+      "Find a Therapist",
+      "Contact Us",
+      "Services",
+      "Virtual Therapy",
+      "Support Groups",
+      "Wellness Resources",
+      "Corporate Wellness",
+      "Connect With Us",
+      "Chat on WhatsApp",
+      "Join our community and stay updated on wellness tips and events.",
+      "All rights reserved.",
+      "Privacy Policy",
+      "Terms of Service",
+      "Cookie Policy",
+    ];
+
+    translateBatch(texts).then((results) => {
+      setT({
+        description: results[0],
+        quickLinks: results[1],
+        aboutUs: results[2],
+        ourApp: results[3],
+        findTherapist: results[4],
+        contactUs: results[5],
+        services: results[6],
+        virtualTherapy: results[7],
+        supportGroups: results[8],
+        wellnessResources: results[9],
+        corporateWellness: results[10],
+        connectWithUs: results[11],
+        chatWhatsApp: results[12],
+        communityText: results[13],
+        allRights: results[14],
+        privacyPolicy: results[15],
+        termsOfService: results[16],
+        cookiePolicy: results[17],
+      });
+    });
+  }, [language, translateBatch]);
+
   return (
     <footer className="bg-secondary text-secondary-foreground">
       <div className="container mx-auto px-4 py-12">
@@ -12,7 +106,7 @@ const Footer = () => {
           <div>
             <h3 className="text-xl font-bold mb-4 text-primary">Innerspark Africa</h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Africa's digital wellness hub — making mental health support affordable, accessible, and stigma-free.
+              {t.description}
             </p>
             <div className="space-y-2 text-sm">
               <div className="flex items-start gap-2">
@@ -32,32 +126,32 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h4 className="font-semibold mb-4">Quick Links</h4>
+            <h4 className="font-semibold mb-4">{t.quickLinks}</h4>
             <ul className="space-y-2 text-sm">
-              <li><Link to="/about" className="hover:text-primary transition-colors">About Us</Link></li>
-              <li><Link to="/services" className="hover:text-primary transition-colors">Our App</Link></li>
-              <li><Link to="/find-therapist" className="hover:text-primary transition-colors">Find a Therapist</Link></li>
-              <li><Link to="/contact" className="hover:text-primary transition-colors">Contact Us</Link></li>
+              <li><Link to="/about" className="hover:text-primary transition-colors">{t.aboutUs}</Link></li>
+              <li><Link to="/services" className="hover:text-primary transition-colors">{t.ourApp}</Link></li>
+              <li><Link to="/find-therapist" className="hover:text-primary transition-colors">{t.findTherapist}</Link></li>
+              <li><Link to="/contact" className="hover:text-primary transition-colors">{t.contactUs}</Link></li>
             </ul>
           </div>
 
           {/* Services */}
           <div>
-            <h4 className="font-semibold mb-4">Services</h4>
+            <h4 className="font-semibold mb-4">{t.services}</h4>
             <ul className="space-y-2 text-sm">
-              <li><a href="#services" className="hover:text-primary transition-colors">Virtual Therapy</a></li>
-              <li><a href="#services" className="hover:text-primary transition-colors">Support Groups</a></li>
-              <li><a href="#services" className="hover:text-primary transition-colors">Wellness Resources</a></li>
-              <li><a href="#corporate" className="hover:text-primary transition-colors">Corporate Wellness</a></li>
+              <li><a href="#services" className="hover:text-primary transition-colors">{t.virtualTherapy}</a></li>
+              <li><a href="#services" className="hover:text-primary transition-colors">{t.supportGroups}</a></li>
+              <li><a href="#services" className="hover:text-primary transition-colors">{t.wellnessResources}</a></li>
+              <li><a href="#corporate" className="hover:text-primary transition-colors">{t.corporateWellness}</a></li>
             </ul>
           </div>
 
           {/* Social Media */}
           <div>
-            <h4 className="font-semibold mb-4">Connect With Us</h4>
+            <h4 className="font-semibold mb-4">{t.connectWithUs}</h4>
             <div className="mb-4">
               <a href="https://wa.me/256780570987?text=Hi,%20I%20would%20like%20to%20connect%20with%20Innerspark%20Africa" target="_blank" rel="noopener noreferrer" className="inline-block">
-                <Button size="sm" className="w-full">Chat on WhatsApp</Button>
+                <Button size="sm" className="w-full">{t.chatWhatsApp}</Button>
               </a>
             </div>
             <div className="flex gap-4 mb-4">
@@ -78,19 +172,19 @@ const Footer = () => {
               </a>
             </div>
             <p className="text-sm text-muted-foreground">
-              Join our community and stay updated on wellness tips and events.
+              {t.communityText}
             </p>
           </div>
         </div>
 
         {/* Bottom Bar */}
         <div className="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-          <p>&copy; 2025 Innerspark Africa. All rights reserved.</p>
+          <p>&copy; 2025 Innerspark Africa. {t.allRights}</p>
           <div className="flex items-center gap-6">
             <LanguageSelector variant="footer" />
-            <Link to="/privacy-policy" className="hover:text-primary transition-colors">Privacy Policy</Link>
-            <Link to="/terms-of-service" className="hover:text-primary transition-colors">Terms of Service</Link>
-            <Link to="/cookie-policy" className="hover:text-primary transition-colors">Cookie Policy</Link>
+            <Link to="/privacy-policy" className="hover:text-primary transition-colors">{t.privacyPolicy}</Link>
+            <Link to="/terms-of-service" className="hover:text-primary transition-colors">{t.termsOfService}</Link>
+            <Link to="/cookie-policy" className="hover:text-primary transition-colors">{t.cookiePolicy}</Link>
           </div>
         </div>
       </div>
