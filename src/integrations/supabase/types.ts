@@ -158,6 +158,7 @@ export type Database = {
           available_options: string[]
           bio: string | null
           certifications: string[] | null
+          country: string
           created_at: string
           education: string | null
           experience_years: number
@@ -175,6 +176,7 @@ export type Database = {
           available_options?: string[]
           bio?: string | null
           certifications?: string[] | null
+          country?: string
           created_at?: string
           education?: string | null
           experience_years?: number
@@ -192,6 +194,7 @@ export type Database = {
           available_options?: string[]
           bio?: string | null
           certifications?: string[] | null
+          country?: string
           created_at?: string
           education?: string | null
           experience_years?: number
