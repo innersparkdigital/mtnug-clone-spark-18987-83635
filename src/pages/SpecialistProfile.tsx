@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { getSpecialistImage } from "@/lib/specialistImages";
 import { 
   ArrowLeft, 
   Video, 
@@ -220,6 +221,8 @@ const SpecialistProfile = () => {
     .join("")
     .slice(0, 2);
 
+  const imageUrl = getSpecialistImage(specialist.name, specialist.image_url);
+
   return (
     <>
       <Helmet>
@@ -245,9 +248,9 @@ const SpecialistProfile = () => {
           <div className="container mx-auto px-4">
             <div className="flex flex-col md:flex-row gap-8 items-start">
               {/* Avatar */}
-              <div className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-4xl shrink-0 border-4 border-background shadow-lg">
-                {specialist.image_url ? (
-                  <img src={specialist.image_url} alt={specialist.name} className="w-full h-full rounded-full object-cover" />
+              <div className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-4xl shrink-0 border-4 border-background shadow-lg overflow-hidden">
+                {imageUrl ? (
+                  <img src={imageUrl} alt={specialist.name} className="w-full h-full rounded-full object-cover" />
                 ) : (
                   initials
                 )}

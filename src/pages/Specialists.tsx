@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search, Video, Phone, ExternalLink, Star } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { getSpecialistImage } from "@/lib/specialistImages";
 
 interface Specialist {
   id: string;
@@ -43,12 +44,14 @@ const SpecialistCard = ({ specialist }: { specialist: Specialist }) => {
     .join("")
     .slice(0, 2);
 
+  const imageUrl = getSpecialistImage(specialist.name, specialist.image_url);
+
   return (
     <div className="bg-card rounded-xl border border-border p-6 hover:shadow-lg transition-all duration-300 hover:border-primary/30">
       <div className="flex items-start gap-4 mb-4">
-        <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xl shrink-0">
-          {specialist.image_url ? (
-            <img src={specialist.image_url} alt={specialist.name} className="w-full h-full rounded-full object-cover" />
+        <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xl shrink-0 overflow-hidden">
+          {imageUrl ? (
+            <img src={imageUrl} alt={specialist.name} className="w-full h-full rounded-full object-cover" />
           ) : (
             initials
           )}
