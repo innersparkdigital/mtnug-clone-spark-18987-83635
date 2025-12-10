@@ -77,6 +77,12 @@ interface Availability {
   is_available: boolean;
 }
 
+interface Certificate {
+  id: string;
+  certificate_name: string;
+  certificate_url: string;
+}
+
 const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 const countryBadges: Record<string, string> = {
@@ -129,6 +135,7 @@ const SpecialistProfile = () => {
   const [specialist, setSpecialist] = useState<Specialist | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [availability, setAvailability] = useState<Availability[]>([]);
+  const [certificates, setCertificates] = useState<Certificate[]>([]);
   const [loading, setLoading] = useState(true);
   const [reviewForm, setReviewForm] = useState({ name: "", rating: 5, comment: "" });
   const [submittingReview, setSubmittingReview] = useState(false);
@@ -178,6 +185,7 @@ Please confirm availability. Thank you!`;
       fetchSpecialist();
       fetchReviews();
       fetchAvailability();
+      fetchCertificates();
     }
   }, [id]);
 
@@ -217,6 +225,18 @@ Please confirm availability. Thank you!`;
 
     if (!error && data) {
       setAvailability(data);
+    }
+  };
+
+  const fetchCertificates = async () => {
+    const { data, error } = await supabase
+      .from("specialist_certificates")
+      .select("*")
+      .eq("specialist_id", id)
+      .order("created_at", { ascending: true });
+
+    if (!error && data) {
+      setCertificates(data);
     }
   };
 
@@ -525,6 +545,37 @@ Please confirm availability. Thank you!`;
                               </li>
                             ))}
                           </ul>
+                        </CardContent>
+                      </Card>
+                    )}
+
+                    {certificates.length > 0 && (
+                      <Card>
+                        <CardHeader>
+                          <CardTitle className="flex items-center gap-2">
+                            <Award className="w-5 h-5" /> Verified Certificates
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="grid gap-4">
+                            {certificates.map((cert) => (
+                              <div key={cert.id} className="space-y-2">
+                                <p className="text-sm font-medium text-foreground">{cert.certificate_name}</p>
+                                <a 
+                                  href={cert.certificate_url} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  className="block border rounded-lg overflow-hidden hover:shadow-lg transition-shadow"
+                                >
+                                  <img 
+                                    src={cert.certificate_url} 
+                                    alt={cert.certificate_name}
+                                    className="w-full h-auto object-contain bg-muted"
+                                  />
+                                </a>
+                              </div>
+                            ))}
+                          </div>
                         </CardContent>
                       </Card>
                     )}
