@@ -163,13 +163,23 @@ const HowItWorks = () => {
             {/* Right: Phone Mockup */}
             <div className="flex justify-center lg:justify-end">
               <div className="relative">
-                {/* Phone mockup image with transition */}
-                <img 
-                  key={activeTab}
-                  src={currentTab.mockup} 
-                  alt={currentTab.alt} 
-                  className="w-[240px] md:w-[280px] h-auto drop-shadow-2xl rounded-[2rem] animate-fade-in"
-                />
+                {/* Phone device frame */}
+                <div className="relative w-[240px] md:w-[280px]">
+                  {/* Phone bezel */}
+                  <div className="bg-gray-900 rounded-[2.5rem] p-2 shadow-2xl">
+                    {/* Notch */}
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-6 bg-gray-900 rounded-b-2xl z-10" />
+                    {/* Screen */}
+                    <div className="relative bg-white rounded-[2rem] overflow-hidden">
+                      <img 
+                        key={activeTab}
+                        src={currentTab.mockup} 
+                        alt={currentTab.alt} 
+                        className="w-full h-auto animate-fade-in"
+                      />
+                    </div>
+                  </div>
+                </div>
                 
                 {/* Decorative elements */}
                 <div className="absolute -top-4 -right-4 w-20 h-20 bg-primary/10 rounded-full blur-2xl" />
