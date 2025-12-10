@@ -395,12 +395,12 @@ const Specialists = () => {
                       className="pl-10"
                     />
                   </div>
-                  <Select value={selectedCountry} onValueChange={setSelectedCountry}>
+                  <Select value={selectedCountry || "all"} onValueChange={(val) => setSelectedCountry(val === "all" ? "" : val)}>
                     <SelectTrigger className="w-[160px] bg-background">
                       <SelectValue placeholder="All Countries" />
                     </SelectTrigger>
                     <SelectContent className="bg-background border border-border z-50">
-                      <SelectItem value="">All Countries</SelectItem>
+                      <SelectItem value="all">All Countries</SelectItem>
                       <SelectItem value="Uganda">
                         <span className="flex items-center gap-2">
                           <img src={ugandaBadge} alt="Uganda" className="w-4 h-4" />
