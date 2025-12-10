@@ -30,6 +30,7 @@ import { useToast } from "@/hooks/use-toast";
 import { getSpecialistImage } from "@/lib/specialistImages";
 import ugandaBadge from "@/assets/uganda-badge.png";
 import ghanaBadge from "@/assets/ghana-badge.png";
+import botswanaBadge from "@/assets/botswana-badge.png";
 import { 
   ArrowLeft, 
   Video, 
@@ -81,6 +82,7 @@ const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Frida
 const countryBadges: Record<string, string> = {
   Uganda: ugandaBadge,
   Ghana: ghanaBadge,
+  Botswana: botswanaBadge,
 };
 
 const formatPrice = (price: number) => {

@@ -17,6 +17,7 @@ import { getSpecialistImage } from "@/lib/specialistImages";
 import { toast } from "sonner";
 import ugandaBadge from "@/assets/uganda-badge.png";
 import ghanaBadge from "@/assets/ghana-badge.png";
+import botswanaBadge from "@/assets/botswana-badge.png";
 
 interface Specialist {
   id: string;
@@ -34,6 +35,7 @@ interface Specialist {
 const countryBadges: Record<string, string> = {
   Uganda: ugandaBadge,
   Ghana: ghanaBadge,
+  Botswana: botswanaBadge,
 };
 
 const typeDescriptions = {
@@ -411,6 +413,12 @@ const Specialists = () => {
                         <span className="flex items-center gap-2">
                           <img src={ghanaBadge} alt="Ghana" className="w-4 h-4" />
                           Ghana
+                        </span>
+                      </SelectItem>
+                      <SelectItem value="Botswana">
+                        <span className="flex items-center gap-2">
+                          <img src={botswanaBadge} alt="Botswana" className="w-4 h-4" />
+                          Botswana
                         </span>
                       </SelectItem>
                     </SelectContent>
