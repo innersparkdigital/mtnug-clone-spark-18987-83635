@@ -96,7 +96,7 @@ const Header = () => {
   };
 
   return (
-    <>
+    <div className="sticky top-0 z-50">
       {/* Top Bar - Hidden on mobile */}
       <div className="hidden md:block bg-secondary text-secondary-foreground py-2 px-4 text-sm">
         <div className="container mx-auto flex justify-end items-center gap-6">
@@ -107,7 +107,7 @@ const Header = () => {
       </div>
 
       {/* Main Navigation */}
-      <header className="bg-primary border-b border-primary sticky top-0 z-50 shadow-sm">
+      <header className="bg-primary border-b border-primary shadow-sm">
         <div className="container mx-auto px-3 md:px-4">
           <div className="flex items-center justify-between h-14 md:h-16">
             {/* Logo */}
@@ -194,7 +194,7 @@ const Header = () => {
           )}
         </div>
       </header>
-    </>
+    </div>
   );
 };
 
