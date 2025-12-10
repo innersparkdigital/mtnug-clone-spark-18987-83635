@@ -10,11 +10,11 @@ import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
 import corporateWellnessImage from "@/assets/corporate-wellness-service.jpg";
-import mtnLogo from "@/assets/mtn-internship.png";
-import uictLogo from "@/assets/uict-training.png";
-import miicLogo from "@/assets/miic-mental-health.png";
-import foundersLogo from "@/assets/founders-mindset-training.png";
-import truckDriversLogo from "@/assets/truck-drivers-training.png";
+import markhLogo from "@/assets/partners/markh.png";
+import nationalIctLogo from "@/assets/partners/national-ict-hub-new.png";
+import uictLogo from "@/assets/partners/uict.png";
+import miicLogo from "@/assets/partners/miic.png";
+import ccareLogo from "@/assets/partners/ccare.png";
 
 const defaultTexts = {
   badge: "For Businesses",
@@ -22,7 +22,7 @@ const defaultTexts = {
   heroTitle2: "your company",
   heroDesc: "For your employees, quality emotional care. Innerspark can help your company achieve more productivity and fewer leaves, with a focus on ROI and positive clinical outcomes.",
   ctaButton: "I Want to Care for My Business",
-  clientsTitle: "Businesses Who Have Used Our Services",
+  clientsTitle: "Companies Who Benefited",
   whyTitle1: "Why does your company need",
   whyTitle2: "emotional health care?",
   stat1: "of employees exhibit physical or psychological illness due to mental health issues.",
@@ -213,7 +213,10 @@ const ForBusiness = () => {
             </p>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-8 items-center justify-items-center">
               <div className="bg-background rounded-xl p-4 shadow-sm border border-border hover:shadow-md transition-shadow">
-                <img src={mtnLogo} alt="MTN Uganda" className="h-16 md:h-20 w-auto object-contain" />
+                <img src={markhLogo} alt="MARKH" className="h-16 md:h-20 w-auto object-contain" />
+              </div>
+              <div className="bg-background rounded-xl p-4 shadow-sm border border-border hover:shadow-md transition-shadow">
+                <img src={nationalIctLogo} alt="National ICT Innovation Hub" className="h-16 md:h-20 w-auto object-contain" />
               </div>
               <div className="bg-background rounded-xl p-4 shadow-sm border border-border hover:shadow-md transition-shadow">
                 <img src={uictLogo} alt="UICT" className="h-16 md:h-20 w-auto object-contain" />
@@ -221,11 +224,8 @@ const ForBusiness = () => {
               <div className="bg-background rounded-xl p-4 shadow-sm border border-border hover:shadow-md transition-shadow">
                 <img src={miicLogo} alt="MIIC" className="h-16 md:h-20 w-auto object-contain" />
               </div>
-              <div className="bg-background rounded-xl p-4 shadow-sm border border-border hover:shadow-md transition-shadow">
-                <img src={foundersLogo} alt="Founders Program" className="h-16 md:h-20 w-auto object-contain" />
-              </div>
               <div className="bg-background rounded-xl p-4 shadow-sm border border-border hover:shadow-md transition-shadow col-span-2 md:col-span-1">
-                <img src={truckDriversLogo} alt="Truck Drivers Program" className="h-16 md:h-20 w-auto object-contain" />
+                <img src={ccareLogo} alt="C-Care" className="h-16 md:h-20 w-auto object-contain" />
               </div>
             </div>
           </div>
