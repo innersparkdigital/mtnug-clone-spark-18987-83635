@@ -125,7 +125,7 @@ const AppTrailer = () => {
   };
 
   return (
-    <section className="relative overflow-hidden py-16 lg:py-24 min-h-[90vh]">
+    <section className="relative overflow-hidden h-screen flex flex-col justify-center">
       {/* Cinematic animation keyframes */}
       <style>{`
         @keyframes personaFloat {
