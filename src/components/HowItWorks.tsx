@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import findTherapistsMockup from "@/assets/mockups/find-therapists-mockup.png";
+import videoSessionMockup from "@/assets/mockups/video-session-mockup.png";
 import chatSessionMockup from "@/assets/mockups/chat-session.png";
 import supportGroupsMockup from "@/assets/mockups/support-groups.jpeg";
 import appointmentMockup from "@/assets/mockups/appointment-mockup.png";
@@ -11,7 +11,7 @@ const HowItWorks = () => {
   const tabs = [
     {
       label: "Video",
-      image: findTherapistsMockup,
+      image: videoSessionMockup,
       alt: "InnerSpark App - Video Therapy",
       steps: [
         {
