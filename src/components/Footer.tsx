@@ -10,10 +10,13 @@ const Footer = () => {
   const [t, setT] = useState({
     description: "Africa's digital wellness hub — making mental health support affordable, accessible, and stigma-free.",
     quickLinks: "Quick Links",
+    ourServices: "Our Services",
+    specialists: "Specialists",
     aboutUs: "About Us",
-    ourApp: "Our App",
-    findTherapist: "Find a Therapist",
+    blog: "Blog",
     contactUs: "Contact Us",
+    forProfessionals: "For Professionals",
+    forBusiness: "For Business",
     services: "Services",
     virtualTherapy: "Virtual Therapy",
     supportGroups: "Support Groups",
@@ -33,10 +36,13 @@ const Footer = () => {
       setT({
         description: "Africa's digital wellness hub — making mental health support affordable, accessible, and stigma-free.",
         quickLinks: "Quick Links",
+        ourServices: "Our Services",
+        specialists: "Specialists",
         aboutUs: "About Us",
-        ourApp: "Our App",
-        findTherapist: "Find a Therapist",
+        blog: "Blog",
         contactUs: "Contact Us",
+        forProfessionals: "For Professionals",
+        forBusiness: "For Business",
         services: "Services",
         virtualTherapy: "Virtual Therapy",
         supportGroups: "Support Groups",
@@ -56,10 +62,13 @@ const Footer = () => {
     const texts = [
       "Africa's digital wellness hub — making mental health support affordable, accessible, and stigma-free.",
       "Quick Links",
+      "Our Services",
+      "Specialists",
       "About Us",
-      "Our App",
-      "Find a Therapist",
+      "Blog",
       "Contact Us",
+      "For Professionals",
+      "For Business",
       "Services",
       "Virtual Therapy",
       "Support Groups",
@@ -78,22 +87,25 @@ const Footer = () => {
       setT({
         description: results[0],
         quickLinks: results[1],
-        aboutUs: results[2],
-        ourApp: results[3],
-        findTherapist: results[4],
-        contactUs: results[5],
-        services: results[6],
-        virtualTherapy: results[7],
-        supportGroups: results[8],
-        wellnessResources: results[9],
-        corporateWellness: results[10],
-        connectWithUs: results[11],
-        chatWhatsApp: results[12],
-        communityText: results[13],
-        allRights: results[14],
-        privacyPolicy: results[15],
-        termsOfService: results[16],
-        cookiePolicy: results[17],
+        ourServices: results[2],
+        specialists: results[3],
+        aboutUs: results[4],
+        blog: results[5],
+        contactUs: results[6],
+        forProfessionals: results[7],
+        forBusiness: results[8],
+        services: results[9],
+        virtualTherapy: results[10],
+        supportGroups: results[11],
+        wellnessResources: results[12],
+        corporateWellness: results[13],
+        connectWithUs: results[14],
+        chatWhatsApp: results[15],
+        communityText: results[16],
+        allRights: results[17],
+        privacyPolicy: results[18],
+        termsOfService: results[19],
+        cookiePolicy: results[20],
       });
     });
   }, [language, translateBatch]);
@@ -124,14 +136,16 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Quick Links */}
           <div>
             <h4 className="font-semibold mb-4">{t.quickLinks}</h4>
             <ul className="space-y-2 text-sm">
+              <li><Link to="/services" className="hover:text-primary transition-colors">{t.ourServices}</Link></li>
+              <li><Link to="/specialists" className="hover:text-primary transition-colors">{t.specialists}</Link></li>
               <li><Link to="/about" className="hover:text-primary transition-colors">{t.aboutUs}</Link></li>
-              <li><Link to="/services" className="hover:text-primary transition-colors">{t.ourApp}</Link></li>
-              <li><Link to="/find-therapist" className="hover:text-primary transition-colors">{t.findTherapist}</Link></li>
+              <li><Link to="/blog" className="hover:text-primary transition-colors">{t.blog}</Link></li>
               <li><Link to="/contact" className="hover:text-primary transition-colors">{t.contactUs}</Link></li>
+              <li><Link to="/for-professionals" className="hover:text-primary transition-colors">{t.forProfessionals}</Link></li>
+              <li><Link to="/for-business" className="hover:text-primary transition-colors">{t.forBusiness}</Link></li>
             </ul>
           </div>
 
