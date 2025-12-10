@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import findTherapistsMockup from "@/assets/mockups/find-therapists-mockup.png";
-import bookSessionMockup from "@/assets/mockups/book-session.jpeg";
+import chatSessionMockup from "@/assets/mockups/chat-session.png";
 import supportGroupsMockup from "@/assets/mockups/support-groups.jpeg";
 import wellnessVaultMockup from "@/assets/mockups/wellness-vault.jpeg";
 
@@ -12,39 +12,82 @@ const HowItWorks = () => {
     {
       label: "Video",
       image: findTherapistsMockup,
-      alt: "InnerSpark App - Video Therapy"
+      alt: "InnerSpark App - Video Therapy",
+      steps: [
+        {
+          title: "Download the InnerSpark App",
+          description: "Get started by downloading our app from Google Play or the App Store. Create your profile in minutes."
+        },
+        {
+          title: "Choose Your Therapist",
+          description: "Browse our network of licensed therapists. Filter by specialty, price, and availability to find your perfect match."
+        },
+        {
+          title: "Book & Start Your Session",
+          description: "Schedule a session at your convenience. Connect via video call and begin your healing journey from anywhere."
+        }
+      ]
     },
     {
       label: "Chat",
-      image: bookSessionMockup,
-      alt: "InnerSpark App - Chat Sessions"
+      image: chatSessionMockup,
+      alt: "InnerSpark App - Chat with AminaMD",
+      steps: [
+        {
+          title: "Start a Conversation with AminaMD",
+          description: "Share your health concerns with our AI-powered doctor. Get instant support and guidance anytime."
+        },
+        {
+          title: "Choose Your Path",
+          description: "Select from recommended options and choose \"Chat with Doctor\" for personalized medical advice from real professionals."
+        },
+        {
+          title: "Connect with a Doctor",
+          description: "Complete your payment if you're not a premium member, and get placed in the queue for our doctors to assist you."
+        }
+      ]
     },
     {
       label: "Appointment",
       image: wellnessVaultMockup,
-      alt: "InnerSpark App - Book Appointment"
+      alt: "InnerSpark App - Book Appointment",
+      steps: [
+        {
+          title: "Browse Available Slots",
+          description: "View your therapist's calendar and find a time that works best for your schedule."
+        },
+        {
+          title: "Select Your Preferred Time",
+          description: "Choose from morning, afternoon, or evening sessions. Pick what fits your lifestyle."
+        },
+        {
+          title: "Confirm & Get Reminders",
+          description: "Receive confirmation and helpful reminders before your appointment so you never miss a session."
+        }
+      ]
     },
     {
       label: "Support Groups",
       image: supportGroupsMockup,
-      alt: "InnerSpark App - Support Groups"
+      alt: "InnerSpark App - Support Groups",
+      steps: [
+        {
+          title: "Explore Support Groups",
+          description: "Discover groups tailored to your needs - anxiety, depression, grief, and more."
+        },
+        {
+          title: "Join a Community",
+          description: "Connect with others who understand your journey. Share experiences in a safe, moderated space."
+        },
+        {
+          title: "Attend Group Sessions",
+          description: "Participate in live group therapy sessions led by professional facilitators."
+        }
+      ]
     }
   ];
 
-  const steps = [
-    {
-      title: "Download the InnerSpark App",
-      description: "Get started by downloading our app from Google Play or the App Store. Create your profile in minutes."
-    },
-    {
-      title: "Choose Your Therapist",
-      description: "Browse our network of licensed therapists. Filter by specialty, price, and availability to find your perfect match."
-    },
-    {
-      title: "Book & Start Your Session",
-      description: "Schedule a session at your convenience. Connect via video call and begin your healing journey from anywhere."
-    }
-  ];
+  const currentTab = tabs[activeTab];
 
   return (
     <section className="py-8 lg:py-10 bg-background relative overflow-hidden">
@@ -92,14 +135,14 @@ const HowItWorks = () => {
             <div>
               <h3 className="text-3xl font-bold text-foreground mb-10">How it works</h3>
               
-              <div className="relative">
+              <div className="relative" key={activeTab}>
                 {/* Vertical line */}
                 <div className="absolute left-[11px] top-3 bottom-3 w-0.5 bg-primary/30" />
                 
                 {/* Steps */}
                 <div className="space-y-8">
-                  {steps.map((step, index) => (
-                    <div key={index} className="relative pl-10 group">
+                  {currentTab.steps.map((step, index) => (
+                    <div key={index} className="relative pl-10 group animate-fade-in" style={{ animationDelay: `${index * 100}ms` }}>
                       {/* Dot */}
                       <div className="absolute left-0 top-1.5 w-6 h-6 rounded-full bg-primary flex items-center justify-center shadow-lg shadow-primary/30 group-hover:scale-110 transition-transform">
                         <div className="w-2 h-2 rounded-full bg-primary-foreground" />
@@ -159,8 +202,8 @@ const HowItWorks = () => {
                 {/* Phone mockup image with transition */}
                 <img 
                   key={activeTab}
-                  src={tabs[activeTab].image} 
-                  alt={tabs[activeTab].alt} 
+                  src={currentTab.image} 
+                  alt={currentTab.alt} 
                   className="w-[240px] md:w-[280px] h-auto drop-shadow-2xl animate-fade-in"
                 />
                 
