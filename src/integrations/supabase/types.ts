@@ -80,6 +80,133 @@ export type Database = {
         }
         Relationships: []
       }
+      specialist_availability: {
+        Row: {
+          day_of_week: number
+          end_time: string
+          id: string
+          is_available: boolean
+          specialist_id: string
+          start_time: string
+        }
+        Insert: {
+          day_of_week: number
+          end_time: string
+          id?: string
+          is_available?: boolean
+          specialist_id: string
+          start_time: string
+        }
+        Update: {
+          day_of_week?: number
+          end_time?: string
+          id?: string
+          is_available?: boolean
+          specialist_id?: string
+          start_time?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "specialist_availability_specialist_id_fkey"
+            columns: ["specialist_id"]
+            isOneToOne: false
+            referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      specialist_reviews: {
+        Row: {
+          comment: string | null
+          created_at: string
+          id: string
+          is_verified: boolean
+          rating: number
+          reviewer_name: string
+          specialist_id: string
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          is_verified?: boolean
+          rating: number
+          reviewer_name: string
+          specialist_id: string
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          is_verified?: boolean
+          rating?: number
+          reviewer_name?: string
+          specialist_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "specialist_reviews_specialist_id_fkey"
+            columns: ["specialist_id"]
+            isOneToOne: false
+            referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      specialists: {
+        Row: {
+          available_options: string[]
+          bio: string | null
+          certifications: string[] | null
+          created_at: string
+          education: string | null
+          experience_years: number
+          id: string
+          image_url: string | null
+          is_active: boolean
+          languages: string[]
+          name: string
+          price_per_hour: number
+          specialties: string[]
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          available_options?: string[]
+          bio?: string | null
+          certifications?: string[] | null
+          created_at?: string
+          education?: string | null
+          experience_years?: number
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          languages?: string[]
+          name: string
+          price_per_hour: number
+          specialties?: string[]
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          available_options?: string[]
+          bio?: string | null
+          certifications?: string[] | null
+          created_at?: string
+          education?: string | null
+          experience_years?: number
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          languages?: string[]
+          name?: string
+          price_per_hour?: number
+          specialties?: string[]
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
