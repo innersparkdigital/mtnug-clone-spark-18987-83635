@@ -43,6 +43,7 @@ import ForBusiness from "./pages/ForBusiness";
 import ForProfessionals from "./pages/ForProfessionals";
 import Specialists from "./pages/Specialists";
 import SpecialistProfile from "./pages/SpecialistProfile";
+import ScrollToTop from "./components/ScrollToTop";
 
 const queryClient = new QueryClient();
 
@@ -55,6 +56,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/virtual-therapy" element={<VirtualTherapy />} />
