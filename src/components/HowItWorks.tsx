@@ -31,19 +31,19 @@ const HowItWorks = () => {
     {
       label: "Chat",
       image: chatSessionMockup,
-      alt: "InnerSpark App - Chat with AminaMD",
+      alt: "InnerSpark App - Chat with Therapist",
       steps: [
         {
-          title: "Start a Conversation with AminaMD",
-          description: "Share your health concerns with our AI-powered doctor. Get instant support and guidance anytime."
+          title: "Start a Conversation with a Therapist",
+          description: "Share your mental health concerns with our licensed counsellors. Get instant support and guidance anytime you need it."
         },
         {
           title: "Choose Your Path",
-          description: "Select from recommended options and choose \"Chat with Doctor\" for personalized medical advice from real professionals."
+          description: "Select from recommended options and choose \"Chat with Therapist/Counsellor\" for personalized mental health advice from real professionals."
         },
         {
-          title: "Connect with a Doctor",
-          description: "Complete your payment if you're not a premium member, and get placed in the queue for our doctors to assist you."
+          title: "Connect with a Therapist",
+          description: "Complete your payment if you're not a premium member, and get placed in the queue for our therapists to assist you."
         }
       ]
     },
