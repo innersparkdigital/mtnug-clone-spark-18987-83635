@@ -9,6 +9,11 @@ import { Brain, Cog, Users, Calendar, Video, BookOpen, GraduationCap, BarChart3,
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import corporateWellnessImage from "@/assets/corporate-wellness-service.jpg";
+import mtnLogo from "@/assets/mtn-internship.png";
+import uictLogo from "@/assets/uict-training.png";
+import miicLogo from "@/assets/miic-mental-health.png";
+import foundersLogo from "@/assets/founders-mindset-training.png";
+import truckDriversLogo from "@/assets/truck-drivers-training.png";
 
 const ForBusiness = () => {
   const { toast } = useToast();
@@ -146,17 +151,28 @@ const ForBusiness = () => {
           </div>
         </section>
 
-        {/* Clients/Users Section */}
-        <section className="py-12 bg-muted/30 border-y border-border">
+        {/* Clients/Partners Section */}
+        <section className="py-16 bg-muted/30 border-y border-border">
           <div className="container mx-auto px-4">
-            <p className="text-center text-muted-foreground mb-8">
-              <span className="font-semibold text-foreground">Our Partners</span> | Trusted by organizations across Africa
+            <p className="text-center text-muted-foreground mb-10">
+              <span className="font-semibold text-foreground text-lg">Businesses Who Have Used Our Services</span>
             </p>
-            <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12 opacity-70">
-              <span className="text-xl font-bold text-muted-foreground">MTN Uganda</span>
-              <span className="text-xl font-bold text-muted-foreground">UICT</span>
-              <span className="text-xl font-bold text-muted-foreground">MIIC</span>
-              <span className="text-xl font-bold text-muted-foreground">Various Schools</span>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-8 items-center justify-items-center">
+              <div className="bg-background rounded-xl p-4 shadow-sm border border-border hover:shadow-md transition-shadow">
+                <img src={mtnLogo} alt="MTN Uganda" className="h-16 md:h-20 w-auto object-contain" />
+              </div>
+              <div className="bg-background rounded-xl p-4 shadow-sm border border-border hover:shadow-md transition-shadow">
+                <img src={uictLogo} alt="UICT" className="h-16 md:h-20 w-auto object-contain" />
+              </div>
+              <div className="bg-background rounded-xl p-4 shadow-sm border border-border hover:shadow-md transition-shadow">
+                <img src={miicLogo} alt="MIIC" className="h-16 md:h-20 w-auto object-contain" />
+              </div>
+              <div className="bg-background rounded-xl p-4 shadow-sm border border-border hover:shadow-md transition-shadow">
+                <img src={foundersLogo} alt="Founders Program" className="h-16 md:h-20 w-auto object-contain" />
+              </div>
+              <div className="bg-background rounded-xl p-4 shadow-sm border border-border hover:shadow-md transition-shadow col-span-2 md:col-span-1">
+                <img src={truckDriversLogo} alt="Truck Drivers Program" className="h-16 md:h-20 w-auto object-contain" />
+              </div>
             </div>
           </div>
         </section>
