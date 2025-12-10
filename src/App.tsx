@@ -23,7 +23,7 @@ import CookiePolicy from "./pages/CookiePolicy";
 import Services from "./pages/Services";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
-import Careers from "./pages/Careers";
+// import Careers from "./pages/Careers";
 import TruckDriversPost from "./pages/blog/TruckDriversPost";
 import FoundersPost from "./pages/blog/FoundersPost";
 import ChildrenMentalHealthPost from "./pages/blog/ChildrenMentalHealthPost";
@@ -73,7 +73,7 @@ const App = () => (
           <Route path="/services" element={<Services />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/careers" element={<Careers />} />
+          {/* <Route path="/careers" element={<Careers />} /> */}
           <Route path="/for-business" element={<ForBusiness />} />
           <Route path="/for-professionals" element={<ForProfessionals />} />
           <Route path="/specialists" element={<Specialists />} />
