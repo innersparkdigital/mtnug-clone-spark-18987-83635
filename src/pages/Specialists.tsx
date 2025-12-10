@@ -7,9 +7,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, Video, Phone, ExternalLink, Star } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Search, Video, Phone, ExternalLink, Calendar, MessageSquare } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getSpecialistImage } from "@/lib/specialistImages";
+import { toast } from "sonner";
 
 interface Specialist {
   id: string;
@@ -38,6 +43,16 @@ const formatPrice = (price: number) => {
 };
 
 const SpecialistCard = ({ specialist }: { specialist: Specialist }) => {
+  const [bookingDialogOpen, setBookingDialogOpen] = useState(false);
+  const [bookingForm, setBookingForm] = useState({
+    name: "",
+    phone: "",
+    preferredDate: "",
+    preferredTime: "",
+    sessionType: "",
+    notes: "",
+  });
+
   const initials = specialist.name
     .split(" ")
     .map((n) => n[0])
@@ -46,88 +61,215 @@ const SpecialistCard = ({ specialist }: { specialist: Specialist }) => {
 
   const imageUrl = getSpecialistImage(specialist.name, specialist.image_url);
 
+  const handleBookingSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!bookingForm.name.trim() || !bookingForm.phone.trim()) {
+      toast.error("Please fill in your name and phone number");
+      return;
+    }
+
+    const message = `Hello, I would like to book a session with ${specialist.name}.
+
+*Booking Details:*
+- Name: ${bookingForm.name.trim()}
+- Phone: ${bookingForm.phone.trim()}
+- Preferred Date: ${bookingForm.preferredDate || "Flexible"}
+- Preferred Time: ${bookingForm.preferredTime || "Flexible"}
+- Session Type: ${bookingForm.sessionType || "Not specified"}
+- Additional Notes: ${bookingForm.notes.trim() || "None"}
+
+Please confirm availability. Thank you!`;
+
+    window.open(
+      `https://wa.me/256780570987?text=${encodeURIComponent(message)}`,
+      "_blank"
+    );
+    
+    setBookingDialogOpen(false);
+    setBookingForm({
+      name: "",
+      phone: "",
+      preferredDate: "",
+      preferredTime: "",
+      sessionType: "",
+      notes: "",
+    });
+    toast.success("Redirecting to WhatsApp...");
+  };
+
   return (
-    <div className="bg-card rounded-xl border border-border p-6 hover:shadow-lg transition-all duration-300 hover:border-primary/30">
-      <div className="flex items-start gap-4 mb-4">
-        <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xl shrink-0 overflow-hidden">
-          {imageUrl ? (
-            <img src={imageUrl} alt={specialist.name} className="w-full h-full rounded-full object-cover" />
-          ) : (
-            initials
-          )}
+    <>
+      <div className="bg-card rounded-xl border border-border p-6 hover:shadow-lg transition-all duration-300 hover:border-primary/30">
+        <div className="flex items-start gap-4 mb-4">
+          <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xl shrink-0 overflow-hidden">
+            {imageUrl ? (
+              <img src={imageUrl} alt={specialist.name} className="w-full h-full rounded-full object-cover" />
+            ) : (
+              initials
+            )}
+          </div>
+          <div className="flex-1 min-w-0">
+            <h3 className="font-semibold text-foreground text-lg truncate">{specialist.name}</h3>
+            <Link 
+              to={`/specialists/${specialist.id}`}
+              className="text-primary text-sm hover:underline flex items-center gap-1"
+            >
+              View profile <ExternalLink className="w-3 h-3" />
+            </Link>
+          </div>
         </div>
-        <div className="flex-1 min-w-0">
-          <h3 className="font-semibold text-foreground text-lg truncate">{specialist.name}</h3>
-          <Link 
-            to={`/specialists/${specialist.id}`}
-            className="text-primary text-sm hover:underline flex items-center gap-1"
-          >
-            View profile <ExternalLink className="w-3 h-3" />
+
+        <div className="space-y-3 mb-4">
+          <div className="flex justify-between text-sm">
+            <span className="text-muted-foreground">Experience:</span>
+            <span className="font-medium text-foreground">{specialist.experience_years} Years</span>
+          </div>
+          <div className="flex justify-between text-sm">
+            <span className="text-muted-foreground">Price:</span>
+            <span className="font-medium text-foreground">{formatPrice(specialist.price_per_hour)}/hr</span>
+          </div>
+        </div>
+
+        <div className="mb-4">
+          <p className="text-sm text-muted-foreground mb-2">Specialties:</p>
+          <div className="flex flex-wrap gap-1.5">
+            {specialist.specialties.slice(0, 4).map((specialty, index) => (
+              <Badge key={index} variant="secondary" className="text-xs">
+                {specialty}
+              </Badge>
+            ))}
+            {specialist.specialties.length > 4 && (
+              <Badge variant="outline" className="text-xs">
+                +{specialist.specialties.length - 4} more
+              </Badge>
+            )}
+          </div>
+        </div>
+
+        <div className="mb-4">
+          <p className="text-sm text-muted-foreground mb-2">Languages:</p>
+          <p className="text-sm text-foreground">{specialist.languages.join(", ")}</p>
+        </div>
+
+        <div className="mb-5">
+          <p className="text-sm text-muted-foreground mb-2">Available Options:</p>
+          <div className="flex gap-2">
+            {specialist.available_options.includes("voice") && (
+              <div className="flex items-center gap-1 text-sm text-foreground">
+                <Phone className="w-4 h-4 text-primary" /> Voice
+              </div>
+            )}
+            {specialist.available_options.includes("video") && (
+              <div className="flex items-center gap-1 text-sm text-foreground">
+                <Video className="w-4 h-4 text-primary" /> Video
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="flex gap-2">
+          <Button className="flex-1" onClick={() => setBookingDialogOpen(true)}>
+            Book
+          </Button>
+          <Link to={`/specialists/${specialist.id}`} className="flex-1">
+            <Button variant="outline" className="w-full">
+              View Profile
+            </Button>
           </Link>
         </div>
       </div>
 
-      <div className="space-y-3 mb-4">
-        <div className="flex justify-between text-sm">
-          <span className="text-muted-foreground">Experience:</span>
-          <span className="font-medium text-foreground">{specialist.experience_years} Years</span>
-        </div>
-        <div className="flex justify-between text-sm">
-          <span className="text-muted-foreground">Price:</span>
-          <span className="font-medium text-foreground">{formatPrice(specialist.price_per_hour)}/hr</span>
-        </div>
-      </div>
-
-      <div className="mb-4">
-        <p className="text-sm text-muted-foreground mb-2">Specialties:</p>
-        <div className="flex flex-wrap gap-1.5">
-          {specialist.specialties.slice(0, 4).map((specialty, index) => (
-            <Badge key={index} variant="secondary" className="text-xs">
-              {specialty}
-            </Badge>
-          ))}
-          {specialist.specialties.length > 4 && (
-            <Badge variant="outline" className="text-xs">
-              +{specialist.specialties.length - 4} more
-            </Badge>
-          )}
-        </div>
-      </div>
-
-      <div className="mb-4">
-        <p className="text-sm text-muted-foreground mb-2">Languages:</p>
-        <p className="text-sm text-foreground">{specialist.languages.join(", ")}</p>
-      </div>
-
-      <div className="mb-5">
-        <p className="text-sm text-muted-foreground mb-2">Available Options:</p>
-        <div className="flex gap-2">
-          {specialist.available_options.includes("voice") && (
-            <div className="flex items-center gap-1 text-sm text-foreground">
-              <Phone className="w-4 h-4 text-primary" /> Voice
+      {/* Booking Dialog */}
+      <Dialog open={bookingDialogOpen} onOpenChange={setBookingDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Calendar className="w-5 h-5 text-primary" />
+              Book Session with {specialist.name}
+            </DialogTitle>
+            <DialogDescription>
+              Fill in your details and we'll connect you via WhatsApp.
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleBookingSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor={`name-${specialist.id}`}>Your Name *</Label>
+              <Input
+                id={`name-${specialist.id}`}
+                placeholder="Enter your full name"
+                value={bookingForm.name}
+                onChange={(e) => setBookingForm({ ...bookingForm, name: e.target.value })}
+                maxLength={100}
+                required
+              />
             </div>
-          )}
-          {specialist.available_options.includes("video") && (
-            <div className="flex items-center gap-1 text-sm text-foreground">
-              <Video className="w-4 h-4 text-primary" /> Video
+            <div className="space-y-2">
+              <Label htmlFor={`phone-${specialist.id}`}>Phone Number *</Label>
+              <Input
+                id={`phone-${specialist.id}`}
+                placeholder="e.g., +256 700 000 000"
+                value={bookingForm.phone}
+                onChange={(e) => setBookingForm({ ...bookingForm, phone: e.target.value })}
+                maxLength={20}
+                required
+              />
             </div>
-          )}
-        </div>
-      </div>
-
-      <div className="flex gap-2">
-        <Link to={`/specialists/${specialist.id}`} className="flex-1">
-          <Button className="w-full">
-            Book
-          </Button>
-        </Link>
-        <Link to={`/specialists/${specialist.id}`} className="flex-1">
-          <Button variant="outline" className="w-full">
-            View Profile
-          </Button>
-        </Link>
-      </div>
-    </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <Label htmlFor={`date-${specialist.id}`}>Preferred Date</Label>
+                <Input
+                  id={`date-${specialist.id}`}
+                  type="date"
+                  value={bookingForm.preferredDate}
+                  onChange={(e) => setBookingForm({ ...bookingForm, preferredDate: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor={`time-${specialist.id}`}>Preferred Time</Label>
+                <Input
+                  id={`time-${specialist.id}`}
+                  type="time"
+                  value={bookingForm.preferredTime}
+                  onChange={(e) => setBookingForm({ ...bookingForm, preferredTime: e.target.value })}
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor={`session-type-${specialist.id}`}>Session Type</Label>
+              <Select
+                value={bookingForm.sessionType}
+                onValueChange={(value) => setBookingForm({ ...bookingForm, sessionType: value })}
+              >
+                <SelectTrigger id={`session-type-${specialist.id}`}>
+                  <SelectValue placeholder="Select session type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="video">Video Call</SelectItem>
+                  <SelectItem value="voice">Voice Call</SelectItem>
+                  <SelectItem value="in-person">In-Person</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor={`notes-${specialist.id}`}>Additional Notes</Label>
+              <Textarea
+                id={`notes-${specialist.id}`}
+                placeholder="Any specific concerns or preferences..."
+                value={bookingForm.notes}
+                onChange={(e) => setBookingForm({ ...bookingForm, notes: e.target.value })}
+                maxLength={500}
+                rows={3}
+              />
+            </div>
+            <Button type="submit" className="w-full gap-2">
+              <MessageSquare className="w-4 h-4" />
+              Continue to WhatsApp
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
