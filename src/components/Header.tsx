@@ -98,10 +98,15 @@ const Header = () => {
   return (
     <div className="sticky top-0 z-50">
       {/* Top Bar - Hidden on mobile */}
-      <div className="hidden md:block bg-secondary text-secondary-foreground py-2 px-4 text-sm">
+      <div className="hidden md:block bg-gradient-to-r from-primary/90 via-primary to-primary/90 text-primary-foreground py-2 px-4 text-sm">
         <div className="container mx-auto flex justify-end items-center gap-6">
-          <Link to="/for-professionals" className="hover:text-primary transition-colors">{translations.forProfessionals}</Link>
-          <Link to="/for-business" className="hover:text-primary transition-colors">{translations.forBusiness}</Link>
+          <Link to="/for-professionals" className="hover:text-primary-foreground/80 transition-colors">{translations.forProfessionals}</Link>
+          <Link to="/for-business" className="hover:text-primary-foreground/80 transition-colors">{translations.forBusiness}</Link>
+          <Link to="/donate-therapy">
+            <Button size="sm" variant="secondary" className="text-xs px-3 py-1 h-7">
+              {translations.donateTherapy}
+            </Button>
+          </Link>
           <LanguageSelector variant="header" />
         </div>
       </div>
@@ -138,11 +143,6 @@ const Header = () => {
               </Link>
               <Link to="/contact" className="text-primary-foreground hover:text-primary-foreground/80 transition-colors font-medium">
                 {navLabels.contact}
-              </Link>
-              <Link to="/donate-therapy">
-                <Button variant="outline" className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary">
-                  {translations.donateTherapy}
-                </Button>
               </Link>
               <AppDownloadPopup />
             </nav>
