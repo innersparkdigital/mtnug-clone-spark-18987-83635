@@ -148,11 +148,11 @@ const ForProfessionals = () => {
               </div>
               
               {/* Hero Image */}
-              <div className="hidden lg:block">
+              <div className="order-first lg:order-last">
                 <img 
                   src={professionalsHeroImage} 
                   alt="Professional therapist in online consultation" 
-                  className="w-full h-auto max-w-lg mx-auto"
+                  className="w-full h-auto max-w-sm lg:max-w-lg mx-auto"
                 />
               </div>
             </div>
