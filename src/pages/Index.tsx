@@ -16,7 +16,7 @@ const Index = () => {
       </head>
       <div className="min-h-screen bg-background">
         <Header />
-        <HeroCarousel />
+        {/* <HeroCarousel /> */}
         <AppTrailer />
         <ServicesGrid />
         <PromoBanner />
