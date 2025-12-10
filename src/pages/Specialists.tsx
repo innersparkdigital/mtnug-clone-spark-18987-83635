@@ -15,6 +15,7 @@ import { Search, Video, Phone, ExternalLink, Calendar, MessageSquare } from "luc
 import { supabase } from "@/integrations/supabase/client";
 import { getSpecialistImage } from "@/lib/specialistImages";
 import { toast } from "sonner";
+import ugandaBadge from "@/assets/uganda-badge.png";
 
 interface Specialist {
   id: string;
@@ -112,9 +113,7 @@ Please confirm availability. Thank you!`;
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
               <h3 className="font-semibold text-foreground text-lg truncate">{specialist.name}</h3>
-              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs bg-muted text-muted-foreground shrink-0" title="Uganda">
-                🇺🇬
-              </span>
+              <img src={ugandaBadge} alt="Uganda" className="w-5 h-5 object-contain shrink-0" title="Uganda" />
             </div>
             <Link 
               to={`/specialists/${specialist.id}`}
