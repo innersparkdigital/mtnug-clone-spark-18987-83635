@@ -164,9 +164,17 @@ const Header = () => {
           {/* Mobile Menu */}
           {isMenuOpen && (
             <nav className="md:hidden py-4 space-y-4 border-t border-border">
-              <Link to="/services" className="block text-foreground hover:text-primary transition-colors font-medium">
-                {navLabels.services}
+              <Link to="/for-professionals" className="block text-primary font-semibold">
+                {translations.forProfessionals}
               </Link>
+              <Link to="/for-business" className="block text-primary font-semibold">
+                {translations.forBusiness}
+              </Link>
+              <div className="border-t border-border pt-4">
+                <Link to="/services" className="block text-foreground hover:text-primary transition-colors font-medium">
+                  {navLabels.services}
+                </Link>
+              </div>
               <Link to="/specialists" className="block text-foreground hover:text-primary transition-colors font-medium">
                 {navLabels.specialists}
               </Link>
