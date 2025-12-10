@@ -301,6 +301,7 @@ const Specialists = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("therapist");
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCountry, setSelectedCountry] = useState("");
   const [specialists, setSpecialists] = useState<Specialist[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -333,7 +334,10 @@ const Specialists = () => {
     const matchesCategory =
       selectedCategory === "" ||
       specialist.specialties.some((s) => s.toLowerCase().includes(selectedCategory.toLowerCase()));
-    return matchesType && matchesSearch && matchesCategory;
+    const matchesCountry =
+      selectedCountry === "" ||
+      specialist.country === selectedCountry;
+    return matchesType && matchesSearch && matchesCategory && matchesCountry;
   });
 
   return (
@@ -381,14 +385,36 @@ const Specialists = () => {
                   </TabsTrigger>
                 </TabsList>
 
-                <div className="relative max-w-md w-full">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Search for a therapist or specialty..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10"
-                  />
+                <div className="flex items-center gap-3">
+                  <div className="relative max-w-md w-full">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Search for a therapist or specialty..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
+                  <Select value={selectedCountry} onValueChange={setSelectedCountry}>
+                    <SelectTrigger className="w-[160px] bg-background">
+                      <SelectValue placeholder="All Countries" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background border border-border z-50">
+                      <SelectItem value="">All Countries</SelectItem>
+                      <SelectItem value="Uganda">
+                        <span className="flex items-center gap-2">
+                          <img src={ugandaBadge} alt="Uganda" className="w-4 h-4" />
+                          Uganda
+                        </span>
+                      </SelectItem>
+                      <SelectItem value="Ghana">
+                        <span className="flex items-center gap-2">
+                          <img src={ghanaBadge} alt="Ghana" className="w-4 h-4" />
+                          Ghana
+                        </span>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
 
