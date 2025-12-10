@@ -1,11 +1,17 @@
 import { useState, useEffect } from "react";
-import { Gift, Sparkles, Heart, Star } from "lucide-react";
+import { Gift, Sparkles, Heart, Star, Phone, Users, Calendar, Shield } from "lucide-react";
 
 const promoMessages = [
   { icon: Gift, text: "🎄 Christmas Special: 20% OFF all therapy sessions this festive season!" },
   { icon: Sparkles, text: "✨ New Year, New You! Start your wellness journey today" },
   { icon: Heart, text: "💚 Gift Mental Wellness - Donate therapy to someone in need" },
   { icon: Star, text: "⭐ Join 10,000+ Africans prioritizing their mental health" },
+  { icon: Phone, text: "📱 Download our app - Available on Android & iOS" },
+  { icon: Users, text: "👥 Free Support Groups - Connect with others on similar journeys" },
+  { icon: Calendar, text: "📅 Book your first session today - No waiting lists!" },
+  { icon: Shield, text: "🔒 100% Confidential - Your privacy is our priority" },
+  { icon: Gift, text: "🎁 Refer a friend & both get 15% off your next session" },
+  { icon: Sparkles, text: "🌟 New Feature: 24/7 Emergency Mental Health Support" },
 ];
 
 const PromoSlider = () => {
