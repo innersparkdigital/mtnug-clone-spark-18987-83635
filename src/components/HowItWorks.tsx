@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import bookSessionMockup from "@/assets/mockups/book-session.jpeg";
+import findTherapistsMockup from "@/assets/mockups/find-therapists-mockup.png";
 
 const HowItWorks = () => {
   const steps = [
@@ -125,25 +125,16 @@ const HowItWorks = () => {
             {/* Right: Phone Mockup */}
             <div className="flex justify-center lg:justify-end">
               <div className="relative">
-                {/* Phone frame - clean modern design */}
-                <div className="relative w-[220px] md:w-[260px]">
-                  {/* Phone bezel */}
-                  <div className="relative bg-gray-900 rounded-[2rem] p-2 shadow-2xl">
-                    {/* Screen container with crop */}
-                    <div className="relative bg-white rounded-[1.5rem] overflow-hidden h-[280px] md:h-[320px]">
-                      {/* Screen content - positioned to show middle section */}
-                      <img 
-                        src={bookSessionMockup} 
-                        alt="InnerSpark App - Book a therapy session" 
-                        className="w-full h-auto absolute top-[-60px] left-0 object-cover"
-                      />
-                    </div>
-                  </div>
-                  
-                  {/* Decorative elements */}
-                  <div className="absolute -top-4 -right-4 w-20 h-20 bg-primary/10 rounded-full blur-2xl" />
-                  <div className="absolute -bottom-4 -left-4 w-24 h-24 bg-accent/20 rounded-full blur-2xl" />
-                </div>
+                {/* Phone mockup image */}
+                <img 
+                  src={findTherapistsMockup} 
+                  alt="InnerSpark App - Find Therapists" 
+                  className="w-[240px] md:w-[280px] h-auto drop-shadow-2xl"
+                />
+                
+                {/* Decorative elements */}
+                <div className="absolute -top-4 -right-4 w-20 h-20 bg-primary/10 rounded-full blur-2xl" />
+                <div className="absolute -bottom-4 -left-4 w-24 h-24 bg-accent/20 rounded-full blur-2xl" />
               </div>
             </div>
           </div>
