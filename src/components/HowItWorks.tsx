@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import videoSessionMockup from "@/assets/mockups/video-session-mockup.png";
 import chatSessionMockup from "@/assets/mockups/chat-session.png";
-import supportGroupsMockup from "@/assets/mockups/support-groups.jpeg";
+import supportGroupsMockup from "@/assets/mockups/support-groups-mockup.png";
 import appointmentMockup from "@/assets/mockups/appointment-mockup.png";
 
 const HowItWorks = () => {
