@@ -325,7 +325,7 @@ const Specialists = () => {
   };
 
   const filteredSpecialists = specialists.filter((specialist) => {
-    const matchesType = specialist.type === activeTab;
+    const matchesType = selectedCountry === "" ? specialist.type === activeTab : true;
     const matchesSearch =
       searchQuery === "" ||
       specialist.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
