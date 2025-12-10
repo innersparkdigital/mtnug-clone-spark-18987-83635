@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import logo from "@/assets/innerspark-logo.png";
 import AppDownloadPopup from "@/components/AppDownloadPopup";
+import { LanguageSelector } from "@/components/LanguageSelector";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -23,6 +24,7 @@ const Header = () => {
         <div className="container mx-auto flex justify-end items-center gap-6">
           <Link to="/for-professionals" className="hover:text-primary transition-colors">FOR PROFESSIONALS</Link>
           <Link to="/for-business" className="hover:text-primary transition-colors">FOR BUSINESS</Link>
+          <LanguageSelector variant="header" />
         </div>
       </div>
 
@@ -106,6 +108,9 @@ const Header = () => {
               </Link>
               <div className="pt-2">
                 <AppDownloadPopup />
+              </div>
+              <div className="pt-2">
+                <LanguageSelector variant="footer" />
               </div>
             </nav>
           )}
