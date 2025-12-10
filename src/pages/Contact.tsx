@@ -223,7 +223,7 @@ const Contact = () => {
         </div>
       </section>
 
-      <AppDownload />
+      {/* <AppDownload /> */}
       <Footer />
     </div>
   );

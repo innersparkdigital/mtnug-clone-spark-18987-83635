@@ -88,7 +88,7 @@ const MIICPost = () => {
         </div>
       </article>
 
-      <AppDownload />
+      {/* <AppDownload /> */}
       <Footer />
     </div>
   );

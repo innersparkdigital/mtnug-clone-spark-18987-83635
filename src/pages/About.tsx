@@ -325,7 +325,7 @@ const About = () => {
         </div>
       </section>
 
-      <AppDownload />
+      {/* <AppDownload /> */}
       <Footer />
     </div>
   );

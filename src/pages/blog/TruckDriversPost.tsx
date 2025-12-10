@@ -88,7 +88,7 @@ const TruckDriversPost = () => {
         </div>
       </article>
 
-      <AppDownload />
+      {/* <AppDownload /> */}
       <Footer />
     </div>
   );

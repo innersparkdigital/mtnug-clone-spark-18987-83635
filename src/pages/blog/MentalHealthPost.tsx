@@ -727,7 +727,7 @@ const MentalHealthPost = () => {
           </div>
         </article>
 
-        <AppDownload />
+        {/* <AppDownload /> */}
       </main>
 
       <Footer />

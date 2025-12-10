@@ -673,7 +673,7 @@ const PanicAttackPost = () => {
         </section>
       </main>
 
-      <AppDownload />
+      {/* <AppDownload /> */}
       <Footer />
     </>
   );

@@ -113,7 +113,7 @@ const UICTWellnessPost = () => {
         </div>
       </article>
 
-      <AppDownload />
+      {/* <AppDownload /> */}
       <Footer />
     </div>
   );

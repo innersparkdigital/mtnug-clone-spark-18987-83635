@@ -95,7 +95,7 @@ const WellnessReports = () => {
         </div>
       </section>
 
-      <AppDownload />
+      {/* <AppDownload /> */}
       <Footer />
     </div>
   );

@@ -99,7 +99,7 @@ const FindTherapist = () => {
         </div>
       </section>
 
-      <AppDownload />
+      {/* <AppDownload /> */}
       <Footer />
     </div>
   );

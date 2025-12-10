@@ -700,7 +700,7 @@ const DepressionPost = () => {
         </article>
       </main>
 
-      <AppDownload />
+      {/* <AppDownload /> */}
       <Footer />
     </>
   );

@@ -24,7 +24,7 @@ const Index = () => {
         {/* <ServicesGrid /> */}
         <Partners />
         <PromoBanner />
-        <AppDownload />
+        {/* <AppDownload /> */}
         <Footer />
         <CookieConsent />
       </div>

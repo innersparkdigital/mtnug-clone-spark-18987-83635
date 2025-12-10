@@ -105,7 +105,7 @@ const EmergencySupport = () => {
         </div>
       </section>
 
-      <AppDownload />
+      {/* <AppDownload /> */}
       <Footer />
     </div>
   );

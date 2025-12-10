@@ -95,7 +95,7 @@ const ProfileSettings = () => {
         </div>
       </section>
 
-      <AppDownload />
+      {/* <AppDownload /> */}
       <Footer />
     </div>
   );

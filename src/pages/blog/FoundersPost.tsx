@@ -77,7 +77,7 @@ const FoundersPost = () => {
         </div>
       </article>
 
-      <AppDownload />
+      {/* <AppDownload /> */}
       <Footer />
     </div>
   );

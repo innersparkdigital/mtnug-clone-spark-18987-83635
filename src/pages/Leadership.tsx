@@ -91,7 +91,7 @@ const Leadership = () => {
           </div>
         </section>
 
-        <AppDownload />
+        {/* <AppDownload /> */}
         <Footer />
     </div>
   );
