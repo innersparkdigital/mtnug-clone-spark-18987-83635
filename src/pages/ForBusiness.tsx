@@ -6,8 +6,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Brain, Cog, Users, Calendar, Video, BookOpen, GraduationCap, BarChart3, UserCheck, MessageSquare, TrendingDown, TrendingUp, ArrowRight } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/contexts/LanguageContext";
 import corporateWellnessImage from "@/assets/corporate-wellness-service.jpg";
 import mtnLogo from "@/assets/mtn-internship.png";
 import uictLogo from "@/assets/uict-training.png";
@@ -15,14 +16,91 @@ import miicLogo from "@/assets/miic-mental-health.png";
 import foundersLogo from "@/assets/founders-mindset-training.png";
 import truckDriversLogo from "@/assets/truck-drivers-training.png";
 
+const defaultTexts = {
+  badge: "For Businesses",
+  heroTitle1: "Good for the employee, even better for",
+  heroTitle2: "your company",
+  heroDesc: "For your employees, quality emotional care. Innerspark can help your company achieve more productivity and fewer leaves, with a focus on ROI and positive clinical outcomes.",
+  ctaButton: "I Want to Care for My Business",
+  clientsTitle: "Businesses Who Have Used Our Services",
+  whyTitle1: "Why does your company need",
+  whyTitle2: "emotional health care?",
+  stat1: "of employees exhibit physical or psychological illness due to mental health issues.",
+  stat2: "of employees have impaired productivity due to psychological problems.",
+  stat3: "of business turnover is caused by mental health problems.",
+  stat4: "not worked per year, per employee due to causes related to emotional health.",
+  employeeTitle: "Mental health based on value delivery",
+  forEmployee: "For the Employee",
+  expertConsult: "Expert Consultations",
+  expertDesc: "Consultations with Innerspark psychologists and counselors, with a selected and trained clinical staff.",
+  careTracks: "Care Tracks & Resources",
+  careDesc: "Progress tracking with educational content including articles, videos, guided exercises and wellness resources.",
+  training: "Training & Workshops",
+  trainingDesc: "Lectures, training and mental health literacy programs with qualified specialists.",
+  forCompany: "For the Company",
+  companyTitle: "Tools to transform your workplace",
+  popMapping: "Population Mapping",
+  popDesc: "Classification of employees into different levels of care with continuous measurement and follow-up.",
+  popBullet1: "Classification into different care levels",
+  popBullet2: "Continuous employee self-assessment",
+  popBullet3: "Professional assessment follow-up",
+  personalized: "Personalized Care Protocols",
+  personalizedDesc: "Unique treatments for unique people. Personalized care protocols for each population profile.",
+  consulting: "Emotional Health Consulting",
+  consultingDesc: "Periodic meetings with our emotional health managers help you define action plans for your teams.",
+  transformTitle: "Transform your company climate and culture",
+  resultsTitle: "Measurable Results",
+  result1: "clinical improvement of employees after the program",
+  result2: "reduction in levels of mental disorders",
+  result3: "increase in productivity",
+  decrease: "Decrease",
+  decreaseItem1: "Annual cost with health plan (loss ratio)",
+  decreaseItem2: "Cost of replacement, recruitment and training (turnover)",
+  decreaseItem3: "Number of absences (absenteeism)",
+  promote: "Promote",
+  promoteItem1: "Relief of employees' symptoms",
+  promoteItem2: "Motivation, self-knowledge and quality of life",
+  promoteItem3: "Increased productivity by up to 35%",
+  evolutionTitle: "Evolution of Emotional Health",
+  evolutionDesc: "Average score of employees who respond to self-assessments throughout the entire program.",
+  beforeProgram: "Before program",
+  afterProgram: "After program",
+  contactTitle: "Calculate mental health costs in your company",
+  contactDesc: "Get in touch and let's discuss how Innerspark can transform your workplace",
+  yourName: "Your Name",
+  emailAddress: "Email Address",
+  companyName: "Company Name",
+  tellUs: "Tell us about your needs",
+  submitButton: "Get in Touch",
+};
+
 const ForBusiness = () => {
   const { toast } = useToast();
+  const { language, translateBatch } = useLanguage();
+  const [t, setT] = useState(defaultTexts);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     company: "",
     message: ""
   });
+
+  useEffect(() => {
+    if (language === "en") {
+      setT(defaultTexts);
+      return;
+    }
+
+    const values = Object.values(defaultTexts);
+    translateBatch(values).then((results) => {
+      const keys = Object.keys(defaultTexts) as (keyof typeof defaultTexts)[];
+      const newT = {} as typeof defaultTexts;
+      keys.forEach((key, i) => {
+        newT[key] = results[i];
+      });
+      setT(newT);
+    });
+  }, [language, translateBatch]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,57 +115,33 @@ const ForBusiness = () => {
   };
 
   const stats = [
-    { value: "84%", label: "of employees exhibit physical or psychological illness due to mental health issues.", icon: Brain },
-    { value: "61%", label: "of employees have impaired productivity due to psychological problems.", icon: Cog },
-    { value: "38%", label: "of business turnover is caused by mental health problems.", icon: Users },
-    { value: "31 days", label: "not worked per year, per employee due to causes related to emotional health.", icon: Calendar },
+    { value: "84%", label: t.stat1, icon: Brain },
+    { value: "61%", label: t.stat2, icon: Cog },
+    { value: "38%", label: t.stat3, icon: Users },
+    { value: "31 days", label: t.stat4, icon: Calendar },
   ];
 
   const employeeFeatures = [
-    { 
-      title: "Expert Consultations", 
-      description: "Consultations with Innerspark psychologists and counselors, with a selected and trained clinical staff.",
-      icon: Video 
-    },
-    { 
-      title: "Care Tracks & Resources", 
-      description: "Progress tracking with educational content including articles, videos, guided exercises and wellness resources.",
-      icon: BookOpen 
-    },
-    { 
-      title: "Training & Workshops", 
-      description: "Lectures, training and mental health literacy programs with qualified specialists.",
-      icon: GraduationCap 
-    },
+    { title: t.expertConsult, description: t.expertDesc, icon: Video },
+    { title: t.careTracks, description: t.careDesc, icon: BookOpen },
+    { title: t.training, description: t.trainingDesc, icon: GraduationCap },
   ];
 
   const companyFeatures = [
     { 
-      title: "Population Mapping", 
-      description: "Classification of employees into different levels of care with continuous measurement and follow-up.",
+      title: t.popMapping, 
+      description: t.popDesc,
       icon: BarChart3,
-      bullets: [
-        "Classification into different care levels",
-        "Continuous employee self-assessment",
-        "Professional assessment follow-up"
-      ]
+      bullets: [t.popBullet1, t.popBullet2, t.popBullet3]
     },
-    { 
-      title: "Personalized Care Protocols", 
-      description: "Unique treatments for unique people. Personalized care protocols for each population profile.",
-      icon: UserCheck 
-    },
-    { 
-      title: "Emotional Health Consulting", 
-      description: "Periodic meetings with our emotional health managers help you define action plans for your teams.",
-      icon: MessageSquare 
-    },
+    { title: t.personalized, description: t.personalizedDesc, icon: UserCheck },
+    { title: t.consulting, description: t.consultingDesc, icon: MessageSquare },
   ];
 
   const results = [
-    { value: "72%", label: "clinical improvement of employees after the program" },
-    { value: "44%", label: "reduction in levels of mental disorders" },
-    { value: "35%", label: "increase in productivity" },
+    { value: "72%", label: t.result1 },
+    { value: "44%", label: t.result2 },
+    { value: "35%", label: t.result3 },
   ];
 
   return (
@@ -122,20 +176,20 @@ const ForBusiness = () => {
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div className="space-y-6">
                 <span className="inline-block bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium">
-                  For Businesses
+                  {t.badge}
                 </span>
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight">
-                  Good for the employee, even better for <span className="text-primary">your company</span>
+                  {t.heroTitle1} <span className="text-primary">{t.heroTitle2}</span>
                 </h1>
                 <p className="text-lg text-muted-foreground">
-                  For your employees, quality emotional care. Innerspark can help your company achieve more productivity and fewer leaves, with a focus on ROI and positive clinical outcomes.
+                  {t.heroDesc}
                 </p>
                 <Button 
                   size="lg" 
                   className="bg-primary hover:bg-primary/90 text-primary-foreground"
                   onClick={() => document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' })}
                 >
-                  I Want to Care for My Business
+                  {t.ctaButton}
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </div>
@@ -155,7 +209,7 @@ const ForBusiness = () => {
         <section className="py-16 bg-muted/30 border-y border-border">
           <div className="container mx-auto px-4">
             <p className="text-center text-muted-foreground mb-10">
-              <span className="font-semibold text-foreground text-lg">Businesses Who Have Used Our Services</span>
+              <span className="font-semibold text-foreground text-lg">{t.clientsTitle}</span>
             </p>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-8 items-center justify-items-center">
               <div className="bg-background rounded-xl p-4 shadow-sm border border-border hover:shadow-md transition-shadow">
@@ -181,8 +235,8 @@ const ForBusiness = () => {
         <section className="py-20 bg-slate-900 text-white">
           <div className="container mx-auto px-4">
             <h2 className="text-3xl md:text-4xl font-bold mb-16 text-center">
-              Why does your company need<br />
-              <span className="text-primary">emotional health care?</span>
+              {t.whyTitle1}<br />
+              <span className="text-primary">{t.whyTitle2}</span>
             </h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
               {stats.map((stat, index) => (
@@ -203,9 +257,9 @@ const ForBusiness = () => {
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-                Mental health based on value delivery
+                {t.employeeTitle}
               </h2>
-              <p className="text-xl text-primary font-semibold">For the Employee</p>
+              <p className="text-xl text-primary font-semibold">{t.forEmployee}</p>
             </div>
             <div className="grid md:grid-cols-3 gap-8">
               {employeeFeatures.map((feature, index) => (
@@ -227,9 +281,9 @@ const ForBusiness = () => {
         <section className="py-20 bg-muted/30">
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
-              <p className="text-xl text-primary font-semibold mb-4">For the Company</p>
+              <p className="text-xl text-primary font-semibold mb-4">{t.forCompany}</p>
               <h2 className="text-3xl md:text-4xl font-bold text-foreground">
-                Tools to transform your workplace
+                {t.companyTitle}
               </h2>
             </div>
             <div className="grid md:grid-cols-3 gap-8">
@@ -262,7 +316,7 @@ const ForBusiness = () => {
         <section className="py-16 bg-primary">
           <div className="container mx-auto px-4 text-center">
             <h2 className="text-3xl md:text-4xl font-bold text-primary-foreground mb-6">
-              Transform your company climate and culture
+              {t.transformTitle}
             </h2>
             <Button 
               size="lg" 
@@ -270,7 +324,7 @@ const ForBusiness = () => {
               className="bg-background text-foreground hover:bg-background/90"
               onClick={() => document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' })}
             >
-              I Want to Care for My Business
+              {t.ctaButton}
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </div>
@@ -280,7 +334,7 @@ const ForBusiness = () => {
         <section className="py-20 bg-background">
           <div className="container mx-auto px-4">
             <h2 className="text-3xl md:text-4xl font-bold text-center text-foreground mb-16">
-              Measurable Results
+              {t.resultsTitle}
             </h2>
             
             <div className="grid md:grid-cols-3 gap-8 mb-16">
@@ -297,12 +351,12 @@ const ForBusiness = () => {
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-3 mb-4">
                     <TrendingDown className="h-8 w-8 text-red-500" />
-                    <h3 className="text-xl font-semibold text-foreground">Decrease</h3>
+                    <h3 className="text-xl font-semibold text-foreground">{t.decrease}</h3>
                   </div>
                   <ul className="space-y-2 text-muted-foreground">
-                    <li>• Annual cost with health plan (loss ratio)</li>
-                    <li>• Cost of replacement, recruitment and training (turnover)</li>
-                    <li>• Number of absences (absenteeism)</li>
+                    <li>• {t.decreaseItem1}</li>
+                    <li>• {t.decreaseItem2}</li>
+                    <li>• {t.decreaseItem3}</li>
                   </ul>
                 </CardContent>
               </Card>
@@ -311,12 +365,12 @@ const ForBusiness = () => {
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-3 mb-4">
                     <TrendingUp className="h-8 w-8 text-green-500" />
-                    <h3 className="text-xl font-semibold text-foreground">Promote</h3>
+                    <h3 className="text-xl font-semibold text-foreground">{t.promote}</h3>
                   </div>
                   <ul className="space-y-2 text-muted-foreground">
-                    <li>• Relief of employees' symptoms</li>
-                    <li>• Motivation, self-knowledge and quality of life</li>
-                    <li>• Increased productivity by up to 35%</li>
+                    <li>• {t.promoteItem1}</li>
+                    <li>• {t.promoteItem2}</li>
+                    <li>• {t.promoteItem3}</li>
                   </ul>
                 </CardContent>
               </Card>
@@ -325,20 +379,20 @@ const ForBusiness = () => {
             {/* Evolution Score */}
             <div className="mt-16 max-w-3xl mx-auto">
               <h3 className="text-xl font-semibold text-center text-foreground mb-8">
-                Evolution of Emotional Health
+                {t.evolutionTitle}
               </h3>
               <p className="text-center text-muted-foreground mb-8">
-                Average score of employees who respond to self-assessments throughout the entire program.
+                {t.evolutionDesc}
               </p>
               <div className="flex items-center justify-center gap-8">
                 <div className="text-center">
                   <p className="text-4xl font-bold text-muted-foreground">4.3</p>
-                  <p className="text-sm text-muted-foreground">Before program</p>
+                  <p className="text-sm text-muted-foreground">{t.beforeProgram}</p>
                 </div>
                 <ArrowRight className="h-8 w-8 text-primary" />
                 <div className="text-center">
                   <p className="text-4xl font-bold text-primary">8.2</p>
-                  <p className="text-sm text-muted-foreground">After program</p>
+                  <p className="text-sm text-muted-foreground">{t.afterProgram}</p>
                 </div>
               </div>
             </div>
@@ -350,16 +404,16 @@ const ForBusiness = () => {
           <div className="container mx-auto px-4">
             <div className="max-w-2xl mx-auto">
               <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
-                Calculate mental health costs in your company
+                {t.contactTitle}
               </h2>
               <p className="text-center text-slate-300 mb-12">
-                Get in touch and let's discuss how Innerspark can transform your workplace
+                {t.contactDesc}
               </p>
               
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-4">
                   <Input
-                    placeholder="Your Name"
+                    placeholder={t.yourName}
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     required
@@ -367,7 +421,7 @@ const ForBusiness = () => {
                   />
                   <Input
                     type="email"
-                    placeholder="Email Address"
+                    placeholder={t.emailAddress}
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     required
@@ -375,41 +429,29 @@ const ForBusiness = () => {
                   />
                 </div>
                 <Input
-                  placeholder="Company Name"
+                  placeholder={t.companyName}
                   value={formData.company}
                   onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                   required
                   className="bg-slate-800 border-slate-700 text-white placeholder:text-slate-400"
                 />
                 <Textarea
-                  placeholder="Tell us about your needs..."
+                  placeholder={t.tellUs}
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   rows={4}
                   className="bg-slate-800 border-slate-700 text-white placeholder:text-slate-400"
                 />
-                <Button type="submit" size="lg" className="w-full bg-primary hover:bg-primary/90">
-                  Reduce Your Mental Health Costs
+                <Button 
+                  type="submit" 
+                  size="lg" 
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+                >
+                  {t.submitButton}
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </form>
             </div>
-          </div>
-        </section>
-
-        {/* Final CTA */}
-        <section className="py-16 bg-primary/10">
-          <div className="container mx-auto px-4 text-center">
-            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-6">
-              Empower the people in your company to get the best out of them.
-            </h2>
-            <Button 
-              size="lg"
-              onClick={() => document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' })}
-            >
-              Get Started Today
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
           </div>
         </section>
       </main>
