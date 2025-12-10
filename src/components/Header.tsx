@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import logo from "@/assets/innerspark-logo.png";
 import AppDownloadPopup from "@/components/AppDownloadPopup";
 import { LanguageSelector } from "@/components/LanguageSelector";
+import { useLanguage } from "@/contexts/LanguageContext";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -14,16 +15,93 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 
+const navItems = [
+  { key: "services", label: "Services", path: "/services" },
+  { key: "specialists", label: "Specialists", path: "/specialists" },
+  { key: "about", label: "About", path: "/about" },
+  { key: "blog", label: "Blog", path: "/blog" },
+  { key: "events", label: "Events & Training", path: "/events-training" },
+  { key: "contact", label: "Contact", path: "/contact" },
+];
+
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { language, translateBatch } = useLanguage();
+  const [translations, setTranslations] = useState({
+    forProfessionals: "FOR PROFESSIONALS",
+    forBusiness: "FOR BUSINESS",
+    tagline: "Africa's Digital Wellness Hub",
+    donateTherapy: "Donate Therapy",
+    services: "Services",
+    specialists: "Specialists",
+    about: "About",
+    blog: "Blog",
+    events: "Events & Training",
+    contact: "Contact",
+  });
+
+  useEffect(() => {
+    if (language === "en") {
+      setTranslations({
+        forProfessionals: "FOR PROFESSIONALS",
+        forBusiness: "FOR BUSINESS",
+        tagline: "Africa's Digital Wellness Hub",
+        donateTherapy: "Donate Therapy",
+        services: "Services",
+        specialists: "Specialists",
+        about: "About",
+        blog: "Blog",
+        events: "Events & Training",
+        contact: "Contact",
+      });
+      return;
+    }
+
+    const textsToTranslate = [
+      "FOR PROFESSIONALS",
+      "FOR BUSINESS",
+      "Africa's Digital Wellness Hub",
+      "Donate Therapy",
+      "Services",
+      "Specialists",
+      "About",
+      "Blog",
+      "Events & Training",
+      "Contact",
+    ];
+
+    translateBatch(textsToTranslate).then((results) => {
+      setTranslations({
+        forProfessionals: results[0],
+        forBusiness: results[1],
+        tagline: results[2],
+        donateTherapy: results[3],
+        services: results[4],
+        specialists: results[5],
+        about: results[6],
+        blog: results[7],
+        events: results[8],
+        contact: results[9],
+      });
+    });
+  }, [language, translateBatch]);
+
+  const navLabels = {
+    services: translations.services,
+    specialists: translations.specialists,
+    about: translations.about,
+    blog: translations.blog,
+    events: translations.events,
+    contact: translations.contact,
+  };
 
   return (
     <>
       {/* Top Bar - Hidden on mobile */}
       <div className="hidden md:block bg-secondary text-secondary-foreground py-2 px-4 text-sm">
         <div className="container mx-auto flex justify-end items-center gap-6">
-          <Link to="/for-professionals" className="hover:text-primary transition-colors">FOR PROFESSIONALS</Link>
-          <Link to="/for-business" className="hover:text-primary transition-colors">FOR BUSINESS</Link>
+          <Link to="/for-professionals" className="hover:text-primary transition-colors">{translations.forProfessionals}</Link>
+          <Link to="/for-business" className="hover:text-primary transition-colors">{translations.forBusiness}</Link>
           <LanguageSelector variant="header" />
         </div>
       </div>
@@ -37,33 +115,33 @@ const Header = () => {
               <img src={logo} alt="Innerspark Africa" className="h-8 w-8 md:h-10 md:w-10" />
               <div className="hidden sm:block">
                 <span className="text-base md:text-xl font-bold text-foreground block">Innerspark Africa</span>
-                <span className="text-xs text-muted-foreground">Africa's Digital Wellness Hub</span>
+                <span className="text-xs text-muted-foreground">{translations.tagline}</span>
               </div>
             </Link>
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center gap-8">
               <Link to="/services" className="hover:text-primary transition-colors font-medium">
-                Services
+                {navLabels.services}
               </Link>
               <Link to="/specialists" className="hover:text-primary transition-colors font-medium">
-                Specialists
+                {navLabels.specialists}
               </Link>
               <Link to="/about" className="hover:text-primary transition-colors font-medium">
-                About
+                {navLabels.about}
               </Link>
               <Link to="/blog" className="hover:text-primary transition-colors font-medium">
-                Blog
+                {navLabels.blog}
               </Link>
               <Link to="/events-training" className="hover:text-primary transition-colors font-medium">
-                Events & Training
+                {navLabels.events}
               </Link>
               <Link to="/contact" className="hover:text-primary transition-colors font-medium">
-                Contact
+                {navLabels.contact}
               </Link>
               <Link to="/donate-therapy">
                 <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground">
-                  Donate Therapy
+                  {translations.donateTherapy}
                 </Button>
               </Link>
               <AppDownloadPopup />
@@ -84,26 +162,26 @@ const Header = () => {
           {isMenuOpen && (
             <nav className="md:hidden py-4 space-y-4 border-t border-border">
               <Link to="/services" className="block hover:text-primary transition-colors font-medium">
-                Services
+                {navLabels.services}
               </Link>
               <Link to="/specialists" className="block hover:text-primary transition-colors font-medium">
-                Specialists
+                {navLabels.specialists}
               </Link>
               <Link to="/about" className="block hover:text-primary transition-colors font-medium">
-                About
+                {navLabels.about}
               </Link>
               <Link to="/blog" className="block hover:text-primary transition-colors font-medium">
-                Blog
+                {navLabels.blog}
               </Link>
               <Link to="/events-training" className="block hover:text-primary transition-colors font-medium">
-                Events & Training
+                {navLabels.events}
               </Link>
               <Link to="/contact" className="block hover:text-primary transition-colors font-medium">
-                Contact
+                {navLabels.contact}
               </Link>
               <Link to="/donate-therapy">
                 <Button variant="outline" className="w-full border-primary text-primary hover:bg-primary hover:text-primary-foreground">
-                  Donate Therapy
+                  {translations.donateTherapy}
                 </Button>
               </Link>
               <div className="pt-2">

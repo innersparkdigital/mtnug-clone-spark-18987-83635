@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { ChevronLeft, ChevronRight, Play, Pause } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 // Import mockup images
 import appHome from "@/assets/mockups/app-home.jpeg";
@@ -29,7 +30,7 @@ interface Slide {
   persona: string;
 }
 
-const slides: Slide[] = [
+const defaultSlides: Slide[] = [
   {
     image: appHome,
     title: "Innerspark Africa",
@@ -92,6 +93,53 @@ const AppTrailer = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isAnimating, setIsAnimating] = useState(false);
+  const { language, translateBatch } = useLanguage();
+  
+  const [translations, setTranslations] = useState({
+    downloadApp: "Download App",
+    getStarted: "Get Started",
+    slides: defaultSlides.map(s => ({ title: s.title, subtitle: s.subtitle, tooltip: s.tooltip })),
+  });
+
+  useEffect(() => {
+    if (language === "en") {
+      setTranslations({
+        downloadApp: "Download App",
+        getStarted: "Get Started",
+        slides: defaultSlides.map(s => ({ title: s.title, subtitle: s.subtitle, tooltip: s.tooltip })),
+      });
+      return;
+    }
+
+    const textsToTranslate = [
+      "Download App",
+      "Get Started",
+      ...defaultSlides.flatMap(s => [s.title, s.subtitle, s.tooltip]),
+    ];
+
+    translateBatch(textsToTranslate).then((results) => {
+      const slideTranslations = [];
+      for (let i = 0; i < defaultSlides.length; i++) {
+        slideTranslations.push({
+          title: results[2 + i * 3],
+          subtitle: results[2 + i * 3 + 1],
+          tooltip: results[2 + i * 3 + 2],
+        });
+      }
+      setTranslations({
+        downloadApp: results[0],
+        getStarted: results[1],
+        slides: slideTranslations,
+      });
+    });
+  }, [language, translateBatch]);
+
+  const slides = useMemo(() => defaultSlides.map((slide, i) => ({
+    ...slide,
+    title: translations.slides[i]?.title || slide.title,
+    subtitle: translations.slides[i]?.subtitle || slide.subtitle,
+    tooltip: translations.slides[i]?.tooltip || slide.tooltip,
+  })), [translations.slides]);
 
   useEffect(() => {
     if (!isPlaying) return;
@@ -358,7 +406,7 @@ const AppTrailer = () => {
                 <svg className="w-6 h-6 relative z-10" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M3.609 1.814L13.792 12 3.609 22.186a.996.996 0 0 1-.609-.92V2.734a1 1 0 0 1 .609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.198l2.807 1.626a1 1 0 0 1 0 1.73l-2.808 1.626L15.206 12l2.492-2.491zM5.864 2.658L16.8 8.991l-2.302 2.302-8.634-8.635z"/>
                 </svg>
-                <span className="relative z-10">Download App</span>
+                <span className="relative z-10">{translations.downloadApp}</span>
               </a>
               <a
                 href="https://wa.me/256780570987?text=Hi,%20I%20want%20to%20learn%20more%20about%20Innerspark"
@@ -366,7 +414,7 @@ const AppTrailer = () => {
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 bg-transparent border-2 border-white text-white font-semibold px-8 py-4 rounded-full hover:bg-white/20 transition-all duration-300 hover:scale-105 backdrop-blur-sm"
               >
-                Get Started
+                {translations.getStarted}
               </a>
             </div>
           </div>
