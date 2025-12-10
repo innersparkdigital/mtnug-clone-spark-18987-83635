@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
+import { T } from "@/components/Translate";
 import { 
   Video, 
   Globe, 
@@ -128,12 +129,12 @@ const ForProfessionals = () => {
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               {/* Text Content */}
               <div className="text-center lg:text-left">
-                <p className="text-primary font-medium mb-4">For Therapists, Counsellors, Psychologists & Psychiatrists</p>
+                <p className="text-primary font-medium mb-4"><T>For Therapists, Counsellors, Psychologists & Psychiatrists</T></p>
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6">
-                  More Than a Platform: <span className="text-primary">Your Online Practice</span>
+                  <T>More Than a Platform:</T> <span className="text-primary"><T>Your Online Practice</T></span>
                 </h1>
                 <p className="text-lg md:text-xl text-muted-foreground mb-6 max-w-2xl">
-                  Join us online and extend your reach to patients across geographic boundaries. With Innerspark, there are no monthly fees; instead, we operate on a percentage-based model. You pay only when you earn.
+                  <T>Join us online and extend your reach to patients across geographic boundaries. With Innerspark, there are no monthly fees; instead, we operate on a percentage-based model. You pay only when you earn.</T>
                 </p>
                 <p className="text-sm text-muted-foreground italic mb-8">
                   *Compensation details are discussed only during the selection process.

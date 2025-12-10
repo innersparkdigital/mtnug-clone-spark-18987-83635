@@ -3,6 +3,7 @@ import Footer from "@/components/Footer";
 import AppDownload from "@/components/AppDownload";
 import { Button } from "@/components/ui/button";
 import { Users, Check } from "lucide-react";
+import { T } from "@/components/Translate";
 
 const SupportGroups = () => {
   return (
@@ -16,16 +17,16 @@ const SupportGroups = () => {
               <Users className="w-10 h-10 text-primary-foreground" />
             </div>
             <h1 className="text-4xl md:text-5xl font-bold mb-6 text-foreground">
-              Support Groups
+              <T>Support Groups</T>
             </h1>
             <p className="text-xl text-muted-foreground mb-8">
-              Safe peer spaces to share and heal together under professional moderation. Connect with others who understand your journey.
+              <T>Safe peer spaces to share and heal together under professional moderation. Connect with others who understand your journey.</T>
             </p>
             <div className="flex gap-4 justify-center">
               <a href="https://wa.me/256780570987?text=Hi,%20I%20would%20like%20to%20join%20a%20support%20group" target="_blank" rel="noopener noreferrer">
-                <Button size="lg">Join a Group</Button>
+                <Button size="lg"><T>Join a Group</T></Button>
               </a>
-              <Button size="lg" variant="outline">Browse Groups</Button>
+              <Button size="lg" variant="outline"><T>Browse Groups</T></Button>
             </div>
           </div>
         </div>
@@ -35,7 +36,7 @@ const SupportGroups = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl font-bold mb-12 text-center text-foreground">
-              Benefits of Support Groups
+              <T>Benefits of Support Groups</T>
             </h2>
             <div className="grid md:grid-cols-2 gap-8">
               {[

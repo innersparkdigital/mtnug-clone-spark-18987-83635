@@ -1,3 +1,4 @@
+import { T } from "@/components/Translate";
 import nationalIctHub from "@/assets/partners/national-ict-hub.png";
 import awsLogo from "@/assets/partners/aws.png";
 
@@ -12,10 +13,10 @@ const Partners = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-10">
           <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
-            Our Partners
+            <T>Our Partners</T>
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            We collaborate with leading organizations to bring you the best mental health support
+            <T>We collaborate with leading organizations to bring you the best mental health support</T>
           </p>
         </div>
         

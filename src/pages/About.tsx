@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { Heart, Target, Eye, Users, Zap, Shield, Globe } from "lucide-react";
+import { T } from "@/components/Translate";
 import aboutHero from "@/assets/about-hero.jpg";
 import talemwaRaymond from "@/assets/talemwa-raymond.jpg";
 import hellenAturo from "@/assets/hellen-aturo.jpg";
@@ -44,10 +45,10 @@ const About = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center mb-12">
             <h1 className="text-4xl md:text-6xl font-bold mb-6 text-foreground">
-              About Innerspark Africa
+              <T>About Innerspark Africa</T>
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
-              Innerspark Africa is a digital mental wellness platform designed to make professional mental health care affordable, accessible, and stigma-free — right from your smartphone.
+              <T>Innerspark Africa is a digital mental wellness platform designed to make professional mental health care affordable, accessible, and stigma-free — right from your smartphone.</T>
             </p>
           </div>
           <div className="relative rounded-2xl overflow-hidden shadow-2xl">
@@ -65,10 +66,10 @@ const About = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold mb-6 text-foreground text-center">
-              What We Do
+              <T>What We Do</T>
             </h2>
             <p className="text-lg text-muted-foreground text-center mb-12 leading-relaxed">
-              We connect individuals, organizations, and communities to licensed therapists, support groups, and self-care tools that promote emotional healing, resilience, and mental well-being.
+              <T>We connect individuals, organizations, and communities to licensed therapists, support groups, and self-care tools that promote emotional healing, resilience, and mental well-being.</T>
             </p>
             
             <div className="grid md:grid-cols-2 gap-8">
