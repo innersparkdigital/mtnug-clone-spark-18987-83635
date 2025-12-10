@@ -134,13 +134,13 @@ const SpecialistCard = ({ specialist }: { specialist: Specialist }) => {
 
 const specialtyCategories = [
   { label: "All", value: "" },
-  { label: "Child Psychology", value: "child" },
-  { label: "Couples/Relationships", value: "couples" },
-  { label: "Families", value: "family" },
-  { label: "Adolescents", value: "adolescent" },
-  { label: "Sports Psychology", value: "sports" },
-  { label: "Youth & Family", value: "youth" },
-  { label: "Employees/Organizations", value: "corporate" },
+  { label: "Child Psychology", value: "Child Psychology" },
+  { label: "Couples/Relationships", value: "Couples/Relationships" },
+  { label: "Families", value: "Families" },
+  { label: "Adolescents", value: "Adolescents" },
+  { label: "Sports Psychology", value: "Sports Psychology" },
+  { label: "Youth & Family", value: "Youth & Family" },
+  { label: "Corporate/Employees", value: "Corporate/Employees" },
 ];
 
 const Specialists = () => {
