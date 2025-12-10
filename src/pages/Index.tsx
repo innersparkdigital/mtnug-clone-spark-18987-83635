@@ -6,6 +6,7 @@ import AppDownload from "@/components/AppDownload";
 import AppTrailer from "@/components/AppTrailer";
 import HowItWorks from "@/components/HowItWorks";
 import Partners from "@/components/Partners";
+import EventsSection from "@/components/EventsSection";
 import Footer from "@/components/Footer";
 import CookieConsent from "@/components/CookieConsent";
 
@@ -24,6 +25,7 @@ const Index = () => {
         {/* <ServicesGrid /> */}
         <Partners />
         <PromoBanner />
+        <EventsSection />
         {/* <AppDownload /> */}
         <Footer />
         <CookieConsent />
