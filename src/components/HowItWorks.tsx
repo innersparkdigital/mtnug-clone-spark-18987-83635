@@ -124,30 +124,25 @@ const HowItWorks = () => {
 
             {/* Right: Phone Mockup */}
             <div className="flex justify-center lg:justify-end">
-              <div className="relative max-h-[320px] overflow-hidden">
-                {/* Phone frame */}
-                <div className="relative w-[200px] md:w-[240px]">
-                  {/* Phone outer frame */}
-                  <div className="relative bg-foreground rounded-t-[2.5rem] p-2 shadow-2xl">
-                    {/* Screen */}
-                    <div className="relative bg-background rounded-t-[2rem] overflow-hidden aspect-[9/16]">
-                      {/* Status bar */}
-                      <div className="absolute top-0 left-0 right-0 h-6 bg-foreground/10 flex items-center justify-center z-10">
-                        <div className="w-16 h-4 bg-foreground rounded-full" />
-                      </div>
-                      
-                      {/* Screen content */}
+              <div className="relative">
+                {/* Phone frame - clean modern design */}
+                <div className="relative w-[220px] md:w-[260px]">
+                  {/* Phone bezel */}
+                  <div className="relative bg-gray-900 rounded-[2rem] p-2 shadow-2xl">
+                    {/* Screen container with crop */}
+                    <div className="relative bg-white rounded-[1.5rem] overflow-hidden h-[280px] md:h-[320px]">
+                      {/* Screen content - positioned to show middle section */}
                       <img 
                         src={bookSessionMockup} 
                         alt="InnerSpark App - Book a therapy session" 
-                        className="w-full h-full object-cover object-top"
+                        className="w-full h-auto absolute top-[-60px] left-0 object-cover"
                       />
                     </div>
                   </div>
                   
                   {/* Decorative elements */}
-                  <div className="absolute -top-4 -right-4 w-16 h-16 bg-primary/10 rounded-full blur-2xl" />
-                  <div className="absolute -bottom-4 -left-4 w-20 h-20 bg-accent/20 rounded-full blur-2xl" />
+                  <div className="absolute -top-4 -right-4 w-20 h-20 bg-primary/10 rounded-full blur-2xl" />
+                  <div className="absolute -bottom-4 -left-4 w-24 h-24 bg-accent/20 rounded-full blur-2xl" />
                 </div>
               </div>
             </div>
