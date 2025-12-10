@@ -18,7 +18,7 @@ const HowItWorks = () => {
   ];
 
   return (
-    <section className="py-12 lg:py-16 bg-background relative overflow-hidden">
+    <section className="py-8 lg:py-10 bg-background relative overflow-hidden">
       {/* Subtle background pattern */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-0 left-0 w-full h-full" style={{
@@ -55,7 +55,7 @@ const HowItWorks = () => {
         </div>
 
         {/* How it works content */}
-        <div className="bg-card rounded-3xl shadow-xl p-8 md:p-12 lg:p-16">
+        <div className="bg-card rounded-3xl shadow-xl p-6 md:p-8 lg:p-10">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left: Steps */}
             <div>
