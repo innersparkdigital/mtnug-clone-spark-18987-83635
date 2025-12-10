@@ -553,7 +553,7 @@ Please confirm availability. Thank you!`;
                       <Card>
                         <CardHeader>
                           <CardTitle className="flex items-center gap-2">
-                            <Award className="w-5 h-5" /> Verified Certificates
+                            <Award className="w-5 h-5" /> Licenses & Verified Certificates
                           </CardTitle>
                         </CardHeader>
                         <CardContent>
