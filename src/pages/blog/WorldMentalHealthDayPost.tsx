@@ -96,7 +96,7 @@ const WorldMentalHealthDayPost = () => {
         </div>
       </article>
 
-      <AppDownload />
+      {/* <AppDownload /> */}
       <Footer />
     </div>
   );

@@ -95,7 +95,7 @@ const MoodCheckIn = () => {
         </div>
       </section>
 
-      <AppDownload />
+      {/* <AppDownload /> */}
       <Footer />
     </div>
   );

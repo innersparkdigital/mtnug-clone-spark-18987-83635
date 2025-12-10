@@ -103,7 +103,7 @@ const VirtualTherapy = () => {
         </div>
       </section>
 
-      <AppDownload />
+      {/* <AppDownload /> */}
       <Footer />
     </div>
   );

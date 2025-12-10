@@ -106,7 +106,7 @@ const ChildrenMentalHealthPost = () => {
         </div>
       </article>
 
-      <AppDownload />
+      {/* <AppDownload /> */}
       <Footer />
     </div>
   );

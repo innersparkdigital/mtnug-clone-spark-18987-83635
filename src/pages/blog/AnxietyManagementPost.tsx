@@ -710,7 +710,7 @@ const AnxietyManagementPost = () => {
         </article>
       </main>
 
-      <AppDownload />
+      {/* <AppDownload /> */}
       <Footer />
     </>
   );

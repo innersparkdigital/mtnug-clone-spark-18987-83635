@@ -535,7 +535,7 @@ const HowToHandleStressPost = () => {
         </article>
       </main>
 
-      <AppDownload />
+      {/* <AppDownload /> */}
       <Footer />
     </>
   );
