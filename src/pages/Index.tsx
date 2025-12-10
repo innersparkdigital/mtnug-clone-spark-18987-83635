@@ -21,7 +21,7 @@ const Index = () => {
         {/* <HeroCarousel /> */}
         <AppTrailer />
         <HowItWorks />
-        <ServicesGrid />
+        {/* <ServicesGrid /> */}
         <Partners />
         <PromoBanner />
         <AppDownload />
