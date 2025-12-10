@@ -23,6 +23,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import professionalsHeroImage from "@/assets/professionals-hero.png";
 
 const ForProfessionals = () => {
   const { toast } = useToast();
@@ -122,26 +123,38 @@ const ForProfessionals = () => {
       
       <main>
         {/* Hero Section */}
-        <section className="relative bg-gradient-to-br from-primary/10 via-background to-secondary/10 py-20 md:py-28">
+        <section className="relative bg-gradient-to-br from-primary/10 via-background to-secondary/10 py-16 md:py-24 overflow-hidden">
           <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto text-center">
-              <p className="text-primary font-medium mb-4">For Therapists, Counsellors, Psychologists & Psychiatrists</p>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6">
-                More Than a Platform: <span className="text-primary">Your Online Practice</span>
-              </h1>
-              <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-                Join us online and extend your reach to patients across geographic boundaries. With Innerspark, there are no monthly fees; instead, we operate on a percentage-based model. You pay only when you earn.
-              </p>
-              <p className="text-sm text-muted-foreground italic mb-8">
-                *Compensation details are discussed only during the selection process.
-              </p>
-              <Button 
-                size="lg" 
-                className="bg-primary hover:bg-primary/90 text-primary-foreground"
-                onClick={() => document.getElementById('join-form')?.scrollIntoView({ behavior: 'smooth' })}
-              >
-                Join Our Network
-              </Button>
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              {/* Text Content */}
+              <div className="text-center lg:text-left">
+                <p className="text-primary font-medium mb-4">For Therapists, Counsellors, Psychologists & Psychiatrists</p>
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6">
+                  More Than a Platform: <span className="text-primary">Your Online Practice</span>
+                </h1>
+                <p className="text-lg md:text-xl text-muted-foreground mb-6 max-w-2xl">
+                  Join us online and extend your reach to patients across geographic boundaries. With Innerspark, there are no monthly fees; instead, we operate on a percentage-based model. You pay only when you earn.
+                </p>
+                <p className="text-sm text-muted-foreground italic mb-8">
+                  *Compensation details are discussed only during the selection process.
+                </p>
+                <Button 
+                  size="lg" 
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                  onClick={() => document.getElementById('join-form')?.scrollIntoView({ behavior: 'smooth' })}
+                >
+                  Join Our Network
+                </Button>
+              </div>
+              
+              {/* Hero Image */}
+              <div className="hidden lg:block">
+                <img 
+                  src={professionalsHeroImage} 
+                  alt="Professional therapist in online consultation" 
+                  className="w-full h-auto max-w-lg mx-auto"
+                />
+              </div>
             </div>
           </div>
         </section>
