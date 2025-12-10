@@ -115,6 +115,38 @@ export type Database = {
           },
         ]
       }
+      specialist_certificates: {
+        Row: {
+          certificate_name: string
+          certificate_url: string
+          created_at: string
+          id: string
+          specialist_id: string
+        }
+        Insert: {
+          certificate_name: string
+          certificate_url: string
+          created_at?: string
+          id?: string
+          specialist_id: string
+        }
+        Update: {
+          certificate_name?: string
+          certificate_url?: string
+          created_at?: string
+          id?: string
+          specialist_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "specialist_certificates_specialist_id_fkey"
+            columns: ["specialist_id"]
+            isOneToOne: false
+            referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       specialist_reviews: {
         Row: {
           comment: string | null
