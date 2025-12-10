@@ -124,55 +124,30 @@ const HowItWorks = () => {
 
             {/* Right: Phone Mockup */}
             <div className="flex justify-center lg:justify-end">
-              <div className="relative">
+              <div className="relative max-h-[320px] overflow-hidden">
                 {/* Phone frame */}
-                <div className="relative w-[280px] md:w-[320px]">
+                <div className="relative w-[200px] md:w-[240px]">
                   {/* Phone outer frame */}
-                  <div className="relative bg-foreground rounded-[3rem] p-3 shadow-2xl">
+                  <div className="relative bg-foreground rounded-t-[2.5rem] p-2 shadow-2xl">
                     {/* Screen */}
-                    <div className="relative bg-background rounded-[2.5rem] overflow-hidden aspect-[9/19.5]">
+                    <div className="relative bg-background rounded-t-[2rem] overflow-hidden aspect-[9/16]">
                       {/* Status bar */}
-                      <div className="absolute top-0 left-0 right-0 h-8 bg-foreground/10 flex items-center justify-center z-10">
-                        <div className="w-20 h-5 bg-foreground rounded-full" />
+                      <div className="absolute top-0 left-0 right-0 h-6 bg-foreground/10 flex items-center justify-center z-10">
+                        <div className="w-16 h-4 bg-foreground rounded-full" />
                       </div>
                       
                       {/* Screen content */}
                       <img 
                         src={bookSessionMockup} 
                         alt="InnerSpark App - Book a therapy session" 
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover object-top"
                       />
-                      
-                      {/* Video call overlay effect */}
-                      <div className="absolute bottom-4 right-4 w-20 h-28 bg-gradient-to-br from-primary/80 to-primary rounded-xl border-2 border-background shadow-lg overflow-hidden">
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="w-8 h-8 rounded-full bg-background/20 flex items-center justify-center">
-                            <svg viewBox="0 0 24 24" className="w-4 h-4 fill-background">
-                              <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12,6A6,6 0 0,0 6,12A6,6 0 0,0 12,18A6,6 0 0,0 18,12A6,6 0 0,0 12,6M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8Z" />
-                            </svg>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      {/* Call controls */}
-                      <div className="absolute bottom-4 left-4 flex gap-2">
-                        <div className="w-10 h-10 rounded-full bg-red-500 flex items-center justify-center shadow-lg">
-                          <svg viewBox="0 0 24 24" className="w-5 h-5 fill-white">
-                            <path d="M12,9C10.4,9 8.85,9.25 7.4,9.72V12.82C7.4,13.22 7.17,13.56 6.84,13.72C5.86,14.21 4.97,14.84 4.17,15.57C4,15.75 3.75,15.86 3.5,15.86C3.2,15.86 2.95,15.74 2.77,15.56L0.29,13.08C0.11,12.9 0,12.65 0,12.38C0,12.1 0.11,11.85 0.29,11.67C3.34,8.77 7.46,7 12,7C16.54,7 20.66,8.77 23.71,11.67C23.89,11.85 24,12.1 24,12.38C24,12.65 23.89,12.9 23.71,13.08L21.23,15.56C21.05,15.74 20.8,15.86 20.5,15.86C20.25,15.86 20,15.75 19.82,15.57C19.03,14.84 18.13,14.21 17.15,13.72C16.82,13.56 16.6,13.22 16.6,12.82V9.72C15.15,9.25 13.6,9 12,9Z" />
-                          </svg>
-                        </div>
-                        <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center shadow-lg">
-                          <svg viewBox="0 0 24 24" className="w-5 h-5 fill-white">
-                            <path d="M17,10.5V7A1,1 0 0,0 16,6H4A1,1 0 0,0 3,7V17A1,1 0 0,0 4,18H16A1,1 0 0,0 17,17V13.5L21,17.5V6.5L17,10.5Z" />
-                          </svg>
-                        </div>
-                      </div>
                     </div>
                   </div>
                   
                   {/* Decorative elements */}
-                  <div className="absolute -top-6 -right-6 w-24 h-24 bg-primary/10 rounded-full blur-2xl" />
-                  <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-accent/20 rounded-full blur-2xl" />
+                  <div className="absolute -top-4 -right-4 w-16 h-16 bg-primary/10 rounded-full blur-2xl" />
+                  <div className="absolute -bottom-4 -left-4 w-20 h-20 bg-accent/20 rounded-full blur-2xl" />
                 </div>
               </div>
             </div>
