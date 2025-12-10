@@ -3,9 +3,11 @@
 // This file provides fallback local images when available
 
 import giftNakayinga from "@/assets/specialists/gift-nakayinga.jpg";
+import nanzigeJannet from "@/assets/specialists/nanzige-jannet.jpg";
 
 const specialistImageMap: Record<string, string> = {
   "Nakayinga Gift": giftNakayinga,
+  "Nanzige Jannet": nanzigeJannet,
 };
 
 export const getSpecialistImage = (name: string, imageUrl?: string | null): string | null => {
