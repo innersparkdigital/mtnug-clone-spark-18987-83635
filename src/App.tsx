@@ -46,6 +46,8 @@ import SpecialistProfile from "./pages/SpecialistProfile";
 
 const queryClient = new QueryClient();
 
+// Specialist profile routes enabled
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
