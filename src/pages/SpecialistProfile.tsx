@@ -10,6 +10,21 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { getSpecialistImage } from "@/lib/specialistImages";
@@ -23,7 +38,8 @@ import {
   Award,
   Calendar,
   MessageCircle,
-  CheckCircle
+  CheckCircle,
+  User
 } from "lucide-react";
 
 interface Specialist {
@@ -106,6 +122,46 @@ const SpecialistProfile = () => {
   const [loading, setLoading] = useState(true);
   const [reviewForm, setReviewForm] = useState({ name: "", rating: 5, comment: "" });
   const [submittingReview, setSubmittingReview] = useState(false);
+  const [bookingDialogOpen, setBookingDialogOpen] = useState(false);
+  const [bookingForm, setBookingForm] = useState({
+    name: "",
+    phone: "",
+    preferredDay: "",
+    preferredTime: "",
+    sessionType: "video",
+    notes: "",
+  });
+
+  const handleBookingSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!bookingForm.name.trim() || !bookingForm.phone.trim()) {
+      toast({ title: "Please fill in your name and phone number", variant: "destructive" });
+      return;
+    }
+
+    const message = `Hello, I would like to book a therapy session.
+
+*Client Details:*
+• Name: ${bookingForm.name}
+• Phone: ${bookingForm.phone}
+
+*Booking Request:*
+• Therapist: ${specialist?.name}
+• Session Type: ${bookingForm.sessionType === "video" ? "Video Call" : "Voice Call"}
+${bookingForm.preferredDay ? `• Preferred Day: ${bookingForm.preferredDay}` : ""}
+${bookingForm.preferredTime ? `• Preferred Time: ${bookingForm.preferredTime}` : ""}
+
+${bookingForm.notes ? `*Additional Notes:*\n${bookingForm.notes}` : ""}
+
+Please confirm availability. Thank you!`;
+
+    window.open(
+      `https://wa.me/256780570987?text=${encodeURIComponent(message)}`,
+      "_blank"
+    );
+    setBookingDialogOpen(false);
+    setBookingForm({ name: "", phone: "", preferredDay: "", preferredTime: "", sessionType: "video", notes: "" });
+  };
 
   useEffect(() => {
     if (id) {
@@ -291,19 +347,114 @@ const SpecialistProfile = () => {
                   )}
                 </div>
 
-                <Button
-                  size="lg"
-                  onClick={() =>
-                    window.open(
-                      `https://wa.me/256780570987?text=${encodeURIComponent(
-                        `Hi, I would like to book a session with ${specialist.name}`
-                      )}`,
-                      "_blank"
-                    )
-                  }
-                >
-                  <MessageCircle className="w-4 h-4 mr-2" /> Book Session via WhatsApp
-                </Button>
+                <Dialog open={bookingDialogOpen} onOpenChange={setBookingDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button size="lg">
+                      <MessageCircle className="w-4 h-4 mr-2" /> Book Session via WhatsApp
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                      <DialogTitle>Book a Session with {specialist.name}</DialogTitle>
+                      <DialogDescription>
+                        Fill in your details and we'll send them via WhatsApp to confirm your booking.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <form onSubmit={handleBookingSubmit} className="space-y-4 mt-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="booking-name">Your Name *</Label>
+                        <Input
+                          id="booking-name"
+                          placeholder="Enter your full name"
+                          value={bookingForm.name}
+                          onChange={(e) => setBookingForm({ ...bookingForm, name: e.target.value })}
+                          required
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="booking-phone">Phone Number *</Label>
+                        <Input
+                          id="booking-phone"
+                          placeholder="e.g., 0780123456"
+                          value={bookingForm.phone}
+                          onChange={(e) => setBookingForm({ ...bookingForm, phone: e.target.value })}
+                          required
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="preferred-day">Preferred Day</Label>
+                          <Select
+                            value={bookingForm.preferredDay}
+                            onValueChange={(value) => setBookingForm({ ...bookingForm, preferredDay: value })}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select day" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Monday">Monday</SelectItem>
+                              <SelectItem value="Tuesday">Tuesday</SelectItem>
+                              <SelectItem value="Wednesday">Wednesday</SelectItem>
+                              <SelectItem value="Thursday">Thursday</SelectItem>
+                              <SelectItem value="Friday">Friday</SelectItem>
+                              <SelectItem value="Saturday">Saturday</SelectItem>
+                              <SelectItem value="Sunday">Sunday</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="preferred-time">Preferred Time</Label>
+                          <Select
+                            value={bookingForm.preferredTime}
+                            onValueChange={(value) => setBookingForm({ ...bookingForm, preferredTime: value })}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select time" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Morning (9am-12pm)">Morning (9am-12pm)</SelectItem>
+                              <SelectItem value="Afternoon (12pm-3pm)">Afternoon (12pm-3pm)</SelectItem>
+                              <SelectItem value="Evening (3pm-6pm)">Evening (3pm-6pm)</SelectItem>
+                              <SelectItem value="Late Evening (6pm-9pm)">Late Evening (6pm-9pm)</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="session-type">Session Type</Label>
+                        <Select
+                          value={bookingForm.sessionType}
+                          onValueChange={(value) => setBookingForm({ ...bookingForm, sessionType: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {specialist.available_options.includes("video") && (
+                              <SelectItem value="video">Video Call</SelectItem>
+                            )}
+                            {specialist.available_options.includes("voice") && (
+                              <SelectItem value="voice">Voice Call</SelectItem>
+                            )}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="booking-notes">Additional Notes (Optional)</Label>
+                        <Textarea
+                          id="booking-notes"
+                          placeholder="Any specific concerns or questions..."
+                          value={bookingForm.notes}
+                          onChange={(e) => setBookingForm({ ...bookingForm, notes: e.target.value })}
+                          rows={3}
+                        />
+                      </div>
+                      <Button type="submit" className="w-full">
+                        <MessageCircle className="w-4 h-4 mr-2" /> Send Booking Request via WhatsApp
+                      </Button>
+                    </form>
+                  </DialogContent>
+                </Dialog>
               </div>
             </div>
           </div>
@@ -442,20 +593,13 @@ const SpecialistProfile = () => {
 
                     <div className="mt-6 pt-6 border-t border-border">
                       <p className="text-sm text-muted-foreground mb-4">
-                        To book a session, contact us via WhatsApp and we'll help you find a suitable time.
+                        To book a session, fill in your details and we'll help you find a suitable time.
                       </p>
                       <Button
                         className="w-full"
-                        onClick={() =>
-                          window.open(
-                            `https://wa.me/256780570987?text=${encodeURIComponent(
-                              `Hi, I would like to check availability and book a session with ${specialist.name}`
-                            )}`,
-                            "_blank"
-                          )
-                        }
+                        onClick={() => setBookingDialogOpen(true)}
                       >
-                        <MessageCircle className="w-4 h-4 mr-2" /> Check Availability
+                        <MessageCircle className="w-4 h-4 mr-2" /> Book a Session
                       </Button>
                     </div>
                   </CardContent>
