@@ -42,6 +42,7 @@ import AnxietyManagementPost from "./pages/blog/AnxietyManagementPost";
 import ForBusiness from "./pages/ForBusiness";
 import ForProfessionals from "./pages/ForProfessionals";
 import Specialists from "./pages/Specialists";
+import SpecialistProfile from "./pages/SpecialistProfile";
 
 const queryClient = new QueryClient();
 
@@ -76,6 +77,7 @@ const App = () => (
           <Route path="/for-business" element={<ForBusiness />} />
           <Route path="/for-professionals" element={<ForProfessionals />} />
           <Route path="/specialists" element={<Specialists />} />
+          <Route path="/specialists/:id" element={<SpecialistProfile />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/how-to-handle-stress" element={<HowToHandleStressPost />} />
           <Route path="/blog/how-to-stop-a-panic-attack" element={<PanicAttackPost />} />

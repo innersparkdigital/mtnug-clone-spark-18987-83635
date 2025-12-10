@@ -1,147 +1,26 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
+import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, Video, Phone, ExternalLink } from "lucide-react";
+import { Search, Video, Phone, ExternalLink, Star } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Specialist {
   id: string;
   name: string;
-  type: "therapist" | "psychotherapist" | "counselor";
-  experience: number;
-  pricePerHour: number;
+  type: string;
+  experience_years: number;
+  price_per_hour: number;
   specialties: string[];
   languages: string[];
-  availableOptions: ("voice" | "video")[];
-  imageUrl?: string;
+  available_options: string[];
+  image_url: string | null;
 }
-
-const specialists: Specialist[] = [
-  {
-    id: "1",
-    name: "Dr. Sarah Nakamya",
-    type: "therapist",
-    experience: 8,
-    pricePerHour: 100000,
-    specialties: ["Anxiety", "Depression", "Trauma", "Relationship Issues", "Workplace Mental Health"],
-    languages: ["English", "Luganda"],
-    availableOptions: ["voice", "video"],
-  },
-  {
-    id: "2",
-    name: "James Okello",
-    type: "counselor",
-    experience: 5,
-    pricePerHour: 75000,
-    specialties: ["Grief", "Family Therapy", "Addiction", "Stress Management"],
-    languages: ["English", "Luo"],
-    availableOptions: ["voice", "video"],
-  },
-  {
-    id: "3",
-    name: "Dr. Grace Tumusiime",
-    type: "psychotherapist",
-    experience: 12,
-    pricePerHour: 150000,
-    specialties: ["PTSD", "Bipolar Disorder", "Schizophrenia", "Personality Disorders", "Clinical Assessment"],
-    languages: ["English", "Runyankole"],
-    availableOptions: ["voice", "video"],
-  },
-  {
-    id: "4",
-    name: "Emmanuel Wasswa",
-    type: "therapist",
-    experience: 6,
-    pricePerHour: 80000,
-    specialties: ["Depression", "Self-Esteem", "Life Transitions", "Career Counseling"],
-    languages: ["English", "Luganda", "Swahili"],
-    availableOptions: ["voice", "video"],
-  },
-  {
-    id: "5",
-    name: "Dr. Amina Hassan",
-    type: "psychotherapist",
-    experience: 10,
-    pricePerHour: 120000,
-    specialties: ["Anxiety Disorders", "OCD", "Eating Disorders", "Trauma Recovery"],
-    languages: ["English", "Arabic"],
-    availableOptions: ["voice", "video"],
-  },
-  {
-    id: "6",
-    name: "Patricia Namutebi",
-    type: "counselor",
-    experience: 4,
-    pricePerHour: 60000,
-    specialties: ["Relationship Issues", "Pre-Marital Counseling", "Couples Therapy", "Communication"],
-    languages: ["English", "Luganda"],
-    availableOptions: ["voice", "video"],
-  },
-  {
-    id: "7",
-    name: "Dr. Peter Ochieng",
-    type: "therapist",
-    experience: 9,
-    pricePerHour: 110000,
-    specialties: ["Substance Abuse", "Addiction Recovery", "Anger Management", "Behavioral Therapy"],
-    languages: ["English", "Luo", "Swahili"],
-    availableOptions: ["voice", "video"],
-  },
-  {
-    id: "8",
-    name: "Florence Akankwasa",
-    type: "counselor",
-    experience: 7,
-    pricePerHour: 85000,
-    specialties: ["Child Psychology", "Adolescent Issues", "Parenting", "Family Dynamics"],
-    languages: ["English", "Runyankole"],
-    availableOptions: ["voice", "video"],
-  },
-  {
-    id: "9",
-    name: "Dr. Moses Kiggundu",
-    type: "psychotherapist",
-    experience: 15,
-    pricePerHour: 180000,
-    specialties: ["Complex Trauma", "Dissociative Disorders", "Severe Depression", "Psychosis"],
-    languages: ["English", "Luganda"],
-    availableOptions: ["voice", "video"],
-  },
-  {
-    id: "10",
-    name: "Ruth Namubiru",
-    type: "therapist",
-    experience: 3,
-    pricePerHour: 50000,
-    specialties: ["Anxiety", "Stress", "Self-Care", "Work-Life Balance"],
-    languages: ["English", "Luganda"],
-    availableOptions: ["voice", "video"],
-  },
-  {
-    id: "11",
-    name: "Dr. Catherine Apio",
-    type: "psychotherapist",
-    experience: 11,
-    pricePerHour: 140000,
-    specialties: ["Depression", "Anxiety", "Trauma", "Women's Mental Health", "Postpartum"],
-    languages: ["English", "Luo"],
-    availableOptions: ["voice", "video"],
-  },
-  {
-    id: "12",
-    name: "Daniel Mugisha",
-    type: "counselor",
-    experience: 6,
-    pricePerHour: 70000,
-    specialties: ["Men's Issues", "Career Stress", "Identity", "Personal Growth"],
-    languages: ["English", "Kinyarwanda", "Luganda"],
-    availableOptions: ["voice", "video"],
-  },
-];
 
 const typeDescriptions = {
   therapist: "Therapists are licensed professionals who help individuals navigate emotional, mental, and behavioral challenges through various therapeutic techniques. Therapists focus on addressing issues like anxiety, depression, and trauma to improve overall mental well-being.",
@@ -168,24 +47,31 @@ const SpecialistCard = ({ specialist }: { specialist: Specialist }) => {
     <div className="bg-card rounded-xl border border-border p-6 hover:shadow-lg transition-all duration-300 hover:border-primary/30">
       <div className="flex items-start gap-4 mb-4">
         <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xl shrink-0">
-          {initials}
+          {specialist.image_url ? (
+            <img src={specialist.image_url} alt={specialist.name} className="w-full h-full rounded-full object-cover" />
+          ) : (
+            initials
+          )}
         </div>
         <div className="flex-1 min-w-0">
           <h3 className="font-semibold text-foreground text-lg truncate">{specialist.name}</h3>
-          <button className="text-primary text-sm hover:underline flex items-center gap-1">
+          <Link 
+            to={`/specialists/${specialist.id}`}
+            className="text-primary text-sm hover:underline flex items-center gap-1"
+          >
             View profile <ExternalLink className="w-3 h-3" />
-          </button>
+          </Link>
         </div>
       </div>
 
       <div className="space-y-3 mb-4">
         <div className="flex justify-between text-sm">
           <span className="text-muted-foreground">Experience:</span>
-          <span className="font-medium text-foreground">{specialist.experience} Years</span>
+          <span className="font-medium text-foreground">{specialist.experience_years} Years</span>
         </div>
         <div className="flex justify-between text-sm">
           <span className="text-muted-foreground">Price:</span>
-          <span className="font-medium text-foreground">{formatPrice(specialist.pricePerHour)}/hr</span>
+          <span className="font-medium text-foreground">{formatPrice(specialist.price_per_hour)}/hr</span>
         </div>
       </div>
 
@@ -213,12 +99,12 @@ const SpecialistCard = ({ specialist }: { specialist: Specialist }) => {
       <div className="mb-5">
         <p className="text-sm text-muted-foreground mb-2">Available Options:</p>
         <div className="flex gap-2">
-          {specialist.availableOptions.includes("voice") && (
+          {specialist.available_options.includes("voice") && (
             <div className="flex items-center gap-1 text-sm text-foreground">
               <Phone className="w-4 h-4 text-primary" /> Voice
             </div>
           )}
-          {specialist.availableOptions.includes("video") && (
+          {specialist.available_options.includes("video") && (
             <div className="flex items-center gap-1 text-sm text-foreground">
               <Video className="w-4 h-4 text-primary" /> Video
             </div>
@@ -226,12 +112,19 @@ const SpecialistCard = ({ specialist }: { specialist: Specialist }) => {
         </div>
       </div>
 
-      <Button 
-        className="w-full"
-        onClick={() => window.open(`https://wa.me/256780570987?text=${encodeURIComponent(`Hi, I would like to book a session with ${specialist.name}`)}`, "_blank")}
-      >
-        Book Session
-      </Button>
+      <div className="flex gap-2">
+        <Button 
+          className="flex-1"
+          onClick={() => window.open(`https://wa.me/256780570987?text=${encodeURIComponent(`Hi, I would like to book a session with ${specialist.name}`)}`, "_blank")}
+        >
+          Book
+        </Button>
+        <Link to={`/specialists/${specialist.id}`} className="flex-1">
+          <Button variant="outline" className="w-full">
+            View Profile
+          </Button>
+        </Link>
+      </div>
     </div>
   );
 };
@@ -239,6 +132,27 @@ const SpecialistCard = ({ specialist }: { specialist: Specialist }) => {
 const Specialists = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("therapist");
+  const [specialists, setSpecialists] = useState<Specialist[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchSpecialists();
+  }, []);
+
+  const fetchSpecialists = async () => {
+    const { data, error } = await supabase
+      .from("specialists")
+      .select("*")
+      .eq("is_active", true)
+      .order("experience_years", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching specialists:", error);
+    } else {
+      setSpecialists(data || []);
+    }
+    setLoading(false);
+  };
 
   const filteredSpecialists = specialists.filter((specialist) => {
     const matchesType = specialist.type === activeTab;
@@ -314,35 +228,44 @@ const Specialists = () => {
                 </p>
               </div>
 
-              {/* Specialists Grid */}
-              <TabsContent value="therapist" className="mt-0">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                  {filteredSpecialists.map((specialist) => (
-                    <SpecialistCard key={specialist.id} specialist={specialist} />
-                  ))}
-                </div>
-              </TabsContent>
-
-              <TabsContent value="psychotherapist" className="mt-0">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                  {filteredSpecialists.map((specialist) => (
-                    <SpecialistCard key={specialist.id} specialist={specialist} />
-                  ))}
-                </div>
-              </TabsContent>
-
-              <TabsContent value="counselor" className="mt-0">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                  {filteredSpecialists.map((specialist) => (
-                    <SpecialistCard key={specialist.id} specialist={specialist} />
-                  ))}
-                </div>
-              </TabsContent>
-
-              {filteredSpecialists.length === 0 && (
+              {/* Loading State */}
+              {loading ? (
                 <div className="text-center py-12">
-                  <p className="text-muted-foreground">No specialists found matching your search.</p>
+                  <div className="animate-pulse text-muted-foreground">Loading specialists...</div>
                 </div>
+              ) : (
+                <>
+                  {/* Specialists Grid */}
+                  <TabsContent value="therapist" className="mt-0">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                      {filteredSpecialists.map((specialist) => (
+                        <SpecialistCard key={specialist.id} specialist={specialist} />
+                      ))}
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="psychotherapist" className="mt-0">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                      {filteredSpecialists.map((specialist) => (
+                        <SpecialistCard key={specialist.id} specialist={specialist} />
+                      ))}
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="counselor" className="mt-0">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                      {filteredSpecialists.map((specialist) => (
+                        <SpecialistCard key={specialist.id} specialist={specialist} />
+                      ))}
+                    </div>
+                  </TabsContent>
+
+                  {filteredSpecialists.length === 0 && (
+                    <div className="text-center py-12">
+                      <p className="text-muted-foreground">No specialists found matching your search.</p>
+                    </div>
+                  )}
+                </>
               )}
             </Tabs>
           </div>
