@@ -116,12 +116,11 @@ const SpecialistCard = ({ specialist }: { specialist: Specialist }) => {
       </div>
 
       <div className="flex gap-2">
-        <Button 
-          className="flex-1"
-          onClick={() => window.open(`https://wa.me/256780570987?text=${encodeURIComponent(`Hi, I would like to book a session with ${specialist.name}`)}`, "_blank")}
-        >
-          Book
-        </Button>
+        <Link to={`/specialists/${specialist.id}`} className="flex-1">
+          <Button className="w-full">
+            Book
+          </Button>
+        </Link>
         <Link to={`/specialists/${specialist.id}`} className="flex-1">
           <Button variant="outline" className="w-full">
             View Profile
