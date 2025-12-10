@@ -1,7 +1,36 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import findTherapistsMockup from "@/assets/mockups/find-therapists-mockup.png";
+import bookSessionMockup from "@/assets/mockups/book-session.jpeg";
+import supportGroupsMockup from "@/assets/mockups/support-groups.jpeg";
+import wellnessVaultMockup from "@/assets/mockups/wellness-vault.jpeg";
 
 const HowItWorks = () => {
+  const [activeTab, setActiveTab] = useState(0);
+
+  const tabs = [
+    {
+      label: "Video",
+      image: findTherapistsMockup,
+      alt: "InnerSpark App - Video Therapy"
+    },
+    {
+      label: "Chat",
+      image: bookSessionMockup,
+      alt: "InnerSpark App - Chat Sessions"
+    },
+    {
+      label: "Appointment",
+      image: wellnessVaultMockup,
+      alt: "InnerSpark App - Book Appointment"
+    },
+    {
+      label: "Support Groups",
+      image: supportGroupsMockup,
+      alt: "InnerSpark App - Support Groups"
+    }
+  ];
+
   const steps = [
     {
       title: "Download the InnerSpark App",
@@ -40,18 +69,20 @@ const HowItWorks = () => {
 
         {/* Service Tabs */}
         <div className="flex flex-wrap justify-center gap-3 mb-4">
-          <Button className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 px-6">
-            Video
-          </Button>
-          <Button variant="outline" className="rounded-full px-6 hover:bg-muted">
-            Chat
-          </Button>
-          <Button variant="outline" className="rounded-full px-6 hover:bg-muted">
-            Appointment
-          </Button>
-          <Button variant="outline" className="rounded-full px-6 hover:bg-muted">
-            Support Groups
-          </Button>
+          {tabs.map((tab, index) => (
+            <Button
+              key={tab.label}
+              onClick={() => setActiveTab(index)}
+              className={`rounded-full px-6 transition-all duration-300 ${
+                activeTab === index
+                  ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                  : "bg-transparent border border-input hover:bg-muted"
+              }`}
+              variant={activeTab === index ? "default" : "outline"}
+            >
+              {tab.label}
+            </Button>
+          ))}
         </div>
 
         {/* How it works content */}
@@ -125,11 +156,12 @@ const HowItWorks = () => {
             {/* Right: Phone Mockup */}
             <div className="flex justify-center lg:justify-end">
               <div className="relative">
-                {/* Phone mockup image */}
+                {/* Phone mockup image with transition */}
                 <img 
-                  src={findTherapistsMockup} 
-                  alt="InnerSpark App - Find Therapists" 
-                  className="w-[240px] md:w-[280px] h-auto drop-shadow-2xl"
+                  key={activeTab}
+                  src={tabs[activeTab].image} 
+                  alt={tabs[activeTab].alt} 
+                  className="w-[240px] md:w-[280px] h-auto drop-shadow-2xl animate-fade-in"
                 />
                 
                 {/* Decorative elements */}
