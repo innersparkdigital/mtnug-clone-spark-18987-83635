@@ -29,6 +29,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { getSpecialistImage } from "@/lib/specialistImages";
 import ugandaBadge from "@/assets/uganda-badge.png";
+import ghanaBadge from "@/assets/ghana-badge.png";
 import { 
   ArrowLeft, 
   Video, 
@@ -56,6 +57,7 @@ interface Specialist {
   education: string | null;
   certifications: string[] | null;
   image_url: string | null;
+  country: string;
 }
 
 interface Review {
@@ -75,6 +77,11 @@ interface Availability {
 }
 
 const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+const countryBadges: Record<string, string> = {
+  Uganda: ugandaBadge,
+  Ghana: ghanaBadge,
+};
 
 const formatPrice = (price: number) => {
   return new Intl.NumberFormat("en-UG", {
@@ -317,7 +324,9 @@ Please confirm availability. Thank you!`;
               <div className="flex-1">
                 <div className="flex flex-wrap items-center gap-3 mb-2">
                   <h1 className="text-3xl md:text-4xl font-bold text-foreground">{specialist.name}</h1>
-                  <img src={ugandaBadge} alt="Uganda" className="w-6 h-6 object-contain" title="Uganda" />
+                  {countryBadges[specialist.country] && (
+                    <img src={countryBadges[specialist.country]} alt={specialist.country} className="w-6 h-6 object-contain" title={specialist.country} />
+                  )}
                   <Badge variant="secondary" className="capitalize">{specialist.type}</Badge>
                 </div>
 
