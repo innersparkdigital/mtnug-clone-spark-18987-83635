@@ -39,7 +39,7 @@ const HowItWorks = () => {
         </div>
 
         {/* Service Tabs */}
-        <div className="flex flex-wrap justify-center gap-3 mb-8">
+        <div className="flex flex-wrap justify-center gap-3 mb-4">
           <Button className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 px-6">
             Video
           </Button>
