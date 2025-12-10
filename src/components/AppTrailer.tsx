@@ -11,11 +11,14 @@ import bookSession from "@/assets/mockups/book-session.jpeg";
 import emergencyHelp from "@/assets/mockups/emergency-help.jpeg";
 import therapyFund from "@/assets/mockups/therapy-fund.jpeg";
 
-// Import team avatars
-import hellenAvatar from "@/assets/hellen-aturo.jpg";
-import jamesAvatar from "@/assets/james-niwamanya.jpg";
-import reaganAvatar from "@/assets/mutebi-reagan.jpg";
-import raymondAvatar from "@/assets/talemwa-raymond.jpg";
+// Import persona images
+import personHome from "@/assets/personas/person-home.png";
+import personTherapist from "@/assets/personas/person-therapist.png";
+import personBooking from "@/assets/personas/person-booking.png";
+import personGroups from "@/assets/personas/person-groups.png";
+import personPayment from "@/assets/personas/person-payment.png";
+import personDonate from "@/assets/personas/person-donate.png";
+import personEmergency from "@/assets/personas/person-emergency.png";
 
 interface Slide {
   image: string;
@@ -23,9 +26,7 @@ interface Slide {
   subtitle: string;
   bgColor: string;
   tooltip: string;
-  avatar: string;
-  avatarName: string;
-  avatarRole: string;
+  persona: string;
 }
 
 const slides: Slide[] = [
@@ -35,9 +36,7 @@ const slides: Slide[] = [
     subtitle: "Africa's Digital Wellness Hub",
     bgColor: "bg-primary",
     tooltip: "Your mental wellness journey starts here",
-    avatar: hellenAvatar,
-    avatarName: "Hellen",
-    avatarRole: "Founder",
+    persona: personHome,
   },
   {
     image: findTherapists,
@@ -45,9 +44,7 @@ const slides: Slide[] = [
     subtitle: "Connect with verified mental health professionals",
     bgColor: "bg-primary",
     tooltip: "Find and book sessions with verified therapists",
-    avatar: jamesAvatar,
-    avatarName: "James",
-    avatarRole: "Therapist",
+    persona: personTherapist,
   },
   {
     image: bookSession,
@@ -55,9 +52,7 @@ const slides: Slide[] = [
     subtitle: "Schedule therapy with ease",
     bgColor: "bg-primary",
     tooltip: "Schedule appointments in just a few taps",
-    avatar: reaganAvatar,
-    avatarName: "Reagan",
-    avatarRole: "User",
+    persona: personBooking,
   },
   {
     image: supportGroups,
@@ -65,9 +60,7 @@ const slides: Slide[] = [
     subtitle: "Share and learn with like-minded communities",
     bgColor: "bg-primary",
     tooltip: "Join communities that understand you",
-    avatar: raymondAvatar,
-    avatarName: "Raymond",
-    avatarRole: "Member",
+    persona: personGroups,
   },
   {
     image: wellnessVault,
@@ -75,9 +68,7 @@ const slides: Slide[] = [
     subtitle: "Use MoMo or points to pay for therapy securely",
     bgColor: "bg-primary",
     tooltip: "Secure payments with Mobile Money or wellness points",
-    avatar: hellenAvatar,
-    avatarName: "Hellen",
-    avatarRole: "Guide",
+    persona: personPayment,
   },
   {
     image: therapyFund,
@@ -85,9 +76,7 @@ const slides: Slide[] = [
     subtitle: "Donate to make therapy accessible to all",
     bgColor: "bg-primary",
     tooltip: "Help someone access mental health support",
-    avatar: jamesAvatar,
-    avatarName: "James",
-    avatarRole: "Advocate",
+    persona: personDonate,
   },
   {
     image: emergencyHelp,
@@ -95,9 +84,7 @@ const slides: Slide[] = [
     subtitle: "Crisis support when you need it most",
     bgColor: "bg-orange-500",
     tooltip: "24/7 crisis support at your fingertips",
-    avatar: reaganAvatar,
-    avatarName: "Reagan",
-    avatarRole: "Support",
+    persona: personEmergency,
   },
 ];
 
@@ -239,91 +226,83 @@ const AppTrailer = () => {
             </div>
           </div>
 
-          {/* Phone Mockup */}
+          {/* Phone Mockup with Person */}
           <div className="flex-1 flex justify-center lg:justify-end">
-            <div className="relative">
-              {/* Avatar leaning on phone - positioned to the left */}
+            <div className="relative flex items-end">
+              {/* Full-body Person leaning beside the phone */}
               <div
-                key={`avatar-${currentSlide}`}
-                className="absolute -left-16 md:-left-20 lg:-left-24 top-1/3 z-30 animate-fade-in hidden sm:block"
+                key={`persona-${currentSlide}`}
+                className="relative z-20 -mr-8 md:-mr-12 lg:-mr-16 animate-fade-in hidden sm:block"
               >
-                <div className="relative">
-                  {/* Avatar image */}
-                  <div className="w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 rounded-full overflow-hidden border-4 border-white shadow-2xl transform -rotate-6 hover:rotate-0 transition-transform duration-300">
-                    <img
-                      src={slides[currentSlide].avatar}
-                      alt={slides[currentSlide].avatarName}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  {/* Name badge */}
-                  <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-white px-3 py-1 rounded-full shadow-lg">
-                    <p className="text-xs font-semibold text-foreground whitespace-nowrap">
-                      {slides[currentSlide].avatarName}
-                    </p>
-                  </div>
-                </div>
+                <img
+                  src={slides[currentSlide].persona}
+                  alt="App user"
+                  className="w-40 md:w-52 lg:w-64 h-auto object-contain drop-shadow-2xl"
+                />
               </div>
 
-              {/* Tooltip Speech Bubble - now connected to avatar */}
-              <div
-                key={`tooltip-${currentSlide}`}
-                className="absolute -top-8 left-1/2 -translate-x-1/2 z-20 animate-fade-in"
-              >
-                <div className="bg-white text-foreground px-4 py-2 rounded-xl shadow-lg text-sm font-medium max-w-[280px] text-center relative">
-                  {slides[currentSlide].tooltip}
-                  {/* Speech bubble arrow pointing down */}
-                  <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-l-transparent border-r-transparent border-t-white" />
-                </div>
-              </div>
-
-              {/* Phone Frame Shadow */}
-              <div className="absolute -inset-4 bg-black/20 rounded-[3rem] blur-2xl transform rotate-3" />
-              
-              {/* Phone Device */}
-              <div className="relative w-[280px] md:w-[320px] lg:w-[360px] aspect-[9/19] bg-gradient-to-b from-gray-800 to-gray-900 rounded-[2.5rem] p-2 shadow-2xl">
-                {/* Screen */}
-                <div className="relative w-full h-full bg-white rounded-[2rem] overflow-hidden">
-                  {/* Notch */}
-                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-6 bg-gray-900 rounded-b-xl z-10 flex items-center justify-center">
-                    <div className="w-2 h-2 bg-gray-600 rounded-full" />
+              {/* Phone Device Container */}
+              <div className="relative">
+                {/* Tooltip Speech Bubble */}
+                <div
+                  key={`tooltip-${currentSlide}`}
+                  className="absolute -top-8 left-1/2 -translate-x-1/2 z-30 animate-fade-in"
+                >
+                  <div className="bg-white text-foreground px-4 py-2 rounded-xl shadow-lg text-sm font-medium max-w-[280px] text-center relative">
+                    {slides[currentSlide].tooltip}
+                    {/* Speech bubble arrow pointing down */}
+                    <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-l-transparent border-r-transparent border-t-white" />
                   </div>
-                  
-                  {/* Screen Content */}
-                  <div className="relative w-full h-full overflow-hidden">
-                    {slides.map((slide, index) => (
-                      <div
-                        key={index}
-                        className={`absolute inset-0 transition-all duration-600 ease-out ${
-                          index === currentSlide
-                            ? "opacity-100 scale-100"
-                            : "opacity-0 scale-95"
-                        }`}
-                      >
-                        <img
-                          src={slide.image}
-                          alt={slide.title}
-                          className="w-full h-full object-cover object-top"
-                        />
-                      </div>
+                </div>
+
+                {/* Phone Frame Shadow */}
+                <div className="absolute -inset-4 bg-black/20 rounded-[3rem] blur-2xl transform rotate-3" />
+                
+                {/* Phone Device */}
+                <div className="relative w-[280px] md:w-[320px] lg:w-[360px] aspect-[9/19] bg-gradient-to-b from-gray-800 to-gray-900 rounded-[2.5rem] p-2 shadow-2xl">
+                  {/* Screen */}
+                  <div className="relative w-full h-full bg-white rounded-[2rem] overflow-hidden">
+                    {/* Notch */}
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-6 bg-gray-900 rounded-b-xl z-10 flex items-center justify-center">
+                      <div className="w-2 h-2 bg-gray-600 rounded-full" />
+                    </div>
+                    
+                    {/* Screen Content */}
+                    <div className="relative w-full h-full overflow-hidden">
+                      {slides.map((slide, index) => (
+                        <div
+                          key={index}
+                          className={`absolute inset-0 transition-all duration-600 ease-out ${
+                            index === currentSlide
+                              ? "opacity-100 scale-100"
+                              : "opacity-0 scale-95"
+                          }`}
+                        >
+                          <img
+                            src={slide.image}
+                            alt={slide.title}
+                            className="w-full h-full object-cover object-top"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Decorative dots */}
+                <div className="absolute -bottom-8 -right-8 hidden lg:block">
+                  <svg width="80" height="80" viewBox="0 0 80 80" className="text-white/30">
+                    {[...Array(9)].map((_, i) => (
+                      <circle
+                        key={i}
+                        cx={10 + (i % 3) * 25}
+                        cy={10 + Math.floor(i / 3) * 25}
+                        r="4"
+                        fill="currentColor"
+                      />
                     ))}
-                  </div>
+                  </svg>
                 </div>
-              </div>
-
-              {/* Decorative dots */}
-              <div className="absolute -bottom-8 -right-8 hidden lg:block">
-                <svg width="80" height="80" viewBox="0 0 80 80" className="text-white/30">
-                  {[...Array(9)].map((_, i) => (
-                    <circle
-                      key={i}
-                      cx={10 + (i % 3) * 25}
-                      cy={10 + Math.floor(i / 3) * 25}
-                      r="4"
-                      fill="currentColor"
-                    />
-                  ))}
-                </svg>
               </div>
             </div>
           </div>
