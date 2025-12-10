@@ -22,7 +22,7 @@ const Header = () => {
       <div className="hidden md:block bg-secondary text-secondary-foreground py-2 px-4 text-sm">
         <div className="container mx-auto flex justify-end items-center gap-6">
           <Link to="/services" className="hover:text-primary transition-colors">FOR INDIVIDUALS</Link>
-          <Link to="/events-training" className="hover:text-primary transition-colors">FOR BUSINESS</Link>
+          <Link to="/for-business" className="hover:text-primary transition-colors">FOR BUSINESS</Link>
         </div>
       </div>
 
