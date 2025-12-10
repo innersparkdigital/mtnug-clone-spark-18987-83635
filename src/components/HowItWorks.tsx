@@ -18,7 +18,7 @@ const HowItWorks = () => {
   ];
 
   return (
-    <section className="py-20 lg:py-28 bg-background relative overflow-hidden">
+    <section className="py-12 lg:py-16 bg-background relative overflow-hidden">
       {/* Subtle background pattern */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-0 left-0 w-full h-full" style={{
