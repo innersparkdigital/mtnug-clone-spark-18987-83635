@@ -132,9 +132,21 @@ const SpecialistCard = ({ specialist }: { specialist: Specialist }) => {
   );
 };
 
+const specialtyCategories = [
+  { label: "All", value: "" },
+  { label: "Child Psychology", value: "child" },
+  { label: "Couples/Relationships", value: "couples" },
+  { label: "Families", value: "family" },
+  { label: "Adolescents", value: "adolescent" },
+  { label: "Sports Psychology", value: "sports" },
+  { label: "Youth & Family", value: "youth" },
+  { label: "Employees/Organizations", value: "corporate" },
+];
+
 const Specialists = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("therapist");
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [specialists, setSpecialists] = useState<Specialist[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -164,7 +176,10 @@ const Specialists = () => {
       specialist.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       specialist.specialties.some((s) => s.toLowerCase().includes(searchQuery.toLowerCase())) ||
       specialist.languages.some((l) => l.toLowerCase().includes(searchQuery.toLowerCase()));
-    return matchesType && matchesSearch;
+    const matchesCategory =
+      selectedCategory === "" ||
+      specialist.specialties.some((s) => s.toLowerCase().includes(selectedCategory.toLowerCase()));
+    return matchesType && matchesSearch && matchesCategory;
   });
 
   return (
@@ -221,6 +236,21 @@ const Specialists = () => {
                     className="pl-10"
                   />
                 </div>
+              </div>
+
+              {/* Category Filters */}
+              <div className="flex flex-wrap gap-2 mb-6">
+                {specialtyCategories.map((category) => (
+                  <Button
+                    key={category.value}
+                    variant={selectedCategory === category.value ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setSelectedCategory(category.value)}
+                    className="rounded-full"
+                  >
+                    {category.label}
+                  </Button>
+                ))}
               </div>
 
               {/* Type Description */}
