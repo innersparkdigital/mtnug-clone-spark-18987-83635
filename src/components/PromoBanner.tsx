@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { T } from "@/components/Translate";
 import promoBannerBg from "@/assets/hero-slide-2.jpg";
 
 const PromoBanner = () => {
@@ -20,17 +21,17 @@ const PromoBanner = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-2xl text-white">
             <h2 className="text-3xl md:text-5xl font-bold mb-4 leading-tight">
-              Mental Health Support for Every African
+              <T>Mental Health Support for Every African</T>
             </h2>
             <p className="text-lg md:text-xl text-white/90 mb-8">
-              Breaking stigma, building resilience. Join thousands taking charge of their mental wellness journey.
+              <T>Breaking stigma, building resilience. Join thousands taking charge of their mental wellness journey.</T>
             </p>
             <a href="https://wa.me/256780570987?text=Hi,%20I%20would%20like%20to%20get%20started%20with%20Innerspark%20Africa's%20mental%20health%20services" target="_blank" rel="noopener noreferrer">
               <Button
                 size="lg"
                 className="bg-white text-primary hover:bg-white/90 font-semibold px-8 py-6 text-lg rounded-full"
               >
-                Get Started Today
+                <T>Get Started Today</T>
               </Button>
             </a>
           </div>

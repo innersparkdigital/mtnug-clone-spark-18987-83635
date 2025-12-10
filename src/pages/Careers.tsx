@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Helmet } from "react-helmet";
 import Header from "@/components/Header";
+import { T } from "@/components/Translate";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -125,9 +126,9 @@ export default function Careers() {
           {/* Hero Section */}
           <section className="bg-gradient-to-br from-primary/10 via-background to-secondary/10 py-20 px-4">
             <div className="max-w-4xl mx-auto text-center">
-              <h1 className="text-4xl md:text-5xl font-bold mb-6">Join Our Mission</h1>
+              <h1 className="text-4xl md:text-5xl font-bold mb-6"><T>Join Our Mission</T></h1>
               <p className="text-xl text-muted-foreground mb-8">
-                Help us transform mental health care in Uganda. Join a team of passionate professionals dedicated to making a difference.
+                <T>Help us transform mental health care in Uganda. Join a team of passionate professionals dedicated to making a difference.</T>
               </p>
             </div>
           </section>

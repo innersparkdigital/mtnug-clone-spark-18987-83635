@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AppDownload from "@/components/AppDownload";
 import NewsletterForm from "@/components/NewsletterForm";
+import { T } from "@/components/Translate";
 import stressHeroImage from "@/assets/blog/stress-management-hero.jpg";
 import panicHeroImage from "@/assets/blog/panic-attack-hero.jpg";
 import depressionHeroImage from "@/assets/blog/depression-hero.jpg";
@@ -123,10 +124,10 @@ const Blog = () => {
             </nav>
             <div className="max-w-3xl">
               <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-                Mental Health & Wellness Blog
+                <T>Mental Health & Wellness Blog</T>
               </h1>
               <p className="text-xl text-muted-foreground">
-                Expert-backed insights, practical tips, and resources to help you navigate your mental health journey. From stress management to building emotional resilience.
+                <T>Expert-backed insights, practical tips, and resources to help you navigate your mental health journey. From stress management to building emotional resilience.</T>
               </p>
             </div>
           </div>

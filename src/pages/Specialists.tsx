@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { T } from "@/components/Translate";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -360,12 +361,10 @@ const Specialists = () => {
         <section className="bg-gradient-to-br from-primary/10 via-background to-secondary/10 py-16 md:py-24">
           <div className="container mx-auto px-4 text-center">
             <h1 className="text-3xl md:text-5xl font-bold text-foreground mb-6">
-              Meet Our <span className="text-primary">Specialists</span>
+              <T>Meet Our</T> <span className="text-primary"><T>Specialists</T></span>
             </h1>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-8">
-              Discover our diverse team of certified specialists ready to support your mental health journey. 
-              From experienced therapists and compassionate counselors to trusted psychotherapists, 
-              browse through profiles to find the right professional for you.
+              <T>Discover our diverse team of certified specialists ready to support your mental health journey. From experienced therapists and compassionate counselors to trusted psychotherapists, browse through profiles to find the right professional for you.</T>
             </p>
           </div>
         </section>
