@@ -126,6 +126,18 @@ const AppTrailer = () => {
 
   return (
     <section className="relative overflow-hidden py-16 lg:py-24">
+      {/* Custom animation keyframes */}
+      <style>{`
+        @keyframes personaFloat {
+          0%, 100% { transform: translateY(0) rotate(3deg); }
+          50% { transform: translateY(-8px) rotate(2deg); }
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateX(-20px); }
+          to { opacity: 1; transform: translateX(0); }
+        }
+      `}</style>
+      
       {/* Background with animated gradient */}
       <div
         className={`absolute inset-0 transition-colors duration-700 ${slides[currentSlide].bgColor}`}
@@ -233,11 +245,17 @@ const AppTrailer = () => {
               <div
                 key={`persona-${currentSlide}`}
                 className="relative z-20 -mr-8 md:-mr-12 lg:-mr-16 animate-fade-in hidden sm:block"
+                style={{
+                  animation: 'fadeIn 0.5s ease-out, personaFloat 3s ease-in-out infinite',
+                }}
               >
                 <img
                   src={slides[currentSlide].persona}
                   alt="App user"
-                  className="w-40 md:w-52 lg:w-64 h-auto object-contain drop-shadow-2xl"
+                  className="w-40 md:w-52 lg:w-64 h-auto object-contain drop-shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-500"
+                  style={{
+                    filter: 'drop-shadow(0 25px 25px rgba(0,0,0,0.25))',
+                  }}
                 />
               </div>
 
