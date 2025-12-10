@@ -136,6 +136,18 @@ const AppTrailer = () => {
           from { opacity: 0; transform: translateX(-20px); }
           to { opacity: 1; transform: translateX(0); }
         }
+        @keyframes pulseGlow {
+          0%, 100% { opacity: 0.2; transform: scale(0.75); }
+          50% { opacity: 0.4; transform: scale(0.85); }
+        }
+        @keyframes connectionPulse {
+          0%, 100% { opacity: 0.3; }
+          50% { opacity: 0.6; }
+        }
+        @keyframes glowPulse {
+          0%, 100% { opacity: 0.1; transform: scale(1); }
+          50% { opacity: 0.25; transform: scale(1.1); }
+        }
       `}</style>
       
       {/* Background with animated gradient */}
@@ -249,15 +261,61 @@ const AppTrailer = () => {
                   animation: 'fadeIn 0.5s ease-out, personaFloat 3s ease-in-out infinite',
                 }}
               >
+                {/* Glow effect behind persona */}
+                <div 
+                  className="absolute inset-0 bg-white/20 blur-3xl rounded-full scale-75"
+                  style={{
+                    animation: 'pulseGlow 2s ease-in-out infinite',
+                  }}
+                />
                 <img
                   src={slides[currentSlide].persona}
                   alt="App user"
-                  className="w-40 md:w-52 lg:w-64 h-auto object-contain drop-shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-500"
+                  className="relative w-40 md:w-52 lg:w-64 h-auto object-contain drop-shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-500"
                   style={{
                     filter: 'drop-shadow(0 25px 25px rgba(0,0,0,0.25))',
                   }}
                 />
               </div>
+
+              {/* Connecting visual element - dotted arc line */}
+              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 hidden sm:block pointer-events-none">
+                <svg 
+                  width="200" 
+                  height="200" 
+                  viewBox="0 0 200 200" 
+                  className="opacity-40"
+                  style={{
+                    animation: 'connectionPulse 2s ease-in-out infinite',
+                  }}
+                >
+                  {/* Curved dotted line connecting persona to phone */}
+                  <path
+                    d="M 40 100 Q 100 60 160 100"
+                    fill="none"
+                    stroke="white"
+                    strokeWidth="2"
+                    strokeDasharray="6 6"
+                    strokeLinecap="round"
+                  />
+                  {/* Animated dot traveling along the path */}
+                  <circle r="4" fill="white">
+                    <animateMotion
+                      dur="2s"
+                      repeatCount="indefinite"
+                      path="M 40 100 Q 100 60 160 100"
+                    />
+                  </circle>
+                </svg>
+              </div>
+
+              {/* Glow connection between persona and phone */}
+              <div 
+                className="absolute left-0 top-1/3 w-32 h-32 bg-white/10 blur-2xl rounded-full hidden sm:block pointer-events-none"
+                style={{
+                  animation: 'glowPulse 3s ease-in-out infinite',
+                }}
+              />
 
               {/* Phone Device Container */}
               <div className="relative">
