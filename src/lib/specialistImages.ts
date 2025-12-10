@@ -1,19 +1,10 @@
-// Import all specialist images
-import sarahNakamya from "@/assets/specialists/sarah-nakamya.jpg";
-import jamesOkello from "@/assets/specialists/james-okello.jpg";
-import graceTumusiime from "@/assets/specialists/grace-tumusiime.jpg";
-import emmanuelWasswa from "@/assets/specialists/emmanuel-wasswa.jpg";
-import aminaHassan from "@/assets/specialists/amina-hassan.jpg";
-import patriciaNamutebi from "@/assets/specialists/patricia-namutebi.jpg";
+// Map specialist names to their profile images
+// Images can be uploaded to the specialist-photos storage bucket and linked via image_url in database
+// This file provides fallback local images when available
 
-// Map specialist names to their images
 const specialistImageMap: Record<string, string> = {
-  "Dr. Sarah Nakamya": sarahNakamya,
-  "James Okello": jamesOkello,
-  "Dr. Grace Tumusiime": graceTumusiime,
-  "Emmanuel Wasswa": emmanuelWasswa,
-  "Dr. Amina Hassan": aminaHassan,
-  "Patricia Namutebi": patriciaNamutebi,
+  // Add mappings as photos are uploaded
+  // Example: "Mariam Nakamanya": "/path/to/image.jpg"
 };
 
 export const getSpecialistImage = (name: string, imageUrl?: string | null): string | null => {
@@ -26,4 +17,3 @@ export const getSpecialistImage = (name: string, imageUrl?: string | null): stri
 };
 
 export default specialistImageMap;
-
