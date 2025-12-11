@@ -553,27 +553,33 @@ Please confirm availability. Thank you!`;
                       <Card>
                         <CardHeader>
                           <CardTitle className="flex items-center gap-2">
-                            <Award className="w-5 h-5" /> Licenses & Verified Certificates
+                            <Award className="w-5 h-5" /> 
+                            Licenses & Verified Certificates
+                            <Badge className="bg-green-500 hover:bg-green-600 text-white ml-2 flex items-center gap-1">
+                              <CheckCircle className="w-3 h-3" />
+                              Verified
+                            </Badge>
                           </CardTitle>
                         </CardHeader>
                         <CardContent>
-                          <div className="grid gap-4">
+                          <div className="flex gap-4 overflow-x-auto pb-4">
                             {certificates.map((cert) => (
-                              <div key={cert.id} className="space-y-2">
-                                <p className="text-sm font-medium text-foreground">{cert.certificate_name}</p>
-                                <a 
-                                  href={cert.certificate_url} 
-                                  target="_blank" 
-                                  rel="noopener noreferrer"
-                                  className="block border rounded-lg overflow-hidden hover:shadow-lg transition-shadow"
-                                >
+                              <a 
+                                key={cert.id}
+                                href={cert.certificate_url} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="flex-shrink-0 w-64 group"
+                              >
+                                <div className="border rounded-lg overflow-hidden hover:shadow-lg transition-shadow bg-muted">
                                   <img 
                                     src={cert.certificate_url} 
                                     alt={cert.certificate_name}
-                                    className="w-full h-auto object-contain bg-muted"
+                                    className="w-full h-48 object-cover group-hover:scale-105 transition-transform"
                                   />
-                                </a>
-                              </div>
+                                </div>
+                                <p className="text-xs font-medium text-muted-foreground mt-2 text-center line-clamp-2">{cert.certificate_name}</p>
+                              </a>
                             ))}
                           </div>
                         </CardContent>
