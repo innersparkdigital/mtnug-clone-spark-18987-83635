@@ -4,10 +4,12 @@
 
 import giftNakayinga from "@/assets/specialists/gift-nakayinga.jpg";
 import nanzigeJannet from "@/assets/specialists/nanzige-jannet.jpg";
+import mirembeNorah from "@/assets/specialists/mirembe-norah.jpg";
 
 const specialistImageMap: Record<string, string> = {
   "Nakayinga Gift": giftNakayinga,
   "Nanzige Jannet": nanzigeJannet,
+  "Mirembe Norah": mirembeNorah,
 };
 
 export const getSpecialistImage = (name: string, imageUrl?: string | null): string | null => {
