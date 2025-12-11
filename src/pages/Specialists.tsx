@@ -328,7 +328,8 @@ const Specialists = () => {
   };
 
   const filteredSpecialists = specialists.filter((specialist) => {
-    const matchesType = selectedCountry === "" ? specialist.type === activeTab : true;
+    // When searching, show all types; otherwise filter by active tab (unless country is selected)
+    const matchesType = searchQuery !== "" ? true : (selectedCountry === "" ? specialist.type === activeTab : true);
     const matchesSearch =
       searchQuery === "" ||
       specialist.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
