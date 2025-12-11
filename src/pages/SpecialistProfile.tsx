@@ -346,6 +346,12 @@ Please confirm availability. Thank you!`;
               <div className="flex-1">
                 <div className="flex flex-wrap items-center gap-3 mb-2">
                   <h1 className="text-3xl md:text-4xl font-bold text-foreground">{specialist.name}</h1>
+                  {certificates.length > 0 && (
+                    <Badge className="bg-green-500 hover:bg-green-600 text-white flex items-center gap-1">
+                      <CheckCircle className="w-3 h-3" />
+                      Verified
+                    </Badge>
+                  )}
                   {countryBadges[specialist.country] && (
                     <img src={countryBadges[specialist.country]} alt={specialist.country} className="w-6 h-6 object-contain" title={specialist.country} />
                   )}
@@ -555,10 +561,6 @@ Please confirm availability. Thank you!`;
                           <CardTitle className="flex items-center gap-2">
                             <Award className="w-5 h-5" /> 
                             Licenses & Verified Certificates
-                            <Badge className="bg-green-500 hover:bg-green-600 text-white ml-2 flex items-center gap-1">
-                              <CheckCircle className="w-3 h-3" />
-                              Verified
-                            </Badge>
                           </CardTitle>
                         </CardHeader>
                         <CardContent>
