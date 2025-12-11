@@ -12,7 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Search, Video, Phone, ExternalLink, Calendar, MessageSquare } from "lucide-react";
+import { Search, Video, Phone, ExternalLink, Calendar, MessageSquare, CheckCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getSpecialistImage } from "@/lib/specialistImages";
 import { toast } from "sonner";
@@ -53,7 +53,7 @@ const formatPrice = (price: number) => {
   }).format(price);
 };
 
-const SpecialistCard = ({ specialist }: { specialist: Specialist }) => {
+const SpecialistCard = ({ specialist, isVerified }: { specialist: Specialist; isVerified: boolean }) => {
   const [bookingDialogOpen, setBookingDialogOpen] = useState(false);
   const [bookingForm, setBookingForm] = useState({
     name: "",
@@ -121,8 +121,14 @@ Please confirm availability. Thank you!`;
             )}
           </div>
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <h3 className="font-semibold text-foreground text-lg truncate">{specialist.name}</h3>
+              {isVerified && (
+                <Badge className="bg-green-500 hover:bg-green-600 text-white flex items-center gap-1 text-xs px-1.5 py-0.5">
+                  <CheckCircle className="w-3 h-3" />
+                  Verified
+                </Badge>
+              )}
               {countryBadges[specialist.country] && (
                 <img src={countryBadges[specialist.country]} alt={specialist.country} className="w-5 h-5 object-contain shrink-0" title={specialist.country} />
               )}
@@ -306,10 +312,12 @@ const Specialists = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedCountry, setSelectedCountry] = useState("");
   const [specialists, setSpecialists] = useState<Specialist[]>([]);
+  const [verifiedSpecialists, setVerifiedSpecialists] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchSpecialists();
+    fetchVerifiedSpecialists();
   }, []);
 
   const fetchSpecialists = async () => {
@@ -325,6 +333,17 @@ const Specialists = () => {
       setSpecialists(data || []);
     }
     setLoading(false);
+  };
+
+  const fetchVerifiedSpecialists = async () => {
+    const { data, error } = await supabase
+      .from("specialist_certificates")
+      .select("specialist_id");
+
+    if (!error && data) {
+      const verifiedIds = new Set(data.map(cert => cert.specialist_id));
+      setVerifiedSpecialists(verifiedIds);
+    }
   };
 
   const filteredSpecialists = specialists.filter((specialist) => {
@@ -460,7 +479,7 @@ const Specialists = () => {
                   <TabsContent value="therapist" className="mt-0">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                       {filteredSpecialists.map((specialist) => (
-                        <SpecialistCard key={specialist.id} specialist={specialist} />
+                        <SpecialistCard key={specialist.id} specialist={specialist} isVerified={verifiedSpecialists.has(specialist.id)} />
                       ))}
                     </div>
                   </TabsContent>
@@ -468,7 +487,7 @@ const Specialists = () => {
                   <TabsContent value="psychotherapist" className="mt-0">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                       {filteredSpecialists.map((specialist) => (
-                        <SpecialistCard key={specialist.id} specialist={specialist} />
+                        <SpecialistCard key={specialist.id} specialist={specialist} isVerified={verifiedSpecialists.has(specialist.id)} />
                       ))}
                     </div>
                   </TabsContent>
@@ -476,7 +495,7 @@ const Specialists = () => {
                   <TabsContent value="counselor" className="mt-0">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                       {filteredSpecialists.map((specialist) => (
-                        <SpecialistCard key={specialist.id} specialist={specialist} />
+                        <SpecialistCard key={specialist.id} specialist={specialist} isVerified={verifiedSpecialists.has(specialist.id)} />
                       ))}
                     </div>
                   </TabsContent>
