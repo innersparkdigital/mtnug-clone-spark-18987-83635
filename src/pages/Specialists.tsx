@@ -7,18 +7,18 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { T } from "@/components/Translate";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Search, Video, Phone, ExternalLink, Calendar, MessageSquare, CheckCircle } from "lucide-react";
+import { Search, Video, Phone, ExternalLink, Calendar, MessageSquare, CheckCircle, ChevronDown, HelpCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getSpecialistImage } from "@/lib/specialistImages";
 import { toast } from "sonner";
 import ugandaBadge from "@/assets/uganda-badge.png";
 import ghanaBadge from "@/assets/ghana-badge.png";
 import botswanaBadge from "@/assets/botswana-badge.png";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 interface Specialist {
   id: string;
@@ -31,18 +31,217 @@ interface Specialist {
   available_options: string[];
   image_url: string | null;
   country: string;
+  education?: string;
+  certifications?: string[];
+  bio?: string;
 }
+
+interface ProfessionalCategory {
+  id: string;
+  name: string;
+  description: string;
+  qualifications: string;
+  conditions: string[];
+  commonQuestions: string[];
+  keywords: string[];
+}
+
+const professionalCategories: ProfessionalCategory[] = [
+  {
+    id: "all",
+    name: "All Professionals",
+    description: "Browse all mental health professionals available on our platform.",
+    qualifications: "Various qualifications across different specializations.",
+    conditions: [],
+    commonQuestions: [],
+    keywords: []
+  },
+  {
+    id: "clinical-psychologist",
+    name: "Clinical Psychologists",
+    description: "Work with depression, anxiety, PTSD, and other mental disorders, helping people cope and improve mental functioning.",
+    qualifications: "Master's or PhD in Clinical Psychology",
+    conditions: ["Depression", "Anxiety disorders", "PTSD", "Personality disorders", "Severe mental illness"],
+    commonQuestions: ["Why do I feel sad all the time?", "How do I know if I have depression?", "Can therapy help with trauma?"],
+    keywords: ["clinical psychology", "phd", "master's psychology", "depression", "anxiety", "ptsd"]
+  },
+  {
+    id: "counselling-psychologist",
+    name: "Counselling Psychologists",
+    description: "Help with emotional stress, relationship problems, grief, and life changes.",
+    qualifications: "Bachelor's or Master's in Counselling Psychology",
+    conditions: ["Emotional stress", "Relationship problems", "Grief", "Life transitions", "Self-esteem issues"],
+    commonQuestions: ["How do I cope with a breakup?", "Why can't I move on from loss?", "How do I handle major life changes?"],
+    keywords: ["counselling psychology", "counseling psychology", "bachelor psychology", "relationship", "grief"]
+  },
+  {
+    id: "psychotherapist",
+    name: "Psychotherapists",
+    description: "Treat depression, anxiety, trauma, phobias, and obsessive behaviors using therapy techniques like CBT, DBT, or trauma-focused therapy.",
+    qualifications: "Training/certification in specific therapy approaches (CBT, DBT, etc.)",
+    conditions: ["Depression", "Anxiety", "Trauma", "Phobias", "OCD", "Obsessive behaviors"],
+    commonQuestions: ["What is CBT and how does it work?", "Can therapy cure my anxiety?", "How long does psychotherapy take?"],
+    keywords: ["psychotherapist", "cbt", "dbt", "trauma therapy", "phobia"]
+  },
+  {
+    id: "psychiatric-nurse",
+    name: "Psychiatric Nurses / Clinical Officers",
+    description: "Work with severe mental illness such as schizophrenia or bipolar disorder, often in hospital or clinical settings.",
+    qualifications: "Nursing degree with psychiatric specialization, or Clinical Officer with psychiatry training",
+    conditions: ["Schizophrenia", "Bipolar disorder", "Severe mental illness", "Psychosis"],
+    commonQuestions: ["What are the signs of bipolar disorder?", "How is schizophrenia treated?", "Do I need hospitalization?"],
+    keywords: ["psychiatric nurse", "clinical officer", "psychiatry training", "nursing", "schizophrenia", "bipolar"]
+  },
+  {
+    id: "psychiatrist",
+    name: "Psychiatrists",
+    description: "Diagnose and treat serious mental disorders with medication and therapy, including psychosis, bipolar disorder, and severe anxiety.",
+    qualifications: "Medical degree (MBChB/MD) plus Masters in Psychiatry",
+    conditions: ["Psychosis", "Bipolar disorder", "Severe anxiety", "Major depression", "Medication management"],
+    commonQuestions: ["Do I need medication for my condition?", "What's the difference between a psychiatrist and psychologist?", "Can mental illness be cured?"],
+    keywords: ["psychiatrist", "mbchb", "md", "medical doctor", "psychiatry", "medication"]
+  },
+  {
+    id: "addiction-counsellor",
+    name: "Addiction Counsellors / Substance Use Specialists",
+    description: "Support individuals struggling with alcohol, drugs, or behavioral addictions and guide recovery.",
+    qualifications: "Certification in addiction counseling, motivational interviewing, or detox support",
+    conditions: ["Alcohol addiction", "Drug addiction", "Behavioral addictions", "Recovery support", "Relapse prevention"],
+    commonQuestions: ["Am I addicted?", "How do I quit drinking?", "What is the first step to recovery?"],
+    keywords: ["addiction", "substance", "alcohol", "drug", "recovery", "detox", "motivational interviewing"]
+  },
+  {
+    id: "social-worker",
+    name: "Social Workers / Psychosocial Support",
+    description: "Assist in crisis situations, child protection, domestic violence cases, and community wellbeing.",
+    qualifications: "Bachelor's or Master's in Social Work or related field",
+    conditions: ["Crisis situations", "Child protection", "Domestic violence", "Community support", "Family welfare"],
+    commonQuestions: ["Where can I get help for domestic violence?", "How do I report child abuse?", "What support is available for my family?"],
+    keywords: ["social work", "psychosocial", "child protection", "domestic violence", "community"]
+  },
+  {
+    id: "child-psychologist",
+    name: "Child & Adolescent Counselors / Psychologists",
+    description: "Address behavioral problems, trauma, school difficulties, and emotional challenges in children and teens.",
+    qualifications: "Master's in Child Psychology, Counseling, or related field",
+    conditions: ["Behavioral problems", "Childhood trauma", "School difficulties", "ADHD", "Teen depression", "Anxiety in children"],
+    commonQuestions: ["Why is my child acting out?", "How do I help my teenager with anxiety?", "Is my child's behavior normal?"],
+    keywords: ["child psychology", "adolescent", "children", "teen", "youth", "behavioral", "school"]
+  },
+  {
+    id: "family-therapist",
+    name: "Family & Marriage Therapists",
+    description: "Help couples and families improve communication, resolve conflicts, and strengthen relationships.",
+    qualifications: "Certification or Master's in Family/Marriage Therapy",
+    conditions: ["Marriage problems", "Family conflicts", "Communication issues", "Divorce", "Blended families"],
+    commonQuestions: ["Can couples therapy save my marriage?", "How do we communicate better?", "Should we stay together for the kids?"],
+    keywords: ["family therapy", "marriage", "couples", "relationship", "communication", "conflict"]
+  },
+  {
+    id: "trauma-practitioner",
+    name: "Trauma-Informed Practitioners",
+    description: "Work with people recovering from trauma, abuse, accidents, or violence.",
+    qualifications: "Certification in Trauma-Informed Care (TIC), TF-CBT, or survivor support programs",
+    conditions: ["Trauma recovery", "Abuse survivors", "Accident trauma", "Violence survivors", "PTSD"],
+    commonQuestions: ["How do I heal from trauma?", "Will I ever feel normal again?", "Why do I have flashbacks?"],
+    keywords: ["trauma", "abuse", "survivor", "tf-cbt", "trauma-informed", "violence"]
+  },
+  {
+    id: "school-counsellor",
+    name: "School Guidance Counselors",
+    description: "Support students with academic challenges, career guidance, personal issues, and school adjustment.",
+    qualifications: "Degree in Educational Psychology, Counseling, or related field",
+    conditions: ["Academic challenges", "Career guidance", "School adjustment", "Bullying", "Student stress"],
+    commonQuestions: ["What career should I choose?", "How do I deal with exam stress?", "My child is being bullied, what do I do?"],
+    keywords: ["school", "guidance", "education", "academic", "career", "student"]
+  },
+  {
+    id: "occupational-therapist",
+    name: "Occupational Therapists (Mental Health)",
+    description: "Help people regain daily life skills affected by mental illness, trauma, or disability.",
+    qualifications: "Bachelor's or Master's in Occupational Therapy",
+    conditions: ["Daily living skills", "Mental illness recovery", "Disability support", "Work rehabilitation"],
+    commonQuestions: ["How can I get back to normal life?", "What activities can help my recovery?", "How do I manage daily tasks with my condition?"],
+    keywords: ["occupational therapy", "daily living", "rehabilitation", "disability"]
+  },
+  {
+    id: "behavioural-therapist",
+    name: "Behavioural Therapists",
+    description: "Focus on changing harmful behaviors such as aggression, compulsions, or bad habits in children and adults.",
+    qualifications: "Certification in Behavioral Therapy; Psychology degree preferred",
+    conditions: ["Aggression", "Compulsive behaviors", "Bad habits", "Behavioral disorders", "Anger management"],
+    commonQuestions: ["How do I control my anger?", "Why can't I stop my bad habits?", "Can behavior therapy help my child?"],
+    keywords: ["behavioral therapy", "behaviour", "aggression", "habits", "anger", "compulsive"]
+  },
+  {
+    id: "peer-support",
+    name: "Peer Support Specialists / Recovery Coaches",
+    description: "Guide and support others through recovery by sharing lived experience.",
+    qualifications: "Certification in peer support or recovery coaching",
+    conditions: ["Recovery support", "Peer mentoring", "Lived experience support", "Community recovery"],
+    commonQuestions: ["How did you overcome your challenges?", "Can someone who's been through this help me?", "What is peer support?"],
+    keywords: ["peer support", "recovery coach", "lived experience", "peer"]
+  },
+  {
+    id: "life-coach",
+    name: "Life / Wellness Coaches",
+    description: "Support stress management, personal growth, life balance, and healthy habits.",
+    qualifications: "Certified Life Coach or Wellness Coach programs",
+    conditions: ["Stress management", "Personal growth", "Life balance", "Goal setting", "Healthy habits"],
+    commonQuestions: ["How do I achieve work-life balance?", "What are my life goals?", "How do I develop better habits?"],
+    keywords: ["life coach", "wellness coach", "personal growth", "stress management", "goals"]
+  },
+  {
+    id: "program-manager",
+    name: "Mental Health Program Managers",
+    description: "Oversee mental health programs in communities or organizations and ensure proper care delivery.",
+    qualifications: "Degree in Public Health, Psychology, Social Work, or related field",
+    conditions: ["Program development", "Community mental health", "Organizational wellness", "Care coordination"],
+    commonQuestions: ["How do I set up a mental health program?", "What resources are available for communities?"],
+    keywords: ["program manager", "public health", "community", "organizational", "mhpss"]
+  },
+  {
+    id: "crisis-counsellor",
+    name: "Crisis Counselors / Suicide Prevention Specialists",
+    description: "Provide immediate support to people in crisis, suicidal thoughts, or emergencies.",
+    qualifications: "Certification in crisis counseling, suicide prevention, or mental health",
+    conditions: ["Crisis intervention", "Suicidal thoughts", "Emergency support", "Self-harm"],
+    commonQuestions: ["I'm having suicidal thoughts, what do I do?", "How do I help someone in crisis?", "Is there hope for me?"],
+    keywords: ["crisis", "suicide prevention", "emergency", "self-harm", "intervention"]
+  },
+  {
+    id: "rehabilitation-counsellor",
+    name: "Rehabilitation Counselors",
+    description: "Help people recovering from injury, illness, or long-term disability regain independence.",
+    qualifications: "Master's in Rehabilitation Counseling or related field",
+    conditions: ["Injury recovery", "Illness recovery", "Disability independence", "Vocational rehabilitation"],
+    commonQuestions: ["How do I get back to work after my illness?", "Can I live independently again?", "What support is available for my disability?"],
+    keywords: ["rehabilitation", "injury", "disability", "vocational", "recovery"]
+  },
+  {
+    id: "neuropsychologist",
+    name: "Neuropsychologists",
+    description: "Assess and treat cognitive or brain-related problems like memory loss, attention difficulties, or effects of brain injury.",
+    qualifications: "Master's or PhD in Neuropsychology or Clinical Neuropsychology",
+    conditions: ["Memory loss", "Attention difficulties", "Brain injury", "Cognitive problems", "Dementia"],
+    commonQuestions: ["Why am I forgetting things?", "Did my head injury affect my brain?", "Can cognitive problems be treated?"],
+    keywords: ["neuropsychology", "brain", "memory", "cognitive", "attention", "dementia"]
+  },
+  {
+    id: "counsellor",
+    name: "Counsellors",
+    description: "Help people cope with emotional, behavioral, and personal issues. They provide support for stress, grief, relationship problems, life transitions, low self-esteem, and everyday mental health challenges.",
+    qualifications: "Bachelor's or Master's in Counselling, Psychology, or related fields, often with additional certification in counseling skills",
+    conditions: ["Stress", "Grief", "Relationship problems", "Life transitions", "Low self-esteem", "Everyday challenges"],
+    commonQuestions: ["How do I deal with stress?", "Why do I feel so down?", "How can I improve my self-esteem?"],
+    keywords: ["counsellor", "counselor", "counselling", "counseling", "stress", "grief", "self-esteem"]
+  }
+];
 
 const countryBadges: Record<string, string> = {
   Uganda: ugandaBadge,
   Ghana: ghanaBadge,
   Botswana: botswanaBadge,
-};
-
-const typeDescriptions = {
-  therapist: "Therapists are licensed professionals who help individuals navigate emotional, mental, and behavioral challenges through various therapeutic techniques. Therapists focus on addressing issues like anxiety, depression, and trauma to improve overall mental well-being.",
-  psychotherapist: "Psychotherapists are highly trained mental health professionals who use evidence-based psychological methods to treat complex mental health conditions. They specialize in deep therapeutic work for personality disorders, severe trauma, and chronic mental health issues.",
-  counselor: "Counselors provide guidance and support for individuals facing life challenges, relationship issues, and emotional difficulties. They focus on helping clients develop coping strategies and make positive life changes through supportive conversations.",
 };
 
 const formatPrice = (price: number) => {
@@ -295,25 +494,31 @@ Please confirm availability. Thank you!`;
   );
 };
 
-const specialtyCategories = [
-  { label: "All", value: "" },
-  { label: "Child Psychology", value: "Child Psychology" },
-  { label: "Couples/Relationships", value: "Couples/Relationships" },
-  { label: "Families", value: "Families" },
-  { label: "Adolescents", value: "Adolescents" },
-  { label: "Sports Psychology", value: "Sports Psychology" },
-  { label: "Youth & Family", value: "Youth & Family" },
-  { label: "Corporate/Employees", value: "Corporate/Employees" },
-];
+// Function to match specialists to categories based on their profile
+const matchSpecialistToCategory = (specialist: Specialist, category: ProfessionalCategory): boolean => {
+  if (category.id === "all") return true;
+  
+  const searchableText = [
+    specialist.type,
+    specialist.bio || "",
+    specialist.education || "",
+    ...(specialist.certifications || []),
+    ...specialist.specialties
+  ].join(" ").toLowerCase();
+  
+  return category.keywords.some(keyword => searchableText.includes(keyword.toLowerCase()));
+};
 
 const Specialists = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeTab, setActiveTab] = useState("therapist");
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedCountry, setSelectedCountry] = useState("");
   const [specialists, setSpecialists] = useState<Specialist[]>([]);
   const [verifiedSpecialists, setVerifiedSpecialists] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
+  const [showQuestions, setShowQuestions] = useState(false);
+
+  const currentCategory = professionalCategories.find(c => c.id === selectedCategory) || professionalCategories[0];
 
   useEffect(() => {
     fetchSpecialists();
@@ -347,31 +552,27 @@ const Specialists = () => {
   };
 
   const filteredSpecialists = specialists.filter((specialist) => {
-    // When searching, show all types; otherwise filter by active tab (unless country is selected)
-    const matchesType = searchQuery !== "" ? true : (selectedCountry === "" ? specialist.type === activeTab : true);
+    const matchesCategory = matchSpecialistToCategory(specialist, currentCategory);
     const matchesSearch =
       searchQuery === "" ||
       specialist.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       specialist.specialties.some((s) => s.toLowerCase().includes(searchQuery.toLowerCase())) ||
       specialist.languages.some((l) => l.toLowerCase().includes(searchQuery.toLowerCase()));
-    const matchesCategory =
-      selectedCategory === "" ||
-      specialist.specialties.some((s) => s.toLowerCase().includes(selectedCategory.toLowerCase()));
     const matchesCountry =
       selectedCountry === "" ||
       specialist.country === selectedCountry;
-    return matchesType && matchesSearch && matchesCategory && matchesCountry;
+    return matchesCategory && matchesSearch && matchesCountry;
   });
 
   return (
     <>
       <Helmet>
-        <title>Our Specialists - Therapists, Counselors & Psychotherapists | Innerspark Africa</title>
+        <title>Our Specialists - Mental Health Professionals | Innerspark Africa</title>
         <meta
           name="description"
-          content="Discover our diverse team of certified specialists ready to support your mental health journey. From experienced therapists and compassionate counselors to trusted psychotherapists."
+          content="Find qualified mental health professionals including psychologists, counselors, psychiatrists, therapists, and more. Get help for depression, anxiety, trauma, relationships, and life challenges."
         />
-        <meta name="keywords" content="therapists Uganda, counselors Uganda, psychotherapists, mental health specialists, online therapy, virtual counseling" />
+        <meta name="keywords" content="psychologists Uganda, counselors, psychiatrists, therapists, mental health professionals, online therapy, virtual counseling Africa" />
       </Helmet>
 
       <Header />
@@ -381,133 +582,152 @@ const Specialists = () => {
         <section className="bg-gradient-to-br from-primary/10 via-background to-secondary/10 py-16 md:py-24">
           <div className="container mx-auto px-4 text-center">
             <h1 className="text-3xl md:text-5xl font-bold text-foreground mb-6">
-              <T>Meet Our</T> <span className="text-primary"><T>Specialists</T></span>
+              <T>Find Your</T> <span className="text-primary"><T>Mental Health Professional</T></span>
             </h1>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-8">
-              <T>Discover our diverse team of certified specialists ready to support your mental health journey. From experienced therapists and compassionate counselors to trusted psychotherapists, browse through profiles to find the right professional for you.</T>
+              <T>Browse our network of qualified professionals including psychologists, counselors, psychiatrists, and specialized therapists. Find the right expert for your unique needs.</T>
             </p>
           </div>
         </section>
 
-        {/* Tabs and Search */}
+        {/* Filters Section */}
         <section className="py-8 border-b border-border bg-card/50">
           <div className="container mx-auto px-4">
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-                <TabsList className="bg-muted/50 p-1">
-                  <TabsTrigger value="therapist" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                    Therapists
-                  </TabsTrigger>
-                  <TabsTrigger value="psychotherapist" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                    Psychotherapists
-                  </TabsTrigger>
-                  <TabsTrigger value="counselor" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                    Counselors
-                  </TabsTrigger>
-                </TabsList>
+            {/* Search and Country Filter */}
+            <div className="flex flex-col md:flex-row md:items-center gap-4 mb-6">
+              <div className="relative flex-1 max-w-md">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search by name or specialty..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+              
+              <Select value={selectedCountry || "all"} onValueChange={(val) => setSelectedCountry(val === "all" ? "" : val)}>
+                <SelectTrigger className="w-[160px] bg-background">
+                  <SelectValue placeholder="All Countries" />
+                </SelectTrigger>
+                <SelectContent className="bg-background border border-border z-50">
+                  <SelectItem value="all">All Countries</SelectItem>
+                  <SelectItem value="Uganda">
+                    <span className="flex items-center gap-2">
+                      <img src={ugandaBadge} alt="Uganda" className="w-4 h-4" />
+                      Uganda
+                    </span>
+                  </SelectItem>
+                  <SelectItem value="Ghana">
+                    <span className="flex items-center gap-2">
+                      <img src={ghanaBadge} alt="Ghana" className="w-4 h-4" />
+                      Ghana
+                    </span>
+                  </SelectItem>
+                  <SelectItem value="Botswana">
+                    <span className="flex items-center gap-2">
+                      <img src={botswanaBadge} alt="Botswana" className="w-4 h-4" />
+                      Botswana
+                    </span>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
 
-                <div className="flex items-center gap-3">
-                  <div className="relative max-w-md w-full">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                    <Input
-                      placeholder="Search for a therapist or specialty..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-10"
-                    />
+            {/* Category Dropdown */}
+            <div className="mb-6">
+              <Label className="text-sm font-medium mb-2 block">Select Professional Type</Label>
+              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                <SelectTrigger className="w-full md:w-[400px] bg-background">
+                  <SelectValue placeholder="All Professionals" />
+                </SelectTrigger>
+                <SelectContent className="bg-background border border-border z-50 max-h-[400px]">
+                  {professionalCategories.map((category) => (
+                    <SelectItem key={category.id} value={category.id}>
+                      {category.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Category Description Card */}
+            {currentCategory && currentCategory.id !== "all" && (
+              <div className="bg-gradient-to-r from-primary/5 to-secondary/5 rounded-xl p-6 mb-6 border border-primary/20">
+                <h2 className="font-bold text-xl text-foreground mb-3">{currentCategory.name}</h2>
+                <p className="text-muted-foreground mb-4">{currentCategory.description}</p>
+                
+                <div className="grid md:grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <h3 className="font-semibold text-sm text-foreground mb-2">Qualifications</h3>
+                    <p className="text-sm text-muted-foreground">{currentCategory.qualifications}</p>
                   </div>
-                  <Select value={selectedCountry || "all"} onValueChange={(val) => setSelectedCountry(val === "all" ? "" : val)}>
-                    <SelectTrigger className="w-[160px] bg-background">
-                      <SelectValue placeholder="All Countries" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-background border border-border z-50">
-                      <SelectItem value="all">All Countries</SelectItem>
-                      <SelectItem value="Uganda">
-                        <span className="flex items-center gap-2">
-                          <img src={ugandaBadge} alt="Uganda" className="w-4 h-4" />
-                          Uganda
-                        </span>
-                      </SelectItem>
-                      <SelectItem value="Ghana">
-                        <span className="flex items-center gap-2">
-                          <img src={ghanaBadge} alt="Ghana" className="w-4 h-4" />
-                          Ghana
-                        </span>
-                      </SelectItem>
-                      <SelectItem value="Botswana">
-                        <span className="flex items-center gap-2">
-                          <img src={botswanaBadge} alt="Botswana" className="w-4 h-4" />
-                          Botswana
-                        </span>
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <div>
+                    <h3 className="font-semibold text-sm text-foreground mb-2">Conditions They Help With</h3>
+                    <div className="flex flex-wrap gap-1.5">
+                      {currentCategory.conditions.slice(0, 5).map((condition, idx) => (
+                        <Badge key={idx} variant="secondary" className="text-xs">
+                          {condition}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-              </div>
 
-              {/* Category Filters */}
-              <div className="flex flex-wrap gap-2 mb-6">
-                {specialtyCategories.map((category) => (
-                  <Button
-                    key={category.value}
-                    variant={selectedCategory === category.value ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setSelectedCategory(category.value)}
-                    className="rounded-full"
-                  >
-                    {category.label}
-                  </Button>
-                ))}
+                {currentCategory.commonQuestions.length > 0 && (
+                  <Collapsible open={showQuestions} onOpenChange={setShowQuestions}>
+                    <CollapsibleTrigger asChild>
+                      <Button variant="ghost" size="sm" className="gap-2 text-primary hover:text-primary/80">
+                        <HelpCircle className="w-4 h-4" />
+                        Common questions people ask
+                        <ChevronDown className={`w-4 h-4 transition-transform ${showQuestions ? 'rotate-180' : ''}`} />
+                      </Button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="mt-3">
+                      <ul className="space-y-2">
+                        {currentCategory.commonQuestions.map((question, idx) => (
+                          <li key={idx} className="text-sm text-muted-foreground flex items-start gap-2">
+                            <span className="text-primary">•</span>
+                            "{question}"
+                          </li>
+                        ))}
+                      </ul>
+                    </CollapsibleContent>
+                  </Collapsible>
+                )}
               </div>
+            )}
 
-              {/* Type Description */}
-              <div className="bg-muted/30 rounded-lg p-4 mb-8">
-                <h2 className="font-semibold text-foreground mb-2 capitalize">{activeTab}s</h2>
-                <p className="text-sm text-muted-foreground">
-                  {typeDescriptions[activeTab as keyof typeof typeDescriptions]}
-                </p>
+            {/* Results count */}
+            <p className="text-sm text-muted-foreground mb-4">
+              Showing {filteredSpecialists.length} professional{filteredSpecialists.length !== 1 ? 's' : ''}
+              {selectedCategory !== "all" && ` in ${currentCategory.name}`}
+              {selectedCountry && ` from ${selectedCountry}`}
+            </p>
+
+            {/* Loading State */}
+            {loading ? (
+              <div className="text-center py-12">
+                <div className="animate-pulse text-muted-foreground">Loading specialists...</div>
               </div>
-
-              {/* Loading State */}
-              {loading ? (
-                <div className="text-center py-12">
-                  <div className="animate-pulse text-muted-foreground">Loading specialists...</div>
+            ) : (
+              <>
+                {/* Specialists Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {filteredSpecialists.map((specialist) => (
+                    <SpecialistCard key={specialist.id} specialist={specialist} isVerified={verifiedSpecialists.has(specialist.id)} />
+                  ))}
                 </div>
-              ) : (
-                <>
-                  {/* Specialists Grid */}
-                  <TabsContent value="therapist" className="mt-0">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                      {filteredSpecialists.map((specialist) => (
-                        <SpecialistCard key={specialist.id} specialist={specialist} isVerified={verifiedSpecialists.has(specialist.id)} />
-                      ))}
-                    </div>
-                  </TabsContent>
 
-                  <TabsContent value="psychotherapist" className="mt-0">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                      {filteredSpecialists.map((specialist) => (
-                        <SpecialistCard key={specialist.id} specialist={specialist} isVerified={verifiedSpecialists.has(specialist.id)} />
-                      ))}
-                    </div>
-                  </TabsContent>
-
-                  <TabsContent value="counselor" className="mt-0">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                      {filteredSpecialists.map((specialist) => (
-                        <SpecialistCard key={specialist.id} specialist={specialist} isVerified={verifiedSpecialists.has(specialist.id)} />
-                      ))}
-                    </div>
-                  </TabsContent>
-
-                  {filteredSpecialists.length === 0 && (
-                    <div className="text-center py-12">
-                      <p className="text-muted-foreground">No specialists found matching your search.</p>
-                    </div>
-                  )}
-                </>
-              )}
-            </Tabs>
+                {filteredSpecialists.length === 0 && (
+                  <div className="text-center py-12">
+                    <p className="text-muted-foreground mb-4">No specialists found matching your criteria.</p>
+                    <Button variant="outline" onClick={() => { setSelectedCategory("all"); setSearchQuery(""); setSelectedCountry(""); }}>
+                      Clear Filters
+                    </Button>
+                  </div>
+                )}
+              </>
+            )}
           </div>
         </section>
 
