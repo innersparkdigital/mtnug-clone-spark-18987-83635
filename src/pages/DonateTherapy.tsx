@@ -1,10 +1,103 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import AppDownload from "@/components/AppDownload";
 import { Button } from "@/components/ui/button";
-import { DollarSign, Check, Heart } from "lucide-react";
+import { Check, Heart } from "lucide-react";
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
+
+interface DonationTier {
+  amount: string;
+  ugx: string;
+  title: string;
+  desc: string;
+}
+
+const donationTiers: DonationTier[] = [
+  { amount: "30,000", ugx: "UGX", title: "Support Session", desc: "Helps cover one chat therapy session" },
+  { amount: "75,000", ugx: "UGX", title: "Full Session", desc: "Funds one complete video therapy session" },
+  { amount: "300,000", ugx: "UGX", title: "Monthly Care", desc: "Provides a full month of therapy support" }
+];
+
+const paymentMethods = [
+  "Mobile Money (MTN)",
+  "Mobile Money (Airtel)",
+  "Bank Transfer",
+  "Cash",
+  "Other"
+];
 
 const DonateTherapy = () => {
+  const [selectedTier, setSelectedTier] = useState<DonationTier | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    paymentMethod: "",
+    message: ""
+  });
+  const { toast } = useToast();
+
+  const handleTierSelect = (tier: DonationTier) => {
+    setSelectedTier(tier);
+    setIsDialogOpen(true);
+  };
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!formData.name || !formData.phone || !formData.paymentMethod) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in all required fields.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Construct WhatsApp message
+    const message = `*New Therapy Donation Request*%0A%0A` +
+      `*Donation Tier:* ${selectedTier?.title} (${selectedTier?.amount} ${selectedTier?.ugx})%0A` +
+      `*Name:* ${formData.name}%0A` +
+      `*Phone:* ${formData.phone}%0A` +
+      `*Email:* ${formData.email || "Not provided"}%0A` +
+      `*Payment Method:* ${formData.paymentMethod}%0A` +
+      `*Message:* ${formData.message || "None"}`;
+
+    const whatsappUrl = `https://wa.me/256780570987?text=${message}`;
+    window.open(whatsappUrl, "_blank");
+
+    // Reset form and close dialog
+    setFormData({ name: "", phone: "", email: "", paymentMethod: "", message: "" });
+    setIsDialogOpen(false);
+    
+    toast({
+      title: "Thank You!",
+      description: "Your donation request has been sent. We'll follow up shortly."
+    });
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -21,10 +114,6 @@ const DonateTherapy = () => {
             <p className="text-xl text-muted-foreground mb-8">
               Help someone in need access mental health care through our community therapy fund. Your donation makes healing possible for those who can't afford it.
             </p>
-            <div className="flex gap-4 justify-center">
-              <Button size="lg">Donate Now</Button>
-              <Button size="lg" variant="outline">Learn More</Button>
-            </div>
           </div>
         </div>
       </section>
@@ -40,9 +129,9 @@ const DonateTherapy = () => {
                 "Fund therapy sessions for those in financial need",
                 "100% of donations go directly to therapy access",
                 "One-time or recurring donation options",
-                "Tax-deductible contributions",
                 "Transparent reporting on fund usage",
-                "Help break down barriers to mental healthcare"
+                "Help break down barriers to mental healthcare",
+                "Support someone's journey to healing"
               ].map((feature, index) => (
                 <div key={index} className="flex items-start gap-4">
                   <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center flex-shrink-0 mt-1">
@@ -63,18 +152,21 @@ const DonateTherapy = () => {
               Donation Tiers
             </h2>
             <div className="grid md:grid-cols-3 gap-8">
-              {[
-                { amount: "$25", title: "Support Session", desc: "Helps cover one chat therapy session" },
-                { amount: "$75", title: "Full Session", desc: "Funds one complete video therapy session" },
-                { amount: "$300", title: "Monthly Care", desc: "Provides a full month of therapy support" }
-              ].map((item) => (
-                <div key={item.amount} className="text-center p-6 bg-background rounded-lg border border-border">
-                  <div className="text-3xl font-bold text-primary mb-2">
-                    {item.amount}
+              {donationTiers.map((tier) => (
+                <div key={tier.title} className="text-center p-6 bg-background rounded-lg border border-border hover:border-primary transition-colors">
+                  <div className="text-3xl font-bold text-primary mb-1">
+                    {tier.amount}
                   </div>
-                  <h3 className="font-semibold text-lg mb-2 text-foreground">{item.title}</h3>
-                  <p className="text-muted-foreground mb-4">{item.desc}</p>
-                  <Button variant="outline" className="w-full">Select</Button>
+                  <div className="text-sm text-muted-foreground mb-3">{tier.ugx}</div>
+                  <h3 className="font-semibold text-lg mb-2 text-foreground">{tier.title}</h3>
+                  <p className="text-muted-foreground mb-4">{tier.desc}</p>
+                  <Button 
+                    variant="outline" 
+                    className="w-full hover:bg-primary hover:text-primary-foreground"
+                    onClick={() => handleTierSelect(tier)}
+                  >
+                    Select
+                  </Button>
                 </div>
               ))}
             </div>
@@ -90,13 +182,102 @@ const DonateTherapy = () => {
           <p className="text-xl mb-8 opacity-90">
             Every contribution brings healing to someone in need
           </p>
-          <Button size="lg" variant="secondary">
+          <Button 
+            size="lg" 
+            variant="secondary"
+            onClick={() => handleTierSelect(donationTiers[1])}
+          >
             Make a Donation
           </Button>
         </div>
       </section>
 
-      {/* <AppDownload /> */}
+      {/* Donation Form Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Complete Your Donation</DialogTitle>
+            <DialogDescription>
+              {selectedTier && (
+                <span className="text-primary font-semibold">
+                  {selectedTier.title} - {selectedTier.amount} {selectedTier.ugx}
+                </span>
+              )}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+            <div className="space-y-2">
+              <Label htmlFor="name">Full Name *</Label>
+              <Input
+                id="name"
+                placeholder="Enter your full name"
+                value={formData.name}
+                onChange={(e) => handleInputChange("name", e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="phone">Phone Number *</Label>
+              <Input
+                id="phone"
+                type="tel"
+                placeholder="e.g., 0780123456"
+                value={formData.phone}
+                onChange={(e) => handleInputChange("phone", e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="email">Email (Optional)</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="your@email.com"
+                value={formData.email}
+                onChange={(e) => handleInputChange("email", e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="paymentMethod">Mode of Payment *</Label>
+              <Select 
+                value={formData.paymentMethod} 
+                onValueChange={(value) => handleInputChange("paymentMethod", value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select payment method" />
+                </SelectTrigger>
+                <SelectContent>
+                  {paymentMethods.map((method) => (
+                    <SelectItem key={method} value={method}>
+                      {method}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="message">Message (Optional)</Label>
+              <Textarea
+                id="message"
+                placeholder="Any message or dedication for your donation..."
+                value={formData.message}
+                onChange={(e) => handleInputChange("message", e.target.value)}
+                rows={3}
+              />
+            </div>
+
+            <Button type="submit" className="w-full">
+              Submit & Contact via WhatsApp
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
+
       <Footer />
     </div>
   );
