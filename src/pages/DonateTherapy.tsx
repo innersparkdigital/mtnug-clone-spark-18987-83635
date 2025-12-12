@@ -32,7 +32,8 @@ interface DonationTier {
 const donationTiers: DonationTier[] = [
   { amount: "30,000", ugx: "UGX", title: "Support Session", desc: "Helps cover one chat therapy session" },
   { amount: "75,000", ugx: "UGX", title: "Full Session", desc: "Funds one complete video therapy session" },
-  { amount: "300,000", ugx: "UGX", title: "Monthly Care", desc: "Provides a full month of therapy support" }
+  { amount: "300,000", ugx: "UGX", title: "Monthly Care", desc: "Provides a full month of therapy support" },
+  { amount: "custom", ugx: "UGX", title: "Custom Amount", desc: "Enter your own donation amount" }
 ];
 
 const paymentMethods = [
@@ -46,6 +47,7 @@ const paymentMethods = [
 const DonateTherapy = () => {
   const [selectedTier, setSelectedTier] = useState<DonationTier | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [customAmount, setCustomAmount] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -57,8 +59,13 @@ const DonateTherapy = () => {
 
   const handleTierSelect = (tier: DonationTier) => {
     setSelectedTier(tier);
+    if (tier.amount !== "custom") {
+      setCustomAmount("");
+    }
     setIsDialogOpen(true);
   };
+
+  const isCustomTier = selectedTier?.amount === "custom";
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -76,9 +83,19 @@ const DonateTherapy = () => {
       return;
     }
 
+    if (isCustomTier && !customAmount) {
+      toast({
+        title: "Missing Amount",
+        description: "Please enter your custom donation amount.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     // Construct WhatsApp message
+    const displayAmount = isCustomTier ? customAmount : selectedTier?.amount;
     const message = `*New Therapy Donation Request*%0A%0A` +
-      `*Donation Tier:* ${selectedTier?.title} (${selectedTier?.amount} ${selectedTier?.ugx})%0A` +
+      `*Donation Tier:* ${selectedTier?.title} (${displayAmount} ${selectedTier?.ugx})%0A` +
       `*Name:* ${formData.name}%0A` +
       `*Phone:* ${formData.phone}%0A` +
       `*Email:* ${formData.email || "Not provided"}%0A` +
@@ -90,6 +107,7 @@ const DonateTherapy = () => {
 
     // Reset form and close dialog
     setFormData({ name: "", phone: "", email: "", paymentMethod: "", message: "" });
+    setCustomAmount("");
     setIsDialogOpen(false);
     
     toast({
@@ -151,21 +169,21 @@ const DonateTherapy = () => {
             <h2 className="text-3xl font-bold mb-12 text-center text-foreground">
               Donation Tiers
             </h2>
-            <div className="grid md:grid-cols-3 gap-8">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               {donationTiers.map((tier) => (
-                <div key={tier.title} className="text-center p-6 bg-background rounded-lg border border-border hover:border-primary transition-colors">
+                <div key={tier.title} className={`text-center p-6 bg-background rounded-lg border transition-colors ${tier.amount === "custom" ? "border-primary/50 bg-primary/5" : "border-border hover:border-primary"}`}>
                   <div className="text-3xl font-bold text-primary mb-1">
-                    {tier.amount}
+                    {tier.amount === "custom" ? "Your Choice" : tier.amount}
                   </div>
                   <div className="text-sm text-muted-foreground mb-3">{tier.ugx}</div>
                   <h3 className="font-semibold text-lg mb-2 text-foreground">{tier.title}</h3>
                   <p className="text-muted-foreground mb-4">{tier.desc}</p>
                   <Button 
-                    variant="outline" 
-                    className="w-full hover:bg-primary hover:text-primary-foreground"
+                    variant={tier.amount === "custom" ? "default" : "outline"}
+                    className={tier.amount === "custom" ? "w-full" : "w-full hover:bg-primary hover:text-primary-foreground"}
                     onClick={() => handleTierSelect(tier)}
                   >
-                    Select
+                    {tier.amount === "custom" ? "Enter Amount" : "Select"}
                   </Button>
                 </div>
               ))}
@@ -198,7 +216,7 @@ const DonateTherapy = () => {
           <DialogHeader>
             <DialogTitle>Complete Your Donation</DialogTitle>
             <DialogDescription>
-              {selectedTier && (
+              {selectedTier && !isCustomTier && (
                 <span className="text-primary font-semibold">
                   {selectedTier.title} - {selectedTier.amount} {selectedTier.ugx}
                 </span>
@@ -207,6 +225,20 @@ const DonateTherapy = () => {
           </DialogHeader>
           
           <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+            {isCustomTier && (
+              <div className="space-y-2">
+                <Label htmlFor="customAmount">Donation Amount (UGX) *</Label>
+                <Input
+                  id="customAmount"
+                  type="text"
+                  placeholder="e.g., 50,000"
+                  value={customAmount}
+                  onChange={(e) => setCustomAmount(e.target.value)}
+                  required
+                />
+              </div>
+            )}
+
             <div className="space-y-2">
               <Label htmlFor="name">Full Name *</Label>
               <Input
