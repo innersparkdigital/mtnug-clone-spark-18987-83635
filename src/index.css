@@ -2,6 +2,49 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Google Translate Widget Styles */
+.google-translate-container {
+  display: inline-block;
+}
+
+.google-translate-container .goog-te-gadget {
+  font-family: inherit !important;
+  font-size: 0 !important;
+}
+
+.google-translate-container .goog-te-gadget-simple {
+  background-color: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  font-size: 14px !important;
+}
+
+.google-translate-container .goog-te-gadget-simple span {
+  color: inherit !important;
+  border: none !important;
+}
+
+.google-translate-container .goog-te-gadget-simple .goog-te-menu-value {
+  color: inherit !important;
+}
+
+.google-translate-container .goog-te-gadget-simple .goog-te-menu-value span:first-child {
+  display: none !important;
+}
+
+.google-translate-container .goog-te-gadget-icon {
+  display: none !important;
+}
+
+/* Hide Google Translate top bar */
+.goog-te-banner-frame {
+  display: none !important;
+}
+
+body {
+  top: 0 !important;
+}
+
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
 All colors MUST be HSL.
 */
