@@ -11,7 +11,7 @@ const specialistImageMap: Record<string, string> = {
   "Nakayinga Gift": giftNakayinga,
   "Nanzige Jannet": nanzigeJannet,
   "Mirembe Norah": mirembeNorah,
-  "Pamela Kanyange Mary": pamelaKanyange,
+  "Kanyange Pamela Mary": pamelaKanyange,
 };
 
 export const getSpecialistImage = (name: string, imageUrl?: string | null): string | null => {
