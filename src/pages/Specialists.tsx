@@ -67,25 +67,25 @@ const pricingTiers: PricingTier[] = [
   {
     id: "affordable",
     name: "Affordable Emotional Support",
-    label: "10K - 30K UGX",
+    label: "30K - 50K UGX",
     description: "Entry-level support from peer specialists and certificate counsellors with up to 2 years experience",
-    priceRange: { min: 10000, max: 30000 },
+    priceRange: { min: 30000, max: 50000 },
     whoFits: ["Peer Support Specialists", "Certificate Counsellors", "< 2 years experience"]
   },
   {
     id: "professional",
     name: "Professional Counselling",
-    label: "30K - 80K UGX",
+    label: "50K - 100K UGX",
     description: "Mid-level practitioners including diploma/bachelor counsellors, social workers, and psychiatric nurses with 2-5 years experience",
-    priceRange: { min: 30001, max: 80000 },
+    priceRange: { min: 50001, max: 100000 },
     whoFits: ["Diploma/Bachelor Counsellors", "Social Workers", "Psychiatric Nurses", "2-5 years experience"]
   },
   {
     id: "advanced",
     name: "Advanced Therapy",
-    label: "80K - 150K UGX",
+    label: "100K - 150K UGX",
     description: "Senior professionals including Master's-level psychologists and counselling psychologists with 5+ years experience",
-    priceRange: { min: 80001, max: 150000 },
+    priceRange: { min: 100001, max: 150000 },
     whoFits: ["Master's-level Psychologists", "Counselling Psychologists", "5+ years experience"]
   },
   {
