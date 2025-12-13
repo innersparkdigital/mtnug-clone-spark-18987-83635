@@ -46,6 +46,58 @@ interface ProfessionalCategory {
   keywords: string[];
 }
 
+interface PricingTier {
+  id: string;
+  name: string;
+  label: string;
+  description: string;
+  priceRange: { min: number; max: number };
+  whoFits: string[];
+}
+
+const pricingTiers: PricingTier[] = [
+  {
+    id: "all",
+    name: "All Price Ranges",
+    label: "All",
+    description: "Browse all professionals across all pricing levels",
+    priceRange: { min: 0, max: Infinity },
+    whoFits: []
+  },
+  {
+    id: "affordable",
+    name: "Affordable Emotional Support",
+    label: "10K - 30K UGX",
+    description: "Entry-level support from peer specialists and certificate counsellors with up to 2 years experience",
+    priceRange: { min: 10000, max: 30000 },
+    whoFits: ["Peer Support Specialists", "Certificate Counsellors", "< 2 years experience"]
+  },
+  {
+    id: "professional",
+    name: "Professional Counselling",
+    label: "30K - 80K UGX",
+    description: "Mid-level practitioners including diploma/bachelor counsellors, social workers, and psychiatric nurses with 2-5 years experience",
+    priceRange: { min: 30001, max: 80000 },
+    whoFits: ["Diploma/Bachelor Counsellors", "Social Workers", "Psychiatric Nurses", "2-5 years experience"]
+  },
+  {
+    id: "advanced",
+    name: "Advanced Therapy",
+    label: "80K - 150K UGX",
+    description: "Senior professionals including Master's-level psychologists and counselling psychologists with 5+ years experience",
+    priceRange: { min: 80001, max: 150000 },
+    whoFits: ["Master's-level Psychologists", "Counselling Psychologists", "5+ years experience"]
+  },
+  {
+    id: "specialist",
+    name: "Specialist Psychiatric Care",
+    label: "150K - 300K UGX",
+    description: "Medical specialists including psychiatrists and medical doctors with psychiatry training",
+    priceRange: { min: 150001, max: 300000 },
+    whoFits: ["Psychiatrists", "Medical Doctors with Psychiatry training"]
+  }
+];
+
 const professionalCategories: ProfessionalCategory[] = [
   {
     id: "all",
@@ -513,12 +565,14 @@ const Specialists = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedCountry, setSelectedCountry] = useState("");
+  const [selectedPricingTier, setSelectedPricingTier] = useState("all");
   const [specialists, setSpecialists] = useState<Specialist[]>([]);
   const [verifiedSpecialists, setVerifiedSpecialists] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [showQuestions, setShowQuestions] = useState(false);
 
   const currentCategory = professionalCategories.find(c => c.id === selectedCategory) || professionalCategories[0];
+  const currentPricingTier = pricingTiers.find(t => t.id === selectedPricingTier) || pricingTiers[0];
 
   useEffect(() => {
     fetchSpecialists();
@@ -561,7 +615,11 @@ const Specialists = () => {
     const matchesCountry =
       selectedCountry === "" ||
       specialist.country === selectedCountry;
-    return matchesCategory && matchesSearch && matchesCountry;
+    const matchesPricingTier =
+      selectedPricingTier === "all" ||
+      (specialist.price_per_hour >= currentPricingTier.priceRange.min &&
+       specialist.price_per_hour <= currentPricingTier.priceRange.max);
+    return matchesCategory && matchesSearch && matchesCountry && matchesPricingTier;
   });
 
   return (
@@ -632,6 +690,51 @@ const Specialists = () => {
                 </SelectContent>
               </Select>
             </div>
+
+            {/* Pricing Tier Cards */}
+            <div className="mb-6">
+              <Label className="text-sm font-medium mb-3 block">Filter by Affordability</Label>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+                {pricingTiers.map((tier) => (
+                  <button
+                    key={tier.id}
+                    onClick={() => setSelectedPricingTier(tier.id)}
+                    className={`p-4 rounded-xl border-2 transition-all text-left ${
+                      selectedPricingTier === tier.id
+                        ? "border-primary bg-primary/10 shadow-md"
+                        : "border-border bg-card hover:border-primary/50 hover:bg-primary/5"
+                    }`}
+                  >
+                    <div className="font-semibold text-sm text-foreground mb-1">{tier.name}</div>
+                    {tier.id !== "all" && (
+                      <div className="text-xs text-primary font-medium">{tier.label}</div>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Selected Pricing Tier Info */}
+            {currentPricingTier && currentPricingTier.id !== "all" && (
+              <div className="bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-xl p-4 mb-6 border border-green-500/20">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center shrink-0">
+                    <span className="text-green-600 font-bold text-sm">💰</span>
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-foreground">{currentPricingTier.name}</h3>
+                    <p className="text-sm text-muted-foreground mb-2">{currentPricingTier.description}</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {currentPricingTier.whoFits.map((fit, idx) => (
+                        <Badge key={idx} variant="secondary" className="text-xs bg-green-500/10 text-green-700 border-green-500/20">
+                          {fit}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Category Dropdown */}
             <div className="mb-6">
@@ -721,7 +824,7 @@ const Specialists = () => {
                 {filteredSpecialists.length === 0 && (
                   <div className="text-center py-12">
                     <p className="text-muted-foreground mb-4">No specialists found matching your criteria.</p>
-                    <Button variant="outline" onClick={() => { setSelectedCategory("all"); setSearchQuery(""); setSelectedCountry(""); }}>
+                <Button variant="outline" onClick={() => { setSelectedCategory("all"); setSearchQuery(""); setSelectedCountry(""); setSelectedPricingTier("all"); }}>
                       Clear Filters
                     </Button>
                   </div>
