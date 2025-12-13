@@ -714,27 +714,6 @@ const Specialists = () => {
               </div>
             </div>
 
-            {/* Selected Pricing Tier Info */}
-            {currentPricingTier && currentPricingTier.id !== "all" && (
-              <div className="bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-xl p-4 mb-6 border border-green-500/20">
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center shrink-0">
-                    <span className="text-green-600 font-bold text-sm">💰</span>
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-foreground">{currentPricingTier.name}</h3>
-                    <p className="text-sm text-muted-foreground mb-2">{currentPricingTier.description}</p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {currentPricingTier.whoFits.map((fit, idx) => (
-                        <Badge key={idx} variant="secondary" className="text-xs bg-green-500/10 text-green-700 border-green-500/20">
-                          {fit}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
 
             {/* Category Dropdown */}
             <div className="mb-6">
