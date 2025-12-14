@@ -65,36 +65,36 @@ const pricingTiers: PricingTier[] = [
     whoFits: []
   },
   {
-    id: "affordable",
-    name: "Affordable Emotional Support",
-    label: "30K - 50K UGX",
-    description: "Entry-level support from peer specialists and certificate counsellors with up to 2 years experience",
-    priceRange: { min: 30000, max: 50000 },
-    whoFits: ["Peer Support Specialists", "Certificate Counsellors", "< 2 years experience"]
+    id: "entry",
+    name: "Entry Level Practitioners",
+    label: "50K UGX",
+    description: "Certificate/Diploma holders, Bachelor's with <2 years experience, peer support & junior nurses",
+    priceRange: { min: 40000, max: 60000 },
+    whoFits: ["Certificate/Diploma holders", "Bachelor's <2 years", "Peer Support", "Junior Nurses"]
   },
   {
-    id: "professional",
-    name: "Professional Counselling",
-    label: "50K - 100K UGX",
-    description: "Mid-level practitioners including diploma/bachelor counsellors, social workers, and psychiatric nurses with 2-5 years experience",
-    priceRange: { min: 50001, max: 100000 },
-    whoFits: ["Diploma/Bachelor Counsellors", "Social Workers", "Psychiatric Nurses", "2-5 years experience"]
+    id: "core",
+    name: "Core Practitioners",
+    label: "80K UGX",
+    description: "Diploma/Bachelor holders with 3-5 years experience, nurses, counsellors, social workers",
+    priceRange: { min: 60001, max: 100000 },
+    whoFits: ["Diploma/Bachelor Counsellors", "Social Workers", "Nurses", "3-5 years experience"]
   },
   {
     id: "advanced",
-    name: "Advanced Therapy",
-    label: "100K - 150K UGX",
-    description: "Senior professionals including Master's-level psychologists and counselling psychologists with 5+ years experience",
-    priceRange: { min: 100001, max: 150000 },
-    whoFits: ["Master's-level Psychologists", "Counselling Psychologists", "5+ years experience"]
+    name: "Advanced & Specialized",
+    label: "120K UGX",
+    description: "Master's degree or 6-10 years strong clinical experience, handles trauma, addiction, workplace mental health",
+    priceRange: { min: 100001, max: 140000 },
+    whoFits: ["Master's degree holders", "6-10 years experience", "Trauma specialists"]
   },
   {
-    id: "specialist",
-    name: "Specialist Psychiatric Care",
-    label: "150K - 300K UGX",
-    description: "Medical specialists including psychiatrists and medical doctors with psychiatry training",
-    priceRange: { min: 150001, max: 300000 },
-    whoFits: ["Psychiatrists", "Medical Doctors with Psychiatry training"]
+    id: "clinical",
+    name: "Clinical & Medical Specialists",
+    label: "150K+ UGX",
+    description: "Psychiatrists, Clinical Psychologists (Master's+), Senior clinicians (10+ years)",
+    priceRange: { min: 140001, max: 300000 },
+    whoFits: ["Psychiatrists", "Clinical Psychologists", "10+ years experience"]
   }
 ];
 
