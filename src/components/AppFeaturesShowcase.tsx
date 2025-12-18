@@ -1,6 +1,17 @@
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Smile, MessageCircle, Video, Users, Calendar, AlertTriangle, Search, Heart, Sparkles, Download } from "lucide-react";
-import { Button } from "@/components/ui/button";
+
+// Import mockup images
+import appHomeMockup from "@/assets/mockups/app-home.jpeg";
+import findTherapistsMockup from "@/assets/mockups/find-therapists.jpeg";
+import chatSessionMockup from "@/assets/mockups/chat-session.png";
+import supportGroupsMockup from "@/assets/mockups/support-groups.jpeg";
+import bookSessionMockup from "@/assets/mockups/book-session.jpeg";
+import emergencyHelpMockup from "@/assets/mockups/emergency-help.jpeg";
+import therapyFundMockup from "@/assets/mockups/therapy-fund.jpeg";
+import wellnessVaultMockup from "@/assets/mockups/wellness-vault.jpeg";
+import videoSessionMockup from "@/assets/mockups/video-session-mockup.png";
+import appointmentMockup from "@/assets/mockups/appointment-mockup.png";
 
 const features = [
   {
@@ -10,7 +21,8 @@ const features = [
     description: "Some days you're okay, some days you're not. Healing starts with understanding yourself. Track your mood with simple emojis and gently learn what your heart has been trying to tell you.",
     icon: Smile,
     gradient: "from-blue-500 to-indigo-600",
-    bgColor: "bg-blue-50"
+    bgColor: "bg-blue-50",
+    mockup: appHomeMockup
   },
   {
     id: 2,
@@ -19,7 +31,8 @@ const features = [
     description: "Celebrate small wins. Write about how your day felt. Acknowledge the hard moments. Every week, see your growth in a gentle wellness report.",
     icon: Sparkles,
     gradient: "from-purple-500 to-pink-500",
-    bgColor: "bg-purple-50"
+    bgColor: "bg-purple-50",
+    mockup: wellnessVaultMockup
   },
   {
     id: 3,
@@ -28,7 +41,8 @@ const features = [
     description: "Browse through certified professionals who truly understand your condition. Find the therapist who matches your healing journey.",
     icon: Search,
     gradient: "from-teal-500 to-cyan-500",
-    bgColor: "bg-teal-50"
+    bgColor: "bg-teal-50",
+    mockup: findTherapistsMockup
   },
   {
     id: 4,
@@ -37,7 +51,8 @@ const features = [
     description: "Whether it's work stress, trauma, heartbreak, or emotional pain... Talk to a licensed therapist who gives you a safe space to breathe, feel, and find your strength again.",
     icon: Video,
     gradient: "from-indigo-500 to-blue-600",
-    bgColor: "bg-indigo-50"
+    bgColor: "bg-indigo-50",
+    mockup: videoSessionMockup
   },
   {
     id: 5,
@@ -46,7 +61,8 @@ const features = [
     description: "You don't have to face stress, anxiety, or loneliness alone at 2:00am. A professional counsellor is always a message away ready to support you with compassion and zero judgment.",
     icon: MessageCircle,
     gradient: "from-sky-500 to-blue-500",
-    bgColor: "bg-sky-50"
+    bgColor: "bg-sky-50",
+    mockup: chatSessionMockup
   },
   {
     id: 6,
@@ -55,7 +71,8 @@ const features = [
     description: "Connect with people who understand exactly what you're going through. Share your story. Hear theirs. Heal together.",
     icon: Users,
     gradient: "from-green-500 to-emerald-500",
-    bgColor: "bg-green-50"
+    bgColor: "bg-green-50",
+    mockup: supportGroupsMockup
   },
   {
     id: 7,
@@ -64,7 +81,8 @@ const features = [
     description: "Book a virtual session for as low as 50,000 UGX. Give yourself the gift of talking to someone who supports your mental and emotional wellbeing.",
     icon: Calendar,
     gradient: "from-orange-500 to-amber-500",
-    bgColor: "bg-orange-50"
+    bgColor: "bg-orange-50",
+    mockup: bookSessionMockup
   },
   {
     id: 8,
@@ -73,7 +91,8 @@ const features = [
     description: "When you feel unsafe or overwhelmed... Press the emergency button and immediately talk to a crisis counsellor who genuinely cares.",
     icon: AlertTriangle,
     gradient: "from-red-500 to-rose-500",
-    bgColor: "bg-red-50"
+    bgColor: "bg-red-50",
+    mockup: emergencyHelpMockup
   },
   {
     id: 9,
@@ -82,7 +101,8 @@ const features = [
     description: "Even 5,000 UGX can help someone who desperately needs counselling but can't afford it. Be part of the healing.",
     icon: Heart,
     gradient: "from-pink-500 to-rose-400",
-    bgColor: "bg-pink-50"
+    bgColor: "bg-pink-50",
+    mockup: therapyFundMockup
   },
   {
     id: 10,
@@ -91,7 +111,8 @@ const features = [
     description: "Create your account and open the door to real mental health support — anytime you need it.",
     icon: Download,
     gradient: "from-violet-500 to-purple-600",
-    bgColor: "bg-violet-50"
+    bgColor: "bg-violet-50",
+    mockup: appointmentMockup
   }
 ];
 
@@ -103,7 +124,7 @@ const AppFeaturesShowcase = () => {
     if (!isAutoPlaying) return;
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % features.length);
-    }, 4000);
+    }, 5000);
     return () => clearInterval(interval);
   }, [isAutoPlaying]);
 
@@ -145,22 +166,22 @@ const AppFeaturesShowcase = () => {
             onMouseEnter={() => setIsAutoPlaying(false)}
             onMouseLeave={() => setIsAutoPlaying(true)}
           >
-            <div className="grid md:grid-cols-2 gap-0">
+            <div className="grid md:grid-cols-2 gap-0 min-h-[500px] md:min-h-[550px]">
               {/* Left Content */}
-              <div className="p-8 md:p-12 lg:p-16 flex flex-col justify-center relative z-10">
-                <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br ${currentFeature.gradient} text-white shadow-lg mb-6`}>
-                  <Icon className="w-8 h-8" />
+              <div className="p-8 md:p-12 lg:p-14 flex flex-col justify-center relative z-10">
+                <div className={`inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br ${currentFeature.gradient} text-white shadow-lg mb-5`}>
+                  <Icon className="w-7 h-7" />
                 </div>
                 
-                <h3 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 transition-all duration-300">
+                <h3 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-3 transition-all duration-300">
                   {currentFeature.title}
                 </h3>
                 
-                <div className={`inline-block px-4 py-2 rounded-lg bg-gradient-to-r ${currentFeature.gradient} text-white text-lg font-medium mb-6 max-w-fit`}>
+                <div className={`inline-block px-4 py-2 rounded-lg bg-gradient-to-r ${currentFeature.gradient} text-white text-base md:text-lg font-medium mb-5 max-w-fit`}>
                   {currentFeature.tagline}
                 </div>
                 
-                <p className="text-muted-foreground text-lg leading-relaxed mb-8">
+                <p className="text-muted-foreground text-base md:text-lg leading-relaxed mb-6">
                   {currentFeature.description}
                 </p>
 
@@ -175,7 +196,7 @@ const AppFeaturesShowcase = () => {
                     <img 
                       src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" 
                       alt="Get it on Google Play" 
-                      className="h-12"
+                      className="h-11"
                     />
                   </a>
                   <a 
@@ -187,29 +208,41 @@ const AppFeaturesShowcase = () => {
                     <img 
                       src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg" 
                       alt="Download on the App Store" 
-                      className="h-12"
+                      className="h-11"
                     />
                   </a>
                 </div>
               </div>
 
-              {/* Right Decorative Area */}
-              <div className="relative hidden md:flex items-center justify-center p-8">
-                {/* Decorative Elements */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${currentFeature.gradient} opacity-10`} />
+              {/* Right - Phone Mockup */}
+              <div className="relative flex items-center justify-center p-6 md:p-8">
+                {/* Background Circle */}
+                <div className={`absolute w-[280px] h-[280px] md:w-[350px] md:h-[350px] rounded-full bg-gradient-to-br ${currentFeature.gradient} opacity-20 blur-xl`} />
                 
-                {/* Large Icon Display */}
-                <div className={`relative w-64 h-64 lg:w-80 lg:h-80 rounded-full bg-gradient-to-br ${currentFeature.gradient} opacity-20 flex items-center justify-center`}>
-                  <div className={`w-48 h-48 lg:w-60 lg:h-60 rounded-full bg-gradient-to-br ${currentFeature.gradient} opacity-30 flex items-center justify-center`}>
-                    <div className={`w-32 h-32 lg:w-40 lg:h-40 rounded-full bg-gradient-to-br ${currentFeature.gradient} flex items-center justify-center shadow-2xl`}>
-                      <Icon className="w-16 h-16 lg:w-20 lg:h-20 text-white" />
+                {/* Phone Frame */}
+                <div className="relative z-10 transform transition-all duration-500 hover:scale-105">
+                  {/* Phone outer frame */}
+                  <div className="relative bg-gray-900 rounded-[3rem] p-2 shadow-2xl">
+                    {/* Phone notch */}
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-7 bg-gray-900 rounded-b-3xl z-20" />
+                    
+                    {/* Phone screen */}
+                    <div className="relative w-[200px] md:w-[240px] h-[420px] md:h-[500px] rounded-[2.5rem] overflow-hidden bg-white">
+                      <img 
+                        src={currentFeature.mockup} 
+                        alt={`${currentFeature.title} app screen`}
+                        className="w-full h-full object-cover object-top transition-opacity duration-500"
+                      />
                     </div>
+                    
+                    {/* Phone home indicator */}
+                    <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-28 h-1 bg-gray-600 rounded-full" />
                   </div>
-                </div>
 
-                {/* Floating decorations */}
-                <div className="absolute top-10 right-10 w-20 h-20 rounded-full bg-white/20 blur-xl animate-pulse" />
-                <div className="absolute bottom-20 left-10 w-16 h-16 rounded-full bg-white/30 blur-lg animate-pulse delay-500" />
+                  {/* Decorative elements */}
+                  <div className={`absolute -top-4 -right-4 w-16 h-16 rounded-full bg-gradient-to-br ${currentFeature.gradient} opacity-60 blur-sm animate-pulse`} />
+                  <div className={`absolute -bottom-6 -left-6 w-20 h-20 rounded-full bg-gradient-to-br ${currentFeature.gradient} opacity-40 blur-md animate-pulse delay-300`} />
+                </div>
               </div>
             </div>
 
@@ -250,7 +283,7 @@ const AppFeaturesShowcase = () => {
           </div>
 
           {/* Feature Quick Links */}
-          <div className="mt-10 grid grid-cols-5 md:grid-cols-10 gap-2">
+          <div className="mt-8 grid grid-cols-5 md:grid-cols-10 gap-2">
             {features.map((feature, index) => {
               const FeatureIcon = feature.icon;
               return (
