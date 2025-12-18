@@ -13,6 +13,15 @@ import wellnessVaultMockup from "@/assets/mockups/wellness-vault.jpeg";
 import videoSessionMockup from "@/assets/mockups/video-session-mockup.png";
 import appointmentMockup from "@/assets/mockups/appointment-mockup.png";
 
+// Import persona images
+import personHome from "@/assets/personas/person-home.png";
+import personTherapist from "@/assets/personas/person-therapist.png";
+import personGroups from "@/assets/personas/person-groups.png";
+import personBooking from "@/assets/personas/person-booking.png";
+import personEmergency from "@/assets/personas/person-emergency.png";
+import personDonate from "@/assets/personas/person-donate.png";
+import personPayment from "@/assets/personas/person-payment.png";
+
 const features = [
   {
     id: 1,
@@ -22,7 +31,8 @@ const features = [
     icon: Smile,
     gradient: "from-blue-500 to-indigo-600",
     bgColor: "bg-blue-50",
-    mockup: appHomeMockup
+    mockup: appHomeMockup,
+    persona: personHome
   },
   {
     id: 2,
@@ -32,7 +42,8 @@ const features = [
     icon: Sparkles,
     gradient: "from-purple-500 to-pink-500",
     bgColor: "bg-purple-50",
-    mockup: wellnessVaultMockup
+    mockup: wellnessVaultMockup,
+    persona: personHome
   },
   {
     id: 3,
@@ -42,7 +53,8 @@ const features = [
     icon: Search,
     gradient: "from-teal-500 to-cyan-500",
     bgColor: "bg-teal-50",
-    mockup: findTherapistsMockup
+    mockup: findTherapistsMockup,
+    persona: personTherapist
   },
   {
     id: 4,
@@ -52,7 +64,8 @@ const features = [
     icon: Video,
     gradient: "from-indigo-500 to-blue-600",
     bgColor: "bg-indigo-50",
-    mockup: videoSessionMockup
+    mockup: videoSessionMockup,
+    persona: personPayment
   },
   {
     id: 5,
@@ -62,7 +75,8 @@ const features = [
     icon: MessageCircle,
     gradient: "from-sky-500 to-blue-500",
     bgColor: "bg-sky-50",
-    mockup: chatSessionMockup
+    mockup: chatSessionMockup,
+    persona: personTherapist
   },
   {
     id: 6,
@@ -72,7 +86,8 @@ const features = [
     icon: Users,
     gradient: "from-green-500 to-emerald-500",
     bgColor: "bg-green-50",
-    mockup: supportGroupsMockup
+    mockup: supportGroupsMockup,
+    persona: personGroups
   },
   {
     id: 7,
@@ -82,7 +97,8 @@ const features = [
     icon: Calendar,
     gradient: "from-orange-500 to-amber-500",
     bgColor: "bg-orange-50",
-    mockup: bookSessionMockup
+    mockup: bookSessionMockup,
+    persona: personBooking
   },
   {
     id: 8,
@@ -92,7 +108,8 @@ const features = [
     icon: AlertTriangle,
     gradient: "from-red-500 to-rose-500",
     bgColor: "bg-red-50",
-    mockup: emergencyHelpMockup
+    mockup: emergencyHelpMockup,
+    persona: personEmergency
   },
   {
     id: 9,
@@ -102,7 +119,8 @@ const features = [
     icon: Heart,
     gradient: "from-pink-500 to-rose-400",
     bgColor: "bg-pink-50",
-    mockup: therapyFundMockup
+    mockup: therapyFundMockup,
+    persona: personDonate
   },
   {
     id: 10,
@@ -112,7 +130,8 @@ const features = [
     icon: Download,
     gradient: "from-violet-500 to-purple-600",
     bgColor: "bg-violet-50",
-    mockup: appointmentMockup
+    mockup: appointmentMockup,
+    persona: personHome
   }
 ];
 
@@ -214,20 +233,29 @@ const AppFeaturesShowcase = () => {
                 </div>
               </div>
 
-              {/* Right - Phone Mockup */}
-              <div className="relative flex items-center justify-center p-6 md:p-8">
-                {/* Background Circle */}
-                <div className={`absolute w-[280px] h-[280px] md:w-[350px] md:h-[350px] rounded-full bg-gradient-to-br ${currentFeature.gradient} opacity-20 blur-xl`} />
+              {/* Right - Phone Mockup with Persona */}
+              <div className="relative flex items-end justify-center p-6 md:p-8 overflow-hidden">
+                {/* Persona Background Image */}
+                <div className="absolute inset-0 flex items-end justify-start">
+                  <img 
+                    src={currentFeature.persona} 
+                    alt="Person using Innerspark app"
+                    className="h-[85%] md:h-[90%] object-contain object-bottom opacity-90 transition-all duration-500"
+                  />
+                </div>
                 
-                {/* Phone Frame */}
-                <div className="relative z-10 transform transition-all duration-500 hover:scale-105">
+                {/* Gradient Overlay for depth */}
+                <div className={`absolute inset-0 bg-gradient-to-l ${currentFeature.gradient} opacity-10`} />
+                
+                {/* Phone Frame positioned to right */}
+                <div className="relative z-10 transform transition-all duration-500 hover:scale-105 ml-auto mr-4 md:mr-8">
                   {/* Phone outer frame */}
-                  <div className="relative bg-gray-900 rounded-[3rem] p-2 shadow-2xl">
+                  <div className="relative bg-gray-900 rounded-[2.5rem] md:rounded-[3rem] p-1.5 md:p-2 shadow-2xl">
                     {/* Phone notch */}
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-7 bg-gray-900 rounded-b-3xl z-20" />
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 md:w-32 h-5 md:h-7 bg-gray-900 rounded-b-2xl md:rounded-b-3xl z-20" />
                     
                     {/* Phone screen */}
-                    <div className="relative w-[200px] md:w-[240px] h-[420px] md:h-[500px] rounded-[2.5rem] overflow-hidden bg-white">
+                    <div className="relative w-[160px] md:w-[220px] h-[340px] md:h-[460px] rounded-[2rem] md:rounded-[2.5rem] overflow-hidden bg-white">
                       <img 
                         src={currentFeature.mockup} 
                         alt={`${currentFeature.title} app screen`}
@@ -236,12 +264,11 @@ const AppFeaturesShowcase = () => {
                     </div>
                     
                     {/* Phone home indicator */}
-                    <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-28 h-1 bg-gray-600 rounded-full" />
+                    <div className="absolute bottom-1.5 md:bottom-2 left-1/2 -translate-x-1/2 w-20 md:w-28 h-1 bg-gray-600 rounded-full" />
                   </div>
 
-                  {/* Decorative elements */}
-                  <div className={`absolute -top-4 -right-4 w-16 h-16 rounded-full bg-gradient-to-br ${currentFeature.gradient} opacity-60 blur-sm animate-pulse`} />
-                  <div className={`absolute -bottom-6 -left-6 w-20 h-20 rounded-full bg-gradient-to-br ${currentFeature.gradient} opacity-40 blur-md animate-pulse delay-300`} />
+                  {/* Decorative glow */}
+                  <div className={`absolute -top-4 -right-4 w-12 md:w-16 h-12 md:h-16 rounded-full bg-gradient-to-br ${currentFeature.gradient} opacity-60 blur-sm animate-pulse`} />
                 </div>
               </div>
             </div>
