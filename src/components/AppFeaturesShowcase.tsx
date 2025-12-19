@@ -11,7 +11,8 @@ import emergencyHelpMockup from "@/assets/mockups/emergency-help.jpeg";
 import therapyFundMockup from "@/assets/mockups/therapy-fund.jpeg";
 import wellnessVaultMockup from "@/assets/mockups/wellness-vault.jpeg";
 import videoSessionMockup from "@/assets/mockups/video-session-mockup.png";
-import appointmentMockup from "@/assets/mockups/appointment-mockup.png";
+import dailyReflectionMockup from "@/assets/mockups/daily-reflection.png";
+import downloadAppMockup from "@/assets/mockups/download-app.png";
 
 const features = [
   {
@@ -32,7 +33,7 @@ const features = [
     icon: Sparkles,
     gradient: "from-purple-500 to-pink-500",
     bgColor: "bg-purple-50",
-    mockup: wellnessVaultMockup
+    mockup: dailyReflectionMockup
   },
   {
     id: 3,
@@ -112,7 +113,7 @@ const features = [
     icon: Download,
     gradient: "from-violet-500 to-purple-600",
     bgColor: "bg-violet-50",
-    mockup: appointmentMockup
+    mockup: downloadAppMockup
   }
 ];
 

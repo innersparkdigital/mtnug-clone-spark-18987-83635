@@ -5,6 +5,8 @@
 /* Google Translate Widget Styles */
 .google-translate-container {
   display: inline-block;
+  max-width: 120px;
+  overflow: hidden;
 }
 
 .google-translate-container .goog-te-gadget {
