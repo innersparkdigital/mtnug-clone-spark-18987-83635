@@ -163,19 +163,6 @@ const AppFeaturesShowcase = () => {
   return (
     <section className="py-16 md:py-24 bg-gradient-to-b from-background to-muted/30 overflow-hidden">
       <div className="container mx-auto px-4">
-        {/* Section Header */}
-        <div className="text-center mb-12">
-          <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">
-            App Features
-          </span>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
-            Everything You Need for
-            <span className="bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent"> Mental Wellness</span>
-          </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Your complete digital companion for mental health support, available 24/7 on the Innerspark App
-          </p>
-        </div>
 
         {/* Feature Showcase */}
         <div className="relative max-w-6xl mx-auto">
