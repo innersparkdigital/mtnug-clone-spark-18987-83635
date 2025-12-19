@@ -580,10 +580,13 @@ const Specialists = () => {
   }, []);
 
   const fetchSpecialists = async () => {
+    // Only fetch specialists with complete profiles (bio and education)
     const { data, error } = await supabase
       .from("specialists")
       .select("*")
       .eq("is_active", true)
+      .not("bio", "is", null)
+      .not("education", "is", null)
       .order("experience_years", { ascending: false });
 
     if (error) {
