@@ -161,7 +161,7 @@ const AppFeaturesShowcase = () => {
   const Icon = currentFeature.icon;
 
   return (
-    <section className="py-16 md:py-24 bg-gradient-to-b from-background to-muted/30 overflow-hidden">
+    <section className="pt-0 pb-16 md:pb-24 bg-gradient-to-b from-background to-muted/30 overflow-hidden">
       <div className="container mx-auto px-4">
 
         {/* Feature Showcase */}
