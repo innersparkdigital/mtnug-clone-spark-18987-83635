@@ -13,15 +13,6 @@ import wellnessVaultMockup from "@/assets/mockups/wellness-vault.jpeg";
 import videoSessionMockup from "@/assets/mockups/video-session-mockup.png";
 import appointmentMockup from "@/assets/mockups/appointment-mockup.png";
 
-// Import persona images
-import personHome from "@/assets/personas/person-home.png";
-import personTherapist from "@/assets/personas/person-therapist.png";
-import personGroups from "@/assets/personas/person-groups.png";
-import personBooking from "@/assets/personas/person-booking.png";
-import personEmergency from "@/assets/personas/person-emergency.png";
-import personDonate from "@/assets/personas/person-donate.png";
-import personPayment from "@/assets/personas/person-payment.png";
-
 const features = [
   {
     id: 1,
@@ -31,8 +22,7 @@ const features = [
     icon: Smile,
     gradient: "from-blue-500 to-indigo-600",
     bgColor: "bg-blue-50",
-    mockup: appHomeMockup,
-    persona: personHome
+    mockup: appHomeMockup
   },
   {
     id: 2,
@@ -42,8 +32,7 @@ const features = [
     icon: Sparkles,
     gradient: "from-purple-500 to-pink-500",
     bgColor: "bg-purple-50",
-    mockup: wellnessVaultMockup,
-    persona: personHome
+    mockup: wellnessVaultMockup
   },
   {
     id: 3,
@@ -53,8 +42,7 @@ const features = [
     icon: Search,
     gradient: "from-teal-500 to-cyan-500",
     bgColor: "bg-teal-50",
-    mockup: findTherapistsMockup,
-    persona: personTherapist
+    mockup: findTherapistsMockup
   },
   {
     id: 4,
@@ -64,8 +52,7 @@ const features = [
     icon: Video,
     gradient: "from-indigo-500 to-blue-600",
     bgColor: "bg-indigo-50",
-    mockup: videoSessionMockup,
-    persona: personPayment
+    mockup: videoSessionMockup
   },
   {
     id: 5,
@@ -75,8 +62,7 @@ const features = [
     icon: MessageCircle,
     gradient: "from-sky-500 to-blue-500",
     bgColor: "bg-sky-50",
-    mockup: chatSessionMockup,
-    persona: personTherapist
+    mockup: chatSessionMockup
   },
   {
     id: 6,
@@ -86,8 +72,7 @@ const features = [
     icon: Users,
     gradient: "from-green-500 to-emerald-500",
     bgColor: "bg-green-50",
-    mockup: supportGroupsMockup,
-    persona: personGroups
+    mockup: supportGroupsMockup
   },
   {
     id: 7,
@@ -97,8 +82,7 @@ const features = [
     icon: Calendar,
     gradient: "from-orange-500 to-amber-500",
     bgColor: "bg-orange-50",
-    mockup: bookSessionMockup,
-    persona: personBooking
+    mockup: bookSessionMockup
   },
   {
     id: 8,
@@ -108,8 +92,7 @@ const features = [
     icon: AlertTriangle,
     gradient: "from-red-500 to-rose-500",
     bgColor: "bg-red-50",
-    mockup: emergencyHelpMockup,
-    persona: personEmergency
+    mockup: emergencyHelpMockup
   },
   {
     id: 9,
@@ -119,8 +102,7 @@ const features = [
     icon: Heart,
     gradient: "from-pink-500 to-rose-400",
     bgColor: "bg-pink-50",
-    mockup: therapyFundMockup,
-    persona: personDonate
+    mockup: therapyFundMockup
   },
   {
     id: 10,
@@ -130,8 +112,7 @@ const features = [
     icon: Download,
     gradient: "from-violet-500 to-purple-600",
     bgColor: "bg-violet-50",
-    mockup: appointmentMockup,
-    persona: personHome
+    mockup: appointmentMockup
   }
 ];
 
@@ -222,14 +203,6 @@ const AppFeaturesShowcase = () => {
 
               {/* Right - Phone Mockup with Persona */}
               <div className="relative flex items-end justify-center p-6 md:p-8 overflow-hidden">
-                {/* Persona Background Image */}
-                <div className="absolute inset-0 flex items-end justify-start">
-                  <img 
-                    src={currentFeature.persona} 
-                    alt="Person using Innerspark app"
-                    className="h-[85%] md:h-[90%] object-contain object-bottom opacity-90 transition-all duration-500"
-                  />
-                </div>
                 
                 {/* Gradient Overlay for depth */}
                 <div className={`absolute inset-0 bg-gradient-to-l ${currentFeature.gradient} opacity-10`} />
