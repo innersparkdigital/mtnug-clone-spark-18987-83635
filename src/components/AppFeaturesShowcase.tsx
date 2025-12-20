@@ -140,26 +140,45 @@ const getGradientColors = (gradient: string) => {
 const AppFeaturesShowcase = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [displayIndex, setDisplayIndex] = useState(0);
+
+  const changeSlide = (newIndex: number) => {
+    if (isTransitioning || newIndex === displayIndex) return;
+    setIsTransitioning(true);
+    setCurrentIndex(newIndex);
+    
+    // After fade out, update display and fade in
+    setTimeout(() => {
+      setDisplayIndex(newIndex);
+      setTimeout(() => {
+        setIsTransitioning(false);
+      }, 50);
+    }, 300);
+  };
 
   useEffect(() => {
     if (!isAutoPlaying) return;
     const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % features.length);
+      const nextIndex = (displayIndex + 1) % features.length;
+      changeSlide(nextIndex);
     }, 5000);
     return () => clearInterval(interval);
-  }, [isAutoPlaying]);
+  }, [isAutoPlaying, displayIndex]);
 
   const goToPrevious = () => {
     setIsAutoPlaying(false);
-    setCurrentIndex((prev) => (prev - 1 + features.length) % features.length);
+    const prevIndex = (displayIndex - 1 + features.length) % features.length;
+    changeSlide(prevIndex);
   };
 
   const goToNext = () => {
     setIsAutoPlaying(false);
-    setCurrentIndex((prev) => (prev + 1) % features.length);
+    const nextIndex = (displayIndex + 1) % features.length;
+    changeSlide(nextIndex);
   };
 
-  const currentFeature = features[currentIndex];
+  const currentFeature = features[displayIndex];
   const Icon = currentFeature.icon;
 
   return (
@@ -180,7 +199,7 @@ const AppFeaturesShowcase = () => {
             {/* Unified gradient overlay for blending */}
             <div className="absolute inset-0 bg-gradient-to-r from-white/90 via-white/70 to-transparent" />
             
-            <div className="grid md:grid-cols-2 gap-0 min-h-[500px] md:min-h-[550px] relative z-10">
+            <div className={`grid md:grid-cols-2 gap-0 min-h-[500px] md:min-h-[550px] relative z-10 transition-opacity duration-300 ease-in-out ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
               {/* Left Content */}
               <div className="p-8 md:p-12 lg:p-14 flex flex-col justify-center relative z-10">
                 <div className={`inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br ${currentFeature.gradient} text-white shadow-lg mb-5`}>
@@ -294,10 +313,10 @@ const AppFeaturesShowcase = () => {
                 key={index}
                 onClick={() => {
                   setIsAutoPlaying(false);
-                  setCurrentIndex(index);
+                  changeSlide(index);
                 }}
                 className={`h-2 rounded-full transition-all duration-300 ${
-                  index === currentIndex 
+                  index === displayIndex 
                     ? `w-8 bg-gradient-to-r ${features[index].gradient}` 
                     : 'w-2 bg-muted-foreground/30 hover:bg-muted-foreground/50'
                 }`}
@@ -315,10 +334,10 @@ const AppFeaturesShowcase = () => {
                   key={feature.id}
                   onClick={() => {
                     setIsAutoPlaying(false);
-                    setCurrentIndex(index);
+                    changeSlide(index);
                   }}
                   className={`flex flex-col items-center p-3 rounded-xl transition-all duration-300 ${
-                    index === currentIndex 
+                    index === displayIndex 
                       ? `bg-gradient-to-br ${feature.gradient} text-white shadow-lg scale-105` 
                       : 'bg-muted/50 text-muted-foreground hover:bg-muted'
                   }`}
