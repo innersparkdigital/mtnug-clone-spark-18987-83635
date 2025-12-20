@@ -54,7 +54,8 @@ const features = [
     icon: Video,
     gradient: "from-indigo-500 to-blue-600",
     bgColor: "bg-indigo-50",
-    mockup: privateCounsellingMockup
+    mockup: privateCounsellingMockup,
+    usePhoneMockup: false
   },
   {
     id: 5,
@@ -203,35 +204,48 @@ const AppFeaturesShowcase = () => {
                 </div>
               </div>
 
-              {/* Right - Phone Mockup with Persona */}
-              <div className="relative flex items-end justify-center p-6 md:p-8 overflow-hidden">
+              {/* Right - Phone Mockup or Image */}
+              <div className="relative flex items-center justify-center p-6 md:p-8 overflow-hidden">
                 
                 {/* Gradient Overlay for depth */}
                 <div className={`absolute inset-0 bg-gradient-to-l ${currentFeature.gradient} opacity-10`} />
                 
-                {/* Phone Frame positioned to right */}
-                <div className="relative z-10 transform transition-all duration-500 hover:scale-105 ml-auto mr-4 md:mr-8">
-                  {/* Phone outer frame */}
-                  <div className="relative bg-gray-900 rounded-[2.5rem] md:rounded-[3rem] p-1.5 md:p-2 shadow-2xl">
-                    {/* Phone notch */}
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 md:w-32 h-5 md:h-7 bg-gray-900 rounded-b-2xl md:rounded-b-3xl z-20" />
-                    
-                    {/* Phone screen */}
-                    <div className="relative w-[160px] md:w-[220px] h-[340px] md:h-[460px] rounded-[2rem] md:rounded-[2.5rem] overflow-hidden bg-white">
-                      <img 
-                        src={currentFeature.mockup} 
-                        alt={`${currentFeature.title} app screen`}
-                        className="w-full h-full object-cover object-top transition-opacity duration-500"
-                      />
-                    </div>
-                    
-                    {/* Phone home indicator */}
-                    <div className="absolute bottom-1.5 md:bottom-2 left-1/2 -translate-x-1/2 w-20 md:w-28 h-1 bg-gray-600 rounded-full" />
+                {currentFeature.usePhoneMockup === false ? (
+                  /* Direct Image Display */
+                  <div className="relative z-10 w-full h-full flex items-center justify-center">
+                    <img 
+                      src={currentFeature.mockup} 
+                      alt={`${currentFeature.title}`}
+                      className="w-full h-full max-h-[400px] md:max-h-[480px] object-cover rounded-2xl shadow-2xl transition-all duration-500 hover:scale-105"
+                    />
+                    {/* Decorative glow */}
+                    <div className={`absolute -top-4 -right-4 w-12 md:w-16 h-12 md:h-16 rounded-full bg-gradient-to-br ${currentFeature.gradient} opacity-60 blur-sm animate-pulse`} />
                   </div>
+                ) : (
+                  /* Phone Frame */
+                  <div className="relative z-10 transform transition-all duration-500 hover:scale-105 ml-auto mr-4 md:mr-8">
+                    {/* Phone outer frame */}
+                    <div className="relative bg-gray-900 rounded-[2.5rem] md:rounded-[3rem] p-1.5 md:p-2 shadow-2xl">
+                      {/* Phone notch */}
+                      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 md:w-32 h-5 md:h-7 bg-gray-900 rounded-b-2xl md:rounded-b-3xl z-20" />
+                      
+                      {/* Phone screen */}
+                      <div className="relative w-[160px] md:w-[220px] h-[340px] md:h-[460px] rounded-[2rem] md:rounded-[2.5rem] overflow-hidden bg-white">
+                        <img 
+                          src={currentFeature.mockup} 
+                          alt={`${currentFeature.title} app screen`}
+                          className="w-full h-full object-cover object-top transition-opacity duration-500"
+                        />
+                      </div>
+                      
+                      {/* Phone home indicator */}
+                      <div className="absolute bottom-1.5 md:bottom-2 left-1/2 -translate-x-1/2 w-20 md:w-28 h-1 bg-gray-600 rounded-full" />
+                    </div>
 
-                  {/* Decorative glow */}
-                  <div className={`absolute -top-4 -right-4 w-12 md:w-16 h-12 md:h-16 rounded-full bg-gradient-to-br ${currentFeature.gradient} opacity-60 blur-sm animate-pulse`} />
-                </div>
+                    {/* Decorative glow */}
+                    <div className={`absolute -top-4 -right-4 w-12 md:w-16 h-12 md:h-16 rounded-full bg-gradient-to-br ${currentFeature.gradient} opacity-60 blur-sm animate-pulse`} />
+                  </div>
+                )}
               </div>
             </div>
 
