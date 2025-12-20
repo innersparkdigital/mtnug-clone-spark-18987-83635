@@ -65,7 +65,8 @@ const features = [
     icon: MessageCircle,
     gradient: "from-sky-500 to-blue-500",
     bgColor: "bg-sky-50",
-    mockup: chatSessionMockup
+    mockup: chatSessionMockup,
+    usePhoneMockup: false
   },
   {
     id: 6,
@@ -119,6 +120,23 @@ const features = [
   }
 ];
 
+// Helper function to convert Tailwind gradient classes to CSS colors
+const getGradientColors = (gradient: string) => {
+  const colorMap: Record<string, { from: string; to: string }> = {
+    "from-blue-500 to-indigo-600": { from: "#3b82f6", to: "#4f46e5" },
+    "from-purple-500 to-pink-500": { from: "#a855f7", to: "#ec4899" },
+    "from-teal-500 to-cyan-500": { from: "#14b8a6", to: "#06b6d4" },
+    "from-indigo-500 to-blue-600": { from: "#6366f1", to: "#2563eb" },
+    "from-sky-500 to-blue-500": { from: "#0ea5e9", to: "#3b82f6" },
+    "from-green-500 to-emerald-500": { from: "#22c55e", to: "#10b981" },
+    "from-orange-500 to-amber-500": { from: "#f97316", to: "#f59e0b" },
+    "from-red-500 to-rose-500": { from: "#ef4444", to: "#f43f5e" },
+    "from-pink-500 to-rose-400": { from: "#ec4899", to: "#fb7185" },
+    "from-violet-500 to-purple-600": { from: "#8b5cf6", to: "#9333ea" },
+  };
+  return colorMap[gradient] || { from: "#3b82f6", to: "#4f46e5" };
+};
+
 const AppFeaturesShowcase = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
@@ -150,13 +168,19 @@ const AppFeaturesShowcase = () => {
 
         {/* Feature Showcase */}
         <div className="relative max-w-6xl mx-auto">
-          {/* Main Feature Card */}
+        {/* Main Feature Card */}
           <div 
-            className={`relative rounded-3xl overflow-hidden shadow-2xl transition-all duration-500 ${currentFeature.bgColor}`}
+            className={`relative rounded-3xl overflow-hidden shadow-2xl transition-all duration-500`}
+            style={{
+              background: `linear-gradient(135deg, ${getGradientColors(currentFeature.gradient).from} 0%, ${getGradientColors(currentFeature.gradient).to} 100%)`
+            }}
             onMouseEnter={() => setIsAutoPlaying(false)}
             onMouseLeave={() => setIsAutoPlaying(true)}
           >
-            <div className="grid md:grid-cols-2 gap-0 min-h-[500px] md:min-h-[550px]">
+            {/* Unified gradient overlay for blending */}
+            <div className="absolute inset-0 bg-gradient-to-r from-white/90 via-white/70 to-transparent" />
+            
+            <div className="grid md:grid-cols-2 gap-0 min-h-[500px] md:min-h-[550px] relative z-10">
               {/* Left Content */}
               <div className="p-8 md:p-12 lg:p-14 flex flex-col justify-center relative z-10">
                 <div className={`inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br ${currentFeature.gradient} text-white shadow-lg mb-5`}>
@@ -206,9 +230,6 @@ const AppFeaturesShowcase = () => {
 
               {/* Right - Phone Mockup or Image */}
               <div className="relative flex items-center justify-center p-6 md:p-8 overflow-hidden">
-                
-                {/* Gradient Overlay for depth */}
-                <div className={`absolute inset-0 bg-gradient-to-l ${currentFeature.gradient} opacity-10`} />
                 
                 {currentFeature.usePhoneMockup === false ? (
                   /* Direct Image Display */
