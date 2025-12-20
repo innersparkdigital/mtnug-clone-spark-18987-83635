@@ -13,6 +13,7 @@ import wellnessVaultMockup from "@/assets/mockups/wellness-vault.jpeg";
 import videoSessionMockup from "@/assets/mockups/video-session-mockup.png";
 import dailyReflectionMockup from "@/assets/mockups/daily-reflection.png";
 import downloadAppMockup from "@/assets/mockups/download-app.png";
+import privateCounsellingMockup from "@/assets/mockups/private-counselling.png";
 
 const features = [
   {
@@ -53,7 +54,7 @@ const features = [
     icon: Video,
     gradient: "from-indigo-500 to-blue-600",
     bgColor: "bg-indigo-50",
-    mockup: videoSessionMockup
+    mockup: privateCounsellingMockup
   },
   {
     id: 5,
