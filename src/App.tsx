@@ -35,6 +35,7 @@ import UICTPost from "./pages/blog/UICTPost";
 import UICTWellnessPost from "./pages/blog/UICTWellnessPost";
 import Blog from "./pages/Blog";
 import MindCheck from "./pages/MindCheck";
+import DepressionTest from "./pages/tests/DepressionTest";
 import HowToHandleStressPost from "./pages/blog/HowToHandleStressPost";
 import PanicAttackPost from "./pages/blog/PanicAttackPost";
 import DepressionPost from "./pages/blog/DepressionPost";
@@ -85,6 +86,7 @@ const App = () => (
           <Route path="/specialists/:id" element={<SpecialistProfile />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/mind-check" element={<MindCheck />} />
+          <Route path="/mind-check/depression" element={<DepressionTest />} />
           <Route path="/blog/how-to-handle-stress" element={<HowToHandleStressPost />} />
           <Route path="/blog/how-to-stop-a-panic-attack" element={<PanicAttackPost />} />
           <Route path="/blog/how-to-deal-with-depression" element={<DepressionPost />} />
