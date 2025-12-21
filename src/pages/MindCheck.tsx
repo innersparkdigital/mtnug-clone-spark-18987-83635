@@ -1,7 +1,8 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Helmet } from "react-helmet";
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Brain, Heart, AlertTriangle, Users, Zap, Shield, Clock, CheckCircle } from "lucide-react";
 
@@ -61,12 +62,18 @@ const mentalHealthTests: MentalHealthTest[] = [
 const MindCheck = () => {
   const [showAllTests, setShowAllTests] = useState(false);
   const [selectedTest, setSelectedTest] = useState<MentalHealthTest | null>(null);
+  const navigate = useNavigate();
 
   const displayedTests = showAllTests ? mentalHealthTests : mentalHealthTests.slice(0, 10);
 
   const handleTestClick = (test: MentalHealthTest) => {
+    // Navigate to depression test if it's the depression test
+    if (test.id === "depression") {
+      navigate("/mind-check/depression");
+      return;
+    }
+    // For other tests, show coming soon modal
     setSelectedTest(test);
-    // For now, show a coming soon message - can be expanded later
   };
 
   return (
