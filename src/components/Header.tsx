@@ -20,6 +20,7 @@ const navItems = [
   { key: "services", label: "Our Services", path: "/services" },
   { key: "specialists", label: "Specialists", path: "/specialists" },
   { key: "about", label: "About Us", path: "/about" },
+  { key: "mindcheck", label: "Mind-Check", path: "/mind-check" },
   { key: "blog", label: "Blog", path: "/blog" },
   { key: "events", label: "Events & Training", path: "/events-training" },
   { key: "contact", label: "Contact Us", path: "/contact" },
@@ -36,6 +37,7 @@ const Header = () => {
     services: "Our Services",
     specialists: "Specialists",
     about: "About Us",
+    mindcheck: "Mind-Check",
     blog: "Blog",
     events: "Events & Training",
     contact: "Contact Us",
@@ -51,6 +53,7 @@ const Header = () => {
         services: "Our Services",
         specialists: "Specialists",
         about: "About Us",
+        mindcheck: "Mind-Check",
         blog: "Blog",
         events: "Events & Training",
         contact: "Contact Us",
@@ -66,6 +69,7 @@ const Header = () => {
       "Our Services",
       "Specialists",
       "About Us",
+      "Mind-Check",
       "Blog",
       "Events & Training",
       "Contact Us",
@@ -80,9 +84,10 @@ const Header = () => {
         services: results[4],
         specialists: results[5],
         about: results[6],
-        blog: results[7],
-        events: results[8],
-        contact: results[9],
+        mindcheck: results[7],
+        blog: results[8],
+        events: results[9],
+        contact: results[10],
       });
     });
   }, [language, translateBatch]);
@@ -91,6 +96,7 @@ const Header = () => {
     services: translations.services,
     specialists: translations.specialists,
     about: translations.about,
+    mindcheck: translations.mindcheck,
     blog: translations.blog,
     events: translations.events,
     contact: translations.contact,
@@ -138,6 +144,9 @@ const Header = () => {
               <Link to="/about" className="text-foreground hover:text-primary transition-colors font-medium">
                 {navLabels.about}
               </Link>
+              <Link to="/mind-check" className="text-foreground hover:text-primary transition-colors font-medium">
+                {navLabels.mindcheck}
+              </Link>
               <Link to="/blog" className="text-foreground hover:text-primary transition-colors font-medium">
                 {navLabels.blog}
               </Link>
@@ -182,6 +191,9 @@ const Header = () => {
               </Link>
               <Link to="/about" className="block text-foreground hover:text-primary transition-colors font-medium">
                 {navLabels.about}
+              </Link>
+              <Link to="/mind-check" className="block text-foreground hover:text-primary transition-colors font-medium">
+                {navLabels.mindcheck}
               </Link>
               <Link to="/blog" className="block text-foreground hover:text-primary transition-colors font-medium">
                 {navLabels.blog}
