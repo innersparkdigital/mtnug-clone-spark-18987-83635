@@ -67,12 +67,11 @@ const MindCheck = () => {
   const displayedTests = showAllTests ? mentalHealthTests : mentalHealthTests.slice(0, 10);
 
   const handleTestClick = (test: MentalHealthTest) => {
-    // Navigate to depression test if it's the depression test
-    if (test.id === "depression") {
-      navigate("/mind-check/depression");
+    const availableTests = ["depression", "anxiety", "adult-adhd", "ptsd"];
+    if (availableTests.includes(test.id)) {
+      navigate(`/mind-check/${test.id}`);
       return;
     }
-    // For other tests, show coming soon modal
     setSelectedTest(test);
   };
 
