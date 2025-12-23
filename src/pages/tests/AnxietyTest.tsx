@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Helmet } from "react-helmet";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import TherapistCTAPopup from "@/components/TherapistCTAPopup";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -152,6 +153,7 @@ const AnxietyTest = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [showResults, setShowResults] = useState(false);
+  const [showTherapistPopup, setShowTherapistPopup] = useState(false);
 
   const handleAnswer = (questionId: number, value: number) => {
     setAnswers(prev => ({ ...prev, [questionId]: value }));
@@ -162,6 +164,7 @@ const AnxietyTest = () => {
       setCurrentQuestion(prev => prev + 1);
     } else {
       setShowResults(true);
+      setShowTherapistPopup(true);
     }
   };
 
@@ -539,7 +542,10 @@ const AnxietyTest = () => {
           </div>
         </div>
       </section>
-
+      <TherapistCTAPopup 
+        isOpen={showTherapistPopup} 
+        onClose={() => setShowTherapistPopup(false)} 
+      />
       <Footer />
     </div>
   );
