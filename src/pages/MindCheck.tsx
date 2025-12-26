@@ -67,7 +67,7 @@ const MindCheck = () => {
   const displayedTests = showAllTests ? mentalHealthTests : mentalHealthTests.slice(0, 10);
 
   const handleTestClick = (test: MentalHealthTest) => {
-    const availableTests = ["depression", "anxiety", "adult-adhd", "ptsd"];
+    const availableTests = ["depression", "anxiety", "adult-adhd", "ptsd", "bpd", "eating-disorder", "gambling-addiction"];
     if (availableTests.includes(test.id)) {
       navigate(`/mind-check/${test.id}`);
       return;
