@@ -40,12 +40,20 @@ const reviews = [
 
 const GamblingAddictionTest = () => {
   const navigate = useNavigate();
+  const [testStarted, setTestStarted] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<string[]>(Array(questions.length).fill(""));
   const [showResults, setShowResults] = useState(false);
   const [showTherapistPopup, setShowTherapistPopup] = useState(false);
 
   const progress = ((currentQuestion + 1) / questions.length) * 100;
+
+  const handleRestart = () => {
+    setTestStarted(false);
+    setShowResults(false);
+    setCurrentQuestion(0);
+    setAnswers(Array(questions.length).fill(""));
+  };
 
   const handleAnswer = (value: string) => {
     const newAnswers = [...answers];
@@ -135,7 +143,36 @@ const GamblingAddictionTest = () => {
         </section>
 
         <div className="container mx-auto px-4 py-12">
-          {!showResults ? (
+          {!testStarted && !showResults ? (
+            /* Start Test Card */
+            <div className="max-w-3xl mx-auto">
+              <Card className="shadow-xl border-0">
+                <CardContent className="p-8 md:p-12 text-center">
+                  <div className="w-20 h-20 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <Brain className="h-10 w-10 text-amber-600" />
+                  </div>
+                  <h2 className="text-2xl md:text-3xl font-bold mb-4">Gambling Addiction Screening Test</h2>
+                  <p className="text-muted-foreground mb-6">
+                    This screening test helps identify patterns associated with problem gambling.
+                    Answer each question honestly based on your experiences.
+                  </p>
+                  <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-8 text-left">
+                    <p className="text-amber-800 text-sm">
+                      <strong>Important:</strong> This test is for educational purposes only and is not a diagnostic tool.
+                      Please consult a healthcare professional for a proper diagnosis.
+                    </p>
+                  </div>
+                  <Button 
+                    size="lg" 
+                    onClick={() => setTestStarted(true)}
+                    className="bg-amber-600 hover:bg-amber-700 text-white px-8 py-6 text-lg"
+                  >
+                    Start Test <ChevronRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          ) : !showResults ? (
             /* Assessment Section */
             <div className="max-w-3xl mx-auto">
               <Card className="shadow-xl border-0">
@@ -187,7 +224,7 @@ const GamblingAddictionTest = () => {
                     <Button onClick={() => navigate("/find-therapist")} className="bg-primary hover:bg-primary/90">
                       Find a Therapist
                     </Button>
-                    <Button variant="outline" onClick={() => { setShowResults(false); setCurrentQuestion(0); setAnswers(Array(questions.length).fill("")); }}>
+                    <Button variant="outline" onClick={handleRestart}>
                       Retake Test
                     </Button>
                   </div>
