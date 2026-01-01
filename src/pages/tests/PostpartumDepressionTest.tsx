@@ -45,6 +45,7 @@ const reviews = [
 
 const PostpartumDepressionTest = () => {
   const navigate = useNavigate();
+  const [testStarted, setTestStarted] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [showResults, setShowResults] = useState(false);
@@ -81,6 +82,7 @@ const PostpartumDepressionTest = () => {
   };
 
   const handleRestart = () => {
+    setTestStarted(false);
     setCurrentQuestion(0);
     setAnswers({});
     setShowResults(false);
@@ -153,7 +155,33 @@ const PostpartumDepressionTest = () => {
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Main Content */}
             <div className="lg:col-span-2">
-              {!showResults ? (
+              {!testStarted && !showResults ? (
+                <Card className="shadow-xl border-0">
+                  <CardContent className="p-8 md:p-12 text-center">
+                    <div className="w-20 h-20 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <Brain className="h-10 w-10 text-pink-600" />
+                    </div>
+                    <h2 className="text-2xl md:text-3xl font-bold mb-4">Postpartum Depression Screening</h2>
+                    <p className="text-muted-foreground mb-6">
+                      This screening test helps identify symptoms of postpartum depression.
+                      Answer based on how you have felt in the past 7 days.
+                    </p>
+                    <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-8 text-left">
+                      <p className="text-amber-800 text-sm">
+                        <strong>Important:</strong> This test is for educational purposes only and is not a diagnostic tool.
+                        Please consult a healthcare professional for a proper diagnosis.
+                      </p>
+                    </div>
+                    <Button 
+                      size="lg" 
+                      onClick={() => setTestStarted(true)}
+                      className="bg-pink-600 hover:bg-pink-700 text-white px-8 py-6 text-lg"
+                    >
+                      Start Test <ChevronRight className="ml-2 h-5 w-5" />
+                    </Button>
+                  </CardContent>
+                </Card>
+              ) : !showResults ? (
                 <Card className="shadow-lg">
                   <CardContent className="p-6 md:p-8">
                     <div className="mb-6">
