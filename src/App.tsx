@@ -42,6 +42,9 @@ import PTSDTest from "./pages/tests/PTSDTest";
 import BorderlinePersonalityTest from "./pages/tests/BorderlinePersonalityTest";
 import EatingDisorderTest from "./pages/tests/EatingDisorderTest";
 import GamblingAddictionTest from "./pages/tests/GamblingAddictionTest";
+import ManiaTest from "./pages/tests/ManiaTest";
+import NarcissisticPersonalityTest from "./pages/tests/NarcissisticPersonalityTest";
+import PostpartumDepressionTest from "./pages/tests/PostpartumDepressionTest";
 import HowToHandleStressPost from "./pages/blog/HowToHandleStressPost";
 import PanicAttackPost from "./pages/blog/PanicAttackPost";
 import DepressionPost from "./pages/blog/DepressionPost";
@@ -99,6 +102,9 @@ const App = () => (
           <Route path="/mind-check/bpd" element={<BorderlinePersonalityTest />} />
           <Route path="/mind-check/eating-disorder" element={<EatingDisorderTest />} />
           <Route path="/mind-check/gambling-addiction" element={<GamblingAddictionTest />} />
+          <Route path="/mind-check/mania" element={<ManiaTest />} />
+          <Route path="/mind-check/npd" element={<NarcissisticPersonalityTest />} />
+          <Route path="/mind-check/postpartum" element={<PostpartumDepressionTest />} />
           <Route path="/blog/how-to-handle-stress" element={<HowToHandleStressPost />} />
           <Route path="/blog/how-to-stop-a-panic-attack" element={<PanicAttackPost />} />
           <Route path="/blog/how-to-deal-with-depression" element={<DepressionPost />} />
