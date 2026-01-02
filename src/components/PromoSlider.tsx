@@ -24,7 +24,7 @@ const PromoSlider = () => {
   }, []);
 
   return (
-    <div className="bg-gradient-to-r from-green-600 via-red-600 to-green-600 text-white py-1.5 overflow-hidden">
+    <div className="bg-gradient-to-r from-primary via-indigo-600 to-primary text-white py-1.5 overflow-hidden">
       <div className="container mx-auto px-4">
         <div className="relative h-6 flex items-center justify-center">
           {promoMessages.map((promo, index) => {
