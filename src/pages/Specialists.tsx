@@ -11,14 +11,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Search, Video, Phone, ExternalLink, Calendar, MessageSquare, CheckCircle, ChevronDown, HelpCircle } from "lucide-react";
+import { Search, Video, Phone, ExternalLink, Calendar, MessageSquare, CheckCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getSpecialistImage } from "@/lib/specialistImages";
 import { toast } from "sonner";
 import ugandaBadge from "@/assets/uganda-badge.png";
 import ghanaBadge from "@/assets/ghana-badge.png";
 import botswanaBadge from "@/assets/botswana-badge.png";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 interface Specialist {
   id: string;
@@ -36,257 +35,79 @@ interface Specialist {
   bio?: string;
 }
 
-interface ProfessionalCategory {
+interface SupportCategory {
   id: string;
   name: string;
   description: string;
-  qualifications: string;
-  conditions: string[];
-  commonQuestions: string[];
   keywords: string[];
 }
 
-interface PricingTier {
-  id: string;
-  name: string;
-  label: string;
-  description: string;
-  priceRange: { min: number; max: number };
-  whoFits: string[];
-}
-
-const pricingTiers: PricingTier[] = [
+const supportCategories: SupportCategory[] = [
   {
     id: "all",
-    name: "All Price Ranges",
-    label: "All",
-    description: "Browse all professionals across all pricing levels",
-    priceRange: { min: 0, max: Infinity },
-    whoFits: []
-  },
-  {
-    id: "entry",
-    name: "Entry Level Practitioners",
-    label: "50K UGX",
-    description: "Certificate/Diploma holders, Bachelor's with <2 years experience, peer support & junior nurses",
-    priceRange: { min: 40000, max: 60000 },
-    whoFits: ["Certificate/Diploma holders", "Bachelor's <2 years", "Peer Support", "Junior Nurses"]
-  },
-  {
-    id: "core",
-    name: "Core Practitioners",
-    label: "80K UGX",
-    description: "Diploma/Bachelor holders with 3-5 years experience, nurses, counsellors, social workers",
-    priceRange: { min: 60001, max: 100000 },
-    whoFits: ["Diploma/Bachelor Counsellors", "Social Workers", "Nurses", "3-5 years experience"]
-  },
-  {
-    id: "advanced",
-    name: "Advanced & Specialized",
-    label: "120K UGX",
-    description: "Master's degree or 6-10 years strong clinical experience, handles trauma, addiction, workplace mental health",
-    priceRange: { min: 100001, max: 140000 },
-    whoFits: ["Master's degree holders", "6-10 years experience", "Trauma specialists"]
-  },
-  {
-    id: "clinical",
-    name: "Clinical & Medical Specialists",
-    label: "150K+ UGX",
-    description: "Psychiatrists, Clinical Psychologists (Master's+), Senior clinicians (10+ years)",
-    priceRange: { min: 140001, max: 300000 },
-    whoFits: ["Psychiatrists", "Clinical Psychologists", "10+ years experience"]
-  }
-];
-
-const professionalCategories: ProfessionalCategory[] = [
-  {
-    id: "all",
-    name: "All Professionals",
+    name: "All Categories",
     description: "Browse all mental health professionals available on our platform.",
-    qualifications: "Various qualifications across different specializations.",
-    conditions: [],
-    commonQuestions: [],
     keywords: []
   },
   {
-    id: "clinical-psychologist",
-    name: "Clinical Psychologists",
-    description: "Work with depression, anxiety, PTSD, and other mental disorders, helping people cope and improve mental functioning.",
-    qualifications: "Master's or PhD in Clinical Psychology",
-    conditions: ["Depression", "Anxiety disorders", "PTSD", "Personality disorders", "Severe mental illness"],
-    commonQuestions: ["Why do I feel sad all the time?", "How do I know if I have depression?", "Can therapy help with trauma?"],
-    keywords: ["clinical psychology", "phd", "master's psychology", "depression", "anxiety", "ptsd"]
+    id: "addiction",
+    name: "Addiction & Substance Use Support",
+    description: "For individuals struggling with any form of addiction, including alcohol, drugs, prescription medications, gambling, digital or behavioral addictions. Support includes relapse prevention, recovery planning, motivation, and 12-step–informed care.",
+    keywords: ["addiction", "substance", "alcohol", "drug", "recovery", "detox", "gambling", "relapse", "motivational"]
   },
   {
-    id: "counselling-psychologist",
-    name: "Counselling Psychologists",
-    description: "Help with emotional stress, relationship problems, grief, and life changes.",
-    qualifications: "Bachelor's or Master's in Counselling Psychology",
-    conditions: ["Emotional stress", "Relationship problems", "Grief", "Life transitions", "Self-esteem issues"],
-    commonQuestions: ["How do I cope with a breakup?", "Why can't I move on from loss?", "How do I handle major life changes?"],
-    keywords: ["counselling psychology", "counseling psychology", "bachelor psychology", "relationship", "grief"]
+    id: "child-adolescent",
+    name: "Child & Adolescent Counseling",
+    description: "Support for children and teenagers facing school challenges, behavioral concerns, emotional regulation issues, and developmental difficulties.",
+    keywords: ["child", "adolescent", "children", "teen", "youth", "behavioral", "school", "developmental", "kids"]
   },
   {
-    id: "psychotherapist",
-    name: "Psychotherapists",
-    description: "Treat depression, anxiety, trauma, phobias, and obsessive behaviors using therapy techniques like CBT, DBT, or trauma-focused therapy.",
-    qualifications: "Training/certification in specific therapy approaches (CBT, DBT, etc.)",
-    conditions: ["Depression", "Anxiety", "Trauma", "Phobias", "OCD", "Obsessive behaviors"],
-    commonQuestions: ["What is CBT and how does it work?", "Can therapy cure my anxiety?", "How long does psychotherapy take?"],
-    keywords: ["psychotherapist", "cbt", "dbt", "trauma therapy", "phobia"]
+    id: "trauma-stress",
+    name: "Trauma & Stress Therapy",
+    description: "Help for those affected by trauma, chronic stress, or PTSD using evidence-based approaches such as CBT, mindfulness, and trauma-informed care.",
+    keywords: ["trauma", "ptsd", "stress", "cbt", "mindfulness", "trauma-informed", "abuse", "survivor"]
   },
   {
-    id: "psychiatric-nurse",
-    name: "Psychiatric Nurses / Clinical Officers",
-    description: "Work with severe mental illness such as schizophrenia or bipolar disorder, often in hospital or clinical settings.",
-    qualifications: "Nursing degree with psychiatric specialization, or Clinical Officer with psychiatry training",
-    conditions: ["Schizophrenia", "Bipolar disorder", "Severe mental illness", "Psychosis"],
-    commonQuestions: ["What are the signs of bipolar disorder?", "How is schizophrenia treated?", "Do I need hospitalization?"],
-    keywords: ["psychiatric nurse", "clinical officer", "psychiatry training", "nursing", "schizophrenia", "bipolar"]
+    id: "family-couples",
+    name: "Family & Couples Counseling",
+    description: "Guidance for families and couples dealing with relationship challenges, communication breakdown, parenting stress, and conflict resolution.",
+    keywords: ["family", "couples", "marriage", "relationship", "parenting", "communication", "conflict", "divorce"]
   },
   {
-    id: "psychiatrist",
-    name: "Psychiatrists",
-    description: "Diagnose and treat serious mental disorders with medication and therapy, including psychosis, bipolar disorder, and severe anxiety.",
-    qualifications: "Medical degree (MBChB/MD) plus Masters in Psychiatry",
-    conditions: ["Psychosis", "Bipolar disorder", "Severe anxiety", "Major depression", "Medication management"],
-    commonQuestions: ["Do I need medication for my condition?", "What's the difference between a psychiatrist and psychologist?", "Can mental illness be cured?"],
-    keywords: ["psychiatrist", "mbchb", "md", "medical doctor", "psychiatry", "medication"]
+    id: "crisis-emergency",
+    name: "Crisis & Emergency Mental Health Support",
+    description: "Immediate support for individuals experiencing acute emotional distress, suicidal thoughts, or mental health crises.",
+    keywords: ["crisis", "emergency", "suicide", "suicidal", "self-harm", "intervention", "acute"]
   },
   {
-    id: "addiction-counsellor",
-    name: "Addiction Counsellors / Substance Use Specialists",
-    description: "Support individuals struggling with alcohol, drugs, or behavioral addictions and guide recovery.",
-    qualifications: "Certification in addiction counseling, motivational interviewing, or detox support",
-    conditions: ["Alcohol addiction", "Drug addiction", "Behavioral addictions", "Recovery support", "Relapse prevention"],
-    commonQuestions: ["Am I addicted?", "How do I quit drinking?", "What is the first step to recovery?"],
-    keywords: ["addiction", "substance", "alcohol", "drug", "recovery", "detox", "motivational interviewing"]
+    id: "depression-anxiety",
+    name: "Depression & Anxiety Therapy",
+    description: "Care for individuals experiencing depression, anxiety, panic attacks, excessive worry, or long-term low mood.",
+    keywords: ["depression", "anxiety", "panic", "worry", "mood", "depressed", "anxious"]
   },
   {
-    id: "social-worker",
-    name: "Social Workers / Psychosocial Support",
-    description: "Assist in crisis situations, child protection, domestic violence cases, and community wellbeing.",
-    qualifications: "Bachelor's or Master's in Social Work or related field",
-    conditions: ["Crisis situations", "Child protection", "Domestic violence", "Community support", "Family welfare"],
-    commonQuestions: ["Where can I get help for domestic violence?", "How do I report child abuse?", "What support is available for my family?"],
-    keywords: ["social work", "psychosocial", "child protection", "domestic violence", "community"]
+    id: "grief-bereavement",
+    name: "Grief & Bereavement Support",
+    description: "Compassionate counseling for those coping with loss, bereavement, and emotional pain after traumatic events.",
+    keywords: ["grief", "bereavement", "loss", "death", "mourning", "bereaved"]
   },
   {
-    id: "child-psychologist",
-    name: "Child & Adolescent Counselors / Psychologists",
-    description: "Address behavioral problems, trauma, school difficulties, and emotional challenges in children and teens.",
-    qualifications: "Master's in Child Psychology, Counseling, or related field",
-    conditions: ["Behavioral problems", "Childhood trauma", "School difficulties", "ADHD", "Teen depression", "Anxiety in children"],
-    commonQuestions: ["Why is my child acting out?", "How do I help my teenager with anxiety?", "Is my child's behavior normal?"],
-    keywords: ["child psychology", "adolescent", "children", "teen", "youth", "behavioral", "school"]
+    id: "relationships-intimacy",
+    name: "Relationships & Intimacy Counseling",
+    description: "Support around romantic relationships, communication challenges, trust issues, and sexual health concerns.",
+    keywords: ["relationship", "intimacy", "romantic", "trust", "sexual", "dating", "partner"]
   },
   {
-    id: "family-therapist",
-    name: "Family & Marriage Therapists",
-    description: "Help couples and families improve communication, resolve conflicts, and strengthen relationships.",
-    qualifications: "Certification or Master's in Family/Marriage Therapy",
-    conditions: ["Marriage problems", "Family conflicts", "Communication issues", "Divorce", "Blended families"],
-    commonQuestions: ["Can couples therapy save my marriage?", "How do we communicate better?", "Should we stay together for the kids?"],
-    keywords: ["family therapy", "marriage", "couples", "relationship", "communication", "conflict"]
+    id: "self-esteem-growth",
+    name: "Self-Esteem & Personal Growth Coaching",
+    description: "For individuals seeking to build confidence, improve self-worth, set life goals, and achieve personal or professional growth.",
+    keywords: ["self-esteem", "confidence", "personal growth", "self-worth", "goals", "life coach", "wellness"]
   },
   {
-    id: "trauma-practitioner",
-    name: "Trauma-Informed Practitioners",
-    description: "Work with people recovering from trauma, abuse, accidents, or violence.",
-    qualifications: "Certification in Trauma-Informed Care (TIC), TF-CBT, or survivor support programs",
-    conditions: ["Trauma recovery", "Abuse survivors", "Accident trauma", "Violence survivors", "PTSD"],
-    commonQuestions: ["How do I heal from trauma?", "Will I ever feel normal again?", "Why do I have flashbacks?"],
-    keywords: ["trauma", "abuse", "survivor", "tf-cbt", "trauma-informed", "violence"]
-  },
-  {
-    id: "school-counsellor",
-    name: "School Guidance Counselors",
-    description: "Support students with academic challenges, career guidance, personal issues, and school adjustment.",
-    qualifications: "Degree in Educational Psychology, Counseling, or related field",
-    conditions: ["Academic challenges", "Career guidance", "School adjustment", "Bullying", "Student stress"],
-    commonQuestions: ["What career should I choose?", "How do I deal with exam stress?", "My child is being bullied, what do I do?"],
-    keywords: ["school", "guidance", "education", "academic", "career", "student"]
-  },
-  {
-    id: "occupational-therapist",
-    name: "Occupational Therapists (Mental Health)",
-    description: "Help people regain daily life skills affected by mental illness, trauma, or disability.",
-    qualifications: "Bachelor's or Master's in Occupational Therapy",
-    conditions: ["Daily living skills", "Mental illness recovery", "Disability support", "Work rehabilitation"],
-    commonQuestions: ["How can I get back to normal life?", "What activities can help my recovery?", "How do I manage daily tasks with my condition?"],
-    keywords: ["occupational therapy", "daily living", "rehabilitation", "disability"]
-  },
-  {
-    id: "behavioural-therapist",
-    name: "Behavioural Therapists",
-    description: "Focus on changing harmful behaviors such as aggression, compulsions, or bad habits in children and adults.",
-    qualifications: "Certification in Behavioral Therapy; Psychology degree preferred",
-    conditions: ["Aggression", "Compulsive behaviors", "Bad habits", "Behavioral disorders", "Anger management"],
-    commonQuestions: ["How do I control my anger?", "Why can't I stop my bad habits?", "Can behavior therapy help my child?"],
-    keywords: ["behavioral therapy", "behaviour", "aggression", "habits", "anger", "compulsive"]
-  },
-  {
-    id: "peer-support",
-    name: "Peer Support Specialists / Recovery Coaches",
-    description: "Guide and support others through recovery by sharing lived experience.",
-    qualifications: "Certification in peer support or recovery coaching",
-    conditions: ["Recovery support", "Peer mentoring", "Lived experience support", "Community recovery"],
-    commonQuestions: ["How did you overcome your challenges?", "Can someone who's been through this help me?", "What is peer support?"],
-    keywords: ["peer support", "recovery coach", "lived experience", "peer"]
-  },
-  {
-    id: "life-coach",
-    name: "Life / Wellness Coaches",
-    description: "Support stress management, personal growth, life balance, and healthy habits.",
-    qualifications: "Certified Life Coach or Wellness Coach programs",
-    conditions: ["Stress management", "Personal growth", "Life balance", "Goal setting", "Healthy habits"],
-    commonQuestions: ["How do I achieve work-life balance?", "What are my life goals?", "How do I develop better habits?"],
-    keywords: ["life coach", "wellness coach", "personal growth", "stress management", "goals"]
-  },
-  {
-    id: "program-manager",
-    name: "Mental Health Program Managers",
-    description: "Oversee mental health programs in communities or organizations and ensure proper care delivery.",
-    qualifications: "Degree in Public Health, Psychology, Social Work, or related field",
-    conditions: ["Program development", "Community mental health", "Organizational wellness", "Care coordination"],
-    commonQuestions: ["How do I set up a mental health program?", "What resources are available for communities?"],
-    keywords: ["program manager", "public health", "community", "organizational", "mhpss"]
-  },
-  {
-    id: "crisis-counsellor",
-    name: "Crisis Counselors / Suicide Prevention Specialists",
-    description: "Provide immediate support to people in crisis, suicidal thoughts, or emergencies.",
-    qualifications: "Certification in crisis counseling, suicide prevention, or mental health",
-    conditions: ["Crisis intervention", "Suicidal thoughts", "Emergency support", "Self-harm"],
-    commonQuestions: ["I'm having suicidal thoughts, what do I do?", "How do I help someone in crisis?", "Is there hope for me?"],
-    keywords: ["crisis", "suicide prevention", "emergency", "self-harm", "intervention"]
-  },
-  {
-    id: "rehabilitation-counsellor",
-    name: "Rehabilitation Counselors",
-    description: "Help people recovering from injury, illness, or long-term disability regain independence.",
-    qualifications: "Master's in Rehabilitation Counseling or related field",
-    conditions: ["Injury recovery", "Illness recovery", "Disability independence", "Vocational rehabilitation"],
-    commonQuestions: ["How do I get back to work after my illness?", "Can I live independently again?", "What support is available for my disability?"],
-    keywords: ["rehabilitation", "injury", "disability", "vocational", "recovery"]
-  },
-  {
-    id: "neuropsychologist",
-    name: "Neuropsychologists",
-    description: "Assess and treat cognitive or brain-related problems like memory loss, attention difficulties, or effects of brain injury.",
-    qualifications: "Master's or PhD in Neuropsychology or Clinical Neuropsychology",
-    conditions: ["Memory loss", "Attention difficulties", "Brain injury", "Cognitive problems", "Dementia"],
-    commonQuestions: ["Why am I forgetting things?", "Did my head injury affect my brain?", "Can cognitive problems be treated?"],
-    keywords: ["neuropsychology", "brain", "memory", "cognitive", "attention", "dementia"]
-  },
-  {
-    id: "counsellor",
-    name: "Counsellors",
-    description: "Help people cope with emotional, behavioral, and personal issues. They provide support for stress, grief, relationship problems, life transitions, low self-esteem, and everyday mental health challenges.",
-    qualifications: "Bachelor's or Master's in Counselling, Psychology, or related fields, often with additional certification in counseling skills",
-    conditions: ["Stress", "Grief", "Relationship problems", "Life transitions", "Low self-esteem", "Everyday challenges"],
-    commonQuestions: ["How do I deal with stress?", "Why do I feel so down?", "How can I improve my self-esteem?"],
-    keywords: ["counsellor", "counselor", "counselling", "counseling", "stress", "grief", "self-esteem"]
+    id: "work-stress",
+    name: "Work, Stress & Occupational Therapy",
+    description: "Support for work-related stress, burnout, productivity challenges, and improving mental wellbeing in professional and daily life.",
+    keywords: ["work", "occupational", "burnout", "productivity", "career", "professional", "workplace", "job"]
   }
 ];
 
@@ -547,7 +368,7 @@ Please confirm availability. Thank you!`;
 };
 
 // Function to match specialists to categories based on their profile
-const matchSpecialistToCategory = (specialist: Specialist, category: ProfessionalCategory): boolean => {
+const matchSpecialistToSupportCategory = (specialist: Specialist, category: SupportCategory): boolean => {
   if (category.id === "all") return true;
   
   const searchableText = [
@@ -565,14 +386,11 @@ const Specialists = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedCountry, setSelectedCountry] = useState("");
-  const [selectedPricingTier, setSelectedPricingTier] = useState("all");
   const [specialists, setSpecialists] = useState<Specialist[]>([]);
   const [verifiedSpecialists, setVerifiedSpecialists] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
-  const [showQuestions, setShowQuestions] = useState(false);
 
-  const currentCategory = professionalCategories.find(c => c.id === selectedCategory) || professionalCategories[0];
-  const currentPricingTier = pricingTiers.find(t => t.id === selectedPricingTier) || pricingTiers[0];
+  const currentCategory = supportCategories.find(c => c.id === selectedCategory) || supportCategories[0];
 
   useEffect(() => {
     fetchSpecialists();
@@ -609,7 +427,7 @@ const Specialists = () => {
   };
 
   const filteredSpecialists = specialists.filter((specialist) => {
-    const matchesCategory = matchSpecialistToCategory(specialist, currentCategory);
+    const matchesCategory = matchSpecialistToSupportCategory(specialist, currentCategory);
     const matchesSearch =
       searchQuery === "" ||
       specialist.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -618,11 +436,7 @@ const Specialists = () => {
     const matchesCountry =
       selectedCountry === "" ||
       specialist.country === selectedCountry;
-    const matchesPricingTier =
-      selectedPricingTier === "all" ||
-      (specialist.price_per_hour >= currentPricingTier.priceRange.min &&
-       specialist.price_per_hour <= currentPricingTier.priceRange.max);
-    return matchesCategory && matchesSearch && matchesCountry && matchesPricingTier;
+    return matchesCategory && matchesSearch && matchesCountry;
   });
 
   return (
@@ -694,91 +508,34 @@ const Specialists = () => {
               </Select>
             </div>
 
-            {/* Pricing Tier Cards */}
+            {/* Support Category Cards */}
             <div className="mb-6">
-              <Label className="text-sm font-medium mb-3 block">Filter by Affordability</Label>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
-                {pricingTiers.map((tier) => (
+              <Label className="text-sm font-medium mb-3 block">Browse by Support Category</Label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+                {supportCategories.map((category) => (
                   <button
-                    key={tier.id}
-                    onClick={() => setSelectedPricingTier(tier.id)}
+                    key={category.id}
+                    onClick={() => setSelectedCategory(category.id)}
                     className={`p-4 rounded-xl border-2 transition-all text-left ${
-                      selectedPricingTier === tier.id
+                      selectedCategory === category.id
                         ? "border-primary bg-primary/10 shadow-md"
                         : "border-border bg-card hover:border-primary/50 hover:bg-primary/5"
                     }`}
                   >
-                    <div className="font-semibold text-sm text-foreground mb-1">{tier.name}</div>
-                    {tier.id !== "all" && (
-                      <div className="text-xs text-primary font-medium">{tier.label}</div>
+                    <div className="font-semibold text-sm text-foreground mb-1">{category.name}</div>
+                    {category.id !== "all" && (
+                      <p className="text-xs text-muted-foreground line-clamp-2">{category.description}</p>
                     )}
                   </button>
                 ))}
               </div>
             </div>
 
-
-            {/* Category Dropdown */}
-            <div className="mb-6">
-              <Label className="text-sm font-medium mb-2 block">Select Professional Type</Label>
-              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                <SelectTrigger className="w-full md:w-[400px] bg-background">
-                  <SelectValue placeholder="All Professionals" />
-                </SelectTrigger>
-                <SelectContent className="bg-background border border-border z-50 max-h-[400px]">
-                  {professionalCategories.map((category) => (
-                    <SelectItem key={category.id} value={category.id}>
-                      {category.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
             {/* Category Description Card */}
             {currentCategory && currentCategory.id !== "all" && (
               <div className="bg-gradient-to-r from-primary/5 to-secondary/5 rounded-xl p-6 mb-6 border border-primary/20">
                 <h2 className="font-bold text-xl text-foreground mb-3">{currentCategory.name}</h2>
-                <p className="text-muted-foreground mb-4">{currentCategory.description}</p>
-                
-                <div className="grid md:grid-cols-2 gap-4 mb-4">
-                  <div>
-                    <h3 className="font-semibold text-sm text-foreground mb-2">Qualifications</h3>
-                    <p className="text-sm text-muted-foreground">{currentCategory.qualifications}</p>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-sm text-foreground mb-2">Conditions They Help With</h3>
-                    <div className="flex flex-wrap gap-1.5">
-                      {currentCategory.conditions.slice(0, 5).map((condition, idx) => (
-                        <Badge key={idx} variant="secondary" className="text-xs">
-                          {condition}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                {currentCategory.commonQuestions.length > 0 && (
-                  <Collapsible open={showQuestions} onOpenChange={setShowQuestions}>
-                    <CollapsibleTrigger asChild>
-                      <Button variant="ghost" size="sm" className="gap-2 text-primary hover:text-primary/80">
-                        <HelpCircle className="w-4 h-4" />
-                        Common questions people ask
-                        <ChevronDown className={`w-4 h-4 transition-transform ${showQuestions ? 'rotate-180' : ''}`} />
-                      </Button>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent className="mt-3">
-                      <ul className="space-y-2">
-                        {currentCategory.commonQuestions.map((question, idx) => (
-                          <li key={idx} className="text-sm text-muted-foreground flex items-start gap-2">
-                            <span className="text-primary">•</span>
-                            "{question}"
-                          </li>
-                        ))}
-                      </ul>
-                    </CollapsibleContent>
-                  </Collapsible>
-                )}
+                <p className="text-muted-foreground">{currentCategory.description}</p>
               </div>
             )}
 
@@ -806,7 +563,7 @@ const Specialists = () => {
                 {filteredSpecialists.length === 0 && (
                   <div className="text-center py-12">
                     <p className="text-muted-foreground mb-4">No specialists found matching your criteria.</p>
-                <Button variant="outline" onClick={() => { setSelectedCategory("all"); setSearchQuery(""); setSelectedCountry(""); setSelectedPricingTier("all"); }}>
+                <Button variant="outline" onClick={() => { setSelectedCategory("all"); setSearchQuery(""); setSelectedCountry(""); }}>
                       Clear Filters
                     </Button>
                   </div>
