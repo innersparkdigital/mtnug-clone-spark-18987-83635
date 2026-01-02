@@ -511,33 +511,22 @@ const Specialists = () => {
             {/* Support Category Cards */}
             <div className="mb-6">
               <Label className="text-sm font-medium mb-3 block">Browse by Support Category</Label>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+              <div className="flex flex-wrap gap-2">
                 {supportCategories.map((category) => (
                   <button
                     key={category.id}
                     onClick={() => setSelectedCategory(category.id)}
-                    className={`p-4 rounded-xl border-2 transition-all text-left ${
+                    className={`px-4 py-2 rounded-full border-2 transition-all text-sm font-medium ${
                       selectedCategory === category.id
-                        ? "border-primary bg-primary/10 shadow-md"
-                        : "border-border bg-card hover:border-primary/50 hover:bg-primary/5"
+                        ? "border-primary bg-primary text-primary-foreground shadow-md"
+                        : "border-border bg-card text-foreground hover:border-primary/50 hover:bg-primary/5"
                     }`}
                   >
-                    <div className="font-semibold text-sm text-foreground mb-1">{category.name}</div>
-                    {category.id !== "all" && (
-                      <p className="text-xs text-muted-foreground line-clamp-2">{category.description}</p>
-                    )}
+                    {category.name}
                   </button>
                 ))}
               </div>
             </div>
-
-            {/* Category Description Card */}
-            {currentCategory && currentCategory.id !== "all" && (
-              <div className="bg-gradient-to-r from-primary/5 to-secondary/5 rounded-xl p-6 mb-6 border border-primary/20">
-                <h2 className="font-bold text-xl text-foreground mb-3">{currentCategory.name}</h2>
-                <p className="text-muted-foreground">{currentCategory.description}</p>
-              </div>
-            )}
 
             {/* Results count */}
             <p className="text-sm text-muted-foreground mb-4">
