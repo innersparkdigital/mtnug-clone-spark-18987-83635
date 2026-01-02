@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Gift, Sparkles, Heart, Star, Phone, Users, Calendar, Shield } from "lucide-react";
 
 const promoMessages = [
-  { icon: Gift, text: "🎄 Christmas Special: 20% OFF all therapy sessions this festive season!" },
   { icon: Sparkles, text: "✨ New Year, New You! Start your wellness journey today" },
   { icon: Heart, text: "💚 Gift Mental Wellness - Donate therapy to someone in need" },
   { icon: Star, text: "⭐ Join 10,000+ Africans prioritizing their mental health" },
