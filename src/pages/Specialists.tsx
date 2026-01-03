@@ -39,6 +39,8 @@ interface SupportCategory {
   id: string;
   name: string;
   description: string;
+  lookingFor: string[];
+  conditions: string[];
   keywords: string[];
 }
 
@@ -47,66 +49,148 @@ const supportCategories: SupportCategory[] = [
     id: "all",
     name: "All Categories",
     description: "Browse all mental health professionals available on our platform.",
+    lookingFor: [],
+    conditions: [],
     keywords: []
   },
   {
     id: "addiction",
     name: "Addiction & Substance Use Support",
     description: "For individuals struggling with any form of addiction, including alcohol, drugs, prescription medications, gambling, digital or behavioral addictions. Support includes relapse prevention, recovery planning, motivation, and 12-step–informed care.",
+    lookingFor: [
+      "Help to stop or reduce substance use",
+      "Relapse prevention strategies",
+      "Recovery planning and motivation",
+      "12-step or alternative recovery approaches",
+      "Support for behavioral addictions (gambling, gaming, internet)"
+    ],
+    conditions: ["Alcohol Addiction", "Drug Addiction", "Prescription Drug Abuse", "Gambling Addiction", "Internet/Gaming Addiction", "Sex Addiction", "Food Addiction", "Nicotine Dependence"],
     keywords: ["addiction", "substance", "alcohol", "drug", "recovery", "detox", "gambling", "relapse", "motivational"]
   },
   {
     id: "child-adolescent",
     name: "Child & Adolescent Counseling",
     description: "Support for children and teenagers facing school challenges, behavioral concerns, emotional regulation issues, and developmental difficulties.",
+    lookingFor: [
+      "Help with school-related challenges",
+      "Behavioral management support",
+      "Emotional regulation techniques",
+      "Social skills development",
+      "Support during family transitions"
+    ],
+    conditions: ["ADHD", "Learning Disabilities", "Bullying", "School Anxiety", "Behavioral Disorders", "Autism Spectrum", "Childhood Depression", "Teen Anxiety", "Social Difficulties"],
     keywords: ["child", "adolescent", "children", "teen", "youth", "behavioral", "school", "developmental", "kids"]
   },
   {
     id: "trauma-stress",
     name: "Trauma & Stress Therapy",
     description: "Help for those affected by trauma, chronic stress, or PTSD using evidence-based approaches such as CBT, mindfulness, and trauma-informed care.",
+    lookingFor: [
+      "Processing traumatic experiences",
+      "PTSD symptom management",
+      "Coping with chronic stress",
+      "Healing from abuse or violence",
+      "Recovery from accidents or disasters"
+    ],
+    conditions: ["PTSD", "Complex Trauma", "Childhood Trauma", "Sexual Abuse", "Domestic Violence", "Accident Trauma", "War/Conflict Trauma", "Chronic Stress Disorder"],
     keywords: ["trauma", "ptsd", "stress", "cbt", "mindfulness", "trauma-informed", "abuse", "survivor"]
   },
   {
     id: "family-couples",
     name: "Family & Couples Counseling",
     description: "Guidance for families and couples dealing with relationship challenges, communication breakdown, parenting stress, and conflict resolution.",
+    lookingFor: [
+      "Improving couple communication",
+      "Resolving family conflicts",
+      "Parenting guidance and support",
+      "Blended family adjustment",
+      "Pre-marital counseling"
+    ],
+    conditions: ["Marital Conflict", "Communication Breakdown", "Parenting Challenges", "Divorce/Separation", "Infidelity Recovery", "Blended Family Issues", "Parent-Child Conflict", "Co-Parenting Difficulties"],
     keywords: ["family", "couples", "marriage", "relationship", "parenting", "communication", "conflict", "divorce"]
   },
   {
     id: "crisis-emergency",
     name: "Crisis & Emergency Mental Health Support",
     description: "Immediate support for individuals experiencing acute emotional distress, suicidal thoughts, or mental health crises.",
+    lookingFor: [
+      "Immediate emotional support",
+      "Suicidal thoughts intervention",
+      "Crisis stabilization",
+      "Safety planning",
+      "Urgent mental health care"
+    ],
+    conditions: ["Suicidal Ideation", "Self-Harm", "Acute Anxiety Attacks", "Psychotic Episodes", "Severe Depression", "Emotional Breakdown", "Acute Grief", "Mental Health Emergency"],
     keywords: ["crisis", "emergency", "suicide", "suicidal", "self-harm", "intervention", "acute"]
   },
   {
     id: "depression-anxiety",
     name: "Depression & Anxiety Therapy",
     description: "Care for individuals experiencing depression, anxiety, panic attacks, excessive worry, or long-term low mood.",
+    lookingFor: [
+      "Managing depressive symptoms",
+      "Reducing anxiety and worry",
+      "Panic attack prevention",
+      "Mood regulation techniques",
+      "Building emotional resilience"
+    ],
+    conditions: ["Major Depression", "Generalized Anxiety", "Panic Disorder", "Social Anxiety", "Phobias", "OCD", "Dysthymia", "Seasonal Affective Disorder", "Health Anxiety"],
     keywords: ["depression", "anxiety", "panic", "worry", "mood", "depressed", "anxious"]
   },
   {
     id: "grief-bereavement",
     name: "Grief & Bereavement Support",
     description: "Compassionate counseling for those coping with loss, bereavement, and emotional pain after traumatic events.",
+    lookingFor: [
+      "Processing the loss of a loved one",
+      "Coping with sudden death",
+      "Managing complicated grief",
+      "Finding meaning after loss",
+      "Support through mourning stages"
+    ],
+    conditions: ["Loss of Spouse/Partner", "Loss of Parent", "Loss of Child", "Pregnancy Loss", "Pet Loss", "Anticipatory Grief", "Complicated Grief", "Traumatic Loss"],
     keywords: ["grief", "bereavement", "loss", "death", "mourning", "bereaved"]
   },
   {
     id: "relationships-intimacy",
     name: "Relationships & Intimacy Counseling",
     description: "Support around romantic relationships, communication challenges, trust issues, and sexual health concerns.",
+    lookingFor: [
+      "Improving relationship patterns",
+      "Building trust and intimacy",
+      "Addressing sexual concerns",
+      "Navigating dating challenges",
+      "Healing from relationship trauma"
+    ],
+    conditions: ["Relationship Anxiety", "Intimacy Issues", "Trust Issues", "Dating Difficulties", "Sexual Dysfunction", "Attachment Issues", "Codependency", "Relationship Trauma"],
     keywords: ["relationship", "intimacy", "romantic", "trust", "sexual", "dating", "partner"]
   },
   {
     id: "self-esteem-growth",
     name: "Self-Esteem & Personal Growth Coaching",
     description: "For individuals seeking to build confidence, improve self-worth, set life goals, and achieve personal or professional growth.",
+    lookingFor: [
+      "Building self-confidence",
+      "Overcoming limiting beliefs",
+      "Setting and achieving life goals",
+      "Career development support",
+      "Personal transformation"
+    ],
+    conditions: ["Low Self-Esteem", "Imposter Syndrome", "Perfectionism", "People-Pleasing", "Identity Issues", "Life Transitions", "Career Confusion", "Motivation Challenges"],
     keywords: ["self-esteem", "confidence", "personal growth", "self-worth", "goals", "life coach", "wellness"]
   },
   {
     id: "work-stress",
     name: "Work, Stress & Occupational Therapy",
     description: "Support for work-related stress, burnout, productivity challenges, and improving mental wellbeing in professional and daily life.",
+    lookingFor: [
+      "Managing workplace stress",
+      "Preventing or recovering from burnout",
+      "Work-life balance strategies",
+      "Career decision support",
+      "Workplace conflict resolution"
+    ],
+    conditions: ["Work Burnout", "Job Stress", "Workplace Anxiety", "Career Burnout", "Work-Life Imbalance", "Job Loss Stress", "Workplace Bullying", "Performance Anxiety"],
     keywords: ["work", "occupational", "burnout", "productivity", "career", "professional", "workplace", "job"]
   }
 ];
@@ -527,6 +611,41 @@ const Specialists = () => {
                 ))}
               </div>
             </div>
+
+            {/* Category Description Card */}
+            {selectedCategory !== "all" && currentCategory && (
+              <div className="bg-gradient-to-r from-primary/5 to-secondary/5 rounded-xl p-6 mb-6 border border-primary/20">
+                <h2 className="font-bold text-xl text-foreground mb-3">{currentCategory.name}</h2>
+                <p className="text-muted-foreground mb-4">{currentCategory.description}</p>
+                
+                {currentCategory.lookingFor.length > 0 && (
+                  <div className="mb-4">
+                    <h3 className="font-semibold text-foreground mb-2">What You're Looking For:</h3>
+                    <ul className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                      {currentCategory.lookingFor.map((item, index) => (
+                        <li key={index} className="flex items-start gap-2 text-sm text-muted-foreground">
+                          <span className="text-primary mt-0.5">•</span>
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                
+                {currentCategory.conditions.length > 0 && (
+                  <div>
+                    <h3 className="font-semibold text-foreground mb-2">Conditions Managed:</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {currentCategory.conditions.map((condition, index) => (
+                        <Badge key={index} variant="secondary" className="text-xs">
+                          {condition}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Results count */}
             <p className="text-sm text-muted-foreground mb-4">
