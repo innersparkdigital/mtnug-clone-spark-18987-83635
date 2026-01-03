@@ -11,7 +11,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Search, Video, Phone, ExternalLink, Calendar, MessageSquare, CheckCircle } from "lucide-react";
+import { 
+  Search, Video, Phone, ExternalLink, Calendar, MessageSquare, CheckCircle,
+  Pill, Baby, Brain, Users, AlertTriangle, CloudRain, Heart, Handshake, Sparkles, Briefcase, LayoutGrid
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getSpecialistImage } from "@/lib/specialistImages";
 import { toast } from "sonner";
@@ -38,6 +41,8 @@ interface Specialist {
 interface SupportCategory {
   id: string;
   name: string;
+  shortName: string;
+  icon: React.ElementType;
   description: string;
   lookingFor: string[];
   conditions: string[];
@@ -48,6 +53,8 @@ const supportCategories: SupportCategory[] = [
   {
     id: "all",
     name: "All Categories",
+    shortName: "All",
+    icon: LayoutGrid,
     description: "Browse all mental health professionals available on our platform.",
     lookingFor: [],
     conditions: [],
@@ -56,6 +63,8 @@ const supportCategories: SupportCategory[] = [
   {
     id: "addiction",
     name: "Addiction & Substance Use Support",
+    shortName: "Addiction",
+    icon: Pill,
     description: "For individuals struggling with any form of addiction, including alcohol, drugs, prescription medications, gambling, digital or behavioral addictions. Support includes relapse prevention, recovery planning, motivation, and 12-step–informed care.",
     lookingFor: [
       "Help to stop or reduce substance use",
@@ -70,6 +79,8 @@ const supportCategories: SupportCategory[] = [
   {
     id: "child-adolescent",
     name: "Child & Adolescent Counseling",
+    shortName: "Child & Teen",
+    icon: Baby,
     description: "Support for children and teenagers facing school challenges, behavioral concerns, emotional regulation issues, and developmental difficulties.",
     lookingFor: [
       "Help with school-related challenges",
@@ -84,6 +95,8 @@ const supportCategories: SupportCategory[] = [
   {
     id: "trauma-stress",
     name: "Trauma & Stress Therapy",
+    shortName: "Trauma",
+    icon: Brain,
     description: "Help for those affected by trauma, chronic stress, or PTSD using evidence-based approaches such as CBT, mindfulness, and trauma-informed care.",
     lookingFor: [
       "Processing traumatic experiences",
@@ -98,6 +111,8 @@ const supportCategories: SupportCategory[] = [
   {
     id: "family-couples",
     name: "Family & Couples Counseling",
+    shortName: "Family & Couples",
+    icon: Users,
     description: "Guidance for families and couples dealing with relationship challenges, communication breakdown, parenting stress, and conflict resolution.",
     lookingFor: [
       "Improving couple communication",
@@ -112,6 +127,8 @@ const supportCategories: SupportCategory[] = [
   {
     id: "crisis-emergency",
     name: "Crisis & Emergency Mental Health Support",
+    shortName: "Crisis",
+    icon: AlertTriangle,
     description: "Immediate support for individuals experiencing acute emotional distress, suicidal thoughts, or mental health crises.",
     lookingFor: [
       "Immediate emotional support",
@@ -126,6 +143,8 @@ const supportCategories: SupportCategory[] = [
   {
     id: "depression-anxiety",
     name: "Depression & Anxiety Therapy",
+    shortName: "Depression & Anxiety",
+    icon: CloudRain,
     description: "Care for individuals experiencing depression, anxiety, panic attacks, excessive worry, or long-term low mood.",
     lookingFor: [
       "Managing depressive symptoms",
@@ -140,6 +159,8 @@ const supportCategories: SupportCategory[] = [
   {
     id: "grief-bereavement",
     name: "Grief & Bereavement Support",
+    shortName: "Grief",
+    icon: Heart,
     description: "Compassionate counseling for those coping with loss, bereavement, and emotional pain after traumatic events.",
     lookingFor: [
       "Processing the loss of a loved one",
@@ -154,6 +175,8 @@ const supportCategories: SupportCategory[] = [
   {
     id: "relationships-intimacy",
     name: "Relationships & Intimacy Counseling",
+    shortName: "Relationships",
+    icon: Handshake,
     description: "Support around romantic relationships, communication challenges, trust issues, and sexual health concerns.",
     lookingFor: [
       "Improving relationship patterns",
@@ -168,6 +191,8 @@ const supportCategories: SupportCategory[] = [
   {
     id: "self-esteem-growth",
     name: "Self-Esteem & Personal Growth Coaching",
+    shortName: "Self-Esteem",
+    icon: Sparkles,
     description: "For individuals seeking to build confidence, improve self-worth, set life goals, and achieve personal or professional growth.",
     lookingFor: [
       "Building self-confidence",
@@ -182,6 +207,8 @@ const supportCategories: SupportCategory[] = [
   {
     id: "work-stress",
     name: "Work, Stress & Occupational Therapy",
+    shortName: "Work Stress",
+    icon: Briefcase,
     description: "Support for work-related stress, burnout, productivity challenges, and improving mental wellbeing in professional and daily life.",
     lookingFor: [
       "Managing workplace stress",
@@ -595,20 +622,33 @@ const Specialists = () => {
             {/* Support Category Cards */}
             <div className="mb-6">
               <Label className="text-sm font-medium mb-3 block">Browse by Support Category</Label>
-              <div className="flex flex-wrap gap-2">
-                {supportCategories.map((category) => (
-                  <button
-                    key={category.id}
-                    onClick={() => setSelectedCategory(category.id)}
-                    className={`px-4 py-2 rounded-full border-2 transition-all text-sm font-medium ${
-                      selectedCategory === category.id
-                        ? "border-primary bg-primary text-primary-foreground shadow-md"
-                        : "border-border bg-card text-foreground hover:border-primary/50 hover:bg-primary/5"
-                    }`}
-                  >
-                    {category.name}
-                  </button>
-                ))}
+              <div className="flex flex-wrap gap-3">
+                {supportCategories.map((category) => {
+                  const IconComponent = category.icon;
+                  const isSelected = selectedCategory === category.id;
+                  return (
+                    <button
+                      key={category.id}
+                      onClick={() => setSelectedCategory(category.id)}
+                      className={`group relative flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 transition-all duration-300 text-sm font-medium ${
+                        isSelected
+                          ? "border-primary bg-gradient-to-r from-primary to-primary/90 text-primary-foreground shadow-lg shadow-primary/25 scale-[1.02]"
+                          : "border-border bg-card text-foreground hover:border-primary/60 hover:bg-gradient-to-r hover:from-primary/5 hover:to-primary/10 hover:shadow-md hover:scale-[1.01]"
+                      }`}
+                    >
+                      <span className={`flex items-center justify-center w-7 h-7 rounded-lg transition-all duration-300 ${
+                        isSelected 
+                          ? "bg-white/20" 
+                          : "bg-primary/10 group-hover:bg-primary/20"
+                      }`}>
+                        <IconComponent className={`w-4 h-4 transition-colors duration-300 ${
+                          isSelected ? "text-primary-foreground" : "text-primary"
+                        }`} />
+                      </span>
+                      <span className="whitespace-nowrap">{category.shortName}</span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
