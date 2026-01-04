@@ -3,17 +3,17 @@ import { ChevronLeft, ChevronRight, Smile, MessageCircle, Video, Users, Calendar
 
 // Import mockup images
 import appHomeMockup from "@/assets/mockups/app-home.jpeg";
-import findTherapistsMockup from "@/assets/mockups/find-therapists.jpeg";
+import findTherapistsMockup from "@/assets/features/find-therapist.jpg";
 import chatSessionMockup from "@/assets/mockups/chat-session.png";
-import supportGroupsMockup from "@/assets/mockups/support-groups.jpeg";
+import supportGroupsMockup from "@/assets/features/support-groups.webp";
 import bookSessionMockup from "@/assets/mockups/book-session.jpeg";
 import emergencyHelpMockup from "@/assets/mockups/emergency-help.jpeg";
-import therapyFundMockup from "@/assets/mockups/therapy-fund.jpeg";
+import therapyFundMockup from "@/assets/features/donate-therapy.jpg";
 import wellnessVaultMockup from "@/assets/mockups/wellness-vault.jpeg";
 import videoSessionMockup from "@/assets/mockups/video-session-mockup.png";
-import dailyReflectionMockup from "@/assets/mockups/daily-reflection.png";
+import dailyReflectionMockup from "@/assets/features/daily-reflection.jpg";
 import downloadAppMockup from "@/assets/mockups/download-app.png";
-import privateCounsellingMockup from "@/assets/mockups/private-counselling.png";
+import privateCounsellingMockup from "@/assets/features/private-counselling.jpg";
 
 const features = [
   {
