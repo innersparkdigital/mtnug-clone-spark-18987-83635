@@ -186,14 +186,14 @@ const AppFeaturesShowcase = () => {
   const Icon = currentFeature.icon;
 
   return (
-    <section className="pt-0 pb-16 md:pb-24 bg-gradient-to-b from-background to-muted/30 overflow-hidden">
+    <section className="pt-0 pb-8 md:pb-12 bg-gradient-to-b from-background to-muted/30 overflow-hidden">
       <div className="container mx-auto px-4">
 
         {/* Feature Showcase */}
-        <div className="relative max-w-6xl mx-auto">
+        <div className="relative max-w-5xl mx-auto">
         {/* Main Feature Card */}
           <div 
-            className={`relative rounded-3xl overflow-hidden shadow-2xl transition-all duration-500`}
+            className={`relative rounded-2xl overflow-hidden shadow-xl transition-all duration-500`}
             style={{
               background: `linear-gradient(135deg, ${getGradientColors(currentFeature.gradient).from} 0%, ${getGradientColors(currentFeature.gradient).to} 100%)`
             }}
@@ -203,27 +203,27 @@ const AppFeaturesShowcase = () => {
             {/* Unified gradient overlay for blending */}
             <div className="absolute inset-0 bg-gradient-to-r from-white/90 via-white/70 to-transparent" />
             
-            <div className={`grid md:grid-cols-2 gap-0 min-h-[500px] md:min-h-[550px] relative z-10 transition-opacity duration-300 ease-in-out ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
+            <div className={`grid md:grid-cols-2 gap-0 min-h-[380px] md:min-h-[400px] relative z-10 transition-opacity duration-300 ease-in-out ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
               {/* Left Content */}
-              <div className="p-8 md:p-12 lg:p-14 flex flex-col justify-center relative z-10">
-                <div className={`inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br ${currentFeature.gradient} text-white shadow-lg mb-5`}>
-                  <Icon className="w-7 h-7" />
+              <div className="p-5 md:p-8 lg:p-10 flex flex-col justify-center relative z-10">
+                <div className={`inline-flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br ${currentFeature.gradient} text-white shadow-lg mb-3`}>
+                  <Icon className="w-5 h-5" />
                 </div>
                 
-                <h3 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-3 transition-all duration-300">
+                <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-2 transition-all duration-300">
                   {currentFeature.title}
                 </h3>
                 
-                <div className={`inline-block px-4 py-2 rounded-lg bg-gradient-to-r ${currentFeature.gradient} text-white text-base md:text-lg font-medium mb-5 max-w-fit`}>
+                <div className={`inline-block px-3 py-1.5 rounded-lg bg-gradient-to-r ${currentFeature.gradient} text-white text-sm font-medium mb-3 max-w-fit`}>
                   {currentFeature.tagline}
                 </div>
                 
-                <p className="text-muted-foreground text-base md:text-lg leading-relaxed mb-6">
+                <p className="text-muted-foreground text-sm leading-relaxed mb-4">
                   {currentFeature.description}
                 </p>
 
                 {/* App Store Buttons */}
-                <div className="flex flex-wrap gap-3">
+                <div className="flex flex-wrap gap-2">
                   <a 
                     href="https://play.google.com/store/apps/details?id=com.innerspark.app" 
                     target="_blank" 
@@ -233,7 +233,7 @@ const AppFeaturesShowcase = () => {
                     <img 
                       src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" 
                       alt="Get it on Google Play" 
-                      className="h-11"
+                      className="h-9"
                     />
                   </a>
                   <a 
@@ -245,14 +245,14 @@ const AppFeaturesShowcase = () => {
                     <img 
                       src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg" 
                       alt="Download on the App Store" 
-                      className="h-11"
+                      className="h-9"
                     />
                   </a>
                 </div>
               </div>
 
               {/* Right - Phone Mockup or Image */}
-              <div className="relative flex items-center justify-center p-6 md:p-8 overflow-hidden">
+              <div className="relative flex items-center justify-center p-4 md:p-6 overflow-hidden">
                 
                 {currentFeature.usePhoneMockup === false ? (
                   /* Direct Image Display */
@@ -260,21 +260,21 @@ const AppFeaturesShowcase = () => {
                     <img 
                       src={currentFeature.mockup} 
                       alt={`${currentFeature.title}`}
-                      className="w-full h-full max-h-[400px] md:max-h-[480px] object-cover rounded-2xl shadow-2xl transition-all duration-500 hover:scale-105"
+                      className="w-full h-full max-h-[300px] md:max-h-[340px] object-cover rounded-xl shadow-xl transition-all duration-500 hover:scale-105"
                     />
                     {/* Decorative glow */}
-                    <div className={`absolute -top-4 -right-4 w-12 md:w-16 h-12 md:h-16 rounded-full bg-gradient-to-br ${currentFeature.gradient} opacity-60 blur-sm animate-pulse`} />
+                    <div className={`absolute -top-3 -right-3 w-10 md:w-12 h-10 md:h-12 rounded-full bg-gradient-to-br ${currentFeature.gradient} opacity-60 blur-sm animate-pulse`} />
                   </div>
                 ) : (
                   /* Phone Frame */
-                  <div className="relative z-10 transform transition-all duration-500 hover:scale-105 ml-auto mr-4 md:mr-8">
+                  <div className="relative z-10 transform transition-all duration-500 hover:scale-105 ml-auto mr-2 md:mr-4">
                     {/* Phone outer frame */}
-                    <div className="relative bg-gray-900 rounded-[2.5rem] md:rounded-[3rem] p-1.5 md:p-2 shadow-2xl">
+                    <div className="relative bg-gray-900 rounded-[2rem] md:rounded-[2.5rem] p-1 md:p-1.5 shadow-xl">
                       {/* Phone notch */}
-                      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 md:w-32 h-5 md:h-7 bg-gray-900 rounded-b-2xl md:rounded-b-3xl z-20" />
+                      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 md:w-24 h-4 md:h-5 bg-gray-900 rounded-b-xl md:rounded-b-2xl z-20" />
                       
                       {/* Phone screen */}
-                      <div className="relative w-[160px] md:w-[220px] h-[340px] md:h-[460px] rounded-[2rem] md:rounded-[2.5rem] overflow-hidden bg-white">
+                      <div className="relative w-[140px] md:w-[180px] h-[280px] md:h-[340px] rounded-[1.5rem] md:rounded-[2rem] overflow-hidden bg-white">
                         <img 
                           src={currentFeature.mockup} 
                           alt={`${currentFeature.title} app screen`}
@@ -283,11 +283,11 @@ const AppFeaturesShowcase = () => {
                       </div>
                       
                       {/* Phone home indicator */}
-                      <div className="absolute bottom-1.5 md:bottom-2 left-1/2 -translate-x-1/2 w-20 md:w-28 h-1 bg-gray-600 rounded-full" />
+                      <div className="absolute bottom-1 md:bottom-1.5 left-1/2 -translate-x-1/2 w-16 md:w-20 h-0.5 bg-gray-600 rounded-full" />
                     </div>
 
                     {/* Decorative glow */}
-                    <div className={`absolute -top-4 -right-4 w-12 md:w-16 h-12 md:h-16 rounded-full bg-gradient-to-br ${currentFeature.gradient} opacity-60 blur-sm animate-pulse`} />
+                    <div className={`absolute -top-3 -right-3 w-10 md:w-12 h-10 md:h-12 rounded-full bg-gradient-to-br ${currentFeature.gradient} opacity-60 blur-sm animate-pulse`} />
                   </div>
                 )}
               </div>
@@ -296,22 +296,22 @@ const AppFeaturesShowcase = () => {
             {/* Navigation Arrows */}
             <button 
               onClick={goToPrevious}
-              className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/90 shadow-lg flex items-center justify-center text-foreground hover:bg-white transition-all hover:scale-110 z-20"
+              className="absolute left-2 md:left-3 top-1/2 -translate-y-1/2 w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/90 shadow-md flex items-center justify-center text-foreground hover:bg-white transition-all hover:scale-110 z-20"
               aria-label="Previous feature"
             >
-              <ChevronLeft className="w-6 h-6" />
+              <ChevronLeft className="w-5 h-5" />
             </button>
             <button 
               onClick={goToNext}
-              className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/90 shadow-lg flex items-center justify-center text-foreground hover:bg-white transition-all hover:scale-110 z-20"
+              className="absolute right-2 md:right-3 top-1/2 -translate-y-1/2 w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/90 shadow-md flex items-center justify-center text-foreground hover:bg-white transition-all hover:scale-110 z-20"
               aria-label="Next feature"
             >
-              <ChevronRight className="w-6 h-6" />
+              <ChevronRight className="w-5 h-5" />
             </button>
           </div>
 
           {/* Pagination Dots */}
-          <div className="flex justify-center gap-2 mt-8">
+          <div className="flex justify-center gap-1.5 mt-4">
             {features.map((_, index) => (
               <button
                 key={index}
@@ -319,10 +319,10 @@ const AppFeaturesShowcase = () => {
                   setIsAutoPlaying(false);
                   changeSlide(index);
                 }}
-                className={`h-2 rounded-full transition-all duration-300 ${
+                className={`h-1.5 rounded-full transition-all duration-300 ${
                   index === displayIndex 
-                    ? `w-8 bg-gradient-to-r ${features[index].gradient}` 
-                    : 'w-2 bg-muted-foreground/30 hover:bg-muted-foreground/50'
+                    ? `w-6 bg-gradient-to-r ${features[index].gradient}` 
+                    : 'w-1.5 bg-muted-foreground/30 hover:bg-muted-foreground/50'
                 }`}
                 aria-label={`Go to feature ${index + 1}`}
               />
@@ -330,7 +330,7 @@ const AppFeaturesShowcase = () => {
           </div>
 
           {/* Feature Quick Links */}
-          <div className="mt-8 grid grid-cols-5 md:grid-cols-10 gap-2">
+          <div className="mt-4 grid grid-cols-5 md:grid-cols-10 gap-1.5">
             {features.map((feature, index) => {
               const FeatureIcon = feature.icon;
               return (
@@ -340,14 +340,14 @@ const AppFeaturesShowcase = () => {
                     setIsAutoPlaying(false);
                     changeSlide(index);
                   }}
-                  className={`flex flex-col items-center p-3 rounded-xl transition-all duration-300 ${
+                  className={`flex flex-col items-center p-2 rounded-lg transition-all duration-300 ${
                     index === displayIndex 
-                      ? `bg-gradient-to-br ${feature.gradient} text-white shadow-lg scale-105` 
+                      ? `bg-gradient-to-br ${feature.gradient} text-white shadow-md scale-105` 
                       : 'bg-muted/50 text-muted-foreground hover:bg-muted'
                   }`}
                 >
-                  <FeatureIcon className="w-5 h-5 mb-1" />
-                  <span className="text-[10px] font-medium text-center leading-tight hidden md:block">
+                  <FeatureIcon className="w-4 h-4 mb-0.5" />
+                  <span className="text-[9px] font-medium text-center leading-tight hidden md:block">
                     {feature.title.split(' ')[0]}
                   </span>
                 </button>
