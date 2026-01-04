@@ -34,7 +34,8 @@ const features = [
     icon: Sparkles,
     gradient: "from-purple-500 to-pink-500",
     bgColor: "bg-purple-50",
-    mockup: dailyReflectionMockup
+    mockup: dailyReflectionMockup,
+    usePhoneMockup: false
   },
   {
     id: 3,
@@ -44,7 +45,8 @@ const features = [
     icon: Search,
     gradient: "from-teal-500 to-cyan-500",
     bgColor: "bg-teal-50",
-    mockup: findTherapistsMockup
+    mockup: findTherapistsMockup,
+    usePhoneMockup: false
   },
   {
     id: 4,
@@ -76,7 +78,8 @@ const features = [
     icon: Users,
     gradient: "from-green-500 to-emerald-500",
     bgColor: "bg-green-50",
-    mockup: supportGroupsMockup
+    mockup: supportGroupsMockup,
+    usePhoneMockup: false
   },
   {
     id: 7,
@@ -106,7 +109,8 @@ const features = [
     icon: Heart,
     gradient: "from-pink-500 to-rose-400",
     bgColor: "bg-pink-50",
-    mockup: therapyFundMockup
+    mockup: therapyFundMockup,
+    usePhoneMockup: false
   },
   {
     id: 10,
