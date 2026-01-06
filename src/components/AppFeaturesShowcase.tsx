@@ -1,16 +1,14 @@
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Smile, MessageCircle, Video, Users, Calendar, AlertTriangle, Search, Heart, Sparkles, Download } from "lucide-react";
 
-// Import mockup images
-import appHomeMockup from "@/assets/mockups/app-home.jpeg";
+// Import feature images
 import findTherapistsMockup from "@/assets/features/find-therapist.jpg";
 import chatSessionMockup from "@/assets/mockups/chat-session.png";
 import supportGroupsMockup from "@/assets/features/support-groups.webp";
-import bookSessionMockup from "@/assets/mockups/book-session.jpeg";
-import emergencyHelpMockup from "@/assets/mockups/emergency-help.jpeg";
+import bookAppointmentMockup from "@/assets/features/book-appointment.jpg";
+import emergencyButtonMockup from "@/assets/features/emergency-button.jpg";
 import therapyFundMockup from "@/assets/features/donate-therapy.jpg";
-import wellnessVaultMockup from "@/assets/mockups/wellness-vault.jpeg";
-import videoSessionMockup from "@/assets/mockups/video-session-mockup.png";
+import moodTrackerMockup from "@/assets/features/mood-tracker.jpg";
 import dailyReflectionMockup from "@/assets/features/daily-reflection.jpg";
 import downloadAppMockup from "@/assets/mockups/download-app.png";
 import privateCounsellingMockup from "@/assets/features/private-counselling.jpg";
@@ -24,7 +22,8 @@ const features = [
     icon: Smile,
     gradient: "from-blue-500 to-indigo-600",
     bgColor: "bg-blue-50",
-    mockup: appHomeMockup
+    mockup: moodTrackerMockup,
+    usePhoneMockup: false
   },
   {
     id: 2,
@@ -89,7 +88,8 @@ const features = [
     icon: Calendar,
     gradient: "from-orange-500 to-amber-500",
     bgColor: "bg-orange-50",
-    mockup: bookSessionMockup
+    mockup: bookAppointmentMockup,
+    usePhoneMockup: false
   },
   {
     id: 8,
@@ -99,7 +99,8 @@ const features = [
     icon: AlertTriangle,
     gradient: "from-red-500 to-rose-500",
     bgColor: "bg-red-50",
-    mockup: emergencyHelpMockup
+    mockup: emergencyButtonMockup,
+    usePhoneMockup: false
   },
   {
     id: 9,
@@ -260,6 +261,8 @@ const AppFeaturesShowcase = () => {
                     <img 
                       src={currentFeature.mockup} 
                       alt={`${currentFeature.title}`}
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full max-h-[300px] md:max-h-[340px] object-cover rounded-xl shadow-xl transition-all duration-500 hover:scale-105"
                     />
                     {/* Decorative glow */}
@@ -278,6 +281,8 @@ const AppFeaturesShowcase = () => {
                         <img 
                           src={currentFeature.mockup} 
                           alt={`${currentFeature.title} app screen`}
+                          loading="lazy"
+                          decoding="async"
                           className="w-full h-full object-cover object-top transition-opacity duration-500"
                         />
                       </div>
