@@ -1,4 +1,5 @@
 import { T } from "@/components/Translate";
+import ScrollReveal, { StaggerContainer, StaggerItem } from "@/components/ScrollReveal";
 import nationalIctHub from "@/assets/partners/national-ict-hub.png";
 import awsLogo from "@/assets/partners/aws.png";
 
@@ -11,29 +12,32 @@ const Partners = () => {
   return (
     <section className="py-16 bg-muted/30">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-10">
-          <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
-            <T>Our Partners</T>
-          </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            <T>We collaborate with leading organizations to bring you the best mental health support</T>
-          </p>
-        </div>
+        <ScrollReveal>
+          <div className="text-center mb-10">
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
+              <T>Our Partners</T>
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              <T>We collaborate with leading organizations to bring you the best mental health support</T>
+            </p>
+          </div>
+        </ScrollReveal>
         
-        <div className="flex flex-wrap justify-center items-center gap-12 md:gap-16">
+        <StaggerContainer className="flex flex-wrap justify-center items-center gap-12 md:gap-16">
           {partners.map((partner) => (
-            <div 
-              key={partner.name}
-              className="grayscale hover:grayscale-0 transition-all duration-300 opacity-70 hover:opacity-100"
-            >
-              <img 
-                src={partner.logo} 
-                alt={partner.name}
-                className="h-12 md:h-16 w-auto object-contain"
-              />
-            </div>
+            <StaggerItem key={partner.name}>
+              <div 
+                className="grayscale hover:grayscale-0 transition-all duration-300 opacity-70 hover:opacity-100"
+              >
+                <img 
+                  src={partner.logo} 
+                  alt={partner.name}
+                  className="h-12 md:h-16 w-auto object-contain"
+                />
+              </div>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerContainer>
       </div>
     </section>
   );
