@@ -296,9 +296,9 @@ Please confirm availability. Thank you!`;
     <>
       <div className="bg-card rounded-xl border border-border p-6 hover:shadow-lg transition-all duration-300 hover:border-primary/30">
         <div className="flex items-start gap-4 mb-4">
-          <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xl shrink-0 overflow-hidden">
+          <div className="w-16 h-16 rounded-lg bg-primary/10 flex items-center justify-center text-primary font-bold text-xl shrink-0 overflow-hidden border-2 border-primary/20">
             {imageUrl ? (
-              <img src={imageUrl} alt={specialist.name} className="w-full h-full rounded-full object-cover" />
+              <img src={imageUrl} alt={specialist.name} className="w-full h-full object-cover object-top" />
             ) : (
               initials
             )}
