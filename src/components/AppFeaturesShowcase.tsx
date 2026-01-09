@@ -145,6 +145,21 @@ const getGradientColors = (gradient: string) => {
 const AppFeaturesShowcase = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
+
+  // Preload all images on mount
+  useEffect(() => {
+    const imagePromises = features.map((feature) => {
+      return new Promise<void>((resolve) => {
+        const img = new Image();
+        img.src = feature.mockup;
+        img.onload = () => resolve();
+        img.onerror = () => resolve(); // Resolve even on error to not block
+      });
+    });
+    
+    Promise.all(imagePromises).then(() => setImagesLoaded(true));
+  }, []);
 
   const changeSlide = (newIndex: number) => {
     if (newIndex === currentIndex) return;
@@ -152,13 +167,13 @@ const AppFeaturesShowcase = () => {
   };
 
   useEffect(() => {
-    if (!isAutoPlaying) return;
+    if (!isAutoPlaying || !imagesLoaded) return;
     const interval = setInterval(() => {
       const nextIndex = (currentIndex + 1) % features.length;
       setCurrentIndex(nextIndex);
     }, 5000);
     return () => clearInterval(interval);
-  }, [isAutoPlaying, currentIndex]);
+  }, [isAutoPlaying, currentIndex, imagesLoaded]);
 
   const goToPrevious = () => {
     setIsAutoPlaying(false);
