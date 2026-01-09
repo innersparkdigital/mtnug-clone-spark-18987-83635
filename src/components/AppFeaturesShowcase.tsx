@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight, Smile, MessageCircle, Video, Users, Calendar, AlertTriangle, Search, Heart, Sparkles, Download } from "lucide-react";
+import { ChevronLeft, ChevronRight, Smile, MessageCircle, Video, Users, Calendar, AlertTriangle, Search, Heart, Sparkles, Download, Star } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { motion, AnimatePresence } from "framer-motion";
 
 // Import feature images
 import findTherapistsMockup from "@/assets/features/find-therapist.jpg";
@@ -16,131 +18,95 @@ import privateCounsellingMockup from "@/assets/features/private-counselling.jpg"
 const features = [
   {
     id: 1,
+    headline: "Your feelings,\nunderstood.",
     title: "Mood Tracker",
-    tagline: "Your feelings deserve to be seen.",
-    description: "Some days you're okay, some days you're not. Healing starts with understanding yourself. Track your mood with simple emojis and gently learn what your heart has been trying to tell you.",
+    description: "Track your mood with simple emojis and gently learn what your heart has been trying to tell you.",
     icon: Smile,
-    gradient: "from-blue-500 to-indigo-600",
-    bgColor: "bg-blue-50",
     mockup: moodTrackerMockup,
-    usePhoneMockup: false
+    accentColor: "hsl(var(--primary))"
   },
   {
     id: 2,
+    headline: "Your story,\ncelebrated.",
     title: "Daily Reflection",
-    tagline: "Your story matters, even on quiet days.",
-    description: "Celebrate small wins. Write about how your day felt. Acknowledge the hard moments. Every week, see your growth in a gentle wellness report.",
+    description: "Celebrate small wins. Write about how your day felt. Every week, see your growth in a wellness report.",
     icon: Sparkles,
-    gradient: "from-purple-500 to-pink-500",
-    bgColor: "bg-purple-50",
     mockup: dailyReflectionMockup,
-    usePhoneMockup: false
+    accentColor: "hsl(var(--primary))"
   },
   {
     id: 3,
+    headline: "The right help,\ncloser than you think.",
     title: "Find Therapists",
-    tagline: "The right help is closer than you think.",
-    description: "Browse through certified professionals who truly understand your condition. Find the therapist who matches your healing journey.",
+    description: "Browse through certified professionals who truly understand your condition and match your healing journey.",
     icon: Search,
-    gradient: "from-teal-500 to-cyan-500",
-    bgColor: "bg-teal-50",
     mockup: findTherapistsMockup,
-    usePhoneMockup: false
+    accentColor: "hsl(var(--primary))"
   },
   {
     id: 4,
+    headline: "Your healing,\ncompletely confidential.",
     title: "Private Counselling",
-    tagline: "Your healing is personal and completely confidential.",
-    description: "Whether it's work stress, trauma, heartbreak, or emotional pain... Talk to a licensed therapist who gives you a safe space to breathe, feel, and find your strength again.",
+    description: "Talk to a licensed therapist who gives you a safe space to breathe, feel, and find your strength again.",
     icon: Video,
-    gradient: "from-indigo-500 to-blue-600",
-    bgColor: "bg-indigo-50",
     mockup: privateCounsellingMockup,
-    usePhoneMockup: false
+    accentColor: "hsl(var(--primary))"
   },
   {
     id: 5,
-    title: "24/7 Chat Consultation",
-    tagline: "When life feels heavy, talk to someone who listens.",
-    description: "You don't have to face stress, anxiety, or loneliness alone at 2:00am. A professional counsellor is always a message away ready to support you with compassion and zero judgment.",
+    headline: "Someone listens,\n24/7.",
+    title: "Chat Consultation",
+    description: "A professional counsellor is always a message away — ready to support you with compassion and zero judgment.",
     icon: MessageCircle,
-    gradient: "from-sky-500 to-blue-500",
-    bgColor: "bg-sky-50",
     mockup: chatSessionMockup,
-    usePhoneMockup: false
+    accentColor: "hsl(var(--primary))"
   },
   {
     id: 6,
+    headline: "You're not alone,\nothers feel it too.",
     title: "Support Groups",
-    tagline: "You're not alone... others feel it too.",
-    description: "Connect with people who understand exactly what you're going through. Share your story. Hear theirs. Heal together.",
+    description: "Connect with people who understand exactly what you're going through. Share your story. Heal together.",
     icon: Users,
-    gradient: "from-green-500 to-emerald-500",
-    bgColor: "bg-green-50",
     mockup: supportGroupsMockup,
-    usePhoneMockup: false
+    accentColor: "hsl(var(--primary))"
   },
   {
     id: 7,
+    headline: "Invest in\nyour peace.",
     title: "Book Appointment",
-    tagline: "Invest in your peace.",
-    description: "Book a virtual session for as low as 50,000 UGX. Give yourself the gift of talking to someone who supports your mental and emotional wellbeing.",
+    description: "Book a virtual session for as low as 50,000 UGX. Give yourself the gift of professional support.",
     icon: Calendar,
-    gradient: "from-orange-500 to-amber-500",
-    bgColor: "bg-orange-50",
     mockup: bookAppointmentMockup,
-    usePhoneMockup: false
+    accentColor: "hsl(var(--primary))"
   },
   {
     id: 8,
+    headline: "Your life matters,\nreach out now.",
     title: "Emergency Button",
-    tagline: "Your life matters. Reach out — Now.",
-    description: "When you feel unsafe or overwhelmed... Press the emergency button and immediately talk to a crisis counsellor who genuinely cares.",
+    description: "Press the emergency button and immediately talk to a crisis counsellor who genuinely cares.",
     icon: AlertTriangle,
-    gradient: "from-red-500 to-rose-500",
-    bgColor: "bg-red-50",
     mockup: emergencyButtonMockup,
-    usePhoneMockup: false
+    accentColor: "hsl(var(--primary))"
   },
   {
     id: 9,
+    headline: "Your kindness,\nsaves tomorrow.",
     title: "Therapy Fund",
-    tagline: "Your kindness can save someone's tomorrow.",
-    description: "Even 5,000 UGX can help someone who desperately needs counselling but can't afford it. Be part of the healing.",
+    description: "Even 5,000 UGX can help someone who desperately needs counselling but can't afford it.",
     icon: Heart,
-    gradient: "from-pink-500 to-rose-400",
-    bgColor: "bg-pink-50",
     mockup: therapyFundMockup,
-    usePhoneMockup: false
+    accentColor: "hsl(var(--primary))"
   },
   {
     id: 10,
+    headline: "Your safe space,\nis waiting.",
     title: "Download App",
-    tagline: "Your safe space is waiting.",
     description: "Create your account and open the door to real mental health support — anytime you need it.",
     icon: Download,
-    gradient: "from-violet-500 to-purple-600",
-    bgColor: "bg-violet-50",
-    mockup: downloadAppMockup
+    mockup: downloadAppMockup,
+    accentColor: "hsl(var(--primary))"
   }
 ];
-
-// Helper function to convert Tailwind gradient classes to CSS colors
-const getGradientColors = (gradient: string) => {
-  const colorMap: Record<string, { from: string; to: string }> = {
-    "from-blue-500 to-indigo-600": { from: "#3b82f6", to: "#4f46e5" },
-    "from-purple-500 to-pink-500": { from: "#a855f7", to: "#ec4899" },
-    "from-teal-500 to-cyan-500": { from: "#14b8a6", to: "#06b6d4" },
-    "from-indigo-500 to-blue-600": { from: "#6366f1", to: "#2563eb" },
-    "from-sky-500 to-blue-500": { from: "#0ea5e9", to: "#3b82f6" },
-    "from-green-500 to-emerald-500": { from: "#22c55e", to: "#10b981" },
-    "from-orange-500 to-amber-500": { from: "#f97316", to: "#f59e0b" },
-    "from-red-500 to-rose-500": { from: "#ef4444", to: "#f43f5e" },
-    "from-pink-500 to-rose-400": { from: "#ec4899", to: "#fb7185" },
-    "from-violet-500 to-purple-600": { from: "#8b5cf6", to: "#9333ea" },
-  };
-  return colorMap[gradient] || { from: "#3b82f6", to: "#4f46e5" };
-};
 
 const AppFeaturesShowcase = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -154,7 +120,7 @@ const AppFeaturesShowcase = () => {
         const img = new Image();
         img.src = feature.mockup;
         img.onload = () => resolve();
-        img.onerror = () => resolve(); // Resolve even on error to not block
+        img.onerror = () => resolve();
       });
     });
     
@@ -171,7 +137,7 @@ const AppFeaturesShowcase = () => {
     const interval = setInterval(() => {
       const nextIndex = (currentIndex + 1) % features.length;
       setCurrentIndex(nextIndex);
-    }, 5000);
+    }, 6000);
     return () => clearInterval(interval);
   }, [isAutoPlaying, currentIndex, imagesLoaded]);
 
@@ -188,181 +154,161 @@ const AppFeaturesShowcase = () => {
   };
 
   const currentFeature = features[currentIndex];
-  const Icon = currentFeature.icon;
 
   return (
-    <section className="min-h-screen flex flex-col justify-center bg-gradient-to-b from-background to-muted/30 overflow-hidden py-4 md:py-0">
-      <div className="container mx-auto px-4 flex-1 flex flex-col justify-center">
-
-        {/* Feature Showcase */}
-        <div className="relative max-w-5xl mx-auto w-full">
-        {/* Main Feature Card */}
-          <div 
-            className={`relative rounded-2xl overflow-hidden shadow-xl transition-all duration-500`}
-            style={{
-              background: `linear-gradient(135deg, ${getGradientColors(currentFeature.gradient).from} 0%, ${getGradientColors(currentFeature.gradient).to} 100%)`
-            }}
-            onMouseEnter={() => setIsAutoPlaying(false)}
-            onMouseLeave={() => setIsAutoPlaying(true)}
-          >
-            {/* Unified gradient overlay for blending */}
-            <div className="absolute inset-0 bg-gradient-to-r from-white/90 via-white/70 to-transparent" />
-            
-            <div className={`grid md:grid-cols-2 gap-0 min-h-[50vh] md:min-h-[60vh] max-h-[70vh] relative z-10 transition-opacity duration-150 ease-out`}>
-              {/* Left Content */}
-              <div className="p-5 md:p-8 lg:p-10 flex flex-col justify-center relative z-10">
-                <div className={`inline-flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br ${currentFeature.gradient} text-white shadow-lg mb-3`}>
-                  <Icon className="w-5 h-5" />
-                </div>
+    <section 
+      className="min-h-screen flex flex-col justify-center overflow-hidden relative"
+      style={{
+        background: 'linear-gradient(135deg, hsl(142 40% 90%) 0%, hsl(142 30% 85%) 50%, hsl(142 25% 88%) 100%)'
+      }}
+      onMouseEnter={() => setIsAutoPlaying(false)}
+      onMouseLeave={() => setIsAutoPlaying(true)}
+    >
+      <div className="container mx-auto px-6 md:px-12 lg:px-20 flex-1 flex items-center">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center w-full py-12 lg:py-0">
+          
+          {/* Left Content */}
+          <div className="order-2 lg:order-1 text-center lg:text-left">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentIndex}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+              >
+                {/* Headline */}
+                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-foreground leading-[1.1] tracking-tight mb-6 whitespace-pre-line font-serif">
+                  {currentFeature.headline}
+                </h1>
                 
-                <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-2 transition-all duration-300">
-                  {currentFeature.title}
-                </h3>
-                
-                <div className={`inline-block px-3 py-1.5 rounded-lg bg-gradient-to-r ${currentFeature.gradient} text-white text-sm font-medium mb-3 max-w-fit`}>
-                  {currentFeature.tagline}
-                </div>
-                
-                <p className="text-muted-foreground text-sm leading-relaxed mb-4">
+                {/* Description */}
+                <p className="text-lg md:text-xl text-muted-foreground leading-relaxed mb-8 max-w-lg mx-auto lg:mx-0">
                   {currentFeature.description}
                 </p>
 
-                {/* App Store Buttons */}
-                <div className="flex flex-wrap gap-2">
-                  <a 
-                    href="https://play.google.com/store/apps/details?id=com.innerspark.app" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="transition-transform hover:scale-105"
-                  >
-                    <img 
-                      src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" 
-                      alt="Get it on Google Play" 
-                      className="h-9"
-                    />
+                {/* CTA Button */}
+                <Button 
+                  size="lg"
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                  asChild
+                >
+                  <a href="https://play.google.com/store/apps/details?id=com.innerspark.app" target="_blank" rel="noopener noreferrer">
+                    Get started
                   </a>
-                  <a 
-                    href="https://apps.apple.com/app/innerspark" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="transition-transform hover:scale-105"
-                  >
-                    <img 
-                      src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg" 
-                      alt="Download on the App Store" 
-                      className="h-9"
-                    />
-                  </a>
+                </Button>
+
+                {/* Trust Badge */}
+                <div className="mt-8 inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 shadow-sm">
+                  <span className="text-sm font-medium text-foreground">Trusted by</span>
+                  <span className="text-sm font-bold text-primary">5,000+</span>
+                  <div className="flex items-center gap-0.5">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                    ))}
+                  </div>
+                  <span className="text-xs text-muted-foreground">users</span>
                 </div>
-              </div>
-
-              {/* Right - Phone Mockup or Image */}
-              <div className="relative flex items-center justify-center p-4 md:p-6 overflow-hidden">
-                
-                {currentFeature.usePhoneMockup === false ? (
-                  /* Direct Image Display */
-                  <div className="relative z-10 w-full h-full flex items-center justify-center">
-                    <img 
-                      src={currentFeature.mockup} 
-                      alt={`${currentFeature.title}`}
-                      loading="lazy"
-                      decoding="async"
-                      className="w-full h-full max-h-[300px] md:max-h-[340px] object-cover rounded-xl shadow-xl transition-all duration-500 hover:scale-105"
-                    />
-                    {/* Decorative glow */}
-                    <div className={`absolute -top-3 -right-3 w-10 md:w-12 h-10 md:h-12 rounded-full bg-gradient-to-br ${currentFeature.gradient} opacity-60 blur-sm animate-pulse`} />
-                  </div>
-                ) : (
-                  /* Phone Frame */
-                  <div className="relative z-10 transform transition-all duration-500 hover:scale-105 ml-auto mr-2 md:mr-4">
-                    {/* Phone outer frame */}
-                    <div className="relative bg-gray-900 rounded-[2rem] md:rounded-[2.5rem] p-1 md:p-1.5 shadow-xl">
-                      {/* Phone notch */}
-                      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 md:w-24 h-4 md:h-5 bg-gray-900 rounded-b-xl md:rounded-b-2xl z-20" />
-                      
-                      {/* Phone screen */}
-                      <div className="relative w-[140px] md:w-[180px] h-[280px] md:h-[340px] rounded-[1.5rem] md:rounded-[2rem] overflow-hidden bg-white">
-                        <img 
-                          src={currentFeature.mockup} 
-                          alt={`${currentFeature.title} app screen`}
-                          loading="lazy"
-                          decoding="async"
-                          className="w-full h-full object-cover object-top transition-opacity duration-500"
-                        />
-                      </div>
-                      
-                      {/* Phone home indicator */}
-                      <div className="absolute bottom-1 md:bottom-1.5 left-1/2 -translate-x-1/2 w-16 md:w-20 h-0.5 bg-gray-600 rounded-full" />
-                    </div>
-
-                    {/* Decorative glow */}
-                    <div className={`absolute -top-3 -right-3 w-10 md:w-12 h-10 md:h-12 rounded-full bg-gradient-to-br ${currentFeature.gradient} opacity-60 blur-sm animate-pulse`} />
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Navigation Arrows */}
-            <button 
-              onClick={goToPrevious}
-              className="absolute left-2 md:left-3 top-1/2 -translate-y-1/2 w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/90 shadow-md flex items-center justify-center text-foreground hover:bg-white transition-all hover:scale-110 z-20"
-              aria-label="Previous feature"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <button 
-              onClick={goToNext}
-              className="absolute right-2 md:right-3 top-1/2 -translate-y-1/2 w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/90 shadow-md flex items-center justify-center text-foreground hover:bg-white transition-all hover:scale-110 z-20"
-              aria-label="Next feature"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </button>
+              </motion.div>
+            </AnimatePresence>
           </div>
 
-          {/* Pagination Dots */}
-          <div className="flex justify-center gap-1.5 mt-4">
-            {features.map((_, index) => (
+          {/* Right - Phone Mockup */}
+          <div className="order-1 lg:order-2 relative flex items-center justify-center lg:justify-end">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentIndex}
+                initial={{ opacity: 0, scale: 0.95, x: 20 }}
+                animate={{ opacity: 1, scale: 1, x: 0 }}
+                exit={{ opacity: 0, scale: 0.95, x: -20 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+                className="relative"
+              >
+                {/* Floating Card Behind */}
+                <div className="absolute -left-8 md:-left-16 top-1/4 w-32 md:w-48 h-40 md:h-56 rounded-2xl overflow-hidden shadow-2xl transform -rotate-6 z-0">
+                  <img 
+                    src={currentFeature.mockup}
+                    alt=""
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                </div>
+
+                {/* Main Phone Frame */}
+                <div className="relative z-10 transform transition-transform duration-500 hover:scale-[1.02]">
+                  {/* Phone outer frame */}
+                  <div className="relative bg-gray-900 rounded-[2.5rem] md:rounded-[3rem] p-1.5 md:p-2 shadow-2xl">
+                    {/* Phone notch */}
+                    <div className="absolute top-2 left-1/2 -translate-x-1/2 w-20 md:w-28 h-6 md:h-7 bg-gray-900 rounded-b-2xl z-20" />
+                    
+                    {/* Phone screen */}
+                    <div className="relative w-[200px] sm:w-[240px] md:w-[280px] h-[400px] sm:h-[480px] md:h-[560px] rounded-[2rem] md:rounded-[2.5rem] overflow-hidden bg-white">
+                      <img 
+                        src={currentFeature.mockup}
+                        alt={`${currentFeature.title} app screen`}
+                        className="w-full h-full object-cover object-top"
+                      />
+                    </div>
+                    
+                    {/* Phone home indicator */}
+                    <div className="absolute bottom-2 md:bottom-3 left-1/2 -translate-x-1/2 w-24 md:w-32 h-1 bg-gray-600 rounded-full" />
+                  </div>
+                </div>
+
+                {/* Floating Elements */}
+                <div className="absolute -right-4 md:-right-8 bottom-1/4 bg-white rounded-xl shadow-xl p-3 md:p-4 z-20">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                      <currentFeature.icon className="w-4 h-4 text-primary" />
+                    </div>
+                    <span className="text-xs md:text-sm font-medium text-foreground">{currentFeature.title}</span>
+                  </div>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </div>
+      </div>
+
+      {/* Navigation Arrows */}
+      <button 
+        onClick={goToPrevious}
+        className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/90 backdrop-blur-sm shadow-lg flex items-center justify-center text-foreground hover:bg-white transition-all hover:scale-110 z-20"
+        aria-label="Previous feature"
+      >
+        <ChevronLeft className="w-6 h-6" />
+      </button>
+      <button 
+        onClick={goToNext}
+        className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/90 backdrop-blur-sm shadow-lg flex items-center justify-center text-foreground hover:bg-white transition-all hover:scale-110 z-20"
+        aria-label="Next feature"
+      >
+        <ChevronRight className="w-6 h-6" />
+      </button>
+
+      {/* Bottom Feature Icons */}
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20">
+        <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg">
+          {features.map((feature, index) => {
+            const FeatureIcon = feature.icon;
+            return (
               <button
-                key={index}
+                key={feature.id}
                 onClick={() => {
                   setIsAutoPlaying(false);
                   changeSlide(index);
                 }}
-                className={`h-1.5 rounded-full transition-all duration-150 ${
+                className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center transition-all duration-300 ${
                   index === currentIndex 
-                    ? `w-6 bg-gradient-to-r ${features[index].gradient}` 
-                    : 'w-1.5 bg-muted-foreground/30 hover:bg-muted-foreground/50'
+                    ? 'bg-primary text-primary-foreground scale-110 shadow-md' 
+                    : 'bg-transparent text-muted-foreground hover:bg-muted'
                 }`}
-                aria-label={`Go to feature ${index + 1}`}
-              />
-            ))}
-          </div>
-
-          {/* Feature Quick Links */}
-          <div className="mt-4 grid grid-cols-5 md:grid-cols-10 gap-1.5">
-            {features.map((feature, index) => {
-              const FeatureIcon = feature.icon;
-              return (
-                <button
-                  key={feature.id}
-                  onClick={() => {
-                    setIsAutoPlaying(false);
-                    changeSlide(index);
-                  }}
-                  className={`flex flex-col items-center p-2 rounded-lg transition-all duration-150 ${
-                    index === currentIndex 
-                      ? `bg-gradient-to-br ${feature.gradient} text-white shadow-md scale-105` 
-                      : 'bg-muted/50 text-muted-foreground hover:bg-muted'
-                  }`}
-                >
-                  <FeatureIcon className="w-4 h-4 mb-0.5" />
-                  <span className="text-[9px] font-medium text-center leading-tight hidden md:block">
-                    {feature.title.split(' ')[0]}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
+                aria-label={`Go to ${feature.title}`}
+              >
+                <FeatureIcon className="w-4 h-4" />
+              </button>
+            );
+          })}
         </div>
       </div>
     </section>
