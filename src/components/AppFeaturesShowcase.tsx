@@ -191,11 +191,11 @@ const AppFeaturesShowcase = () => {
   const Icon = currentFeature.icon;
 
   return (
-    <section className="pt-0 pb-8 md:pb-12 bg-gradient-to-b from-background to-muted/30 overflow-hidden">
-      <div className="container mx-auto px-4">
+    <section className="min-h-screen flex flex-col justify-center bg-gradient-to-b from-background to-muted/30 overflow-hidden py-4 md:py-0">
+      <div className="container mx-auto px-4 flex-1 flex flex-col justify-center">
 
         {/* Feature Showcase */}
-        <div className="relative max-w-5xl mx-auto">
+        <div className="relative max-w-5xl mx-auto w-full">
         {/* Main Feature Card */}
           <div 
             className={`relative rounded-2xl overflow-hidden shadow-xl transition-all duration-500`}
@@ -208,7 +208,7 @@ const AppFeaturesShowcase = () => {
             {/* Unified gradient overlay for blending */}
             <div className="absolute inset-0 bg-gradient-to-r from-white/90 via-white/70 to-transparent" />
             
-            <div className={`grid md:grid-cols-2 gap-0 min-h-[380px] md:min-h-[400px] relative z-10 transition-opacity duration-150 ease-out`}>
+            <div className={`grid md:grid-cols-2 gap-0 min-h-[50vh] md:min-h-[60vh] max-h-[70vh] relative z-10 transition-opacity duration-150 ease-out`}>
               {/* Left Content */}
               <div className="p-5 md:p-8 lg:p-10 flex flex-col justify-center relative z-10">
                 <div className={`inline-flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br ${currentFeature.gradient} text-white shadow-lg mb-3`}>
