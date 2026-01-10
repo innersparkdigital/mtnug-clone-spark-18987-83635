@@ -225,7 +225,7 @@ const AppFeaturesShowcase = () => {
                 className="relative"
               >
                 {/* Large Card with Human Image - Auto height to match image */}
-                <div className="absolute -left-24 sm:-left-32 md:-left-40 lg:-left-48 top-1/2 -translate-y-1/2 w-52 sm:w-64 md:w-80 lg:w-96 rounded-3xl overflow-hidden shadow-2xl transform -rotate-6 z-0 bg-white">
+                <div className="absolute -left-32 sm:-left-40 md:-left-52 lg:-left-64 top-1/2 -translate-y-1/2 w-52 sm:w-64 md:w-80 lg:w-96 rounded-3xl overflow-hidden shadow-2xl transform -rotate-3 z-0 bg-white">
                   <img 
                     src={currentFeature.mockup}
                     alt=""
