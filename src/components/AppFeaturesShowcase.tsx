@@ -3,17 +3,17 @@ import { ChevronLeft, ChevronRight, Smile, MessageCircle, Video, Users, Calendar
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 
-// Import feature images
-import findTherapistsMockup from "@/assets/features/find-therapist.jpg";
-import chatSessionMockup from "@/assets/mockups/chat-session.png";
-import supportGroupsMockup from "@/assets/features/support-groups.webp";
-import bookAppointmentMockup from "@/assets/features/book-appointment.jpg";
-import emergencyButtonMockup from "@/assets/features/emergency-button.jpg";
-import therapyFundMockup from "@/assets/features/donate-therapy.jpg";
-import moodTrackerMockup from "@/assets/features/mood-tracker.jpg";
-import dailyReflectionMockup from "@/assets/features/daily-reflection.jpg";
-import downloadAppMockup from "@/assets/mockups/download-app.png";
-import privateCounsellingMockup from "@/assets/features/private-counselling.jpg";
+// Import phone mockup screen images
+import moodTrackerMockup from "@/assets/mockups/mood-tracker-screen.png";
+import dailyReflectionMockup from "@/assets/mockups/daily-reflection-screen.png";
+import bookAppointmentMockup from "@/assets/mockups/book-appointment-screen.png";
+import emergencyButtonMockup from "@/assets/mockups/emergency-screen.png";
+import therapyFundMockup from "@/assets/mockups/donate-therapy-screen.png";
+import supportGroupsMockup from "@/assets/mockups/support-groups-screen.png";
+import downloadAppMockup from "@/assets/mockups/download-app-screen.png";
+import findTherapistsMockup from "@/assets/mockups/find-therapist-screen.png";
+import chatSessionMockup from "@/assets/mockups/chat-consultation-screen.png";
+import privateCounsellingMockup from "@/assets/mockups/private-counselling-screen.png";
 
 const features = [
   {
