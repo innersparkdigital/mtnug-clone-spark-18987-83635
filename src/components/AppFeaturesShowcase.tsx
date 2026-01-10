@@ -224,30 +224,30 @@ const AppFeaturesShowcase = () => {
                 transition={{ duration: 0.5, ease: "easeOut" }}
                 className="relative"
               >
-                {/* Floating Card Behind */}
-                <div className="absolute -left-8 md:-left-16 top-1/4 w-32 md:w-48 h-40 md:h-56 rounded-2xl overflow-hidden shadow-2xl transform -rotate-6 z-0">
+                {/* Large Background Card with Human Image */}
+                <div className="absolute -left-12 md:-left-20 lg:-left-24 top-1/2 -translate-y-1/2 w-48 sm:w-56 md:w-72 lg:w-80 h-64 sm:h-80 md:h-96 lg:h-[450px] rounded-3xl overflow-hidden shadow-2xl transform -rotate-6 z-0">
                   <img 
                     src={currentFeature.mockup}
                     alt=""
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover object-top"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
                 </div>
 
-                {/* Main Phone Frame */}
+                {/* Main Phone Frame - Blank */}
                 <div className="relative z-10 transform transition-transform duration-500 hover:scale-[1.02]">
                   {/* Phone outer frame */}
                   <div className="relative bg-gray-900 rounded-[2.5rem] md:rounded-[3rem] p-1.5 md:p-2 shadow-2xl">
                     {/* Phone notch */}
                     <div className="absolute top-2 left-1/2 -translate-x-1/2 w-20 md:w-28 h-6 md:h-7 bg-gray-900 rounded-b-2xl z-20" />
                     
-                    {/* Phone screen */}
-                    <div className="relative w-[200px] sm:w-[240px] md:w-[280px] h-[400px] sm:h-[480px] md:h-[560px] rounded-[2rem] md:rounded-[2.5rem] overflow-hidden bg-white">
-                      <img 
-                        src={currentFeature.mockup}
-                        alt={`${currentFeature.title} app screen`}
-                        className="w-full h-full object-cover object-top"
-                      />
+                    {/* Phone screen - Blank with subtle gradient */}
+                    <div className="relative w-[200px] sm:w-[240px] md:w-[280px] h-[400px] sm:h-[480px] md:h-[560px] rounded-[2rem] md:rounded-[2.5rem] overflow-hidden bg-gradient-to-b from-gray-100 to-gray-200">
+                      {/* Optional subtle app-like elements */}
+                      <div className="absolute inset-x-4 top-12 flex flex-col gap-3">
+                        <div className="h-2 w-3/4 bg-gray-300/50 rounded-full" />
+                        <div className="h-2 w-1/2 bg-gray-300/50 rounded-full" />
+                      </div>
                     </div>
                     
                     {/* Phone home indicator */}
