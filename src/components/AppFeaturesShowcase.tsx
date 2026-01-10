@@ -224,12 +224,12 @@ const AppFeaturesShowcase = () => {
                 transition={{ duration: 0.5, ease: "easeOut" }}
                 className="relative"
               >
-                {/* Large Card with Human Image - Positioned to be fully visible */}
-                <div className="absolute -left-24 sm:-left-32 md:-left-40 lg:-left-48 top-1/2 -translate-y-1/2 w-52 sm:w-64 md:w-80 lg:w-96 aspect-[3/4] rounded-3xl overflow-hidden shadow-2xl transform -rotate-6 z-0">
+                {/* Large Card with Human Image - Auto height to match image */}
+                <div className="absolute -left-24 sm:-left-32 md:-left-40 lg:-left-48 top-1/2 -translate-y-1/2 w-52 sm:w-64 md:w-80 lg:w-96 rounded-3xl overflow-hidden shadow-2xl transform -rotate-6 z-0 bg-white">
                   <img 
                     src={currentFeature.mockup}
                     alt=""
-                    className="w-full h-full object-contain bg-gray-100"
+                    className="w-full h-auto object-cover"
                   />
                 </div>
 
