@@ -15,6 +15,15 @@ import findTherapistsMockup from "@/assets/mockups/find-therapist-screen.png";
 import chatSessionMockup from "@/assets/mockups/chat-consultation-screen.png";
 import privateCounsellingMockup from "@/assets/mockups/private-counselling-screen.png";
 
+// Import human photography for background cards
+import personHome from "@/assets/personas/person-home.png";
+import personTherapist from "@/assets/personas/person-therapist.png";
+import personBooking from "@/assets/personas/person-booking.png";
+import personPayment from "@/assets/personas/person-payment.png";
+import personGroups from "@/assets/personas/person-groups.png";
+import personEmergency from "@/assets/personas/person-emergency.png";
+import personDonate from "@/assets/personas/person-donate.png";
+
 const features = [
   {
     id: 1,
@@ -23,6 +32,7 @@ const features = [
     description: "Track your mood with simple emojis and gently learn what your heart has been trying to tell you.",
     icon: Smile,
     mockup: moodTrackerMockup,
+    personImage: personHome,
     accentColor: "hsl(var(--primary))"
   },
   {
@@ -32,6 +42,7 @@ const features = [
     description: "Celebrate small wins. Write about how your day felt. Every week, see your growth in a wellness report.",
     icon: Sparkles,
     mockup: dailyReflectionMockup,
+    personImage: personPayment,
     accentColor: "hsl(var(--primary))"
   },
   {
@@ -41,6 +52,7 @@ const features = [
     description: "Browse through certified professionals who truly understand your condition and match your healing journey.",
     icon: Search,
     mockup: findTherapistsMockup,
+    personImage: personTherapist,
     accentColor: "hsl(var(--primary))"
   },
   {
@@ -50,6 +62,7 @@ const features = [
     description: "Talk to a licensed therapist who gives you a safe space to breathe, feel, and find your strength again.",
     icon: Video,
     mockup: privateCounsellingMockup,
+    personImage: personTherapist,
     accentColor: "hsl(var(--primary))"
   },
   {
@@ -59,6 +72,7 @@ const features = [
     description: "A professional counsellor is always a message away — ready to support you with compassion and zero judgment.",
     icon: MessageCircle,
     mockup: chatSessionMockup,
+    personImage: personHome,
     accentColor: "hsl(var(--primary))"
   },
   {
@@ -68,6 +82,7 @@ const features = [
     description: "Connect with people who understand exactly what you're going through. Share your story. Heal together.",
     icon: Users,
     mockup: supportGroupsMockup,
+    personImage: personGroups,
     accentColor: "hsl(var(--primary))"
   },
   {
@@ -77,6 +92,7 @@ const features = [
     description: "Book a virtual session for as low as 50,000 UGX. Give yourself the gift of professional support.",
     icon: Calendar,
     mockup: bookAppointmentMockup,
+    personImage: personBooking,
     accentColor: "hsl(var(--primary))"
   },
   {
@@ -86,6 +102,7 @@ const features = [
     description: "Press the emergency button and immediately talk to a crisis counsellor who genuinely cares.",
     icon: AlertTriangle,
     mockup: emergencyButtonMockup,
+    personImage: personEmergency,
     accentColor: "hsl(var(--primary))"
   },
   {
@@ -95,6 +112,7 @@ const features = [
     description: "Even 5,000 UGX can help someone who desperately needs counselling but can't afford it.",
     icon: Heart,
     mockup: therapyFundMockup,
+    personImage: personDonate,
     accentColor: "hsl(var(--primary))"
   },
   {
@@ -104,6 +122,7 @@ const features = [
     description: "Create your account and open the door to real mental health support — anytime you need it.",
     icon: Download,
     mockup: downloadAppMockup,
+    personImage: personHome,
     accentColor: "hsl(var(--primary))"
   }
 ];
@@ -115,13 +134,21 @@ const AppFeaturesShowcase = () => {
 
   // Preload all images on mount
   useEffect(() => {
-    const imagePromises = features.map((feature) => {
-      return new Promise<void>((resolve) => {
-        const img = new Image();
-        img.src = feature.mockup;
-        img.onload = () => resolve();
-        img.onerror = () => resolve();
-      });
+    const imagePromises = features.flatMap((feature) => {
+      return [
+        new Promise<void>((resolve) => {
+          const img = new Image();
+          img.src = feature.mockup;
+          img.onload = () => resolve();
+          img.onerror = () => resolve();
+        }),
+        new Promise<void>((resolve) => {
+          const img = new Image();
+          img.src = feature.personImage;
+          img.onload = () => resolve();
+          img.onerror = () => resolve();
+        })
+      ];
     });
     
     Promise.all(imagePromises).then(() => setImagesLoaded(true));
@@ -224,13 +251,20 @@ const AppFeaturesShowcase = () => {
                 transition={{ duration: 0.5, ease: "easeOut" }}
                 className="relative"
               >
-                {/* Large Card with Human Image - Auto height to match image */}
+                {/* Large Card with Human Image */}
                 <div className="absolute -left-32 sm:-left-40 md:-left-52 lg:-left-64 top-1/2 -translate-y-1/2 w-52 sm:w-64 md:w-80 lg:w-96 rounded-3xl overflow-hidden shadow-2xl transform -rotate-3 z-0 bg-white">
-                  <img 
-                    src={currentFeature.mockup}
-                    alt=""
-                    className="w-full h-auto object-cover"
-                  />
+                  <AnimatePresence mode="wait">
+                    <motion.img
+                      key={`person-${currentFeature.id}`}
+                      src={currentFeature.personImage}
+                      alt=""
+                      className="w-full h-auto object-cover"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.15 }}
+                    />
+                  </AnimatePresence>
                 </div>
 
                 {/* Main Phone Frame - With App Screen */}
