@@ -233,20 +233,27 @@ const AppFeaturesShowcase = () => {
                   />
                 </div>
 
-                {/* Main Phone Frame - Blank */}
+                {/* Main Phone Frame - With App Screen */}
                 <div className="relative z-10 transform transition-transform duration-500 hover:scale-[1.02]">
                   {/* Phone outer frame */}
                   <div className="relative bg-gray-900 rounded-[2.5rem] md:rounded-[3rem] p-1.5 md:p-2 shadow-2xl">
                     {/* Phone notch */}
                     <div className="absolute top-2 left-1/2 -translate-x-1/2 w-20 md:w-28 h-6 md:h-7 bg-gray-900 rounded-b-2xl z-20" />
                     
-                    {/* Phone screen - Blank with subtle gradient */}
-                    <div className="relative w-[200px] sm:w-[240px] md:w-[280px] h-[400px] sm:h-[480px] md:h-[560px] rounded-[2rem] md:rounded-[2.5rem] overflow-hidden bg-gradient-to-b from-gray-100 to-gray-200">
-                      {/* Optional subtle app-like elements */}
-                      <div className="absolute inset-x-4 top-12 flex flex-col gap-3">
-                        <div className="h-2 w-3/4 bg-gray-300/50 rounded-full" />
-                        <div className="h-2 w-1/2 bg-gray-300/50 rounded-full" />
-                      </div>
+                    {/* Phone screen - With App Mockup */}
+                    <div className="relative w-[200px] sm:w-[240px] md:w-[280px] h-[400px] sm:h-[480px] md:h-[560px] rounded-[2rem] md:rounded-[2.5rem] overflow-hidden bg-white">
+                      <AnimatePresence mode="wait">
+                        <motion.img
+                          key={currentFeature.id}
+                          src={currentFeature.mockup}
+                          alt={currentFeature.title}
+                          className="w-full h-full object-cover object-top"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.15 }}
+                        />
+                      </AnimatePresence>
                     </div>
                     
                     {/* Phone home indicator */}
