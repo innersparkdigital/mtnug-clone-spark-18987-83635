@@ -99,13 +99,13 @@ export const StaggerContainer = ({
   className = "",
   staggerDelay = 0.12,
   once = true,
-  threshold = 0.1,
+  threshold = 0.05,
 }: StaggerContainerProps) => {
   const shouldReduceMotion = useReducedMotion();
   const { ref, inView } = useInView({
     triggerOnce: once,
     threshold,
-    rootMargin: "-50px 0px",
+    rootMargin: "100px 0px", // Trigger earlier for better mobile experience
   });
 
   const containerVariants: Variants = {
@@ -145,8 +145,8 @@ export const StaggerItem = ({
   children,
   className = "",
   direction = "up",
-  distance = 40,
-  duration = 0.7,
+  distance = 30, // Reduced distance for smoother mobile experience
+  duration = 0.6,
   scale = false,
 }: StaggerItemProps) => {
   const shouldReduceMotion = useReducedMotion();
@@ -187,7 +187,11 @@ export const StaggerItem = ({
   };
 
   return (
-    <motion.div variants={itemVariants} className={className}>
+    <motion.div 
+      variants={itemVariants} 
+      className={className}
+      style={{ willChange: 'opacity, transform' }}
+    >
       {children}
     </motion.div>
   );
