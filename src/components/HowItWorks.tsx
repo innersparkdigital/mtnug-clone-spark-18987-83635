@@ -4,9 +4,9 @@ import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { motion, AnimatePresence } from "framer-motion";
 import videoSessionMockup from "@/assets/mockups/video-session-mockup.png";
-import chatSessionMockup from "@/assets/mockups/chat-session.png";
-import supportGroupsMockup from "@/assets/mockups/support-groups-mockup.png";
-import appointmentMockup from "@/assets/mockups/appointment-mockup.png";
+import chatSessionMockup from "@/assets/mockups/chat-session-new.png";
+import supportGroupsMockup from "@/assets/mockups/support-groups-new.png";
+import appointmentMockup from "@/assets/mockups/find-therapists-new.png";
 
 const HowItWorks = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -261,7 +261,7 @@ const HowItWorks = () => {
                           key={activeTab}
                           src={currentTab.image}
                           alt={currentTab.alt}
-                          className="w-full h-full object-contain object-top bg-white"
+                          className="w-full h-full object-cover bg-white"
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
                           exit={{ opacity: 0 }}
