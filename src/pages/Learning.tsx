@@ -322,13 +322,13 @@ const Learning = () => {
           <StaggerContainer className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredCourses.map((course) => (
               <StaggerItem key={course.id}>
-                <Link to={`/learning/${course.id}`}>
-                  <Card className="h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1 overflow-hidden group cursor-pointer">
+                <div className="cursor-not-allowed">
+                  <Card className="h-full overflow-hidden group opacity-80">
                     <div className="relative h-48 overflow-hidden">
                       <img 
                         src={course.image} 
                         alt={course.title} 
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        className="w-full h-full object-cover grayscale"
                       />
                       <div className="absolute top-3 left-3 flex gap-2 flex-wrap">
                         <Badge className={getLevelColor(course.level)}>
@@ -340,11 +340,10 @@ const Learning = () => {
                           </Badge>
                         )}
                       </div>
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4">
-                        <Button size="sm" className="gap-2">
-                          <Play className="w-4 h-4" />
-                          Start Learning
-                        </Button>
+                      <div className="absolute top-3 right-3">
+                        <Badge className="bg-amber-500 text-white border-0 text-xs font-semibold">
+                          Coming Soon
+                        </Badge>
                       </div>
                     </div>
                     <CardHeader className="pb-2">
@@ -355,7 +354,7 @@ const Learning = () => {
                         <BookOpen className="w-3 h-3" />
                         {'modules' in course && typeof course.modules === 'number' ? course.modules : (course as any).modules?.length || 4} Modules
                       </div>
-                      <CardTitle className="text-lg line-clamp-2 group-hover:text-primary transition-colors">
+                      <CardTitle className="text-lg line-clamp-2">
                         {course.title}
                       </CardTitle>
                     </CardHeader>
@@ -368,13 +367,13 @@ const Learning = () => {
                           <Users className="w-4 h-4" />
                           {course.enrolled.toLocaleString()} enrolled
                         </div>
-                        <Badge variant="outline" className="text-xs">
-                          Free
+                        <Badge variant="outline" className="text-xs bg-amber-50 text-amber-700 border-amber-200">
+                          Coming Soon
                         </Badge>
                       </div>
                     </CardContent>
                   </Card>
-                </Link>
+                </div>
               </StaggerItem>
             ))}
           </StaggerContainer>
