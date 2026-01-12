@@ -61,6 +61,8 @@ import CourseDetail from "./pages/CourseDetail";
 import LessonViewer from "./pages/LessonViewer";
 import CourseCertificate from "./pages/CourseCertificate";
 import LearningDashboard from "./pages/LearningDashboard";
+import StudentDashboard from "./pages/StudentDashboard";
+import AdminDashboard from "./pages/AdminDashboard";
 import Auth from "./pages/Auth";
 
 const queryClient = new QueryClient();
@@ -104,6 +106,8 @@ const App = () => (
             <Route path="/specialists/:id" element={<SpecialistProfile />} />
             <Route path="/learning" element={<Learning />} />
             <Route path="/learning/dashboard" element={<LearningDashboard />} />
+            <Route path="/learning/student-dashboard" element={<StudentDashboard />} />
+            <Route path="/learning/admin-dashboard" element={<AdminDashboard />} />
             <Route path="/learning/:courseId" element={<CourseDetail />} />
             <Route path="/learning/:courseId/certificate" element={<CourseCertificate />} />
             <Route path="/learning/:courseId/module/:moduleId/lesson/:lessonId" element={<LessonViewer />} />
