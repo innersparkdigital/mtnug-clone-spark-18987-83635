@@ -85,10 +85,10 @@ const studentCourses = [
 ];
 
 const stats = [
-  { label: "Active Learners", value: "12,000+", icon: Users },
+  { label: "Active Learners", value: "0", icon: Users },
   { label: "Courses Available", value: "18", icon: BookOpen },
-  { label: "Certificates Issued", value: "5,500+", icon: Award },
-  { label: "Partner Organizations", value: "45+", icon: Building2 }
+  { label: "Certificates Issued", value: "0", icon: Award },
+  { label: "Partner Organizations", value: "0", icon: Building2 }
 ];
 
 const getLevelColor = (level: string) => {
