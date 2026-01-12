@@ -478,10 +478,26 @@ Please confirm availability. Thank you!`;
   );
 };
 
+// Explicit category assignments for specialists
+const specialistCategoryAssignments: Record<string, string[]> = {
+  "Julius Kizito": ["addiction"],
+  "Nassuuna Margret": ["addiction"],
+  "Mubiru Rashid": ["addiction"],
+  "Atwiine Priscilla": ["trauma-stress"],
+  "Winnie Anzazi Jira": ["trauma-stress"],
+};
+
 // Function to match specialists to categories based on their profile
 const matchSpecialistToSupportCategory = (specialist: Specialist, category: SupportCategory): boolean => {
   if (category.id === "all") return true;
   
+  // Check explicit assignments first
+  const explicitCategories = specialistCategoryAssignments[specialist.name];
+  if (explicitCategories) {
+    return explicitCategories.includes(category.id);
+  }
+  
+  // Fallback to keyword matching for specialists without explicit assignments
   const searchableText = [
     specialist.type,
     specialist.bio || "",
