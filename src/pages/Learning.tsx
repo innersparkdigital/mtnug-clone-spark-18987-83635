@@ -320,62 +320,66 @@ const Learning = () => {
           </ScrollReveal>
 
           <StaggerContainer className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredCourses.map((course) => (
-              <StaggerItem key={course.id}>
-                <div className="cursor-not-allowed">
-                  <Card className="h-full overflow-hidden group opacity-80">
-                    <div className="relative h-48 overflow-hidden">
-                      <img 
-                        src={course.image} 
-                        alt={course.title} 
-                        className="w-full h-full object-cover grayscale"
-                      />
-                      <div className="absolute top-3 left-3 flex gap-2 flex-wrap">
-                        <Badge className={getLevelColor(course.level)}>
-                          {course.level}
-                        </Badge>
-                        {'track' in course && course.track !== 'student' && (
-                          <Badge className="bg-background/90 text-foreground border-0 text-xs">
-                            {careerTracks.find(t => t.id === course.track)?.name}
+            {filteredCourses.map((course) => {
+              const isAvailable = course.id === "digital-mental-health";
+              return (
+                <StaggerItem key={course.id}>
+                  <Link to={`/learning/${course.id}`} className={isAvailable ? "" : "cursor-pointer"}>
+                    <Card className={`h-full overflow-hidden group hover:shadow-lg transition-all duration-300 ${isAvailable ? '' : ''}`}>
+                      <div className="relative h-48 overflow-hidden">
+                        <img 
+                          src={course.image} 
+                          alt={course.title} 
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                        <div className="absolute top-3 left-3 flex gap-2 flex-wrap">
+                          <Badge className={getLevelColor(course.level)}>
+                            {course.level}
                           </Badge>
-                        )}
-                      </div>
-                      <div className="absolute top-3 right-3">
-                        <Badge className="bg-amber-500 text-white border-0 text-xs font-semibold">
-                          Coming Soon
-                        </Badge>
-                      </div>
-                    </div>
-                    <CardHeader className="pb-2">
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
-                        <Clock className="w-3 h-3" />
-                        {course.duration}
-                        <span className="mx-1">•</span>
-                        <BookOpen className="w-3 h-3" />
-                        {'modules' in course && typeof course.modules === 'number' ? course.modules : (course as any).modules?.length || 4} Modules
-                      </div>
-                      <CardTitle className="text-lg line-clamp-2">
-                        {course.title}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <CardDescription className="line-clamp-2 mb-4">
-                        {course.description}
-                      </CardDescription>
-                      <div className="flex items-center justify-between text-sm">
-                        <div className="flex items-center gap-1 text-muted-foreground">
-                          <Users className="w-4 h-4" />
-                          {course.enrolled.toLocaleString()} enrolled
+                          {'track' in course && course.track !== 'student' && (
+                            <Badge className="bg-background/90 text-foreground border-0 text-xs">
+                              {careerTracks.find(t => t.id === course.track)?.name}
+                            </Badge>
+                          )}
                         </div>
-                        <Badge variant="outline" className="text-xs bg-amber-50 text-amber-700 border-amber-200">
-                          Coming Soon
-                        </Badge>
                       </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              </StaggerItem>
-            ))}
+                      <CardHeader className="pb-2">
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
+                          <Clock className="w-3 h-3" />
+                          {course.duration}
+                          <span className="mx-1">•</span>
+                          <BookOpen className="w-3 h-3" />
+                          {'modules' in course && typeof course.modules === 'number' ? course.modules : (course as any).modules?.length || 4} Modules
+                        </div>
+                        <CardTitle className="text-lg line-clamp-2 group-hover:text-primary transition-colors">
+                          {course.title}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <CardDescription className="line-clamp-2 mb-4">
+                          {course.description}
+                        </CardDescription>
+                        <div className="flex items-center justify-between text-sm">
+                          <div className="flex items-center gap-1 text-muted-foreground">
+                            <Users className="w-4 h-4" />
+                            {course.enrolled.toLocaleString()} enrolled
+                          </div>
+                          {isAvailable ? (
+                            <Badge className="text-xs bg-green-100 text-green-700 border-green-200">
+                              Available Now
+                            </Badge>
+                          ) : (
+                            <Badge variant="outline" className="text-xs">
+                              View Details
+                            </Badge>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                </StaggerItem>
+              );
+            })}
           </StaggerContainer>
         </div>
       </section>
