@@ -272,19 +272,15 @@ const AppFeaturesShowcase = () => {
 
                 {/* Main Phone Frame - With App Screen */}
                 <div className="relative z-10 transform transition-transform duration-500 hover:scale-[1.02]">
-                  {/* Phone outer frame */}
-                  <div className="relative bg-gray-900 rounded-[2.5rem] md:rounded-[3rem] p-1.5 md:p-2 shadow-2xl">
-                    {/* Phone notch */}
-                    <div className="absolute top-2 left-1/2 -translate-x-1/2 w-20 md:w-28 h-6 md:h-7 bg-gray-900 rounded-b-2xl z-20" />
-                    
-                    {/* Phone screen - With App Mockup */}
-                    <div className="relative w-[200px] sm:w-[240px] md:w-[280px] h-[400px] sm:h-[480px] md:h-[560px] rounded-[2rem] md:rounded-[2.5rem] overflow-hidden bg-white">
+                  {currentFeature.id === 4 ? (
+                    /* Private Counselling - Show image without phone frame */
+                    <div className="relative w-[200px] sm:w-[240px] md:w-[280px] h-[400px] sm:h-[480px] md:h-[560px] rounded-3xl overflow-hidden shadow-2xl">
                       <AnimatePresence mode="wait">
                         <motion.img
                           key={currentFeature.id}
                           src={currentFeature.mockup}
                           alt={currentFeature.title}
-                          className="w-full h-full object-contain object-top bg-white"
+                          className="w-full h-full object-cover"
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
                           exit={{ opacity: 0 }}
@@ -292,10 +288,32 @@ const AppFeaturesShowcase = () => {
                         />
                       </AnimatePresence>
                     </div>
-                    
-                    {/* Phone home indicator */}
-                    <div className="absolute bottom-2 md:bottom-3 left-1/2 -translate-x-1/2 w-24 md:w-32 h-1 bg-gray-600 rounded-full" />
-                  </div>
+                  ) : (
+                    /* Other features - Show with phone frame */
+                    <div className="relative bg-gray-900 rounded-[2.5rem] md:rounded-[3rem] p-1.5 md:p-2 shadow-2xl">
+                      {/* Phone notch */}
+                      <div className="absolute top-2 left-1/2 -translate-x-1/2 w-20 md:w-28 h-6 md:h-7 bg-gray-900 rounded-b-2xl z-20" />
+                      
+                      {/* Phone screen - With App Mockup */}
+                      <div className="relative w-[200px] sm:w-[240px] md:w-[280px] h-[400px] sm:h-[480px] md:h-[560px] rounded-[2rem] md:rounded-[2.5rem] overflow-hidden bg-white">
+                        <AnimatePresence mode="wait">
+                          <motion.img
+                            key={currentFeature.id}
+                            src={currentFeature.mockup}
+                            alt={currentFeature.title}
+                            className="w-full h-full object-contain object-top bg-white"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.15 }}
+                          />
+                        </AnimatePresence>
+                      </div>
+                      
+                      {/* Phone home indicator */}
+                      <div className="absolute bottom-2 md:bottom-3 left-1/2 -translate-x-1/2 w-24 md:w-32 h-1 bg-gray-600 rounded-full" />
+                    </div>
+                  )}
                 </div>
 
                 {/* Floating Elements */}
