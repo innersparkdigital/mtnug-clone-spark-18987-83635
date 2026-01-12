@@ -29,7 +29,7 @@ import {
   X,
   LogIn
 } from "lucide-react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 // Slide content for lessons
 const lessonSlides: Record<string, {
@@ -1387,6 +1387,33 @@ const getLessonIcon = (type: string) => {
   }
 };
 
+// Course structure to find next lesson
+const courseModules: Record<string, { id: string; lessons: string[] }[]> = {
+  "digital-mental-health": [
+    { id: "module-1", lessons: ["1-1", "1-2", "1-3", "1-4"] },
+    { id: "module-2", lessons: ["2-1", "2-2", "2-3", "2-4", "2-5"] },
+    { id: "module-3", lessons: ["3-1", "3-2", "3-3", "3-4", "3-5"] },
+    { id: "module-4", lessons: ["4-1", "4-2", "4-3", "4-4", "4-5"] },
+    { id: "module-5", lessons: ["5-1", "5-2", "5-3", "5-4", "5-5"] },
+    { id: "module-6", lessons: ["6-1", "6-2", "6-3", "6-4", "6-5"] },
+    { id: "module-7", lessons: ["7-1", "7-2", "7-3", "7-4", "7-5"] },
+    { id: "module-8", lessons: ["8-1", "8-2", "8-3", "8-4"] }
+  ],
+  "stress-academic-pressure": [
+    { id: "module-1", lessons: ["1-1", "1-2", "1-3", "1-4"] },
+    { id: "module-2", lessons: ["2-1", "2-2", "2-3", "2-4"] },
+    { id: "module-3", lessons: ["3-1", "3-2", "3-3", "3-4", "3-5"] },
+    { id: "module-4", lessons: ["4-1", "4-2", "4-3", "4-4", "4-5", "4-6"] }
+  ],
+  "wellness-ambassador": [
+    { id: "module-1", lessons: ["1-1", "1-2", "1-3", "1-4"] },
+    { id: "module-2", lessons: ["2-1", "2-2", "2-3", "2-4", "2-5"] },
+    { id: "module-3", lessons: ["3-1", "3-2", "3-3", "3-4", "3-5"] },
+    { id: "module-4", lessons: ["4-1", "4-2", "4-3", "4-4", "4-5"] },
+    { id: "module-5", lessons: ["5-1", "5-2", "5-3", "5-4", "5-5"] }
+  ]
+};
+
 const LessonViewer = () => {
   const { courseId, moduleId, lessonId } = useParams();
   const navigate = useNavigate();
@@ -1398,11 +1425,40 @@ const LessonViewer = () => {
   const [showResult, setShowResult] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [quizScore, setQuizScore] = useState(0);
+  const [isSaving, setIsSaving] = useState(false);
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const lessonData = lessonId && lessonSlides[lessonId] ? lessonSlides[lessonId] : defaultSlides;
   const slides = lessonData.slides;
   const totalSlides = slides.length;
   const progress = Math.round(((currentSlide + 1) / totalSlides) * 100);
+
+  // Find next lesson in course
+  const getNextLesson = () => {
+    if (!courseId || !moduleId || !lessonId) return null;
+    
+    const modules = courseModules[courseId];
+    if (!modules) return null;
+    
+    for (let mi = 0; mi < modules.length; mi++) {
+      const module = modules[mi];
+      const lessonIndex = module.lessons.indexOf(lessonId);
+      
+      if (lessonIndex !== -1) {
+        // Found current lesson
+        if (lessonIndex < module.lessons.length - 1) {
+          // Next lesson in same module
+          return { moduleId: module.id, lessonId: module.lessons[lessonIndex + 1] };
+        } else if (mi < modules.length - 1) {
+          // First lesson of next module
+          const nextModule = modules[mi + 1];
+          return { moduleId: nextModule.id, lessonId: nextModule.lessons[0] };
+        }
+      }
+    }
+    
+    return null; // Course completed
+  };
 
   // Load saved progress on mount
   useEffect(() => {
@@ -1414,16 +1470,30 @@ const LessonViewer = () => {
     }
   }, [user, courseId, moduleId, lessonId, getLessonProgress]);
 
-  // Save progress when slide changes
+  // Debounced save progress when slide changes (saves after 500ms of no changes)
   useEffect(() => {
-    if (user && courseId && moduleId && lessonId) {
-      updateLessonProgress(courseId, moduleId, lessonId, currentSlide, false);
+    if (user && courseId && moduleId && lessonId && currentSlide > 0) {
+      // Clear any pending save
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+      
+      // Schedule a save after 500ms
+      saveTimeoutRef.current = setTimeout(() => {
+        updateLessonProgress(courseId, moduleId, lessonId, currentSlide, false);
+      }, 500);
     }
+    
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+    };
   }, [currentSlide, user, courseId, moduleId, lessonId]);
 
   const goToNextSlide = () => {
     if (currentSlide < totalSlides - 1) {
-      setCurrentSlide(currentSlide + 1);
+      setCurrentSlide(prev => prev + 1);
       setSelectedAnswer(null);
       setShowResult(false);
     }
@@ -1450,7 +1520,15 @@ const LessonViewer = () => {
       await updateLessonProgress(courseId, moduleId, lessonId, currentSlide, true, quizScore);
       toast.success('Lesson completed!');
     }
-    navigate(`/learning/${courseId}`);
+    
+    // Navigate to next lesson if available, otherwise back to course
+    const nextLesson = getNextLesson();
+    if (nextLesson) {
+      navigate(`/learning/${courseId}/module/${nextLesson.moduleId}/lesson/${nextLesson.lessonId}`);
+    } else {
+      toast.success('Congratulations! You completed the course!');
+      navigate(`/learning/${courseId}`);
+    }
   };
 
   const renderSlideContent = () => {

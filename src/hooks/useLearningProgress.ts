@@ -12,6 +12,8 @@ interface LessonProgress {
   last_slide: number;
   quiz_score: number | null;
   completed_at: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
 interface CourseEnrollment {
