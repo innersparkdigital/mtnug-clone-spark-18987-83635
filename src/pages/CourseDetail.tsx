@@ -10,6 +10,7 @@ import Footer from "@/components/Footer";
 import ScrollReveal, { StaggerContainer, StaggerItem } from "@/components/ScrollReveal";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLearningProgress } from "@/hooks/useLearningProgress";
+import { getWorkplaceCourseById, careerTracks } from "@/lib/workplaceCourseData";
 import {
   BookOpen,
   Clock,
@@ -28,7 +29,8 @@ import {
   BarChart3,
   Lock,
   LogIn,
-  Loader2
+  Loader2,
+  Briefcase
 } from "lucide-react";
 
 // Course data (same as Learning page, in production would come from API/database)
@@ -428,6 +430,35 @@ const getLessonIcon = (type: string) => {
   }
 };
 
+// Helper to convert workplace course to expected format
+const convertWorkplaceCourse = (workplaceCourse: ReturnType<typeof getWorkplaceCourseById>) => {
+  if (!workplaceCourse) return null;
+  
+  const trackInfo = careerTracks.find(t => t.id === workplaceCourse.track);
+  
+  return {
+    id: workplaceCourse.id,
+    title: workplaceCourse.title,
+    description: workplaceCourse.description,
+    longDescription: workplaceCourse.longDescription,
+    duration: workplaceCourse.duration,
+    level: workplaceCourse.level,
+    format: workplaceCourse.format,
+    category: trackInfo?.name || "Workplace Mental Health",
+    modules: workplaceCourse.modules,
+    enrolled: workplaceCourse.enrolled,
+    image: workplaceCourse.image,
+    progress: workplaceCourse.progress,
+    learningOutcomes: workplaceCourse.learningOutcomes,
+    prerequisites: workplaceCourse.prerequisites,
+    instructor: workplaceCourse.instructor,
+    certificateInfo: workplaceCourse.certificateInfo,
+    resources: workplaceCourse.resources,
+    audience: workplaceCourse.audience,
+    track: workplaceCourse.track
+  };
+};
+
 const CourseDetail = () => {
   const { courseId } = useParams<{ courseId: string }>();
   const navigate = useNavigate();
@@ -441,7 +472,10 @@ const CourseDetail = () => {
     loading: progressLoading 
   } = useLearningProgress(courseId);
   
-  const course = courseId && coursesData[courseId] ? coursesData[courseId] : defaultCourse;
+  // Try to get from original courses first, then check workplace courses
+  const originalCourse = courseId && coursesData[courseId] ? coursesData[courseId] : null;
+  const workplaceCourse = courseId ? convertWorkplaceCourse(getWorkplaceCourseById(courseId)) : null;
+  const course = originalCourse || workplaceCourse || defaultCourse;
 
   const totalLessons = course.modules.reduce((acc, m) => acc + m.lessons.length, 0);
   
@@ -573,6 +607,12 @@ const CourseDetail = () => {
                   <Badge className={getLevelColor(course.level)}>{course.level}</Badge>
                   <Badge variant="outline">{course.format}</Badge>
                   <Badge variant="outline">{course.category}</Badge>
+                  {'audience' in course && (course as any).audience && (
+                    <Badge variant="secondary" className="gap-1">
+                      <Users className="w-3 h-3" />
+                      {(course as any).audience}
+                    </Badge>
+                  )}
                 </div>
                 <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
                   {course.title}
