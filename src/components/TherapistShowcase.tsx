@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { useRef } from "react";
+import ScrollReveal, { Parallax, ScaleOnScroll } from "@/components/ScrollReveal";
 
 // Import specialist images
 import juliusKizito from "@/assets/specialists/julius-kizito.png";
@@ -14,42 +16,52 @@ const therapists = [
 ];
 
 const TherapistShowcase = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  // Smooth parallax for decorative elements
+  const decorY = useTransform(scrollYProgress, [0, 1], [100, -100]);
+  const smoothDecorY = useSpring(decorY, { stiffness: 100, damping: 30 });
+
   return (
     <section 
-      className="py-20 md:py-32 overflow-hidden"
+      ref={sectionRef}
+      className="py-20 md:py-32 overflow-hidden relative"
       style={{
         background: 'linear-gradient(135deg, hsl(210 40% 92%) 0%, hsl(210 30% 88%) 50%, hsl(210 25% 90%) 100%)'
       }}
     >
-      <div className="container mx-auto px-4">
+      {/* Floating decorative elements with parallax */}
+      <motion.div
+        style={{ y: smoothDecorY }}
+        className="absolute top-20 left-10 w-32 h-32 rounded-full bg-primary/5 blur-3xl"
+      />
+      <motion.div
+        style={{ y: smoothDecorY }}
+        className="absolute bottom-20 right-10 w-40 h-40 rounded-full bg-accent/10 blur-3xl"
+      />
+
+      <div className="container mx-auto px-4 relative z-10">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-4">Meet Our Therapists</p>
-          <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-foreground leading-[1.1] tracking-tight mb-6 whitespace-pre-line font-serif"
-          >
-            Your guide to{'\n'}mental wellness.
-          </motion.h2>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-base md:text-lg text-muted-foreground mb-8 leading-relaxed"
-          >
-            Compassionate, qualified mental health professionals ready to provide
-            personalized support for your journey to emotional wellbeing.
-          </motion.p>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
+          <ScrollReveal delay={0.1}>
+            <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-4">Meet Our Therapists</p>
+          </ScrollReveal>
+          <ScrollReveal delay={0.2} distance={80}>
+            <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-foreground leading-[1.1] tracking-tight mb-6 whitespace-pre-line font-serif">
+              Your guide to{'\n'}mental wellness.
+            </h2>
+          </ScrollReveal>
+          <ScrollReveal delay={0.3} blur>
+            <p className="text-base md:text-lg text-muted-foreground mb-8 leading-relaxed">
+              Compassionate, qualified mental health professionals ready to provide
+              personalized support for your journey to emotional wellbeing.
+            </p>
+          </ScrollReveal>
+          <ScrollReveal delay={0.4} scale>
             <Link to="/find-therapist">
               <Button 
                 variant="outline" 
@@ -59,25 +71,23 @@ const TherapistShowcase = () => {
                 Meet them all
               </Button>
             </Link>
-          </motion.div>
+          </ScrollReveal>
         </div>
 
-        {/* Therapist Cards - Overlapping Design */}
-        <motion.div 
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.3 }}
-          className="flex justify-center items-end gap-[-20px] relative"
-        >
+        {/* Therapist Cards - Overlapping Design with enhanced animations */}
+        <ScaleOnScroll scaleFrom={0.85} scaleTo={1}>
           <div className="flex justify-center items-end -space-x-4 md:-space-x-8 lg:-space-x-12">
             {therapists.map((therapist, index) => (
               <motion.div
                 key={therapist.name}
-                initial={{ opacity: 0, y: 50, rotate: therapist.rotation }}
+                initial={{ opacity: 0, y: 80, rotate: therapist.rotation }}
                 whileInView={{ opacity: 1, y: 0, rotate: therapist.rotation }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.1 * index }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ 
+                  duration: 0.8, 
+                  delay: 0.15 * index,
+                  ease: [0.22, 1, 0.36, 1] 
+                }}
                 whileHover={{ 
                   y: -20, 
                   rotate: 0,
@@ -87,7 +97,7 @@ const TherapistShowcase = () => {
                 }}
                 className="relative group cursor-pointer"
                 style={{ 
-                  zIndex: index === 3 ? 10 : Math.abs(3 - index) < 2 ? 5 : 1,
+                  zIndex: index === 1 ? 10 : Math.abs(1 - index) < 2 ? 5 : 1,
                   transform: `rotate(${therapist.rotation}deg)`
                 }}
               >
@@ -114,25 +124,21 @@ const TherapistShowcase = () => {
               </motion.div>
             ))}
           </div>
-        </motion.div>
+        </ScaleOnScroll>
 
         {/* CTA Button */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.5 }}
-          className="text-center mt-20"
-        >
-          <Link to="/find-therapist">
-            <Button 
-              size="lg"
-              className="rounded-full px-10 py-6 text-base font-medium bg-primary hover:bg-primary/90 transition-all duration-300"
-            >
-              Get started
-            </Button>
-          </Link>
-        </motion.div>
+        <ScrollReveal delay={0.5} scale>
+          <div className="text-center mt-20">
+            <Link to="/find-therapist">
+              <Button 
+                size="lg"
+                className="rounded-full px-10 py-6 text-base font-medium bg-primary hover:bg-primary/90 transition-all duration-300"
+              >
+                Get started
+              </Button>
+            </Link>
+          </div>
+        </ScrollReveal>
       </div>
     </section>
   );
