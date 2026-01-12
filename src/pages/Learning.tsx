@@ -194,7 +194,7 @@ const Learning = () => {
                 Innerspark Learning Hub
               </Badge>
               <h1 className="text-4xl md:text-6xl font-bold mb-6 text-foreground">
-                Learning
+                Learning Hub
               </h1>
               <p className="text-xl md:text-2xl text-primary font-medium mb-4">
                 Build Healthy Digital Habits & Mental Resilience
