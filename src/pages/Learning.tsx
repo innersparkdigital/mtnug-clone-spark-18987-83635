@@ -84,12 +84,6 @@ const studentCourses = [
   }
 ];
 
-const stats = [
-  { label: "Active Learners", value: "12,000+", icon: Users },
-  { label: "Courses Available", value: "18", icon: BookOpen },
-  { label: "Certificates Issued", value: "5,500+", icon: Award },
-  { label: "Partner Organizations", value: "45+", icon: Building2 }
-];
 
 const getLevelColor = (level: string) => {
   switch (level) {
@@ -209,18 +203,6 @@ const Learning = () => {
             </ScrollReveal>
           </div>
 
-          {/* Stats */}
-          <ScrollReveal direction="up" delay={0.2}>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-16 max-w-4xl mx-auto">
-              {stats.map((stat, index) => (
-                <div key={index} className="bg-background/80 backdrop-blur-sm border border-border rounded-xl p-4 text-center">
-                  <stat.icon className="w-8 h-8 text-primary mx-auto mb-2" />
-                  <div className="text-2xl font-bold text-foreground">{stat.value}</div>
-                  <div className="text-sm text-muted-foreground">{stat.label}</div>
-                </div>
-              ))}
-            </div>
-          </ScrollReveal>
         </div>
       </section>
 
@@ -363,11 +345,7 @@ const Learning = () => {
                       <CardDescription className="line-clamp-2 mb-4">
                         {course.description}
                       </CardDescription>
-                      <div className="flex items-center justify-between text-sm">
-                        <div className="flex items-center gap-1 text-muted-foreground">
-                          <Users className="w-4 h-4" />
-                          {course.enrolled.toLocaleString()} enrolled
-                        </div>
+                      <div className="flex items-center justify-end text-sm">
                         <Badge variant="outline" className="text-xs">
                           Free
                         </Badge>
