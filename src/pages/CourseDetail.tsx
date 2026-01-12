@@ -66,7 +66,7 @@ const coursesData: Record<string, {
     level: "Beginner",
     format: "Online",
     category: "Digital Mental Health",
-    enrolled: 1250,
+    enrolled: 0,
     image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&h=600&fit=crop",
     progress: 0,
     learningOutcomes: [
@@ -195,7 +195,7 @@ const coursesData: Record<string, {
     level: "Intermediate",
     format: "Online",
     category: "Stress & Anxiety Management",
-    enrolled: 890,
+    enrolled: 0,
     image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=1200&h=600&fit=crop",
     progress: 0,
     learningOutcomes: [
@@ -275,7 +275,7 @@ const coursesData: Record<string, {
     level: "Advanced",
     format: "Hybrid",
     category: "Ambassador Programs",
-    enrolled: 320,
+    enrolled: 0,
     image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1200&h=600&fit=crop",
     progress: 0,
     learningOutcomes: [

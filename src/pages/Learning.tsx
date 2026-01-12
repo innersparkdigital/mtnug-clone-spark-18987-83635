@@ -49,7 +49,7 @@ const studentCourses = [
     format: "Online",
     category: "Student Wellness",
     modules: 8,
-    enrolled: 1250,
+    enrolled: 0,
     image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&h=600&fit=crop",
     progress: 0,
     featured: true
@@ -63,7 +63,7 @@ const studentCourses = [
     format: "Online",
     category: "Student Wellness",
     modules: 6,
-    enrolled: 890,
+    enrolled: 0,
     image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&h=600&fit=crop",
     progress: 0,
     featured: true
@@ -77,7 +77,7 @@ const studentCourses = [
     format: "Hybrid",
     category: "Ambassador Programs",
     modules: 10,
-    enrolled: 320,
+    enrolled: 0,
     image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&h=600&fit=crop",
     progress: 0,
     featured: true
