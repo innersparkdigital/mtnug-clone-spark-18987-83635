@@ -646,61 +646,86 @@ const CourseDetail = () => {
                     <CardDescription>Free access to all course materials</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    {user && enrolled && progressPercent > 0 && (
-                      <div className="space-y-2">
-                        <div className="flex justify-between text-sm">
-                          <span className="text-muted-foreground">Your Progress</span>
-                          <span className="font-medium">{progressPercent}%</span>
+                    {/* Coming Soon Notice for non-available courses */}
+                    {course.id !== "digital-mental-health" ? (
+                      <div className="space-y-4">
+                        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 text-center">
+                          <Badge className="bg-amber-500 text-white border-0 text-sm font-semibold mb-3">
+                            Coming Soon
+                          </Badge>
+                          <p className="text-sm text-amber-800 font-medium mb-2">
+                            This course is currently in development
+                          </p>
+                          <p className="text-xs text-amber-700">
+                            Sign up for our newsletter to be notified when this course becomes available.
+                          </p>
                         </div>
-                        <Progress value={progressPercent} className="h-2" />
-                        <p className="text-xs text-muted-foreground">{completedLessons} of {totalLessons} lessons completed</p>
-                      </div>
-                    )}
-                    
-                    {!user ? (
-                      <Link to="/auth">
-                        <Button className="w-full gap-2" size="lg">
-                          <LogIn className="w-5 h-5" />
-                          Sign In to Enroll
-                        </Button>
-                      </Link>
-                    ) : enrolled ? (
-                      <>
-                        <Link to={getResumeLink()}>
-                          <Button className="w-full gap-2" size="lg">
-                            <Play className="w-5 h-5" />
-                            {progressPercent > 0 ? "Continue Learning" : "Start Course"}
+                        <Link to="/learning/digital-mental-health">
+                          <Button variant="outline" className="w-full gap-2" size="lg">
+                            <BookOpen className="w-5 h-5" />
+                            Browse Available Course
                           </Button>
                         </Link>
-                        {progressPercent === 100 && (
-                          <Link to={`/learning/${course.id}/certificate`}>
-                            <Button variant="outline" className="w-full gap-2 mt-2 border-yellow-500/50 text-yellow-600 hover:bg-yellow-500/10">
-                              <Award className="w-5 h-5" />
-                              View Certificate
+                      </div>
+                    ) : (
+                      <>
+                        {user && enrolled && progressPercent > 0 && (
+                          <div className="space-y-2">
+                            <div className="flex justify-between text-sm">
+                              <span className="text-muted-foreground">Your Progress</span>
+                              <span className="font-medium">{progressPercent}%</span>
+                            </div>
+                            <Progress value={progressPercent} className="h-2" />
+                            <p className="text-xs text-muted-foreground">{completedLessons} of {totalLessons} lessons completed</p>
+                          </div>
+                        )}
+                        
+                        {!user ? (
+                          <Link to="/auth">
+                            <Button className="w-full gap-2" size="lg">
+                              <LogIn className="w-5 h-5" />
+                              Sign In to Enroll
                             </Button>
                           </Link>
+                        ) : enrolled ? (
+                          <>
+                            <Link to={getResumeLink()}>
+                              <Button className="w-full gap-2" size="lg">
+                                <Play className="w-5 h-5" />
+                                {progressPercent > 0 ? "Continue Learning" : "Start Course"}
+                              </Button>
+                            </Link>
+                            {progressPercent === 100 && (
+                              <Link to={`/learning/${course.id}/certificate`}>
+                                <Button variant="outline" className="w-full gap-2 mt-2 border-yellow-500/50 text-yellow-600 hover:bg-yellow-500/10">
+                                  <Award className="w-5 h-5" />
+                                  View Certificate
+                                </Button>
+                              </Link>
+                            )}
+                          </>
+                        ) : (
+                          <Button 
+                            className="w-full gap-2" 
+                            size="lg"
+                            onClick={handleEnroll}
+                            disabled={progressLoading}
+                          >
+                            {progressLoading ? (
+                              <Loader2 className="w-5 h-5 animate-spin" />
+                            ) : (
+                              <BookOpen className="w-5 h-5" />
+                            )}
+                            Enroll Now - Free
+                          </Button>
+                        )}
+                        
+                        {!user && (
+                          <p className="text-xs text-center text-muted-foreground">
+                            Create a free account to track your progress
+                          </p>
                         )}
                       </>
-                    ) : (
-                      <Button 
-                        className="w-full gap-2" 
-                        size="lg"
-                        onClick={handleEnroll}
-                        disabled={progressLoading}
-                      >
-                        {progressLoading ? (
-                          <Loader2 className="w-5 h-5 animate-spin" />
-                        ) : (
-                          <BookOpen className="w-5 h-5" />
-                        )}
-                        Enroll Now - Free
-                      </Button>
-                    )}
-                    
-                    {!user && (
-                      <p className="text-xs text-center text-muted-foreground">
-                        Create a free account to track your progress
-                      </p>
                     )}
                     
                     <div className="flex items-center gap-3 pt-4 border-t border-border">
