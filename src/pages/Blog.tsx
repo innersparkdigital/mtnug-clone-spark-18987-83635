@@ -24,6 +24,33 @@ interface BlogPost {
 
 const blogPosts: BlogPost[] = [
   {
+    slug: "how-to-find-a-therapist",
+    title: "How to Find a Therapist: Complete Guide to Choosing the Right Mental Health Professional",
+    excerpt: "Step-by-step guide to finding the right therapist for your needs. Learn what to look for, questions to ask, and how to make your first appointment.",
+    date: "January 12, 2026",
+    readTime: "12 min read",
+    image: mentalHealthHeroImage,
+    category: "Finding Help"
+  },
+  {
+    slug: "signs-of-depression",
+    title: "10 Warning Signs of Depression You Shouldn't Ignore",
+    excerpt: "Learn to recognize the common signs and symptoms of depression. Early detection can lead to faster recovery. Discover what to look for and when to seek help.",
+    date: "January 12, 2026",
+    readTime: "8 min read",
+    image: depressionHeroImage,
+    category: "Depression"
+  },
+  {
+    slug: "anxiety-symptoms",
+    title: "Anxiety Symptoms: How to Recognize if You Have Anxiety Disorder",
+    excerpt: "Learn to identify the physical, emotional, and behavioral symptoms of anxiety. Understand the difference between normal worry and anxiety disorder.",
+    date: "January 12, 2026",
+    readTime: "10 min read",
+    image: anxietyHeroImage,
+    category: "Anxiety"
+  },
+  {
     slug: "how-to-manage-anxiety",
     title: "How to Manage Anxiety: Expert-Backed Strategies for Finding Calm",
     excerpt: "Anxiety can feel overwhelming, but you don't have to face it alone. Discover practical, research-backed strategies to help you manage anxiety, find calm, and reclaim your peace of mind.",

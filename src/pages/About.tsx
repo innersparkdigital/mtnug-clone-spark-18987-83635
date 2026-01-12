@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AppDownload from "@/components/AppDownload";
@@ -14,6 +15,33 @@ import mutebiReagan from "@/assets/mutebi-reagan.jpg";
 import jamesNiwamanya from "@/assets/james-niwamanya.jpg";
 
 const About = () => {
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "MedicalOrganization",
+    "name": "Innerspark Africa",
+    "alternateName": "Innerspark",
+    "url": "https://innerspark.africa",
+    "logo": "https://innerspark.africa/innerspark-logo.png",
+    "description": "Innerspark Africa is a digital mental wellness platform making professional mental health care affordable, accessible, and stigma-free across Africa.",
+    "foundingDate": "2023",
+    "areaServed": ["Uganda", "Ghana", "Botswana", "Africa"],
+    "medicalSpecialty": ["Psychiatry", "Psychology", "Counseling"],
+    "sameAs": [
+      "https://x.com/innersparkrcv",
+      "https://www.facebook.com/innersparkrecover",
+      "https://www.linkedin.com/in/inner-spark-581014326/",
+      "https://www.youtube.com/@INNERSPARK36"
+    ]
+  };
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://innerspark.africa" },
+      { "@type": "ListItem", "position": 2, "name": "About Us", "item": "https://innerspark.africa/about" }
+    ]
+  };
   const leaders = [
     {
       name: "Talemwa Raymond",
@@ -38,6 +66,29 @@ const About = () => {
   ];
 
   return (
+    <>
+      <Helmet>
+        <title>About Innerspark Africa | Mental Health Platform in Africa | Our Mission</title>
+        <meta name="description" content="Learn about Innerspark Africa, the leading digital mental health platform in Africa. Our mission is to make therapy accessible, affordable, and stigma-free. Meet our team and discover our vision for mental wellness across Africa." />
+        <meta name="keywords" content="about Innerspark Africa, mental health Africa, therapy platform Uganda, digital mental wellness, mental health mission, African mental health, accessible therapy, affordable counseling, mental health startup Africa, teletherapy Africa" />
+        <link rel="canonical" href="https://innerspark.africa/about" />
+        
+        {/* Open Graph */}
+        <meta property="og:title" content="About Innerspark Africa | Mental Health Platform" />
+        <meta property="og:description" content="Innerspark Africa is a digital mental wellness platform making professional mental health care affordable and accessible across Africa." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://innerspark.africa/about" />
+        <meta property="og:image" content="https://innerspark.africa/innerspark-logo.png" />
+        
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="About Innerspark Africa | Mental Health Platform" />
+        <meta name="twitter:description" content="Learn about Innerspark Africa's mission to make mental health care accessible across Africa." />
+        
+        {/* Schema.org */}
+        <script type="application/ld+json">{JSON.stringify(organizationSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
+      </Helmet>
     <div className="min-h-screen bg-background">
       <Header />
       
@@ -457,6 +508,7 @@ const About = () => {
 
       <Footer />
     </div>
+    </>
   );
 };
 
