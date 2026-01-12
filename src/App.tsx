@@ -59,6 +59,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import Learning from "./pages/Learning";
 import CourseDetail from "./pages/CourseDetail";
 import LessonViewer from "./pages/LessonViewer";
+import CourseCertificate from "./pages/CourseCertificate";
 import Auth from "./pages/Auth";
 
 const queryClient = new QueryClient();
@@ -102,6 +103,7 @@ const App = () => (
             <Route path="/specialists/:id" element={<SpecialistProfile />} />
             <Route path="/learning" element={<Learning />} />
             <Route path="/learning/:courseId" element={<CourseDetail />} />
+            <Route path="/learning/:courseId/certificate" element={<CourseCertificate />} />
             <Route path="/learning/:courseId/module/:moduleId/lesson/:lessonId" element={<LessonViewer />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/mind-check" element={<MindCheck />} />

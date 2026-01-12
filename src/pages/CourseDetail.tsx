@@ -625,12 +625,22 @@ const CourseDetail = () => {
                         </Button>
                       </Link>
                     ) : enrolled ? (
-                      <Link to={getResumeLink()}>
-                        <Button className="w-full gap-2" size="lg">
-                          <Play className="w-5 h-5" />
-                          {progressPercent > 0 ? "Continue Learning" : "Start Course"}
-                        </Button>
-                      </Link>
+                      <>
+                        <Link to={getResumeLink()}>
+                          <Button className="w-full gap-2" size="lg">
+                            <Play className="w-5 h-5" />
+                            {progressPercent > 0 ? "Continue Learning" : "Start Course"}
+                          </Button>
+                        </Link>
+                        {progressPercent === 100 && (
+                          <Link to={`/learning/${course.id}/certificate`}>
+                            <Button variant="outline" className="w-full gap-2 mt-2 border-yellow-500/50 text-yellow-600 hover:bg-yellow-500/10">
+                              <Award className="w-5 h-5" />
+                              View Certificate
+                            </Button>
+                          </Link>
+                        )}
+                      </>
                     ) : (
                       <Button 
                         className="w-full gap-2" 
