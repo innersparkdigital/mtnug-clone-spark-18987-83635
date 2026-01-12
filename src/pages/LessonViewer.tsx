@@ -10,6 +10,7 @@ import Header from "@/components/Header";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLearningProgress } from "@/hooks/useLearningProgress";
 import { toast } from "sonner";
+import NextLessonModal from "@/components/NextLessonModal";
 import {
   ChevronLeft,
   ChevronRight,
@@ -1414,6 +1415,59 @@ const courseModules: Record<string, { id: string; lessons: string[] }[]> = {
   ]
 };
 
+// Lesson metadata for modal display
+const lessonMeta: Record<string, { title: string; type: string; duration: string }> = {
+  "1-1": { title: "What is Digital Mental Health?", type: "video", duration: "15 min" },
+  "1-2": { title: "The Digital Age & Your Mind", type: "slides", duration: "20 min" },
+  "1-3": { title: "Self-Assessment: Your Digital Habits", type: "activity", duration: "10 min" },
+  "1-4": { title: "Module 1 Quiz", type: "quiz", duration: "10 min" },
+  "2-1": { title: "Understanding Information Overload", type: "video", duration: "20 min" },
+  "2-2": { title: "Signs of Digital Burnout", type: "slides", duration: "15 min" },
+  "2-3": { title: "Real Student Stories: Burnout Recovery", type: "video", duration: "25 min" },
+  "2-4": { title: "Reflection: Your Burnout Risk", type: "activity", duration: "15 min" },
+  "2-5": { title: "Module 2 Quiz", type: "quiz", duration: "10 min" },
+  "3-1": { title: "How Social Media Affects Your Brain", type: "video", duration: "20 min" },
+  "3-2": { title: "Comparison Culture & Self-Esteem", type: "slides", duration: "20 min" },
+  "3-3": { title: "Building a Healthier Feed", type: "activity", duration: "15 min" },
+  "3-4": { title: "Digital Detox Strategies", type: "slides", duration: "20 min" },
+  "3-5": { title: "Module 3 Quiz", type: "quiz", duration: "10 min" },
+  "4-1": { title: "Understanding Stress & Anxiety", type: "video", duration: "20 min" },
+  "4-2": { title: "Academic Pressure in the Digital Age", type: "slides", duration: "15 min" },
+  "4-3": { title: "Coping Strategies That Work", type: "video", duration: "25 min" },
+  "4-4": { title: "Guided Relaxation Exercise", type: "audio", duration: "15 min" },
+  "4-5": { title: "Module 4 Quiz", type: "quiz", duration: "10 min" },
+  "5-1": { title: "Setting Boundaries with Technology", type: "video", duration: "20 min" },
+  "5-2": { title: "Sleep & Screen Time", type: "slides", duration: "15 min" },
+  "5-3": { title: "Mindful Technology Use", type: "slides", duration: "20 min" },
+  "5-4": { title: "Creating Your Screen-Time Plan", type: "activity", duration: "20 min" },
+  "5-5": { title: "Module 5 Quiz", type: "quiz", duration: "10 min" },
+  "6-1": { title: "What is Emotional Intelligence?", type: "video", duration: "20 min" },
+  "6-2": { title: "Self-Awareness & Self-Regulation", type: "slides", duration: "20 min" },
+  "6-3": { title: "Building a Self-Care Routine", type: "video", duration: "25 min" },
+  "6-4": { title: "Mindfulness Exercise", type: "audio", duration: "15 min" },
+  "6-5": { title: "Module 6 Quiz", type: "quiz", duration: "10 min" },
+  "7-1": { title: "Recognizing When You Need Help", type: "video", duration: "15 min" },
+  "7-2": { title: "Mental Health Resources in Africa", type: "slides", duration: "20 min" },
+  "7-3": { title: "How to Support a Friend", type: "video", duration: "20 min" },
+  "7-4": { title: "Starting the Conversation", type: "activity", duration: "15 min" },
+  "7-5": { title: "Module 7 Quiz", type: "quiz", duration: "10 min" },
+  "8-1": { title: "Course Review & Key Takeaways", type: "video", duration: "20 min" },
+  "8-2": { title: "Creating Your Wellness Plan", type: "activity", duration: "30 min" },
+  "8-3": { title: "Final Assessment", type: "quiz", duration: "30 min" },
+  "8-4": { title: "Get Your Certificate", type: "certificate", duration: "5 min" }
+};
+
+const moduleNames: Record<string, string> = {
+  "module-1": "Introduction to Digital Mental Health",
+  "module-2": "Digital Overload & Burnout",
+  "module-3": "Social Media & Emotional Wellbeing",
+  "module-4": "Stress, Anxiety & Academic Pressure",
+  "module-5": "Healthy Screen-Time & Digital Habits",
+  "module-6": "Emotional Intelligence & Self-Care",
+  "module-7": "Seeking Help & Supporting Others",
+  "module-8": "Final Reflection & Personal Wellness Plan"
+};
+
 const LessonViewer = () => {
   const { courseId, moduleId, lessonId } = useParams();
   const navigate = useNavigate();
@@ -1426,6 +1480,12 @@ const LessonViewer = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [quizScore, setQuizScore] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
+  const [showNextLessonModal, setShowNextLessonModal] = useState(false);
+  const [nextLessonInfo, setNextLessonInfo] = useState<{
+    moduleId: string;
+    lessonId: string;
+    isNewModule: boolean;
+  } | null>(null);
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const lessonData = lessonId && lessonSlides[lessonId] ? lessonSlides[lessonId] : defaultSlides;
@@ -1518,17 +1578,36 @@ const LessonViewer = () => {
   const handleCompleteLesson = async () => {
     if (user && courseId && moduleId && lessonId) {
       await updateLessonProgress(courseId, moduleId, lessonId, currentSlide, true, quizScore);
-      toast.success('Lesson completed!');
     }
     
-    // Navigate to next lesson if available, otherwise back to course
-    const nextLesson = getNextLesson();
-    if (nextLesson) {
-      navigate(`/learning/${courseId}/module/${nextLesson.moduleId}/lesson/${nextLesson.lessonId}`);
+    // Find next lesson and show modal
+    const next = getNextLesson();
+    if (next) {
+      const isNewModule = next.moduleId !== moduleId;
+      setNextLessonInfo({
+        moduleId: next.moduleId,
+        lessonId: next.lessonId,
+        isNewModule
+      });
+      setShowNextLessonModal(true);
     } else {
-      toast.success('Congratulations! You completed the course!');
-      navigate(`/learning/${courseId}`);
+      // Course completed
+      setNextLessonInfo(null);
+      setShowNextLessonModal(true);
     }
+  };
+
+  const getNextLessonDetails = () => {
+    if (!nextLessonInfo) return null;
+    const meta = lessonMeta[nextLessonInfo.lessonId];
+    if (!meta) return null;
+    return {
+      title: meta.title,
+      type: meta.type,
+      duration: meta.duration,
+      moduleTitle: moduleNames[nextLessonInfo.moduleId] || nextLessonInfo.moduleId,
+      isNewModule: nextLessonInfo.isNewModule
+    };
   };
 
   const renderSlideContent = () => {
@@ -1852,6 +1931,27 @@ const LessonViewer = () => {
           </div>
         </main>
       </div>
+
+      {/* Next Lesson Modal */}
+      <NextLessonModal
+        open={showNextLessonModal}
+        onOpenChange={(open) => {
+          setShowNextLessonModal(open);
+          if (!open && !nextLessonInfo) {
+            // Course completed, navigate to certificate
+            navigate(`/learning/${courseId}/certificate`);
+          } else if (!open) {
+            // User closed modal without continuing, go back to course
+            navigate(`/learning/${courseId}`);
+          }
+        }}
+        currentLessonTitle={lessonData.title}
+        nextLesson={getNextLessonDetails()}
+        courseId={courseId || ''}
+        nextModuleId={nextLessonInfo?.moduleId || ''}
+        nextLessonId={nextLessonInfo?.lessonId || ''}
+        isCourseComplete={!nextLessonInfo}
+      />
     </div>
   );
 };
