@@ -1,3 +1,5 @@
+import stressBurnoutWorkloadImage from "@/assets/courses/stress-burnout-workload.jpg";
+
 // Career stage track definitions
 export type CareerTrack = 
   | "transitioning-to-work" 
@@ -693,7 +695,7 @@ export const workplaceMentalHealthCourses: WorkplaceCourse[] = [
     track: "workplace-mental-health",
     audience: "Employees & supervisors",
     enrolled: 2800,
-    image: "https://images.unsplash.com/photo-1623146576556-bc8c81af4cf4?w=800&h=600&fit=crop",
+    image: stressBurnoutWorkloadImage,
     progress: 0,
     learningOutcomes: [
       "Distinguish between stress and burnout",
