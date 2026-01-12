@@ -284,7 +284,7 @@ const AppFeaturesShowcase = () => {
                           key={currentFeature.id}
                           src={currentFeature.mockup}
                           alt={currentFeature.title}
-                          className="w-full h-full object-cover object-top"
+                          className="w-full h-full object-contain object-top bg-white"
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
                           exit={{ opacity: 0 }}
