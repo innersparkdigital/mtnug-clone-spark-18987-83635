@@ -16,13 +16,16 @@ import chatSessionMockup from "@/assets/mockups/chat-consultation-screen.png";
 import privateCounsellingMockup from "@/assets/mockups/private-counselling-screen.png";
 
 // Import human photography for background cards
-import personHome from "@/assets/personas/person-home.png";
-import personTherapist from "@/assets/personas/person-therapist.png";
-import personBooking from "@/assets/personas/person-booking.png";
-import personPayment from "@/assets/personas/person-payment.png";
-import personGroups from "@/assets/personas/person-groups.png";
-import personEmergency from "@/assets/personas/person-emergency.png";
-import personDonate from "@/assets/personas/person-donate.png";
+import moodTrackingImage from "@/assets/personas/mood-tracking.jpg";
+import bookAppointmentImage from "@/assets/personas/book-appointment.jpg";
+import chatConsultationImage from "@/assets/personas/chat-consultation.jpg";
+import dailyReflectionImage from "@/assets/personas/daily-reflection.jpg";
+import therapyFundImage from "@/assets/personas/therapy-fund.jpg";
+import privateCounsellingImage from "@/assets/personas/private-counselling.jpg";
+import findTherapistImage from "@/assets/personas/find-therapist.jpg";
+import downloadAppImage from "@/assets/personas/download-app.jpg";
+import supportGroupsImage from "@/assets/personas/support-groups.png";
+import emergencyImage from "@/assets/personas/emergency.jpg";
 
 const features = [
   {
@@ -32,7 +35,7 @@ const features = [
     description: "Track your mood with simple emojis and gently learn what your heart has been trying to tell you.",
     icon: Smile,
     mockup: moodTrackerMockup,
-    personImage: personHome,
+    personImage: moodTrackingImage,
     accentColor: "hsl(var(--primary))"
   },
   {
@@ -42,7 +45,7 @@ const features = [
     description: "Celebrate small wins. Write about how your day felt. Every week, see your growth in a wellness report.",
     icon: Sparkles,
     mockup: dailyReflectionMockup,
-    personImage: personPayment,
+    personImage: dailyReflectionImage,
     accentColor: "hsl(var(--primary))"
   },
   {
@@ -52,7 +55,7 @@ const features = [
     description: "Browse through certified professionals who truly understand your condition and match your healing journey.",
     icon: Search,
     mockup: findTherapistsMockup,
-    personImage: personTherapist,
+    personImage: findTherapistImage,
     accentColor: "hsl(var(--primary))"
   },
   {
@@ -62,7 +65,7 @@ const features = [
     description: "Talk to a licensed therapist who gives you a safe space to breathe, feel, and find your strength again.",
     icon: Video,
     mockup: privateCounsellingMockup,
-    personImage: personTherapist,
+    personImage: privateCounsellingImage,
     accentColor: "hsl(var(--primary))"
   },
   {
@@ -72,7 +75,7 @@ const features = [
     description: "A professional counsellor is always a message away — ready to support you with compassion and zero judgment.",
     icon: MessageCircle,
     mockup: chatSessionMockup,
-    personImage: personHome,
+    personImage: chatConsultationImage,
     accentColor: "hsl(var(--primary))"
   },
   {
@@ -82,7 +85,7 @@ const features = [
     description: "Connect with people who understand exactly what you're going through. Share your story. Heal together.",
     icon: Users,
     mockup: supportGroupsMockup,
-    personImage: personGroups,
+    personImage: supportGroupsImage,
     accentColor: "hsl(var(--primary))"
   },
   {
@@ -92,7 +95,7 @@ const features = [
     description: "Book a virtual session for as low as 50,000 UGX. Give yourself the gift of professional support.",
     icon: Calendar,
     mockup: bookAppointmentMockup,
-    personImage: personBooking,
+    personImage: bookAppointmentImage,
     accentColor: "hsl(var(--primary))"
   },
   {
@@ -102,7 +105,7 @@ const features = [
     description: "Press the emergency button and immediately talk to a crisis counsellor who genuinely cares.",
     icon: AlertTriangle,
     mockup: emergencyButtonMockup,
-    personImage: personEmergency,
+    personImage: emergencyImage,
     accentColor: "hsl(var(--primary))"
   },
   {
@@ -112,7 +115,7 @@ const features = [
     description: "Even 5,000 UGX can help someone who desperately needs counselling but can't afford it.",
     icon: Heart,
     mockup: therapyFundMockup,
-    personImage: personDonate,
+    personImage: therapyFundImage,
     accentColor: "hsl(var(--primary))"
   },
   {
@@ -122,7 +125,7 @@ const features = [
     description: "Create your account and open the door to real mental health support — anytime you need it.",
     icon: Download,
     mockup: downloadAppMockup,
-    personImage: personHome,
+    personImage: downloadAppImage,
     accentColor: "hsl(var(--primary))"
   }
 ];
