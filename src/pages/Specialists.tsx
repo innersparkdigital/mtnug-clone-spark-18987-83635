@@ -586,12 +586,63 @@ const Specialists = () => {
   return (
     <>
       <Helmet>
-        <title>Our Specialists - Mental Health Professionals | Innerspark Africa</title>
+        <title>Find a Therapist Near You | Licensed Counselors & Psychologists | Innerspark Africa</title>
         <meta
           name="description"
-          content="Find qualified mental health professionals including psychologists, counselors, psychiatrists, therapists, and more. Get help for depression, anxiety, trauma, relationships, and life challenges."
+          content="Find licensed therapists, counselors & psychologists in Africa. Book online therapy sessions for depression, anxiety, trauma, relationships & more. Affordable rates from UGX 75,000. Verified professionals."
         />
-        <meta name="keywords" content="psychologists Uganda, counselors, psychiatrists, therapists, mental health professionals, online therapy, virtual counseling Africa" />
+        <meta name="keywords" content="find a therapist, find therapist near me, online therapist, licensed therapists Africa, psychologists Uganda, counselors Africa, psychiatrists, mental health professionals, online therapy, virtual counseling, therapist directory, book a therapist, affordable therapy, licensed counselors, mental health help, depression therapist, anxiety counselor, trauma specialist, relationship counselor, find a psychologist" />
+        <link rel="canonical" href="https://innerspark.africa/specialists" />
+        
+        {/* Open Graph */}
+        <meta property="og:title" content="Find a Therapist | Licensed Mental Health Professionals | Innerspark" />
+        <meta property="og:description" content="Browse our network of licensed therapists, counselors & psychologists. Find the right mental health professional for your needs. Book online sessions today." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://innerspark.africa/specialists" />
+        <meta property="og:image" content="https://innerspark.africa/innerspark-logo.png" />
+        
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Find a Therapist | Innerspark Africa" />
+        <meta name="twitter:description" content="Find licensed therapists & counselors. Book affordable online therapy for depression, anxiety, trauma & more." />
+        
+        {/* Schema.org */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "MedicalWebPage",
+            "name": "Find a Therapist - Mental Health Professionals Directory",
+            "description": "Browse and book sessions with licensed therapists, counselors, and psychologists in Africa.",
+            "url": "https://innerspark.africa/specialists",
+            "specialty": "Psychiatry",
+            "mainEntity": {
+              "@type": "ItemList",
+              "name": "Mental Health Professionals",
+              "description": "Directory of licensed therapists, counselors, and psychologists",
+              "numberOfItems": 15
+            }
+          })}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://innerspark.africa"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Find a Therapist",
+                "item": "https://innerspark.africa/specialists"
+              }
+            ]
+          })}
+        </script>
       </Helmet>
 
       <Header />
