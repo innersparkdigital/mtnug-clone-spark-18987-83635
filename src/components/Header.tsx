@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import { Menu, X, ChevronDown, Stethoscope, Building2 } from "lucide-react";
+import { Menu, X, ChevronDown, Stethoscope, Building2, LogIn, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import logo from "@/assets/innerspark-logo.png";
 import AppDownloadPopup from "@/components/AppDownloadPopup";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
 import PromoSlider from "@/components/PromoSlider";
 import {
   NavigationMenu,
@@ -15,6 +16,12 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const navItems = [
   { key: "services", label: "Our Services", path: "/services" },
@@ -30,6 +37,7 @@ const navItems = [
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { language, translateBatch } = useLanguage();
+  const { user, signOut } = useAuth();
   const [translations, setTranslations] = useState({
     forProfessionals: "FOR PROFESSIONALS",
     forBusiness: "FOR BUSINESS",
@@ -157,6 +165,37 @@ const Header = () => {
               <Link to="/contact" className="text-foreground hover:text-primary transition-colors font-medium">
                 {navLabels.contact}
               </Link>
+              
+              {/* Auth Button */}
+              {user ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm" className="gap-2">
+                      <User className="w-4 h-4" />
+                      <span className="max-w-20 truncate">{user.email?.split('@')[0]}</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem asChild>
+                      <Link to="/learning" className="cursor-pointer">
+                        My Learning
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => signOut()} className="cursor-pointer text-destructive">
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Sign Out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <Link to="/auth">
+                  <Button variant="outline" size="sm" className="gap-2">
+                    <LogIn className="w-4 h-4" />
+                    Sign In
+                  </Button>
+                </Link>
+              )}
+              
               <AppDownloadPopup />
             </nav>
 
@@ -205,6 +244,31 @@ const Header = () => {
               <Link to="/contact" className="block text-foreground hover:text-primary transition-colors font-medium">
                 {navLabels.contact}
               </Link>
+              
+              {/* Mobile Auth */}
+              {user ? (
+                <div className="space-y-2 border-t border-border pt-4">
+                  <Link to="/learning" className="block text-foreground hover:text-primary transition-colors font-medium">
+                    My Learning
+                  </Link>
+                  <Button 
+                    variant="outline" 
+                    className="w-full text-destructive border-destructive hover:bg-destructive hover:text-destructive-foreground"
+                    onClick={() => signOut()}
+                  >
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Sign Out
+                  </Button>
+                </div>
+              ) : (
+                <Link to="/auth">
+                  <Button className="w-full gap-2">
+                    <LogIn className="w-4 h-4" />
+                    Sign In / Sign Up
+                  </Button>
+                </Link>
+              )}
+              
               <Link to="/donate-therapy">
                 <Button variant="outline" className="w-full border-primary text-primary hover:bg-primary hover:text-primary-foreground">
                   {translations.donateTherapy}
