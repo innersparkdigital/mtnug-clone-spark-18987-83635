@@ -51,6 +51,7 @@ const HowItWorks = () => {
       headline: "Professional care,\nface to face.",
       image: videoSessionMockup,
       alt: "InnerSpark App - Video Therapy",
+      fillFrame: true,
       steps: [
         {
           title: "Download the InnerSpark App",
@@ -261,7 +262,7 @@ const HowItWorks = () => {
                           key={activeTab}
                           src={currentTab.image}
                           alt={currentTab.alt}
-                          className="w-full h-full object-contain object-top bg-white"
+                          className={`w-full h-full bg-white ${currentTab.fillFrame ? 'object-cover' : 'object-contain object-top'}`}
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
                           exit={{ opacity: 0 }}
