@@ -86,7 +86,7 @@ export const transitioningToWorkCourses: WorkplaceCourse[] = [
     format: "Online",
     track: "transitioning-to-work",
     audience: "Students, interns, graduates",
-    enrolled: 2340,
+    enrolled: 0,
     image: "https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=800&h=600&fit=crop",
     progress: 0,
     learningOutcomes: [
@@ -173,7 +173,7 @@ export const transitioningToWorkCourses: WorkplaceCourse[] = [
     format: "Online",
     track: "transitioning-to-work",
     audience: "Early-career professionals",
-    enrolled: 1890,
+    enrolled: 0,
     image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=600&fit=crop",
     progress: 0,
     learningOutcomes: [
@@ -258,7 +258,7 @@ export const transitioningToWorkCourses: WorkplaceCourse[] = [
     format: "Online",
     track: "transitioning-to-work",
     audience: "Job seekers & new employees",
-    enrolled: 1650,
+    enrolled: 0,
     image: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&h=600&fit=crop",
     progress: 0,
     learningOutcomes: [
@@ -346,7 +346,7 @@ export const transitioningToWorkCourses: WorkplaceCourse[] = [
     format: "Online",
     track: "transitioning-to-work",
     audience: "Early-career professionals",
-    enrolled: 2100,
+    enrolled: 0,
     image: "https://images.unsplash.com/photo-1507537297725-24a1c029d3ca?w=800&h=600&fit=crop",
     progress: 0,
     learningOutcomes: [
@@ -432,7 +432,7 @@ export const transitioningToWorkCourses: WorkplaceCourse[] = [
     format: "Online",
     track: "transitioning-to-work",
     audience: "Early-career professionals",
-    enrolled: 1480,
+    enrolled: 0,
     image: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=800&h=600&fit=crop",
     progress: 0,
     learningOutcomes: [
@@ -517,7 +517,7 @@ export const transitioningToWorkCourses: WorkplaceCourse[] = [
     format: "Online",
     track: "transitioning-to-work",
     audience: "Job seekers & graduates",
-    enrolled: 1320,
+    enrolled: 0,
     image: "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=800&h=600&fit=crop",
     progress: 0,
     learningOutcomes: [
@@ -607,7 +607,7 @@ export const workplaceMentalHealthCourses: WorkplaceCourse[] = [
     format: "Online",
     track: "workplace-mental-health",
     audience: "All employees",
-    enrolled: 3200,
+    enrolled: 0,
     image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=600&fit=crop",
     progress: 0,
     learningOutcomes: [
@@ -694,7 +694,7 @@ export const workplaceMentalHealthCourses: WorkplaceCourse[] = [
     format: "Online",
     track: "workplace-mental-health",
     audience: "Employees & supervisors",
-    enrolled: 2800,
+    enrolled: 0,
     image: stressBurnoutWorkloadImage,
     progress: 0,
     learningOutcomes: [
@@ -782,7 +782,7 @@ export const workplaceMentalHealthCourses: WorkplaceCourse[] = [
     format: "Online",
     track: "workplace-mental-health",
     audience: "Teams & supervisors",
-    enrolled: 2100,
+    enrolled: 0,
     image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=600&fit=crop",
     progress: 0,
     learningOutcomes: [
@@ -869,7 +869,7 @@ export const workplaceMentalHealthCourses: WorkplaceCourse[] = [
     format: "Online",
     track: "workplace-mental-health",
     audience: "Employees",
-    enrolled: 1950,
+    enrolled: 0,
     image: "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&h=600&fit=crop",
     progress: 0,
     learningOutcomes: [
@@ -956,7 +956,7 @@ export const workplaceMentalHealthCourses: WorkplaceCourse[] = [
     format: "Online",
     track: "workplace-mental-health",
     audience: "Employees & managers",
-    enrolled: 1450,
+    enrolled: 0,
     image: "https://images.unsplash.com/photo-1604881991720-f91add269bed?w=800&h=600&fit=crop",
     progress: 0,
     learningOutcomes: [
@@ -1043,7 +1043,7 @@ export const workplaceMentalHealthCourses: WorkplaceCourse[] = [
     format: "Online",
     track: "workplace-mental-health",
     audience: "Employees & managers",
-    enrolled: 2350,
+    enrolled: 0,
     image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=600&fit=crop",
     progress: 0,
     learningOutcomes: [
@@ -1134,7 +1134,7 @@ export const leadershipHRCourses: WorkplaceCourse[] = [
     format: "Online",
     track: "leadership-hr",
     audience: "Managers & leaders",
-    enrolled: 980,
+    enrolled: 0,
     image: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=800&h=600&fit=crop",
     progress: 0,
     learningOutcomes: [
@@ -1221,7 +1221,7 @@ export const leadershipHRCourses: WorkplaceCourse[] = [
     format: "Online",
     track: "leadership-hr",
     audience: "HR & leadership",
-    enrolled: 750,
+    enrolled: 0,
     image: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&h=600&fit=crop",
     progress: 0,
     learningOutcomes: [
@@ -1308,7 +1308,7 @@ export const leadershipHRCourses: WorkplaceCourse[] = [
     format: "Online",
     track: "leadership-hr",
     audience: "Managers, HR, safety teams",
-    enrolled: 680,
+    enrolled: 0,
     image: "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=800&h=600&fit=crop",
     progress: 0,
     learningOutcomes: [
