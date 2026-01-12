@@ -3,22 +3,14 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 
 // Import specialist images
-import giftNakayinga from "@/assets/specialists/gift-nakayinga.jpg";
-import nanzigeJannet from "@/assets/specialists/nanzige-jannet.jpg";
-import mirembeNorah from "@/assets/specialists/mirembe-norah.jpg";
-import pamelaKanyange from "@/assets/specialists/pamela-kanyange.jpg";
 import juliusKizito from "@/assets/specialists/julius-kizito.png";
 import nassuunaMargret from "@/assets/specialists/nassuuna-margret.jpg";
-import winnieAnzaziJira from "@/assets/specialists/winnie-anzazi-jira.jpg";
+import atwiiinePriscilla from "@/assets/specialists/atwiine-priscilla.jpg";
 
 const therapists = [
-  { name: "Gift Nakayinga", image: giftNakayinga, rotation: -8 },
-  { name: "Nanzige Jannet", image: nanzigeJannet, rotation: -4 },
-  { name: "Mirembe Norah", image: mirembeNorah, rotation: 0 },
-  { name: "Pamela Kanyange", image: pamelaKanyange, rotation: 4 },
-  { name: "Julius Kizito", image: juliusKizito, rotation: 8 },
-  { name: "Nassuuna Margret", image: nassuunaMargret, rotation: 12 },
-  { name: "Winnie Anzazi Jira", image: winnieAnzaziJira, rotation: -12 },
+  { name: "Atwiine Priscilla", image: atwiiinePriscilla, rotation: -6 },
+  { name: "Julius Kizito", image: juliusKizito, rotation: 0 },
+  { name: "Nassuuna Margret", image: nassuunaMargret, rotation: 6 },
 ];
 
 const TherapistShowcase = () => {
