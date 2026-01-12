@@ -22,10 +22,10 @@ import {
   CheckCircle2,
   Briefcase,
   UserCog,
-  LayoutDashboard
+  LayoutDashboard,
+  BarChart3
 } from "lucide-react";
 import { useState } from "react";
-import { useAuth } from "@/contexts/AuthContext";
 import { 
   careerTracks, 
   transitioningToWorkCourses, 
@@ -112,7 +112,6 @@ const getTrackIcon = (iconName: string) => {
 
 const Learning = () => {
   const [selectedTrack, setSelectedTrack] = useState<CareerTrack | "all" | "student">("all");
-  const { user } = useAuth();
   
   const getFilteredCourses = () => {
     if (selectedTrack === "all") {
@@ -166,10 +165,16 @@ const Learning = () => {
                   <BookOpen className="w-5 h-5" />
                   Explore Courses
                 </Button>
-                <Link to="/learning/dashboard">
+                <Link to="/learning/student-dashboard">
                   <Button size="lg" variant="secondary" className="gap-2">
                     <LayoutDashboard className="w-5 h-5" />
-                    My Dashboard
+                    My Learning
+                  </Button>
+                </Link>
+                <Link to="/learning/admin-dashboard">
+                  <Button size="lg" variant="outline" className="gap-2">
+                    <BarChart3 className="w-5 h-5" />
+                    Admin Dashboard
                   </Button>
                 </Link>
                 <Link to="/for-business">
