@@ -166,8 +166,8 @@ const Header = () => {
                 {navLabels.contact}
               </Link>
               
-              {/* Auth Button */}
-              {user ? (
+              {/* User Menu - Only show if logged in */}
+              {user && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="outline" size="sm" className="gap-2">
@@ -177,7 +177,7 @@ const Header = () => {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuItem asChild>
-                      <Link to="/learning" className="cursor-pointer">
+                      <Link to="/learning/student-dashboard" className="cursor-pointer">
                         My Learning
                       </Link>
                     </DropdownMenuItem>
@@ -187,13 +187,6 @@ const Header = () => {
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
-              ) : (
-                <Link to="/auth">
-                  <Button variant="outline" size="sm" className="gap-2">
-                    <LogIn className="w-4 h-4" />
-                    Sign In
-                  </Button>
-                </Link>
               )}
               
               <AppDownloadPopup />
@@ -248,10 +241,10 @@ const Header = () => {
                 {navLabels.contact}
               </Link>
               
-              {/* Mobile Auth */}
-              {user ? (
+              {/* Mobile Auth - Only show user menu if logged in */}
+              {user && (
                 <div className="space-y-2 border-t border-border pt-4">
-                  <Link to="/learning" className="block text-foreground hover:text-primary transition-colors font-medium">
+                  <Link to="/learning/student-dashboard" className="block text-foreground hover:text-primary transition-colors font-medium">
                     My Learning
                   </Link>
                   <Button 
@@ -263,13 +256,6 @@ const Header = () => {
                     Sign Out
                   </Button>
                 </div>
-              ) : (
-                <Link to="/auth">
-                  <Button className="w-full gap-2">
-                    <LogIn className="w-4 h-4" />
-                    Sign In / Sign Up
-                  </Button>
-                </Link>
               )}
               
               <Link to="/donate-therapy">
