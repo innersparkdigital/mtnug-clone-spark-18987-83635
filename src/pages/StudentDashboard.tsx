@@ -20,6 +20,73 @@ import {
   ArrowRight
 } from 'lucide-react';
 
+// Original student courses (same as Learning page)
+const studentCourses = [
+  {
+    id: "digital-mental-health",
+    title: "Digital Mental Health & Wellness",
+    description: "A comprehensive course covering digital wellbeing, online safety, and mental health fundamentals for the digital age.",
+    duration: "6-8 weeks",
+    level: "Beginner",
+    format: "Online",
+    track: "student",
+    image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&h=600&fit=crop",
+    modules: [
+      { id: "mod-1", title: "Introduction to Digital Wellness", lessons: [
+        { id: "lesson-1", title: "Understanding Digital Health" },
+        { id: "lesson-2", title: "Screen Time Management" }
+      ]},
+      { id: "mod-2", title: "Online Safety", lessons: [
+        { id: "lesson-1", title: "Privacy Basics" },
+        { id: "lesson-2", title: "Cyberbullying Prevention" }
+      ]}
+    ]
+  },
+  {
+    id: "stress-academic-pressure",
+    title: "Managing Stress & Academic Pressure in the Digital Age",
+    description: "Learn practical strategies to cope with academic stress, digital overload, and build resilience for success.",
+    duration: "4 weeks",
+    level: "Intermediate",
+    format: "Online",
+    track: "student",
+    image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&h=600&fit=crop",
+    modules: [
+      { id: "mod-1", title: "Understanding Stress", lessons: [
+        { id: "lesson-1", title: "What is Stress?" },
+        { id: "lesson-2", title: "Stress Triggers" }
+      ]},
+      { id: "mod-2", title: "Coping Strategies", lessons: [
+        { id: "lesson-1", title: "Relaxation Techniques" },
+        { id: "lesson-2", title: "Time Management" }
+      ]}
+    ]
+  },
+  {
+    id: "wellness-ambassador",
+    title: "Digital Wellness Ambassador Program",
+    description: "Become a certified ambassador to lead wellness initiatives in your school, university, or community.",
+    duration: "8 weeks",
+    level: "Advanced",
+    format: "Hybrid",
+    track: "student",
+    image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&h=600&fit=crop",
+    modules: [
+      { id: "mod-1", title: "Ambassador Foundations", lessons: [
+        { id: "lesson-1", title: "Role of a Wellness Ambassador" },
+        { id: "lesson-2", title: "Communication Skills" }
+      ]},
+      { id: "mod-2", title: "Leading Initiatives", lessons: [
+        { id: "lesson-1", title: "Planning Events" },
+        { id: "lesson-2", title: "Peer Support" }
+      ]}
+    ]
+  }
+];
+
+// All courses combined
+const allCourses = [...studentCourses, ...allWorkplaceCourses];
+
 const StudentDashboard = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
@@ -44,10 +111,14 @@ const StudentDashboard = () => {
   }
 
   const getCourseById = (courseId: string) => {
+    // Check student courses first, then workplace courses
+    const studentCourse = studentCourses.find(c => c.id === courseId);
+    if (studentCourse) return studentCourse;
     return getWorkplaceCourseById(courseId) || allWorkplaceCourses.find(c => c.id === courseId);
   };
 
   const getTrackName = (trackId: string) => {
+    if (trackId === 'student') return 'Student Wellness';
     const track = careerTracks.find(t => t.id === trackId);
     return track?.name || 'General';
   };
