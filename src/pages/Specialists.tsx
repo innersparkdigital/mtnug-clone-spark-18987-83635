@@ -246,6 +246,8 @@ const SpecialistCard = ({ specialist, isVerified }: { specialist: Specialist; is
     sessionType: "",
     notes: "",
   });
+  
+  const primaryCategory = getSpecialistPrimaryCategory(specialist.name);
 
   const initials = specialist.name
     .split(" ")
@@ -310,6 +312,12 @@ Please confirm availability. Thank you!`;
                 <Badge className="bg-green-500 hover:bg-green-600 text-white flex items-center gap-1 text-xs px-1.5 py-0.5">
                   <CheckCircle className="w-3 h-3" />
                   Verified
+                </Badge>
+              )}
+              {primaryCategory && (
+                <Badge variant="outline" className="flex items-center gap-1 text-xs px-1.5 py-0.5 border-primary/50 text-primary">
+                  <primaryCategory.icon className="w-3 h-3" />
+                  {primaryCategory.shortName}
                 </Badge>
               )}
               {countryBadges[specialist.country] && (
@@ -485,6 +493,15 @@ const specialistCategoryAssignments: Record<string, string[]> = {
   "Mubiru Rashid": ["addiction"],
   "Atwiine Priscilla": ["trauma-stress"],
   "Winnie Anzazi Jira": ["trauma-stress"],
+};
+
+// Get primary category for a specialist
+const getSpecialistPrimaryCategory = (specialistName: string): SupportCategory | null => {
+  const categoryIds = specialistCategoryAssignments[specialistName];
+  if (categoryIds && categoryIds.length > 0) {
+    return supportCategories.find(c => c.id === categoryIds[0]) || null;
+  }
+  return null;
 };
 
 // Function to match specialists to categories based on their profile
