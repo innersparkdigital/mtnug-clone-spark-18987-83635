@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import VirtualTherapy from "./pages/VirtualTherapy";
@@ -58,6 +59,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import Learning from "./pages/Learning";
 import CourseDetail from "./pages/CourseDetail";
 import LessonViewer from "./pages/LessonViewer";
+import Auth from "./pages/Auth";
 
 const queryClient = new QueryClient();
 
@@ -65,71 +67,74 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <LanguageProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-        <ScrollToTop />
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/virtual-therapy" element={<VirtualTherapy />} />
-          <Route path="/support-groups" element={<SupportGroups />} />
-          <Route path="/chat-sessions" element={<ChatSessions />} />
-          <Route path="/mood-check-in" element={<MoodCheckIn />} />
-          <Route path="/my-goals" element={<MyGoals />} />
-          <Route path="/emergency-support" element={<EmergencySupport />} />
-          <Route path="/events-training" element={<EventsTraining />} />
-          <Route path="/donate-therapy" element={<DonateTherapy />} />
-          <Route path="/wellness-reports" element={<WellnessReports />} />
-          <Route path="/meditations" element={<Meditations />} />
-          <Route path="/find-therapist" element={<FindTherapist />} />
-          <Route path="/profile-settings" element={<ProfileSettings />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/terms-of-service" element={<TermsOfService />} />
-          <Route path="/cookie-policy" element={<CookiePolicy />} />
-          <Route path="/services" element={<Services />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-          {/* <Route path="/careers" element={<Careers />} /> */}
-          <Route path="/for-business" element={<ForBusiness />} />
-          <Route path="/for-professionals" element={<ForProfessionals />} />
-          <Route path="/specialists" element={<Specialists />} />
-          <Route path="/specialists/:id" element={<SpecialistProfile />} />
-          <Route path="/learning" element={<Learning />} />
-          <Route path="/learning/:courseId" element={<CourseDetail />} />
-          <Route path="/learning/:courseId/module/:moduleId/lesson/:lessonId" element={<LessonViewer />} />
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/mind-check" element={<MindCheck />} />
-          <Route path="/mind-check/depression" element={<DepressionTest />} />
-          <Route path="/mind-check/anxiety" element={<AnxietyTest />} />
-          <Route path="/mind-check/adult-adhd" element={<AdultADHDTest />} />
-          <Route path="/mind-check/ptsd" element={<PTSDTest />} />
-          <Route path="/mind-check/bpd" element={<BorderlinePersonalityTest />} />
-          <Route path="/mind-check/eating-disorder" element={<EatingDisorderTest />} />
-          <Route path="/mind-check/gambling-addiction" element={<GamblingAddictionTest />} />
-          <Route path="/mind-check/mania" element={<ManiaTest />} />
-          <Route path="/mind-check/npd" element={<NarcissisticPersonalityTest />} />
-          <Route path="/mind-check/postpartum" element={<PostpartumDepressionTest />} />
-          <Route path="/blog/how-to-handle-stress" element={<HowToHandleStressPost />} />
-          <Route path="/blog/how-to-stop-a-panic-attack" element={<PanicAttackPost />} />
-          <Route path="/blog/how-to-deal-with-depression" element={<DepressionPost />} />
-          <Route path="/blog/what-is-mental-health" element={<MentalHealthPost />} />
-          <Route path="/blog/how-to-manage-anxiety" element={<AnxietyManagementPost />} />
-          <Route path="/events-training/truck-drivers-retirement-training" element={<TruckDriversPost />} />
-          <Route path="/events-training/founders-mindset-training" element={<FoundersPost />} />
-          <Route path="/events-training/children-mental-health-awareness" element={<ChildrenMentalHealthPost />} />
-          <Route path="/events-training/miic-wellness-innovation" element={<MIICPost />} />
-          <Route path="/events-training/mtn-internship-anxiety" element={<MTNPost />} />
-          <Route path="/events-training/world-mental-health-day-2024" element={<WorldMentalHealthDayPost />} />
-          <Route path="/events-training/uict-mental-health-training" element={<UICTPost />} />
-          <Route path="/events-training/uict-wellness-activity-day" element={<UICTWellnessPost />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </LanguageProvider>
+    <AuthProvider>
+      <LanguageProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+          <ScrollToTop />
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/virtual-therapy" element={<VirtualTherapy />} />
+            <Route path="/support-groups" element={<SupportGroups />} />
+            <Route path="/chat-sessions" element={<ChatSessions />} />
+            <Route path="/mood-check-in" element={<MoodCheckIn />} />
+            <Route path="/my-goals" element={<MyGoals />} />
+            <Route path="/emergency-support" element={<EmergencySupport />} />
+            <Route path="/events-training" element={<EventsTraining />} />
+            <Route path="/donate-therapy" element={<DonateTherapy />} />
+            <Route path="/wellness-reports" element={<WellnessReports />} />
+            <Route path="/meditations" element={<Meditations />} />
+            <Route path="/find-therapist" element={<FindTherapist />} />
+            <Route path="/profile-settings" element={<ProfileSettings />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms-of-service" element={<TermsOfService />} />
+            <Route path="/cookie-policy" element={<CookiePolicy />} />
+            <Route path="/services" element={<Services />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            {/* <Route path="/careers" element={<Careers />} /> */}
+            <Route path="/for-business" element={<ForBusiness />} />
+            <Route path="/for-professionals" element={<ForProfessionals />} />
+            <Route path="/specialists" element={<Specialists />} />
+            <Route path="/specialists/:id" element={<SpecialistProfile />} />
+            <Route path="/learning" element={<Learning />} />
+            <Route path="/learning/:courseId" element={<CourseDetail />} />
+            <Route path="/learning/:courseId/module/:moduleId/lesson/:lessonId" element={<LessonViewer />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/mind-check" element={<MindCheck />} />
+            <Route path="/mind-check/depression" element={<DepressionTest />} />
+            <Route path="/mind-check/anxiety" element={<AnxietyTest />} />
+            <Route path="/mind-check/adult-adhd" element={<AdultADHDTest />} />
+            <Route path="/mind-check/ptsd" element={<PTSDTest />} />
+            <Route path="/mind-check/bpd" element={<BorderlinePersonalityTest />} />
+            <Route path="/mind-check/eating-disorder" element={<EatingDisorderTest />} />
+            <Route path="/mind-check/gambling-addiction" element={<GamblingAddictionTest />} />
+            <Route path="/mind-check/mania" element={<ManiaTest />} />
+            <Route path="/mind-check/npd" element={<NarcissisticPersonalityTest />} />
+            <Route path="/mind-check/postpartum" element={<PostpartumDepressionTest />} />
+            <Route path="/blog/how-to-handle-stress" element={<HowToHandleStressPost />} />
+            <Route path="/blog/how-to-stop-a-panic-attack" element={<PanicAttackPost />} />
+            <Route path="/blog/how-to-deal-with-depression" element={<DepressionPost />} />
+            <Route path="/blog/what-is-mental-health" element={<MentalHealthPost />} />
+            <Route path="/blog/how-to-manage-anxiety" element={<AnxietyManagementPost />} />
+            <Route path="/events-training/truck-drivers-retirement-training" element={<TruckDriversPost />} />
+            <Route path="/events-training/founders-mindset-training" element={<FoundersPost />} />
+            <Route path="/events-training/children-mental-health-awareness" element={<ChildrenMentalHealthPost />} />
+            <Route path="/events-training/miic-wellness-innovation" element={<MIICPost />} />
+            <Route path="/events-training/mtn-internship-anxiety" element={<MTNPost />} />
+            <Route path="/events-training/world-mental-health-day-2024" element={<WorldMentalHealthDayPost />} />
+            <Route path="/events-training/uict-mental-health-training" element={<UICTPost />} />
+            <Route path="/events-training/uict-wellness-activity-day" element={<UICTWellnessPost />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </LanguageProvider>
+    </AuthProvider>
   </QueryClientProvider>
 );
 

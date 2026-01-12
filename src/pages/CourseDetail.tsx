@@ -1,5 +1,5 @@
 import { Helmet } from "react-helmet";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -8,6 +8,8 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ScrollReveal, { StaggerContainer, StaggerItem } from "@/components/ScrollReveal";
+import { useAuth } from "@/contexts/AuthContext";
+import { useLearningProgress } from "@/hooks/useLearningProgress";
 import {
   BookOpen,
   Clock,
@@ -24,7 +26,9 @@ import {
   Target,
   Lightbulb,
   BarChart3,
-  Lock
+  Lock,
+  LogIn,
+  Loader2
 } from "lucide-react";
 
 // Course data (same as Learning page, in production would come from API/database)
@@ -426,11 +430,49 @@ const getLessonIcon = (type: string) => {
 
 const CourseDetail = () => {
   const { courseId } = useParams<{ courseId: string }>();
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const { 
+    isEnrolled, 
+    enrollInCourse, 
+    getCourseProgress, 
+    getModuleProgress,
+    lessonProgress,
+    loading: progressLoading 
+  } = useLearningProgress(courseId);
+  
   const course = courseId && coursesData[courseId] ? coursesData[courseId] : defaultCourse;
 
   const totalLessons = course.modules.reduce((acc, m) => acc + m.lessons.length, 0);
-  const completedLessons = course.modules.reduce((acc, m) => acc + m.lessons.filter(l => l.completed).length, 0);
+  
+  // Calculate progress from database
+  const completedLessons = lessonProgress.filter(p => p.completed).length;
   const progressPercent = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
+  
+  const enrolled = courseId ? isEnrolled(courseId) : false;
+
+  const handleEnroll = async () => {
+    if (!user) {
+      navigate('/auth');
+      return;
+    }
+    if (courseId) {
+      await enrollInCourse(courseId);
+    }
+  };
+
+  // Check if a specific lesson is completed
+  const isLessonCompleted = (moduleId: string, lessonId: string) => {
+    return lessonProgress.some(
+      p => p.module_id === moduleId && p.lesson_id === lessonId && p.completed
+    );
+  };
+
+  // Check if a module is completed
+  const isModuleCompleted = (moduleId: string, lessonCount: number) => {
+    const completed = getModuleProgress(moduleId);
+    return completed >= lessonCount;
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -514,7 +556,7 @@ const CourseDetail = () => {
                     <CardDescription>Free access to all course materials</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    {progressPercent > 0 && (
+                    {user && enrolled && progressPercent > 0 && (
                       <div className="space-y-2">
                         <div className="flex justify-between text-sm">
                           <span className="text-muted-foreground">Your Progress</span>
@@ -524,12 +566,43 @@ const CourseDetail = () => {
                         <p className="text-xs text-muted-foreground">{completedLessons} of {totalLessons} lessons completed</p>
                       </div>
                     )}
-                    <Link to={`/learning/${course.id}/module/module-1/lesson/1-1`}>
-                      <Button className="w-full gap-2" size="lg">
-                        <Play className="w-5 h-5" />
-                        {progressPercent > 0 ? "Continue Learning" : "Start Course"}
+                    
+                    {!user ? (
+                      <Link to="/auth">
+                        <Button className="w-full gap-2" size="lg">
+                          <LogIn className="w-5 h-5" />
+                          Sign In to Enroll
+                        </Button>
+                      </Link>
+                    ) : enrolled ? (
+                      <Link to={`/learning/${course.id}/module/module-1/lesson/1-1`}>
+                        <Button className="w-full gap-2" size="lg">
+                          <Play className="w-5 h-5" />
+                          {progressPercent > 0 ? "Continue Learning" : "Start Course"}
+                        </Button>
+                      </Link>
+                    ) : (
+                      <Button 
+                        className="w-full gap-2" 
+                        size="lg"
+                        onClick={handleEnroll}
+                        disabled={progressLoading}
+                      >
+                        {progressLoading ? (
+                          <Loader2 className="w-5 h-5 animate-spin" />
+                        ) : (
+                          <BookOpen className="w-5 h-5" />
+                        )}
+                        Enroll Now - Free
                       </Button>
-                    </Link>
+                    )}
+                    
+                    {!user && (
+                      <p className="text-xs text-center text-muted-foreground">
+                        Create a free account to track your progress
+                      </p>
+                    )}
+                    
                     <div className="flex items-center gap-3 pt-4 border-t border-border">
                       <img 
                         src={course.instructor.image} 
@@ -590,28 +663,32 @@ const CourseDetail = () => {
                   </CardHeader>
                   <CardContent>
                     <Accordion type="single" collapsible className="w-full">
-                      {course.modules.map((module, moduleIndex) => (
+                      {course.modules.map((module, moduleIndex) => {
+                        const moduleCompleted = isModuleCompleted(module.id, module.lessons.length);
+                        return (
                         <AccordionItem key={module.id} value={module.id}>
                           <AccordionTrigger className="hover:no-underline">
                             <div className="flex items-center gap-3 text-left">
-                              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-sm font-medium text-primary">
-                                {moduleIndex + 1}
+                              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                                moduleCompleted 
+                                  ? "bg-green-wellness/10 text-green-wellness" 
+                                  : "bg-primary/10 text-primary"
+                              }`}>
+                                {moduleCompleted ? <CheckCircle2 className="w-4 h-4" /> : moduleIndex + 1}
                               </div>
                               <div>
                                 <p className="font-medium">{module.title}</p>
                                 <p className="text-xs text-muted-foreground">
-                                  {module.lessons.length} lessons
+                                  {getModuleProgress(module.id)}/{module.lessons.length} lessons completed
                                 </p>
                               </div>
-                              {module.completed && (
-                                <CheckCircle2 className="w-5 h-5 text-green-wellness ml-auto mr-4" />
-                              )}
                             </div>
                           </AccordionTrigger>
                           <AccordionContent>
                             <ul className="space-y-2 pt-2">
                               {module.lessons.map((lesson) => {
                                 const LessonIcon = getLessonIcon(lesson.type);
+                                const completed = isLessonCompleted(module.id, lesson.id);
                                 return (
                                   <li key={lesson.id}>
                                     <Link 
@@ -621,7 +698,7 @@ const CourseDetail = () => {
                                       <LessonIcon className="w-4 h-4 text-muted-foreground group-hover:text-primary" />
                                       <span className="flex-1 text-sm">{lesson.title}</span>
                                       <span className="text-xs text-muted-foreground">{lesson.duration}</span>
-                                      {lesson.completed ? (
+                                      {completed ? (
                                         <CheckCircle2 className="w-4 h-4 text-green-wellness" />
                                       ) : (
                                         <Play className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -633,7 +710,8 @@ const CourseDetail = () => {
                             </ul>
                           </AccordionContent>
                         </AccordionItem>
-                      ))}
+                        );
+                      })}
                     </Accordion>
                   </CardContent>
                 </Card>

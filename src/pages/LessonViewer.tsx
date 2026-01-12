@@ -7,6 +7,9 @@ import { Progress } from "@/components/ui/progress";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import Header from "@/components/Header";
+import { useAuth } from "@/contexts/AuthContext";
+import { useLearningProgress } from "@/hooks/useLearningProgress";
+import { toast } from "sonner";
 import {
   ChevronLeft,
   ChevronRight,
@@ -23,9 +26,10 @@ import {
   Award,
   Home,
   Menu,
-  X
+  X,
+  LogIn
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // Slide content for lessons
 const lessonSlides: Record<string, {
@@ -1386,15 +1390,36 @@ const getLessonIcon = (type: string) => {
 const LessonViewer = () => {
   const { courseId, moduleId, lessonId } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { updateLessonProgress, getLessonProgress, enrollInCourse, isEnrolled } = useLearningProgress(courseId);
+  
   const [currentSlide, setCurrentSlide] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [quizScore, setQuizScore] = useState(0);
 
   const lessonData = lessonId && lessonSlides[lessonId] ? lessonSlides[lessonId] : defaultSlides;
   const slides = lessonData.slides;
   const totalSlides = slides.length;
   const progress = Math.round(((currentSlide + 1) / totalSlides) * 100);
+
+  // Load saved progress on mount
+  useEffect(() => {
+    if (user && courseId && moduleId && lessonId) {
+      const savedProgress = getLessonProgress(moduleId, lessonId);
+      if (savedProgress && savedProgress.last_slide > 0) {
+        setCurrentSlide(savedProgress.last_slide);
+      }
+    }
+  }, [user, courseId, moduleId, lessonId, getLessonProgress]);
+
+  // Save progress when slide changes
+  useEffect(() => {
+    if (user && courseId && moduleId && lessonId) {
+      updateLessonProgress(courseId, moduleId, lessonId, currentSlide, false);
+    }
+  }, [currentSlide, user, courseId, moduleId, lessonId]);
 
   const goToNextSlide = () => {
     if (currentSlide < totalSlides - 1) {
@@ -1414,6 +1439,18 @@ const LessonViewer = () => {
 
   const checkAnswer = () => {
     setShowResult(true);
+    const slide = slides[currentSlide];
+    if (slide.type === 'quiz' && slide.quiz && selectedAnswer === slide.quiz.correct) {
+      setQuizScore(prev => prev + 1);
+    }
+  };
+
+  const handleCompleteLesson = async () => {
+    if (user && courseId && moduleId && lessonId) {
+      await updateLessonProgress(courseId, moduleId, lessonId, currentSlide, true, quizScore);
+      toast.success('Lesson completed!');
+    }
+    navigate(`/learning/${courseId}`);
   };
 
   const renderSlideContent = () => {
@@ -1708,12 +1745,10 @@ const LessonViewer = () => {
               </Button>
               
               {currentSlide === totalSlides - 1 ? (
-                <Link to={`/learning/${courseId}`}>
-                  <Button className="gap-2">
-                    Complete Lesson
-                    <CheckCircle2 className="w-4 h-4" />
-                  </Button>
-                </Link>
+                <Button onClick={handleCompleteLesson} className="gap-2">
+                  Complete Lesson
+                  <CheckCircle2 className="w-4 h-4" />
+                </Button>
               ) : (
                 <Button onClick={goToNextSlide} className="gap-2">
                   Next
@@ -1721,6 +1756,21 @@ const LessonViewer = () => {
                 </Button>
               )}
             </div>
+
+            {/* Sign in prompt for non-authenticated users */}
+            {!user && (
+              <div className="mt-6 p-4 bg-muted rounded-lg text-center">
+                <p className="text-sm text-muted-foreground mb-2">
+                  Sign in to save your progress and earn certificates
+                </p>
+                <Link to="/auth">
+                  <Button variant="outline" size="sm" className="gap-2">
+                    <LogIn className="w-4 h-4" />
+                    Sign In
+                  </Button>
+                </Link>
+              </div>
+            )}
           </div>
         </main>
       </div>
