@@ -10,6 +10,7 @@ import juliusKizito from "@/assets/specialists/julius-kizito.png";
 import nassuunaMargret from "@/assets/specialists/nassuuna-margret.jpg";
 import winnieAnzaziJira from "@/assets/specialists/winnie-anzazi-jira.jpg";
 import atwiiinePriscilla from "@/assets/specialists/atwiine-priscilla.jpg";
+import mubiruRashid from "@/assets/specialists/mubiru-rashid.jpg";
 
 const specialistImageMap: Record<string, string> = {
   "Nakayinga Gift": giftNakayinga,
@@ -20,6 +21,7 @@ const specialistImageMap: Record<string, string> = {
   "Nassuuna Margret": nassuunaMargret,
   "Winnie Anzazi Jira": winnieAnzaziJira,
   "Atwiine Priscilla": atwiiinePriscilla,
+  "Mubiru Rashid": mubiruRashid,
 };
 
 export const getSpecialistImage = (name: string, imageUrl?: string | null): string | null => {
