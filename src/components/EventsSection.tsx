@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import ScrollReveal, { StaggerContainer, StaggerItem } from "@/components/ScrollReveal";
+import ScrollReveal, { StaggerContainer, StaggerItem, ScaleOnScroll } from "@/components/ScrollReveal";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import {
   Pagination,
   PaginationContent,
@@ -84,15 +85,33 @@ const EVENTS_PER_PAGE = 3;
 
 const EventsSection = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  const bgY = useTransform(scrollYProgress, [0, 1], [80, -80]);
+  const smoothBgY = useSpring(bgY, { stiffness: 100, damping: 30 });
 
   const totalPages = Math.ceil(events.length / EVENTS_PER_PAGE);
   const startIndex = (currentPage - 1) * EVENTS_PER_PAGE;
   const currentEvents = events.slice(startIndex, startIndex + EVENTS_PER_PAGE);
 
   return (
-    <section className="py-16 bg-muted/30">
-      <div className="container mx-auto px-4">
-        <ScrollReveal>
+    <section ref={sectionRef} className="py-16 bg-muted/30 relative overflow-hidden">
+      {/* Parallax decorative elements */}
+      <motion.div
+        style={{ y: smoothBgY }}
+        className="absolute -top-20 left-0 w-72 h-72 rounded-full bg-primary/5 blur-3xl"
+      />
+      <motion.div
+        style={{ y: smoothBgY }}
+        className="absolute -bottom-20 right-0 w-80 h-80 rounded-full bg-accent/5 blur-3xl"
+      />
+
+      <div className="container mx-auto px-4 relative z-10">
+        <ScrollReveal distance={60} duration={0.8}>
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
               Events & Training
@@ -107,59 +126,68 @@ const EventsSection = () => {
           {currentEvents.map((event) => (
             <StaggerItem key={event.id} scale>
               <Link to={`/events-training/${event.slug}`}>
-                <Card className="overflow-hidden group hover:shadow-xl transition-all duration-300 h-full bg-background">
-                  <div className="relative h-56 overflow-hidden">
-                    <img
-                      src={event.image}
-                      alt={event.title}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  </div>
-                  <div className="p-5">
-                    <h3 className="text-lg font-bold text-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors">
-                      {event.title}
-                    </h3>
-                    <p className="text-sm text-primary font-medium">
-                      {event.date}
-                    </p>
-                  </div>
-                </Card>
+                <motion.div
+                  whileHover={{ y: -8 }}
+                  transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  <Card className="overflow-hidden group hover:shadow-xl transition-all duration-300 h-full bg-background">
+                    <div className="relative h-56 overflow-hidden">
+                      <motion.img
+                        src={event.image}
+                        alt={event.title}
+                        className="w-full h-full object-cover"
+                        whileHover={{ scale: 1.1 }}
+                        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    </div>
+                    <div className="p-5">
+                      <h3 className="text-lg font-bold text-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                        {event.title}
+                      </h3>
+                      <p className="text-sm text-primary font-medium">
+                        {event.date}
+                      </p>
+                    </div>
+                  </Card>
+                </motion.div>
               </Link>
             </StaggerItem>
           ))}
         </StaggerContainer>
 
         {totalPages > 1 && (
-          <div className="mt-8">
-            <Pagination>
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious
-                    onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
-                    className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
-                  />
-                </PaginationItem>
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                  <PaginationItem key={page}>
-                    <PaginationLink
-                      onClick={() => setCurrentPage(page)}
-                      isActive={currentPage === page}
-                      className="cursor-pointer"
-                    >
-                      {page}
-                    </PaginationLink>
+          <ScrollReveal delay={0.4}>
+            <div className="mt-8">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious
+                      onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
+                      className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                    />
                   </PaginationItem>
-                ))}
-                <PaginationItem>
-                  <PaginationNext
-                    onClick={() => currentPage < totalPages && setCurrentPage(currentPage + 1)}
-                    className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
-                  />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          </div>
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                    <PaginationItem key={page}>
+                      <PaginationLink
+                        onClick={() => setCurrentPage(page)}
+                        isActive={currentPage === page}
+                        className="cursor-pointer"
+                      >
+                        {page}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))}
+                  <PaginationItem>
+                    <PaginationNext
+                      onClick={() => currentPage < totalPages && setCurrentPage(currentPage + 1)}
+                      className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          </ScrollReveal>
         )}
       </div>
     </section>

@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight, Smile, MessageCircle, Video, Users, Calendar, AlertTriangle, Search, Heart, Sparkles, Download, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform, useSpring } from "framer-motion";
 
 // Import phone mockup screen images
 import moodTrackerMockup from "@/assets/mockups/mood-tracker-screen.png";
@@ -185,8 +185,21 @@ const AppFeaturesShowcase = () => {
 
   const currentFeature = features[currentIndex];
 
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  // Parallax effects for decorative elements
+  const decorY = useTransform(scrollYProgress, [0, 1], [120, -120]);
+  const smoothDecorY = useSpring(decorY, { stiffness: 100, damping: 30 });
+  const decorScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.85, 1, 0.9]);
+  const smoothDecorScale = useSpring(decorScale, { stiffness: 100, damping: 30 });
+
   return (
     <section 
+      ref={sectionRef}
       className="min-h-screen flex flex-col justify-center overflow-hidden relative"
       style={{
         background: 'linear-gradient(135deg, hsl(142 40% 90%) 0%, hsl(142 30% 85%) 50%, hsl(142 25% 88%) 100%)'
@@ -194,6 +207,15 @@ const AppFeaturesShowcase = () => {
       onMouseEnter={() => setIsAutoPlaying(false)}
       onMouseLeave={() => setIsAutoPlaying(true)}
     >
+      {/* Parallax decorative orbs */}
+      <motion.div
+        style={{ y: smoothDecorY, scale: smoothDecorScale }}
+        className="absolute top-1/3 left-5 w-48 h-48 rounded-full bg-primary/8 blur-3xl"
+      />
+      <motion.div
+        style={{ y: smoothDecorY, scale: smoothDecorScale }}
+        className="absolute bottom-1/3 right-5 w-64 h-64 rounded-full bg-accent/10 blur-3xl"
+      />
       <div className="container mx-auto px-6 md:px-12 lg:px-20 flex-1 flex items-center">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center w-full py-12 lg:py-0">
           

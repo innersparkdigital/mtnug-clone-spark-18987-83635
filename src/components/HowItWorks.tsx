@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight, Video, MessageCircle, Calendar, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform, useSpring } from "framer-motion";
 import videoSessionMockup from "@/assets/mockups/video-session-mockup.png";
 import chatSessionMockup from "@/assets/mockups/chat-session-new.png";
 import supportGroupsMockup from "@/assets/mockups/support-groups-new.png";
@@ -153,8 +153,21 @@ const HowItWorks = () => {
     setActiveTab((prev) => (prev + 1) % tabs.length);
   };
 
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  // Parallax effects for decorative elements
+  const decorY = useTransform(scrollYProgress, [0, 1], [150, -150]);
+  const smoothDecorY = useSpring(decorY, { stiffness: 100, damping: 30 });
+  const decorScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.8, 1, 0.9]);
+  const smoothDecorScale = useSpring(decorScale, { stiffness: 100, damping: 30 });
+
   return (
     <section 
+      ref={sectionRef}
       className="min-h-screen flex flex-col justify-center overflow-hidden relative"
       style={{
         background: 'linear-gradient(135deg, hsl(210 40% 92%) 0%, hsl(210 30% 88%) 50%, hsl(210 25% 90%) 100%)'
@@ -162,6 +175,15 @@ const HowItWorks = () => {
       onMouseEnter={() => setIsAutoPlaying(false)}
       onMouseLeave={() => setIsAutoPlaying(true)}
     >
+      {/* Parallax decorative orbs */}
+      <motion.div
+        style={{ y: smoothDecorY, scale: smoothDecorScale }}
+        className="absolute top-1/4 left-10 w-40 h-40 rounded-full bg-primary/10 blur-3xl"
+      />
+      <motion.div
+        style={{ y: smoothDecorY, scale: smoothDecorScale }}
+        className="absolute bottom-1/4 right-10 w-56 h-56 rounded-full bg-accent/10 blur-3xl"
+      />
       <div className="container mx-auto px-6 md:px-12 lg:px-20 flex-1 flex items-center">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center w-full py-12 lg:py-0">
           
