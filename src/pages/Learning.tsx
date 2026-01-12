@@ -23,9 +23,12 @@ import {
   Briefcase,
   UserCog,
   LayoutDashboard,
-  BarChart3
+  BarChart3,
+  LogIn
 } from "lucide-react";
 import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useUserRole } from "@/hooks/useUserRole";
 import { 
   careerTracks, 
   transitioningToWorkCourses, 
@@ -112,6 +115,8 @@ const getTrackIcon = (iconName: string) => {
 
 const Learning = () => {
   const [selectedTrack, setSelectedTrack] = useState<CareerTrack | "all" | "student">("all");
+  const { user } = useAuth();
+  const { isAdmin } = useUserRole();
   
   const getFilteredCourses = () => {
     if (selectedTrack === "all") {
@@ -165,18 +170,33 @@ const Learning = () => {
                   <BookOpen className="w-5 h-5" />
                   Explore Courses
                 </Button>
-                <Link to="/learning/student-dashboard">
-                  <Button size="lg" variant="secondary" className="gap-2">
-                    <LayoutDashboard className="w-5 h-5" />
-                    My Learning
-                  </Button>
-                </Link>
-                <Link to="/learning/admin-dashboard">
-                  <Button size="lg" variant="outline" className="gap-2">
-                    <BarChart3 className="w-5 h-5" />
-                    Admin Dashboard
-                  </Button>
-                </Link>
+                
+                {user ? (
+                  <>
+                    <Link to="/learning/student-dashboard">
+                      <Button size="lg" variant="secondary" className="gap-2">
+                        <LayoutDashboard className="w-5 h-5" />
+                        My Learning
+                      </Button>
+                    </Link>
+                    {isAdmin && (
+                      <Link to="/learning/admin-dashboard">
+                        <Button size="lg" variant="outline" className="gap-2">
+                          <BarChart3 className="w-5 h-5" />
+                          Admin Dashboard
+                        </Button>
+                      </Link>
+                    )}
+                  </>
+                ) : (
+                  <Link to="/auth">
+                    <Button size="lg" variant="secondary" className="gap-2">
+                      <LogIn className="w-5 h-5" />
+                      Sign In
+                    </Button>
+                  </Link>
+                )}
+                
                 <Link to="/for-business">
                   <Button size="lg" variant="outline" className="gap-2">
                     <Building2 className="w-5 h-5" />

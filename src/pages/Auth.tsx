@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
-import { BookOpen, Loader2 } from 'lucide-react';
+import { BookOpen, Loader2, ArrowLeft } from 'lucide-react';
 import { z } from 'zod';
 
 const emailSchema = z.string().email('Please enter a valid email address');
@@ -16,6 +16,8 @@ const passwordSchema = z.string().min(6, 'Password must be at least 6 characters
 
 const Auth = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirectTo = searchParams.get('redirect') || '/learning';
   const { user, loading, signIn, signUp } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   
@@ -115,6 +117,16 @@ const Auth = () => {
 
       <div className="min-h-screen bg-gradient-to-br from-blue-wellness/10 via-background to-green-wellness/10 flex items-center justify-center p-4">
         <div className="w-full max-w-md">
+          {/* Back Button */}
+          <div className="mb-6">
+            <Button variant="ghost" asChild className="gap-2 text-muted-foreground hover:text-foreground">
+              <Link to="/learning">
+                <ArrowLeft className="w-4 h-4" />
+                Back to Learning Hub
+              </Link>
+            </Button>
+          </div>
+
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 text-primary mb-4">
               <BookOpen className="w-10 h-10" />
