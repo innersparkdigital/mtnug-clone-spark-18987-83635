@@ -451,6 +451,56 @@ const CourseDetail = () => {
   
   const enrolled = courseId ? isEnrolled(courseId) : false;
 
+  // Find the next lesson to continue from
+  const getResumeLink = () => {
+    if (!courseId) return `/learning/${course.id}/module/module-1/lesson/1-1`;
+    
+    // Find the first incomplete lesson OR the lesson with the most recent progress
+    let resumeModuleId = 'module-1';
+    let resumeLessonId = '1-1';
+    
+    // Check if there's any progress
+    if (lessonProgress.length > 0) {
+      // Find the most recently updated lesson
+      const sortedProgress = [...lessonProgress].sort((a, b) => 
+        new Date(b.updated_at || b.completed_at || 0).getTime() - new Date(a.updated_at || a.completed_at || 0).getTime()
+      );
+      
+      const lastProgress = sortedProgress[0];
+      
+      if (lastProgress) {
+        // If the last lesson was completed, find the next incomplete lesson
+        if (lastProgress.completed) {
+          // Find next lesson after the completed one
+          let foundCurrent = false;
+          for (const module of course.modules) {
+            for (const lesson of module.lessons) {
+              if (foundCurrent) {
+                // Check if this lesson is not completed
+                const isComplete = lessonProgress.some(
+                  p => p.module_id === module.id && p.lesson_id === lesson.id && p.completed
+                );
+                if (!isComplete) {
+                  return `/learning/${courseId}/module/${module.id}/lesson/${lesson.id}`;
+                }
+              }
+              if (module.id === lastProgress.module_id && lesson.id === lastProgress.lesson_id) {
+                foundCurrent = true;
+              }
+            }
+          }
+          // All lessons completed, go to first lesson
+          return `/learning/${courseId}/module/module-1/lesson/1-1`;
+        } else {
+          // Resume the incomplete lesson
+          return `/learning/${courseId}/module/${lastProgress.module_id}/lesson/${lastProgress.lesson_id}`;
+        }
+      }
+    }
+    
+    return `/learning/${courseId}/module/${resumeModuleId}/lesson/${resumeLessonId}`;
+  };
+
   const handleEnroll = async () => {
     if (!user) {
       navigate('/auth');
@@ -575,7 +625,7 @@ const CourseDetail = () => {
                         </Button>
                       </Link>
                     ) : enrolled ? (
-                      <Link to={`/learning/${course.id}/module/module-1/lesson/1-1`}>
+                      <Link to={getResumeLink()}>
                         <Button className="w-full gap-2" size="lg">
                           <Play className="w-5 h-5" />
                           {progressPercent > 0 ? "Continue Learning" : "Start Course"}
