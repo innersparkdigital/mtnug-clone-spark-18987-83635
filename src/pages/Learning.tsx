@@ -173,12 +173,14 @@ const Learning = () => {
                 
                 {user ? (
                   <>
-                    <Link to="/learning/student-dashboard">
-                      <Button size="lg" variant="secondary" className="gap-2">
-                        <LayoutDashboard className="w-5 h-5" />
-                        My Learning
-                      </Button>
-                    </Link>
+                    {!isAdmin && (
+                      <Link to="/learning/student-dashboard">
+                        <Button size="lg" variant="secondary" className="gap-2">
+                          <LayoutDashboard className="w-5 h-5" />
+                          My Learning
+                        </Button>
+                      </Link>
+                    )}
                     {isAdmin && (
                       <Link to="/learning/admin-dashboard">
                         <Button size="lg" variant="outline" className="gap-2">
