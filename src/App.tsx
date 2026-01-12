@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
@@ -91,7 +91,7 @@ const App = () => (
             <Route path="/donate-therapy" element={<DonateTherapy />} />
             <Route path="/wellness-reports" element={<WellnessReports />} />
             <Route path="/meditations" element={<Meditations />} />
-            <Route path="/find-therapist" element={<FindTherapist />} />
+            <Route path="/find-therapist" element={<Navigate to="/specialists" replace />} />
             <Route path="/profile-settings" element={<ProfileSettings />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-of-service" element={<TermsOfService />} />
