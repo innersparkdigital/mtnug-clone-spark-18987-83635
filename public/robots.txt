@@ -1,19 +1,79 @@
-# Robots.txt for Innerspark Africa - Mental Health Services Uganda
+# Robots.txt for Innerspark Africa - Mental Health Services
+# https://innerspark.africa
+
+# Allow all major search engines full access
 User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Googlebot-Image
 Allow: /
 
 User-agent: Bingbot
 Allow: /
+Crawl-delay: 1
 
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+# Social media crawlers
 User-agent: Twitterbot
 Allow: /
 
 User-agent: facebookexternalhit
 Allow: /
 
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: Pinterest
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+# Default rules for all other bots
 User-agent: *
 Allow: /
+
+# Disallow private/user-specific pages
 Disallow: /profile-settings
+Disallow: /admin-dashboard
+Disallow: /student-dashboard
+Disallow: /learning/admin-dashboard
+Disallow: /learning/student-dashboard
+
+# Disallow auth pages (not useful for search)
+Disallow: /auth
+
+# Allow all important content pages
+Allow: /virtual-therapy
+Allow: /specialists
+Allow: /find-therapist
+Allow: /support-groups
+Allow: /blog
+Allow: /mind-check
+Allow: /learning
+Allow: /services
+Allow: /about
+Allow: /contact
+Allow: /events-training
+Allow: /for-business
+Allow: /for-professionals
+Allow: /emergency-support
+Allow: /donate-therapy
 
 # Sitemaps
 Sitemap: https://innerspark.africa/sitemap.xml
+
+# Host
+Host: https://innerspark.africa
