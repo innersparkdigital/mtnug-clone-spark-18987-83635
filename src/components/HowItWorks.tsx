@@ -261,7 +261,7 @@ const HowItWorks = () => {
                           key={activeTab}
                           src={currentTab.image}
                           alt={currentTab.alt}
-                          className="w-full h-full object-cover bg-white"
+                          className="w-full h-full object-contain object-top bg-white"
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
                           exit={{ opacity: 0 }}
