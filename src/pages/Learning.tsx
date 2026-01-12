@@ -166,14 +166,12 @@ const Learning = () => {
                   <BookOpen className="w-5 h-5" />
                   Explore Courses
                 </Button>
-                {user && (
-                  <Link to="/learning/dashboard">
-                    <Button size="lg" variant="secondary" className="gap-2">
-                      <LayoutDashboard className="w-5 h-5" />
-                      My Dashboard
-                    </Button>
-                  </Link>
-                )}
+                <Link to="/learning/dashboard">
+                  <Button size="lg" variant="secondary" className="gap-2">
+                    <LayoutDashboard className="w-5 h-5" />
+                    My Dashboard
+                  </Button>
+                </Link>
                 <Link to="/for-business">
                   <Button size="lg" variant="outline" className="gap-2">
                     <Building2 className="w-5 h-5" />
