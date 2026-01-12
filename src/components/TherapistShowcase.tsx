@@ -15,25 +15,31 @@ const therapists = [
 
 const TherapistShowcase = () => {
   return (
-    <section className="py-20 md:py-32 bg-background overflow-hidden">
+    <section 
+      className="py-20 md:py-32 overflow-hidden"
+      style={{
+        background: 'linear-gradient(135deg, hsl(210 40% 92%) 0%, hsl(210 30% 88%) 50%, hsl(210 25% 90%) 100%)'
+      }}
+    >
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
+          <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-4">Meet Our Therapists</p>
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="text-4xl md:text-5xl lg:text-6xl font-serif font-medium text-foreground mb-6"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-foreground leading-[1.1] tracking-tight mb-6 whitespace-pre-line font-serif"
           >
-            Your Guide to Mental Wellness
+            Your guide to{'\n'}mental wellness.
           </motion.h2>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-lg md:text-xl text-muted-foreground mb-8"
+            className="text-base md:text-lg text-muted-foreground mb-8 leading-relaxed"
           >
             Compassionate, qualified mental health professionals ready to provide
             personalized support for your journey to emotional wellbeing.
