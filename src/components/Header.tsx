@@ -156,12 +156,12 @@ const Header = () => {
               <Link to="/mind-check" className="text-foreground hover:text-primary transition-colors font-medium">
                 {navLabels.mindcheck}
               </Link>
+              <Link to="/learning" className="text-foreground hover:text-primary transition-colors font-medium">
+                Learning
+              </Link>
               <Link to="/blog" className="text-foreground hover:text-primary transition-colors font-medium">
                 {navLabels.blog}
               </Link>
-              {/* <Link to="/events-training" className="text-foreground hover:text-primary transition-colors font-medium">
-                {navLabels.events}
-              </Link> */}
               <Link to="/contact" className="text-foreground hover:text-primary transition-colors font-medium">
                 {navLabels.contact}
               </Link>
