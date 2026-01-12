@@ -75,15 +75,101 @@ const MindCheck = () => {
     setSelectedTest(test);
   };
 
+  const pageSchema = {
+    "@context": "https://schema.org",
+    "@type": "MedicalWebPage",
+    "name": "Mental Health Self-Assessment Tests",
+    "description": "Free online mental health screening tests for depression, anxiety, ADHD, PTSD, and more. Get instant, confidential results.",
+    "url": "https://innerspark.africa/mind-check",
+    "specialty": "Psychiatry",
+    "mainEntity": {
+      "@type": "ItemList",
+      "name": "Mental Health Tests",
+      "numberOfItems": mentalHealthTests.length,
+      "itemListElement": mentalHealthTests.slice(0, 10).map((test, index) => ({
+        "@type": "ListItem",
+        "position": index + 1,
+        "name": `${test.name} Test`,
+        "description": test.description
+      }))
+    }
+  };
+
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Are online mental health tests accurate?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Online mental health tests are screening tools that can help identify potential symptoms. While they are not diagnostic, they are based on clinically validated questionnaires like PHQ-9 and GAD-7. Always consult a mental health professional for proper diagnosis."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Are mental health tests confidential?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, all our mental health tests are 100% confidential. Your results are not stored or shared. You receive instant, private results that only you can see."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What should I do after taking a mental health test?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "If your test results suggest you may be experiencing mental health symptoms, we recommend speaking with a licensed therapist or mental health professional. Innerspark can connect you with qualified therapists for proper evaluation and support."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How long do mental health tests take?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Most of our mental health screening tests take only 3-5 minutes to complete. Each test clearly shows the estimated time before you start."
+        }
+      }
+    ]
+  };
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://innerspark.africa" },
+      { "@type": "ListItem", "position": 2, "name": "Mind-Check", "item": "https://innerspark.africa/mind-check" }
+    ]
+  };
+
   return (
     <>
       <Helmet>
-        <title>Mind-Check - Free Mental Health Self-Assessment Tests | Innerspark Africa</title>
+        <title>Free Mental Health Tests Online | Depression, Anxiety, ADHD Screening | Innerspark</title>
         <meta 
           name="description" 
-          content="Take free, confidential mental health self-assessment tests. Screen for depression, anxiety, ADHD, PTSD, and more. Quick results to help you understand your mental health." 
+          content="Take free online mental health tests for depression, anxiety, ADHD, PTSD, bipolar, OCD & more. Get instant, confidential results. Clinically-based screening tools to understand your mental health symptoms." 
         />
-        <meta name="keywords" content="mental health test, depression test, anxiety test, ADHD test, PTSD test, mental health screening, self-assessment" />
+        <meta name="keywords" content="mental health test, depression test online, anxiety test, am I depressed quiz, do I have anxiety quiz, ADHD test adults, PTSD screening, bipolar test, OCD test, mental health quiz, free mental health assessment, self-assessment mental health, mental health screening, depression symptoms test, anxiety symptoms quiz, mental health check" />
+        <link rel="canonical" href="https://innerspark.africa/mind-check" />
+        
+        {/* Open Graph */}
+        <meta property="og:title" content="Free Mental Health Tests | Depression, Anxiety, ADHD Screening" />
+        <meta property="og:description" content="Take free, confidential mental health screening tests. Get instant results for depression, anxiety, ADHD, PTSD, and 30+ other conditions." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://innerspark.africa/mind-check" />
+        <meta property="og:image" content="https://innerspark.africa/innerspark-logo.png" />
+        
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Free Mental Health Tests | Innerspark Africa" />
+        <meta name="twitter:description" content="Take free online mental health tests. Screen for depression, anxiety, ADHD & more. Instant, confidential results." />
+        
+        {/* Schema.org */}
+        <script type="application/ld+json">{JSON.stringify(pageSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
       </Helmet>
 
       <Header />

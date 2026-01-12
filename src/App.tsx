@@ -51,6 +51,9 @@ import PanicAttackPost from "./pages/blog/PanicAttackPost";
 import DepressionPost from "./pages/blog/DepressionPost";
 import MentalHealthPost from "./pages/blog/MentalHealthPost";
 import AnxietyManagementPost from "./pages/blog/AnxietyManagementPost";
+import SignsOfDepressionPost from "./pages/blog/SignsOfDepressionPost";
+import AnxietySymptomsPost from "./pages/blog/AnxietySymptomsPost";
+import HowToFindATherapistPost from "./pages/blog/HowToFindATherapistPost";
 import ForBusiness from "./pages/ForBusiness";
 import ForProfessionals from "./pages/ForProfessionals";
 import Specialists from "./pages/Specialists";
@@ -128,6 +131,9 @@ const App = () => (
             <Route path="/blog/how-to-deal-with-depression" element={<DepressionPost />} />
             <Route path="/blog/what-is-mental-health" element={<MentalHealthPost />} />
             <Route path="/blog/how-to-manage-anxiety" element={<AnxietyManagementPost />} />
+            <Route path="/blog/signs-of-depression" element={<SignsOfDepressionPost />} />
+            <Route path="/blog/anxiety-symptoms" element={<AnxietySymptomsPost />} />
+            <Route path="/blog/how-to-find-a-therapist" element={<HowToFindATherapistPost />} />
             <Route path="/events-training/truck-drivers-retirement-training" element={<TruckDriversPost />} />
             <Route path="/events-training/founders-mindset-training" element={<FoundersPost />} />
             <Route path="/events-training/children-mental-health-awareness" element={<ChildrenMentalHealthPost />} />

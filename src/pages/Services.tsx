@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Helmet } from "react-helmet";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,57 @@ import supportGroups from "@/assets/support-groups-service.jpg";
 import wellnessResources from "@/assets/wellness-resources-service.jpg";
 import corporateWellness from "@/assets/corporate-wellness-service.jpg";
 import testimonialBrian from "@/assets/testimonial-brian.jpg";
+
+const servicesSchema = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "Mental Health Services",
+  "provider": {
+    "@type": "MedicalOrganization",
+    "name": "Innerspark Africa"
+  },
+  "serviceType": "Mental Health Care",
+  "areaServed": "Africa",
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Mental Health Services",
+    "itemListElement": [
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Virtual Therapy",
+          "description": "One-on-one online therapy sessions with licensed therapists"
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Support Groups",
+          "description": "Professionally moderated peer support groups"
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Corporate Wellness",
+          "description": "Workplace mental health programs and EAP services"
+        }
+      }
+    ]
+  }
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://innerspark.africa" },
+    { "@type": "ListItem", "position": 2, "name": "Services", "item": "https://innerspark.africa/services" }
+  ]
+};
 
 const defaultTexts = {
   heroTitle: "Mental Health Support That Fits Your Life",
@@ -76,6 +128,29 @@ const Services = () => {
   }, [language, translateBatch]);
 
   return (
+    <>
+      <Helmet>
+        <title>Mental Health Services in Africa | Therapy, Counseling, Support Groups | Innerspark</title>
+        <meta name="description" content="Explore Innerspark Africa's mental health services: online therapy, virtual counseling, support groups, wellness resources, and corporate wellness programs. Affordable, accessible mental health care across Africa." />
+        <meta name="keywords" content="mental health services Africa, therapy services Uganda, online counseling services, support groups mental health, corporate wellness programs, employee assistance program, virtual therapy services, affordable mental health care, teletherapy services, wellness resources, mental health support, professional counseling" />
+        <link rel="canonical" href="https://innerspark.africa/services" />
+        
+        {/* Open Graph */}
+        <meta property="og:title" content="Mental Health Services | Therapy, Counseling, Support Groups" />
+        <meta property="og:description" content="Explore Innerspark Africa's mental health services: online therapy, support groups, wellness resources, and corporate wellness programs." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://innerspark.africa/services" />
+        <meta property="og:image" content="https://innerspark.africa/innerspark-logo.png" />
+        
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Mental Health Services | Innerspark Africa" />
+        <meta name="twitter:description" content="Online therapy, support groups, and corporate wellness programs across Africa." />
+        
+        {/* Schema.org */}
+        <script type="application/ld+json">{JSON.stringify(servicesSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
+      </Helmet>
     <div className="min-h-screen bg-background">
       <Header />
       
@@ -340,6 +415,7 @@ const Services = () => {
 
       <Footer />
     </div>
+    </>
   );
 };
 

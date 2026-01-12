@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Helmet } from "react-helmet";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,35 @@ import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Mail, Phone, MapPin } from "lucide-react";
 import contactHero from "@/assets/contact-hero.jpg";
+
+const contactSchema = {
+  "@context": "https://schema.org",
+  "@type": "ContactPage",
+  "name": "Contact Innerspark Africa",
+  "description": "Get in touch with Innerspark Africa for mental health support, therapy inquiries, or partnership opportunities.",
+  "url": "https://innerspark.africa/contact",
+  "mainEntity": {
+    "@type": "MedicalOrganization",
+    "name": "Innerspark Africa",
+    "telephone": "+256780570987",
+    "email": "info@innersparkafrica.com",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Kampala",
+      "addressCountry": "UG",
+      "streetAddress": "National ICT Innovation Hub"
+    }
+  }
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://innerspark.africa" },
+    { "@type": "ListItem", "position": 2, "name": "Contact", "item": "https://innerspark.africa/contact" }
+  ]
+};
 
 const defaultTexts = {
   heroTitle: "Let's Get Doing for Tomorrow, Today",
@@ -85,6 +115,29 @@ const Contact = () => {
   };
 
   return (
+    <>
+      <Helmet>
+        <title>Contact Innerspark Africa | Mental Health Support & Inquiries</title>
+        <meta name="description" content="Contact Innerspark Africa for mental health support, therapy bookings, or partnership inquiries. Reach us via WhatsApp, phone, or email. Located at National ICT Innovation Hub, Kampala, Uganda." />
+        <meta name="keywords" content="contact Innerspark Africa, mental health support Uganda, therapy booking, counseling inquiries, mental health helpline Uganda, therapy contact, Kampala mental health, WhatsApp therapy booking" />
+        <link rel="canonical" href="https://innerspark.africa/contact" />
+        
+        {/* Open Graph */}
+        <meta property="og:title" content="Contact Innerspark Africa | Mental Health Support" />
+        <meta property="og:description" content="Get in touch with Innerspark Africa for mental health support, therapy bookings, or partnership opportunities." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://innerspark.africa/contact" />
+        <meta property="og:image" content="https://innerspark.africa/innerspark-logo.png" />
+        
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Contact Innerspark Africa" />
+        <meta name="twitter:description" content="Reach out to Innerspark Africa for mental health support and therapy bookings." />
+        
+        {/* Schema.org */}
+        <script type="application/ld+json">{JSON.stringify(contactSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
+      </Helmet>
     <div className="min-h-screen bg-background">
       <Header />
       
@@ -243,6 +296,7 @@ const Contact = () => {
 
       <Footer />
     </div>
+    </>
   );
 };
 
