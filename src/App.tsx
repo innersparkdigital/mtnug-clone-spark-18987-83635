@@ -55,6 +55,9 @@ import ForProfessionals from "./pages/ForProfessionals";
 import Specialists from "./pages/Specialists";
 import SpecialistProfile from "./pages/SpecialistProfile";
 import ScrollToTop from "./components/ScrollToTop";
+import Learning from "./pages/Learning";
+import CourseDetail from "./pages/CourseDetail";
+import LessonViewer from "./pages/LessonViewer";
 
 const queryClient = new QueryClient();
 
@@ -93,6 +96,9 @@ const App = () => (
           <Route path="/for-professionals" element={<ForProfessionals />} />
           <Route path="/specialists" element={<Specialists />} />
           <Route path="/specialists/:id" element={<SpecialistProfile />} />
+          <Route path="/learning" element={<Learning />} />
+          <Route path="/learning/:courseId" element={<CourseDetail />} />
+          <Route path="/learning/:courseId/module/:moduleId/lesson/:lessonId" element={<LessonViewer />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/mind-check" element={<MindCheck />} />
           <Route path="/mind-check/depression" element={<DepressionTest />} />

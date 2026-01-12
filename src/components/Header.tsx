@@ -19,6 +19,7 @@ import {
 const navItems = [
   { key: "services", label: "Our Services", path: "/services" },
   { key: "specialists", label: "Specialists", path: "/specialists" },
+  { key: "learning", label: "Learning", path: "/learning" },
   { key: "about", label: "About Us", path: "/about" },
   { key: "mindcheck", label: "Mind-Check", path: "/mind-check" },
   { key: "blog", label: "Blog", path: "/blog" },
