@@ -5,6 +5,7 @@ import PromoBanner from "@/components/PromoBanner";
 import AppDownload from "@/components/AppDownload";
 import AppTrailer from "@/components/AppTrailer";
 import HowItWorks from "@/components/HowItWorks";
+import TherapistShowcase from "@/components/TherapistShowcase";
 import Partners from "@/components/Partners";
 import EventsSection from "@/components/EventsSection";
 import AppFeaturesShowcase from "@/components/AppFeaturesShowcase";
@@ -23,6 +24,7 @@ const Index = () => {
         {/* <HeroCarousel /> */}
         <AppFeaturesShowcase />
         <HowItWorks />
+        <TherapistShowcase />
         {/* <ServicesGrid /> */}
         <Partners />
         {/* <AppTrailer /> */}
