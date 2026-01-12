@@ -11,6 +11,12 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLearningProgress } from "@/hooks/useLearningProgress";
 import { toast } from "sonner";
 import NextLessonModal from "@/components/NextLessonModal";
+import { 
+  allWorkplaceSlides, 
+  workplaceCourseModules, 
+  workplaceLessonMeta, 
+  workplaceModuleNames 
+} from "@/lib/workplaceLessonSlides";
 import {
   ChevronLeft,
   ChevronRight,
@@ -1488,10 +1494,21 @@ const LessonViewer = () => {
   } | null>(null);
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const lessonData = lessonId && lessonSlides[lessonId] ? lessonSlides[lessonId] : defaultSlides;
+  // Check for workplace course slides first, then original slides
+  const workplaceLesson = lessonId ? allWorkplaceSlides[lessonId] : null;
+  const originalLesson = lessonId && lessonSlides[lessonId] ? lessonSlides[lessonId] : null;
+  const lessonData = workplaceLesson || originalLesson || defaultSlides;
   const slides = lessonData.slides;
   const totalSlides = slides.length;
   const progress = Math.round(((currentSlide + 1) / totalSlides) * 100);
+
+  // Get course modules - check workplace courses first
+  const getModulesForCourse = () => {
+    if (courseId && workplaceCourseModules[courseId]) {
+      return workplaceCourseModules[courseId];
+    }
+    return courseId && courseModules[courseId] ? courseModules[courseId] : [];
+  };
 
   // Find next lesson in course
   const getNextLesson = () => {
