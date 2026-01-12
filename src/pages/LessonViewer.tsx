@@ -211,6 +211,1161 @@ const lessonSlides: Record<string, {
         }
       }
     ]
+  },
+  // Module 3: Social Media & Emotional Wellbeing
+  "3-1": {
+    title: "The Psychology of Social Media",
+    slides: [
+      {
+        type: "title",
+        title: "Module 3: Social Media & Emotional Wellbeing",
+        subtitle: "Lesson 1: The Psychology of Social Media",
+        content: ["Learning objectives:", "• Understand how social media platforms are designed", "• Recognize psychological triggers used to keep you engaged", "• Identify your personal social media patterns"]
+      },
+      {
+        type: "content",
+        title: "How Social Media Captures Your Attention",
+        bullets: [
+          "Infinite scroll: No natural stopping point keeps you scrolling endlessly",
+          "Variable rewards: Unpredictable likes and comments keep you coming back",
+          "Social validation: Likes trigger dopamine, making you crave more approval",
+          "Fear of Missing Out (FOMO): Constant updates create anxiety about missing things",
+          "Personalized algorithms: Content tailored to keep you engaged longer"
+        ],
+        image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=800&h=400&fit=crop"
+      },
+      {
+        type: "content",
+        title: "The Comparison Trap",
+        bullets: [
+          "We compare our behind-the-scenes to others' highlight reels",
+          "Research shows more social media use correlates with lower self-esteem",
+          "Filters and editing create unrealistic beauty standards",
+          "Success posts can make us feel inadequate about our own progress",
+          "Remember: People rarely post their struggles and failures"
+        ]
+      },
+      {
+        type: "scenario",
+        title: "Real Student Story",
+        scenario: {
+          title: "Grace's Social Media Wake-Up Call",
+          story: "Grace, a graphic design student in Nairobi, spent hours scrolling through Instagram looking at other designers' work. She felt increasingly inadequate—everyone seemed more talented, more successful, with more followers. She almost quit design entirely. Then her mentor helped her realize she was comparing her beginning to others' middles. She started a 'no scroll after 8pm' rule and began posting her own learning journey, imperfections included.",
+          reflection: "When have you felt worse about yourself after scrolling social media? What triggered those feelings?"
+        }
+      },
+      {
+        type: "activity",
+        title: "Social Media Audit",
+        activity: {
+          instruction: "Conduct a quick audit of your social media feeds:",
+          prompts: [
+            "List the 5 accounts that take up most of your attention",
+            "For each, note: Does this account make me feel better or worse about myself?",
+            "Identify 3 accounts that consistently bring negative emotions",
+            "Find 3 accounts that inspire, educate, or genuinely make you happy",
+            "Plan: What will you unfollow, mute, or follow more of?"
+          ]
+        }
+      },
+      {
+        type: "tips",
+        title: "Healthier Social Media Habits",
+        tips: {
+          title: "Take control of your feed:",
+          items: [
+            "Curate ruthlessly: Unfollow accounts that make you feel bad",
+            "Follow accounts that teach, inspire, or make you genuinely laugh",
+            "Set daily time limits using built-in app controls",
+            "Turn off notifications for non-essential apps",
+            "Schedule specific times to check social media rather than constant browsing"
+          ]
+        }
+      },
+      {
+        type: "quiz",
+        title: "Knowledge Check",
+        quiz: {
+          question: "What is 'infinite scroll' designed to do?",
+          options: [
+            "Help you find specific content faster",
+            "Keep you scrolling by removing natural stopping points",
+            "Improve your internet connection speed",
+            "Organize content chronologically"
+          ],
+          correct: 1,
+          explanation: "Infinite scroll is deliberately designed to remove natural stopping points, keeping you engaged longer. Traditional websites had page breaks that created natural pause moments—infinite scroll eliminates these."
+        }
+      }
+    ]
+  },
+  "3-2": {
+    title: "Cyberbullying & Online Harassment",
+    slides: [
+      {
+        type: "title",
+        title: "Cyberbullying & Online Harassment",
+        subtitle: "Recognizing, responding to, and preventing digital abuse",
+        content: ["In this lesson:", "• Define cyberbullying and its various forms", "• Learn how to respond if you experience or witness it", "• Understand the mental health impacts and recovery"]
+      },
+      {
+        type: "content",
+        title: "Forms of Cyberbullying",
+        bullets: [
+          "Direct harassment: Threatening or insulting messages sent directly",
+          "Public shaming: Embarrassing someone publicly on social media",
+          "Exclusion: Deliberately leaving someone out of online groups",
+          "Impersonation: Creating fake accounts to damage reputation",
+          "Doxxing: Sharing private information without consent",
+          "Image-based abuse: Sharing intimate images without permission"
+        ]
+      },
+      {
+        type: "content",
+        title: "Mental Health Impact",
+        bullets: [
+          "Cyberbullying can cause anxiety, depression, and low self-esteem",
+          "Unlike traditional bullying, it follows you home—no escape",
+          "Digital permanence means hurtful content can resurface",
+          "Victims often feel isolated and ashamed",
+          "In severe cases, it contributes to self-harm and suicidal thoughts",
+          "Early intervention and support are crucial"
+        ]
+      },
+      {
+        type: "scenario",
+        title: "Real Student Story",
+        scenario: {
+          title: "Peter's Experience",
+          story: "Peter, a student at University of Ghana, made a mistake during an online class that was recorded. Someone clipped it and shared it on WhatsApp groups with mocking captions. The video spread across campus. Peter felt humiliated and stopped attending virtual classes. He only recovered after confiding in a counselor and finding friends who supported him. The harassers were eventually reported to the university.",
+          reflection: "How would you support a friend going through a similar experience?"
+        }
+      },
+      {
+        type: "activity",
+        title: "Response Planning",
+        activity: {
+          instruction: "Create your personal response plan:",
+          prompts: [
+            "Who are 3 trusted adults you could tell if you experience cyberbullying?",
+            "Where would you find evidence (screenshots, links)?",
+            "What platform reporting tools do you know how to use?",
+            "Draft a supportive message you could send to someone being bullied",
+            "What self-care activities help you when you're feeling hurt?"
+          ]
+        }
+      },
+      {
+        type: "tips",
+        title: "If You Experience Cyberbullying",
+        tips: {
+          title: "Steps to take:",
+          items: [
+            "Don't respond or retaliate—it often makes things worse",
+            "Screenshot and save all evidence with dates/times",
+            "Block the person on all platforms",
+            "Report to the platform using their tools",
+            "Tell a trusted adult, counselor, or friend",
+            "Remember: It's not your fault, and you deserve support"
+          ]
+        }
+      },
+      {
+        type: "quiz",
+        title: "Knowledge Check",
+        quiz: {
+          question: "What should you do FIRST if you experience cyberbullying?",
+          options: [
+            "Respond with equally harsh messages",
+            "Delete all your social media accounts immediately",
+            "Take screenshots and save evidence before blocking",
+            "Post publicly about what happened"
+          ],
+          correct: 2,
+          explanation: "Documenting evidence is crucial before taking other actions. Screenshots with timestamps can be important if you need to report to authorities, schools, or platforms. Then block, report, and seek support."
+        }
+      }
+    ]
+  },
+  // Module 4: Stress, Anxiety & Academic Pressure
+  "4-1": {
+    title: "Understanding Academic Stress",
+    slides: [
+      {
+        type: "title",
+        title: "Module 4: Stress, Anxiety & Academic Pressure",
+        subtitle: "Lesson 1: Understanding Academic Stress",
+        content: ["What you'll learn:", "• The difference between helpful and harmful stress", "• Common causes of academic pressure", "• How digital life amplifies academic stress"]
+      },
+      {
+        type: "content",
+        title: "Good Stress vs. Bad Stress",
+        bullets: [
+          "Eustress (good stress): Motivates you, helps you focus, improves performance",
+          "Distress (bad stress): Overwhelming, causes anxiety, impairs thinking",
+          "The same situation can cause either—it depends on how you perceive it",
+          "Some pressure helps you prepare; too much pressure causes panic",
+          "The goal isn't to eliminate stress, but to manage it effectively"
+        ],
+        image: "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=800&h=400&fit=crop"
+      },
+      {
+        type: "content",
+        title: "Common Sources of Academic Stress",
+        bullets: [
+          "Heavy course loads and competing deadlines",
+          "Exam pressure and fear of failure",
+          "Financial stress and work-study balance",
+          "Family expectations and cultural pressure",
+          "Comparison with high-achieving peers",
+          "Uncertainty about future career and job prospects"
+        ]
+      },
+      {
+        type: "content",
+        title: "How Technology Adds to Academic Pressure",
+        bullets: [
+          "24/7 availability means no clear 'off' time",
+          "Constant notifications interrupt deep study sessions",
+          "Seeing peers' achievements online increases comparison",
+          "Information overload makes it hard to know what to prioritize",
+          "Procrastination through entertainment is always one click away"
+        ]
+      },
+      {
+        type: "scenario",
+        title: "Real Student Story",
+        scenario: {
+          title: "Fatima's Semester of Overwhelm",
+          story: "Fatima, a law student in Dar es Salaam, was juggling 7 courses, a part-time job, and family responsibilities. She stayed up late scrolling through TikTok to 'relax,' but it left her more tired. Her phone buzzed with deadline reminders while she was trying to study. By mid-semester, she was exhausted, anxious, and her grades were slipping. A friend introduced her to time-blocking and digital boundaries. Within weeks, she felt more in control.",
+          reflection: "What aspects of Fatima's story resonate with your own experience?"
+        }
+      },
+      {
+        type: "activity",
+        title: "Stress Mapping Exercise",
+        activity: {
+          instruction: "Map out your current stress landscape:",
+          prompts: [
+            "List your top 5 current stressors (academic and otherwise)",
+            "Rate each from 1-10 in terms of how much it affects you",
+            "Identify which stressors you can control vs. which you can't",
+            "For controllable stressors, write one action you could take this week",
+            "For uncontrollable stressors, write one coping strategy"
+          ]
+        }
+      },
+      {
+        type: "tips",
+        title: "Managing Academic Pressure",
+        tips: {
+          title: "Evidence-based strategies:",
+          items: [
+            "Break large tasks into smaller, manageable steps",
+            "Use the Pomodoro technique: 25 min work, 5 min break",
+            "Create a dedicated study environment away from phone",
+            "Schedule regular breaks—rest improves performance",
+            "Reach out for help early—tutors, professors, counselors",
+            "Remember: Your worth isn't determined by your grades"
+          ]
+        }
+      },
+      {
+        type: "quiz",
+        title: "Knowledge Check",
+        quiz: {
+          question: "What is 'eustress'?",
+          options: [
+            "Stress caused by European travel",
+            "Positive stress that motivates and improves performance",
+            "Stress caused by using technology",
+            "A stress-relief medication"
+          ],
+          correct: 1,
+          explanation: "Eustress is positive stress that can actually enhance performance, focus, and motivation. The key is keeping stress at manageable levels where it helps rather than overwhelms you."
+        }
+      }
+    ]
+  },
+  "4-2": {
+    title: "Anxiety Management Techniques",
+    slides: [
+      {
+        type: "title",
+        title: "Anxiety Management Techniques",
+        subtitle: "Practical tools to calm your mind in stressful moments",
+        content: ["You'll learn:", "• How to recognize anxiety symptoms", "• Immediate techniques to reduce anxiety", "• Long-term practices for anxiety prevention"]
+      },
+      {
+        type: "content",
+        title: "Recognizing Anxiety",
+        bullets: [
+          "Physical: Racing heart, sweaty palms, shallow breathing, muscle tension",
+          "Mental: Racing thoughts, difficulty concentrating, worst-case thinking",
+          "Emotional: Feeling overwhelmed, irritable, or on edge",
+          "Behavioral: Avoiding situations, procrastinating, restlessness",
+          "Everyone experiences anxiety—it becomes a problem when it interferes with life"
+        ]
+      },
+      {
+        type: "content",
+        title: "The 5-4-3-2-1 Grounding Technique",
+        bullets: [
+          "This technique brings you back to the present moment",
+          "5 things you can SEE around you",
+          "4 things you can TOUCH or feel",
+          "3 things you can HEAR",
+          "2 things you can SMELL",
+          "1 thing you can TASTE",
+          "Works by interrupting anxious thoughts and focusing on senses"
+        ]
+      },
+      {
+        type: "content",
+        title: "Box Breathing for Instant Calm",
+        bullets: [
+          "Inhale for 4 counts",
+          "Hold for 4 counts",
+          "Exhale for 4 counts",
+          "Hold for 4 counts",
+          "Repeat 4-6 times",
+          "This activates your parasympathetic nervous system, reducing fight-or-flight",
+          "Used by athletes, military, and performers to manage pressure"
+        ]
+      },
+      {
+        type: "scenario",
+        title: "Real Student Story",
+        scenario: {
+          title: "Kwame's Exam Panic",
+          story: "Kwame, an engineering student in Accra, would freeze during exams. His mind went blank, his heart raced, and he'd forget everything he studied. After learning box breathing from a campus counselor, he practiced daily for two weeks. During his next exam, when he felt panic rising, he closed his eyes and did 4 cycles of box breathing. The fog lifted, and he completed his exam. He still uses this technique years later in his career.",
+          reflection: "When do you notice anxiety symptoms most strongly? What triggers them?"
+        }
+      },
+      {
+        type: "activity",
+        title: "Practice Session",
+        activity: {
+          instruction: "Let's practice these techniques right now:",
+          prompts: [
+            "Set a timer for 2 minutes and do the 5-4-3-2-1 grounding exercise",
+            "Then do 4 rounds of box breathing (4-4-4-4)",
+            "Notice: How does your body feel before and after?",
+            "Rate your anxiety before (1-10) and after (1-10)",
+            "Commit to practicing one technique daily this week"
+          ]
+        }
+      },
+      {
+        type: "tips",
+        title: "Long-Term Anxiety Prevention",
+        tips: {
+          title: "Build these habits:",
+          items: [
+            "Regular physical exercise—even a 15-minute walk helps",
+            "Consistent sleep schedule (7-9 hours)",
+            "Limit caffeine, especially after noon",
+            "Daily mindfulness or meditation (start with 5 minutes)",
+            "Maintain social connections—isolation increases anxiety",
+            "Seek professional help if anxiety significantly impacts daily life"
+          ]
+        }
+      },
+      {
+        type: "quiz",
+        title: "Knowledge Check",
+        quiz: {
+          question: "In box breathing, what is the sequence?",
+          options: [
+            "Inhale 2, Hold 2, Exhale 2, Hold 2",
+            "Inhale 4, Hold 4, Exhale 4, Hold 4",
+            "Inhale 6, Exhale 6, Repeat",
+            "Hold breath as long as possible, then exhale"
+          ],
+          correct: 1,
+          explanation: "Box breathing follows a 4-4-4-4 pattern: Inhale for 4 counts, hold for 4, exhale for 4, hold for 4. This equal rhythm activates the calming parasympathetic nervous system."
+        }
+      }
+    ]
+  },
+  // Module 5: Healthy Screen-Time & Digital Habits
+  "5-1": {
+    title: "Auditing Your Screen Time",
+    slides: [
+      {
+        type: "title",
+        title: "Module 5: Healthy Screen-Time & Digital Habits",
+        subtitle: "Lesson 1: Auditing Your Screen Time",
+        content: ["This lesson covers:", "• How to measure and understand your screen time", "• Productive vs. passive screen time", "• Setting realistic digital goals"]
+      },
+      {
+        type: "content",
+        title: "The Reality of Screen Time",
+        bullets: [
+          "Global average: 7+ hours of screen time daily",
+          "For students, it's often even higher with online learning",
+          "Not all screen time is equal—context matters",
+          "Productive: Learning, creating, meaningful connection",
+          "Passive: Endless scrolling, mindless consumption",
+          "The first step to change is honest measurement"
+        ],
+        image: "https://images.unsplash.com/photo-1522199755839-a2bacb67c546?w=800&h=400&fit=crop"
+      },
+      {
+        type: "content",
+        title: "Using Built-In Screen Time Tools",
+        bullets: [
+          "iPhone: Settings > Screen Time (detailed breakdown by app)",
+          "Android: Settings > Digital Wellbeing & Parental Controls",
+          "Desktop: Apps like RescueTime or built-in Focus modes",
+          "Most apps now show weekly reports automatically",
+          "Look for patterns: Which apps consume most time? When?",
+          "Note your pickup count—how often you check your phone"
+        ]
+      },
+      {
+        type: "scenario",
+        title: "Real Student Story",
+        scenario: {
+          title: "Naledi's 40-Hour Discovery",
+          story: "Naledi, a journalism student in Johannesburg, checked her screen time report for the first time. She was shocked: 40+ hours per week on her phone alone, with 6 hours daily on social media. That's nearly a full-time job! She realized she was spending more time consuming content than creating it—ironic for a journalism student. She set app limits and redirected 2 hours daily to her own writing. Within a month, she'd completed a short story she'd been 'too busy' to write.",
+          reflection: "What might you discover if you honestly audited your screen time?"
+        }
+      },
+      {
+        type: "activity",
+        title: "Your Screen Time Audit",
+        activity: {
+          instruction: "Complete this audit over the next 3 days:",
+          prompts: [
+            "Check your phone's screen time right now—what's your daily average?",
+            "List your top 5 apps by usage time",
+            "Categorize each: Productive, Social, Entertainment, or Other",
+            "Calculate: How many hours per week go to passive scrolling?",
+            "Ask yourself: What could I do with just 1 of those hours redirected?"
+          ]
+        }
+      },
+      {
+        type: "tips",
+        title: "Setting Realistic Limits",
+        tips: {
+          title: "Start with these steps:",
+          items: [
+            "Don't try to cut screen time by 50%—start with 15-30 minutes less",
+            "Set app-specific limits for your top time-draining apps",
+            "Enable 'Downtime' or 'Focus Mode' during study hours",
+            "Remove social media apps from your home screen",
+            "Charge your phone outside your bedroom",
+            "Replace scrolling with specific alternatives (read, walk, call a friend)"
+          ]
+        }
+      },
+      {
+        type: "quiz",
+        title: "Knowledge Check",
+        quiz: {
+          question: "What's the difference between productive and passive screen time?",
+          options: [
+            "Productive is work screens, passive is personal screens",
+            "Productive creates value or learning; passive is mindless consumption",
+            "Productive is any app you pay for; passive is free apps",
+            "There's no meaningful difference"
+          ],
+          correct: 1,
+          explanation: "Productive screen time involves intentional activities that add value—learning, creating, meaningful connection. Passive screen time is mindless scrolling and consumption without clear purpose or benefit."
+        }
+      }
+    ]
+  },
+  "5-2": {
+    title: "Building a Digital Wellness Routine",
+    slides: [
+      {
+        type: "title",
+        title: "Building a Digital Wellness Routine",
+        subtitle: "Creating sustainable habits for balanced technology use",
+        content: ["In this lesson:", "• Design your personalized digital wellness routine", "• Learn the science of habit formation", "• Create boundaries that stick"]
+      },
+      {
+        type: "content",
+        title: "The Science of Habit Formation",
+        bullets: [
+          "Habits form through a cue-routine-reward loop",
+          "To change a habit, disrupt the cue or replace the routine",
+          "New habits take an average of 66 days to become automatic",
+          "Start incredibly small—'too easy to fail'",
+          "Stack new habits onto existing ones ('After I brush my teeth, I will...')",
+          "Environment design matters more than willpower"
+        ]
+      },
+      {
+        type: "content",
+        title: "Morning Digital Boundaries",
+        bullets: [
+          "Don't check your phone for the first 30-60 minutes after waking",
+          "Your morning sets the tone for your entire day",
+          "Waking to notifications puts you in reactive mode immediately",
+          "Instead: Stretch, hydrate, journal, or eat breakfast first",
+          "Use a separate alarm clock so phone stays out of bedroom",
+          "Morning quiet protects your most creative, focused time"
+        ]
+      },
+      {
+        type: "content",
+        title: "Evening Digital Wind-Down",
+        bullets: [
+          "Blue light from screens disrupts sleep hormones",
+          "Set a 'screens off' time 1 hour before bed",
+          "Enable Night Shift or blue light filters after sunset",
+          "Avoid stimulating content (news, social drama) before bed",
+          "Replace scrolling with reading, journaling, or relaxation",
+          "Charge your phone outside your bedroom"
+        ]
+      },
+      {
+        type: "scenario",
+        title: "Real Student Story",
+        scenario: {
+          title: "James's Morning Revolution",
+          story: "James, a medical student in Kampala, used to wake up and immediately check WhatsApp, emails, and Twitter. By the time he got out of bed, he was already stressed about messages and news. He challenged himself to keep his phone in another room overnight and not check it until after breakfast. The first week was hard—the urge was strong. But soon, he noticed he was calmer, more focused in morning lectures, and actually enjoying breakfast. Three months later, it's his most important habit.",
+          reflection: "What's the first thing you do when you wake up? How does it affect your day?"
+        }
+      },
+      {
+        type: "activity",
+        title: "Design Your Digital Routine",
+        activity: {
+          instruction: "Create your personalized digital wellness routine:",
+          prompts: [
+            "Morning boundary: What will you do BEFORE checking your phone?",
+            "Study sessions: How will you minimize digital distractions?",
+            "Breaks: What non-screen activity will you do between study blocks?",
+            "Evening wind-down: What time will you stop screens?",
+            "Weekend reset: How will you ensure digital-free time for rest?"
+          ]
+        }
+      },
+      {
+        type: "tips",
+        title: "Making Boundaries Stick",
+        tips: {
+          title: "Practical implementation:",
+          items: [
+            "Make it physical: Remove charger from bedroom, buy an alarm clock",
+            "Make it social: Tell friends about your boundaries so they support you",
+            "Make it visible: Put reminder notes on your phone or door",
+            "Start with one boundary—master it before adding more",
+            "Expect slip-ups—they're part of the process, not failure",
+            "Track your progress to see improvement over time"
+          ]
+        }
+      },
+      {
+        type: "quiz",
+        title: "Knowledge Check",
+        quiz: {
+          question: "Why should you avoid checking your phone first thing in the morning?",
+          options: [
+            "It uses too much data",
+            "It puts you in reactive mode and can increase stress",
+            "It drains your battery faster",
+            "Phones don't work well in the morning"
+          ],
+          correct: 1,
+          explanation: "Checking your phone immediately upon waking puts you in reactive mode—responding to others' demands and content. This increases cortisol (stress hormone) and takes away your most focused, creative time of day."
+        }
+      }
+    ]
+  },
+  // Module 6: Emotional Intelligence & Self-Care
+  "6-1": {
+    title: "Understanding Emotional Intelligence",
+    slides: [
+      {
+        type: "title",
+        title: "Module 6: Emotional Intelligence & Self-Care",
+        subtitle: "Lesson 1: Understanding Emotional Intelligence",
+        content: ["You'll explore:", "• The four components of emotional intelligence", "• Why EQ matters more than IQ for success", "• How to develop your emotional skills"]
+      },
+      {
+        type: "content",
+        title: "What is Emotional Intelligence?",
+        bullets: [
+          "EQ (Emotional Quotient) is your ability to understand and manage emotions",
+          "Unlike IQ, EQ can be developed and improved throughout life",
+          "Research shows EQ is a stronger predictor of success than IQ",
+          "It affects relationships, career, leadership, and mental health",
+          "Emotionally intelligent people navigate stress and conflict better"
+        ],
+        image: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=800&h=400&fit=crop"
+      },
+      {
+        type: "content",
+        title: "The Four Components of EQ",
+        bullets: [
+          "Self-Awareness: Recognizing your own emotions and their impact",
+          "Self-Management: Controlling impulses, adapting to change",
+          "Social Awareness: Understanding others' emotions (empathy)",
+          "Relationship Management: Inspiring, influencing, resolving conflict",
+          "All four work together and can be strengthened with practice"
+        ]
+      },
+      {
+        type: "content",
+        title: "EQ in the Digital Age",
+        bullets: [
+          "Digital communication removes tone, body language, and nuance",
+          "Misunderstandings are common in texts and emails",
+          "Social media can amplify emotional reactions",
+          "Online anonymity can reduce empathy",
+          "Digital EQ means reading context and responding thoughtfully online"
+        ]
+      },
+      {
+        type: "scenario",
+        title: "Real Student Story",
+        scenario: {
+          title: "Aisha's WhatsApp Conflict",
+          story: "Aisha, a student in Rwanda, received a short reply from her study group partner: 'Fine.' She immediately assumed he was angry with her and spent hours anxious about what she'd done wrong. When they met in person, he explained he was just busy and hadn't meant anything by it. Aisha realized she often projected emotions onto text messages. She started assuming positive intent and asking for clarification before reacting. Her relationships and stress levels improved dramatically.",
+          reflection: "Have you ever misread tone in a text message? What happened?"
+        }
+      },
+      {
+        type: "activity",
+        title: "EQ Self-Assessment",
+        activity: {
+          instruction: "Rate yourself honestly (1=rarely, 5=always) on these EQ indicators:",
+          prompts: [
+            "I can name my emotions when I feel them",
+            "I pause before reacting when I'm upset",
+            "I can tell when someone is uncomfortable, even if they don't say so",
+            "I adapt my communication style to different people",
+            "I handle criticism without becoming defensive"
+          ]
+        }
+      },
+      {
+        type: "tips",
+        title: "Developing Your EQ",
+        tips: {
+          title: "Daily practices:",
+          items: [
+            "Name your emotions throughout the day (expand beyond 'good' or 'bad')",
+            "Pause before responding when you feel triggered",
+            "Practice active listening—focus fully on what others say",
+            "Ask questions to understand, not to respond",
+            "Reflect on conflicts: What could I have done differently?",
+            "Read fiction—it builds empathy and emotional vocabulary"
+          ]
+        }
+      },
+      {
+        type: "quiz",
+        title: "Knowledge Check",
+        quiz: {
+          question: "Which is NOT one of the four components of emotional intelligence?",
+          options: [
+            "Self-Awareness",
+            "Self-Management",
+            "Technical Skills",
+            "Relationship Management"
+          ],
+          correct: 2,
+          explanation: "The four components of EQ are: Self-Awareness, Self-Management, Social Awareness (empathy), and Relationship Management. Technical skills are separate—EQ is about emotional understanding and management."
+        }
+      }
+    ]
+  },
+  "6-2": {
+    title: "Self-Care Practices for Students",
+    slides: [
+      {
+        type: "title",
+        title: "Self-Care Practices for Students",
+        subtitle: "Building a sustainable self-care routine on a student budget",
+        content: ["This lesson covers:", "• What real self-care is (and isn't)", "• The five pillars of student self-care", "• Creating a personalized self-care plan"]
+      },
+      {
+        type: "content",
+        title: "Redefining Self-Care",
+        bullets: [
+          "Self-care is not selfish—it's necessary for sustainable performance",
+          "It's not just bubble baths and face masks (though those can help!)",
+          "Real self-care often means doing hard things that serve your future self",
+          "It includes saying no, setting boundaries, and asking for help",
+          "Self-care looks different for everyone—find what restores YOU"
+        ]
+      },
+      {
+        type: "content",
+        title: "The Five Pillars of Student Self-Care",
+        bullets: [
+          "Physical: Sleep, nutrition, movement, hydration",
+          "Mental: Learning, creativity, breaks from screens",
+          "Emotional: Processing feelings, therapy, journaling",
+          "Social: Quality time with friends, community, belonging",
+          "Spiritual: Purpose, values, nature, mindfulness (whatever gives meaning)",
+          "Neglecting any pillar affects all the others"
+        ]
+      },
+      {
+        type: "content",
+        title: "Budget-Friendly Self-Care",
+        bullets: [
+          "Free: Walk in nature, dance to music, call a friend, nap, stretch",
+          "Low-cost: Cook a good meal, take a long shower, journal, read",
+          "Community: Join clubs, study groups, religious organizations, volunteer",
+          "Campus resources: Free counseling, gym, events, library quiet spaces",
+          "Digital tools: Free meditation apps, YouTube yoga, mood tracking"
+        ]
+      },
+      {
+        type: "scenario",
+        title: "Real Student Story",
+        scenario: {
+          title: "Chidinma's Self-Care Sunday",
+          story: "Chidinma, a nursing student in Lagos, was burning out—all work, no rest. She started 'Self-Care Sundays': no studying, no social media. Instead, she cleaned her space, cooked a nice meal, called home, went for a walk, and did gentle stretching. At first, she felt guilty not studying. But she noticed she was more focused and less anxious during the week. Her grades actually improved. Now, she protects that day fiercely.",
+          reflection: "What does self-care currently look like in your life? What's missing?"
+        }
+      },
+      {
+        type: "activity",
+        title: "Create Your Self-Care Menu",
+        activity: {
+          instruction: "Build a personalized 'self-care menu' you can choose from:",
+          prompts: [
+            "List 3 activities for each pillar (Physical, Mental, Emotional, Social, Spiritual)",
+            "Star the ones that are free or low-cost",
+            "Identify which pillar you most neglect",
+            "Choose 3 activities to try this week",
+            "Schedule one self-care activity in your calendar right now"
+          ]
+        }
+      },
+      {
+        type: "tips",
+        title: "Making Self-Care Sustainable",
+        tips: {
+          title: "Practical advice:",
+          items: [
+            "Schedule self-care like you schedule classes—it's non-negotiable",
+            "Start small: 10 minutes of intentional rest is better than nothing",
+            "Notice what drains you and what restores you",
+            "Self-care during hard times is most important, not least",
+            "It's okay if your self-care looks different from others'",
+            "Progress, not perfection—some days you'll just survive, and that's okay"
+          ]
+        }
+      },
+      {
+        type: "quiz",
+        title: "Knowledge Check",
+        quiz: {
+          question: "Which of the following is an example of REAL self-care?",
+          options: [
+            "Scrolling social media for 3 hours to 'relax'",
+            "Saying no to a commitment when you're overwhelmed",
+            "Staying up all night to finish work, then binge-watching TV",
+            "Buying expensive things you can't afford"
+          ],
+          correct: 1,
+          explanation: "Real self-care includes boundary-setting and protecting your wellbeing. Saying no when overwhelmed prevents burnout and respects your limits. Mindless scrolling and overspending often provide short-term escape but long-term harm."
+        }
+      }
+    ]
+  },
+  // Module 7: Seeking Help & Supporting Others
+  "7-1": {
+    title: "When & How to Seek Help",
+    slides: [
+      {
+        type: "title",
+        title: "Module 7: Seeking Help & Supporting Others",
+        subtitle: "Lesson 1: When & How to Seek Help",
+        content: ["You'll learn:", "• Signs that you might need professional support", "• Types of mental health support available", "• How to take the first step toward help"]
+      },
+      {
+        type: "content",
+        title: "It's Okay to Need Help",
+        bullets: [
+          "Seeking help is a sign of strength, not weakness",
+          "Just like physical health, mental health sometimes needs professional care",
+          "Early intervention leads to better outcomes",
+          "You don't have to be 'sick enough' to deserve support",
+          "Many successful people credit therapy for their growth"
+        ],
+        image: "https://images.unsplash.com/photo-1573497620053-ea5300f94f21?w=800&h=400&fit=crop"
+      },
+      {
+        type: "content",
+        title: "Signs You Might Need Support",
+        bullets: [
+          "Persistent sadness, emptiness, or hopelessness lasting more than 2 weeks",
+          "Anxiety that interferes with daily activities",
+          "Significant changes in sleep, appetite, or energy",
+          "Withdrawing from friends, family, or activities you used to enjoy",
+          "Difficulty concentrating, making decisions, or getting things done",
+          "Thoughts of self-harm or suicide (seek help immediately)"
+        ]
+      },
+      {
+        type: "content",
+        title: "Types of Mental Health Support",
+        bullets: [
+          "Campus counseling: Often free or low-cost for students",
+          "Therapists/Psychologists: Provide talk therapy and coping strategies",
+          "Psychiatrists: Medical doctors who can prescribe medication if needed",
+          "Peer support groups: Connecting with others who understand",
+          "Crisis hotlines: 24/7 support for urgent situations",
+          "Apps like Innerspark: Accessible tools for daily mental wellness"
+        ]
+      },
+      {
+        type: "scenario",
+        title: "Real Student Story",
+        scenario: {
+          title: "Mohammed's Turning Point",
+          story: "Mohammed, an engineering student in Egypt, had been struggling with anxiety for years but thought he should 'man up' and handle it alone. His hands would shake during presentations, and he avoided social events. When a friend shared that he was seeing a counselor, Mohammed felt permission to try it too. After three months of therapy, he learned techniques that changed his life. He now speaks openly about mental health to reduce stigma for others.",
+          reflection: "What beliefs or barriers might prevent you from seeking help if you needed it?"
+        }
+      },
+      {
+        type: "activity",
+        title: "Help-Seeking Preparation",
+        activity: {
+          instruction: "Prepare for if/when you might need support:",
+          prompts: [
+            "Find out: Where is your campus counseling center? What are their hours?",
+            "Research: What therapists or services are available in your area?",
+            "Identify: Who in your life could you talk to if you were struggling?",
+            "Save: Store a crisis hotline number in your phone now",
+            "Reflect: What would make seeking help easier for you?"
+          ]
+        }
+      },
+      {
+        type: "tips",
+        title: "Taking the First Step",
+        tips: {
+          title: "How to reach out:",
+          items: [
+            "You can start with a trusted friend, family member, or campus counselor",
+            "Scripts help: 'I've been struggling with ___ and I'd like to talk to someone'",
+            "It's okay to try different therapists—fit matters",
+            "First sessions are often about getting to know you, not solving everything",
+            "Treatment takes time—be patient with the process",
+            "You deserve support—don't wait until crisis to seek help"
+          ]
+        }
+      },
+      {
+        type: "quiz",
+        title: "Knowledge Check",
+        quiz: {
+          question: "Which of the following is a sign you should consider seeking professional mental health support?",
+          options: [
+            "Feeling sad for a day after receiving bad news",
+            "Persistent anxiety that interferes with daily activities for weeks",
+            "Being nervous before a big presentation",
+            "Feeling tired after a long day of studying"
+          ],
+          correct: 1,
+          explanation: "While occasional stress, sadness, or nervousness is normal, persistent symptoms that last for weeks and interfere with daily functioning are signs that professional support could be helpful."
+        }
+      }
+    ]
+  },
+  "7-2": {
+    title: "Supporting a Friend in Crisis",
+    slides: [
+      {
+        type: "title",
+        title: "Supporting a Friend in Crisis",
+        subtitle: "How to be there for someone who is struggling",
+        content: ["This lesson teaches:", "• How to recognize when a friend needs help", "• What to say (and what not to say)", "• How to connect them to professional resources"]
+      },
+      {
+        type: "content",
+        title: "Recognizing Warning Signs in Others",
+        bullets: [
+          "Withdrawal from friends, activities, or responsibilities",
+          "Mood changes: Unusual sadness, irritability, or hopelessness",
+          "Talking about feeling like a burden or wanting to give up",
+          "Increased substance use or risky behavior",
+          "Giving away possessions or saying goodbye",
+          "Dramatic changes in sleep, eating, or appearance"
+        ]
+      },
+      {
+        type: "content",
+        title: "How to Start the Conversation",
+        bullets: [
+          "Choose a private, comfortable setting",
+          "Be direct but caring: 'I've noticed you seem down lately. I'm worried about you.'",
+          "Use 'I' statements: 'I care about you' rather than 'You're acting strange'",
+          "Listen more than you talk—let them share at their pace",
+          "Don't try to fix it—your presence and listening matter most",
+          "Avoid minimizing ('It's not that bad') or problem-solving immediately"
+        ]
+      },
+      {
+        type: "content",
+        title: "What to Say (and What to Avoid)",
+        bullets: [
+          "SAY: 'I'm here for you' / 'That sounds really hard' / 'How can I support you?'",
+          "SAY: 'It's okay to not be okay' / 'You're not alone in this'",
+          "AVOID: 'Just think positive' / 'Others have it worse' / 'Snap out of it'",
+          "AVOID: 'I know exactly how you feel' (unless you truly do)",
+          "AVOID: Sharing their struggles with others without permission"
+        ]
+      },
+      {
+        type: "scenario",
+        title: "Real Student Story",
+        scenario: {
+          title: "Sarah's Intervention",
+          story: "Sarah noticed her roommate, Blessing, had stopped going to class and was sleeping all day. Blessing dismissed it as 'just tired.' Sarah gently but persistently expressed concern. One night, Blessing finally opened up about feeling hopeless. Sarah listened without judgment, then asked, 'Would you be willing to talk to the campus counselor with me?' She walked Blessing to the center the next day. Blessing says that moment saved her life.",
+          reflection: "Have you ever noticed a friend struggling? How did you respond?"
+        }
+      },
+      {
+        type: "activity",
+        title: "Role-Play Practice",
+        activity: {
+          instruction: "Practice these supportive conversations:",
+          prompts: [
+            "Write out how you would start a conversation with a friend you're worried about",
+            "List 5 supportive phrases you could use when listening to someone",
+            "Identify 3 local resources you could share (hotlines, campus services, apps)",
+            "Practice saying out loud: 'I care about you. I'm worried. How can I help?'",
+            "Reflect: What would you want a friend to say to you if you were struggling?"
+          ]
+        }
+      },
+      {
+        type: "tips",
+        title: "Important Reminders",
+        tips: {
+          title: "Supporting others while caring for yourself:",
+          items: [
+            "You're a friend, not a therapist—it's not your job to fix them",
+            "Encourage professional help, don't replace it",
+            "It's okay to involve trusted adults if you're worried about safety",
+            "If someone mentions suicide, take it seriously and get help immediately",
+            "Supporting someone can be draining—make sure you have support too",
+            "You can't pour from an empty cup—your wellbeing matters"
+          ]
+        }
+      },
+      {
+        type: "quiz",
+        title: "Knowledge Check",
+        quiz: {
+          question: "What should you do if a friend directly mentions wanting to end their life?",
+          options: [
+            "Promise to keep it a secret to maintain their trust",
+            "Tell them it's just a phase and they'll feel better soon",
+            "Take it seriously and help connect them to professional support immediately",
+            "Give them space to figure it out on their own"
+          ],
+          correct: 2,
+          explanation: "Suicidal statements should always be taken seriously. Your role is to stay with them, express care, and connect them to professional help—campus counselors, crisis hotlines, or emergency services. Breaking confidentiality to save a life is always the right choice."
+        }
+      }
+    ]
+  },
+  // Module 8: Final Reflection & Personal Wellness Plan
+  "8-1": {
+    title: "Reflecting on Your Journey",
+    slides: [
+      {
+        type: "title",
+        title: "Module 8: Final Reflection & Personal Wellness Plan",
+        subtitle: "Lesson 1: Reflecting on Your Journey",
+        content: ["In this final module:", "• Review key learnings from the course", "• Reflect on your personal growth", "• Identify areas for continued development"]
+      },
+      {
+        type: "content",
+        title: "Course Journey Recap",
+        bullets: [
+          "Module 1: Understood what digital mental health means",
+          "Module 2: Explored digital overload and burnout",
+          "Module 3: Examined social media's emotional impact",
+          "Module 4: Learned stress and anxiety management techniques",
+          "Module 5: Built healthy screen-time habits",
+          "Module 6: Developed emotional intelligence and self-care practices",
+          "Module 7: Learned to seek help and support others"
+        ]
+      },
+      {
+        type: "content",
+        title: "Key Insights",
+        bullets: [
+          "Technology isn't inherently good or bad—it's how we use it",
+          "Awareness is the first step toward change",
+          "Small, consistent changes beat dramatic overhauls",
+          "Mental health is as important as physical health",
+          "Seeking help is strength, not weakness",
+          "You have the power to design your digital life intentionally"
+        ]
+      },
+      {
+        type: "activity",
+        title: "Personal Reflection Exercise",
+        activity: {
+          instruction: "Take time to reflect on your learning journey:",
+          prompts: [
+            "What was the most surprising thing you learned in this course?",
+            "Which technique or strategy have you already started implementing?",
+            "What's one belief about technology or mental health that has changed?",
+            "What do you wish you had known before starting this course?",
+            "Who in your life could benefit from what you've learned?"
+          ]
+        }
+      },
+      {
+        type: "scenario",
+        title: "Celebrating Progress",
+        scenario: {
+          title: "Your Growth Story",
+          story: "Think about where you were when you started this course. Perhaps you were overwhelmed by screen time, stressed about academics, or unsure how to manage digital life. Now, you have a toolkit of strategies, a deeper understanding of your patterns, and the knowledge that you're not alone. This is just the beginning of your wellness journey—not the end.",
+          reflection: "What are you most proud of learning or changing during this course?"
+        }
+      },
+      {
+        type: "tips",
+        title: "Continuing Your Growth",
+        tips: {
+          title: "Beyond this course:",
+          items: [
+            "Keep practicing the techniques—habits take time to solidify",
+            "Share what you've learned with friends and family",
+            "Revisit modules when you need a refresher",
+            "Explore Innerspark app features for ongoing support",
+            "Consider becoming a Digital Wellness Ambassador",
+            "Remember: Wellness is a journey, not a destination"
+          ]
+        }
+      },
+      {
+        type: "quiz",
+        title: "Course Reflection",
+        quiz: {
+          question: "What is the most important first step toward healthier digital habits?",
+          options: [
+            "Deleting all social media immediately",
+            "Buying expensive wellness products",
+            "Awareness and honest self-assessment",
+            "Convincing everyone around you to change"
+          ],
+          correct: 2,
+          explanation: "Awareness is the foundation of all change. Before you can improve your habits, you need to honestly understand your current patterns. This self-awareness allows you to make informed, sustainable changes."
+        }
+      }
+    ]
+  },
+  "8-2": {
+    title: "Creating Your Personal Wellness Plan",
+    slides: [
+      {
+        type: "title",
+        title: "Creating Your Personal Wellness Plan",
+        subtitle: "Building a sustainable roadmap for your mental wellbeing",
+        content: ["The final step:", "• Create your personalized digital wellness plan", "• Set specific, achievable goals", "• Prepare for challenges and setbacks"]
+      },
+      {
+        type: "content",
+        title: "The SMART Goal Framework",
+        bullets: [
+          "Specific: What exactly will you do?",
+          "Measurable: How will you track progress?",
+          "Achievable: Is it realistic given your life?",
+          "Relevant: Does it address your actual needs?",
+          "Time-bound: By when will you achieve it?",
+          "Example: 'I will limit Instagram to 30 minutes daily using the app timer for the next 30 days'"
+        ],
+        image: "https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=800&h=400&fit=crop"
+      },
+      {
+        type: "content",
+        title: "Areas to Address in Your Plan",
+        bullets: [
+          "Screen time: Daily limits, app-specific boundaries",
+          "Morning routine: Phone-free time, grounding practices",
+          "Evening routine: Wind-down time, sleep hygiene",
+          "Stress management: Which techniques will you use?",
+          "Social connections: How will you nurture relationships offline?",
+          "Self-care: What activities will you prioritize?",
+          "Support network: Who will you turn to when struggling?"
+        ]
+      },
+      {
+        type: "activity",
+        title: "Build Your Wellness Plan",
+        activity: {
+          instruction: "Complete your Personal Digital Wellness Plan:",
+          prompts: [
+            "Goal 1 (Screen Time): Write one SMART goal for managing your digital use",
+            "Goal 2 (Daily Routines): Set one morning or evening boundary",
+            "Goal 3 (Stress): Choose one anxiety/stress technique to practice weekly",
+            "Goal 4 (Self-Care): Identify one self-care activity to do each week",
+            "Support: Name 2-3 people you can reach out to for accountability or help"
+          ]
+        }
+      },
+      {
+        type: "content",
+        title: "Planning for Setbacks",
+        bullets: [
+          "Setbacks are normal—they're part of growth, not failure",
+          "Identify your triggers: What causes you to fall back into old patterns?",
+          "Create 'if-then' plans: 'If I break my screen time limit, then I will...'",
+          "Practice self-compassion: Talk to yourself like you'd talk to a friend",
+          "Reset daily: Every day is a fresh start",
+          "Celebrate small wins—progress matters more than perfection"
+        ]
+      },
+      {
+        type: "scenario",
+        title: "Your Commitment",
+        scenario: {
+          title: "A Letter to Your Future Self",
+          story: "Imagine yourself 3 months from now, having successfully implemented your wellness plan. How do you feel? What's different? What are you proud of? Take a moment to write a short letter to your current self from this future perspective. What advice would your future self give you? What would they thank you for starting today?",
+          reflection: "What commitment are you making to yourself as you finish this course?"
+        }
+      },
+      {
+        type: "tips",
+        title: "Next Steps After This Course",
+        tips: {
+          title: "Keep your momentum going:",
+          items: [
+            "Download and use the Innerspark app for daily check-ins",
+            "Join a study group or wellness community for accountability",
+            "Set a 30-day review date to assess your progress",
+            "Consider the Digital Wellness Ambassador program",
+            "Share your journey—your story might help someone else",
+            "Remember: You've already taken the most important step by completing this course"
+          ]
+        }
+      },
+      {
+        type: "quiz",
+        title: "Final Assessment",
+        quiz: {
+          question: "Which of the following is a SMART goal for digital wellness?",
+          options: [
+            "I will use my phone less",
+            "I will never use social media again",
+            "I will set a 30-minute daily limit on TikTok using the app timer for the next 2 weeks",
+            "I will try to be more mindful"
+          ],
+          correct: 2,
+          explanation: "This goal is SMART: Specific (TikTok, 30 minutes), Measurable (using app timer), Achievable (not eliminating, just limiting), Relevant (addresses screen time), and Time-bound (2 weeks). Vague goals like 'use less' or extreme goals like 'never use again' are harder to achieve."
+        }
+      }
+    ]
   }
 };
 
