@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AppDownload from "@/components/AppDownload";
@@ -7,6 +8,16 @@ import { MessageSquare, Check } from "lucide-react";
 const ChatSessions = () => {
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>Chat Therapy Sessions | Text-Based Counseling | Innerspark Africa</title>
+        <meta name="description" content="Connect with licensed therapists through secure text-based chat sessions. Get mental health support anytime, anywhere with affordable online therapy in Africa." />
+        <meta name="keywords" content="chat therapy, text counseling, online therapy chat, text based therapy, messaging therapist, chat counseling Africa" />
+        <link rel="canonical" href="https://innerspark.africa/chat-sessions" />
+        <meta property="og:url" content="https://innerspark.africa/chat-sessions" />
+        <meta property="og:title" content="Chat Therapy Sessions | Innerspark Africa" />
+        <meta property="og:description" content="Connect with licensed therapists through secure text-based chat sessions." />
+        <meta property="og:type" content="website" />
+      </Helmet>
       <Header />
       
       <section className="pt-32 pb-16 bg-gradient-to-br from-primary/10 to-background">

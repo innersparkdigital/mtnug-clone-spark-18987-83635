@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AppDownload from "@/components/AppDownload";
@@ -7,6 +8,16 @@ import { Heart, Check } from "lucide-react";
 const MoodCheckIn = () => {
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>Mood Check-In & Journaling | Track Mental Wellness | Innerspark Africa</title>
+        <meta name="description" content="Track your daily mood and build emotional awareness with Innerspark's mood check-in and journaling tools. Understand patterns and improve your mental wellness." />
+        <meta name="keywords" content="mood tracking, mental health journal, emotional wellness, mood diary, mental health app Africa, wellness tracking" />
+        <link rel="canonical" href="https://innerspark.africa/mood-check-in" />
+        <meta property="og:url" content="https://innerspark.africa/mood-check-in" />
+        <meta property="og:title" content="Mood Check-In & Journaling | Innerspark Africa" />
+        <meta property="og:description" content="Track your daily mood and build emotional awareness with journaling tools." />
+        <meta property="og:type" content="website" />
+      </Helmet>
       <Header />
       
       <section className="pt-32 pb-16 bg-gradient-to-br from-primary/10 to-background">

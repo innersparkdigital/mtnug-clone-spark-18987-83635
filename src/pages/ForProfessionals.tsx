@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -120,6 +121,16 @@ const ForProfessionals = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>For Professionals | Join Innerspark Therapist Network | Africa</title>
+        <meta name="description" content="Join Innerspark's network of therapists and counselors. Expand your practice online with secure video consultations and reach patients across Africa." />
+        <meta name="keywords" content="therapist network, join therapist platform, online counseling jobs, mental health professionals Africa, therapy practice online" />
+        <link rel="canonical" href="https://innerspark.africa/for-professionals" />
+        <meta property="og:url" content="https://innerspark.africa/for-professionals" />
+        <meta property="og:title" content="For Professionals | Join Innerspark" />
+        <meta property="og:description" content="Join Innerspark's network of therapists and counselors in Africa." />
+        <meta property="og:type" content="website" />
+      </Helmet>
       <Header />
       
       <main>
