@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AppDownload from "@/components/AppDownload";
@@ -7,6 +8,16 @@ import { AlertCircle, Check, Phone } from "lucide-react";
 const EmergencySupport = () => {
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>Emergency Mental Health Support | Crisis Help | Innerspark Africa</title>
+        <meta name="description" content="Get immediate mental health crisis support. Access 24/7 emergency counseling and crisis intervention services in Africa. You are not alone." />
+        <meta name="keywords" content="mental health crisis, emergency support, crisis counseling, suicide prevention, mental health emergency Africa, crisis hotline" />
+        <link rel="canonical" href="https://innerspark.africa/emergency-support" />
+        <meta property="og:url" content="https://innerspark.africa/emergency-support" />
+        <meta property="og:title" content="Emergency Mental Health Support | Innerspark Africa" />
+        <meta property="og:description" content="Get immediate mental health crisis support and 24/7 emergency counseling." />
+        <meta property="og:type" content="website" />
+      </Helmet>
       <Header />
       
       <section className="pt-32 pb-16 bg-gradient-to-br from-destructive/10 to-background">

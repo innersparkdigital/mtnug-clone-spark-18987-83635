@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -118,8 +119,17 @@ const DonateTherapy = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>Donate Therapy | Support Mental Health Care | Innerspark Africa</title>
+        <meta name="description" content="Help someone access mental health care through our community therapy fund. Your donation makes healing possible for those who can't afford therapy in Africa." />
+        <meta name="keywords" content="donate therapy, mental health donation, therapy fund Africa, support mental health, charity therapy, community mental health" />
+        <link rel="canonical" href="https://innerspark.africa/donate-therapy" />
+        <meta property="og:url" content="https://innerspark.africa/donate-therapy" />
+        <meta property="og:title" content="Donate Therapy | Innerspark Africa" />
+        <meta property="og:description" content="Help someone access mental health care through our community therapy fund." />
+        <meta property="og:type" content="website" />
+      </Helmet>
       <Header />
-      
       <section className="pt-32 pb-16 bg-gradient-to-br from-primary/10 to-background">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
