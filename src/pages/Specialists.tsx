@@ -493,6 +493,14 @@ const specialistCategoryAssignments: Record<string, string[]> = {
   "Mubiru Rashid": ["addiction"],
   "Atwiine Priscilla": ["trauma-stress"],
   "Winnie Anzazi Jira": ["trauma-stress"],
+  // New specialists
+  "Leonard Ogugu": ["work-stress"],
+  "Leah Wanjiru Muiruri": ["self-esteem-growth"],
+  "Boingotlo Moremi": ["relationships-intimacy", "family-couples"],
+  "Mbabazi Jovia": ["relationships-intimacy"],
+  "Esther Murungi": ["depression-anxiety"],
+  "Zemeyi Rita": ["family-couples", "grief-bereavement"],
+  "Florence Winfred Nakaweesa": ["child-adolescent"],
 };
 
 // Get primary category for a specialist
