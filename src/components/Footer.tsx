@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Facebook, Twitter, Instagram, Youtube, Linkedin, Mail, Phone, MapPin } from "lucide-react";
+import { Facebook, Twitter, Instagram, Youtube, Linkedin, Mail, Phone, MapPin, PhoneCall } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { LanguageSelector } from "@/components/LanguageSelector";
@@ -24,6 +24,7 @@ const Footer = () => {
     corporateWellness: "Corporate Wellness",
     connectWithUs: "Connect With Us",
     chatWhatsApp: "Chat on WhatsApp",
+    callUs: "Call Us",
     communityText: "Join our community and stay updated on wellness tips and events.",
     allRights: "All rights reserved.",
     privacyPolicy: "Privacy Policy",
@@ -50,6 +51,7 @@ const Footer = () => {
         corporateWellness: "Corporate Wellness",
         connectWithUs: "Connect With Us",
         chatWhatsApp: "Chat on WhatsApp",
+        callUs: "Call Us",
         communityText: "Join our community and stay updated on wellness tips and events.",
         allRights: "All rights reserved.",
         privacyPolicy: "Privacy Policy",
@@ -76,6 +78,7 @@ const Footer = () => {
       "Corporate Wellness",
       "Connect With Us",
       "Chat on WhatsApp",
+      "Call Us",
       "Join our community and stay updated on wellness tips and events.",
       "All rights reserved.",
       "Privacy Policy",
@@ -101,11 +104,12 @@ const Footer = () => {
         corporateWellness: results[13],
         connectWithUs: results[14],
         chatWhatsApp: results[15],
-        communityText: results[16],
-        allRights: results[17],
-        privacyPolicy: results[18],
-        termsOfService: results[19],
-        cookiePolicy: results[20],
+        callUs: results[16],
+        communityText: results[17],
+        allRights: results[18],
+        privacyPolicy: results[19],
+        termsOfService: results[20],
+        cookiePolicy: results[21],
       });
     });
   }, [language, translateBatch]);
@@ -163,9 +167,15 @@ const Footer = () => {
           {/* Social Media */}
           <div>
             <h4 className="font-semibold mb-4">{t.connectWithUs}</h4>
-            <div className="mb-4">
-              <a href="https://wa.me/256792085773?text=Hi,%20I%20would%20like%20to%20connect%20with%20Innerspark%20Africa" target="_blank" rel="noopener noreferrer" className="inline-block">
+            <div className="flex gap-2 mb-4">
+              <a href="https://wa.me/256792085773?text=Hi,%20I%20would%20like%20to%20connect%20with%20Innerspark%20Africa" target="_blank" rel="noopener noreferrer" className="flex-1">
                 <Button size="sm" className="w-full">{t.chatWhatsApp}</Button>
+              </a>
+              <a href="tel:+256792085773" className="flex-1">
+                <Button size="sm" variant="outline" className="w-full gap-1">
+                  <PhoneCall className="w-3 h-3" />
+                  {t.callUs}
+                </Button>
               </a>
             </div>
             <div className="flex gap-4 mb-4">
