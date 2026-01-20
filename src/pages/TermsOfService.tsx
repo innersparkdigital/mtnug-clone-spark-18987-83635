@@ -242,7 +242,7 @@ const TermsOfService = () => {
               <p><strong>Innerspark Africa</strong></p>
               <p>National ICT Innovation Hub</p>
               <p>Kampala, Uganda</p>
-              <p>Phone: <a href="tel:+256780570987" className="text-primary hover:underline">+256 780 570 987</a></p>
+              <p>Phone: <a href="tel:+256792085773" className="text-primary hover:underline">+256 792 085 773</a></p>
               <p>Email: <a href="mailto:info@innersparkafrica.com" className="text-primary hover:underline">info@innersparkafrica.com</a></p>
               <p>Website: <a href="https://innersparkafrica.com" className="text-primary hover:underline">www.innersparkafrica.com</a></p>
             </div>

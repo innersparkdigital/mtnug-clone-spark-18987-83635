@@ -512,7 +512,7 @@ const HowToHandleStressPost = () => {
                     Our licensed therapists at Innerspark Africa are here to help you manage stress and build emotional resilience.
                   </p>
                   <a 
-                    href="https://wa.me/256780570987?text=Hi%2C%20I%20just%20read%20your%20article%20on%20stress%20management%20and%20would%20like%20to%20book%20a%20therapy%20session"
+                    href="https://wa.me/256792085773?text=Hi%2C%20I%20just%20read%20your%20article%20on%20stress%20management%20and%20would%20like%20to%20book%20a%20therapy%20session"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-8 py-4 rounded-full font-semibold hover:bg-primary/90 transition-colors"

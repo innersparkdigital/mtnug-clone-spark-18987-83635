@@ -168,10 +168,10 @@ const Services = () => {
                   {t.heroDesc}
                 </p>
                 <div className="flex flex-wrap gap-4">
-                  <a href="https://wa.me/256780570987?text=Hi,%20I%20would%20like%20to%20book%20a%20therapy%20session" target="_blank" rel="noopener noreferrer">
+                  <a href="https://wa.me/256792085773?text=Hi,%20I%20would%20like%20to%20book%20a%20therapy%20session" target="_blank" rel="noopener noreferrer">
                     <Button size="lg">{t.bookSession}</Button>
                   </a>
-                  <a href="https://wa.me/256780570987?text=Hi,%20I%20would%20like%20to%20join%20a%20support%20group" target="_blank" rel="noopener noreferrer">
+                  <a href="https://wa.me/256792085773?text=Hi,%20I%20would%20like%20to%20join%20a%20support%20group" target="_blank" rel="noopener noreferrer">
                     <Button size="lg" variant="outline">{t.joinSupportGroup}</Button>
                   </a>
                 </div>
@@ -399,10 +399,10 @@ const Services = () => {
             <h2 className="text-3xl md:text-5xl font-bold mb-4">{t.ctaTitle}</h2>
             <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">{t.ctaDesc}</p>
             <div className="flex flex-wrap gap-4 justify-center">
-              <a href="https://wa.me/256780570987?text=Hi,%20I%20would%20like%20to%20book%20a%20therapy%20session" target="_blank" rel="noopener noreferrer">
+              <a href="https://wa.me/256792085773?text=Hi,%20I%20would%20like%20to%20book%20a%20therapy%20session" target="_blank" rel="noopener noreferrer">
                 <Button size="lg" className="bg-white text-primary hover:bg-white/90">{t.bookSession}</Button>
               </a>
-              <a href="https://wa.me/256780570987?text=Hi,%20I%20would%20like%20to%20join%20a%20support%20group" target="_blank" rel="noopener noreferrer">
+              <a href="https://wa.me/256792085773?text=Hi,%20I%20would%20like%20to%20join%20a%20support%20group" target="_blank" rel="noopener noreferrer">
                 <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">{t.joinGroup}</Button>
               </a>
               <Link to="/contact">

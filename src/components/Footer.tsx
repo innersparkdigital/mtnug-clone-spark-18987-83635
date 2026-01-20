@@ -127,7 +127,7 @@ const Footer = () => {
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-primary flex-shrink-0" />
-                <span className="text-muted-foreground">+256 780 570 987</span>
+                <span className="text-muted-foreground">+256 792 085 773</span>
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-primary flex-shrink-0" />
@@ -164,7 +164,7 @@ const Footer = () => {
           <div>
             <h4 className="font-semibold mb-4">{t.connectWithUs}</h4>
             <div className="mb-4">
-              <a href="https://wa.me/256780570987?text=Hi,%20I%20would%20like%20to%20connect%20with%20Innerspark%20Africa" target="_blank" rel="noopener noreferrer" className="inline-block">
+              <a href="https://wa.me/256792085773?text=Hi,%20I%20would%20like%20to%20connect%20with%20Innerspark%20Africa" target="_blank" rel="noopener noreferrer" className="inline-block">
                 <Button size="sm" className="w-full">{t.chatWhatsApp}</Button>
               </a>
             </div>

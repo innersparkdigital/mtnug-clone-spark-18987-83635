@@ -173,7 +173,7 @@ ${bookingForm.notes ? `*Additional Notes:*\n${bookingForm.notes}` : ""}
 Please confirm availability. Thank you!`;
 
     window.open(
-      `https://wa.me/256780570987?text=${encodeURIComponent(message)}`,
+      `https://wa.me/256792085773?text=${encodeURIComponent(message)}`,
       "_blank"
     );
     setBookingDialogOpen(false);

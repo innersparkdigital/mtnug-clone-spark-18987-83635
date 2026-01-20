@@ -366,7 +366,7 @@ const HowToFindATherapistPost = () => {
                         Find a Therapist
                       </Button>
                     </Link>
-                    <a href="https://wa.me/256780570987?text=Hi,%20I%20need%20help%20finding%20a%20therapist" target="_blank" rel="noopener noreferrer">
+                    <a href="https://wa.me/256792085773?text=Hi,%20I%20need%20help%20finding%20a%20therapist" target="_blank" rel="noopener noreferrer">
                       <Button size="lg" variant="outline">
                         Get Help Matching
                       </Button>

@@ -103,7 +103,7 @@ const DonateTherapy = () => {
       `*Payment Method:* ${formData.paymentMethod}%0A` +
       `*Message:* ${formData.message || "None"}`;
 
-    const whatsappUrl = `https://wa.me/256780570987?text=${message}`;
+    const whatsappUrl = `https://wa.me/256792085773?text=${message}`;
     window.open(whatsappUrl, "_blank");
 
     // Reset form and close dialog

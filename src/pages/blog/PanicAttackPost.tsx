@@ -662,7 +662,7 @@ const PanicAttackPost = () => {
               If panic attacks are affecting your quality of life, speaking to a mental health professional can help you develop personalized coping strategies.
             </p>
             <a 
-              href="https://wa.me/256780570987?text=Hi,%20I%20would%20like%20to%20speak%20with%20a%20therapist%20about%20managing%20panic%20attacks"
+              href="https://wa.me/256792085773?text=Hi,%20I%20would%20like%20to%20speak%20with%20a%20therapist%20about%20managing%20panic%20attacks"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-primary-foreground text-primary px-8 py-4 rounded-full font-semibold hover:bg-primary-foreground/90 transition-colors"
