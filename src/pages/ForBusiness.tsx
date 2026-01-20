@@ -107,7 +107,7 @@ const ForBusiness = () => {
     const whatsappMessage = encodeURIComponent(
       `Hi, I'm ${formData.name} from ${formData.company}. I'm interested in Innerspark for Business. ${formData.message}`
     );
-    window.open(`https://wa.me/256780570987?text=${whatsappMessage}`, "_blank");
+    window.open(`https://wa.me/256792085773?text=${whatsappMessage}`, "_blank");
     toast({
       title: "Redirecting to WhatsApp",
       description: "We'll connect with you shortly to discuss your business needs.",

@@ -163,7 +163,7 @@ const VirtualTherapy = () => {
               <T>Connect one-on-one with licensed therapists from anywhere in Africa. Get professional mental health support for depression, anxiety, stress, and more through secure video, voice, or chat sessions.</T>
             </p>
             <div className="flex gap-4 justify-center flex-wrap">
-              <a href="https://wa.me/256780570987?text=Hi,%20I%20would%20like%20to%20book%20an%20online%20therapy%20session" target="_blank" rel="noopener noreferrer">
+              <a href="https://wa.me/256792085773?text=Hi,%20I%20would%20like%20to%20book%20an%20online%20therapy%20session" target="_blank" rel="noopener noreferrer">
                 <Button size="lg" className="gap-2">
                   <MessageSquare className="w-5 h-5" />
                   <T>Book Online Session</T>
@@ -285,7 +285,7 @@ const VirtualTherapy = () => {
             Take the first step towards better mental health from the comfort of your home
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
-            <a href="https://wa.me/256780570987?text=Hi,%20I'm%20ready%20to%20start%20online%20therapy" target="_blank" rel="noopener noreferrer">
+            <a href="https://wa.me/256792085773?text=Hi,%20I'm%20ready%20to%20start%20online%20therapy" target="_blank" rel="noopener noreferrer">
               <Button size="lg" variant="secondary">
                 Get Started Now
               </Button>

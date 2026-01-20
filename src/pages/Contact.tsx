@@ -19,7 +19,7 @@ const contactSchema = {
   "mainEntity": {
     "@type": "MedicalOrganization",
     "name": "Innerspark Africa",
-    "telephone": "+256780570987",
+    "telephone": "+256792085773",
     "email": "info@innersparkafrica.com",
     "address": {
       "@type": "PostalAddress",
@@ -155,7 +155,7 @@ const Contact = () => {
               </p>
               
               <div className="mb-8">
-                <a href="https://wa.me/256780570987?text=Hi,%20I%20would%20like%20to%20get%20in%20touch%20with%20Innerspark%20Africa" target="_blank" rel="noopener noreferrer">
+                <a href="https://wa.me/256792085773?text=Hi,%20I%20would%20like%20to%20get%20in%20touch%20with%20Innerspark%20Africa" target="_blank" rel="noopener noreferrer">
                   <Button size="lg" className="w-full md:w-auto">
                     {t.chatWhatsApp}
                   </Button>
@@ -169,7 +169,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold text-foreground mb-1">{t.phoneContact}</h3>
-                    <p className="text-muted-foreground">+256 780 570 987</p>
+                    <p className="text-muted-foreground"><a href="tel:+256792085773">+256 792 085 773</a></p>
                   </div>
                 </div>
                 

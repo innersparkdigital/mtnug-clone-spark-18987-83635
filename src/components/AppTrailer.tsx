@@ -409,7 +409,7 @@ const AppTrailer = () => {
                 <span className="relative z-10">{translations.downloadApp}</span>
               </a>
               <a
-                href="https://wa.me/256780570987?text=Hi,%20I%20want%20to%20learn%20more%20about%20Innerspark"
+                href="https://wa.me/256792085773?text=Hi,%20I%20want%20to%20learn%20more%20about%20Innerspark"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 bg-transparent border-2 border-white text-white font-semibold px-8 py-4 rounded-full hover:bg-white/20 transition-all duration-300 hover:scale-105 backdrop-blur-sm"

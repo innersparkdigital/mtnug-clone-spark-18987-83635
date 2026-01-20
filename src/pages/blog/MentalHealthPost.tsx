@@ -712,7 +712,7 @@ const MentalHealthPost = () => {
                       If you're struggling with your mental health, you don't have to face it alone. Our team at Innerspark Africa is here to help.
                     </p>
                     <a 
-                      href="https://wa.me/256780570987?text=Hi%2C%20I%20would%20like%20to%20talk%20about%20mental%20health%20support"
+                      href="https://wa.me/256792085773?text=Hi%2C%20I%20would%20like%20to%20talk%20about%20mental%20health%20support"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center justify-center bg-primary text-primary-foreground px-8 py-3 rounded-full font-semibold hover:bg-primary/90 transition-colors"

@@ -42,7 +42,7 @@ const ForProfessionals = () => {
     e.preventDefault();
     
     const message = `Hi, I'm ${formData.name}, a ${formData.specialty} (License: ${formData.licenseNumber}). I'd like to join the Innerspark professional network. Contact: ${formData.email}, ${formData.phone}. ${formData.message}`;
-    const whatsappUrl = `https://wa.me/256780570987?text=${encodeURIComponent(message)}`;
+    const whatsappUrl = `https://wa.me/256792085773?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
     
     toast({

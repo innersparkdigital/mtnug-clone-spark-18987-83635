@@ -278,7 +278,7 @@ const SpecialistCard = ({ specialist, isVerified }: { specialist: Specialist; is
 Please confirm availability. Thank you!`;
 
     window.open(
-      `https://wa.me/256780570987?text=${encodeURIComponent(message)}`,
+      `https://wa.me/256792085773?text=${encodeURIComponent(message)}`,
       "_blank"
     );
     
@@ -825,7 +825,7 @@ const Specialists = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" asChild>
                 <a
-                  href="https://wa.me/256780570987?text=Hi%2C%20I%20would%20like%20to%20book%20a%20therapy%20session"
+                  href="https://wa.me/256792085773?text=Hi%2C%20I%20would%20like%20to%20book%20a%20therapy%20session"
                   target="_blank"
                   rel="noopener noreferrer"
                 >

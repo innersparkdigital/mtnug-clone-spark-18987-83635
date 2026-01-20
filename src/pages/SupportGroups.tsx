@@ -154,7 +154,7 @@ const SupportGroups = () => {
               <T>Safe, professionally moderated peer spaces where you can share experiences, find understanding, and heal together. Connect with others who truly understand your journey.</T>
             </p>
             <div className="flex gap-4 justify-center flex-wrap">
-              <a href="https://wa.me/256780570987?text=Hi,%20I%20would%20like%20to%20join%20a%20mental%20health%20support%20group" target="_blank" rel="noopener noreferrer">
+              <a href="https://wa.me/256792085773?text=Hi,%20I%20would%20like%20to%20join%20a%20mental%20health%20support%20group" target="_blank" rel="noopener noreferrer">
                 <Button size="lg" className="gap-2">
                   <Users className="w-5 h-5" />
                   <T>Join a Group</T>
@@ -271,7 +271,7 @@ const SupportGroups = () => {
             Join a supportive community of people who understand your journey
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
-            <a href="https://wa.me/256780570987?text=Hi,%20I%20want%20to%20explore%20support%20groups%20and%20connect%20with%20a%20community" target="_blank" rel="noopener noreferrer">
+            <a href="https://wa.me/256792085773?text=Hi,%20I%20want%20to%20explore%20support%20groups%20and%20connect%20with%20a%20community" target="_blank" rel="noopener noreferrer">
               <Button size="lg" variant="secondary">
                 Explore Support Groups
               </Button>

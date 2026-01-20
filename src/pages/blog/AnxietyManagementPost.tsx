@@ -695,7 +695,7 @@ const AnxietyManagementPost = () => {
                       Our trained counselors are here to help you develop personalized coping strategies and find lasting relief.
                     </p>
                     <a 
-                      href="https://wa.me/256780570987?text=Hi%2C%20I%20need%20help%20managing%20my%20anxiety.%20I%20would%20like%20to%20speak%20with%20a%20counselor."
+                      href="https://wa.me/256792085773?text=Hi%2C%20I%20need%20help%20managing%20my%20anxiety.%20I%20would%20like%20to%20speak%20with%20a%20counselor."
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-block bg-background text-foreground px-8 py-3 rounded-full font-semibold hover:bg-background/90 transition-colors"

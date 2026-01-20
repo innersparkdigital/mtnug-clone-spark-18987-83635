@@ -672,7 +672,7 @@ const DepressionPost = () => {
                       Our compassionate therapists are here to support your journey toward healing.
                     </p>
                     <a 
-                      href="https://wa.me/256780570987?text=Hi%2C%20I%20read%20your%20blog%20about%20depression%20and%20would%20like%20to%20speak%20with%20a%20therapist"
+                      href="https://wa.me/256792085773?text=Hi%2C%20I%20read%20your%20blog%20about%20depression%20and%20would%20like%20to%20speak%20with%20a%20therapist"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-block bg-background text-foreground px-8 py-3 rounded-full font-semibold hover:bg-background/90 transition-colors"

@@ -121,7 +121,7 @@ const NotFound = () => {
                 Need immediate support?
               </p>
               <a 
-                href="https://wa.me/256780570987?text=Hi%2C%20I%20need%20immediate%20mental%20health%20support"
+                href="https://wa.me/256792085773?text=Hi%2C%20I%20need%20immediate%20mental%20health%20support"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 text-primary font-medium hover:underline"
