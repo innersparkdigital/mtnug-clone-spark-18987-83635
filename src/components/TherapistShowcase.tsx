@@ -8,11 +8,17 @@ import ScrollReveal, { Parallax, ScaleOnScroll } from "@/components/ScrollReveal
 import juliusKizito from "@/assets/specialists/julius-kizito.png";
 import nassuunaMargret from "@/assets/specialists/nassuuna-margret.jpg";
 import atwiiinePriscilla from "@/assets/specialists/atwiine-priscilla.jpg";
+import mbabaziJovia from "@/assets/specialists/mbabazi-jovia.jpg";
+import zemeyiRita from "@/assets/specialists/zemeyi-rita.jpg";
+import florenceNakaweesa from "@/assets/specialists/florence-winfred-nakaweesa.jpg";
+import winnieAnzaziJira from "@/assets/specialists/winnie-anzazi-jira.jpg";
 
 const therapists = [
-  { name: "Atwiine Priscilla", image: atwiiinePriscilla, rotation: -6 },
+  { name: "Mbabazi Jovia", image: mbabaziJovia, rotation: -12 },
+  { name: "Zemeyi Rita", image: zemeyiRita, rotation: -4 },
   { name: "Julius Kizito", image: juliusKizito, rotation: 0 },
-  { name: "Nassuuna Margret", image: nassuunaMargret, rotation: 6 },
+  { name: "Florence Winfred", image: florenceNakaweesa, rotation: 4 },
+  { name: "Winnie Anzazi Jira", image: winnieAnzaziJira, rotation: 12 },
 ];
 
 const TherapistShowcase = () => {
