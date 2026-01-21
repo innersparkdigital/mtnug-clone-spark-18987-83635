@@ -279,18 +279,11 @@ const HowItWorks = () => {
                     
                     {/* Phone screen */}
                     <div className="relative w-[200px] sm:w-[240px] md:w-[280px] h-[400px] sm:h-[480px] md:h-[560px] rounded-[2rem] md:rounded-[2.5rem] overflow-hidden bg-white">
-                      <AnimatePresence mode="wait">
-                        <motion.img
-                          key={activeTab}
-                          src={currentTab.image}
-                          alt={currentTab.alt}
-                          className={`w-full h-full bg-white ${currentTab.fillFrame ? 'object-cover' : 'object-contain object-top'}`}
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
-                          transition={{ duration: 0.15 }}
-                        />
-                      </AnimatePresence>
+                      <img
+                        src={currentTab.image}
+                        alt={currentTab.alt}
+                        className={`w-full h-full bg-white ${currentTab.fillFrame ? 'object-cover' : 'object-contain object-top'}`}
+                      />
                     </div>
                     
                     {/* Phone home indicator */}
