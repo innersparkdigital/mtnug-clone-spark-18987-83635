@@ -11,6 +11,11 @@ import nassuunaMargret from "@/assets/specialists/nassuuna-margret.jpg";
 import winnieAnzaziJira from "@/assets/specialists/winnie-anzazi-jira.jpg";
 import atwiiinePriscilla from "@/assets/specialists/atwiine-priscilla.jpg";
 import mubiruRashid from "@/assets/specialists/mubiru-rashid.jpg";
+import leonardOgugu from "@/assets/specialists/leonard-ogugu.jpg";
+import mbabaziJovia from "@/assets/specialists/mbabazi-jovia.jpg";
+import estherMurungi from "@/assets/specialists/esther-murungi.jpg";
+import zemeyiRita from "@/assets/specialists/zemeyi-rita.jpg";
+import florenceNakaweesa from "@/assets/specialists/florence-winfred-nakaweesa.jpg";
 
 const specialistImageMap: Record<string, string> = {
   "Nakayinga Gift": giftNakayinga,
@@ -22,14 +27,14 @@ const specialistImageMap: Record<string, string> = {
   "Winnie Anzazi Jira": winnieAnzaziJira,
   "Atwiine Priscilla": atwiiinePriscilla,
   "Mubiru Rashid": mubiruRashid,
+  "Leonard Ogugu": leonardOgugu,
+  "Mbabazi Jovia": mbabaziJovia,
+  "Esther Murungi": estherMurungi,
+  "Zemeyi Rita": zemeyiRita,
+  "Florence Winfred Nakaweesa": florenceNakaweesa,
   // New specialists without local images - will use database image_url or initials
-  "Leonard Ogugu": "",
   "Leah Wanjiru Muiruri": "",
   "Boingotlo Moremi": "",
-  "Mbabazi Jovia": "",
-  "Esther Murungi": "",
-  "Zemeyi Rita": "",
-  "Florence Winfred Nakaweesa": "",
 };
 
 export const getSpecialistImage = (name: string, imageUrl?: string | null): string | null => {
