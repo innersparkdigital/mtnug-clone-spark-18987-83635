@@ -14,11 +14,13 @@ import florenceNakaweesa from "@/assets/specialists/florence-winfred-nakaweesa.j
 import winnieAnzaziJira from "@/assets/specialists/winnie-anzazi-jira.jpg";
 
 const therapists = [
-  { name: "Mbabazi Jovia", image: mbabaziJovia, rotation: -12 },
-  { name: "Zemeyi Rita", image: zemeyiRita, rotation: -4 },
+  { name: "Mbabazi Jovia", image: mbabaziJovia, rotation: -15 },
+  { name: "Atwiine Priscilla", image: atwiiinePriscilla, rotation: -10 },
+  { name: "Zemeyi Rita", image: zemeyiRita, rotation: -5 },
   { name: "Julius Kizito", image: juliusKizito, rotation: 0 },
-  { name: "Florence Winfred", image: florenceNakaweesa, rotation: 4 },
-  { name: "Winnie Anzazi Jira", image: winnieAnzaziJira, rotation: 12 },
+  { name: "Nassuuna Margret", image: nassuunaMargret, rotation: 5 },
+  { name: "Florence Winfred", image: florenceNakaweesa, rotation: 10 },
+  { name: "Winnie Anzazi Jira", image: winnieAnzaziJira, rotation: 15 },
 ];
 
 const TherapistShowcase = () => {
