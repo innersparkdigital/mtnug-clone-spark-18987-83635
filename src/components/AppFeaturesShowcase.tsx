@@ -278,18 +278,11 @@ const AppFeaturesShowcase = () => {
               >
                 {/* Large Card with Human Image */}
                 <div className="absolute -left-32 sm:-left-40 md:-left-52 lg:-left-64 top-1/2 -translate-y-1/2 w-52 sm:w-64 md:w-80 lg:w-96 rounded-3xl overflow-hidden shadow-2xl transform -rotate-3 z-0 bg-white">
-                  <AnimatePresence mode="wait">
-                    <motion.img
-                      key={`person-${currentFeature.id}`}
-                      src={currentFeature.personImage}
-                      alt=""
-                      className="w-full h-auto object-cover"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.15 }}
-                    />
-                  </AnimatePresence>
+                  <img
+                    src={currentFeature.personImage}
+                    alt=""
+                    className="w-full h-auto object-cover"
+                  />
                 </div>
 
                 {/* Main Phone Frame - With App Screen */}
@@ -297,18 +290,11 @@ const AppFeaturesShowcase = () => {
                   {currentFeature.id === 4 ? (
                     /* Private Counselling - Show image without phone frame */
                     <div className="relative w-[200px] sm:w-[240px] md:w-[280px] h-[400px] sm:h-[480px] md:h-[560px] rounded-3xl overflow-hidden shadow-2xl">
-                      <AnimatePresence mode="wait">
-                        <motion.img
-                          key={currentFeature.id}
-                          src={currentFeature.mockup}
-                          alt={currentFeature.title}
-                          className="w-full h-full object-cover"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
-                          transition={{ duration: 0.15 }}
-                        />
-                      </AnimatePresence>
+                      <img
+                        src={currentFeature.mockup}
+                        alt={currentFeature.title}
+                        className="w-full h-full object-cover"
+                      />
                     </div>
                   ) : (
                     /* Other features - Show with phone frame */
@@ -318,18 +304,11 @@ const AppFeaturesShowcase = () => {
                       
                       {/* Phone screen - With App Mockup */}
                       <div className="relative w-[200px] sm:w-[240px] md:w-[280px] h-[400px] sm:h-[480px] md:h-[560px] rounded-[2rem] md:rounded-[2.5rem] overflow-hidden bg-white">
-                        <AnimatePresence mode="wait">
-                          <motion.img
-                            key={currentFeature.id}
-                            src={currentFeature.mockup}
-                            alt={currentFeature.title}
-                            className="w-full h-full object-contain object-top bg-white"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.15 }}
-                          />
-                        </AnimatePresence>
+                        <img
+                          src={currentFeature.mockup}
+                          alt={currentFeature.title}
+                          className="w-full h-full object-contain object-top bg-white"
+                        />
                       </div>
                       
                       {/* Phone home indicator */}
