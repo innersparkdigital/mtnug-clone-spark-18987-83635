@@ -122,14 +122,9 @@ const Header = () => {
             <Phone className="w-3 h-3" />
             <span>Call 0740 616 404</span>
           </a>
-          <a 
-            href="https://wa.me/256740616404" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="flex items-center gap-1 hover:text-primary-foreground/80 transition-colors"
-          >
-            <MessageCircle className="w-3 h-3" />
-            <span>WhatsApp</span>
+          <a href="tel:+256792085773" className="flex items-center gap-1 hover:text-primary-foreground/80 transition-colors">
+            <Phone className="w-3 h-3" />
+            <span>Call 0792 085 773</span>
           </a>
           <a href="tel:+256792085773" className="flex items-center gap-1 hover:text-primary-foreground/80 transition-colors">
             <Phone className="w-3 h-3" />
@@ -156,20 +151,11 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Mobile Contact Bar */}
       <div className="md:hidden bg-primary text-primary-foreground py-1.5 px-4">
         <div className="flex justify-center items-center gap-3 text-xs">
           <a href="tel:+256740616404" className="flex items-center gap-1 hover:text-primary-foreground/80 transition-colors">
             <Phone className="w-3 h-3" />
             <span>0740 616 404</span>
-          </a>
-          <a 
-            href="https://wa.me/256740616404" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="flex items-center gap-1 hover:text-primary-foreground/80 transition-colors"
-          >
-            <MessageCircle className="w-3 h-3" />
           </a>
           <span className="text-primary-foreground/50">|</span>
           <a href="tel:+256792085773" className="flex items-center gap-1 hover:text-primary-foreground/80 transition-colors">
