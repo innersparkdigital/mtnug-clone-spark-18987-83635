@@ -59,6 +59,7 @@ import ForProfessionals from "./pages/ForProfessionals";
 import Specialists from "./pages/Specialists";
 import SpecialistProfile from "./pages/SpecialistProfile";
 import ScrollToTop from "./components/ScrollToTop";
+import FloatingWhatsApp from "./components/FloatingWhatsApp";
 import Learning from "./pages/Learning";
 import CourseDetail from "./pages/CourseDetail";
 import LessonViewer from "./pages/LessonViewer";
@@ -81,6 +82,7 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
           <ScrollToTop />
+          <FloatingWhatsApp />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
