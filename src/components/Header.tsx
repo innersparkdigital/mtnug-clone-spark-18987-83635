@@ -117,28 +117,24 @@ const Header = () => {
       <PromoSlider />
       {/* Top Bar - Hidden on mobile */}
       <div className="hidden md:block bg-gradient-to-r from-primary/90 via-primary to-primary/90 text-primary-foreground py-1 px-4 text-xs">
-        <div className="container mx-auto flex justify-between items-center">
-          {/* Click-to-call phone numbers */}
-          <div className="flex items-center gap-4">
-            <a href="tel:+256740616404" className="flex items-center gap-1 hover:text-primary-foreground/80 transition-colors">
-              <Phone className="w-3 h-3" />
-              <span>0740 616 404</span>
-            </a>
-            <a href="tel:+256792085773" className="flex items-center gap-1 hover:text-primary-foreground/80 transition-colors">
-              <Phone className="w-3 h-3" />
-              <span>0792 085 773</span>
-            </a>
-          </div>
-          <div className="flex items-center gap-4">
-            <Link to="/for-professionals" className="hover:text-primary-foreground/80 transition-colors">{translations.forProfessionals}</Link>
-            <Link to="/for-business" className="hover:text-primary-foreground/80 transition-colors">{translations.forBusiness}</Link>
-            <Link to="/donate-therapy">
-              <Button size="sm" variant="secondary" className="text-[10px] px-2 py-0.5 h-5">
-                {translations.donateTherapy}
-              </Button>
-            </Link>
-            <LanguageSelector variant="header" />
-          </div>
+        <div className="container mx-auto flex justify-end items-center gap-4">
+          <a href="tel:+256740616404" className="flex items-center gap-1 hover:text-primary-foreground/80 transition-colors">
+            <Phone className="w-3 h-3" />
+            <span>Call 0740 616 404</span>
+          </a>
+          <a href="tel:+256792085773" className="flex items-center gap-1 hover:text-primary-foreground/80 transition-colors">
+            <Phone className="w-3 h-3" />
+            <span>Call 0792 085 773</span>
+          </a>
+          <span className="text-primary-foreground/30">|</span>
+          <Link to="/for-professionals" className="hover:text-primary-foreground/80 transition-colors">{translations.forProfessionals}</Link>
+          <Link to="/for-business" className="hover:text-primary-foreground/80 transition-colors">{translations.forBusiness}</Link>
+          <Link to="/donate-therapy">
+            <Button size="sm" variant="secondary" className="text-[10px] px-2 py-0.5 h-5">
+              {translations.donateTherapy}
+            </Button>
+          </Link>
+          <LanguageSelector variant="header" />
         </div>
       </div>
 
