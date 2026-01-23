@@ -8,24 +8,52 @@ import heroSlide3 from "@/assets/hero-slide-3.jpg";
 const slides = [
   {
     image: heroSlide1,
-    title: "Your Digital Partner for Mental Wellness",
-    subtitle: "Connect with licensed therapists from anywhere, anytime. Affordable, accessible, stigma-free support.",
-    cta: "Start Your Journey",
-    link: "#app"
+    title: "Your kindness saves someone tomorrow",
+    subtitle: "Donate therapy sessions to those who cannot afford mental health support.",
+    cta: "Donate Now",
+    link: "/donate-therapy"
   },
   {
     image: heroSlide2,
-    title: "Join Safe Support Groups",
-    subtitle: "Share, heal, and grow together in professionally moderated peer communities.",
-    cta: "Find Your Community",
-    link: "#community"
+    title: "The right help is closer than you think",
+    subtitle: "Connect with licensed therapists from anywhere, anytime. Affordable, accessible, stigma-free support.",
+    cta: "Find a Therapist",
+    link: "/find-therapist"
   },
   {
     image: heroSlide3,
-    title: "Track Your Wellness Journey",
-    subtitle: "Mood check-ins, journaling, and personalized insights to build emotional awareness.",
-    cta: "Download the App",
-    link: "#app"
+    title: "Your feelings are understood",
+    subtitle: "Our compassionate specialists are trained to listen without judgment.",
+    cta: "Talk to Someone",
+    link: "/specialists"
+  },
+  {
+    image: heroSlide1,
+    title: "Your healing is completely confidential",
+    subtitle: "Private, secure sessions with trusted professionals who respect your privacy.",
+    cta: "Book a Session",
+    link: "/virtual-therapy"
+  },
+  {
+    image: heroSlide2,
+    title: "Your life matters. Reach out to us now",
+    subtitle: "You are not alone. We are here to support you through every step of your journey.",
+    cta: "Get Help Now",
+    link: "/emergency-support"
+  },
+  {
+    image: heroSlide3,
+    title: "Your story is worth celebrating",
+    subtitle: "Every step forward is a victory. We're here to celebrate your progress with you.",
+    cta: "Start Your Journey",
+    link: "/services"
+  },
+  {
+    image: heroSlide1,
+    title: "Someone is ready to listen 24/7",
+    subtitle: "Round-the-clock support whenever you need someone to talk to.",
+    cta: "Chat Now",
+    link: "/contact"
   }
 ];
 
