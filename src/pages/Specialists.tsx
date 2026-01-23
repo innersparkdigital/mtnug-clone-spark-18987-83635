@@ -300,7 +300,7 @@ Please confirm availability. Thank you!`;
         <div className="flex items-start gap-4 mb-4">
           <div className="w-16 h-16 rounded-lg bg-primary/10 flex items-center justify-center text-primary font-bold text-xl shrink-0 overflow-hidden border-2 border-primary/20">
             {imageUrl ? (
-              <img src={imageUrl} alt={specialist.name} className="w-full h-full object-cover object-top" />
+              <img src={imageUrl} alt={specialist.name} className="w-full h-full object-cover object-top" loading="lazy" />
             ) : (
               initials
             )}
@@ -545,38 +545,37 @@ const Specialists = () => {
   const currentCategory = supportCategories.find(c => c.id === selectedCategory) || supportCategories[0];
 
   useEffect(() => {
-    fetchSpecialists();
-    fetchVerifiedSpecialists();
+    const fetchData = async () => {
+      // Fetch specialists and certificates in parallel for faster loading
+      const [specialistsResult, certificatesResult] = await Promise.all([
+        supabase
+          .from("specialists")
+          .select("*")
+          .eq("is_active", true)
+          .not("bio", "is", null)
+          .not("education", "is", null)
+          .order("experience_years", { ascending: false }),
+        supabase
+          .from("specialist_certificates")
+          .select("specialist_id")
+      ]);
+
+      if (specialistsResult.error) {
+        console.error("Error fetching specialists:", specialistsResult.error);
+      } else {
+        setSpecialists(specialistsResult.data || []);
+      }
+
+      if (!certificatesResult.error && certificatesResult.data) {
+        const verifiedIds = new Set(certificatesResult.data.map(cert => cert.specialist_id));
+        setVerifiedSpecialists(verifiedIds);
+      }
+
+      setLoading(false);
+    };
+
+    fetchData();
   }, []);
-
-  const fetchSpecialists = async () => {
-    // Only fetch specialists with complete profiles (bio and education)
-    const { data, error } = await supabase
-      .from("specialists")
-      .select("*")
-      .eq("is_active", true)
-      .not("bio", "is", null)
-      .not("education", "is", null)
-      .order("experience_years", { ascending: false });
-
-    if (error) {
-      console.error("Error fetching specialists:", error);
-    } else {
-      setSpecialists(data || []);
-    }
-    setLoading(false);
-  };
-
-  const fetchVerifiedSpecialists = async () => {
-    const { data, error } = await supabase
-      .from("specialist_certificates")
-      .select("specialist_id");
-
-    if (!error && data) {
-      const verifiedIds = new Set(data.map(cert => cert.specialist_id));
-      setVerifiedSpecialists(verifiedIds);
-    }
-  };
 
   const filteredSpecialists = specialists.filter((specialist) => {
     const matchesCategory = matchSpecialistToSupportCategory(specialist, currentCategory);
@@ -786,10 +785,33 @@ const Specialists = () => {
               {selectedCountry && ` from ${selectedCountry}`}
             </p>
 
-            {/* Loading State */}
+            {/* Loading State with Skeleton Cards */}
             {loading ? (
-              <div className="text-center py-12">
-                <div className="animate-pulse text-muted-foreground">Loading specialists...</div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {[...Array(8)].map((_, i) => (
+                  <div key={i} className="bg-card rounded-xl border border-border p-6 animate-pulse">
+                    <div className="flex items-start gap-4 mb-4">
+                      <div className="w-16 h-16 rounded-lg bg-muted"></div>
+                      <div className="flex-1 space-y-2">
+                        <div className="h-5 bg-muted rounded w-3/4"></div>
+                        <div className="h-4 bg-muted rounded w-1/2"></div>
+                      </div>
+                    </div>
+                    <div className="space-y-3 mb-4">
+                      <div className="h-4 bg-muted rounded w-full"></div>
+                      <div className="h-4 bg-muted rounded w-2/3"></div>
+                    </div>
+                    <div className="flex flex-wrap gap-1.5 mb-4">
+                      <div className="h-5 bg-muted rounded w-16"></div>
+                      <div className="h-5 bg-muted rounded w-20"></div>
+                      <div className="h-5 bg-muted rounded w-14"></div>
+                    </div>
+                    <div className="flex gap-2">
+                      <div className="h-10 bg-muted rounded flex-1"></div>
+                      <div className="h-10 bg-muted rounded flex-1"></div>
+                    </div>
+                  </div>
+                ))}
               </div>
             ) : (
               <>
