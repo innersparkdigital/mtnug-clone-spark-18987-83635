@@ -12,11 +12,11 @@ import mbabaziJovia from "@/assets/specialists/mbabazi-jovia.jpg";
 import zemeyiRita from "@/assets/specialists/zemeyi-rita.jpg";
 
 const therapists = [
-  { name: "Mbabazi Jovia", image: mbabaziJovia, rotation: -12 },
-  { name: "Atwiine Priscilla", image: atwiiinePriscilla, rotation: -6 },
-  { name: "Julius Kizito", image: juliusKizito, rotation: 0 },
-  { name: "Zemeyi Rita", image: zemeyiRita, rotation: 6 },
-  { name: "Nassuuna Margret", image: nassuunaMargret, rotation: 12 },
+  { name: "Mbabazi Jovia", image: mbabaziJovia, rotation: -12, id: "560a72fe-1ff2-4a2e-8e8a-18c8c1b697a4" },
+  { name: "Atwiine Priscilla", image: atwiiinePriscilla, rotation: -6, id: "01dd47fd-0fcc-459a-b6c3-bf39f7926da6" },
+  { name: "Julius Kizito", image: juliusKizito, rotation: 0, id: "7542d74b-3e3c-4437-a329-7865e6cde942" },
+  { name: "Zemeyi Rita", image: zemeyiRita, rotation: 6, id: "05b43b71-6155-47c1-8995-359b100763b7" },
+  { name: "Nassuuna Margret", image: nassuunaMargret, rotation: 12, id: "fde2986e-81fe-4ed8-b56d-df4c8f542011" },
 ];
 
 const TherapistShowcase = () => {
@@ -82,50 +82,54 @@ const TherapistShowcase = () => {
         <ScaleOnScroll scaleFrom={0.85} scaleTo={1}>
           <div className="flex justify-center items-end -space-x-4 md:-space-x-8 lg:-space-x-12">
             {therapists.map((therapist, index) => (
-              <motion.div
+              <Link
                 key={therapist.name}
-                initial={{ opacity: 0, y: 80, rotate: therapist.rotation }}
-                whileInView={{ opacity: 1, y: 0, rotate: therapist.rotation }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ 
-                  duration: 0.8, 
-                  delay: 0.15 * index,
-                  ease: [0.22, 1, 0.36, 1] 
-                }}
-                whileHover={{ 
-                  y: -20, 
-                  rotate: 0,
-                  scale: 1.05,
-                  zIndex: 50,
-                  transition: { duration: 0.3 }
-                }}
-                className="relative group cursor-pointer"
-                style={{ 
-                  zIndex: index === 1 ? 10 : Math.abs(1 - index) < 2 ? 5 : 1,
-                  transform: `rotate(${therapist.rotation}deg)`
-                }}
+                to={`/specialists/${therapist.id}`}
               >
-                <div 
-                  className="w-32 h-40 sm:w-40 sm:h-52 md:w-48 md:h-64 lg:w-52 lg:h-72 rounded-2xl overflow-hidden shadow-lg group-hover:shadow-2xl transition-shadow duration-300"
+                <motion.div
+                  initial={{ opacity: 0, y: 80, rotate: therapist.rotation }}
+                  whileInView={{ opacity: 1, y: 0, rotate: therapist.rotation }}
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{ 
+                    duration: 0.8, 
+                    delay: 0.15 * index,
+                    ease: [0.22, 1, 0.36, 1] 
+                  }}
+                  whileHover={{ 
+                    y: -20, 
+                    rotate: 0,
+                    scale: 1.05,
+                    zIndex: 50,
+                    transition: { duration: 0.3 }
+                  }}
+                  className="relative group cursor-pointer"
                   style={{ 
-                    backgroundColor: 'hsl(35 50% 90%)',
+                    zIndex: index === 2 ? 10 : Math.abs(2 - index) < 2 ? 5 : 1,
+                    transform: `rotate(${therapist.rotation}deg)`
                   }}
                 >
-                  <img
-                    src={therapist.image}
-                    alt={therapist.name}
-                    className="w-full h-full object-cover object-top"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                </div>
-                {/* Name tooltip on hover */}
-                <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
-                  <span className="text-sm font-medium text-foreground bg-background/90 px-3 py-1 rounded-full shadow-sm">
-                    {therapist.name}
-                  </span>
-                </div>
-              </motion.div>
+                  <div 
+                    className="w-32 h-40 sm:w-40 sm:h-52 md:w-48 md:h-64 lg:w-52 lg:h-72 rounded-2xl overflow-hidden shadow-lg group-hover:shadow-2xl transition-shadow duration-300"
+                    style={{ 
+                      backgroundColor: 'hsl(35 50% 90%)',
+                    }}
+                  >
+                    <img
+                      src={therapist.image}
+                      alt={therapist.name}
+                      className="w-full h-full object-cover object-top"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                  {/* Name tooltip on hover */}
+                  <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+                    <span className="text-sm font-medium text-foreground bg-background/90 px-3 py-1 rounded-full shadow-sm">
+                      {therapist.name}
+                    </span>
+                  </div>
+                </motion.div>
+              </Link>
             ))}
           </div>
         </ScaleOnScroll>
