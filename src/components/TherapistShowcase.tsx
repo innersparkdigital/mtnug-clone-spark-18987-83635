@@ -10,17 +10,13 @@ import nassuunaMargret from "@/assets/specialists/nassuuna-margret.jpg";
 import atwiiinePriscilla from "@/assets/specialists/atwiine-priscilla.jpg";
 import mbabaziJovia from "@/assets/specialists/mbabazi-jovia.jpg";
 import zemeyiRita from "@/assets/specialists/zemeyi-rita.jpg";
-import florenceNakaweesa from "@/assets/specialists/florence-winfred-nakaweesa.jpg";
-import winnieAnzaziJira from "@/assets/specialists/winnie-anzazi-jira.jpg";
 
 const therapists = [
-  { name: "Mbabazi Jovia", image: mbabaziJovia, rotation: -15 },
-  { name: "Atwiine Priscilla", image: atwiiinePriscilla, rotation: -10 },
-  { name: "Zemeyi Rita", image: zemeyiRita, rotation: -5 },
+  { name: "Mbabazi Jovia", image: mbabaziJovia, rotation: -12 },
+  { name: "Atwiine Priscilla", image: atwiiinePriscilla, rotation: -6 },
   { name: "Julius Kizito", image: juliusKizito, rotation: 0 },
-  { name: "Nassuuna Margret", image: nassuunaMargret, rotation: 5 },
-  { name: "Florence Winfred", image: florenceNakaweesa, rotation: 10 },
-  { name: "Winnie Anzazi Jira", image: winnieAnzaziJira, rotation: 15 },
+  { name: "Zemeyi Rita", image: zemeyiRita, rotation: 6 },
+  { name: "Nassuuna Margret", image: nassuunaMargret, rotation: 12 },
 ];
 
 const TherapistShowcase = () => {
