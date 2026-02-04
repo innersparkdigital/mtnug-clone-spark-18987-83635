@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet";
 import Header from "@/components/Header";
 import HeroCarousel from "@/components/HeroCarousel";
 import ServicesGrid from "@/components/ServicesGrid";
@@ -15,10 +16,11 @@ import CookieConsent from "@/components/CookieConsent";
 const Index = () => {
   return (
     <>
-      {/* SEO meta tags for homepage */}
-      <head>
-        <link rel="canonical" href="https://innerspark.africa/" />
-      </head>
+      <Helmet>
+        <title>Online Therapy - Book a Therapist Online Today | Innerspark Africa</title>
+        <meta name="description" content="Book online therapy with licensed therapists. Get professional mental health support for depression, anxiety, stress & more. Talk to a therapist today. Video, voice & chat therapy available globally." />
+        <link rel="canonical" href="https://www.innersparkafrica.com/" />
+      </Helmet>
       <div className="min-h-screen bg-background">
         <Header />
         {/* <HeroCarousel /> */}

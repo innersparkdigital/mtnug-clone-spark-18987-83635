@@ -10,6 +10,36 @@
   
   <!-- Core Service Pages - High Priority -->
   <url>
+    <loc>https://www.innersparkafrica.com/online-therapy</loc>
+    <lastmod>2026-02-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.98</priority>
+  </url>
+  <url>
+    <loc>https://www.innersparkafrica.com/book-therapist</loc>
+    <lastmod>2026-02-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.98</priority>
+  </url>
+  <url>
+    <loc>https://www.innersparkafrica.com/mental-health-support</loc>
+    <lastmod>2026-02-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://www.innersparkafrica.com/video-therapy</loc>
+    <lastmod>2026-02-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://www.innersparkafrica.com/chat-therapy</loc>
+    <lastmod>2026-02-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
     <loc>https://www.innersparkafrica.com/virtual-therapy</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>weekly</changefreq>

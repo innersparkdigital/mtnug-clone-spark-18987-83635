@@ -68,6 +68,12 @@ import LearningDashboard from "./pages/LearningDashboard";
 import StudentDashboard from "./pages/StudentDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import Auth from "./pages/Auth";
+// SEO Landing Pages
+import OnlineTherapy from "./pages/OnlineTherapy";
+import BookTherapist from "./pages/BookTherapist";
+import MentalHealthSupport from "./pages/MentalHealthSupport";
+import VideoTherapy from "./pages/VideoTherapy";
+import ChatTherapy from "./pages/ChatTherapy";
 
 const queryClient = new QueryClient();
 
@@ -87,6 +93,12 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/virtual-therapy" element={<VirtualTherapy />} />
+            {/* SEO Landing Pages */}
+            <Route path="/online-therapy" element={<OnlineTherapy />} />
+            <Route path="/book-therapist" element={<BookTherapist />} />
+            <Route path="/mental-health-support" element={<MentalHealthSupport />} />
+            <Route path="/video-therapy" element={<VideoTherapy />} />
+            <Route path="/chat-therapy" element={<ChatTherapy />} />
             <Route path="/support-groups" element={<SupportGroups />} />
             <Route path="/chat-sessions" element={<ChatSessions />} />
             <Route path="/mood-check-in" element={<MoodCheckIn />} />
