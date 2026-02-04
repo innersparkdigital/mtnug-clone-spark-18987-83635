@@ -41,7 +41,7 @@ const Header = () => {
   const [translations, setTranslations] = useState({
     forProfessionals: "FOR PROFESSIONALS",
     forBusiness: "FOR BUSINESS",
-    tagline: "Africa's Digital Wellness Hub",
+    tagline: "Online Therapy & Mental Health Support",
     donateTherapy: "Donate Therapy",
     services: "Our Services",
     specialists: "Specialists",
@@ -57,7 +57,7 @@ const Header = () => {
       setTranslations({
         forProfessionals: "FOR PROFESSIONALS",
         forBusiness: "FOR BUSINESS",
-        tagline: "Africa's Digital Wellness Hub",
+        tagline: "Online Therapy & Mental Health Support",
         donateTherapy: "Donate Therapy",
         services: "Our Services",
         specialists: "Specialists",

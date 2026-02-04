@@ -593,24 +593,24 @@ const Specialists = () => {
   return (
     <>
       <Helmet>
-        <title>Find a Therapist Near You | Licensed Counselors & Psychologists | Innerspark Africa</title>
+        <title>Find a Therapist Online - Book Licensed Therapists Today | Innerspark Africa</title>
         <meta
           name="description"
-          content="Find licensed therapists, counselors & psychologists in Africa. Book online therapy sessions for depression, anxiety, trauma, relationships & more. Affordable rates from UGX 75,000. Verified professionals."
+          content="Find and book licensed therapists online today. Browse our network of verified counselors & psychologists. Get help for depression, anxiety, trauma & more. Affordable rates from $20. Book now!"
         />
-        <meta name="keywords" content="find a therapist, find therapist near me, online therapist, licensed therapists Africa, psychologists Uganda, counselors Africa, psychiatrists, mental health professionals, online therapy, virtual counseling, therapist directory, book a therapist, affordable therapy, licensed counselors, mental health help, depression therapist, anxiety counselor, trauma specialist, relationship counselor, find a psychologist" />
-        <link rel="canonical" href="https://innerspark.africa/specialists" />
+        <meta name="keywords" content="find therapist online, book therapist, find therapist near me, online therapist, licensed therapists, psychologists, counselors, mental health professionals, online therapy, virtual counseling, therapist directory, book a therapist, affordable therapy, licensed counselors, depression therapist, anxiety counselor, trauma specialist, relationship counselor" />
+        <link rel="canonical" href="https://www.innersparkafrica.com/specialists" />
         
         {/* Open Graph */}
-        <meta property="og:title" content="Find a Therapist | Licensed Mental Health Professionals | Innerspark" />
-        <meta property="og:description" content="Browse our network of licensed therapists, counselors & psychologists. Find the right mental health professional for your needs. Book online sessions today." />
+        <meta property="og:title" content="Find a Therapist Online - Book Today | Innerspark" />
+        <meta property="og:description" content="Browse our network of licensed therapists, counselors & psychologists. Find the right mental health professional. Book online sessions today." />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://innerspark.africa/specialists" />
-        <meta property="og:image" content="https://innerspark.africa/innerspark-logo.png" />
+        <meta property="og:url" content="https://www.innersparkafrica.com/specialists" />
+        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
         
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Find a Therapist | Innerspark Africa" />
+        <meta name="twitter:title" content="Find a Therapist Online | Innerspark Africa" />
         <meta name="twitter:description" content="Find licensed therapists & counselors. Book affordable online therapy for depression, anxiety, trauma & more." />
         
         {/* Schema.org */}
@@ -618,9 +618,9 @@ const Specialists = () => {
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "MedicalWebPage",
-            "name": "Find a Therapist - Mental Health Professionals Directory",
-            "description": "Browse and book sessions with licensed therapists, counselors, and psychologists in Africa.",
-            "url": "https://innerspark.africa/specialists",
+            "name": "Find a Therapist Online - Mental Health Professionals Directory",
+            "description": "Browse and book sessions with licensed therapists, counselors, and psychologists. Available globally.",
+            "url": "https://www.innersparkafrica.com/specialists",
             "specialty": "Psychiatry",
             "mainEntity": {
               "@type": "ItemList",
@@ -639,13 +639,13 @@ const Specialists = () => {
                 "@type": "ListItem",
                 "position": 1,
                 "name": "Home",
-                "item": "https://innerspark.africa"
+                "item": "https://www.innersparkafrica.com"
               },
               {
                 "@type": "ListItem",
                 "position": 2,
                 "name": "Find a Therapist",
-                "item": "https://innerspark.africa/specialists"
+                "item": "https://www.innersparkafrica.com/specialists"
               }
             ]
           })}

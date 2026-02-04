@@ -8,24 +8,25 @@ import { useLanguage } from "@/contexts/LanguageContext";
 const Footer = () => {
   const { language, translateBatch } = useLanguage();
   const [t, setT] = useState({
-    description: "Africa's digital wellness hub — making mental health support affordable, accessible, and stigma-free.",
+    description: "Online therapy and mental health support — making professional care affordable, accessible, and stigma-free globally.",
     quickLinks: "Quick Links",
     ourServices: "Our Services",
-    specialists: "Specialists",
+    specialists: "Find a Therapist",
     aboutUs: "About Us",
     blog: "Blog",
     contactUs: "Contact Us",
     forProfessionals: "For Professionals",
     forBusiness: "For Business",
-    services: "Services",
-    virtualTherapy: "Virtual Therapy",
+    services: "Therapy Services",
+    onlineTherapy: "Online Therapy",
+    bookTherapist: "Book a Therapist",
+    videoTherapy: "Video Therapy",
+    chatTherapy: "Chat Therapy",
     supportGroups: "Support Groups",
-    wellnessResources: "Wellness Resources",
-    corporateWellness: "Corporate Wellness",
     connectWithUs: "Connect With Us",
     chatWhatsApp: "Chat on WhatsApp",
     callUs: "Call Us",
-    communityText: "Join our community and stay updated on wellness tips and events.",
+    communityText: "Join our community. Get support when you need it most.",
     allRights: "All rights reserved.",
     privacyPolicy: "Privacy Policy",
     termsOfService: "Terms of Service",
@@ -35,24 +36,25 @@ const Footer = () => {
   useEffect(() => {
     if (language === "en") {
       setT({
-        description: "Africa's digital wellness hub — making mental health support affordable, accessible, and stigma-free.",
+        description: "Online therapy and mental health support — making professional care affordable, accessible, and stigma-free globally.",
         quickLinks: "Quick Links",
         ourServices: "Our Services",
-        specialists: "Specialists",
+        specialists: "Find a Therapist",
         aboutUs: "About Us",
         blog: "Blog",
         contactUs: "Contact Us",
         forProfessionals: "For Professionals",
         forBusiness: "For Business",
-        services: "Services",
-        virtualTherapy: "Virtual Therapy",
+        services: "Therapy Services",
+        onlineTherapy: "Online Therapy",
+        bookTherapist: "Book a Therapist",
+        videoTherapy: "Video Therapy",
+        chatTherapy: "Chat Therapy",
         supportGroups: "Support Groups",
-        wellnessResources: "Wellness Resources",
-        corporateWellness: "Corporate Wellness",
         connectWithUs: "Connect With Us",
         chatWhatsApp: "Chat on WhatsApp",
         callUs: "Call Us",
-        communityText: "Join our community and stay updated on wellness tips and events.",
+        communityText: "Join our community. Get support when you need it most.",
         allRights: "All rights reserved.",
         privacyPolicy: "Privacy Policy",
         termsOfService: "Terms of Service",
@@ -62,24 +64,25 @@ const Footer = () => {
     }
 
     const texts = [
-      "Africa's digital wellness hub — making mental health support affordable, accessible, and stigma-free.",
+      "Online therapy and mental health support — making professional care affordable, accessible, and stigma-free globally.",
       "Quick Links",
       "Our Services",
-      "Specialists",
+      "Find a Therapist",
       "About Us",
       "Blog",
       "Contact Us",
       "For Professionals",
       "For Business",
-      "Services",
-      "Virtual Therapy",
+      "Therapy Services",
+      "Online Therapy",
+      "Book a Therapist",
+      "Video Therapy",
+      "Chat Therapy",
       "Support Groups",
-      "Wellness Resources",
-      "Corporate Wellness",
       "Connect With Us",
       "Chat on WhatsApp",
       "Call Us",
-      "Join our community and stay updated on wellness tips and events.",
+      "Join our community. Get support when you need it most.",
       "All rights reserved.",
       "Privacy Policy",
       "Terms of Service",
@@ -98,18 +101,19 @@ const Footer = () => {
         forProfessionals: results[7],
         forBusiness: results[8],
         services: results[9],
-        virtualTherapy: results[10],
-        supportGroups: results[11],
-        wellnessResources: results[12],
-        corporateWellness: results[13],
-        connectWithUs: results[14],
-        chatWhatsApp: results[15],
-        callUs: results[16],
-        communityText: results[17],
-        allRights: results[18],
-        privacyPolicy: results[19],
-        termsOfService: results[20],
-        cookiePolicy: results[21],
+        onlineTherapy: results[10],
+        bookTherapist: results[11],
+        videoTherapy: results[12],
+        chatTherapy: results[13],
+        supportGroups: results[14],
+        connectWithUs: results[15],
+        chatWhatsApp: results[16],
+        callUs: results[17],
+        communityText: results[18],
+        allRights: results[19],
+        privacyPolicy: results[20],
+        termsOfService: results[21],
+        cookiePolicy: results[22],
       });
     });
   }, [language, translateBatch]);
@@ -157,10 +161,11 @@ const Footer = () => {
           <div>
             <h4 className="font-semibold mb-4">{t.services}</h4>
             <ul className="space-y-2 text-sm">
-              <li><a href="#services" className="hover:text-primary transition-colors">{t.virtualTherapy}</a></li>
-              <li><a href="#services" className="hover:text-primary transition-colors">{t.supportGroups}</a></li>
-              <li><a href="#services" className="hover:text-primary transition-colors">{t.wellnessResources}</a></li>
-              <li><a href="#corporate" className="hover:text-primary transition-colors">{t.corporateWellness}</a></li>
+              <li><Link to="/online-therapy" className="hover:text-primary transition-colors">{t.onlineTherapy}</Link></li>
+              <li><Link to="/book-therapist" className="hover:text-primary transition-colors">{t.bookTherapist}</Link></li>
+              <li><Link to="/video-therapy" className="hover:text-primary transition-colors">{t.videoTherapy}</Link></li>
+              <li><Link to="/chat-therapy" className="hover:text-primary transition-colors">{t.chatTherapy}</Link></li>
+              <li><Link to="/support-groups" className="hover:text-primary transition-colors">{t.supportGroups}</Link></li>
             </ul>
           </div>
 

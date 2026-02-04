@@ -239,19 +239,31 @@ const AppFeaturesShowcase = () => {
                   {currentFeature.description}
                 </p>
 
-                {/* CTA Button */}
-                <Button 
-                  size="lg"
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-                  asChild
-                >
-                  <a href="https://play.google.com/store/apps/details?id=com.innerspark.app" target="_blank" rel="noopener noreferrer">
-                    Get started
-                  </a>
-                </Button>
+                {/* CTA Buttons */}
+                <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-8">
+                  <Button 
+                    size="lg"
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                    asChild
+                  >
+                    <a href="https://wa.me/256792085773?text=Hi,%20I%20need%20to%20book%20a%20therapy%20session%20today" target="_blank" rel="noopener noreferrer">
+                      Book Therapy Now
+                    </a>
+                  </Button>
+                  <Button 
+                    size="lg"
+                    variant="outline"
+                    className="px-8 py-6 text-lg font-semibold rounded-full border-2 hover:bg-muted transition-all duration-300"
+                    asChild
+                  >
+                    <a href="/specialists">
+                      Find a Therapist
+                    </a>
+                  </Button>
+                </div>
 
                 {/* Trust Badge */}
-                <div className="mt-8 inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 shadow-sm">
+                <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 shadow-sm">
                   <span className="text-sm font-medium text-foreground">Trusted by</span>
                   <span className="text-sm font-bold text-primary">5,000+</span>
                   <div className="flex items-center gap-0.5">
@@ -259,7 +271,7 @@ const AppFeaturesShowcase = () => {
                       <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                     ))}
                   </div>
-                  <span className="text-xs text-muted-foreground">users</span>
+                  <span className="text-xs text-muted-foreground">worldwide</span>
                 </div>
               </motion.div>
             </AnimatePresence>

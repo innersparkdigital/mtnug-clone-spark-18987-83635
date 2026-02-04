@@ -10,13 +10,13 @@ const VirtualTherapy = () => {
   const pageSchema = {
     "@context": "https://schema.org",
     "@type": "MedicalWebPage",
-    "name": "Online Therapy & Virtual Counseling in Africa",
-    "description": "Connect with licensed therapists for online therapy sessions. Get professional mental health support from home through secure video, voice, or chat sessions.",
-    "url": "https://innerspark.africa/virtual-therapy",
+    "name": "Virtual Therapy & Online Counseling - Book Today",
+    "description": "Connect with licensed therapists for virtual therapy sessions. Get professional mental health support from home through secure video, voice, or chat sessions.",
+    "url": "https://www.innersparkafrica.com/virtual-therapy",
     "mainEntity": {
       "@type": "MedicalTherapy",
-      "name": "Online Therapy",
-      "alternateName": ["Virtual Therapy", "Teletherapy", "Online Counseling", "E-Therapy", "Internet Therapy"],
+      "name": "Virtual Therapy",
+      "alternateName": ["Online Therapy", "Teletherapy", "Online Counseling", "E-Therapy", "Internet Therapy"],
       "description": "Professional mental health therapy delivered online through video calls, voice calls, or messaging with licensed therapists.",
       "medicineSystem": "WesternConventional",
       "relevantSpecialty": ["Psychiatry", "Psychology"]
@@ -35,18 +35,18 @@ const VirtualTherapy = () => {
   const serviceSchema = {
     "@context": "https://schema.org",
     "@type": "Service",
-    "name": "Online Therapy Services",
-    "alternateName": ["Virtual Therapy", "Teletherapy", "Online Counseling"],
-    "description": "Professional online therapy and virtual counseling services with licensed therapists. Connect via video, voice, or chat for depression, anxiety, stress, and more.",
+    "name": "Virtual Therapy Services",
+    "alternateName": ["Online Therapy", "Teletherapy", "Online Counseling"],
+    "description": "Professional virtual therapy and online counseling services with licensed therapists. Connect via video, voice, or chat for depression, anxiety, stress, and more.",
     "provider": {
       "@type": "MedicalOrganization",
       "name": "Innerspark Africa",
-      "url": "https://innerspark.africa"
+      "url": "https://www.innersparkafrica.com"
     },
     "serviceType": "Mental Health Counseling",
     "areaServed": {
-      "@type": "Continent",
-      "name": "Africa"
+      "@type": "Place",
+      "name": "Worldwide"
     },
     "availableChannel": {
       "@type": "ServiceChannel",
@@ -56,8 +56,8 @@ const VirtualTherapy = () => {
     "offers": {
       "@type": "Offer",
       "availability": "https://schema.org/InStock",
-      "priceCurrency": "UGX",
-      "price": "75000",
+      "priceCurrency": "USD",
+      "price": "20",
       "priceValidUntil": "2026-12-31"
     }
   };
@@ -68,26 +68,26 @@ const VirtualTherapy = () => {
     "mainEntity": [
       {
         "@type": "Question",
-        "name": "What is online therapy and how does it work?",
+        "name": "What is virtual therapy and how does it work?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Online therapy is professional mental health counseling delivered through video calls, phone calls, or messaging. You connect with a licensed therapist from anywhere using your phone or computer. Sessions are secure, confidential, and just as effective as in-person therapy."
+          "text": "Virtual therapy is professional mental health counseling delivered through video calls, phone calls, or messaging. You connect with a licensed therapist from anywhere using your phone or computer. Sessions are secure, confidential, and just as effective as in-person therapy."
         }
       },
       {
         "@type": "Question",
-        "name": "Is online therapy effective for depression and anxiety?",
+        "name": "Is virtual therapy effective for depression and anxiety?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes, research shows online therapy is highly effective for treating depression, anxiety, and other mental health conditions. Studies indicate it can be as effective as face-to-face therapy, with the added benefits of convenience and accessibility."
+          "text": "Yes, research shows virtual therapy is highly effective for treating depression, anxiety, and other mental health conditions. Studies indicate it can be as effective as face-to-face therapy, with the added benefits of convenience and accessibility."
         }
       },
       {
         "@type": "Question",
-        "name": "How much does online therapy cost in Africa?",
+        "name": "How much does virtual therapy cost?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "At Innerspark Africa, online therapy sessions start from UGX 75,000 (approximately $20 USD). We offer flexible payment options including mobile money to make mental health care accessible and affordable."
+          "text": "At Innerspark Africa, virtual therapy sessions start from $20 USD. We offer flexible payment options to make mental health care accessible and affordable globally."
         }
       },
       {
@@ -109,13 +109,13 @@ const VirtualTherapy = () => {
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://innerspark.africa"
+        "item": "https://www.innersparkafrica.com"
       },
       {
         "@type": "ListItem",
         "position": 2,
-        "name": "Online Therapy",
-        "item": "https://innerspark.africa/virtual-therapy"
+        "name": "Virtual Therapy",
+        "item": "https://www.innersparkafrica.com/virtual-therapy"
       }
     ]
   };
@@ -123,22 +123,22 @@ const VirtualTherapy = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Online Therapy & Virtual Counseling in Africa | Licensed Therapists | Innerspark</title>
-        <meta name="description" content="Get online therapy from licensed therapists in Africa. Virtual counseling for depression, anxiety, stress, trauma & more. Secure video, voice & chat sessions. Affordable rates starting UGX 75,000. Book now!" />
-        <meta name="keywords" content="online therapy Africa, virtual therapy Uganda, teletherapy, online counseling, virtual counseling, e-therapy, internet therapy, online therapist, video therapy, phone therapy, chat therapy, depression therapy online, anxiety counseling online, mental health online, therapy from home, remote therapy, digital therapy, online psychologist, virtual psychiatrist" />
-        <link rel="canonical" href="https://innerspark.africa/virtual-therapy" />
+        <title>Virtual Therapy - Talk to a Therapist Today | Book Online | Innerspark</title>
+        <meta name="description" content="Get virtual therapy from licensed therapists. Book a session today. Video, voice & chat therapy for depression, anxiety, stress & more. Affordable rates from $20. Start now!" />
+        <meta name="keywords" content="virtual therapy, online therapy, teletherapy, talk to therapist today, book therapist online, virtual counseling, e-therapy, internet therapy, online therapist, video therapy, phone therapy, chat therapy, depression therapy online, anxiety counseling online, mental health online, therapy from home, remote therapy, digital therapy" />
+        <link rel="canonical" href="https://www.innersparkafrica.com/virtual-therapy" />
         
         {/* Open Graph */}
-        <meta property="og:title" content="Online Therapy & Virtual Counseling in Africa | Innerspark" />
-        <meta property="og:description" content="Connect with licensed therapists for online therapy. Get professional mental health support from home. Video, voice, or chat sessions available 24/7." />
+        <meta property="og:title" content="Virtual Therapy - Talk to a Therapist Today | Innerspark" />
+        <meta property="og:description" content="Connect with licensed therapists for virtual therapy. Get professional mental health support from home. Video, voice, or chat sessions available. Book today!" />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://innerspark.africa/virtual-therapy" />
-        <meta property="og:image" content="https://innerspark.africa/innerspark-logo.png" />
+        <meta property="og:url" content="https://www.innersparkafrica.com/virtual-therapy" />
+        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
         
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Online Therapy & Virtual Counseling | Innerspark Africa" />
-        <meta name="twitter:description" content="Get affordable online therapy from licensed therapists. Video, voice & chat sessions for depression, anxiety, stress & more." />
+        <meta name="twitter:title" content="Virtual Therapy - Talk to a Therapist Today" />
+        <meta name="twitter:description" content="Get affordable virtual therapy from licensed therapists. Video, voice & chat sessions for depression, anxiety, stress & more." />
         
         {/* Schema.org */}
         <script type="application/ld+json">{JSON.stringify(pageSchema)}</script>
