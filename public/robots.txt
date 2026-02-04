@@ -1,5 +1,5 @@
 # Robots.txt for Innerspark Africa - Mental Health Services
-# https://innerspark.africa
+# https://www.innersparkafrica.com
 
 # Allow all major search engines full access
 User-agent: Googlebot
@@ -73,7 +73,7 @@ Allow: /emergency-support
 Allow: /donate-therapy
 
 # Sitemaps
-Sitemap: https://innerspark.africa/sitemap.xml
+Sitemap: https://www.innersparkafrica.com/sitemap.xml
 
 # Host
-Host: https://innerspark.africa
+Host: https://www.innersparkafrica.com
