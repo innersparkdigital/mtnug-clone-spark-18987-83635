@@ -5,7 +5,10 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
-import ScrollReveal, { StaggerContainer, StaggerItem, TextReveal } from "@/components/ScrollReveal";
+import ScrollReveal, { StaggerContainer, StaggerItem } from "@/components/ScrollReveal";
+import PreAssessmentModal from "@/components/PreAssessmentModal";
+import BookingFormModal from "@/components/BookingFormModal";
+import { useBookingFlow } from "@/hooks/useBookingFlow";
 import servicesHero from "@/assets/services-hero.jpg";
 import virtualTherapy from "@/assets/virtual-therapy-service.jpg";
 import supportGroups from "@/assets/support-groups-service.jpg";
@@ -59,14 +62,14 @@ const breadcrumbSchema = {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   "itemListElement": [
-    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://innerspark.africa" },
-    { "@type": "ListItem", "position": 2, "name": "Services", "item": "https://innerspark.africa/services" }
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.innersparkafrica.com" },
+    { "@type": "ListItem", "position": 2, "name": "Services", "item": "https://www.innersparkafrica.com/services" }
   ]
 };
 
 const defaultTexts = {
   heroTitle: "Mental Health Support That Fits Your Life",
-  heroDesc: "At Innerspark Africa, we make therapy, community support, and wellness resources accessible anytime, anywhere. Whether you're an individual, student, or organization, we have the right tools to help you heal, grow, and thrive.",
+  heroDesc: "Understand your mental health first, then get the right support. At Innerspark Africa, we make therapy, community support, and wellness resources accessible anytime, anywhere.",
   bookSession: "Book a Session",
   joinSupportGroup: "Join a Support Group",
   virtualTherapy: "Virtual Therapy",
@@ -109,6 +112,15 @@ const defaultTexts = {
 const Services = () => {
   const { language, translateBatch } = useLanguage();
   const [t, setT] = useState(defaultTexts);
+  const { 
+    startBooking, 
+    startGroup, 
+    closeFlow, 
+    actionType,
+    isAssessmentModalOpen,
+    isBookingFormOpen,
+    isGroupFormOpen
+  } = useBookingFlow();
 
   useEffect(() => {
     if (language === "en") {
@@ -133,14 +145,14 @@ const Services = () => {
         <title>Mental Health Services in Africa | Therapy, Counseling, Support Groups | Innerspark</title>
         <meta name="description" content="Explore Innerspark Africa's mental health services: online therapy, virtual counseling, support groups, wellness resources, and corporate wellness programs. Affordable, accessible mental health care across Africa." />
         <meta name="keywords" content="mental health services Africa, therapy services Uganda, online counseling services, support groups mental health, corporate wellness programs, employee assistance program, virtual therapy services, affordable mental health care, teletherapy services, wellness resources, mental health support, professional counseling" />
-        <link rel="canonical" href="https://innerspark.africa/services" />
+        <link rel="canonical" href="https://www.innersparkafrica.com/services" />
         
         {/* Open Graph */}
         <meta property="og:title" content="Mental Health Services | Therapy, Counseling, Support Groups" />
         <meta property="og:description" content="Explore Innerspark Africa's mental health services: online therapy, support groups, wellness resources, and corporate wellness programs." />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://innerspark.africa/services" />
-        <meta property="og:image" content="https://innerspark.africa/innerspark-logo.png" />
+        <meta property="og:url" content="https://www.innersparkafrica.com/services" />
+        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
         
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
@@ -151,6 +163,28 @@ const Services = () => {
         <script type="application/ld+json">{JSON.stringify(servicesSchema)}</script>
         <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
       </Helmet>
+
+      {/* Pre-Assessment Modal */}
+      <PreAssessmentModal 
+        isOpen={isAssessmentModalOpen} 
+        onClose={closeFlow}
+        actionType={actionType}
+      />
+
+      {/* Booking Form Modal */}
+      <BookingFormModal
+        isOpen={isBookingFormOpen}
+        onClose={closeFlow}
+        formType="book"
+      />
+
+      {/* Group Form Modal */}
+      <BookingFormModal
+        isOpen={isGroupFormOpen}
+        onClose={closeFlow}
+        formType="group"
+      />
+
     <div className="min-h-screen bg-background">
       <Header />
       
@@ -168,12 +202,8 @@ const Services = () => {
                   {t.heroDesc}
                 </p>
                 <div className="flex flex-wrap gap-4">
-                  <a href="https://wa.me/256792085773?text=Hi,%20I%20would%20like%20to%20book%20a%20therapy%20session" target="_blank" rel="noopener noreferrer">
-                    <Button size="lg">{t.bookSession}</Button>
-                  </a>
-                  <a href="https://wa.me/256792085773?text=Hi,%20I%20would%20like%20to%20join%20a%20support%20group" target="_blank" rel="noopener noreferrer">
-                    <Button size="lg" variant="outline">{t.joinSupportGroup}</Button>
-                  </a>
+                  <Button size="lg" onClick={startBooking}>{t.bookSession}</Button>
+                  <Button size="lg" variant="outline" onClick={startGroup}>{t.joinSupportGroup}</Button>
                 </div>
               </div>
             </ScrollReveal>
@@ -220,9 +250,7 @@ const Services = () => {
                     </div>
                   </StaggerItem>
                 </StaggerContainer>
-                <Link to="/virtual-therapy">
-                  <Button size="lg">{t.bookTherapist}</Button>
-                </Link>
+                <Button size="lg" onClick={startBooking}>{t.bookTherapist}</Button>
               </div>
             </ScrollReveal>
           </div>
@@ -258,9 +286,7 @@ const Services = () => {
                     </div>
                   </StaggerItem>
                 </StaggerContainer>
-                <Link to="/support-groups">
-                  <Button size="lg" variant="secondary">{t.exploreCircles}</Button>
-                </Link>
+                <Button size="lg" variant="secondary" onClick={startGroup}>{t.exploreCircles}</Button>
               </div>
             </ScrollReveal>
             <ScrollReveal direction="right" delay={0.1} className="order-1 md:order-2">
@@ -399,12 +425,21 @@ const Services = () => {
             <h2 className="text-3xl md:text-5xl font-bold mb-4">{t.ctaTitle}</h2>
             <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">{t.ctaDesc}</p>
             <div className="flex flex-wrap gap-4 justify-center">
-              <a href="https://wa.me/256792085773?text=Hi,%20I%20would%20like%20to%20book%20a%20therapy%20session" target="_blank" rel="noopener noreferrer">
-                <Button size="lg" className="bg-white text-primary hover:bg-white/90">{t.bookSession}</Button>
-              </a>
-              <a href="https://wa.me/256792085773?text=Hi,%20I%20would%20like%20to%20join%20a%20support%20group" target="_blank" rel="noopener noreferrer">
-                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">{t.joinGroup}</Button>
-              </a>
+              <Button 
+                size="lg" 
+                className="bg-white text-primary hover:bg-white/90"
+                onClick={startBooking}
+              >
+                {t.bookSession}
+              </Button>
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="border-white text-white hover:bg-white/10"
+                onClick={startGroup}
+              >
+                {t.joinGroup}
+              </Button>
               <Link to="/contact">
                 <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">{t.contactUs}</Button>
               </Link>
