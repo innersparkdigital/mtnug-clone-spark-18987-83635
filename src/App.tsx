@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { AssessmentProvider } from "@/contexts/AssessmentContext";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import VirtualTherapy from "./pages/VirtualTherapy";
@@ -83,12 +84,13 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
       <LanguageProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-          <ScrollToTop />
-          <FloatingWhatsApp />
+        <AssessmentProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <ScrollToTop />
+              <FloatingWhatsApp />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
@@ -158,9 +160,10 @@ const App = () => (
             <Route path="/events-training/uict-wellness-activity-day" element={<UICTWellnessPost />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
-          </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
+            </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </AssessmentProvider>
       </LanguageProvider>
     </AuthProvider>
   </QueryClientProvider>

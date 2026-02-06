@@ -4,8 +4,18 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Video, Check, Shield, Clock, Globe, Heart, MessageSquare, Star, Users, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
+import PreAssessmentModal from "@/components/PreAssessmentModal";
+import BookingFormModal from "@/components/BookingFormModal";
+import { useBookingFlow } from "@/hooks/useBookingFlow";
 
 const OnlineTherapy = () => {
+  const { 
+    startBooking, 
+    closeFlow, 
+    actionType,
+    isAssessmentModalOpen,
+    isBookingFormOpen,
+  } = useBookingFlow();
   const pageSchema = {
     "@context": "https://schema.org",
     "@type": "MedicalWebPage",
@@ -101,6 +111,20 @@ const OnlineTherapy = () => {
         <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
       </Helmet>
 
+      {/* Pre-Assessment Modal */}
+      <PreAssessmentModal 
+        isOpen={isAssessmentModalOpen} 
+        onClose={closeFlow}
+        actionType={actionType}
+      />
+
+      {/* Booking Form Modal */}
+      <BookingFormModal
+        isOpen={isBookingFormOpen}
+        onClose={closeFlow}
+        formType="book"
+      />
+
       <Header />
       
       {/* Hero Section - Urgent Booking Focus */}
@@ -121,12 +145,10 @@ const OnlineTherapy = () => {
             </p>
             
             <div className="flex gap-4 justify-center flex-wrap mb-8">
-              <a href="https://wa.me/256792085773?text=Hi,%20I%20need%20to%20book%20an%20online%20therapy%20session%20urgently" target="_blank" rel="noopener noreferrer">
-                <Button size="lg" className="gap-2 text-lg px-8 py-6">
-                  <MessageSquare className="w-5 h-5" />
-                  Book a Session Now
-                </Button>
-              </a>
+              <Button size="lg" className="gap-2 text-lg px-8 py-6" onClick={startBooking}>
+                <MessageSquare className="w-5 h-5" />
+                Book a Session Now
+              </Button>
               <Link to="/specialists">
                 <Button size="lg" variant="outline" className="text-lg px-8 py-6">
                   Find a Therapist
@@ -276,11 +298,9 @@ const OnlineTherapy = () => {
             Get help today. Our therapists are ready to support you on your journey to better mental health.
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
-            <a href="https://wa.me/256792085773?text=Hi,%20I%20need%20therapy%20now.%20Please%20help%20me%20book%20a%20session" target="_blank" rel="noopener noreferrer">
-              <Button size="lg" variant="secondary" className="text-lg px-8 py-6">
-                Get Support Today
-              </Button>
-            </a>
+            <Button size="lg" variant="secondary" className="text-lg px-8 py-6" onClick={startBooking}>
+              Get Support Today
+            </Button>
             <Link to="/specialists">
               <Button size="lg" variant="outline" className="text-lg px-8 py-6 border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary">
                 Browse Therapists
