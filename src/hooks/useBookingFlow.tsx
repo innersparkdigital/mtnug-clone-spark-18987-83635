@@ -1,5 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { useAssessment } from "@/contexts/AssessmentContext";
 
 type FlowStep = "idle" | "assessment-choice" | "booking-form" | "group-form";
@@ -8,13 +7,22 @@ type ActionType = "book" | "group";
 export const useBookingFlow = () => {
   const [flowStep, setFlowStep] = useState<FlowStep>("idle");
   const [actionType, setActionType] = useState<ActionType>("book");
-  const { assessmentResult, pendingAction, clearAssessment } = useAssessment();
-  const location = useLocation();
+  const { 
+    assessmentResult, 
+    pendingAction, 
+    clearAssessment,
+    justCompletedAssessment,
+    setJustCompletedAssessment
+  } = useAssessment();
+  const hasCheckedReturn = useRef(false);
 
-  // Check if user is returning from an assessment
+  // Check if user JUST completed assessment and should see form
+  // This only triggers once when justCompletedAssessment becomes true
   useEffect(() => {
-    if (assessmentResult && pendingAction) {
-      // User completed assessment and returned
+    if (justCompletedAssessment && assessmentResult && pendingAction && !hasCheckedReturn.current) {
+      hasCheckedReturn.current = true;
+      
+      // User just completed an assessment, show the appropriate form
       if (pendingAction === "book") {
         setFlowStep("booking-form");
         setActionType("book");
@@ -22,30 +30,30 @@ export const useBookingFlow = () => {
         setFlowStep("group-form");
         setActionType("group");
       }
+      
+      // Reset the flag after showing the form
+      setJustCompletedAssessment(false);
     }
-  }, [assessmentResult, pendingAction, location.pathname]);
+  }, [justCompletedAssessment, assessmentResult, pendingAction, setJustCompletedAssessment]);
+
+  // Reset the check flag when flow is closed
+  useEffect(() => {
+    if (flowStep === "idle") {
+      hasCheckedReturn.current = false;
+    }
+  }, [flowStep]);
 
   const startBooking = useCallback(() => {
-    if (assessmentResult) {
-      // Already has assessment, go directly to form
-      setFlowStep("booking-form");
-    } else {
-      // Show assessment choice first
-      setFlowStep("assessment-choice");
-    }
+    // Always show assessment choice first (no auto-skip based on stale data)
+    setFlowStep("assessment-choice");
     setActionType("book");
-  }, [assessmentResult]);
+  }, []);
 
   const startGroup = useCallback(() => {
-    if (assessmentResult) {
-      // Already has assessment, go directly to form
-      setFlowStep("group-form");
-    } else {
-      // Show assessment choice first
-      setFlowStep("assessment-choice");
-    }
+    // Always show assessment choice first (no auto-skip based on stale data)
+    setFlowStep("assessment-choice");
     setActionType("group");
-  }, [assessmentResult]);
+  }, []);
 
   const closeFlow = useCallback(() => {
     setFlowStep("idle");

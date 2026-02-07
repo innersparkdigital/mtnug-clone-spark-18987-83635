@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/select";
 import { Brain, ArrowRight, CheckCircle, AlertCircle } from "lucide-react";
 import { useAssessment } from "@/contexts/AssessmentContext";
+import { trackAssessmentStarted, trackAssessmentSkipped, trackBookingClick, trackGroupClick } from "@/lib/analytics";
 
 interface PreAssessmentModalProps {
   isOpen: boolean;
@@ -24,7 +25,9 @@ interface PreAssessmentModalProps {
   actionType: "book" | "group";
 }
 
+// Complete list of all 37 assessments
 const assessmentOptions = [
+  // Original assessments
   {
     id: "depression",
     name: "Depression",
@@ -50,45 +53,279 @@ const assessmentOptions = [
     format: "1:1 Therapy Session"
   },
   {
-    id: "stress",
-    name: "Stress & Burnout",
-    description: "Feeling overwhelmed, exhausted, pressured, or mentally drained.",
+    id: "adult-adhd",
+    name: "Adult ADHD",
+    description: "Difficulty focusing, impulsive behavior, restlessness, or trouble staying organized.",
+    path: "/mind-check/adult-adhd",
+    recommendation: "ADHD Specialist or Psychiatrist",
+    format: "1:1 Therapy Session"
+  },
+  {
+    id: "bpd",
+    name: "Borderline Personality Disorder",
+    description: "Intense emotions, unstable relationships, fear of abandonment, or identity confusion.",
+    path: "/mind-check/bpd",
+    recommendation: "DBT-Trained Therapist",
+    format: "1:1 Therapy Session"
+  },
+  {
+    id: "eating-disorder",
+    name: "Eating Disorder",
+    description: "Unhealthy eating patterns, body image concerns, or extreme dieting behaviors.",
+    path: "/mind-check/eating-disorder",
+    recommendation: "Eating Disorder Specialist",
+    format: "1:1 Therapy Session"
+  },
+  {
+    id: "gambling-addiction",
+    name: "Gambling Addiction",
+    description: "Difficulty controlling gambling habits, betting more than you can afford.",
+    path: "/mind-check/gambling-addiction",
+    recommendation: "Addiction Specialist",
+    format: "1:1 Therapy + Support Group"
+  },
+  {
+    id: "mania",
+    name: "Mania",
+    description: "Elevated mood, excessive energy, reduced need for sleep, or impulsive decisions.",
+    path: "/mind-check/mania",
+    recommendation: "Psychiatrist or Mood Disorder Specialist",
+    format: "1:1 Therapy Session"
+  },
+  {
+    id: "npd",
+    name: "Narcissistic Personality Disorder",
+    description: "Need for admiration, lack of empathy, or sense of superiority.",
+    path: "/mind-check/npd",
+    recommendation: "Personality Disorder Specialist",
+    format: "1:1 Therapy Session"
+  },
+  {
+    id: "postpartum",
+    name: "Postpartum Depression",
+    description: "Mood changes, sadness, or difficulty bonding after having a baby.",
+    path: "/mind-check/postpartum",
+    recommendation: "Perinatal Mental Health Specialist",
+    format: "1:1 Therapy Session"
+  },
+  // New assessments
+  {
+    id: "sex-addiction",
+    name: "Sex Addiction",
+    description: "Difficulty controlling sexual thoughts or behaviors that affect your life.",
+    path: "/mind-check/sex-addiction",
+    recommendation: "Sexual Health Therapist",
+    format: "1:1 Therapy Session"
+  },
+  {
+    id: "video-game-addiction",
+    name: "Video Game Addiction",
+    description: "Excessive gaming that interferes with daily life, work, or relationships.",
+    path: "/mind-check/video-game-addiction",
+    recommendation: "Behavioral Addiction Specialist",
+    format: "1:1 Therapy Session"
+  },
+  {
+    id: "internet-addiction",
+    name: "Internet Addiction",
+    description: "Compulsive internet use affecting your daily functioning or relationships.",
+    path: "/mind-check/internet-addiction",
+    recommendation: "Digital Wellness Therapist",
+    format: "1:1 Therapy Session"
+  },
+  {
+    id: "job-burnout",
+    name: "Job Burnout",
+    description: "Feeling overwhelmed, exhausted, or disconnected from your work.",
     path: "/mind-check/job-burnout",
     recommendation: "Licensed Counselor or Life Coach",
     format: "1:1 Therapy or Support Group"
   },
   {
-    id: "self-esteem",
-    name: "Self-Esteem Issues",
-    description: "Feeling not good enough, low confidence, or constant self-doubt.",
-    path: "/mind-check/depression",
-    recommendation: "Counselor or Personal Growth Coach",
+    id: "toxic-workplace",
+    name: "Toxic Workplace",
+    description: "Work environment causing stress, anxiety, or emotional distress.",
+    path: "/mind-check/toxic-workplace",
+    recommendation: "Workplace Wellness Counselor",
+    format: "1:1 Therapy Session"
+  },
+  {
+    id: "panic-disorder",
+    name: "Panic Disorder",
+    description: "Sudden intense fear, panic attacks, or physical symptoms like racing heart.",
+    path: "/mind-check/panic-disorder",
+    recommendation: "Anxiety Specialist",
+    format: "1:1 Therapy Session"
+  },
+  {
+    id: "ocd",
+    name: "Obsessive-Compulsive Disorder (OCD)",
+    description: "Unwanted repetitive thoughts or behaviors you feel compelled to do.",
+    path: "/mind-check/ocd",
+    recommendation: "OCD Specialist (ERP Therapist)",
+    format: "1:1 Therapy Session"
+  },
+  {
+    id: "bipolar",
+    name: "Bipolar Disorder",
+    description: "Extreme mood swings between emotional highs and lows.",
+    path: "/mind-check/bipolar",
+    recommendation: "Mood Disorder Specialist or Psychiatrist",
+    format: "1:1 Therapy Session"
+  },
+  {
+    id: "social-anxiety",
+    name: "Social Anxiety Disorder",
+    description: "Intense fear of social situations, judgment, or embarrassment.",
+    path: "/mind-check/social-anxiety",
+    recommendation: "Social Anxiety Therapist",
+    format: "1:1 Therapy or Group Therapy"
+  },
+  {
+    id: "hoarding",
+    name: "Hoarding Disorder",
+    description: "Difficulty discarding possessions, leading to cluttered living spaces.",
+    path: "/mind-check/hoarding",
+    recommendation: "OCD/Hoarding Specialist",
+    format: "1:1 Therapy Session"
+  },
+  {
+    id: "psychosis",
+    name: "Psychosis",
+    description: "Experiences of seeing or hearing things others don't, or unusual beliefs.",
+    path: "/mind-check/psychosis",
+    recommendation: "Psychiatrist",
+    format: "Immediate Medical Consultation"
+  },
+  {
+    id: "grief",
+    name: "Complicated Grief",
+    description: "Struggling emotionally after losing a loved one or something important.",
+    path: "/mind-check/grief",
+    recommendation: "Grief Counselor or Therapist",
     format: "1:1 Therapy or Support Group"
   },
   {
-    id: "relationship",
-    name: "Relationship Challenges",
+    id: "did",
+    name: "Dissociative Identity Disorder",
+    description: "Experiencing different identities or significant memory gaps.",
+    path: "/mind-check/did",
+    recommendation: "Trauma Specialist",
+    format: "1:1 Specialized Therapy"
+  },
+  {
+    id: "schizophrenia",
+    name: "Schizophrenia",
+    description: "Disrupted thoughts, perceptions, or difficulty distinguishing reality.",
+    path: "/mind-check/schizophrenia",
+    recommendation: "Psychiatrist",
+    format: "Psychiatric Care + Therapy"
+  },
+  {
+    id: "stress",
+    name: "Stress",
+    description: "Feeling overwhelmed, tense, or unable to relax and cope with daily demands.",
+    path: "/mind-check/stress",
+    recommendation: "Stress Management Counselor",
+    format: "1:1 Therapy or Support Group"
+  },
+  {
+    id: "agoraphobia",
+    name: "Agoraphobia",
+    description: "Fear of places or situations that might cause panic or helplessness.",
+    path: "/mind-check/agoraphobia",
+    recommendation: "Anxiety Specialist",
+    format: "1:1 Therapy Session"
+  },
+  {
+    id: "separation-anxiety",
+    name: "Separation Anxiety",
+    description: "Excessive fear or anxiety about being separated from attachment figures.",
+    path: "/mind-check/separation-anxiety",
+    recommendation: "Anxiety Therapist",
+    format: "1:1 Therapy Session"
+  },
+  {
+    id: "sleep-disorder",
+    name: "Sleep Disorder",
+    description: "Trouble falling asleep, staying asleep, or feeling rested after sleep.",
+    path: "/mind-check/sleep-disorder",
+    recommendation: "Sleep Specialist or CBT-I Therapist",
+    format: "1:1 Therapy Session"
+  },
+  {
+    id: "empathy-deficit",
+    name: "Empathy Deficit Disorder",
+    description: "Difficulty understanding or connecting with others' emotions.",
+    path: "/mind-check/empathy-deficit",
+    recommendation: "Psychotherapist",
+    format: "1:1 Therapy Session"
+  },
+  {
+    id: "binge-eating",
+    name: "Binge Eating Disorder",
+    description: "Episodes of eating large amounts of food with loss of control.",
+    path: "/mind-check/binge-eating",
+    recommendation: "Eating Disorder Specialist",
+    format: "1:1 Therapy Session"
+  },
+  {
+    id: "gender-dysphoria",
+    name: "Gender Dysphoria",
+    description: "Distress from disconnect between gender identity and assigned sex.",
+    path: "/mind-check/gender-dysphoria",
+    recommendation: "Gender-Affirming Therapist",
+    format: "1:1 Specialized Therapy"
+  },
+  {
+    id: "relationship-health",
+    name: "Relationship Health",
     description: "Ongoing conflicts, communication issues, trust problems, or emotional distance.",
     path: "/mind-check/relationship-health",
     recommendation: "Couples Therapist or Relationship Counselor",
     format: "1:1 or Couples Therapy"
   },
   {
-    id: "addiction",
-    name: "Addiction & Substance Use",
-    description: "Difficulty controlling alcohol, drugs, betting, or other habits.",
-    path: "/mind-check/gambling-addiction",
-    recommendation: "Addiction Specialist or Counselor",
-    format: "1:1 Therapy + Support Group"
+    id: "sociopath",
+    name: "Sociopathy",
+    description: "Difficulty following social norms, empathy challenges, or impulsive behavior.",
+    path: "/mind-check/sociopath",
+    recommendation: "Forensic Psychologist",
+    format: "1:1 Specialized Therapy"
   },
   {
-    id: "grief",
-    name: "Grief & Loss",
-    description: "Struggling emotionally after losing a loved one or something important.",
-    path: "/mind-check/grief",
-    recommendation: "Grief Counselor or Therapist",
-    format: "1:1 Therapy or Support Group"
+    id: "job-satisfaction",
+    name: "Job Satisfaction",
+    description: "Evaluating your fulfillment and happiness in your current job.",
+    path: "/mind-check/job-satisfaction",
+    recommendation: "Career Counselor or Life Coach",
+    format: "1:1 Coaching Session"
   },
+  {
+    id: "work-life-balance",
+    name: "Work-Life Balance",
+    description: "Struggling to balance professional and personal life responsibilities.",
+    path: "/mind-check/work-life-balance",
+    recommendation: "Life Coach or Counselor",
+    format: "1:1 Therapy or Coaching"
+  },
+  {
+    id: "imposter-syndrome",
+    name: "Imposter Syndrome",
+    description: "Feeling like a fraud despite your accomplishments and qualifications.",
+    path: "/mind-check/imposter-syndrome",
+    recommendation: "CBT Therapist or Life Coach",
+    format: "1:1 Therapy Session"
+  },
+  {
+    id: "sad",
+    name: "Seasonal Affective Disorder (SAD)",
+    description: "Depression that follows a seasonal pattern, usually in winter months.",
+    path: "/mind-check/sad",
+    recommendation: "Mood Disorder Specialist",
+    format: "1:1 Therapy Session"
+  },
+  // Crisis option
   {
     id: "crisis",
     name: "Crisis / Emotional Distress",
@@ -111,12 +348,29 @@ const PreAssessmentModal = ({ isOpen, onClose, actionType }: PreAssessmentModalP
     if (condition) {
       setPendingAction(actionType);
       setReturnPath(location.pathname);
+      
+      // Track analytics
+      trackAssessmentStarted(condition.id);
+      if (actionType === "book") {
+        trackBookingClick("pre_assessment_modal");
+      } else {
+        trackGroupClick("pre_assessment_modal");
+      }
+      
       onClose();
       navigate(condition.path);
     }
   };
 
   const handleProceedWithoutAssessment = () => {
+    // Track skipped assessment
+    trackAssessmentSkipped(actionType);
+    if (actionType === "book") {
+      trackBookingClick("pre_assessment_modal_skip");
+    } else {
+      trackGroupClick("pre_assessment_modal_skip");
+    }
+    
     onClose();
     const whatsappNumber = "256792085773";
     const message = actionType === "book" 

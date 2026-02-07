@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -30,6 +30,7 @@ import {
 import { useAssessment, AssessmentResult } from "@/contexts/AssessmentContext";
 import { Calendar, Clock, CheckCircle, Send, AlertCircle, Users, Phone } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { trackBookingFormOpened, trackBookingSubmitted, trackWhatsAppClick } from "@/lib/analytics";
 
 interface BookingFormModalProps {
   isOpen: boolean;
@@ -133,6 +134,13 @@ const formatWhatsAppMessage = (
 const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { assessmentResult, clearAssessment } = useAssessment();
+
+  // Track form opened
+  useEffect(() => {
+    if (isOpen) {
+      trackBookingFormOpened(!!assessmentResult);
+    }
+  }, [isOpen, assessmentResult]);
   
   const bookingForm = useForm<BookingFormData>({
     resolver: zodResolver(bookingSchema),
@@ -161,6 +169,14 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
     const message = formatWhatsAppMessage(formType, data, assessmentResult);
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/256792085773?text=${encodedMessage}`;
+    
+    // Track analytics
+    trackBookingSubmitted(
+      formType,
+      assessmentResult?.assessmentType,
+      assessmentResult?.severity
+    );
+    trackWhatsAppClick(formType === "book" ? "booking_form" : "group_form");
     
     window.open(whatsappUrl, "_blank");
     
