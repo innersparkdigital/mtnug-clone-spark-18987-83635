@@ -47,6 +47,34 @@ import GamblingAddictionTest from "./pages/tests/GamblingAddictionTest";
 import ManiaTest from "./pages/tests/ManiaTest";
 import NarcissisticPersonalityTest from "./pages/tests/NarcissisticPersonalityTest";
 import PostpartumDepressionTest from "./pages/tests/PostpartumDepressionTest";
+// New Assessment Tests
+import SexAddictionTest from "./pages/tests/SexAddictionTest";
+import VideoGameAddictionTest from "./pages/tests/VideoGameAddictionTest";
+import InternetAddictionTest from "./pages/tests/InternetAddictionTest";
+import JobBurnoutTest from "./pages/tests/JobBurnoutTest";
+import ToxicWorkplaceTest from "./pages/tests/ToxicWorkplaceTest";
+import PanicDisorderTest from "./pages/tests/PanicDisorderTest";
+import OCDTest from "./pages/tests/OCDTest";
+import BipolarTest from "./pages/tests/BipolarTest";
+import SocialAnxietyTest from "./pages/tests/SocialAnxietyTest";
+import HoardingTest from "./pages/tests/HoardingTest";
+import PsychosisTest from "./pages/tests/PsychosisTest";
+import GriefTest from "./pages/tests/GriefTest";
+import DIDTest from "./pages/tests/DIDTest";
+import SchizophreniaTest from "./pages/tests/SchizophreniaTest";
+import StressTest from "./pages/tests/StressTest";
+import AgoraphobiaTest from "./pages/tests/AgoraphobiaTest";
+import SeparationAnxietyTest from "./pages/tests/SeparationAnxietyTest";
+import SleepDisorderTest from "./pages/tests/SleepDisorderTest";
+import EmpathyDeficitTest from "./pages/tests/EmpathyDeficitTest";
+import BingeEatingTest from "./pages/tests/BingeEatingTest";
+import GenderDysphoriaTest from "./pages/tests/GenderDysphoriaTest";
+import RelationshipHealthTest from "./pages/tests/RelationshipHealthTest";
+import SociopathyTest from "./pages/tests/SociopathyTest";
+import JobSatisfactionTest from "./pages/tests/JobSatisfactionTest";
+import WorkLifeBalanceTest from "./pages/tests/WorkLifeBalanceTest";
+import ImposterSyndromeTest from "./pages/tests/ImposterSyndromeTest";
+import SADTest from "./pages/tests/SADTest";
 import HowToHandleStressPost from "./pages/blog/HowToHandleStressPost";
 import PanicAttackPost from "./pages/blog/PanicAttackPost";
 import DepressionPost from "./pages/blog/DepressionPost";
@@ -142,6 +170,34 @@ const App = () => (
             <Route path="/mind-check/mania" element={<ManiaTest />} />
             <Route path="/mind-check/npd" element={<NarcissisticPersonalityTest />} />
             <Route path="/mind-check/postpartum" element={<PostpartumDepressionTest />} />
+            {/* New Assessment Tests */}
+            <Route path="/mind-check/sex-addiction" element={<SexAddictionTest />} />
+            <Route path="/mind-check/video-game-addiction" element={<VideoGameAddictionTest />} />
+            <Route path="/mind-check/internet-addiction" element={<InternetAddictionTest />} />
+            <Route path="/mind-check/job-burnout" element={<JobBurnoutTest />} />
+            <Route path="/mind-check/toxic-workplace" element={<ToxicWorkplaceTest />} />
+            <Route path="/mind-check/panic-disorder" element={<PanicDisorderTest />} />
+            <Route path="/mind-check/ocd" element={<OCDTest />} />
+            <Route path="/mind-check/bipolar" element={<BipolarTest />} />
+            <Route path="/mind-check/social-anxiety" element={<SocialAnxietyTest />} />
+            <Route path="/mind-check/hoarding" element={<HoardingTest />} />
+            <Route path="/mind-check/psychosis" element={<PsychosisTest />} />
+            <Route path="/mind-check/grief" element={<GriefTest />} />
+            <Route path="/mind-check/did" element={<DIDTest />} />
+            <Route path="/mind-check/schizophrenia" element={<SchizophreniaTest />} />
+            <Route path="/mind-check/stress" element={<StressTest />} />
+            <Route path="/mind-check/agoraphobia" element={<AgoraphobiaTest />} />
+            <Route path="/mind-check/separation-anxiety" element={<SeparationAnxietyTest />} />
+            <Route path="/mind-check/sleep-disorder" element={<SleepDisorderTest />} />
+            <Route path="/mind-check/empathy-deficit" element={<EmpathyDeficitTest />} />
+            <Route path="/mind-check/binge-eating" element={<BingeEatingTest />} />
+            <Route path="/mind-check/gender-dysphoria" element={<GenderDysphoriaTest />} />
+            <Route path="/mind-check/relationship-health" element={<RelationshipHealthTest />} />
+            <Route path="/mind-check/sociopath" element={<SociopathyTest />} />
+            <Route path="/mind-check/job-satisfaction" element={<JobSatisfactionTest />} />
+            <Route path="/mind-check/work-life-balance" element={<WorkLifeBalanceTest />} />
+            <Route path="/mind-check/imposter-syndrome" element={<ImposterSyndromeTest />} />
+            <Route path="/mind-check/sad" element={<SADTest />} />
             <Route path="/blog/how-to-handle-stress" element={<HowToHandleStressPost />} />
             <Route path="/blog/how-to-stop-a-panic-attack" element={<PanicAttackPost />} />
             <Route path="/blog/how-to-deal-with-depression" element={<DepressionPost />} />

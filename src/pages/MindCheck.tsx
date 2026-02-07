@@ -67,8 +67,19 @@ const MindCheck = () => {
   const displayedTests = showAllTests ? mentalHealthTests : mentalHealthTests.slice(0, 10);
 
   const handleTestClick = (test: MentalHealthTest) => {
-    const availableTests = ["depression", "anxiety", "adult-adhd", "ptsd", "bpd", "eating-disorder", "gambling-addiction", "mania", "npd", "postpartum"];
-    if (availableTests.includes(test.id)) {
+    // All tests now have routes
+    const allAvailableTests = [
+      "depression", "anxiety", "adult-adhd", "ptsd", "bpd", "eating-disorder", 
+      "gambling-addiction", "mania", "npd", "postpartum",
+      // New tests
+      "sex-addiction", "video-game-addiction", "internet-addiction", "job-burnout",
+      "toxic-workplace", "panic-disorder", "ocd", "bipolar", "social-anxiety",
+      "hoarding", "psychosis", "grief", "did", "schizophrenia", "stress",
+      "agoraphobia", "separation-anxiety", "sleep-disorder", "empathy-deficit",
+      "binge-eating", "gender-dysphoria", "relationship-health", "sociopath",
+      "job-satisfaction", "work-life-balance", "imposter-syndrome", "sad"
+    ];
+    if (allAvailableTests.includes(test.id)) {
       navigate(`/mind-check/${test.id}`);
       return;
     }

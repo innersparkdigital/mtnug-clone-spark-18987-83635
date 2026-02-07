@@ -24,7 +24,12 @@ export const useAssessmentTest = (config: TestConfig) => {
   const [showTherapistPopup, setShowTherapistPopup] = useState(false);
   const [showBookingForm, setShowBookingForm] = useState(false);
   
-  const { setAssessmentResult, pendingAction, setPendingAction } = useAssessment();
+  const { 
+    setAssessmentResult, 
+    pendingAction, 
+    setPendingAction,
+    setJustCompletedAssessment 
+  } = useAssessment();
 
   const handleAnswer = (questionId: number, value: number) => {
     setAnswers(prev => ({ ...prev, [questionId]: value }));
@@ -55,6 +60,8 @@ export const useAssessmentTest = (config: TestConfig) => {
     
     // If user came from booking flow (book OR group), show form after delay
     if (pendingAction) {
+      // Mark that assessment was just completed - this triggers the form
+      setJustCompletedAssessment(true);
       setTimeout(() => {
         setShowBookingForm(true);
       }, 1500);

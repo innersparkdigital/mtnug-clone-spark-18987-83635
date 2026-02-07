@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useRef } from "react";
 
 export interface AssessmentResult {
   assessmentType: string;
@@ -19,6 +19,8 @@ interface AssessmentContextType {
   clearAssessment: () => void;
   returnPath: string | null;
   setReturnPath: (path: string | null) => void;
+  justCompletedAssessment: boolean;
+  setJustCompletedAssessment: (value: boolean) => void;
 }
 
 const AssessmentContext = createContext<AssessmentContextType | undefined>(undefined);
@@ -35,9 +37,14 @@ export const AssessmentProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const [pendingAction, setPendingAction] = useState<"book" | "group" | null>(null);
   const [assessmentResult, setAssessmentResult] = useState<AssessmentResult | null>(null);
   const [returnPath, setReturnPath] = useState<string | null>(null);
+  const [justCompletedAssessment, setJustCompletedAssessment] = useState(false);
+  const initialized = useRef(false);
 
-  // Persist to sessionStorage
+  // Load from sessionStorage on mount
   useEffect(() => {
+    if (initialized.current) return;
+    initialized.current = true;
+    
     const stored = sessionStorage.getItem("innerspark_assessment");
     if (stored) {
       try {
@@ -45,13 +52,18 @@ export const AssessmentProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         if (parsed.assessmentResult) setAssessmentResult(parsed.assessmentResult);
         if (parsed.pendingAction) setPendingAction(parsed.pendingAction);
         if (parsed.returnPath) setReturnPath(parsed.returnPath);
+        // Important: justCompletedAssessment defaults to false on page reload
+        // It only becomes true when setAssessmentResult is called in the same session
       } catch (e) {
         console.error("Failed to parse assessment data", e);
       }
     }
   }, []);
 
+  // Persist to sessionStorage when state changes
   useEffect(() => {
+    if (!initialized.current) return;
+    
     sessionStorage.setItem("innerspark_assessment", JSON.stringify({
       assessmentResult,
       pendingAction,
@@ -63,6 +75,7 @@ export const AssessmentProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     setAssessmentResult(null);
     setPendingAction(null);
     setReturnPath(null);
+    setJustCompletedAssessment(false);
     sessionStorage.removeItem("innerspark_assessment");
   };
 
@@ -76,6 +89,8 @@ export const AssessmentProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         clearAssessment,
         returnPath,
         setReturnPath,
+        justCompletedAssessment,
+        setJustCompletedAssessment,
       }}
     >
       {children}
