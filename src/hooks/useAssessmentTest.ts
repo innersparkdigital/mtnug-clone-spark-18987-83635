@@ -53,7 +53,7 @@ export const useAssessmentTest = (config: TestConfig) => {
     
     setAssessmentResult(assessmentData);
     
-    // If user came from booking flow, show booking form after delay
+    // If user came from booking flow (book OR group), show form after delay
     if (pendingAction) {
       setTimeout(() => {
         setShowBookingForm(true);

@@ -3,11 +3,13 @@ import { Helmet } from "react-helmet";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import TherapistCTAPopup from "@/components/TherapistCTAPopup";
+import BookingFormModal from "@/components/BookingFormModal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
+import { useAssessment, AssessmentResult } from "@/contexts/AssessmentContext";
 import { 
   Brain, 
   Heart, 
@@ -154,6 +156,8 @@ const AnxietyTest = () => {
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [showResults, setShowResults] = useState(false);
   const [showTherapistPopup, setShowTherapistPopup] = useState(false);
+  const [showBookingForm, setShowBookingForm] = useState(false);
+  const { setAssessmentResult, pendingAction, setPendingAction } = useAssessment();
 
   const handleAnswer = (questionId: number, value: number) => {
     setAnswers(prev => ({ ...prev, [questionId]: value }));
@@ -164,7 +168,31 @@ const AnxietyTest = () => {
       setCurrentQuestion(prev => prev + 1);
     } else {
       setShowResults(true);
-      setShowTherapistPopup(true);
+      // Save assessment result
+      const score = Object.values(answers).reduce((sum, val) => sum + val, 0);
+      const result = getResultInterpretation(score);
+      
+      const assessmentData: AssessmentResult = {
+        assessmentType: "anxiety",
+        assessmentLabel: "Anxiety",
+        severity: result.level as AssessmentResult["severity"],
+        score: score,
+        maxScore: 30,
+        recommendation: "Licensed Therapist or Counselor",
+        recommendedFormat: "1:1 Therapy Session",
+        timestamp: new Date().toISOString(),
+      };
+      
+      setAssessmentResult(assessmentData);
+      
+      // If user came from booking flow (book OR group), show form after delay
+      if (pendingAction) {
+        setTimeout(() => {
+          setShowBookingForm(true);
+        }, 1500);
+      } else {
+        setShowTherapistPopup(true);
+      }
     }
   };
 
@@ -179,6 +207,13 @@ const AnxietyTest = () => {
     setCurrentQuestion(0);
     setAnswers({});
     setShowResults(false);
+  };
+
+  const handleContinueToBooking = () => {
+    if (!pendingAction) {
+      setPendingAction("book");
+    }
+    setShowBookingForm(true);
   };
 
   const calculateScore = () => {
@@ -323,15 +358,20 @@ const AnxietyTest = () => {
                     );
                   })()}
 
-                  <div className="bg-pink-50 border border-pink-200 rounded-lg p-6 mb-8">
-                    <h3 className="font-semibold text-pink-900 mb-3 flex items-center gap-2">
-                      <Heart className="h-5 w-5" />
+                  {/* Reassurance message */}
+                  <div className="bg-primary/10 border border-primary/20 rounded-lg p-4 mb-6 text-center">
+                    <p className="text-foreground font-medium">You're not alone. Support is available.</p>
+                  </div>
+
+                  <div className="bg-muted rounded-lg p-6 mb-8">
+                    <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+                      <Heart className="h-5 w-5 text-primary" />
                       What's Next?
                     </h3>
-                    <ul className="space-y-2 text-pink-800 text-sm">
+                    <ul className="space-y-2 text-muted-foreground text-sm">
                       <li>• Consider speaking with a mental health professional for a comprehensive evaluation</li>
                       <li>• Practice relaxation techniques like deep breathing and meditation</li>
-                      <li>• Download the InnerSpark app to connect with licensed therapists</li>
+                      <li>• Connect with licensed therapists through Innerspark</li>
                       <li>• Limit caffeine and maintain regular sleep patterns</li>
                     </ul>
                   </div>
@@ -346,10 +386,10 @@ const AnxietyTest = () => {
                       Retake Test
                     </Button>
                     <Button 
-                      className="bg-pink-600 hover:bg-pink-700 text-white"
-                      onClick={() => window.location.href = '/find-therapist'}
+                      size="lg"
+                      onClick={handleContinueToBooking}
                     >
-                      Find a Therapist
+                      Book a Therapist Now
                     </Button>
                   </div>
                 </CardContent>
@@ -545,6 +585,11 @@ const AnxietyTest = () => {
       <TherapistCTAPopup 
         isOpen={showTherapistPopup} 
         onClose={() => setShowTherapistPopup(false)} 
+      />
+      <BookingFormModal
+        isOpen={showBookingForm}
+        onClose={() => setShowBookingForm(false)}
+        formType={pendingAction === "group" ? "group" : "book"}
       />
       <Footer />
     </div>
