@@ -190,9 +190,8 @@ const AnxietyTest = () => {
         setTimeout(() => {
           setShowBookingForm(true);
         }, 1500);
-      } else {
-        setShowTherapistPopup(true);
       }
+      // No popup — inline CTAs handle the Mind-Check flow
     }
   };
 
@@ -213,6 +212,11 @@ const AnxietyTest = () => {
     if (!pendingAction) {
       setPendingAction("book");
     }
+    setShowBookingForm(true);
+  };
+
+  const handleJoinSupportGroup = () => {
+    setPendingAction("group");
     setShowBookingForm(true);
   };
 
@@ -376,21 +380,36 @@ const AnxietyTest = () => {
                     </ul>
                   </div>
 
-                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                    <Button 
-                      variant="outline" 
-                      onClick={handleRestart}
-                      className="flex items-center gap-2"
-                    >
-                      <RotateCcw className="h-4 w-4" />
-                      Retake Test
-                    </Button>
-                    <Button 
-                      size="lg"
-                      onClick={handleContinueToBooking}
-                    >
-                      Book a Therapist Now
-                    </Button>
+                  <div className="flex flex-col gap-3">
+                    <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                      <Button 
+                        size="lg"
+                        onClick={handleContinueToBooking}
+                        className="flex items-center gap-2"
+                      >
+                        <Heart className="h-4 w-4" />
+                        Book a Therapy Session
+                      </Button>
+                      <Button 
+                        size="lg"
+                        variant="secondary"
+                        onClick={handleJoinSupportGroup}
+                        className="flex items-center gap-2"
+                      >
+                        <AlertCircle className="h-4 w-4" />
+                        Join a Support Group
+                      </Button>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                      <Button 
+                        variant="outline" 
+                        onClick={handleRestart}
+                        className="flex items-center gap-2"
+                      >
+                        <RotateCcw className="h-4 w-4" />
+                        Retake Test
+                      </Button>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -412,6 +431,7 @@ const AnxietyTest = () => {
                       {anxietyQuestions[currentQuestion].question}
                     </h3>
                     <RadioGroup
+                      key={`anxiety-q-${currentQuestion}`}
                       value={answers[anxietyQuestions[currentQuestion].id]?.toString()}
                       onValueChange={(value) => handleAnswer(anxietyQuestions[currentQuestion].id, parseInt(value))}
                       className="space-y-3"
@@ -426,8 +446,8 @@ const AnxietyTest = () => {
                           }`}
                           onClick={() => handleAnswer(anxietyQuestions[currentQuestion].id, option.value)}
                         >
-                          <RadioGroupItem value={option.value.toString()} id={`option-${option.value}`} />
-                          <Label htmlFor={`option-${option.value}`} className="flex-1 cursor-pointer font-medium">
+                          <RadioGroupItem value={option.value.toString()} id={`anx-q${currentQuestion}-opt-${option.value}`} />
+                          <Label htmlFor={`anx-q${currentQuestion}-opt-${option.value}`} className="flex-1 cursor-pointer font-medium">
                             {option.label}
                           </Label>
                         </div>

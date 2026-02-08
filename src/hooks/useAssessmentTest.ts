@@ -60,14 +60,12 @@ export const useAssessmentTest = (config: TestConfig) => {
     
     // If user came from booking flow (book OR group), show form after delay
     if (pendingAction) {
-      // Mark that assessment was just completed - this triggers the form
       setJustCompletedAssessment(true);
       setTimeout(() => {
         setShowBookingForm(true);
       }, 1500);
-    } else {
-      setShowTherapistPopup(true);
     }
+    // No popup for Mind-Check flow — CTAs are shown inline in the results card
   };
 
   const handleNext = (questionsLength: number) => {
@@ -98,6 +96,11 @@ export const useAssessmentTest = (config: TestConfig) => {
     setShowBookingForm(true);
   };
 
+  const handleJoinSupportGroup = () => {
+    setPendingAction("group");
+    setShowBookingForm(true);
+  };
+
   return {
     testStarted,
     setTestStarted,
@@ -114,6 +117,7 @@ export const useAssessmentTest = (config: TestConfig) => {
     handlePrevious,
     handleRestart,
     handleContinueToBooking,
+    handleJoinSupportGroup,
     calculateScore,
     getResultInterpretation: config.getSeverity,
   };
