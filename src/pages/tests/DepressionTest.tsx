@@ -176,14 +176,13 @@ const DepressionTest = () => {
       
       setAssessmentResult(assessmentData);
       
-      // If user came from booking flow, show popup after delay then redirect
+      // If user came from booking flow, show form after delay
       if (pendingAction) {
         setTimeout(() => {
           setShowBookingForm(true);
         }, 1500);
-      } else {
-        setShowTherapistPopup(true);
       }
+      // No popup — inline CTAs handle the Mind-Check flow
     }
   };
 
@@ -201,15 +200,15 @@ const DepressionTest = () => {
   };
 
   const handleContinueToBooking = () => {
-    if (pendingAction === "book") {
-      setShowBookingForm(true);
-    } else if (pendingAction === "group") {
-      setShowBookingForm(true);
-    } else {
-      // Start new booking flow
+    if (!pendingAction) {
       setPendingAction("book");
-      setShowBookingForm(true);
     }
+    setShowBookingForm(true);
+  };
+
+  const handleJoinSupportGroup = () => {
+    setPendingAction("group");
+    setShowBookingForm(true);
   };
 
   const calculateScore = () => {
@@ -372,21 +371,36 @@ const DepressionTest = () => {
                     </ul>
                   </div>
 
-                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                    <Button 
-                      variant="outline" 
-                      onClick={handleRestart}
-                      className="flex items-center gap-2"
-                    >
-                      <RotateCcw className="h-4 w-4" />
-                      Retake Test
-                    </Button>
-                    <Button 
-                      size="lg"
-                      onClick={handleContinueToBooking}
-                    >
-                      Book a Therapist Now
-                    </Button>
+                  <div className="flex flex-col gap-3">
+                    <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                      <Button 
+                        size="lg"
+                        onClick={handleContinueToBooking}
+                        className="flex items-center gap-2"
+                      >
+                        <Heart className="h-4 w-4" />
+                        Book a Therapy Session
+                      </Button>
+                      <Button 
+                        size="lg"
+                        variant="secondary"
+                        onClick={handleJoinSupportGroup}
+                        className="flex items-center gap-2"
+                      >
+                        <AlertCircle className="h-4 w-4" />
+                        Join a Support Group
+                      </Button>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                      <Button 
+                        variant="outline" 
+                        onClick={handleRestart}
+                        className="flex items-center gap-2"
+                      >
+                        <RotateCcw className="h-4 w-4" />
+                        Retake Test
+                      </Button>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -408,6 +422,7 @@ const DepressionTest = () => {
                       {depressionQuestions[currentQuestion].question}
                     </h3>
                     <RadioGroup
+                      key={`depression-q-${currentQuestion}`}
                       value={answers[depressionQuestions[currentQuestion].id]?.toString()}
                       onValueChange={(value) => handleAnswer(depressionQuestions[currentQuestion].id, parseInt(value))}
                       className="space-y-3"
@@ -422,8 +437,8 @@ const DepressionTest = () => {
                           }`}
                           onClick={() => handleAnswer(depressionQuestions[currentQuestion].id, option.value)}
                         >
-                          <RadioGroupItem value={option.value.toString()} id={`option-${option.value}`} />
-                          <Label htmlFor={`option-${option.value}`} className="flex-1 cursor-pointer font-medium">
+                          <RadioGroupItem value={option.value.toString()} id={`dep-q${currentQuestion}-opt-${option.value}`} />
+                          <Label htmlFor={`dep-q${currentQuestion}-opt-${option.value}`} className="flex-1 cursor-pointer font-medium">
                             {option.label}
                           </Label>
                         </div>

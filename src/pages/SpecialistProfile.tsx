@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useEffect, useState, useRef } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -28,6 +28,8 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { getSpecialistImage } from "@/lib/specialistImages";
+import { useAssessment } from "@/contexts/AssessmentContext";
+import PreAssessmentModal from "@/components/PreAssessmentModal";
 import ugandaBadge from "@/assets/uganda-badge.png";
 import ghanaBadge from "@/assets/ghana-badge.png";
 import botswanaBadge from "@/assets/botswana-badge.png";
@@ -132,6 +134,7 @@ const StarRating = ({ rating, interactive = false, onRate }: { rating: number; i
 const SpecialistProfile = () => {
   const { id } = useParams<{ id: string }>();
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [specialist, setSpecialist] = useState<Specialist | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [availability, setAvailability] = useState<Availability[]>([]);
@@ -140,6 +143,9 @@ const SpecialistProfile = () => {
   const [reviewForm, setReviewForm] = useState({ name: "", rating: 5, comment: "" });
   const [submittingReview, setSubmittingReview] = useState(false);
   const [bookingDialogOpen, setBookingDialogOpen] = useState(false);
+  const [showPreAssessment, setShowPreAssessment] = useState(false);
+  const { assessmentResult, justCompletedAssessment, setJustCompletedAssessment } = useAssessment();
+  const hasAutoOpened = useRef(false);
   const [bookingForm, setBookingForm] = useState({
     name: "",
     phone: "",
@@ -149,6 +155,15 @@ const SpecialistProfile = () => {
     notes: "",
   });
 
+  // Auto-open booking dialog if user just completed an assessment and returned
+  useEffect(() => {
+    if (justCompletedAssessment && assessmentResult && !hasAutoOpened.current) {
+      hasAutoOpened.current = true;
+      setBookingDialogOpen(true);
+      setJustCompletedAssessment(false);
+    }
+  }, [justCompletedAssessment, assessmentResult, setJustCompletedAssessment]);
+
   const handleBookingSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!bookingForm.name.trim() || !bookingForm.phone.trim()) {
@@ -156,7 +171,7 @@ const SpecialistProfile = () => {
       return;
     }
 
-    const message = `Hello, I would like to book a therapy session.
+    let message = `Hello, I would like to book a therapy session.
 
 *Client Details:*
 • Name: ${bookingForm.name}
@@ -166,9 +181,21 @@ const SpecialistProfile = () => {
 • Therapist: ${specialist?.name}
 • Session Type: ${bookingForm.sessionType === "video" ? "Video Call" : "Voice Call"}
 ${bookingForm.preferredDay ? `• Preferred Day: ${bookingForm.preferredDay}` : ""}
-${bookingForm.preferredTime ? `• Preferred Time: ${bookingForm.preferredTime}` : ""}
+${bookingForm.preferredTime ? `• Preferred Time: ${bookingForm.preferredTime}` : ""}`;
 
-${bookingForm.notes ? `*Additional Notes:*\n${bookingForm.notes}` : ""}
+    // Include assessment results if available
+    if (assessmentResult) {
+      message += `
+
+*Assessment Results:*
+• Condition: ${assessmentResult.assessmentLabel}
+• Severity: ${assessmentResult.severity}
+• Score: ${assessmentResult.score}/${assessmentResult.maxScore}
+• Recommendation: ${assessmentResult.recommendation}`;
+    }
+
+    message += `
+${bookingForm.notes ? `\n*Additional Notes:*\n${bookingForm.notes}` : ""}
 
 Please confirm availability. Thank you!`;
 
@@ -386,12 +413,11 @@ Please confirm availability. Thank you!`;
                   )}
                 </div>
 
+                <Button size="lg" onClick={() => setShowPreAssessment(true)}>
+                  <MessageCircle className="w-4 h-4 mr-2" /> Book Session via WhatsApp
+                </Button>
+
                 <Dialog open={bookingDialogOpen} onOpenChange={setBookingDialogOpen}>
-                  <DialogTrigger asChild>
-                    <Button size="lg">
-                      <MessageCircle className="w-4 h-4 mr-2" /> Book Session via WhatsApp
-                    </Button>
-                  </DialogTrigger>
                   <DialogContent className="sm:max-w-md">
                     <DialogHeader>
                       <DialogTitle>Book a Session with {specialist.name}</DialogTitle>
@@ -399,6 +425,19 @@ Please confirm availability. Thank you!`;
                         Fill in your details and we'll send them via WhatsApp to confirm your booking.
                       </DialogDescription>
                     </DialogHeader>
+
+                    {/* Assessment Summary if available */}
+                    {assessmentResult && (
+                      <div className="bg-muted/50 rounded-lg p-3 border text-sm space-y-1">
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium">Assessment Result</span>
+                          <span className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary">{assessmentResult.severity}</span>
+                        </div>
+                        <p className="text-muted-foreground"><strong>Condition:</strong> {assessmentResult.assessmentLabel}</p>
+                        <p className="text-muted-foreground"><strong>Score:</strong> {assessmentResult.score}/{assessmentResult.maxScore}</p>
+                      </div>
+                    )}
+
                     <form onSubmit={handleBookingSubmit} className="space-y-4 mt-4">
                       <div className="space-y-2">
                         <Label htmlFor="booking-name">Your Name *</Label>
@@ -494,6 +533,15 @@ Please confirm availability. Thank you!`;
                     </form>
                   </DialogContent>
                 </Dialog>
+
+                <PreAssessmentModal
+                  isOpen={showPreAssessment}
+                  onClose={() => {
+                    setShowPreAssessment(false);
+                    // If user skipped assessment, open booking dialog directly
+                  }}
+                  actionType="book"
+                />
               </div>
             </div>
           </div>
