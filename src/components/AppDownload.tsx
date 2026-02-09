@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import appScreenshot from "@/assets/app-screenshot.jpg";
 
 const AppDownload = () => {
@@ -11,8 +12,8 @@ const AppDownload = () => {
               Innerspark App
             </h2>
             <div className="flex flex-wrap gap-3 items-center justify-center md:justify-start">
-              <a 
-                href="#" 
+              <Link 
+                to="/app-coming-soon" 
                 className="inline-block transition-transform hover:scale-105"
                 aria-label="Download on App Store"
               >
@@ -22,9 +23,9 @@ const AppDownload = () => {
                   className="h-10 w-auto"
                   style={{ height: '40px' }}
                 />
-              </a>
-              <a 
-                href="#" 
+              </Link>
+              <Link 
+                to="/app-coming-soon" 
                 className="inline-block transition-transform hover:scale-105"
                 aria-label="Get it on Google Play"
               >
@@ -34,7 +35,7 @@ const AppDownload = () => {
                   className="h-10 w-auto"
                   style={{ height: '40px' }}
                 />
-              </a>
+              </Link>
             </div>
           </div>
 

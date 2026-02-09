@@ -7,17 +7,17 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { T } from "@/components/Translate";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { 
-  Search, Video, Phone, ExternalLink, Calendar, MessageSquare, CheckCircle,
+  Search, Video, Phone, ExternalLink, CheckCircle,
   Pill, Baby, Brain, Users, AlertTriangle, CloudRain, Heart, Handshake, Sparkles, Briefcase, LayoutGrid
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getSpecialistImage } from "@/lib/specialistImages";
-import { toast } from "sonner";
+import PreAssessmentModal from "@/components/PreAssessmentModal";
+import BookingFormModal from "@/components/BookingFormModal";
+import { useBookingFlow } from "@/hooks/useBookingFlow";
 import ugandaBadge from "@/assets/uganda-badge.png";
 import ghanaBadge from "@/assets/ghana-badge.png";
 import botswanaBadge from "@/assets/botswana-badge.png";
@@ -236,17 +236,14 @@ const formatPrice = (price: number) => {
   }).format(price);
 };
 
-const SpecialistCard = ({ specialist, isVerified }: { specialist: Specialist; isVerified: boolean }) => {
-  const [bookingDialogOpen, setBookingDialogOpen] = useState(false);
-  const [bookingForm, setBookingForm] = useState({
-    name: "",
-    phone: "",
-    preferredDate: "",
-    preferredTime: "",
-    sessionType: "",
-    notes: "",
-  });
-  
+// Context for booking flow - passed from parent
+interface SpecialistCardProps {
+  specialist: Specialist;
+  isVerified: boolean;
+  onBookClick: () => void;
+}
+
+const SpecialistCard = ({ specialist, isVerified, onBookClick }: SpecialistCardProps) => {
   const primaryCategory = getSpecialistPrimaryCategory(specialist.name);
 
   const initials = specialist.name
@@ -257,45 +254,7 @@ const SpecialistCard = ({ specialist, isVerified }: { specialist: Specialist; is
 
   const imageUrl = getSpecialistImage(specialist.name, specialist.image_url);
 
-  const handleBookingSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!bookingForm.name.trim() || !bookingForm.phone.trim()) {
-      toast.error("Please fill in your name and phone number");
-      return;
-    }
-
-    const message = `Hello, I would like to book a session with ${specialist.name}.
-
-*Booking Details:*
-- Name: ${bookingForm.name.trim()}
-- Phone: ${bookingForm.phone.trim()}
-- Preferred Date: ${bookingForm.preferredDate || "Flexible"}
-- Preferred Time: ${bookingForm.preferredTime || "Flexible"}
-- Session Type: ${bookingForm.sessionType || "Not specified"}
-- Additional Notes: ${bookingForm.notes.trim() || "None"}
-
-Please confirm availability. Thank you!`;
-
-    window.open(
-      `https://wa.me/256792085773?text=${encodeURIComponent(message)}`,
-      "_blank"
-    );
-    
-    setBookingDialogOpen(false);
-    setBookingForm({
-      name: "",
-      phone: "",
-      preferredDate: "",
-      preferredTime: "",
-      sessionType: "",
-      notes: "",
-    });
-    toast.success("Redirecting to WhatsApp...");
-  };
-
   return (
-    <>
       <div className="bg-card rounded-xl border border-border p-6 hover:shadow-lg transition-all duration-300 hover:border-primary/30">
         <div className="flex items-start gap-4 mb-4">
           <div className="w-16 h-16 rounded-lg bg-primary/10 flex items-center justify-center text-primary font-bold text-xl shrink-0 overflow-hidden border-2 border-primary/20">
@@ -382,7 +341,7 @@ Please confirm availability. Thank you!`;
         </div>
 
         <div className="flex gap-2">
-          <Button className="flex-1" onClick={() => setBookingDialogOpen(true)}>
+          <Button className="flex-1" onClick={onBookClick}>
             Book
           </Button>
           <Link to={`/specialists/${specialist.id}`} className="flex-1">
@@ -392,97 +351,6 @@ Please confirm availability. Thank you!`;
           </Link>
         </div>
       </div>
-
-      {/* Booking Dialog */}
-      <Dialog open={bookingDialogOpen} onOpenChange={setBookingDialogOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Calendar className="w-5 h-5 text-primary" />
-              Book Session with {specialist.name}
-            </DialogTitle>
-            <DialogDescription>
-              Fill in your details and we'll connect you via WhatsApp.
-            </DialogDescription>
-          </DialogHeader>
-          <form onSubmit={handleBookingSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor={`name-${specialist.id}`}>Your Name *</Label>
-              <Input
-                id={`name-${specialist.id}`}
-                placeholder="Enter your full name"
-                value={bookingForm.name}
-                onChange={(e) => setBookingForm({ ...bookingForm, name: e.target.value })}
-                maxLength={100}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor={`phone-${specialist.id}`}>Phone Number *</Label>
-              <Input
-                id={`phone-${specialist.id}`}
-                placeholder="e.g., +256 700 000 000"
-                value={bookingForm.phone}
-                onChange={(e) => setBookingForm({ ...bookingForm, phone: e.target.value })}
-                maxLength={20}
-                required
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-2">
-                <Label htmlFor={`date-${specialist.id}`}>Preferred Date</Label>
-                <Input
-                  id={`date-${specialist.id}`}
-                  type="date"
-                  value={bookingForm.preferredDate}
-                  onChange={(e) => setBookingForm({ ...bookingForm, preferredDate: e.target.value })}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor={`time-${specialist.id}`}>Preferred Time</Label>
-                <Input
-                  id={`time-${specialist.id}`}
-                  type="time"
-                  value={bookingForm.preferredTime}
-                  onChange={(e) => setBookingForm({ ...bookingForm, preferredTime: e.target.value })}
-                />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor={`session-type-${specialist.id}`}>Session Type</Label>
-              <Select
-                value={bookingForm.sessionType}
-                onValueChange={(value) => setBookingForm({ ...bookingForm, sessionType: value })}
-              >
-                <SelectTrigger id={`session-type-${specialist.id}`}>
-                  <SelectValue placeholder="Select session type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="video">Video Call</SelectItem>
-                  <SelectItem value="voice">Voice Call</SelectItem>
-                  <SelectItem value="in-person">In-Person</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor={`notes-${specialist.id}`}>Additional Notes</Label>
-              <Textarea
-                id={`notes-${specialist.id}`}
-                placeholder="Any specific concerns or preferences..."
-                value={bookingForm.notes}
-                onChange={(e) => setBookingForm({ ...bookingForm, notes: e.target.value })}
-                maxLength={500}
-                rows={3}
-              />
-            </div>
-            <Button type="submit" className="w-full gap-2">
-              <MessageSquare className="w-4 h-4" />
-              Continue to WhatsApp
-            </Button>
-          </form>
-        </DialogContent>
-      </Dialog>
-    </>
   );
 };
 
@@ -541,6 +409,15 @@ const Specialists = () => {
   const [specialists, setSpecialists] = useState<Specialist[]>([]);
   const [verifiedSpecialists, setVerifiedSpecialists] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
+
+  const {
+    startBooking,
+    closeFlow,
+    resetFlow,
+    isAssessmentModalOpen,
+    isBookingFormOpen,
+    actionType
+  } = useBookingFlow();
 
   const currentCategory = supportCategories.find(c => c.id === selectedCategory) || supportCategories[0];
 
@@ -818,7 +695,12 @@ const Specialists = () => {
                 {/* Specialists Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                   {filteredSpecialists.map((specialist) => (
-                    <SpecialistCard key={specialist.id} specialist={specialist} isVerified={verifiedSpecialists.has(specialist.id)} />
+                    <SpecialistCard 
+                      key={specialist.id} 
+                      specialist={specialist} 
+                      isVerified={verifiedSpecialists.has(specialist.id)}
+                      onBookClick={startBooking}
+                    />
                   ))}
                 </div>
 
@@ -863,6 +745,20 @@ const Specialists = () => {
       </main>
 
       <Footer />
+
+      {/* Pre-Assessment Modal */}
+      <PreAssessmentModal
+        isOpen={isAssessmentModalOpen}
+        onClose={closeFlow}
+        actionType={actionType}
+      />
+
+      {/* Booking Form Modal */}
+      <BookingFormModal
+        isOpen={isBookingFormOpen}
+        onClose={resetFlow}
+        formType={actionType}
+      />
     </>
   );
 };

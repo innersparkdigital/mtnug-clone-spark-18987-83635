@@ -1,7 +1,11 @@
 import { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight, Smile, MessageCircle, Video, Users, Calendar, AlertTriangle, Search, Heart, Sparkles, Download, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence, useScroll, useTransform, useSpring } from "framer-motion";
+import PreAssessmentModal from "./PreAssessmentModal";
+import BookingFormModal from "./BookingFormModal";
+import { useBookingFlow } from "@/hooks/useBookingFlow";
 
 // Import phone mockup screen images
 import moodTrackerMockup from "@/assets/mockups/mood-tracker-screen.png";
@@ -134,6 +138,16 @@ const AppFeaturesShowcase = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [imagesLoaded, setImagesLoaded] = useState(false);
+  
+  const {
+    startBooking,
+    closeFlow,
+    goToForm,
+    resetFlow,
+    isAssessmentModalOpen,
+    isBookingFormOpen,
+    actionType
+  } = useBookingFlow();
 
   // Preload all images on mount
   useEffect(() => {
@@ -244,11 +258,9 @@ const AppFeaturesShowcase = () => {
                   <Button 
                     size="lg"
                     className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-                    asChild
+                    onClick={startBooking}
                   >
-                    <a href="https://wa.me/256792085773?text=Hi,%20I%20need%20to%20book%20a%20therapy%20session%20today" target="_blank" rel="noopener noreferrer">
-                      Book Therapy Now
-                    </a>
+                    Book Therapy Now
                   </Button>
                   <Button 
                     size="lg"
@@ -256,9 +268,9 @@ const AppFeaturesShowcase = () => {
                     className="px-8 py-6 text-lg font-semibold rounded-full border-2 hover:bg-muted transition-all duration-300"
                     asChild
                   >
-                    <a href="/specialists">
+                    <Link to="/specialists">
                       Find a Therapist
-                    </a>
+                    </Link>
                   </Button>
                 </div>
 
@@ -385,6 +397,20 @@ const AppFeaturesShowcase = () => {
           })}
         </div>
       </div>
+
+      {/* Pre-Assessment Modal */}
+      <PreAssessmentModal
+        isOpen={isAssessmentModalOpen}
+        onClose={closeFlow}
+        actionType={actionType}
+      />
+
+      {/* Booking Form Modal */}
+      <BookingFormModal
+        isOpen={isBookingFormOpen}
+        onClose={resetFlow}
+        formType={actionType}
+      />
     </section>
   );
 };
