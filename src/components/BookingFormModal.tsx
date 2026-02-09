@@ -28,9 +28,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useAssessment, AssessmentResult } from "@/contexts/AssessmentContext";
-import { Calendar, Clock, CheckCircle, Send, AlertCircle, Users, Phone } from "lucide-react";
+import { Calendar, Clock, CheckCircle, Send, AlertCircle, Users, Phone, User, ArrowRight } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { trackBookingFormOpened, trackBookingSubmitted, trackWhatsAppClick } from "@/lib/analytics";
+import TherapistRecommendationCard from "./TherapistRecommendationCard";
 
 interface BookingFormModalProps {
   isOpen: boolean;
@@ -133,14 +134,37 @@ const formatWhatsAppMessage = (
 
 const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { assessmentResult, clearAssessment } = useAssessment();
+  const [showForm, setShowForm] = useState(false);
+  const { assessmentResult, clearAssessment, setPendingAction } = useAssessment();
 
-  // Track form opened
+  // Track form opened and manage view state
   useEffect(() => {
     if (isOpen) {
       trackBookingFormOpened(!!assessmentResult);
+      // If we have assessment result and booking, show recommendation first
+      // Otherwise show form directly
+      if (assessmentResult && formType === "book") {
+        setShowForm(false);
+      } else {
+        setShowForm(true);
+      }
+    } else {
+      setShowForm(false);
     }
-  }, [isOpen, assessmentResult]);
+  }, [isOpen, assessmentResult, formType]);
+
+  const handleProceedWithTherapist = () => {
+    setShowForm(true);
+  };
+
+  const handleSwitchToGroup = () => {
+    setPendingAction("group");
+    onClose();
+    // Re-open as group form
+    setTimeout(() => {
+      window.dispatchEvent(new CustomEvent('openGroupForm'));
+    }, 100);
+  };
   
   const bookingForm = useForm<BookingFormData>({
     resolver: zodResolver(bookingSchema),
@@ -226,237 +250,244 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
           </DialogTitle>
           <DialogDescription>
             {formType === "book" 
-              ? "Complete your booking details and we'll connect you with the right therapist."
+              ? showForm 
+                ? "Complete your booking details and we'll connect you with the right therapist."
+                : "Based on your assessment, we've matched you with a recommended therapist."
               : "Fill in your details to join a supportive community."}
           </DialogDescription>
         </DialogHeader>
 
-        {/* Assessment Summary */}
-        {assessmentResult && (
-          <div className="bg-muted/50 rounded-lg p-4 space-y-2 border">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-foreground">Assessment Result</span>
-              <span className={`text-xs px-2 py-1 rounded-full ${getSeverityColor(assessmentResult.severity)}`}>
-                {assessmentResult.severity}
-              </span>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              <strong>Condition:</strong> {assessmentResult.assessmentLabel}
-            </p>
-            <p className="text-sm text-muted-foreground">
-              <strong>Recommendation:</strong> {assessmentResult.recommendation}
-            </p>
-            <p className="text-xs text-muted-foreground italic">
-              {assessmentResult.recommendedFormat}
-            </p>
-          </div>
+        {/* Therapist Recommendation (for booking with assessment, before form) */}
+        {formType === "book" && assessmentResult && !showForm && (
+          <TherapistRecommendationCard
+            assessmentResult={assessmentResult}
+            onProceedWithTherapist={handleProceedWithTherapist}
+            onJoinSupportGroup={handleSwitchToGroup}
+          />
         )}
 
-        {formType === "book" ? (
-          <Form {...bookingForm}>
-            <form onSubmit={bookingForm.handleSubmit(handleSubmit)} className="space-y-4">
-              <FormField
-                control={bookingForm.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Full Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Your name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+        {/* Show form when ready */}
+        {showForm && (
+          <>
+            {/* Compact Assessment Summary (when showing form) */}
+            {assessmentResult && (
+              <div className="bg-muted/50 rounded-lg p-3 border">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">
+                    {assessmentResult.assessmentLabel} • <span className={getSeverityColor(assessmentResult.severity).split(' ')[0]}>{assessmentResult.severity}</span>
+                  </span>
+                  <CheckCircle className="h-4 w-4 text-primary" />
+                </div>
+              </div>
+            )}
 
-              <FormField
-                control={bookingForm.control}
-                name="phone"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Phone Number</FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input placeholder="+256 XXX XXXXXX" className="pl-10" {...field} />
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <div className="grid grid-cols-2 gap-4">
-                <FormField
-                  control={bookingForm.control}
-                  name="preferredDay"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Preferred Day</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
+            {formType === "book" ? (
+              <Form {...bookingForm}>
+                <form onSubmit={bookingForm.handleSubmit(handleSubmit)} className="space-y-4">
+                  <FormField
+                    control={bookingForm.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Full Name</FormLabel>
                         <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select day" />
-                          </SelectTrigger>
+                          <Input placeholder="Your name" {...field} />
                         </FormControl>
-                        <SelectContent>
-                          {days.map((day) => (
-                            <SelectItem key={day} value={day}>{day}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                <FormField
-                  control={bookingForm.control}
-                  name="preferredTime"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Preferred Time</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
+                  <FormField
+                    control={bookingForm.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Phone Number</FormLabel>
                         <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select time" />
-                          </SelectTrigger>
+                          <div className="relative">
+                            <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            <Input placeholder="+256 XXX XXXXXX" className="pl-10" {...field} />
+                          </div>
                         </FormControl>
-                        <SelectContent>
-                          {times.map((time) => (
-                            <SelectItem key={time} value={time}>{time}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-              <FormField
-                control={bookingForm.control}
-                name="notes"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Additional Notes (Optional)</FormLabel>
-                    <FormControl>
-                      <Textarea 
-                        placeholder="Any specific concerns or preferences..." 
-                        className="resize-none" 
-                        {...field} 
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                  <div className="grid grid-cols-2 gap-4">
+                    <FormField
+                      control={bookingForm.control}
+                      name="preferredDay"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Preferred Day</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select day" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {days.map((day) => (
+                                <SelectItem key={day} value={day}>{day}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-              <div className="bg-primary/5 rounded-lg p-3 flex items-center gap-2">
-                <Clock className="h-4 w-4 text-primary" />
-                <span className="text-sm text-foreground">
-                  Session Cost: <strong>UGX 75,000 / hour</strong>
-                </span>
-              </div>
+                    <FormField
+                      control={bookingForm.control}
+                      name="preferredTime"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Preferred Time</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select time" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {times.map((time) => (
+                                <SelectItem key={time} value={time}>{time}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
 
-              <Button type="submit" className="w-full gap-2" disabled={isSubmitting}>
-                <Send className="h-4 w-4" />
-                {isSubmitting ? "Sending..." : "Submit Booking Request"}
-              </Button>
-            </form>
-          </Form>
-        ) : (
-          <Form {...groupForm}>
-            <form onSubmit={groupForm.handleSubmit(handleSubmit)} className="space-y-4">
-              <FormField
-                control={groupForm.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Full Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Your name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                  <FormField
+                    control={bookingForm.control}
+                    name="notes"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Additional Notes (Optional)</FormLabel>
+                        <FormControl>
+                          <Textarea 
+                            placeholder="Any specific concerns or preferences..." 
+                            className="resize-none" 
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-              <FormField
-                control={groupForm.control}
-                name="phone"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Phone Number</FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input placeholder="+256 XXX XXXXXX" className="pl-10" {...field} />
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                  <div className="bg-primary/5 rounded-lg p-3 flex items-center gap-2">
+                    <Clock className="h-4 w-4 text-primary" />
+                    <span className="text-sm text-foreground">
+                      Session Cost: <strong>UGX 75,000 / hour</strong>
+                    </span>
+                  </div>
 
-              <FormField
-                control={groupForm.control}
-                name="groupType"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Select Support Group</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Choose a group..." />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {supportGroups.map((group) => (
-                          <SelectItem key={group.id} value={group.id}>
-                            <div className="flex justify-between items-center w-full">
-                              <span>{group.name}</span>
-                            </div>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                  <Button type="submit" className="w-full gap-2" disabled={isSubmitting}>
+                    <Send className="h-4 w-4" />
+                    {isSubmitting ? "Sending..." : "Submit Booking Request"}
+                  </Button>
+                </form>
+              </Form>
+            ) : (
+              <Form {...groupForm}>
+                <form onSubmit={groupForm.handleSubmit(handleSubmit)} className="space-y-4">
+                  <FormField
+                    control={groupForm.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Full Name</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Your name" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-              <FormField
-                control={groupForm.control}
-                name="notes"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Additional Notes (Optional)</FormLabel>
-                    <FormControl>
-                      <Textarea 
-                        placeholder="Any specific concerns or preferences..." 
-                        className="resize-none" 
-                        {...field} 
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                  <FormField
+                    control={groupForm.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Phone Number</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            <Input placeholder="+256 XXX XXXXXX" className="pl-10" {...field} />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-              <div className="bg-primary/5 rounded-lg p-3 flex items-center gap-2">
-                <Users className="h-4 w-4 text-primary" />
-                <span className="text-sm text-foreground">
-                  Weekly Fee: <strong>UGX 25,000</strong>
-                </span>
-              </div>
+                  <FormField
+                    control={groupForm.control}
+                    name="groupType"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Select Support Group</FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Choose a group..." />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {supportGroups.map((group) => (
+                              <SelectItem key={group.id} value={group.id}>
+                                <div className="flex justify-between items-center w-full">
+                                  <span>{group.name}</span>
+                                </div>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-              <Button type="submit" className="w-full gap-2" disabled={isSubmitting}>
-                <Send className="h-4 w-4" />
-                {isSubmitting ? "Sending..." : "Submit Group Request"}
-              </Button>
-            </form>
-          </Form>
+                  <FormField
+                    control={groupForm.control}
+                    name="notes"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Additional Notes (Optional)</FormLabel>
+                        <FormControl>
+                          <Textarea 
+                            placeholder="Any specific concerns or preferences..." 
+                            className="resize-none" 
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <div className="bg-primary/5 rounded-lg p-3 flex items-center gap-2">
+                    <Users className="h-4 w-4 text-primary" />
+                    <span className="text-sm text-foreground">
+                      Weekly Fee: <strong>UGX 25,000</strong>
+                    </span>
+                  </div>
+
+                  <Button type="submit" className="w-full gap-2" disabled={isSubmitting}>
+                    <Send className="h-4 w-4" />
+                    {isSubmitting ? "Sending..." : "Submit Group Request"}
+                  </Button>
+                </form>
+              </Form>
+            )}
+          </>
         )}
 
         <p className="text-xs text-muted-foreground text-center">

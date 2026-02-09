@@ -103,6 +103,8 @@ import BookTherapist from "./pages/BookTherapist";
 import MentalHealthSupport from "./pages/MentalHealthSupport";
 import VideoTherapy from "./pages/VideoTherapy";
 import ChatTherapy from "./pages/ChatTherapy";
+// App Coming Soon Page
+import AppComingSoon from "./pages/AppComingSoon";
 
 const queryClient = new QueryClient();
 
@@ -129,6 +131,7 @@ const App = () => (
             <Route path="/mental-health-support" element={<MentalHealthSupport />} />
             <Route path="/video-therapy" element={<VideoTherapy />} />
             <Route path="/chat-therapy" element={<ChatTherapy />} />
+            <Route path="/app-coming-soon" element={<AppComingSoon />} />
             <Route path="/support-groups" element={<SupportGroups />} />
             <Route path="/chat-sessions" element={<ChatSessions />} />
             <Route path="/mood-check-in" element={<MoodCheckIn />} />
