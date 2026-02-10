@@ -28,7 +28,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { getSpecialistImage } from "@/lib/specialistImages";
-import { useAssessment } from "@/contexts/AssessmentContext";
+import { useAssessment, SelectedSpecialist } from "@/contexts/AssessmentContext";
 import PreAssessmentModal from "@/components/PreAssessmentModal";
 import ugandaBadge from "@/assets/uganda-badge.png";
 import ghanaBadge from "@/assets/ghana-badge.png";
@@ -538,9 +538,18 @@ Please confirm availability. Thank you!`;
                   isOpen={showPreAssessment}
                   onClose={() => {
                     setShowPreAssessment(false);
-                    // If user skipped assessment, open booking dialog directly
                   }}
                   actionType="book"
+                  specialist={specialist ? {
+                    id: specialist.id,
+                    name: specialist.name,
+                    type: specialist.type,
+                    specialties: specialist.specialties,
+                    experience_years: specialist.experience_years,
+                    price_per_hour: specialist.price_per_hour,
+                    image_url: specialist.image_url,
+                    bio: specialist.bio,
+                  } : null}
                 />
               </div>
             </div>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   Dialog,
@@ -15,19 +15,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Brain, ArrowRight, CheckCircle, AlertCircle } from "lucide-react";
-import { useAssessment } from "@/contexts/AssessmentContext";
+import { Brain, ArrowRight, CheckCircle, AlertCircle, User } from "lucide-react";
+import { useAssessment, SelectedSpecialist } from "@/contexts/AssessmentContext";
 import { trackAssessmentStarted, trackAssessmentSkipped, trackBookingClick, trackGroupClick } from "@/lib/analytics";
+import { getRelevantAssessments } from "@/lib/specialistAssessmentMapping";
 
 interface PreAssessmentModalProps {
   isOpen: boolean;
   onClose: () => void;
   actionType: "book" | "group";
+  specialist?: SelectedSpecialist | null;
 }
 
 // Complete list of all 37 assessments
 const assessmentOptions = [
-  // Original assessments
   {
     id: "depression",
     name: "Depression",
@@ -108,7 +109,6 @@ const assessmentOptions = [
     recommendation: "Perinatal Mental Health Specialist",
     format: "1:1 Therapy Session"
   },
-  // New assessments
   {
     id: "sex-addiction",
     name: "Sex Addiction",
@@ -336,18 +336,47 @@ const assessmentOptions = [
   },
 ];
 
-const PreAssessmentModal = ({ isOpen, onClose, actionType }: PreAssessmentModalProps) => {
+const PreAssessmentModal = ({ isOpen, onClose, actionType, specialist }: PreAssessmentModalProps) => {
   const [wantsAssessment, setWantsAssessment] = useState<boolean | null>(null);
   const [selectedCondition, setSelectedCondition] = useState<string>("");
   const navigate = useNavigate();
   const location = useLocation();
-  const { setPendingAction, setReturnPath } = useAssessment();
+  const { setPendingAction, setReturnPath, setSelectedSpecialist } = useAssessment();
+
+  // Get recommended assessments based on selected specialist
+  const recommendedAssessmentIds = useMemo(() => {
+    if (!specialist) return [];
+    return getRelevantAssessments(specialist.type, specialist.specialties);
+  }, [specialist]);
+
+  // Sort assessments: recommended first, then the rest
+  const sortedAssessments = useMemo(() => {
+    if (recommendedAssessmentIds.length === 0) return assessmentOptions;
+
+    const recommended = assessmentOptions.filter(a => recommendedAssessmentIds.includes(a.id));
+    const others = assessmentOptions.filter(a => !recommendedAssessmentIds.includes(a.id) && a.id !== "crisis");
+    const crisis = assessmentOptions.find(a => a.id === "crisis");
+
+    return [...recommended, ...others, ...(crisis ? [crisis] : [])];
+  }, [recommendedAssessmentIds]);
+
+  // Auto-select the first recommended assessment when specialist is provided
+  useEffect(() => {
+    if (specialist && wantsAssessment === true && recommendedAssessmentIds.length > 0 && !selectedCondition) {
+      setSelectedCondition(recommendedAssessmentIds[0]);
+    }
+  }, [specialist, wantsAssessment, recommendedAssessmentIds, selectedCondition]);
 
   const handleProceedWithAssessment = () => {
     const condition = assessmentOptions.find(c => c.id === selectedCondition);
     if (condition) {
       setPendingAction(actionType);
       setReturnPath(location.pathname);
+      
+      // Store the selected specialist so it persists through navigation
+      if (specialist) {
+        setSelectedSpecialist(specialist);
+      }
       
       // Track analytics
       trackAssessmentStarted(condition.id);
@@ -373,9 +402,14 @@ const PreAssessmentModal = ({ isOpen, onClose, actionType }: PreAssessmentModalP
     
     onClose();
     const whatsappNumber = "256792085773";
-    const message = actionType === "book" 
+    let message = actionType === "book" 
       ? "Hi, I would like to book a therapy session"
       : "Hi, I would like to join a mental health support group";
+    
+    if (specialist) {
+      message += ` with ${specialist.name}`;
+    }
+    
     window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, "_blank");
   };
 
@@ -385,6 +419,7 @@ const PreAssessmentModal = ({ isOpen, onClose, actionType }: PreAssessmentModalP
   };
 
   const selectedOption = assessmentOptions.find(c => c.id === selectedCondition);
+  const isRecommended = (id: string) => recommendedAssessmentIds.includes(id);
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => { if (!open) { onClose(); handleReset(); } }}>
@@ -395,19 +430,45 @@ const PreAssessmentModal = ({ isOpen, onClose, actionType }: PreAssessmentModalP
             {actionType === "book" ? "Book a Therapy Session" : "Join a Support Group"}
           </DialogTitle>
           <DialogDescription>
-            Understanding your mental health helps us match you with the right support.
+            {specialist 
+              ? `To ensure the best care with ${specialist.name}, please complete a short assessment aligned with their expertise.`
+              : "Understanding your mental health helps us match you with the right support."
+            }
           </DialogDescription>
         </DialogHeader>
+
+        {/* Show selected specialist context */}
+        {specialist && (
+          <div className="bg-primary/5 border border-primary/20 rounded-lg p-3 flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center overflow-hidden shrink-0">
+              {specialist.image_url ? (
+                <img src={specialist.image_url} alt={specialist.name} className="w-full h-full object-cover object-top" />
+              ) : (
+                <User className="w-5 h-5 text-primary" />
+              )}
+            </div>
+            <div className="min-w-0">
+              <p className="font-medium text-foreground text-sm truncate">{specialist.name}</p>
+              <p className="text-xs text-muted-foreground capitalize">{specialist.type}</p>
+            </div>
+          </div>
+        )}
 
         <div className="space-y-6 py-4">
           {wantsAssessment === null && (
             <>
               <div className="bg-muted/50 rounded-lg p-4">
                 <p className="text-foreground font-medium mb-2">
-                  Would you like to assess your mental health first?
+                  {specialist 
+                    ? "Would you like to complete a quick assessment first?"
+                    : "Would you like to assess your mental health first?"
+                  }
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  This quick assessment helps us recommend the right type of support for you.
+                  {specialist
+                    ? "This helps your therapist understand your needs before the session."
+                    : "This quick assessment helps us recommend the right type of support for you."
+                  }
                 </p>
               </div>
 
@@ -448,23 +509,51 @@ const PreAssessmentModal = ({ isOpen, onClose, actionType }: PreAssessmentModalP
             <>
               <div className="space-y-3">
                 <label className="text-sm font-medium text-foreground">
-                  Select what you would like to assess
+                  {specialist && recommendedAssessmentIds.length > 0
+                    ? `Recommended assessments for ${specialist.name}'s expertise`
+                    : "Select what you would like to assess"
+                  }
                 </label>
                 <Select value={selectedCondition} onValueChange={setSelectedCondition}>
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Choose a condition..." />
                   </SelectTrigger>
                   <SelectContent className="max-h-[300px]">
-                    {assessmentOptions.map((option) => (
-                      <SelectItem key={option.id} value={option.id} className="py-3">
-                        <div className="flex flex-col">
-                          <span className="font-medium">{option.name}</span>
-                          <span className="text-xs text-muted-foreground mt-0.5">
-                            {option.description}
-                          </span>
+                    {specialist && recommendedAssessmentIds.length > 0 && (
+                      <div className="px-2 py-1.5 text-xs font-semibold text-primary border-b">
+                        Recommended for {specialist.name}
+                      </div>
+                    )}
+                    {sortedAssessments.map((option, index) => {
+                      const recommended = isRecommended(option.id);
+                      const isFirstNonRecommended = specialist && recommendedAssessmentIds.length > 0 && 
+                        !recommended && index > 0 && isRecommended(sortedAssessments[index - 1]?.id);
+                      
+                      return (
+                        <div key={option.id}>
+                          {isFirstNonRecommended && (
+                            <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-t border-b">
+                              All Assessments
+                            </div>
+                          )}
+                          <SelectItem value={option.id} className="py-3">
+                            <div className="flex flex-col">
+                              <span className="font-medium flex items-center gap-1">
+                                {option.name}
+                                {recommended && (
+                                  <span className="text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded-full ml-1">
+                                    Recommended
+                                  </span>
+                                )}
+                              </span>
+                              <span className="text-xs text-muted-foreground mt-0.5">
+                                {option.description}
+                              </span>
+                            </div>
+                          </SelectItem>
                         </div>
-                      </SelectItem>
-                    ))}
+                      );
+                    })}
                   </SelectContent>
                 </Select>
               </div>

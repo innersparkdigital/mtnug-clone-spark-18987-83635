@@ -11,6 +11,17 @@ export interface AssessmentResult {
   timestamp: string;
 }
 
+export interface SelectedSpecialist {
+  id: string;
+  name: string;
+  type: string;
+  specialties: string[];
+  experience_years: number;
+  price_per_hour: number;
+  image_url: string | null;
+  bio: string | null;
+}
+
 interface AssessmentContextType {
   pendingAction: "book" | "group" | null;
   setPendingAction: (action: "book" | "group" | null) => void;
@@ -21,6 +32,8 @@ interface AssessmentContextType {
   setReturnPath: (path: string | null) => void;
   justCompletedAssessment: boolean;
   setJustCompletedAssessment: (value: boolean) => void;
+  selectedSpecialist: SelectedSpecialist | null;
+  setSelectedSpecialist: (specialist: SelectedSpecialist | null) => void;
 }
 
 const AssessmentContext = createContext<AssessmentContextType | undefined>(undefined);
@@ -38,6 +51,7 @@ export const AssessmentProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const [assessmentResult, setAssessmentResult] = useState<AssessmentResult | null>(null);
   const [returnPath, setReturnPath] = useState<string | null>(null);
   const [justCompletedAssessment, setJustCompletedAssessment] = useState(false);
+  const [selectedSpecialist, setSelectedSpecialist] = useState<SelectedSpecialist | null>(null);
   const initialized = useRef(false);
 
   // Load from sessionStorage on mount
@@ -52,8 +66,7 @@ export const AssessmentProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         if (parsed.assessmentResult) setAssessmentResult(parsed.assessmentResult);
         if (parsed.pendingAction) setPendingAction(parsed.pendingAction);
         if (parsed.returnPath) setReturnPath(parsed.returnPath);
-        // Important: justCompletedAssessment defaults to false on page reload
-        // It only becomes true when setAssessmentResult is called in the same session
+        if (parsed.selectedSpecialist) setSelectedSpecialist(parsed.selectedSpecialist);
       } catch (e) {
         console.error("Failed to parse assessment data", e);
       }
@@ -67,15 +80,17 @@ export const AssessmentProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     sessionStorage.setItem("innerspark_assessment", JSON.stringify({
       assessmentResult,
       pendingAction,
-      returnPath
+      returnPath,
+      selectedSpecialist
     }));
-  }, [assessmentResult, pendingAction, returnPath]);
+  }, [assessmentResult, pendingAction, returnPath, selectedSpecialist]);
 
   const clearAssessment = () => {
     setAssessmentResult(null);
     setPendingAction(null);
     setReturnPath(null);
     setJustCompletedAssessment(false);
+    setSelectedSpecialist(null);
     sessionStorage.removeItem("innerspark_assessment");
   };
 
@@ -91,6 +106,8 @@ export const AssessmentProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         setReturnPath,
         justCompletedAssessment,
         setJustCompletedAssessment,
+        selectedSpecialist,
+        setSelectedSpecialist,
       }}
     >
       {children}

@@ -135,7 +135,7 @@ const formatWhatsAppMessage = (
 const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
-  const { assessmentResult, clearAssessment, setPendingAction } = useAssessment();
+  const { assessmentResult, clearAssessment, setPendingAction, selectedSpecialist } = useAssessment();
 
   // Track form opened and manage view state
   useEffect(() => {
@@ -190,7 +190,16 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
   const handleSubmit = (data: BookingFormData | GroupFormData) => {
     setIsSubmitting(true);
     
-    const message = formatWhatsAppMessage(formType, data, assessmentResult);
+    let message = formatWhatsAppMessage(formType, data, assessmentResult);
+    
+    // Add selected specialist info to the message
+    if (selectedSpecialist && formType === "book") {
+      message = message.replace(
+        "*New Booking Request – Innerspark Africa*",
+        `*New Booking Request – Innerspark Africa*\n\n*Selected Therapist:* ${selectedSpecialist.name}`
+      );
+    }
+    
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/256792085773?text=${encodedMessage}`;
     
@@ -263,6 +272,7 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
             assessmentResult={assessmentResult}
             onProceedWithTherapist={handleProceedWithTherapist}
             onJoinSupportGroup={handleSwitchToGroup}
+            selectedSpecialist={selectedSpecialist}
           />
         )}
 
