@@ -409,6 +409,7 @@ const Specialists = () => {
   const [specialists, setSpecialists] = useState<Specialist[]>([]);
   const [verifiedSpecialists, setVerifiedSpecialists] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
+  const [bookingSpecialist, setBookingSpecialist] = useState<Specialist | null>(null);
 
   const {
     startBooking,
@@ -418,6 +419,11 @@ const Specialists = () => {
     isBookingFormOpen,
     actionType
   } = useBookingFlow();
+
+  const handleSpecialistBook = (specialist: Specialist) => {
+    setBookingSpecialist(specialist);
+    startBooking();
+  };
 
   const currentCategory = supportCategories.find(c => c.id === selectedCategory) || supportCategories[0];
 
@@ -699,7 +705,7 @@ const Specialists = () => {
                       key={specialist.id} 
                       specialist={specialist} 
                       isVerified={verifiedSpecialists.has(specialist.id)}
-                      onBookClick={startBooking}
+                      onBookClick={() => handleSpecialistBook(specialist)}
                     />
                   ))}
                 </div>
@@ -749,8 +755,21 @@ const Specialists = () => {
       {/* Pre-Assessment Modal */}
       <PreAssessmentModal
         isOpen={isAssessmentModalOpen}
-        onClose={closeFlow}
+        onClose={() => {
+          closeFlow();
+          setBookingSpecialist(null);
+        }}
         actionType={actionType}
+        specialist={bookingSpecialist ? {
+          id: bookingSpecialist.id,
+          name: bookingSpecialist.name,
+          type: bookingSpecialist.type,
+          specialties: bookingSpecialist.specialties,
+          experience_years: bookingSpecialist.experience_years,
+          price_per_hour: bookingSpecialist.price_per_hour,
+          image_url: bookingSpecialist.image_url,
+          bio: bookingSpecialist.bio || null,
+        } : null}
       />
 
       {/* Booking Form Modal */}

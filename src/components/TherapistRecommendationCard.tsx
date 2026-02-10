@@ -6,14 +6,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { 
   User, 
   CheckCircle, 
-  Star, 
   ArrowRight,
   AlertCircle,
   Users,
   Bell,
   RefreshCw
 } from "lucide-react";
-import { AssessmentResult } from "@/contexts/AssessmentContext";
+import { AssessmentResult, SelectedSpecialist } from "@/contexts/AssessmentContext";
 import { findMatchingTherapist, MatchedTherapist, getRecommendedSpecialistType } from "@/lib/therapistMatching";
 import { getSpecialistImage } from "@/lib/specialistImages";
 
@@ -21,12 +20,14 @@ interface TherapistRecommendationCardProps {
   assessmentResult: AssessmentResult;
   onProceedWithTherapist: () => void;
   onJoinSupportGroup: () => void;
+  selectedSpecialist?: SelectedSpecialist | null;
 }
 
 const TherapistRecommendationCard = ({
   assessmentResult,
   onProceedWithTherapist,
   onJoinSupportGroup,
+  selectedSpecialist,
 }: TherapistRecommendationCardProps) => {
   const [loading, setLoading] = useState(true);
   const [therapist, setTherapist] = useState<MatchedTherapist | null>(null);
@@ -38,6 +39,27 @@ const TherapistRecommendationCard = ({
   });
 
   const fetchTherapist = async () => {
+    // If user selected a specialist, use them directly (no fair-assignment override)
+    if (selectedSpecialist) {
+      setTherapist({
+        id: selectedSpecialist.id,
+        name: selectedSpecialist.name,
+        type: selectedSpecialist.type,
+        specialties: selectedSpecialist.specialties,
+        experience_years: selectedSpecialist.experience_years,
+        price_per_hour: selectedSpecialist.price_per_hour,
+        image_url: selectedSpecialist.image_url,
+        bio: selectedSpecialist.bio,
+        matchScore: 100,
+        matchReason: "Your selected therapist"
+      });
+      setFallbackMessage(null);
+      setAlternatives({ generalTherapist: false, supportGroup: false, waitlist: false });
+      setLoading(false);
+      return;
+    }
+
+    // Standard fair-assignment flow
     setLoading(true);
     const result = await findMatchingTherapist(assessmentResult.assessmentType);
     setTherapist(result.therapist);
@@ -48,7 +70,7 @@ const TherapistRecommendationCard = ({
 
   useEffect(() => {
     fetchTherapist();
-  }, [assessmentResult.assessmentType]);
+  }, [assessmentResult.assessmentType, selectedSpecialist?.id]);
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
@@ -121,17 +143,19 @@ const TherapistRecommendationCard = ({
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium text-primary flex items-center gap-2">
               <CheckCircle className="w-4 h-4" />
-              Assigned Therapist
+              {selectedSpecialist ? "Your Selected Therapist" : "Assigned Therapist"}
             </span>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="gap-1 text-xs"
-              onClick={fetchTherapist}
-            >
-              <RefreshCw className="w-3 h-3" />
-              Reassign
-            </Button>
+            {!selectedSpecialist && (
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="gap-1 text-xs"
+                onClick={fetchTherapist}
+              >
+                <RefreshCw className="w-3 h-3" />
+                Reassign
+              </Button>
+            )}
           </div>
 
           <div className="flex gap-4">
