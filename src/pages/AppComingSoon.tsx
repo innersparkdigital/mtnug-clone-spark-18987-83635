@@ -144,7 +144,7 @@ const AppComingSoon = () => {
                   </div>
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <CheckCircle className="w-5 h-5 text-primary" />
-                    <span>Coming Q1 2025</span>
+                    <span>Coming Soon</span>
                   </div>
                 </div>
               </motion.div>
