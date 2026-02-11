@@ -8,11 +8,12 @@ import { Link } from "react-router-dom";
 import { Heart, Target, Eye, Users, Zap, Shield, Globe } from "lucide-react";
 import { T } from "@/components/Translate";
 import ScrollReveal, { StaggerContainer, StaggerItem, TextReveal } from "@/components/ScrollReveal";
-import aboutHero from "@/assets/about-hero.jpg";
+import aboutHero from "@/assets/about-hero-new.png";
 import talemwaRaymond from "@/assets/talemwa-raymond.jpg";
 import hellenAturo from "@/assets/hellen-aturo.jpg";
 import mutebiReagan from "@/assets/mutebi-reagan.jpg";
 import jamesNiwamanya from "@/assets/james-niwamanya.jpg";
+import carolineAchieng from "@/assets/caroline-achieng.png";
 
 const About = () => {
   const organizationSchema = {
@@ -50,7 +51,7 @@ const About = () => {
     },
     {
       name: "Hellen Aturo",
-      position: "Co-founder and Business Development & Partnership Manager",
+      position: "Co-founder and Human Resource Specialist",
       image: hellenAturo,
     },
     {
@@ -60,8 +61,13 @@ const About = () => {
     },
     {
       name: "James Niwamanya",
-      position: "Brand Digital Marketing Lead",
+      position: "Operations Lead",
       image: jamesNiwamanya,
+    },
+    {
+      name: "Caroline Achieng",
+      position: "Business Development & Partnership Manager",
+      image: carolineAchieng,
     },
   ];
 

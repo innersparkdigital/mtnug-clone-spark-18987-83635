@@ -9,11 +9,11 @@ import ScrollReveal, { StaggerContainer, StaggerItem } from "@/components/Scroll
 import PreAssessmentModal from "@/components/PreAssessmentModal";
 import BookingFormModal from "@/components/BookingFormModal";
 import { useBookingFlow } from "@/hooks/useBookingFlow";
-import servicesHero from "@/assets/services-hero.jpg";
-import virtualTherapy from "@/assets/virtual-therapy-service.jpg";
-import supportGroups from "@/assets/support-groups-service.jpg";
-import wellnessResources from "@/assets/wellness-resources-service.jpg";
-import corporateWellness from "@/assets/corporate-wellness-service.jpg";
+import servicesHero from "@/assets/mental-health-support-new.png";
+import virtualTherapy from "@/assets/virtual-therapy-service-new.png";
+import supportGroups from "@/assets/support-groups-service-new.png";
+import wellnessResources from "@/assets/wellness-resources-service-new.png";
+import corporateWellness from "@/assets/corporate-wellness-service-new.png";
 import testimonialBrian from "@/assets/testimonial-brian.jpg";
 
 const servicesSchema = {

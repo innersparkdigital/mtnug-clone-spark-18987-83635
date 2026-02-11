@@ -9,7 +9,7 @@ import { Brain, Cog, Users, Calendar, Video, BookOpen, GraduationCap, BarChart3,
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
-import corporateWellnessImage from "@/assets/corporate-wellness-service.jpg";
+import corporateWellnessImage from "@/assets/for-business-hero-new.png";
 import markhLogo from "@/assets/partners/markh.png";
 import nationalIctLogo from "@/assets/partners/national-ict-hub-new.png";
 import uictLogo from "@/assets/partners/uict.png";
