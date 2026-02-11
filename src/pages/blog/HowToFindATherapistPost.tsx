@@ -1,5 +1,6 @@
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
+import RelatedArticles from "@/components/RelatedArticles";
 import { ArrowLeft, Calendar, Clock, Search, CheckCircle, MessageSquare, DollarSign, Heart, Shield, Users } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -41,8 +42,18 @@ const HowToFindATherapistPost = () => {
     ],
     "author": {
       "@type": "Organization",
-      "name": "Innerspark Africa"
-    }
+      "name": "Innerspark Africa",
+      "url": "https://www.innersparkafrica.com"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Innerspark Africa",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://www.innersparkafrica.com/innerspark-logo.png"
+      }
+    },
+    "inLanguage": "en"
   };
 
   const faqSchema = {
@@ -88,9 +99,9 @@ const HowToFindATherapistPost = () => {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://innerspark.africa" },
-      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://innerspark.africa/blog" },
-      { "@type": "ListItem", "position": 3, "name": "How to Find a Therapist", "item": "https://innerspark.africa/blog/how-to-find-a-therapist" }
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.innersparkafrica.com" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://www.innersparkafrica.com/blog" },
+      { "@type": "ListItem", "position": 3, "name": "How to Find a Therapist", "item": "https://www.innersparkafrica.com/blog/how-to-find-a-therapist" }
     ]
   };
 
@@ -133,14 +144,14 @@ const HowToFindATherapistPost = () => {
         <title>How to Find a Therapist: Complete Guide | Choosing the Right Mental Health Professional</title>
         <meta name="description" content="Learn how to find the right therapist for your needs. Step-by-step guide to choosing a mental health professional, questions to ask, what to expect, and how to make your first appointment." />
         <meta name="keywords" content="how to find a therapist, find a therapist near me, how to choose a therapist, finding the right therapist, therapist search, mental health professional, how to get a therapist, first therapy appointment, therapy for beginners, affordable therapist, online therapist" />
-        <link rel="canonical" href="https://innerspark.africa/blog/how-to-find-a-therapist" />
+        <link rel="canonical" href="https://www.innersparkafrica.com/blog/how-to-find-a-therapist" />
         
         {/* Open Graph */}
         <meta property="og:title" content="How to Find a Therapist: Complete Guide" />
         <meta property="og:description" content="Step-by-step guide to finding the right therapist. Learn what to look for and how to make your first appointment." />
         <meta property="og:type" content="article" />
-        <meta property="og:url" content="https://innerspark.africa/blog/how-to-find-a-therapist" />
-        <meta property="og:image" content="https://innerspark.africa/innerspark-logo.png" />
+        <meta property="og:url" content="https://www.innersparkafrica.com/blog/how-to-find-a-therapist" />
+        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
         <meta property="article:published_time" content="2026-01-12" />
         <meta property="article:section" content="Therapy" />
         
@@ -379,6 +390,7 @@ const HowToFindATherapistPost = () => {
         </article>
       </main>
 
+      <RelatedArticles currentSlug="how-to-find-a-therapist" />
       <Footer />
     </>
   );

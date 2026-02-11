@@ -1,5 +1,6 @@
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
+import RelatedArticles from "@/components/RelatedArticles";
 import { ArrowLeft, Calendar, Clock } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -11,28 +12,30 @@ import panicHeroImage from "@/assets/blog/panic-attack-hero.jpg";
 const PanicAttackPost = () => {
   const articleSchema = {
     "@context": "https://schema.org",
-    "@type": "Article",
+    "@type": "BlogPosting",
     "headline": "How Do I Stop a Panic Attack? Proven Grounding & Breathing Tools to Calm Down",
     "description": "Learn how to stop or reduce the intensity of a panic attack using grounding techniques, sensory tools, and expert-backed breathing exercises. Practical steps to regain calm quickly.",
-    "image": "https://innerspark.africa/assets/blog/panic-attack-hero.jpg",
+    "image": "https://www.innersparkafrica.com/innerspark-logo.png",
     "author": {
       "@type": "Organization",
       "name": "Innerspark Africa",
-      "url": "https://innerspark.africa"
+      "url": "https://www.innersparkafrica.com"
     },
     "publisher": {
       "@type": "Organization",
       "name": "Innerspark Africa",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://innerspark.africa/innerspark-logo.png"
+        "url": "https://www.innersparkafrica.com/innerspark-logo.png"
       }
     },
     "datePublished": "2025-12-06",
-    "dateModified": "2025-12-06",
+    "dateModified": "2026-02-11",
+    "inLanguage": "en",
+    "keywords": ["panic attack", "stop panic attack", "grounding techniques", "breathing exercises", "anxiety relief", "panic disorder"],
     "mainEntityOfPage": {
       "@type": "WebPage",
-      "@id": "https://innerspark.africa/blog/how-to-stop-a-panic-attack"
+      "@id": "https://www.innersparkafrica.com/blog/how-to-stop-a-panic-attack"
     }
   };
 
@@ -83,19 +86,19 @@ const PanicAttackPost = () => {
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://innerspark.africa"
+        "item": "https://www.innersparkafrica.com"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Blog",
-        "item": "https://innerspark.africa/blog"
+        "item": "https://www.innersparkafrica.com/blog"
       },
       {
         "@type": "ListItem",
         "position": 3,
         "name": "How to Stop a Panic Attack",
-        "item": "https://innerspark.africa/blog/how-to-stop-a-panic-attack"
+        "item": "https://www.innersparkafrica.com/blog/how-to-stop-a-panic-attack"
       }
     ]
   };
@@ -106,14 +109,14 @@ const PanicAttackPost = () => {
         <title>How Do I Stop a Panic Attack? Proven Grounding & Breathing Tools | Innerspark Africa</title>
         <meta name="description" content="Learn how to stop or reduce the intensity of a panic attack using grounding techniques, sensory tools, and expert-backed breathing exercises. Practical steps to regain calm quickly." />
         <meta name="keywords" content="panic attack, stop panic attack, grounding techniques, breathing exercises, anxiety relief, mental health, calm down fast, panic disorder" />
-        <link rel="canonical" href="https://innerspark.africa/blog/how-to-stop-a-panic-attack" />
+        <link rel="canonical" href="https://www.innersparkafrica.com/blog/how-to-stop-a-panic-attack" />
         
         {/* Open Graph */}
         <meta property="og:title" content="How Do I Stop a Panic Attack? Simple, Fast Techniques to Regain Control" />
         <meta property="og:description" content="Panic attacks can feel terrifying, but with the right tools, you can ease their intensity and return to balance." />
         <meta property="og:type" content="article" />
-        <meta property="og:url" content="https://innerspark.africa/blog/how-to-stop-a-panic-attack" />
-        <meta property="og:image" content="https://innerspark.africa/assets/blog/panic-attack-hero.jpg" />
+        <meta property="og:url" content="https://www.innersparkafrica.com/blog/how-to-stop-a-panic-attack" />
+        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
         <meta property="article:published_time" content="2025-12-06" />
         <meta property="article:author" content="Innerspark Africa" />
         <meta property="article:section" content="Mental Health" />
@@ -125,7 +128,7 @@ const PanicAttackPost = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="How Do I Stop a Panic Attack? Expert-Backed Tools" />
         <meta name="twitter:description" content="Learn practical techniques to stop or reduce the intensity of a panic attack." />
-        <meta name="twitter:image" content="https://innerspark.africa/assets/blog/panic-attack-hero.jpg" />
+        <meta name="twitter:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
         
         {/* Schema.org */}
         <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>
@@ -673,6 +676,7 @@ const PanicAttackPost = () => {
         </section>
       </main>
 
+      <RelatedArticles currentSlug="how-to-stop-a-panic-attack" />
       {/* <AppDownload /> */}
       <Footer />
     </>

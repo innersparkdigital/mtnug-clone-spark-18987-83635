@@ -1,5 +1,6 @@
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
+import RelatedArticles from "@/components/RelatedArticles";
 import { ArrowLeft, Calendar, Clock } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -11,28 +12,30 @@ import stressTypesImage from "@/assets/blog/stress-types-infographic.png";
 const HowToHandleStressPost = () => {
   const articleSchema = {
     "@context": "https://schema.org",
-    "@type": "Article",
+    "@type": "BlogPosting",
     "headline": "How Should I Handle Stress? Expert-Backed, Simple & Practical Ways to Regain Control",
     "description": "Discover how to handle stress with practical, expert-approved tools. Learn the difference between controllable and uncontrollable stress and explore simple strategies to stay calm and grounded.",
-    "image": "https://innerspark.africa/assets/blog/stress-management-hero.jpg",
+    "image": "https://www.innersparkafrica.com/innerspark-logo.png",
     "author": {
       "@type": "Organization",
       "name": "Innerspark Africa",
-      "url": "https://innerspark.africa"
+      "url": "https://www.innersparkafrica.com"
     },
     "publisher": {
       "@type": "Organization",
       "name": "Innerspark Africa",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://innerspark.africa/innerspark-logo.png"
+        "url": "https://www.innersparkafrica.com/innerspark-logo.png"
       }
     },
     "datePublished": "2025-12-03",
-    "dateModified": "2025-12-03",
+    "dateModified": "2026-02-11",
+    "inLanguage": "en",
+    "keywords": ["how to handle stress", "stress management", "stress relief", "anxiety management", "coping with stress", "grounding techniques"],
     "mainEntityOfPage": {
       "@type": "WebPage",
-      "@id": "https://innerspark.africa/blog/how-to-handle-stress"
+      "@id": "https://www.innersparkafrica.com/blog/how-to-handle-stress"
     }
   };
 
@@ -83,19 +86,19 @@ const HowToHandleStressPost = () => {
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://innerspark.africa"
+        "item": "https://www.innersparkafrica.com"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Blog",
-        "item": "https://innerspark.africa/blog"
+        "item": "https://www.innersparkafrica.com/blog"
       },
       {
         "@type": "ListItem",
         "position": 3,
         "name": "How to Handle Stress",
-        "item": "https://innerspark.africa/blog/how-to-handle-stress"
+        "item": "https://www.innersparkafrica.com/blog/how-to-handle-stress"
       }
     ]
   };
@@ -106,14 +109,14 @@ const HowToHandleStressPost = () => {
         <title>How Should I Handle Stress? Simple Strategies to Manage Everyday Stress | Innerspark Africa</title>
         <meta name="description" content="Discover how to handle stress with practical, expert-approved tools. Learn the difference between controllable and uncontrollable stress and explore simple strategies to stay calm and grounded." />
         <meta name="keywords" content="how to handle stress, stress management, stress relief, anxiety management, coping with stress, mental health tips, grounding techniques, box breathing" />
-        <link rel="canonical" href="https://innerspark.africa/blog/how-to-handle-stress" />
+        <link rel="canonical" href="https://www.innersparkafrica.com/blog/how-to-handle-stress" />
         
         {/* Open Graph */}
         <meta property="og:title" content="How Should I Handle Stress? Expert-Backed Guide to Feeling Calmer" />
         <meta property="og:description" content="Stress doesn't have to run the show. Learn how to understand your stress and manage it using simple tools backed by mental health experts." />
         <meta property="og:type" content="article" />
-        <meta property="og:url" content="https://innerspark.africa/blog/how-to-handle-stress" />
-        <meta property="og:image" content="https://innerspark.africa/assets/blog/stress-management-hero.jpg" />
+        <meta property="og:url" content="https://www.innersparkafrica.com/blog/how-to-handle-stress" />
+        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
         <meta property="article:published_time" content="2025-12-03" />
         <meta property="article:author" content="Innerspark Africa" />
         <meta property="article:section" content="Stress Management" />
@@ -125,7 +128,7 @@ const HowToHandleStressPost = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="How Should I Handle Stress? Expert-Backed Guide" />
         <meta name="twitter:description" content="Learn practical, expert-approved tools to manage everyday stress." />
-        <meta name="twitter:image" content="https://innerspark.africa/assets/blog/stress-management-hero.jpg" />
+        <meta name="twitter:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
         
         {/* Schema.org */}
         <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>
@@ -535,6 +538,7 @@ const HowToHandleStressPost = () => {
         </article>
       </main>
 
+      <RelatedArticles currentSlug="how-to-handle-stress" />
       {/* <AppDownload /> */}
       <Footer />
     </>

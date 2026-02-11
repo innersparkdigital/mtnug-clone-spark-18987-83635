@@ -1,5 +1,6 @@
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
+import RelatedArticles from "@/components/RelatedArticles";
 import { ArrowLeft, Calendar, Clock, Brain, Heart, Zap, Shield } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -10,28 +11,30 @@ import anxietyHeroImage from "@/assets/blog/anxiety-management-hero.jpg";
 const AnxietySymptomsPost = () => {
   const articleSchema = {
     "@context": "https://schema.org",
-    "@type": "Article",
+    "@type": "BlogPosting",
     "headline": "Anxiety Symptoms: How to Recognize if You Have Anxiety Disorder",
     "description": "Learn to identify the physical, emotional, and behavioral symptoms of anxiety. Understand the difference between normal worry and anxiety disorder.",
-    "image": "https://innerspark.africa/assets/blog/anxiety-management-hero.jpg",
+    "image": "https://www.innersparkafrica.com/innerspark-logo.png",
     "author": {
       "@type": "Organization",
       "name": "Innerspark Africa",
-      "url": "https://innerspark.africa"
+      "url": "https://www.innersparkafrica.com"
     },
     "publisher": {
       "@type": "Organization",
       "name": "Innerspark Africa",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://innerspark.africa/innerspark-logo.png"
+        "url": "https://www.innersparkafrica.com/innerspark-logo.png"
       }
     },
     "datePublished": "2026-01-12",
-    "dateModified": "2026-01-12",
+    "dateModified": "2026-02-11",
+    "inLanguage": "en",
+    "keywords": ["anxiety symptoms", "signs of anxiety", "anxiety disorder symptoms", "physical symptoms of anxiety", "what does anxiety feel like"],
     "mainEntityOfPage": {
       "@type": "WebPage",
-      "@id": "https://innerspark.africa/blog/anxiety-symptoms"
+      "@id": "https://www.innersparkafrica.com/blog/anxiety-symptoms"
     }
   };
 
@@ -78,9 +81,9 @@ const AnxietySymptomsPost = () => {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://innerspark.africa" },
-      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://innerspark.africa/blog" },
-      { "@type": "ListItem", "position": 3, "name": "Anxiety Symptoms", "item": "https://innerspark.africa/blog/anxiety-symptoms" }
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.innersparkafrica.com" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://www.innersparkafrica.com/blog" },
+      { "@type": "ListItem", "position": 3, "name": "Anxiety Symptoms", "item": "https://www.innersparkafrica.com/blog/anxiety-symptoms" }
     ]
   };
 
@@ -123,14 +126,14 @@ const AnxietySymptomsPost = () => {
         <title>Anxiety Symptoms: How to Recognize Signs of Anxiety Disorder | Innerspark</title>
         <meta name="description" content="Learn the physical, emotional, and behavioral symptoms of anxiety. Recognize the signs of anxiety disorder including racing heart, excessive worry, and difficulty sleeping. Know when to seek help." />
         <meta name="keywords" content="anxiety symptoms, signs of anxiety, do I have anxiety, anxiety disorder symptoms, physical symptoms of anxiety, anxiety signs, what does anxiety feel like, anxiety symptoms checklist, generalized anxiety symptoms, panic attack symptoms, anxiety warning signs" />
-        <link rel="canonical" href="https://innerspark.africa/blog/anxiety-symptoms" />
+        <link rel="canonical" href="https://www.innersparkafrica.com/blog/anxiety-symptoms" />
         
         {/* Open Graph */}
         <meta property="og:title" content="Anxiety Symptoms: Recognize the Signs of Anxiety Disorder" />
         <meta property="og:description" content="Learn to identify physical, emotional, and behavioral symptoms of anxiety. Know when normal worry becomes an anxiety disorder." />
         <meta property="og:type" content="article" />
-        <meta property="og:url" content="https://innerspark.africa/blog/anxiety-symptoms" />
-        <meta property="og:image" content="https://innerspark.africa/assets/blog/anxiety-management-hero.jpg" />
+        <meta property="og:url" content="https://www.innersparkafrica.com/blog/anxiety-symptoms" />
+        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
         <meta property="article:published_time" content="2026-01-12" />
         <meta property="article:section" content="Anxiety" />
         
@@ -359,6 +362,7 @@ const AnxietySymptomsPost = () => {
         </article>
       </main>
 
+      <RelatedArticles currentSlug="anxiety-symptoms" />
       <Footer />
     </>
   );
