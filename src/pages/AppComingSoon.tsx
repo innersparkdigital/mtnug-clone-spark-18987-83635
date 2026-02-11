@@ -144,7 +144,7 @@ const AppComingSoon = () => {
                   </div>
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <CheckCircle className="w-5 h-5 text-primary" />
-                    <span>Coming Q1 2025</span>
+                    <span>Coming Soon</span>
                   </div>
                 </div>
               </motion.div>
@@ -172,8 +172,8 @@ const AppComingSoon = () => {
                   <CardContent>
                     {isSubmitted ? (
                       <div className="text-center py-8">
-                        <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
-                          <CheckCircle className="w-8 h-8 text-green-600" />
+                        <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-4">
+                          <CheckCircle className="w-8 h-8 text-primary" />
                         </div>
                         <h3 className="text-xl font-semibold text-foreground mb-2">
                           You're on the list!
