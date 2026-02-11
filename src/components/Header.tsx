@@ -143,7 +143,6 @@ const Header = () => {
               {translations.donateTherapy}
             </Button>
           </Link>
-          <LanguageSelector variant="header" />
         </div>
       </div>
 
@@ -205,6 +204,7 @@ const Header = () => {
               <Link to="/contact" className="text-foreground hover:text-primary transition-colors font-medium">
                 {navLabels.contact}
               </Link>
+              <LanguageSelector variant="header" />
               
               {/* User Menu - Only show if logged in */}
               {user && (
