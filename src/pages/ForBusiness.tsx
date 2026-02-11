@@ -150,8 +150,8 @@ const ForBusiness = () => {
         <title>Innerspark for Business | Corporate Mental Health Solutions in Africa</title>
         <meta name="description" content="Transform your workplace with Innerspark's corporate mental health programs. Reduce absenteeism, improve productivity, and support employee wellbeing across Africa." />
         <meta name="keywords" content="corporate wellness, employee mental health, workplace wellbeing, corporate therapy, business mental health Africa, EAP programs Uganda" />
-        <link rel="canonical" href="https://innerspark.africa/for-business" />
-        <meta property="og:url" content="https://innerspark.africa/for-business" />
+        <link rel="canonical" href="https://www.innersparkafrica.com/for-business" />
+        <meta property="og:url" content="https://www.innersparkafrica.com/for-business" />
         <meta property="og:title" content="Innerspark for Business | Corporate Mental Health Solutions" />
         <meta property="og:description" content="Transform your workplace with corporate mental health programs." />
         <meta property="og:type" content="website" />
