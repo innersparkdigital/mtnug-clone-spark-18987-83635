@@ -1,5 +1,6 @@
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
+import RelatedArticles from "@/components/RelatedArticles";
 import { ArrowLeft, Calendar, Clock, Check, Heart, Sparkles, Users, Brain, Sun } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -10,28 +11,30 @@ import depressionHeroImage from "@/assets/blog/depression-hero.jpg";
 const DepressionPost = () => {
   const articleSchema = {
     "@context": "https://schema.org",
-    "@type": "Article",
+    "@type": "BlogPosting",
     "headline": "How to Deal With Depression: Effective Tools, Support & Daily Strategies",
     "description": "Learn how to deal with depression using expert-approved strategies, evidence-based tools, and supportive habits. Understand symptoms, reduce avoidance, rebuild motivation, and take small steps toward healing.",
-    "image": "https://innerspark.africa/assets/blog/depression-hero.jpg",
+    "image": "https://www.innersparkafrica.com/innerspark-logo.png",
     "author": {
       "@type": "Organization",
       "name": "Innerspark Africa",
-      "url": "https://innerspark.africa"
+      "url": "https://www.innersparkafrica.com"
     },
     "publisher": {
       "@type": "Organization",
       "name": "Innerspark Africa",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://innerspark.africa/innerspark-logo.png"
+        "url": "https://www.innersparkafrica.com/innerspark-logo.png"
       }
     },
     "datePublished": "2025-12-08",
-    "dateModified": "2025-12-08",
+    "dateModified": "2026-02-11",
+    "inLanguage": "en",
+    "keywords": ["depression", "deal with depression", "depression treatment", "mental health", "coping strategies", "behavioral activation", "therapy"],
     "mainEntityOfPage": {
       "@type": "WebPage",
-      "@id": "https://innerspark.africa/blog/how-to-deal-with-depression"
+      "@id": "https://www.innersparkafrica.com/blog/how-to-deal-with-depression"
     }
   };
 
@@ -82,19 +85,19 @@ const DepressionPost = () => {
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://innerspark.africa"
+        "item": "https://www.innersparkafrica.com"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Blog",
-        "item": "https://innerspark.africa/blog"
+        "item": "https://www.innersparkafrica.com/blog"
       },
       {
         "@type": "ListItem",
         "position": 3,
         "name": "How to Deal With Depression",
-        "item": "https://innerspark.africa/blog/how-to-deal-with-depression"
+        "item": "https://www.innersparkafrica.com/blog/how-to-deal-with-depression"
       }
     ]
   };
@@ -105,14 +108,14 @@ const DepressionPost = () => {
         <title>How to Deal With Depression: Effective Tools, Support & Daily Strategies | Innerspark Africa</title>
         <meta name="description" content="Learn how to deal with depression using expert-approved strategies, evidence-based tools, and supportive habits. Understand symptoms, reduce avoidance, rebuild motivation, and take small steps toward healing." />
         <meta name="keywords" content="depression, deal with depression, depression treatment, mental health, coping strategies, behavioral activation, therapy, depression recovery" />
-        <link rel="canonical" href="https://innerspark.africa/blog/how-to-deal-with-depression" />
+        <link rel="canonical" href="https://www.innersparkafrica.com/blog/how-to-deal-with-depression" />
         
         {/* Open Graph */}
         <meta property="og:title" content="How to Deal With Depression? Simple, Compassionate Strategies That Actually Help" />
         <meta property="og:description" content="Depression can feel heavy and isolating, but you're not alone—and you're not stuck. Here's a clear, gentle, research-backed guide to dealing with depression." />
         <meta property="og:type" content="article" />
-        <meta property="og:url" content="https://innerspark.africa/blog/how-to-deal-with-depression" />
-        <meta property="og:image" content="https://innerspark.africa/assets/blog/depression-hero.jpg" />
+        <meta property="og:url" content="https://www.innersparkafrica.com/blog/how-to-deal-with-depression" />
+        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
         <meta property="article:published_time" content="2025-12-08" />
         <meta property="article:author" content="Innerspark Africa" />
         <meta property="article:section" content="Depression" />
@@ -124,7 +127,7 @@ const DepressionPost = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="How to Deal With Depression: Expert-Backed Tools" />
         <meta name="twitter:description" content="Learn practical strategies to cope with depression using evidence-based tools." />
-        <meta name="twitter:image" content="https://innerspark.africa/assets/blog/depression-hero.jpg" />
+        <meta name="twitter:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
         
         {/* Schema.org */}
         <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>
@@ -700,6 +703,7 @@ const DepressionPost = () => {
         </article>
       </main>
 
+      <RelatedArticles currentSlug="how-to-deal-with-depression" />
       {/* <AppDownload /> */}
       <Footer />
     </>

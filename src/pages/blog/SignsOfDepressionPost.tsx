@@ -1,5 +1,6 @@
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
+import RelatedArticles from "@/components/RelatedArticles";
 import { ArrowLeft, Calendar, Clock, AlertTriangle, CheckCircle, Heart } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -10,28 +11,30 @@ import depressionHeroImage from "@/assets/blog/depression-hero.jpg";
 const SignsOfDepressionPost = () => {
   const articleSchema = {
     "@context": "https://schema.org",
-    "@type": "Article",
+    "@type": "BlogPosting",
     "headline": "10 Warning Signs of Depression You Shouldn't Ignore",
     "description": "Learn to recognize the common signs and symptoms of depression. Early detection can lead to faster recovery. Discover what to look for and when to seek help.",
-    "image": "https://innerspark.africa/assets/blog/depression-hero.jpg",
+    "image": "https://www.innersparkafrica.com/innerspark-logo.png",
     "author": {
       "@type": "Organization",
       "name": "Innerspark Africa",
-      "url": "https://innerspark.africa"
+      "url": "https://www.innersparkafrica.com"
     },
     "publisher": {
       "@type": "Organization",
       "name": "Innerspark Africa",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://innerspark.africa/innerspark-logo.png"
+        "url": "https://www.innersparkafrica.com/innerspark-logo.png"
       }
     },
     "datePublished": "2026-01-12",
-    "dateModified": "2026-01-12",
+    "dateModified": "2026-02-11",
+    "inLanguage": "en",
+    "keywords": ["signs of depression", "depression symptoms", "am I depressed", "warning signs depression", "early signs of depression", "clinical depression symptoms"],
     "mainEntityOfPage": {
       "@type": "WebPage",
-      "@id": "https://innerspark.africa/blog/signs-of-depression"
+      "@id": "https://www.innersparkafrica.com/blog/signs-of-depression"
     }
   };
 
@@ -78,9 +81,9 @@ const SignsOfDepressionPost = () => {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://innerspark.africa" },
-      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://innerspark.africa/blog" },
-      { "@type": "ListItem", "position": 3, "name": "Signs of Depression", "item": "https://innerspark.africa/blog/signs-of-depression" }
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.innersparkafrica.com" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://www.innersparkafrica.com/blog" },
+      { "@type": "ListItem", "position": 3, "name": "Signs of Depression", "item": "https://www.innersparkafrica.com/blog/signs-of-depression" }
     ]
   };
 
@@ -133,14 +136,14 @@ const SignsOfDepressionPost = () => {
         <title>10 Warning Signs of Depression You Shouldn't Ignore | Innerspark Africa</title>
         <meta name="description" content="Learn to recognize the common signs and symptoms of depression. Persistent sadness, fatigue, sleep changes, and loss of interest are key warning signs. Know when to seek professional help." />
         <meta name="keywords" content="signs of depression, depression symptoms, am I depressed, warning signs depression, how to know if you're depressed, depression warning signs, symptoms of depression, depression signs to watch for, early signs of depression, clinical depression symptoms" />
-        <link rel="canonical" href="https://innerspark.africa/blog/signs-of-depression" />
+        <link rel="canonical" href="https://www.innersparkafrica.com/blog/signs-of-depression" />
         
         {/* Open Graph */}
         <meta property="og:title" content="10 Warning Signs of Depression You Shouldn't Ignore" />
         <meta property="og:description" content="Learn to recognize the common signs of depression. Early detection leads to faster recovery. Know what to look for." />
         <meta property="og:type" content="article" />
-        <meta property="og:url" content="https://innerspark.africa/blog/signs-of-depression" />
-        <meta property="og:image" content="https://innerspark.africa/assets/blog/depression-hero.jpg" />
+        <meta property="og:url" content="https://www.innersparkafrica.com/blog/signs-of-depression" />
+        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
         <meta property="article:published_time" content="2026-01-12" />
         <meta property="article:section" content="Depression" />
         
@@ -331,6 +334,7 @@ const SignsOfDepressionPost = () => {
         </article>
       </main>
 
+      <RelatedArticles currentSlug="signs-of-depression" />
       <Footer />
     </>
   );

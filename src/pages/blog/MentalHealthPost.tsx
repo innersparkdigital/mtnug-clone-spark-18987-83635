@@ -1,5 +1,6 @@
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
+import RelatedArticles from "@/components/RelatedArticles";
 import { ArrowLeft, Calendar, Clock, Check, Heart, Brain, Users, Sun, AlertTriangle, Activity } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -10,28 +11,30 @@ import mentalHealthHeroImage from "@/assets/blog/mental-health-hero.jpg";
 const MentalHealthPost = () => {
   const articleSchema = {
     "@context": "https://schema.org",
-    "@type": "Article",
+    "@type": "BlogPosting",
     "headline": "What Is Mental Health? Conditions, Warning Signs & How to Improve Your Well-Being",
     "description": "Discover what mental health really means, common mental health conditions, early warning signs, and practical ways to improve emotional well-being. Learn when to seek help and how to recognize if you may have a mental health problem.",
-    "image": "https://innerspark.africa/assets/blog/mental-health-hero.jpg",
+    "image": "https://www.innersparkafrica.com/innerspark-logo.png",
     "author": {
       "@type": "Organization",
       "name": "Innerspark Africa",
-      "url": "https://innerspark.africa"
+      "url": "https://www.innersparkafrica.com"
     },
     "publisher": {
       "@type": "Organization",
       "name": "Innerspark Africa",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://innerspark.africa/innerspark-logo.png"
+        "url": "https://www.innersparkafrica.com/innerspark-logo.png"
       }
     },
     "datePublished": "2025-12-09",
-    "dateModified": "2025-12-09",
+    "dateModified": "2026-02-11",
+    "inLanguage": "en",
+    "keywords": ["mental health", "mental wellness", "mental health conditions", "anxiety", "depression", "emotional well-being", "warning signs"],
     "mainEntityOfPage": {
       "@type": "WebPage",
-      "@id": "https://innerspark.africa/blog/what-is-mental-health"
+      "@id": "https://www.innersparkafrica.com/blog/what-is-mental-health"
     }
   };
 
@@ -82,19 +85,19 @@ const MentalHealthPost = () => {
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://innerspark.africa"
+        "item": "https://www.innersparkafrica.com"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Blog",
-        "item": "https://innerspark.africa/blog"
+        "item": "https://www.innersparkafrica.com/blog"
       },
       {
         "@type": "ListItem",
         "position": 3,
         "name": "What Is Mental Health",
-        "item": "https://innerspark.africa/blog/what-is-mental-health"
+        "item": "https://www.innersparkafrica.com/blog/what-is-mental-health"
       }
     ]
   };
@@ -105,14 +108,14 @@ const MentalHealthPost = () => {
         <title>What Is Mental Health? Conditions, Warning Signs & How to Improve Your Well-Being | Innerspark Africa</title>
         <meta name="description" content="Discover what mental health really means, common mental health conditions, early warning signs, and practical ways to improve emotional well-being. Learn when to seek help and how to recognize if you may have a mental health problem." />
         <meta name="keywords" content="mental health, mental wellness, mental health conditions, anxiety, depression, PTSD, bipolar disorder, ADHD, warning signs, emotional well-being" />
-        <link rel="canonical" href="https://innerspark.africa/blog/what-is-mental-health" />
+        <link rel="canonical" href="https://www.innersparkafrica.com/blog/what-is-mental-health" />
         
         {/* Open Graph */}
         <meta property="og:title" content="What Is Mental Health? A Complete Guide to Conditions, Warning Signs & Everyday Wellness" />
         <meta property="og:description" content="Mental health influences how we think, feel, and act every day. This guide explains what mental health is, common conditions, early warning signs, and proven tools to strengthen your emotional well-being." />
         <meta property="og:type" content="article" />
-        <meta property="og:url" content="https://innerspark.africa/blog/what-is-mental-health" />
-        <meta property="og:image" content="https://innerspark.africa/assets/blog/mental-health-hero.jpg" />
+        <meta property="og:url" content="https://www.innersparkafrica.com/blog/what-is-mental-health" />
+        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
         <meta property="article:published_time" content="2025-12-09" />
         <meta property="article:author" content="Innerspark Africa" />
         <meta property="article:section" content="Mental Health" />
@@ -124,7 +127,7 @@ const MentalHealthPost = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="What Is Mental Health? Conditions, Warning Signs & Well-Being" />
         <meta name="twitter:description" content="Learn what mental health means, common conditions, warning signs, and how to improve your well-being." />
-        <meta name="twitter:image" content="https://innerspark.africa/assets/blog/mental-health-hero.jpg" />
+        <meta name="twitter:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
         
         {/* Schema.org */}
         <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>
@@ -728,6 +731,7 @@ const MentalHealthPost = () => {
         </article>
 
         {/* <AppDownload /> */}
+        <RelatedArticles currentSlug="what-is-mental-health" />
       </main>
 
       <Footer />

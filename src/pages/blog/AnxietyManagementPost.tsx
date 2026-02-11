@@ -1,5 +1,6 @@
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
+import RelatedArticles from "@/components/RelatedArticles";
 import { ArrowLeft, Calendar, Clock, Check, Heart, Brain, Shield, Wind, Activity, Users, Moon, Sparkles } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -10,28 +11,30 @@ import anxietyHeroImage from "@/assets/blog/anxiety-management-hero.jpg";
 const AnxietyManagementPost = () => {
   const articleSchema = {
     "@context": "https://schema.org",
-    "@type": "Article",
+    "@type": "BlogPosting",
     "headline": "How to Manage Anxiety: Expert-Backed Strategies for Finding Calm",
     "description": "Learn effective, research-backed strategies for managing anxiety. Discover breathing techniques, grounding exercises, lifestyle changes, and when to seek professional help for anxiety relief.",
-    "image": "https://innerspark.africa/assets/blog/anxiety-management-hero.jpg",
+    "image": "https://www.innersparkafrica.com/innerspark-logo.png",
     "author": {
       "@type": "Organization",
       "name": "Innerspark Africa",
-      "url": "https://innerspark.africa"
+      "url": "https://www.innersparkafrica.com"
     },
     "publisher": {
       "@type": "Organization",
       "name": "Innerspark Africa",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://innerspark.africa/innerspark-logo.png"
+        "url": "https://www.innersparkafrica.com/innerspark-logo.png"
       }
     },
     "datePublished": "2025-12-09",
-    "dateModified": "2025-12-09",
+    "dateModified": "2026-02-11",
+    "inLanguage": "en",
+    "keywords": ["anxiety management", "anxiety relief", "how to manage anxiety", "anxiety coping strategies", "breathing exercises", "grounding techniques"],
     "mainEntityOfPage": {
       "@type": "WebPage",
-      "@id": "https://innerspark.africa/blog/how-to-manage-anxiety"
+      "@id": "https://www.innersparkafrica.com/blog/how-to-manage-anxiety"
     }
   };
 
@@ -82,19 +85,19 @@ const AnxietyManagementPost = () => {
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://innerspark.africa"
+        "item": "https://www.innersparkafrica.com"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Blog",
-        "item": "https://innerspark.africa/blog"
+        "item": "https://www.innersparkafrica.com/blog"
       },
       {
         "@type": "ListItem",
         "position": 3,
         "name": "How to Manage Anxiety",
-        "item": "https://innerspark.africa/blog/how-to-manage-anxiety"
+        "item": "https://www.innersparkafrica.com/blog/how-to-manage-anxiety"
       }
     ]
   };
@@ -105,14 +108,14 @@ const AnxietyManagementPost = () => {
         <title>How to Manage Anxiety: Expert-Backed Strategies for Finding Calm | Innerspark Africa</title>
         <meta name="description" content="Learn effective, research-backed strategies for managing anxiety. Discover breathing techniques, grounding exercises, lifestyle changes, and when to seek professional help for anxiety relief." />
         <meta name="keywords" content="anxiety management, anxiety relief, how to manage anxiety, anxiety coping strategies, anxiety techniques, breathing exercises, grounding techniques, anxiety help" />
-        <link rel="canonical" href="https://innerspark.africa/blog/how-to-manage-anxiety" />
+        <link rel="canonical" href="https://www.innersparkafrica.com/blog/how-to-manage-anxiety" />
         
         {/* Open Graph */}
         <meta property="og:title" content="How to Manage Anxiety: Expert-Backed Strategies for Finding Calm" />
         <meta property="og:description" content="Discover practical, evidence-based techniques to manage anxiety and find peace. Learn breathing exercises, grounding techniques, and lifestyle changes that actually work." />
         <meta property="og:type" content="article" />
-        <meta property="og:url" content="https://innerspark.africa/blog/how-to-manage-anxiety" />
-        <meta property="og:image" content="https://innerspark.africa/assets/blog/anxiety-management-hero.jpg" />
+        <meta property="og:url" content="https://www.innersparkafrica.com/blog/how-to-manage-anxiety" />
+        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
         <meta property="article:published_time" content="2025-12-09" />
         <meta property="article:author" content="Innerspark Africa" />
         <meta property="article:section" content="Anxiety" />
@@ -124,7 +127,7 @@ const AnxietyManagementPost = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="How to Manage Anxiety: Expert-Backed Strategies" />
         <meta name="twitter:description" content="Practical techniques for managing anxiety, from breathing exercises to lifestyle changes." />
-        <meta name="twitter:image" content="https://innerspark.africa/assets/blog/anxiety-management-hero.jpg" />
+        <meta name="twitter:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
         
         {/* Schema.org */}
         <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>
@@ -710,6 +713,7 @@ const AnxietyManagementPost = () => {
         </article>
       </main>
 
+      <RelatedArticles currentSlug="how-to-manage-anxiety" />
       {/* <AppDownload /> */}
       <Footer />
     </>

@@ -104,13 +104,14 @@ const Blog = () => {
         <title>Mental Health Blog | Expert Wellness Tips & Resources | Innerspark Africa</title>
         <meta name="description" content="Discover expert-backed mental health articles, stress management tips, and wellness resources. Read our latest insights on managing anxiety, depression, and building emotional resilience." />
         <meta name="keywords" content="mental health blog, stress management, anxiety tips, wellness resources, emotional health, therapy advice, mental wellness Africa" />
-        <link rel="canonical" href="https://innerspark.africa/blog" />
+        <link rel="canonical" href="https://www.innersparkafrica.com/blog" />
         
         {/* Open Graph */}
         <meta property="og:title" content="Mental Health Blog | Innerspark Africa" />
         <meta property="og:description" content="Expert-backed mental health articles and wellness resources from Africa's leading digital wellness platform." />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://innerspark.africa/blog" />
+        <meta property="og:url" content="https://www.innersparkafrica.com/blog" />
+        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
         
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
@@ -124,13 +125,15 @@ const Blog = () => {
             "@type": "Blog",
             "name": "Innerspark Africa Mental Health Blog",
             "description": "Expert-backed mental health articles and wellness resources",
-            "url": "https://innerspark.africa/blog",
+            "url": "https://www.innersparkafrica.com/blog",
+            "inLanguage": "en",
             "publisher": {
               "@type": "Organization",
               "name": "Innerspark Africa",
+              "url": "https://www.innersparkafrica.com",
               "logo": {
                 "@type": "ImageObject",
-                "url": "https://innerspark.africa/innerspark-logo.png"
+                "url": "https://www.innersparkafrica.com/innerspark-logo.png"
               }
             }
           })}
