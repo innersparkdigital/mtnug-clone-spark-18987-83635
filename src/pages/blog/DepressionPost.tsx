@@ -172,7 +172,7 @@ const DepressionPost = () => {
                   </span>
                   <div className="ml-auto">
                     <SocialShareButtons 
-                      url="https://innerspark.africa/blog/how-to-deal-with-depression"
+                      url="https://www.innersparkafrica.com/blog/how-to-deal-with-depression"
                       title="How to Deal With Depression? Simple, Compassionate Strategies That Actually Help"
                       description="Learn how to deal with depression using expert-approved strategies and supportive habits."
                     />
@@ -690,7 +690,7 @@ const DepressionPost = () => {
                   <div className="flex flex-col md:flex-row items-center justify-between gap-4">
                     <p className="text-muted-foreground font-medium">Share this article:</p>
                     <SocialShareButtons 
-                      url="https://innerspark.africa/blog/how-to-deal-with-depression"
+                      url="https://www.innersparkafrica.com/blog/how-to-deal-with-depression"
                       title="How to Deal With Depression? Simple, Compassionate Strategies That Actually Help"
                       description="Learn how to deal with depression using expert-approved strategies and supportive habits."
                     />

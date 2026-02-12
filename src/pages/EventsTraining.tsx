@@ -110,8 +110,8 @@ const EventsTraining = () => {
         <title>Events & Training | Mental Health Workshops | Innerspark Africa</title>
         <meta name="description" content="Explore Innerspark's mental health events, corporate training programs, and community wellness initiatives across Africa. Learn from our workshops and awareness sessions." />
         <meta name="keywords" content="mental health events, corporate training, wellness workshops Africa, mental health awareness, community programs Uganda" />
-        <link rel="canonical" href="https://innerspark.africa/events-training" />
-        <meta property="og:url" content="https://innerspark.africa/events-training" />
+        <link rel="canonical" href="https://www.innersparkafrica.com/events-training" />
+        <meta property="og:url" content="https://www.innersparkafrica.com/events-training" />
         <meta property="og:title" content="Events & Training | Innerspark Africa" />
         <meta property="og:description" content="Explore Innerspark's mental health events and corporate training programs." />
         <meta property="og:type" content="website" />

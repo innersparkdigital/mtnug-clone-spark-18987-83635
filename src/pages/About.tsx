@@ -90,7 +90,7 @@ const About = () => {
         <meta property="og:description" content="Innerspark Africa is a digital mental wellness platform making professional mental health care affordable and accessible globally." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.innersparkafrica.com/about" />
-        <meta property="og:image" content="https://innerspark.africa/innerspark-logo.png" />
+        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
         
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />

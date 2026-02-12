@@ -136,8 +136,8 @@ const Learning = () => {
         <title>Learning Hub | Innerspark Africa - Workplace Mental Health Courses</title>
         <meta name="description" content="Build healthy workplace mental health with Innerspark Africa's Learning Hub. Access courses for career transitions, workplace wellness, and leadership mental health training." />
         <meta name="keywords" content="workplace mental health courses, career transition training, leadership mental health, employee wellness, HR mental health training Africa" />
-        <link rel="canonical" href="https://innerspark.africa/learning" />
-        <meta property="og:url" content="https://innerspark.africa/learning" />
+        <link rel="canonical" href="https://www.innersparkafrica.com/learning" />
+        <meta property="og:url" content="https://www.innersparkafrica.com/learning" />
         <meta property="og:title" content="Learning Hub | Workplace Mental Health Courses | Innerspark Africa" />
         <meta property="og:description" content="Access workplace mental health courses for career transitions, employee wellness, and leadership training." />
         <meta property="og:type" content="website" />

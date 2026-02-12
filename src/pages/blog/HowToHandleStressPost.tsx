@@ -173,7 +173,7 @@ const HowToHandleStressPost = () => {
                   </span>
                   <div className="ml-auto">
                     <SocialShareButtons 
-                      url="https://innerspark.africa/blog/how-to-handle-stress"
+                      url="https://www.innersparkafrica.com/blog/how-to-handle-stress"
                       title="How Should I Handle Stress? Expert-Backed, Simple & Practical Ways to Regain Control"
                       description="Discover how to handle stress with practical, expert-approved tools."
                     />
@@ -527,7 +527,7 @@ const HowToHandleStressPost = () => {
                 {/* Share */}
                 <div className="flex items-center justify-center mt-12 pt-8 border-t border-border">
                   <SocialShareButtons 
-                    url="https://innerspark.africa/blog/how-to-handle-stress"
+                    url="https://www.innersparkafrica.com/blog/how-to-handle-stress"
                     title="How Should I Handle Stress? Expert-Backed, Simple & Practical Ways to Regain Control"
                     description="Discover how to handle stress with practical, expert-approved tools."
                   />

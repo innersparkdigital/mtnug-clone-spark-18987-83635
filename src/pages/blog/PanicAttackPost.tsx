@@ -173,7 +173,7 @@ const PanicAttackPost = () => {
                   </span>
                   <div className="ml-auto">
                     <SocialShareButtons 
-                      url="https://innerspark.africa/blog/how-to-stop-a-panic-attack"
+                      url="https://www.innersparkafrica.com/blog/how-to-stop-a-panic-attack"
                       title="How Do I Stop a Panic Attack? Simple, Fast Techniques to Regain Control"
                       description="Learn how to stop or reduce the intensity of a panic attack using grounding techniques."
                     />
@@ -643,7 +643,7 @@ const PanicAttackPost = () => {
                       <p className="text-muted-foreground">Share it with someone who might need it.</p>
                     </div>
                     <SocialShareButtons 
-                      url="https://innerspark.africa/blog/how-to-stop-a-panic-attack"
+                      url="https://www.innersparkafrica.com/blog/how-to-stop-a-panic-attack"
                       title="How Do I Stop a Panic Attack? Simple, Fast Techniques to Regain Control"
                       description="Learn how to stop or reduce the intensity of a panic attack using grounding techniques."
                     />

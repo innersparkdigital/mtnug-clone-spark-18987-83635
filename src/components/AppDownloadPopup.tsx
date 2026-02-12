@@ -11,7 +11,7 @@ const AppDownloadPopup = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   // QR code that links to the app store or website
-  const qrCodeUrl = "https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://innerspark.africa&bgcolor=ffffff&color=000000";
+  const qrCodeUrl = "https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://www.innersparkafrica.com&bgcolor=ffffff&color=000000";
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -68,7 +68,7 @@ const AppDownloadPopup = () => {
             <div className="flex-1">
               <p className="text-xs text-gray-400 mb-3">Scan QR code to download or</p>
               <a
-                href="https://innerspark.africa"
+                href="https://www.innersparkafrica.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 bg-teal-600 hover:bg-teal-500 text-white px-4 py-2.5 rounded-lg text-sm font-medium transition-colors"

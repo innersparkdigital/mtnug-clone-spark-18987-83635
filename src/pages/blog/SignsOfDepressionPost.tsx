@@ -195,7 +195,7 @@ const SignsOfDepressionPost = () => {
                   </span>
                   <div className="ml-auto">
                     <SocialShareButtons 
-                      url="https://innerspark.africa/blog/signs-of-depression"
+                      url="https://www.innersparkafrica.com/blog/signs-of-depression"
                       title="10 Warning Signs of Depression You Shouldn't Ignore"
                       description="Learn to recognize the common signs of depression."
                     />
