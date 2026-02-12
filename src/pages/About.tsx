@@ -14,6 +14,7 @@ import hellenAturo from "@/assets/hellen-aturo.jpg";
 import mutebiReagan from "@/assets/mutebi-reagan.jpg";
 import jamesNiwamanya from "@/assets/james-niwamanya.jpg";
 import carolineAchieng from "@/assets/caroline-achieng.png";
+import ademolaJamiu from "@/assets/ademola-jamiu.png";
 
 const About = () => {
   const organizationSchema = {
@@ -68,6 +69,11 @@ const About = () => {
       name: "Caroline Achieng",
       position: "Business Development & Partnership Manager",
       image: carolineAchieng,
+    },
+    {
+      name: "Ademola Jamiu",
+      position: "Software Engineer & Web Development Lead",
+      image: ademolaJamiu,
     },
   ];
 
