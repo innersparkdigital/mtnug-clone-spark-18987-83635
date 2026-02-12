@@ -185,7 +185,7 @@ const AnxietySymptomsPost = () => {
                   </span>
                   <div className="ml-auto">
                     <SocialShareButtons 
-                      url="https://innerspark.africa/blog/anxiety-symptoms"
+                      url="https://www.innersparkafrica.com/blog/anxiety-symptoms"
                       title="Anxiety Symptoms: How to Recognize Anxiety Disorder"
                       description="Learn to identify the symptoms of anxiety."
                     />

@@ -196,7 +196,7 @@ const HowToFindATherapistPost = () => {
                 </span>
               </div>
               <SocialShareButtons 
-                url="https://innerspark.africa/blog/how-to-find-a-therapist"
+                url="https://www.innersparkafrica.com/blog/how-to-find-a-therapist"
                 title="How to Find a Therapist: Complete Guide"
                 description="Step-by-step guide to finding the right therapist."
               />

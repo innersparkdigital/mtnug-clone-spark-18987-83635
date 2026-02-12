@@ -172,7 +172,7 @@ const AnxietyManagementPost = () => {
                   </span>
                   <div className="ml-auto">
                     <SocialShareButtons 
-                      url="https://innerspark.africa/blog/how-to-manage-anxiety"
+                      url="https://www.innersparkafrica.com/blog/how-to-manage-anxiety"
                       title="How to Manage Anxiety: Expert-Backed Strategies for Finding Calm"
                       description="Discover practical, evidence-based techniques to manage anxiety and find peace."
                     />
@@ -683,7 +683,7 @@ const AnxietyManagementPost = () => {
                   <div className="border-t border-b border-border py-6">
                     <p className="text-foreground font-medium mb-4">Share this article to help others:</p>
                     <SocialShareButtons 
-                      url="https://innerspark.africa/blog/how-to-manage-anxiety"
+                      url="https://www.innersparkafrica.com/blog/how-to-manage-anxiety"
                       title="How to Manage Anxiety: Expert-Backed Strategies for Finding Calm"
                       description="Discover practical, evidence-based techniques to manage anxiety and find peace."
                     />

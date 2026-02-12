@@ -12,8 +12,8 @@ const Meditations = () => {
         <title>Meditations & Calm Audio | Guided Relaxation | Innerspark Africa</title>
         <meta name="description" content="Listen to guided meditations and soothing sounds for relaxation. Find calm in minutes with our expertly crafted audio library for stress relief and mental wellness." />
         <meta name="keywords" content="guided meditation, relaxation audio, calm sounds, stress relief, meditation Africa, mental wellness audio" />
-        <link rel="canonical" href="https://innerspark.africa/meditations" />
-        <meta property="og:url" content="https://innerspark.africa/meditations" />
+        <link rel="canonical" href="https://www.innersparkafrica.com/meditations" />
+        <meta property="og:url" content="https://www.innersparkafrica.com/meditations" />
         <meta property="og:title" content="Meditations & Calm Audio | Innerspark Africa" />
         <meta property="og:description" content="Listen to guided meditations and soothing sounds for relaxation and stress relief." />
         <meta property="og:type" content="website" />

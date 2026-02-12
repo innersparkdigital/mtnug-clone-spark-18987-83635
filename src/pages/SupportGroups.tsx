@@ -24,7 +24,7 @@ const SupportGroups = () => {
     "@type": "MedicalWebPage",
     "name": "Mental Health Support Groups in Africa",
     "description": "Join professionally moderated mental health support groups for depression, anxiety, grief, addiction, and more. Connect with others who understand your journey.",
-    "url": "https://innerspark.africa/support-groups",
+    "url": "https://www.innersparkafrica.com/support-groups",
     "specialty": "Psychiatry",
     "about": {
       "@type": "MedicalCondition",
@@ -41,7 +41,7 @@ const SupportGroups = () => {
     "provider": {
       "@type": "MedicalOrganization",
       "name": "Innerspark Africa",
-      "url": "https://innerspark.africa"
+      "url": "https://www.innersparkafrica.com"
     },
     "serviceType": "Group Therapy",
     "areaServed": {
@@ -101,13 +101,13 @@ const SupportGroups = () => {
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://innerspark.africa"
+        "item": "https://www.innersparkafrica.com"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Support Groups",
-        "item": "https://innerspark.africa/support-groups"
+        "item": "https://www.innersparkafrica.com/support-groups"
       }
     ]
   };
@@ -129,14 +129,14 @@ const SupportGroups = () => {
         <title>Mental Health Support Groups in Africa | Peer Support | Innerspark</title>
         <meta name="description" content="Join mental health support groups in Africa. Professionally moderated peer support for depression, anxiety, grief, addiction & more. Safe, confidential group sessions. Connect with others who understand." />
         <meta name="keywords" content="mental health support groups, peer support groups, group therapy Africa, depression support group, anxiety support group, grief support group, addiction support group, online support groups, mental health community, therapy groups, support circle, mental wellness groups, emotional support group, recovery groups" />
-        <link rel="canonical" href="https://innerspark.africa/support-groups" />
+        <link rel="canonical" href="https://www.innersparkafrica.com/support-groups" />
         
         {/* Open Graph */}
         <meta property="og:title" content="Mental Health Support Groups | Peer Support | Innerspark Africa" />
         <meta property="og:description" content="Join professionally moderated mental health support groups. Safe spaces to share, heal, and connect with others facing similar challenges." />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://innerspark.africa/support-groups" />
-        <meta property="og:image" content="https://innerspark.africa/innerspark-logo.png" />
+        <meta property="og:url" content="https://www.innersparkafrica.com/support-groups" />
+        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
         
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />

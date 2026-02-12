@@ -91,7 +91,7 @@ const MindCheck = () => {
     "@type": "MedicalWebPage",
     "name": "Mental Health Self-Assessment Tests",
     "description": "Free online mental health screening tests for depression, anxiety, ADHD, PTSD, and more. Get instant, confidential results.",
-    "url": "https://innerspark.africa/mind-check",
+    "url": "https://www.innersparkafrica.com/mind-check",
     "specialty": "Psychiatry",
     "mainEntity": {
       "@type": "ItemList",
@@ -149,8 +149,8 @@ const MindCheck = () => {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://innerspark.africa" },
-      { "@type": "ListItem", "position": 2, "name": "Mind-Check", "item": "https://innerspark.africa/mind-check" }
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.innersparkafrica.com" },
+      { "@type": "ListItem", "position": 2, "name": "Mind-Check", "item": "https://www.innersparkafrica.com/mind-check" }
     ]
   };
 
@@ -163,14 +163,14 @@ const MindCheck = () => {
           content="Take free online mental health tests for depression, anxiety, ADHD, PTSD, bipolar, OCD & more. Get instant, confidential results. Clinically-based screening tools to understand your mental health symptoms." 
         />
         <meta name="keywords" content="mental health test, depression test online, anxiety test, am I depressed quiz, do I have anxiety quiz, ADHD test adults, PTSD screening, bipolar test, OCD test, mental health quiz, free mental health assessment, self-assessment mental health, mental health screening, depression symptoms test, anxiety symptoms quiz, mental health check" />
-        <link rel="canonical" href="https://innerspark.africa/mind-check" />
+        <link rel="canonical" href="https://www.innersparkafrica.com/mind-check" />
         
         {/* Open Graph */}
         <meta property="og:title" content="Free Mental Health Tests | Depression, Anxiety, ADHD Screening" />
         <meta property="og:description" content="Take free, confidential mental health screening tests. Get instant results for depression, anxiety, ADHD, PTSD, and 30+ other conditions." />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://innerspark.africa/mind-check" />
-        <meta property="og:image" content="https://innerspark.africa/innerspark-logo.png" />
+        <meta property="og:url" content="https://www.innersparkafrica.com/mind-check" />
+        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
         
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />

@@ -172,7 +172,7 @@ const MentalHealthPost = () => {
                   </span>
                   <div className="ml-auto">
                     <SocialShareButtons 
-                      url="https://innerspark.africa/blog/what-is-mental-health"
+                      url="https://www.innersparkafrica.com/blog/what-is-mental-health"
                       title="What Is Mental Health? A Complete Guide to Conditions, Warning Signs & Everyday Wellness"
                       description="Mental health influences how we think, feel, and act every day. This guide explains what mental health is, common conditions, and warning signs."
                     />
