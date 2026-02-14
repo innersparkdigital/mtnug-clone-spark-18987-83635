@@ -89,7 +89,7 @@ const HowToFindATherapistPost = () => {
         "name": "How much does therapy cost?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Therapy costs vary widely. At Innerspark Africa, sessions start from UGX 75,000 (approximately $20). Some therapists offer sliding scale fees, and many insurance plans cover mental health services."
+          "text": "Therapy costs vary widely. At Innerspark Africa, sessions start from UGX 75,000 (approximately $22). Some therapists offer sliding scale fees, and many insurance plans cover mental health services."
         }
       }
     ]
