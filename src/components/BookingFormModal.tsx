@@ -28,7 +28,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useAssessment, AssessmentResult } from "@/contexts/AssessmentContext";
-import { Calendar, Clock, CheckCircle, Send, AlertCircle, Users, Phone, User, ArrowRight } from "lucide-react";
+import { Calendar, Clock, CheckCircle, Send, AlertCircle, Users, Phone, User, ArrowRight, CreditCard, Smartphone } from "lucide-react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
 import { trackBookingFormOpened, trackBookingSubmitted, trackWhatsAppClick } from "@/lib/analytics";
 import TherapistRecommendationCard from "./TherapistRecommendationCard";
@@ -44,6 +46,7 @@ const bookingSchema = z.object({
   phone: z.string().min(10, "Enter a valid phone number").max(20),
   preferredDay: z.string().min(1, "Please select a preferred day"),
   preferredTime: z.string().min(1, "Please select a preferred time"),
+  paymentMethod: z.string().min(1, "Please select a payment method"),
   notes: z.string().max(500).optional(),
 });
 
@@ -51,6 +54,7 @@ const groupSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters").max(100),
   phone: z.string().min(10, "Enter a valid phone number").max(20),
   groupType: z.string().min(1, "Please select a group"),
+  paymentMethod: z.string().min(1, "Please select a payment method"),
   notes: z.string().max(500).optional(),
 });
 
@@ -97,7 +101,8 @@ const formatWhatsAppMessage = (
     }
     
     message += `*Preferred Day:* ${bookingData.preferredDay}\n`;
-    message += `*Preferred Time:* ${bookingData.preferredTime}\n\n`;
+    message += `*Preferred Time:* ${bookingData.preferredTime}\n`;
+    message += `*Payment Method:* ${bookingData.paymentMethod === "mobile_money" ? "Mobile Money" : "Visa/Card"}\n\n`;
     message += `*Session Cost:* UGX 75,000 / hour\n`;
     
     if (bookingData.notes) {
@@ -122,6 +127,7 @@ const formatWhatsAppMessage = (
     }
     
     message += `*Selected Group:* ${selectedGroup?.name || groupData.groupType}\n`;
+    message += `*Payment Method:* ${groupData.paymentMethod === "mobile_money" ? "Mobile Money" : "Visa/Card"}\n`;
     message += `*Weekly Fee:* ${selectedGroup?.fee || "UGX 25,000/week"}\n`;
     
     if (groupData.notes) {
@@ -173,6 +179,7 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
       phone: "",
       preferredDay: "",
       preferredTime: "",
+      paymentMethod: "",
       notes: "",
     },
   });
@@ -183,6 +190,7 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
       name: "",
       phone: "",
       groupType: "",
+      paymentMethod: "",
       notes: "",
     },
   });
@@ -375,6 +383,35 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
 
                   <FormField
                     control={bookingForm.control}
+                    name="paymentMethod"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Preferred Payment Method</FormLabel>
+                        <FormControl>
+                          <RadioGroup onValueChange={field.onChange} value={field.value} className="flex gap-4">
+                            <div className="flex items-center gap-2 border rounded-lg p-3 flex-1 cursor-pointer hover:border-primary/50 transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+                              <RadioGroupItem value="mobile_money" id="booking_mobile_money" />
+                              <Label htmlFor="booking_mobile_money" className="flex items-center gap-2 cursor-pointer">
+                                <Smartphone className="h-4 w-4 text-primary" />
+                                Mobile Money
+                              </Label>
+                            </div>
+                            <div className="flex items-center gap-2 border rounded-lg p-3 flex-1 cursor-pointer hover:border-primary/50 transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+                              <RadioGroupItem value="visa" id="booking_visa" />
+                              <Label htmlFor="booking_visa" className="flex items-center gap-2 cursor-pointer">
+                                <CreditCard className="h-4 w-4 text-primary" />
+                                Visa / Card
+                              </Label>
+                            </div>
+                          </RadioGroup>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={bookingForm.control}
                     name="notes"
                     render={({ field }) => (
                       <FormItem>
@@ -460,6 +497,35 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
                             ))}
                           </SelectContent>
                         </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={groupForm.control}
+                    name="paymentMethod"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Preferred Payment Method</FormLabel>
+                        <FormControl>
+                          <RadioGroup onValueChange={field.onChange} value={field.value} className="flex gap-4">
+                            <div className="flex items-center gap-2 border rounded-lg p-3 flex-1 cursor-pointer hover:border-primary/50 transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+                              <RadioGroupItem value="mobile_money" id="group_mobile_money" />
+                              <Label htmlFor="group_mobile_money" className="flex items-center gap-2 cursor-pointer">
+                                <Smartphone className="h-4 w-4 text-primary" />
+                                Mobile Money
+                              </Label>
+                            </div>
+                            <div className="flex items-center gap-2 border rounded-lg p-3 flex-1 cursor-pointer hover:border-primary/50 transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+                              <RadioGroupItem value="visa" id="group_visa" />
+                              <Label htmlFor="group_visa" className="flex items-center gap-2 cursor-pointer">
+                                <CreditCard className="h-4 w-4 text-primary" />
+                                Visa / Card
+                              </Label>
+                            </div>
+                          </RadioGroup>
+                        </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
