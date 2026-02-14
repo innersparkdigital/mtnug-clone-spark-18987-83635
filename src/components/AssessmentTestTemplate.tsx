@@ -27,6 +27,7 @@ import {
   Phone,
   Star
 } from "lucide-react";
+import AssessmentGauge from "@/components/AssessmentGauge";
 
 export interface AssessmentQuestion {
   id: number;
@@ -119,16 +120,18 @@ const AssessmentTestTemplate = ({ config }: AssessmentTestTemplateProps) => {
             <p className="text-muted-foreground">Based on your responses</p>
           </div>
           
-          <div className={`${result.bgColor} ${result.borderColor} border rounded-xl p-6 md:p-8 mb-8`}>
-            <div className="text-center">
-              <p className="text-sm text-muted-foreground mb-2">Your Score</p>
-              <p className={`text-5xl font-bold ${result.color} mb-2`}>{score}</p>
-              <p className="text-sm text-muted-foreground mb-4">out of {config.maxScore}</p>
-              <div className={`inline-block px-4 py-2 rounded-full ${result.bgColor} ${result.borderColor} border`}>
-                <span className={`font-semibold ${result.color}`}>{result.level}</span>
-              </div>
-            </div>
-            <p className="mt-6 text-center text-foreground/80">{result.description}</p>
+          {/* Gauge Meter */}
+          <div className="flex justify-center mb-8">
+            <AssessmentGauge
+              score={score}
+              maxScore={config.maxScore}
+              severity={result.level}
+              title={config.title}
+            />
+          </div>
+
+          <div className={`${result.bgColor} ${result.borderColor} border rounded-xl p-6 mb-8`}>
+            <p className="text-center text-foreground/80">{result.description}</p>
           </div>
 
           <div className="bg-primary/10 border border-primary/20 rounded-lg p-4 mb-6 text-center">
