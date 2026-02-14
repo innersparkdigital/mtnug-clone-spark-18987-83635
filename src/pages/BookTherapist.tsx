@@ -214,7 +214,7 @@ const BookTherapist = () => {
                 {
                   icon: Heart,
                   title: "Affordable Rates",
-                  desc: "Quality therapy at accessible prices. Starting from $20 per session"
+                  desc: "Quality therapy at accessible prices. Starting from $22 per session"
                 },
                 {
                   icon: Globe,

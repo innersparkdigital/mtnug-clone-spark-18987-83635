@@ -227,7 +227,7 @@ const MentalHealthSupport = () => {
                 { icon: Globe, text: "Available globally — no geographic restrictions" },
                 { icon: Clock, text: "Flexible scheduling with same-day appointments" },
                 { icon: Shield, text: "Private, secure, and 100% confidential" },
-                { icon: Heart, text: "Affordable rates starting from $20 USD" },
+                { icon: Heart, text: "Affordable rates starting from $22 USD" },
                 { icon: Sparkles, text: "Personalized care tailored to your needs" },
                 { icon: Users, text: "Community support through peer groups" },
                 { icon: Brain, text: "Evidence-based treatment approaches" }

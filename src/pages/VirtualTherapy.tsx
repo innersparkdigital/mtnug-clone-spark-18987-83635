@@ -87,7 +87,7 @@ const VirtualTherapy = () => {
         "name": "How much does virtual therapy cost?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "At Innerspark Africa, virtual therapy sessions start from $20 USD. We offer flexible payment options to make mental health care accessible and affordable globally."
+          "text": "At Innerspark Africa, virtual therapy sessions start from $22 USD. We offer flexible payment options to make mental health care accessible and affordable globally."
         }
       },
       {
@@ -124,7 +124,7 @@ const VirtualTherapy = () => {
     <div className="min-h-screen bg-background">
       <Helmet>
         <title>Virtual Therapy - Talk to a Therapist Today | Book Online | Innerspark</title>
-        <meta name="description" content="Get virtual therapy from licensed therapists. Book a session today. Video, voice & chat therapy for depression, anxiety, stress & more. Affordable rates from $20. Start now!" />
+        <meta name="description" content="Get virtual therapy from licensed therapists. Book a session today. Video, voice & chat therapy for depression, anxiety, stress & more. Affordable rates from $22. Start now!" />
         <meta name="keywords" content="virtual therapy, online therapy, teletherapy, talk to therapist today, book therapist online, virtual counseling, e-therapy, internet therapy, online therapist, video therapy, phone therapy, chat therapy, depression therapy online, anxiety counseling online, mental health online, therapy from home, remote therapy, digital therapy" />
         <link rel="canonical" href="https://www.innersparkafrica.com/virtual-therapy" />
         
