@@ -89,7 +89,7 @@ const TherapistRecommendationCard = ({
       currency: "UGX",
       minimumFractionDigits: 0,
     }).format(price);
-    const usd = Math.round(price / 3700);
+    const usd = Math.round(price / 3400);
     return `$${usd} / ${ugx}`;
   };
 
