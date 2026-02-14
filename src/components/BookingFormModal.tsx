@@ -28,12 +28,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useAssessment, AssessmentResult } from "@/contexts/AssessmentContext";
-import { Calendar, Clock, CheckCircle, Send, AlertCircle, Users, Phone, User, ArrowRight, CreditCard, Smartphone, Languages, Globe } from "lucide-react";
+import { Calendar, Clock, CheckCircle, Send, AlertCircle, Users, Phone, User, ArrowRight, CreditCard, Smartphone, Languages, Globe, Loader2 } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
 import { trackBookingFormOpened, trackBookingSubmitted, trackWhatsAppClick } from "@/lib/analytics";
 import TherapistRecommendationCard from "./TherapistRecommendationCard";
+import { supabase } from "@/integrations/supabase/client";
 
 interface BookingFormModalProps {
   isOpen: boolean;
@@ -207,12 +208,87 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
     },
   });
 
-  const handleSubmit = (data: BookingFormData | GroupFormData) => {
+  const handleSubmit = async (data: BookingFormData | GroupFormData) => {
     setIsSubmitting(true);
     
+    const isVisaPayment = data.paymentMethod === "visa";
+    
+    // If Visa/Card selected, redirect to Stripe Checkout
+    if (isVisaPayment) {
+      try {
+        const bookingDetails: Record<string, string> = {
+          name: data.name,
+          phone: data.phone,
+          preferredLanguage: data.preferredLanguage,
+          country: data.country,
+        };
+        
+        if (formType === "book") {
+          const bookingData = data as BookingFormData;
+          bookingDetails.preferredDay = bookingData.preferredDay;
+          bookingDetails.preferredTime = bookingData.preferredTime;
+        }
+        
+        if (selectedSpecialist) {
+          bookingDetails.specialistName = selectedSpecialist.name;
+        }
+        
+        if (assessmentResult) {
+          bookingDetails.assessmentType = assessmentResult.assessmentLabel;
+          bookingDetails.severity = assessmentResult.severity;
+        }
+
+        const { data: responseData, error } = await supabase.functions.invoke('create-payment', {
+          body: {
+            customerName: data.name,
+            bookingDetails,
+          },
+        });
+
+        if (error) throw error;
+        if (!responseData?.url) throw new Error("No checkout URL returned");
+
+        // Track analytics before redirect
+        trackBookingSubmitted(
+          formType,
+          assessmentResult?.assessmentType,
+          assessmentResult?.severity
+        );
+
+        // Also send WhatsApp notification for admin tracking
+        let message = formatWhatsAppMessage(formType, data, assessmentResult);
+        if (selectedSpecialist && formType === "book") {
+          message = message.replace(
+            "*New Booking Request – Innerspark Africa*",
+            `*New Booking Request – Innerspark Africa*\n\n*Selected Therapist:* ${selectedSpecialist.name}`
+          );
+        }
+        message += `\n\n*💳 Payment Status:* Redirected to Stripe Checkout`;
+        const encodedMessage = encodeURIComponent(message);
+        // Send WhatsApp in background
+        window.open(`https://wa.me/256792085773?text=${encodedMessage}`, "_blank");
+
+        // Redirect to Stripe Checkout
+        window.location.href = responseData.url;
+        
+        clearAssessment();
+        onClose();
+        return;
+      } catch (error) {
+        console.error("Stripe payment error:", error);
+        toast({
+          title: "Payment Error",
+          description: "Could not initiate card payment. Please try again or use Mobile Money.",
+          variant: "destructive",
+        });
+        setIsSubmitting(false);
+        return;
+      }
+    }
+    
+    // Mobile Money flow - send via WhatsApp as before
     let message = formatWhatsAppMessage(formType, data, assessmentResult);
     
-    // Add selected specialist info to the message
     if (selectedSpecialist && formType === "book") {
       message = message.replace(
         "*New Booking Request – Innerspark Africa*",
@@ -223,7 +299,6 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/256792085773?text=${encodedMessage}`;
     
-    // Track analytics
     trackBookingSubmitted(
       formType,
       assessmentResult?.assessmentType,
@@ -482,8 +557,17 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
                   </div>
 
                   <Button type="submit" className="w-full gap-2" disabled={isSubmitting}>
-                    <Send className="h-4 w-4" />
-                    {isSubmitting ? "Sending..." : "Submit Booking Request"}
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Processing...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="h-4 w-4" />
+                        Submit Booking Request
+                      </>
+                    )}
                   </Button>
                 </form>
               </Form>

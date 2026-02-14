@@ -105,6 +105,8 @@ import VideoTherapy from "./pages/VideoTherapy";
 import ChatTherapy from "./pages/ChatTherapy";
 // App Coming Soon Page
 import AppComingSoon from "./pages/AppComingSoon";
+import PaymentSuccess from "./pages/PaymentSuccess";
+import PaymentCanceled from "./pages/PaymentCanceled";
 
 const queryClient = new QueryClient();
 
@@ -132,6 +134,8 @@ const App = () => (
             <Route path="/video-therapy" element={<VideoTherapy />} />
             <Route path="/chat-therapy" element={<ChatTherapy />} />
             <Route path="/app-coming-soon" element={<AppComingSoon />} />
+            <Route path="/payment-success" element={<PaymentSuccess />} />
+            <Route path="/payment-canceled" element={<PaymentCanceled />} />
             <Route path="/support-groups" element={<SupportGroups />} />
             <Route path="/chat-sessions" element={<ChatSessions />} />
             <Route path="/mood-check-in" element={<MoodCheckIn />} />
