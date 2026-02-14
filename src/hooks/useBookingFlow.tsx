@@ -19,14 +19,7 @@ export const useBookingFlow = () => {
   const hasCheckedReturn = useRef(false);
   const hasCheckedPayment = useRef(false);
 
-  // Auto-open booking form when returning from Stripe payment
-  useEffect(() => {
-    if (searchParams.get("payment") === "success" && !hasCheckedPayment.current) {
-      hasCheckedPayment.current = true;
-      setFlowStep("booking-form");
-      setActionType("book");
-    }
-  }, [searchParams]);
+  // (Stripe payment return handling removed - manual payment flow now)
 
   // Check if user JUST completed assessment and should see form
   // This only triggers once when justCompletedAssessment becomes true
