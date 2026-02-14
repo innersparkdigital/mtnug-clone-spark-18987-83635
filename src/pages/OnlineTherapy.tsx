@@ -74,7 +74,7 @@ const OnlineTherapy = () => {
         "name": "How much does online therapy cost?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Online therapy sessions start from $20 USD, making professional mental health care accessible and affordable globally."
+          "text": "Online therapy sessions start from $22 USD, making professional mental health care accessible and affordable globally."
         }
       },
       {
@@ -215,7 +215,7 @@ const OnlineTherapy = () => {
                 {
                   icon: Heart,
                   title: "Affordable Care",
-                  desc: "Quality therapy at accessible prices. Sessions from $20 USD"
+                  desc: "Quality therapy at accessible prices. Sessions from $22 USD"
                 },
                 {
                   icon: Star,
@@ -329,7 +329,7 @@ const OnlineTherapy = () => {
                 },
                 {
                   q: "How much does online therapy cost?",
-                  a: "Online therapy sessions start from $20 USD, making professional mental health care accessible and affordable globally."
+                  a: "Online therapy sessions start from $22 USD, making professional mental health care accessible and affordable globally."
                 },
                 {
                   q: "Can I talk to a therapist today?",

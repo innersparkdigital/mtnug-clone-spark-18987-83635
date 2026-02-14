@@ -481,7 +481,7 @@ const Specialists = () => {
         <title>Find a Therapist Online - Book Licensed Therapists Today | Innerspark Africa</title>
         <meta
           name="description"
-          content="Find and book licensed therapists online today. Browse our network of verified counselors & psychologists. Get help for depression, anxiety, trauma & more. Affordable rates from $20. Book now!"
+          content="Find and book licensed therapists online today. Browse our network of verified counselors & psychologists. Get help for depression, anxiety, trauma & more. Affordable rates from $22. Book now!"
         />
         <meta name="keywords" content="find therapist online, book therapist, find therapist near me, online therapist, licensed therapists, psychologists, counselors, mental health professionals, online therapy, virtual counseling, therapist directory, book a therapist, affordable therapy, licensed counselors, depression therapist, anxiety counselor, trauma specialist, relationship counselor" />
         <link rel="canonical" href="https://www.innersparkafrica.com/specialists" />
