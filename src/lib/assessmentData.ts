@@ -468,3 +468,249 @@ export const sadQuestions: AssessmentQuestion[] = [
   { id: 9, question: "Do your mood symptoms improve when seasons change?", options: standardOptions },
   { id: 10, question: "Has this pattern occurred for at least two years?", options: standardOptions },
 ];
+
+// Frequency options (Never to Almost Always)
+const frequencyOptions = [
+  { value: 0, label: "Never" },
+  { value: 1, label: "Sometimes" },
+  { value: 2, label: "Most of the time" },
+  { value: 3, label: "Almost always" },
+];
+
+// ADHD options (5-point)
+const adhdOptions = [
+  { value: 0, label: "Never" },
+  { value: 1, label: "Rarely" },
+  { value: 2, label: "Sometimes" },
+  { value: 3, label: "Often" },
+  { value: 4, label: "Very Often" },
+];
+
+// Yes/No options
+const yesNoOptions = [
+  { value: 0, label: "No" },
+  { value: 1, label: "Yes" },
+];
+
+// Intensity options (5-point)
+const intensityOptions = [
+  { value: 0, label: "Not at all" },
+  { value: 1, label: "A little" },
+  { value: 2, label: "Moderately" },
+  { value: 3, label: "Quite a bit" },
+  { value: 4, label: "Extremely" },
+];
+
+// Eating frequency options (6-point)
+const eatingFrequencyOptions = [
+  { value: 0, label: "Never" },
+  { value: 1, label: "Rarely" },
+  { value: 2, label: "Sometimes" },
+  { value: 3, label: "Often" },
+  { value: 4, label: "Very Often" },
+  { value: 5, label: "Always" },
+];
+
+// Gambling Addiction Questions
+export const gamblingAddictionQuestions: AssessmentQuestion[] = [
+  { id: 1, question: "Have you become restless, irritable, or anxious when trying to stop or cut down on gambling?", options: frequencyOptions },
+  { id: 2, question: "Have you tried to keep your family or friends from knowing how much you gamble?", options: frequencyOptions },
+  { id: 3, question: "Do you gamble to escape from problems or feelings of helplessness, guilt, or depression?", options: frequencyOptions },
+  { id: 4, question: "Have you risked or lost a significant relationship, job, or opportunity because of gambling?", options: frequencyOptions },
+  { id: 5, question: "Have you ever borrowed money or sold anything to get money to gamble?", options: frequencyOptions },
+  { id: 6, question: "Have you felt the need to gamble with increasing amounts of money to achieve the excitement you desire?", options: frequencyOptions },
+  { id: 7, question: "Have you made repeated unsuccessful efforts to control, cut back, or stop gambling?", options: frequencyOptions },
+  { id: 8, question: "Do you often think about gambling (planning the next venture, thinking of ways to get money)?", options: frequencyOptions },
+  { id: 9, question: "After losing money gambling, do you often return another day to try to win back your losses?", options: frequencyOptions },
+  { id: 10, question: "Have you committed or considered committing illegal acts to finance gambling?", options: frequencyOptions },
+];
+
+// Adult ADHD Questions
+export const adultADHDQuestions: AssessmentQuestion[] = [
+  { id: 1, question: "How often do you have trouble wrapping up the final details of a project once the challenging parts have been done?", options: adhdOptions },
+  { id: 2, question: "How often do you have difficulty getting things in order when you have to do a task that requires organization?", options: adhdOptions },
+  { id: 3, question: "How often do you have problems remembering appointments or obligations?", options: adhdOptions },
+  { id: 4, question: "When you have a task that requires a lot of thought, how often do you avoid or delay getting started?", options: adhdOptions },
+  { id: 5, question: "How often do you fidget or squirm with your hands or feet when you have to sit down for a long time?", options: adhdOptions },
+  { id: 6, question: "How often do you feel overly active and compelled to do things, like you were driven by a motor?", options: adhdOptions },
+  { id: 7, question: "How often do you make careless mistakes when you have to work on a boring or difficult project?", options: adhdOptions },
+  { id: 8, question: "How often do you have difficulty keeping your attention when you are doing boring or repetitive work?", options: adhdOptions },
+  { id: 9, question: "How often do you have difficulty concentrating on what people say to you, even when they are speaking to you directly?", options: adhdOptions },
+  { id: 10, question: "How often do you misplace or have difficulty finding things at home or at work?", options: adhdOptions },
+  { id: 11, question: "How often are you distracted by activity or noise around you?", options: adhdOptions },
+  { id: 12, question: "How often do you leave your seat in meetings or other situations in which you are expected to remain seated?", options: adhdOptions },
+];
+
+// Mania Questions
+export const maniaQuestions: AssessmentQuestion[] = [
+  { id: 1, question: "Have you felt so good or hyper that others thought you were not your normal self?", options: yesNoOptions },
+  { id: 2, question: "Have you been so irritable that you shouted at people or started fights or arguments?", options: yesNoOptions },
+  { id: 3, question: "Have you felt much more self-confident than usual?", options: yesNoOptions },
+  { id: 4, question: "Have you gotten much less sleep than usual and found you didn't really miss it?", options: yesNoOptions },
+  { id: 5, question: "Have you been much more talkative or spoken faster than usual?", options: yesNoOptions },
+  { id: 6, question: "Have thoughts raced through your head or couldn't slow down your mind?", options: yesNoOptions },
+  { id: 7, question: "Have you been so easily distracted by things around you that you had trouble concentrating?", options: yesNoOptions },
+  { id: 8, question: "Have you had much more energy than usual?", options: yesNoOptions },
+  { id: 9, question: "Have you been much more active or done many more things than usual?", options: yesNoOptions },
+  { id: 10, question: "Have you been much more social or outgoing than usual?", options: yesNoOptions },
+  { id: 11, question: "Have you been much more interested in sex than usual?", options: yesNoOptions },
+  { id: 12, question: "Have you done things that were unusual for you or that others might have thought were excessive, foolish, or risky?", options: yesNoOptions },
+  { id: 13, question: "Have you spent money in ways that got you or your family into trouble?", options: yesNoOptions },
+];
+
+// Narcissistic Personality Questions
+export const narcissisticPersonalityQuestions: AssessmentQuestion[] = [
+  { id: 1, question: "Do you often feel that you are more special or unique than others?", options: frequencyOptions },
+  { id: 2, question: "Do you frequently fantasize about unlimited success, power, or brilliance?", options: frequencyOptions },
+  { id: 3, question: "Do you believe that you can only be understood by or associate with other special or high-status people?", options: frequencyOptions },
+  { id: 4, question: "Do you require excessive admiration from others?", options: frequencyOptions },
+  { id: 5, question: "Do you have a sense of entitlement and expect especially favorable treatment?", options: frequencyOptions },
+  { id: 6, question: "Do you often exploit others to achieve your own goals?", options: frequencyOptions },
+  { id: 7, question: "Do you lack empathy and have difficulty recognizing others' feelings and needs?", options: frequencyOptions },
+  { id: 8, question: "Are you often envious of others or believe that others are envious of you?", options: frequencyOptions },
+  { id: 9, question: "Do you display arrogant or haughty behaviors or attitudes?", options: frequencyOptions },
+  { id: 10, question: "Do you become angry or dismissive when you don't receive special treatment?", options: frequencyOptions },
+  { id: 11, question: "Do you have difficulty handling criticism or perceived slights?", options: frequencyOptions },
+  { id: 12, question: "Do you often exaggerate your achievements and talents?", options: frequencyOptions },
+  { id: 13, question: "Do you tend to monopolize conversations and belittle others?", options: frequencyOptions },
+  { id: 14, question: "Do you have difficulty maintaining healthy relationships?", options: frequencyOptions },
+  { id: 15, question: "Do you often feel secretly insecure despite projecting confidence?", options: frequencyOptions },
+];
+
+// Borderline Personality Questions
+export const borderlinePersonalityQuestions: AssessmentQuestion[] = [
+  { id: 1, question: "I have intense fears of being abandoned by those close to me.", options: intensityOptions },
+  { id: 2, question: "My relationships tend to be unstable and intense, swinging between extremes.", options: intensityOptions },
+  { id: 3, question: "I have an unstable sense of who I am or what I want.", options: intensityOptions },
+  { id: 4, question: "I engage in impulsive behaviors that could be harmful (spending, substance use, reckless driving).", options: intensityOptions },
+  { id: 5, question: "I have recurring thoughts of self-harm or suicidal behavior.", options: intensityOptions },
+  { id: 6, question: "My moods can change rapidly within hours or days.", options: intensityOptions },
+  { id: 7, question: "I often feel empty inside.", options: intensityOptions },
+  { id: 8, question: "I have difficulty controlling intense anger.", options: intensityOptions },
+  { id: 9, question: "During times of stress, I feel disconnected from reality or suspicious of others.", options: intensityOptions },
+  { id: 10, question: "I idealize people at first but then become disappointed in them quickly.", options: intensityOptions },
+];
+
+// Postpartum Depression Questions (Edinburgh Postnatal Depression Scale)
+export const postpartumDepressionQuestions: AssessmentQuestion[] = [
+  { id: 1, question: "I have been able to laugh and see the funny side of things.", options: [
+    { value: 0, label: "As much as I always could" },
+    { value: 1, label: "Not quite so much now" },
+    { value: 2, label: "Definitely not so much now" },
+    { value: 3, label: "Not at all" },
+  ]},
+  { id: 2, question: "I have looked forward with enjoyment to things.", options: [
+    { value: 0, label: "As much as I ever did" },
+    { value: 1, label: "Rather less than I used to" },
+    { value: 2, label: "Definitely less than I used to" },
+    { value: 3, label: "Hardly at all" },
+  ]},
+  { id: 3, question: "I have blamed myself unnecessarily when things went wrong.", options: [
+    { value: 0, label: "No, never" },
+    { value: 1, label: "Hardly ever" },
+    { value: 2, label: "Yes, sometimes" },
+    { value: 3, label: "Yes, very often" },
+  ]},
+  { id: 4, question: "I have been anxious or worried for no good reason.", options: [
+    { value: 0, label: "No, not at all" },
+    { value: 1, label: "Hardly ever" },
+    { value: 2, label: "Yes, sometimes" },
+    { value: 3, label: "Yes, very often" },
+  ]},
+  { id: 5, question: "I have felt scared or panicky for no good reason.", options: [
+    { value: 0, label: "No, not at all" },
+    { value: 1, label: "Hardly ever" },
+    { value: 2, label: "Yes, sometimes" },
+    { value: 3, label: "Yes, quite a lot" },
+  ]},
+  { id: 6, question: "Things have been getting on top of me.", options: [
+    { value: 0, label: "No, I've been coping as well as ever" },
+    { value: 1, label: "Not quite so well" },
+    { value: 2, label: "Yes, sometimes I haven't been coping" },
+    { value: 3, label: "Yes, most of the time I haven't been coping" },
+  ]},
+  { id: 7, question: "I have been so unhappy that I have had difficulty sleeping.", options: [
+    { value: 0, label: "No, not at all" },
+    { value: 1, label: "Not very often" },
+    { value: 2, label: "Yes, sometimes" },
+    { value: 3, label: "Yes, most of the time" },
+  ]},
+  { id: 8, question: "I have felt sad or miserable.", options: [
+    { value: 0, label: "No, not at all" },
+    { value: 1, label: "Not very often" },
+    { value: 2, label: "Yes, quite often" },
+    { value: 3, label: "Yes, most of the time" },
+  ]},
+  { id: 9, question: "I have been so unhappy that I have been crying.", options: [
+    { value: 0, label: "No, never" },
+    { value: 1, label: "Only occasionally" },
+    { value: 2, label: "Yes, quite often" },
+    { value: 3, label: "Yes, most of the time" },
+  ]},
+  { id: 10, question: "The thought of harming myself has occurred to me.", options: [
+    { value: 0, label: "Never" },
+    { value: 1, label: "Hardly ever" },
+    { value: 2, label: "Sometimes" },
+    { value: 3, label: "Yes, quite often" },
+  ]},
+];
+
+// Eating Disorder Questions
+export const eatingDisorderQuestions: AssessmentQuestion[] = [
+  { id: 1, question: "I am terrified about being overweight.", options: eatingFrequencyOptions },
+  { id: 2, question: "I avoid eating when I am hungry.", options: eatingFrequencyOptions },
+  { id: 3, question: "I find myself preoccupied with food.", options: eatingFrequencyOptions },
+  { id: 4, question: "I have gone on eating binges where I feel I cannot stop.", options: eatingFrequencyOptions },
+  { id: 5, question: "I cut my food into small pieces.", options: eatingFrequencyOptions },
+  { id: 6, question: "I am aware of the calorie content of foods I eat.", options: eatingFrequencyOptions },
+  { id: 7, question: "I particularly avoid foods with high carbohydrate content.", options: eatingFrequencyOptions },
+  { id: 8, question: "I feel that others would prefer if I ate more.", options: eatingFrequencyOptions },
+  { id: 9, question: "I vomit after I have eaten.", options: eatingFrequencyOptions },
+  { id: 10, question: "I feel extremely guilty after eating.", options: eatingFrequencyOptions },
+  { id: 11, question: "I am preoccupied with a desire to be thinner.", options: eatingFrequencyOptions },
+  { id: 12, question: "I think about burning up calories when I exercise.", options: eatingFrequencyOptions },
+  { id: 13, question: "Other people think I am too thin.", options: eatingFrequencyOptions },
+  { id: 14, question: "I am preoccupied with the thought of having fat on my body.", options: eatingFrequencyOptions },
+  { id: 15, question: "I take longer than others to eat my meals.", options: eatingFrequencyOptions },
+];
+
+// PTSD Questions
+export const ptsdQuestions: AssessmentQuestion[] = [
+  { id: 1, question: "In the past month, have you had nightmares about a traumatic event or thought about it when you did not want to?", options: intensityOptions },
+  { id: 2, question: "In the past month, have you tried hard not to think about a traumatic event or went out of your way to avoid situations that reminded you of it?", options: intensityOptions },
+  { id: 3, question: "In the past month, have you been constantly on guard, watchful, or easily startled?", options: intensityOptions },
+  { id: 4, question: "In the past month, have you felt numb or detached from others, activities, or your surroundings?", options: intensityOptions },
+  { id: 5, question: "In the past month, have you felt guilty or been unable to stop blaming yourself or others for the traumatic event?", options: intensityOptions },
+  { id: 6, question: "In the past month, have you had disturbing memories, thoughts, or images of a traumatic event?", options: intensityOptions },
+  { id: 7, question: "In the past month, have you had physical reactions (like heart pounding, sweating, trouble breathing) when reminded of a traumatic event?", options: intensityOptions },
+  { id: 8, question: "In the past month, have you had trouble falling or staying asleep?", options: intensityOptions },
+  { id: 9, question: "In the past month, have you had difficulty concentrating?", options: intensityOptions },
+  { id: 10, question: "In the past month, have you felt irritable or had angry outbursts?", options: intensityOptions },
+];
+
+// Depression Questions (PHQ-9)
+export const depressionQuestions: AssessmentQuestion[] = [
+  { id: 1, question: "Over the past 2 weeks, how often have you felt little interest or pleasure in doing things?", options: standardOptions },
+  { id: 2, question: "Over the past 2 weeks, how often have you felt down, depressed, or hopeless?", options: standardOptions },
+  { id: 3, question: "Over the past 2 weeks, how often have you had trouble falling or staying asleep, or sleeping too much?", options: standardOptions },
+  { id: 4, question: "Over the past 2 weeks, how often have you felt tired or had little energy?", options: standardOptions },
+  { id: 5, question: "Over the past 2 weeks, how often have you had poor appetite or been overeating?", options: standardOptions },
+  { id: 6, question: "Over the past 2 weeks, how often have you felt bad about yourself — or that you are a failure or have let yourself or your family down?", options: standardOptions },
+  { id: 7, question: "Over the past 2 weeks, how often have you had trouble concentrating on things, such as reading or watching TV?", options: standardOptions },
+  { id: 8, question: "Over the past 2 weeks, how often have you moved or spoken so slowly that other people could have noticed? Or the opposite — being fidgety or restless?", options: standardOptions },
+  { id: 9, question: "Over the past 2 weeks, how often have you had thoughts that you would be better off dead, or of hurting yourself?", options: standardOptions },
+];
+
+// Anxiety Questions (GAD-based)
+export const anxietyQuestions: AssessmentQuestion[] = [
+  { id: 1, question: "Over the past 2 weeks, how often have you felt nervous, anxious, or on edge?", options: standardOptions },
+  { id: 2, question: "Over the past 2 weeks, how often have you not been able to stop or control worrying?", options: standardOptions },
+  { id: 3, question: "Over the past 2 weeks, how often have you worried too much about different things?", options: standardOptions },
+  { id: 4, question: "Over the past 2 weeks, how often have you had trouble relaxing?", options: standardOptions },
+  { id: 5, question: "Over the past 2 weeks, how often have you been so restless that it's hard to sit still?", options: standardOptions },
+  { id: 6, question: "Over the past 2 weeks, how often have you become easily annoyed or irritable?", options: standardOptions },
+  { id: 7, question: "Over the past 2 weeks, how often have you felt afraid as if something awful might happen?", options: standardOptions },
+  { id: 8, question: "Over the past 2 weeks, how often have you had difficulty concentrating due to worry?", options: standardOptions },
+  { id: 9, question: "Over the past 2 weeks, how often have you experienced physical symptoms like racing heart, sweating, or trembling?", options: standardOptions },
+  { id: 10, question: "Over the past 2 weeks, how often have you avoided situations because they made you anxious?", options: standardOptions },
+];
