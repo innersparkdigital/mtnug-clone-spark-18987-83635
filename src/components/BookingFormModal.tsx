@@ -109,7 +109,7 @@ const formatWhatsAppMessage = (
     message += `*Payment Method:* ${bookingData.paymentMethod === "mobile_money" ? "Mobile Money" : "Visa/Card"}\n`;
     message += `*Preferred Language:* ${bookingData.preferredLanguage}\n`;
     message += `*Country:* ${bookingData.country}\n\n`;
-    message += `*Session Cost:* UGX 75,000 / hour\n`;
+    message += `*Session Cost:* $22 / UGX 75,000 per hour\n`;
     
     if (bookingData.notes) {
       message += `\n*Additional Notes:* ${bookingData.notes}`;
@@ -477,7 +477,7 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
                   <div className="bg-primary/5 rounded-lg p-3 flex items-center gap-2">
                     <Clock className="h-4 w-4 text-primary" />
                     <span className="text-sm text-foreground">
-                      Session Cost: <strong>UGX 75,000 / hour</strong>
+                      Session Cost: <strong>$22 / UGX 75,000 per hour</strong>
                     </span>
                   </div>
 

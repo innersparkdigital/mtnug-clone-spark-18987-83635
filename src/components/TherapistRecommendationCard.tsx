@@ -84,11 +84,13 @@ const TherapistRecommendationCard = ({
   };
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("en-UG", {
+    const ugx = new Intl.NumberFormat("en-UG", {
       style: "currency",
       currency: "UGX",
       minimumFractionDigits: 0,
     }).format(price);
+    const usd = Math.round(price / 3700);
+    return `$${usd} / ${ugx}`;
   };
 
   const recommendedType = getRecommendedSpecialistType(assessmentResult.assessmentType);
