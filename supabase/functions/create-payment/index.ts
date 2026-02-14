@@ -23,13 +23,13 @@ serve(async (req) => {
     if (!stripeKey) throw new Error("STRIPE_SECRET_KEY is not set");
     logStep("Stripe key verified");
 
-    const { customerEmail, customerName, bookingDetails } = await req.json();
+    const { customerEmail, customerName, bookingDetails, returnPath } = await req.json();
     
     if (!customerEmail && !customerName) {
       throw new Error("Customer email or name is required");
     }
 
-    logStep("Request parsed", { customerEmail, customerName });
+    logStep("Request parsed", { customerEmail, customerName, returnPath });
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
 
@@ -68,8 +68,8 @@ serve(async (req) => {
       ],
       mode: "payment",
       metadata,
-      success_url: `${req.headers.get("origin")}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.headers.get("origin")}/payment-canceled`,
+      success_url: `${req.headers.get("origin")}${returnPath || '/payment-success'}?payment=success&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${req.headers.get("origin")}${returnPath || '/payment-canceled'}?payment=canceled`,
     });
 
     logStep("Checkout session created", { sessionId: session.id, url: session.url });
