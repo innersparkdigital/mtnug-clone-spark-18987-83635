@@ -28,7 +28,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useAssessment, AssessmentResult } from "@/contexts/AssessmentContext";
-import { Calendar, Clock, CheckCircle, Send, AlertCircle, Users, Phone, User, ArrowRight, CreditCard, Smartphone } from "lucide-react";
+import { Calendar, Clock, CheckCircle, Send, AlertCircle, Users, Phone, User, ArrowRight, CreditCard, Smartphone, Languages } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
@@ -47,6 +47,7 @@ const bookingSchema = z.object({
   preferredDay: z.string().min(1, "Please select a preferred day"),
   preferredTime: z.string().min(1, "Please select a preferred time"),
   paymentMethod: z.string().min(1, "Please select a payment method"),
+  preferredLanguage: z.string().min(1, "Please enter your preferred language").max(50),
   notes: z.string().max(500).optional(),
 });
 
@@ -55,6 +56,7 @@ const groupSchema = z.object({
   phone: z.string().min(10, "Enter a valid phone number").max(20),
   groupType: z.string().min(1, "Please select a group"),
   paymentMethod: z.string().min(1, "Please select a payment method"),
+  preferredLanguage: z.string().min(1, "Please enter your preferred language").max(50),
   notes: z.string().max(500).optional(),
 });
 
@@ -102,7 +104,8 @@ const formatWhatsAppMessage = (
     
     message += `*Preferred Day:* ${bookingData.preferredDay}\n`;
     message += `*Preferred Time:* ${bookingData.preferredTime}\n`;
-    message += `*Payment Method:* ${bookingData.paymentMethod === "mobile_money" ? "Mobile Money" : "Visa/Card"}\n\n`;
+    message += `*Payment Method:* ${bookingData.paymentMethod === "mobile_money" ? "Mobile Money" : "Visa/Card"}\n`;
+    message += `*Preferred Language:* ${bookingData.preferredLanguage}\n\n`;
     message += `*Session Cost:* UGX 75,000 / hour\n`;
     
     if (bookingData.notes) {
@@ -128,6 +131,7 @@ const formatWhatsAppMessage = (
     
     message += `*Selected Group:* ${selectedGroup?.name || groupData.groupType}\n`;
     message += `*Payment Method:* ${groupData.paymentMethod === "mobile_money" ? "Mobile Money" : "Visa/Card"}\n`;
+    message += `*Preferred Language:* ${groupData.preferredLanguage}\n`;
     message += `*Weekly Fee:* ${selectedGroup?.fee || "UGX 25,000/week"}\n`;
     
     if (groupData.notes) {
@@ -180,6 +184,7 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
       preferredDay: "",
       preferredTime: "",
       paymentMethod: "",
+      preferredLanguage: "",
       notes: "",
     },
   });
@@ -191,6 +196,7 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
       phone: "",
       groupType: "",
       paymentMethod: "",
+      preferredLanguage: "",
       notes: "",
     },
   });
@@ -412,6 +418,23 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
 
                   <FormField
                     control={bookingForm.control}
+                    name="preferredLanguage"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Preferred Language</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Languages className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            <Input placeholder="e.g. English, Luganda, Swahili" className="pl-10" {...field} />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={bookingForm.control}
                     name="notes"
                     render={({ field }) => (
                       <FormItem>
@@ -525,6 +548,23 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
                               </Label>
                             </div>
                           </RadioGroup>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={groupForm.control}
+                    name="preferredLanguage"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Preferred Language</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Languages className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            <Input placeholder="e.g. English, Luganda, Swahili" className="pl-10" {...field} />
+                          </div>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
