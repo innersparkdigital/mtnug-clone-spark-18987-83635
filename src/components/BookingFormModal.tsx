@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useSearchParams, useLocation } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
@@ -150,23 +151,39 @@ const formatWhatsAppMessage = (
 const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [paymentConfirmed, setPaymentConfirmed] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
   const { assessmentResult, clearAssessment, setPendingAction, selectedSpecialist } = useAssessment();
+
+  // Detect return from Stripe payment
+  useEffect(() => {
+    if (searchParams.get("payment") === "success") {
+      setPaymentConfirmed(true);
+      setShowForm(true);
+      // Clean up URL params
+      searchParams.delete("payment");
+      searchParams.delete("session_id");
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
 
   // Track form opened and manage view state
   useEffect(() => {
     if (isOpen) {
       trackBookingFormOpened(!!assessmentResult);
-      // If we have assessment result and booking, show recommendation first
-      // Otherwise show form directly
-      if (assessmentResult && formType === "book") {
+      if (assessmentResult && formType === "book" && !paymentConfirmed) {
         setShowForm(false);
       } else {
         setShowForm(true);
       }
     } else {
       setShowForm(false);
+      if (!paymentConfirmed) {
+        // only reset if not returning from payment
+      }
     }
-  }, [isOpen, assessmentResult, formType]);
+  }, [isOpen, assessmentResult, formType, paymentConfirmed]);
 
   const handleProceedWithTherapist = () => {
     setShowForm(true);
@@ -242,6 +259,7 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
           body: {
             customerName: data.name,
             bookingDetails,
+            returnPath: location.pathname,
           },
         });
 
@@ -374,8 +392,21 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
         {/* Show form when ready */}
         {showForm && (
           <>
+            {/* Payment Confirmed Banner */}
+            {paymentConfirmed && (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-center gap-3">
+                <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                  <CheckCircle className="w-5 h-5 text-green-600" />
+                </div>
+                <div>
+                  <p className="font-semibold text-green-800 text-sm">Payment Confirmed ✅</p>
+                  <p className="text-green-700 text-xs">Your card payment was successful. Our team will reach out shortly via WhatsApp.</p>
+                </div>
+              </div>
+            )}
+
             {/* Compact Assessment Summary (when showing form) */}
-            {assessmentResult && (
+            {assessmentResult && !paymentConfirmed && (
               <div className="bg-muted/50 rounded-lg p-3 border">
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">

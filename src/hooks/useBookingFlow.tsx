@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useAssessment } from "@/contexts/AssessmentContext";
 
 type FlowStep = "idle" | "assessment-choice" | "booking-form" | "group-form";
@@ -7,6 +8,7 @@ type ActionType = "book" | "group";
 export const useBookingFlow = () => {
   const [flowStep, setFlowStep] = useState<FlowStep>("idle");
   const [actionType, setActionType] = useState<ActionType>("book");
+  const [searchParams] = useSearchParams();
   const { 
     assessmentResult, 
     pendingAction, 
@@ -15,6 +17,16 @@ export const useBookingFlow = () => {
     setJustCompletedAssessment
   } = useAssessment();
   const hasCheckedReturn = useRef(false);
+  const hasCheckedPayment = useRef(false);
+
+  // Auto-open booking form when returning from Stripe payment
+  useEffect(() => {
+    if (searchParams.get("payment") === "success" && !hasCheckedPayment.current) {
+      hasCheckedPayment.current = true;
+      setFlowStep("booking-form");
+      setActionType("book");
+    }
+  }, [searchParams]);
 
   // Check if user JUST completed assessment and should see form
   // This only triggers once when justCompletedAssessment becomes true
