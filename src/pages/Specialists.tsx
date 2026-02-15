@@ -380,6 +380,8 @@ const specialistCategoryAssignments: Record<string, string[]> = {
   "Mary Nicole Cheruto Ngetich": ["child-adolescent"],
   "Namigo Anna Mary": ["child-adolescent"],
   "Abio Mary Evelyn": ["child-adolescent"],
+  "Apiny Melody Gladys": ["trauma-stress", "depression-anxiety"],
+  "Kekiconco Jannet": ["trauma-stress", "depression-anxiety"],
 };
 
 // Get primary category for a specialist
