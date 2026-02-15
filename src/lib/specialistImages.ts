@@ -39,6 +39,9 @@ const specialistImageMap: Record<string, string> = {
   "Akugizibwe Julius": "",
   "Nabulya Immaculate": "",
   "Enock Nyaanga Omwanza": "",
+  "Mary Nicole Cheruto Ngetich": "",
+  "Namigo Anna Mary": "",
+  "Abio Mary Evelyn": "",
 };
 
 export const getSpecialistImage = (name: string, imageUrl?: string | null): string | null => {
