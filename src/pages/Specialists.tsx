@@ -21,6 +21,7 @@ import { useBookingFlow } from "@/hooks/useBookingFlow";
 import ugandaBadge from "@/assets/uganda-badge.png";
 import ghanaBadge from "@/assets/ghana-badge.png";
 import botswanaBadge from "@/assets/botswana-badge.png";
+import kenyaBadge from "@/assets/kenya-badge.png";
 
 interface Specialist {
   id: string;
@@ -226,6 +227,7 @@ const countryBadges: Record<string, string> = {
   Uganda: ugandaBadge,
   Ghana: ghanaBadge,
   Botswana: botswanaBadge,
+  Kenya: kenyaBadge,
 };
 
 const formatPrice = (price: number) => {
@@ -361,6 +363,10 @@ const specialistCategoryAssignments: Record<string, string[]> = {
   "Julius Kizito": ["addiction"],
   "Nassuuna Margret": ["addiction"],
   "Mubiru Rashid": ["addiction"],
+  "Tuhaise Angella Kansiime": ["addiction"],
+  "Akugizibwe Julius": ["addiction"],
+  "Nabulya Immaculate": ["addiction"],
+  "Enock Nyaanga Omwanza": ["addiction"],
   "Atwiine Priscilla": ["trauma-stress"],
   "Winnie Anzazi Jira": ["trauma-stress"],
   // New specialists
