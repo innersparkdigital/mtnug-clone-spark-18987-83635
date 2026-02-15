@@ -35,6 +35,10 @@ const specialistImageMap: Record<string, string> = {
   // New specialists without local images - will use database image_url or initials
   "Leah Wanjiru Muiruri": "",
   "Boingotlo Moremi": "",
+  "Tuhaise Angella Kansiime": "",
+  "Akugizibwe Julius": "",
+  "Nabulya Immaculate": "",
+  "Enock Nyaanga Omwanza": "",
 };
 
 export const getSpecialistImage = (name: string, imageUrl?: string | null): string | null => {
