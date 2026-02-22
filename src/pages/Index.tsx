@@ -17,8 +17,8 @@ const Index = () => {
   return (
     <>
       <Helmet>
-        <title>Online Therapy - Book a Therapist Online Today | Innerspark Africa</title>
-        <meta name="description" content="Book online therapy with licensed therapists. Get professional mental health support for depression, anxiety, stress & more. Talk to a therapist today. Video, voice & chat therapy available globally." />
+        <title>Therapy in Uganda – Book a Licensed Therapist Online | Innerspark Africa</title>
+        <meta name="description" content="Uganda's leading online therapy platform. Book affordable sessions with licensed therapists for depression, anxiety, trauma & stress. Video, voice & chat therapy. Start today." />
         <link rel="canonical" href="https://www.innersparkafrica.com/" />
       </Helmet>
       <div className="min-h-screen bg-background">

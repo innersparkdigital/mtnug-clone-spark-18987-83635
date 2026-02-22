@@ -490,12 +490,12 @@ const Specialists = () => {
   return (
     <>
       <Helmet>
-        <title>Find a Therapist Online - Book Licensed Therapists Today | Innerspark Africa</title>
+        <title>Therapists in Uganda – Find & Book a Licensed Counsellor | Innerspark</title>
         <meta
           name="description"
-          content="Find and book licensed therapists online today. Browse our network of verified counselors & psychologists. Get help for depression, anxiety, trauma & more. Affordable rates from $22. Book now!"
+          content="Browse verified therapists in Uganda & across Africa. Filter by specialty, country & price. Book licensed counsellors for depression, anxiety, trauma & more. From UGX 50,000/session."
         />
-        <meta name="keywords" content="find therapist online, book therapist, find therapist near me, online therapist, licensed therapists, psychologists, counselors, mental health professionals, online therapy, virtual counseling, therapist directory, book a therapist, affordable therapy, licensed counselors, depression therapist, anxiety counselor, trauma specialist, relationship counselor" />
+        <meta name="keywords" content="therapist in Uganda, find therapist near me, licensed counsellor Uganda, psychologist Kampala, mental health professional Africa, therapist directory Uganda" />
         <link rel="canonical" href="https://www.innersparkafrica.com/specialists" />
         
         {/* Open Graph */}
