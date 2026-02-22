@@ -1,14 +1,19 @@
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 // Note: yellow-400 used for star ratings is intentional (universal rating color)
 import { Link } from "react-router-dom";
 import { Shield, Clock, Star, Users, CheckCircle } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import PreAssessmentModal from "./PreAssessmentModal";
 import BookingFormModal from "./BookingFormModal";
 import { useBookingFlow } from "@/hooks/useBookingFlow";
-import heroImage from "@/assets/hero-slide-1.jpg";
+import heroImage1 from "@/assets/hero-slide-1.jpg";
+import heroImage2 from "@/assets/hero-slide-2-new.png";
+
+const heroImages = [heroImage1, heroImage2];
 
 const HeroSection = () => {
+  const [currentImage, setCurrentImage] = useState(0);
   const {
     startBooking,
     closeFlow,
@@ -19,11 +24,29 @@ const HeroSection = () => {
     actionType
   } = useBookingFlow();
 
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentImage((prev) => (prev + 1) % heroImages.length);
+    }, 10000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <section className="relative min-h-[85vh] md:min-h-[90vh] flex items-center overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0">
-        <img src={heroImage} alt="Therapy session" className="w-full h-full object-cover object-top" />
+        <AnimatePresence mode="wait">
+          <motion.img
+            key={currentImage}
+            src={heroImages[currentImage]}
+            alt="Therapy session"
+            className="w-full h-full object-cover object-top absolute inset-0"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1 }}
+          />
+        </AnimatePresence>
         <div className="absolute inset-0 bg-gradient-to-r from-foreground/85 via-foreground/70 to-foreground/40" />
       </div>
 
