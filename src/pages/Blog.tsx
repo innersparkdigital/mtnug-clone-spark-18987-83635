@@ -11,6 +11,17 @@ import panicHeroImage from "@/assets/blog/panic-attack-hero.jpg";
 import depressionHeroImage from "@/assets/blog/depression-hero.jpg";
 import mentalHealthHeroImage from "@/assets/blog/mental-health-hero.jpg";
 import anxietyHeroImage from "@/assets/blog/anxiety-management-hero.jpg";
+import therapyCostHero from "@/assets/blog/therapy-cost-hero.jpg";
+import findTherapistKampalaHero from "@/assets/blog/find-therapist-kampala-hero.jpg";
+import onlineTherapyAfricaHero from "@/assets/blog/online-therapy-africa-hero.jpg";
+import signsNeedTherapistHero from "@/assets/blog/signs-need-therapist-hero.jpg";
+import studentTherapyHero from "@/assets/blog/student-therapy-hero.jpg";
+import whatIsTherapyHero from "@/assets/blog/what-is-therapy-hero.jpg";
+import benefitsTherapyHero from "@/assets/blog/benefits-therapy-hero.jpg";
+import typesTherapyHero from "@/assets/blog/types-therapy-hero.jpg";
+import findTherapistHero from "@/assets/blog/find-therapist-hero.jpg";
+import signsDepressionHero from "@/assets/blog/signs-depression-hero.jpg";
+import anxietySymptomsHero from "@/assets/blog/anxiety-symptoms-hero.jpg";
 
 interface BlogPost {
   slug: string;
@@ -29,7 +40,7 @@ const blogPosts: BlogPost[] = [
     excerpt: "Therapy in Uganda costs UGX 30,000–200,000 per session. Compare online vs in-person prices, discover affordable options, and book your first session today.",
     date: "February 22, 2026",
     readTime: "10 min read",
-    image: mentalHealthHeroImage,
+    image: therapyCostHero,
     category: "Therapy Costs"
   },
   {
@@ -38,7 +49,7 @@ const blogPosts: BlogPost[] = [
     excerpt: "Looking for a therapist in Kampala? Discover 7 proven ways to find affordable, licensed mental health professionals in Uganda's capital.",
     date: "February 22, 2026",
     readTime: "9 min read",
-    image: mentalHealthHeroImage,
+    image: findTherapistKampalaHero,
     category: "Finding Help"
   },
   {
@@ -47,7 +58,7 @@ const blogPosts: BlogPost[] = [
     excerpt: "Research proves online therapy is effective in Africa. Discover how virtual mental health care is transforming access to therapy across the continent.",
     date: "February 22, 2026",
     readTime: "10 min read",
-    image: anxietyHeroImage,
+    image: onlineTherapyAfricaHero,
     category: "Online Therapy"
   },
   {
@@ -56,7 +67,7 @@ const blogPosts: BlogPost[] = [
     excerpt: "Not sure if you need therapy? Here are 8 clear signs it's time to talk to a professional — and why seeking help is a sign of strength.",
     date: "February 22, 2026",
     readTime: "8 min read",
-    image: depressionHeroImage,
+    image: signsNeedTherapistHero,
     category: "Self-Assessment"
   },
   {
@@ -65,7 +76,7 @@ const blogPosts: BlogPost[] = [
     excerpt: "University students in Uganda can access affordable therapy from UGX 30,000. Discover free campus counseling, online therapy, and student mental health resources.",
     date: "February 22, 2026",
     readTime: "9 min read",
-    image: stressHeroImage,
+    image: studentTherapyHero,
     category: "Student Mental Health"
   },
   {
@@ -74,7 +85,7 @@ const blogPosts: BlogPost[] = [
     excerpt: "Wondering what therapy actually is? This beginner-friendly guide explains how therapy works, what happens in a session, who it's for, and how it can change your life.",
     date: "February 22, 2026",
     readTime: "10 min read",
-    image: mentalHealthHeroImage,
+    image: whatIsTherapyHero,
     category: "Therapy Basics"
   },
   {
@@ -83,7 +94,7 @@ const blogPosts: BlogPost[] = [
     excerpt: "Discover 12 science-backed benefits of therapy — from reducing anxiety to improving relationships, sleep, and career performance.",
     date: "February 22, 2026",
     readTime: "11 min read",
-    image: anxietyHeroImage,
+    image: benefitsTherapyHero,
     category: "Why Therapy Works"
   },
   {
@@ -92,7 +103,7 @@ const blogPosts: BlogPost[] = [
     excerpt: "CBT, psychodynamic, trauma therapy, couples counseling — confused? This guide explains the most common types and helps you choose.",
     date: "February 22, 2026",
     readTime: "12 min read",
-    image: stressHeroImage,
+    image: typesTherapyHero,
     category: "Therapy Guide"
   },
   {
@@ -101,7 +112,7 @@ const blogPosts: BlogPost[] = [
     excerpt: "Step-by-step guide to finding the right therapist for your needs. Learn what to look for, questions to ask, and how to make your first appointment.",
     date: "January 12, 2026",
     readTime: "12 min read",
-    image: mentalHealthHeroImage,
+    image: findTherapistHero,
     category: "Finding Help"
   },
   {
@@ -110,7 +121,7 @@ const blogPosts: BlogPost[] = [
     excerpt: "Learn to recognize the common signs and symptoms of depression. Early detection can lead to faster recovery. Discover what to look for and when to seek help.",
     date: "January 12, 2026",
     readTime: "8 min read",
-    image: depressionHeroImage,
+    image: signsDepressionHero,
     category: "Depression"
   },
   {
@@ -119,7 +130,7 @@ const blogPosts: BlogPost[] = [
     excerpt: "Learn to identify the physical, emotional, and behavioral symptoms of anxiety. Understand the difference between normal worry and anxiety disorder.",
     date: "January 12, 2026",
     readTime: "10 min read",
-    image: anxietyHeroImage,
+    image: anxietySymptomsHero,
     category: "Anxiety"
   },
   {
