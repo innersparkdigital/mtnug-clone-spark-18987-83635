@@ -110,6 +110,12 @@ import PaymentCanceled from "./pages/PaymentCanceled";
 // Location SEO Pages
 import TherapyInUganda from "./pages/TherapyInUganda";
 import TherapyInKampala from "./pages/TherapyInKampala";
+// Buying-Intent Blog Posts
+import TherapyCostUgandaPost from "./pages/blog/TherapyCostUgandaPost";
+import FindTherapistKampalaPost from "./pages/blog/FindTherapistKampalaPost";
+import OnlineTherapyAfricaPost from "./pages/blog/OnlineTherapyAfricaPost";
+import SignsYouNeedTherapistPost from "./pages/blog/SignsYouNeedTherapistPost";
+import StudentTherapyUgandaPost from "./pages/blog/StudentTherapyUgandaPost";
 
 const queryClient = new QueryClient();
 
@@ -227,6 +233,12 @@ const App = () => (
             {/* Location SEO Pages */}
             <Route path="/therapy-in-uganda" element={<TherapyInUganda />} />
             <Route path="/therapy-in-kampala" element={<TherapyInKampala />} />
+            {/* Buying-Intent Blog Posts */}
+            <Route path="/blog/therapy-cost-uganda" element={<TherapyCostUgandaPost />} />
+            <Route path="/blog/find-therapist-kampala" element={<FindTherapistKampalaPost />} />
+            <Route path="/blog/online-therapy-effective-africa" element={<OnlineTherapyAfricaPost />} />
+            <Route path="/blog/signs-you-need-a-therapist" element={<SignsYouNeedTherapistPost />} />
+            <Route path="/blog/student-therapy-uganda" element={<StudentTherapyUgandaPost />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
             </Routes>

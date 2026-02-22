@@ -201,6 +201,38 @@
     <priority>0.9</priority>
   </url>
   
+  <!-- Buying-Intent Blog Posts -->
+  <url>
+    <loc>https://www.innersparkafrica.com/blog/therapy-cost-uganda</loc>
+    <lastmod>2026-02-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.innersparkafrica.com/blog/find-therapist-kampala</loc>
+    <lastmod>2026-02-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.innersparkafrica.com/blog/online-therapy-effective-africa</loc>
+    <lastmod>2026-02-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.innersparkafrica.com/blog/signs-you-need-a-therapist</loc>
+    <lastmod>2026-02-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.innersparkafrica.com/blog/student-therapy-uganda</loc>
+    <lastmod>2026-02-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
   <!-- Events & Training Section -->
   <url>
     <loc>https://www.innersparkafrica.com/events-training</loc>

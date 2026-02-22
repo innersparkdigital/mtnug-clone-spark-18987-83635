@@ -24,6 +24,51 @@ interface BlogPost {
 
 const blogPosts: BlogPost[] = [
   {
+    slug: "therapy-cost-uganda",
+    title: "How Much Does Therapy Cost in Uganda? A Complete 2026 Guide",
+    excerpt: "Therapy in Uganda costs UGX 30,000–200,000 per session. Compare online vs in-person prices, discover affordable options, and book your first session today.",
+    date: "February 22, 2026",
+    readTime: "10 min read",
+    image: mentalHealthHeroImage,
+    category: "Therapy Costs"
+  },
+  {
+    slug: "find-therapist-kampala",
+    title: "Where to Find a Therapist in Kampala: Top 7 Options in 2026",
+    excerpt: "Looking for a therapist in Kampala? Discover 7 proven ways to find affordable, licensed mental health professionals in Uganda's capital.",
+    date: "February 22, 2026",
+    readTime: "9 min read",
+    image: mentalHealthHeroImage,
+    category: "Finding Help"
+  },
+  {
+    slug: "online-therapy-effective-africa",
+    title: "Is Online Therapy Effective in Africa? What the Research Says",
+    excerpt: "Research proves online therapy is effective in Africa. Discover how virtual mental health care is transforming access to therapy across the continent.",
+    date: "February 22, 2026",
+    readTime: "10 min read",
+    image: anxietyHeroImage,
+    category: "Online Therapy"
+  },
+  {
+    slug: "signs-you-need-a-therapist",
+    title: "8 Signs You Need a Therapist (And Why That's Completely Okay)",
+    excerpt: "Not sure if you need therapy? Here are 8 clear signs it's time to talk to a professional — and why seeking help is a sign of strength.",
+    date: "February 22, 2026",
+    readTime: "8 min read",
+    image: depressionHeroImage,
+    category: "Self-Assessment"
+  },
+  {
+    slug: "student-therapy-uganda",
+    title: "Best Therapy Options for University Students in Uganda (2026 Guide)",
+    excerpt: "University students in Uganda can access affordable therapy from UGX 30,000. Discover free campus counseling, online therapy, and student mental health resources.",
+    date: "February 22, 2026",
+    readTime: "9 min read",
+    image: stressHeroImage,
+    category: "Student Mental Health"
+  },
+  {
     slug: "how-to-find-a-therapist",
     title: "How to Find a Therapist: Complete Guide to Choosing the Right Mental Health Professional",
     excerpt: "Step-by-step guide to finding the right therapist for your needs. Learn what to look for, questions to ask, and how to make your first appointment.",
