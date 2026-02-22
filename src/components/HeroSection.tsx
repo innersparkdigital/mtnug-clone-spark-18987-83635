@@ -27,7 +27,7 @@ const HeroSection = () => {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentImage((prev) => (prev + 1) % heroImages.length);
-    }, 10000);
+    }, 30000);
     return () => clearInterval(timer);
   }, []);
 
