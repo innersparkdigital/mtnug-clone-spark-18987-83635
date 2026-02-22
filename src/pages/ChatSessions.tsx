@@ -9,9 +9,9 @@ const ChatSessions = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Chat Therapy Sessions | Text-Based Counseling | Innerspark Africa</title>
-        <meta name="description" content="Connect with licensed therapists through secure text-based chat sessions. Get mental health support anytime, anywhere with affordable online therapy in Africa." />
-        <meta name="keywords" content="chat therapy, text counseling, online therapy chat, text based therapy, messaging therapist, chat counseling Africa" />
+        <title>Text-Based Counselling Sessions | Message a Therapist | Innerspark</title>
+        <meta name="description" content="Connect with licensed therapists through secure text-based counselling sessions. Get mental health support anytime, anywhere. Affordable & private." />
+        <meta name="keywords" content="text counselling, message therapist, text-based mental health support, counselling chat Africa" />
         <link rel="canonical" href="https://www.innersparkafrica.com/chat-sessions" />
         <meta property="og:url" content="https://www.innersparkafrica.com/chat-sessions" />
         <meta property="og:title" content="Chat Therapy Sessions | Innerspark Africa" />

@@ -107,6 +107,9 @@ import ChatTherapy from "./pages/ChatTherapy";
 import AppComingSoon from "./pages/AppComingSoon";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentCanceled from "./pages/PaymentCanceled";
+// Location SEO Pages
+import TherapyInUganda from "./pages/TherapyInUganda";
+import TherapyInKampala from "./pages/TherapyInKampala";
 
 const queryClient = new QueryClient();
 
@@ -221,6 +224,9 @@ const App = () => (
             <Route path="/events-training/world-mental-health-day-2024" element={<WorldMentalHealthDayPost />} />
             <Route path="/events-training/uict-mental-health-training" element={<UICTPost />} />
             <Route path="/events-training/uict-wellness-activity-day" element={<UICTWellnessPost />} />
+            {/* Location SEO Pages */}
+            <Route path="/therapy-in-uganda" element={<TherapyInUganda />} />
+            <Route path="/therapy-in-kampala" element={<TherapyInKampala />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
             </Routes>

@@ -76,9 +76,9 @@ const BookTherapist = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Book a Therapist Online | Schedule Therapy Session Today | Innerspark</title>
-        <meta name="description" content="Book a licensed therapist online in minutes. Schedule your therapy appointment today. Video, voice & chat sessions available. Same-day appointments. Start therapy now!" />
-        <meta name="keywords" content="book therapist online, book therapy appointment, schedule therapist, online therapy booking, therapy session booking, book counselor online, therapist appointment, schedule therapy session, book mental health appointment" />
+        <title>Book a Therapy Session Online – Same-Day Appointments | Innerspark</title>
+        <meta name="description" content="Schedule a therapy session online in minutes. Same-day appointments with licensed counselors. Video, voice & chat options. Affordable rates from UGX 50,000." />
+        <meta name="keywords" content="book therapy session, schedule therapy appointment, same-day therapy, therapy appointment online, book counselor, therapy booking" />
         <link rel="canonical" href="https://www.innersparkafrica.com/book-therapist" />
         
         <meta property="og:title" content="Book a Therapist Online | Schedule Therapy Today" />

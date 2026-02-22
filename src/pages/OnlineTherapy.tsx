@@ -91,9 +91,9 @@ const OnlineTherapy = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Online Therapy - Talk to a Therapist Today | Book Now | Innerspark</title>
-        <meta name="description" content="Book online therapy with a licensed therapist today. Get professional mental health support for depression, anxiety, stress & more. Video, voice & chat sessions available globally. Start now!" />
-        <meta name="keywords" content="online therapy, book therapist online, talk to a therapist now, virtual therapy, online counseling, mental health therapy online, affordable online therapy, video therapy, chat with therapist, depression therapy, anxiety therapy, book therapy appointment" />
+        <title>Online Therapy Africa – Affordable Counselling from Home | Innerspark</title>
+        <meta name="description" content="Access affordable online therapy from anywhere in Africa. Licensed therapists for depression, anxiety, stress & more. Video, voice & chat sessions. Start your healing journey now." />
+        <meta name="keywords" content="online therapy Africa, affordable online counselling, teletherapy Africa, remote therapy, online mental health support, virtual counseling Africa" />
         <link rel="canonical" href="https://www.innersparkafrica.com/online-therapy" />
         
         <meta property="og:title" content="Online Therapy - Talk to a Therapist Today | Innerspark" />
