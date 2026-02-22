@@ -113,8 +113,7 @@ const Header = () => {
 
   return (
     <div className="sticky top-0 z-50">
-      {/* Promo Slider */}
-      <PromoSlider />
+      {/* Promo Slider - Hidden */}
       {/* Top Bar - Hidden on mobile */}
       <div className="hidden md:block bg-gradient-to-r from-primary/90 via-primary to-primary/90 text-primary-foreground py-1 px-4 text-xs">
         <div className="container mx-auto flex justify-end items-center gap-4">
@@ -143,7 +142,6 @@ const Header = () => {
               {translations.donateTherapy}
             </Button>
           </Link>
-          <LanguageSelector variant="header" />
         </div>
       </div>
 
@@ -305,9 +303,6 @@ const Header = () => {
               </Link>
               <div className="pt-2">
                 <AppDownloadPopup />
-              </div>
-              <div className="pt-2">
-                <LanguageSelector variant="footer" />
               </div>
             </nav>
           )}
