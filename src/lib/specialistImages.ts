@@ -16,6 +16,15 @@ import mbabaziJovia from "@/assets/specialists/mbabazi-jovia.jpg";
 import estherMurungi from "@/assets/specialists/esther-murungi.jpg";
 import zemeyiRita from "@/assets/specialists/zemeyi-rita.jpg";
 import florenceNakaweesa from "@/assets/specialists/florence-winfred-nakaweesa.jpg";
+import nabulyaImmaculate from "@/assets/specialists/nabulya-immaculate.jpg";
+import kekiconcoJannet from "@/assets/specialists/kekiconco-jannet.jpg";
+import abioMaryEvelyn from "@/assets/specialists/abio-mary-evelyn.jpg";
+import maryNicoleNgetich from "@/assets/specialists/mary-nicole-ngetich.jpg";
+import enockNyaanga from "@/assets/specialists/enock-nyaanga.jpg";
+import akugizibweJulius from "@/assets/specialists/akugizibwe-julius.jpg";
+import apinyMelodyGladys from "@/assets/specialists/apiny-melody-gladys.jpg";
+import namigoAnnaMary from "@/assets/specialists/namigo-anna-mary.jpg";
+import tuhaiseAngella from "@/assets/specialists/tuhaise-angella-kansiime.jpg";
 
 const specialistImageMap: Record<string, string> = {
   "Nakayinga Gift": giftNakayinga,
@@ -32,18 +41,18 @@ const specialistImageMap: Record<string, string> = {
   "Esther Murungi": estherMurungi,
   "Zemeyi Rita": zemeyiRita,
   "Florence Winfred Nakaweesa": florenceNakaweesa,
-  // New specialists without local images - will use database image_url or initials
+  "Nabulya Immaculate": nabulyaImmaculate,
+  "Kekiconco Jannet": kekiconcoJannet,
+  "Abio Mary Evelyn": abioMaryEvelyn,
+  "Mary Nicole Cheruto Ngetich": maryNicoleNgetich,
+  "Enock Nyaanga Omwanza": enockNyaanga,
+  "Akugizibwe Julius": akugizibweJulius,
+  "Apiny Melody Gladys": apinyMelodyGladys,
+  "Namigo Anna Mary": namigoAnnaMary,
+  "Tuhaise Angella Kansiime": tuhaiseAngella,
+  // Specialists without local images
   "Leah Wanjiru Muiruri": "",
   "Boingotlo Moremi": "",
-  "Tuhaise Angella Kansiime": "",
-  "Akugizibwe Julius": "",
-  "Nabulya Immaculate": "",
-  "Enock Nyaanga Omwanza": "",
-  "Mary Nicole Cheruto Ngetich": "",
-  "Namigo Anna Mary": "",
-  "Abio Mary Evelyn": "",
-  "Apiny Melody Gladys": "",
-  "Kekiconco Jannet": "",
   "Nampiima Barbara Mugambe": "",
 };
 
