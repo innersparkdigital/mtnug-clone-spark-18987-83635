@@ -116,6 +116,10 @@ import FindTherapistKampalaPost from "./pages/blog/FindTherapistKampalaPost";
 import OnlineTherapyAfricaPost from "./pages/blog/OnlineTherapyAfricaPost";
 import SignsYouNeedTherapistPost from "./pages/blog/SignsYouNeedTherapistPost";
 import StudentTherapyUgandaPost from "./pages/blog/StudentTherapyUgandaPost";
+// TOFU Blog Posts
+import WhatIsTherapyPost from "./pages/blog/WhatIsTherapyPost";
+import BenefitsOfTherapyPost from "./pages/blog/BenefitsOfTherapyPost";
+import TypesOfTherapyPost from "./pages/blog/TypesOfTherapyPost";
 
 const queryClient = new QueryClient();
 
@@ -239,6 +243,10 @@ const App = () => (
             <Route path="/blog/online-therapy-effective-africa" element={<OnlineTherapyAfricaPost />} />
             <Route path="/blog/signs-you-need-a-therapist" element={<SignsYouNeedTherapistPost />} />
             <Route path="/blog/student-therapy-uganda" element={<StudentTherapyUgandaPost />} />
+            {/* TOFU Blog Posts */}
+            <Route path="/blog/what-is-therapy" element={<WhatIsTherapyPost />} />
+            <Route path="/blog/benefits-of-therapy" element={<BenefitsOfTherapyPost />} />
+            <Route path="/blog/types-of-therapy" element={<TypesOfTherapyPost />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
             </Routes>

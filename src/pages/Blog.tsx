@@ -69,6 +69,33 @@ const blogPosts: BlogPost[] = [
     category: "Student Mental Health"
   },
   {
+    slug: "what-is-therapy",
+    title: "What Is Therapy? A Simple Guide to How It Works & Why It Helps",
+    excerpt: "Wondering what therapy actually is? This beginner-friendly guide explains how therapy works, what happens in a session, who it's for, and how it can change your life.",
+    date: "February 22, 2026",
+    readTime: "10 min read",
+    image: mentalHealthHeroImage,
+    category: "Therapy Basics"
+  },
+  {
+    slug: "benefits-of-therapy",
+    title: "12 Proven Benefits of Therapy (Backed by Research)",
+    excerpt: "Discover 12 science-backed benefits of therapy — from reducing anxiety to improving relationships, sleep, and career performance.",
+    date: "February 22, 2026",
+    readTime: "11 min read",
+    image: anxietyHeroImage,
+    category: "Why Therapy Works"
+  },
+  {
+    slug: "types-of-therapy",
+    title: "Types of Therapy Explained: Which One Is Right for You?",
+    excerpt: "CBT, psychodynamic, trauma therapy, couples counseling — confused? This guide explains the most common types and helps you choose.",
+    date: "February 22, 2026",
+    readTime: "12 min read",
+    image: stressHeroImage,
+    category: "Therapy Guide"
+  },
+  {
     slug: "how-to-find-a-therapist",
     title: "How to Find a Therapist: Complete Guide to Choosing the Right Mental Health Professional",
     excerpt: "Step-by-step guide to finding the right therapist for your needs. Learn what to look for, questions to ask, and how to make your first appointment.",
