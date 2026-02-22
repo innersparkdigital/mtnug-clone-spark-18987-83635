@@ -26,7 +26,7 @@ const Index = () => {
         <TrustStatsBar />
         <TherapistShowcase />
         <TestimonialsSection />
-        <AppFeaturesShowcase />
+        {/* <AppFeaturesShowcase /> */}
         <HowItWorks />
         <Partners />
         <EventsSection />
