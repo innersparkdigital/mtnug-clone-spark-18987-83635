@@ -61,7 +61,7 @@ const HeroSection = () => {
           >
             Affordable, confidential therapy from certified professionals — 
             via video, voice, or chat. Sessions start at{' '}
-            <span className="font-bold text-primary-foreground">UGX 50,000</span>.
+            <span className="font-bold text-primary-foreground">UGX 30,000</span>.
           </motion.p>
 
           {/* Trust points */}
