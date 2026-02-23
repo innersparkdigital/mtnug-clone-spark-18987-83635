@@ -56,6 +56,8 @@ const Partners = () => {
                   src={partner.logo} 
                   alt={partner.name}
                   className="h-12 md:h-16 w-auto object-contain"
+                  loading="lazy"
+                  decoding="async"
                 />
               </motion.div>
             </StaggerItem>

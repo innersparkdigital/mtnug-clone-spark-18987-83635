@@ -91,6 +91,8 @@ const HeroCarousel = () => {
             src={slide.image}
             alt={slide.title}
             className="w-full h-full object-cover"
+            loading={index === 0 ? "eager" : "lazy"}
+            decoding="async"
           />
           <div className="absolute inset-0 z-20 flex items-center">
             <div className="container mx-auto px-4">
