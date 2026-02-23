@@ -53,6 +53,7 @@ const specialistImageMap: Record<string, string> = {
   "Namigo Anna Mary": namigoAnnaMary,
   "Tuhaise Angella Kansiime": tuhaiseAngella,
   "Atibuni Simon": atibuniSimon,
+  "Odeth Kempogo": odethKempogo,
   // Specialists without local images
   "Leah Wanjiru Muiruri": "",
   "Boingotlo Moremi": "",
