@@ -25,6 +25,7 @@ import akugizibweJulius from "@/assets/specialists/akugizibwe-julius.jpg";
 import apinyMelodyGladys from "@/assets/specialists/apiny-melody-gladys.jpg";
 import namigoAnnaMary from "@/assets/specialists/namigo-anna-mary.jpg";
 import tuhaiseAngella from "@/assets/specialists/tuhaise-angella-kansiime.jpg";
+import atibuniSimon from "@/assets/specialists/atibuni-simon.jpg";
 
 const specialistImageMap: Record<string, string> = {
   "Nakayinga Gift": giftNakayinga,
@@ -50,6 +51,7 @@ const specialistImageMap: Record<string, string> = {
   "Apiny Melody Gladys": apinyMelodyGladys,
   "Namigo Anna Mary": namigoAnnaMary,
   "Tuhaise Angella Kansiime": tuhaiseAngella,
+  "Atibuni Simon": atibuniSimon,
   // Specialists without local images
   "Leah Wanjiru Muiruri": "",
   "Boingotlo Moremi": "",
