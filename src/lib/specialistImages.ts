@@ -26,6 +26,7 @@ import apinyMelodyGladys from "@/assets/specialists/apiny-melody-gladys.jpg";
 import namigoAnnaMary from "@/assets/specialists/namigo-anna-mary.jpg";
 import tuhaiseAngella from "@/assets/specialists/tuhaise-angella-kansiime.jpg";
 import atibuniSimon from "@/assets/specialists/atibuni-simon.jpg";
+import odethKempogo from "@/assets/specialists/odeth-kempogo.jpg";
 
 const specialistImageMap: Record<string, string> = {
   "Nakayinga Gift": giftNakayinga,
