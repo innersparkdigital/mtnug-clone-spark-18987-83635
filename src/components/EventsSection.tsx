@@ -136,6 +136,8 @@ const EventsSection = () => {
                         src={event.image}
                         alt={event.title}
                         className="w-full h-full object-cover"
+                        loading="lazy"
+                        decoding="async"
                         whileHover={{ scale: 1.1 }}
                         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                       />

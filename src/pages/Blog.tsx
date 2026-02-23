@@ -259,6 +259,7 @@ const Blog = () => {
                         alt={post.title}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                         loading="lazy"
+                        decoding="async"
                       />
                       <div className="absolute top-4 left-4">
                         <span className="bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-medium">
