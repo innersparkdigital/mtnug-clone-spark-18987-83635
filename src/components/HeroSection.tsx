@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 // Note: yellow-400 used for star ratings is intentional (universal rating color)
 import { Link } from "react-router-dom";
@@ -9,6 +10,7 @@ import { useBookingFlow } from "@/hooks/useBookingFlow";
 import heroImage from "@/assets/hero-slide-1.jpg";
 
 const HeroSection = () => {
+  const [heroLoaded, setHeroLoaded] = useState(false);
   const {
     startBooking,
     closeFlow,
@@ -23,7 +25,7 @@ const HeroSection = () => {
     <section className="relative min-h-[85vh] md:min-h-[90vh] flex items-center overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0">
-        <img src={heroImage} alt="Therapy session" className="w-full h-full object-cover object-top" loading="eager" fetchPriority="high" decoding="sync" />
+        <img src={heroImage} alt="Therapy session" className={`w-full h-full object-cover object-top transition-opacity duration-500 ${heroLoaded ? 'opacity-100' : 'opacity-0'}`} loading="eager" fetchPriority="high" decoding="sync" onLoad={() => setHeroLoaded(true)} />
         <div className="absolute inset-0 bg-gradient-to-r from-foreground/85 via-foreground/70 to-foreground/40" />
       </div>
 

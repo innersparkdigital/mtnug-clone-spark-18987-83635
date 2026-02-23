@@ -36,7 +36,7 @@ const OptimizedImage = ({ src, alt, priority = false, className = "", style, ...
       decoding={priority ? "sync" : "async"}
       fetchPriority={priority ? "high" : "auto"}
       onLoad={() => setIsLoaded(true)}
-      className={`${className} transition-opacity duration-300 ${isLoaded || !isInView ? "opacity-100" : "opacity-0"}`}
+      className={`${className} transition-opacity duration-500 ${isLoaded ? "opacity-100" : "opacity-0"}`}
       style={style}
       {...props}
     />
