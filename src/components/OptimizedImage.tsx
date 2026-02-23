@@ -21,7 +21,7 @@ const OptimizedImage = ({ src, alt, priority = false, className = "", style, ...
           observer.disconnect();
         }
       },
-      { rootMargin: "200px" }
+      { rootMargin: "600px" }
     );
     if (imgRef.current) observer.observe(imgRef.current);
     return () => observer.disconnect();
