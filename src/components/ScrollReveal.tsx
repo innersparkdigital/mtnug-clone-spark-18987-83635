@@ -19,9 +19,9 @@ const ScrollReveal = ({
   children,
   className = "",
   delay = 0,
-  duration = 0.8,
+  duration = 0.35,
   direction = "up",
-  distance = 60,
+  distance = 20,
   once = true,
   threshold = 0.1,
   scale = false,
@@ -97,7 +97,7 @@ interface StaggerContainerProps {
 export const StaggerContainer = ({
   children,
   className = "",
-  staggerDelay = 0.12,
+  staggerDelay = 0.05,
   once = true,
   threshold = 0.05,
 }: StaggerContainerProps) => {
@@ -113,7 +113,7 @@ export const StaggerContainer = ({
     visible: {
       transition: {
         staggerChildren: shouldReduceMotion ? 0 : staggerDelay,
-        delayChildren: 0.1,
+        delayChildren: 0.03,
       },
     },
   };
@@ -145,8 +145,8 @@ export const StaggerItem = ({
   children,
   className = "",
   direction = "up",
-  distance = 30, // Reduced distance for smoother mobile experience
-  duration = 0.6,
+  distance = 15,
+  duration = 0.3,
   scale = false,
 }: StaggerItemProps) => {
   const shouldReduceMotion = useReducedMotion();
