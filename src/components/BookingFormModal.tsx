@@ -27,7 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useAssessment, AssessmentResult } from "@/contexts/AssessmentContext";
+import { useAssessment, AssessmentResult, BookingActionType } from "@/contexts/AssessmentContext";
 import { Calendar, Clock, CheckCircle, Send, AlertCircle, Users, Phone, User, ArrowRight, CreditCard, Smartphone, Languages, Globe, Loader2 } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
@@ -38,7 +38,7 @@ import TherapistRecommendationCard from "./TherapistRecommendationCard";
 interface BookingFormModalProps {
   isOpen: boolean;
   onClose: () => void;
-  formType: "book" | "group";
+  formType: BookingActionType;
 }
 
 const bookingSchema = z.object({
@@ -80,15 +80,18 @@ const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
 const times = ["Morning (8AM-12PM)", "Afternoon (12PM-4PM)", "Evening (4PM-8PM)"];
 
 const formatWhatsAppMessage = (
-  formType: "book" | "group",
+  formType: BookingActionType,
   data: BookingFormData | GroupFormData,
   assessment: AssessmentResult | null
 ) => {
   const hasAssessment = assessment !== null;
   
-  if (formType === "book") {
+  if (formType === "book" || formType === "consultation") {
     const bookingData = data as BookingFormData;
-    let message = `*New Booking Request – Innerspark Africa*\n\n`;
+    const isConsultation = formType === "consultation";
+    let message = isConsultation
+      ? `*🟢 FREE CONSULTATION Request – Innerspark Africa*\n\n`
+      : `*New Booking Request – Innerspark Africa*\n\n`;
     message += `*Name:* ${bookingData.name}\n`;
     message += `*Phone:* ${bookingData.phone}\n\n`;
     
@@ -109,7 +112,7 @@ const formatWhatsAppMessage = (
     message += `*Payment Method:* ${bookingData.paymentMethod === "mobile_money" ? "Mobile Money" : "Visa/Card"}\n`;
     message += `*Preferred Language:* ${bookingData.preferredLanguage}\n`;
     message += `*Country:* ${bookingData.country}\n\n`;
-    message += `*Session Cost:* $22 / UGX 75,000 per hour\n`;
+    message += `*Session Cost:* ${isConsultation ? "FREE (Initial Consultation)" : "$22 / UGX 75,000 per hour"}\n`;
     
     if (bookingData.notes) {
       message += `\n*Additional Notes:* ${bookingData.notes}`;
@@ -155,7 +158,7 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
   useEffect(() => {
     if (isOpen) {
       trackBookingFormOpened(!!assessmentResult);
-      if (assessmentResult && formType === "book") {
+      if (assessmentResult && (formType === "book" || formType === "consultation")) {
         setShowForm(false);
       } else {
         setShowForm(true);
@@ -262,7 +265,12 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
       <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
-            {formType === "book" ? (
+            {formType === "consultation" ? (
+              <>
+                <Calendar className="h-6 w-6 text-primary" />
+                Free Consultation Request
+              </>
+            ) : formType === "book" ? (
               <>
                 <Calendar className="h-6 w-6 text-primary" />
                 Book a Therapy Session
@@ -275,7 +283,11 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
             )}
           </DialogTitle>
           <DialogDescription>
-            {formType === "book" 
+            {formType === "consultation"
+              ? showForm
+                ? "Tell us about yourself so we can arrange your free consultation."
+                : "Based on your assessment, we've matched you with a recommended therapist."
+              : formType === "book" 
               ? showForm 
                 ? "Complete your booking details and we'll connect you with the right therapist."
                 : "Based on your assessment, we've matched you with a recommended therapist."
@@ -284,7 +296,7 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
         </DialogHeader>
 
         {/* Therapist Recommendation (for booking with assessment, before form) */}
-        {formType === "book" && assessmentResult && !showForm && (
+        {(formType === "book" || formType === "consultation") && assessmentResult && !showForm && (
           <TherapistRecommendationCard
             assessmentResult={assessmentResult}
             onProceedWithTherapist={handleProceedWithTherapist}
@@ -308,7 +320,7 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
               </div>
             )}
 
-            {formType === "book" ? (
+            {(formType === "book" || formType === "consultation") ? (
               <Form {...bookingForm}>
                 <form onSubmit={bookingForm.handleSubmit(handleSubmit)} className="space-y-4">
                   <FormField

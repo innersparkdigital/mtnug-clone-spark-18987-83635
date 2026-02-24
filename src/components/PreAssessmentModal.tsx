@@ -16,14 +16,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Brain, ArrowRight, CheckCircle, AlertCircle, User } from "lucide-react";
-import { useAssessment, SelectedSpecialist } from "@/contexts/AssessmentContext";
+import { useAssessment, SelectedSpecialist, BookingActionType } from "@/contexts/AssessmentContext";
 import { trackAssessmentStarted, trackAssessmentSkipped, trackBookingClick, trackGroupClick } from "@/lib/analytics";
 import { getRelevantAssessments } from "@/lib/specialistAssessmentMapping";
 
 interface PreAssessmentModalProps {
   isOpen: boolean;
   onClose: () => void;
-  actionType: "book" | "group";
+  actionType: BookingActionType;
   specialist?: SelectedSpecialist | null;
 }
 
@@ -380,7 +380,7 @@ const PreAssessmentModal = ({ isOpen, onClose, actionType, specialist }: PreAsse
       
       // Track analytics
       trackAssessmentStarted(condition.id);
-      if (actionType === "book") {
+      if (actionType === "book" || actionType === "consultation") {
         trackBookingClick("pre_assessment_modal");
       } else {
         trackGroupClick("pre_assessment_modal");
@@ -394,7 +394,7 @@ const PreAssessmentModal = ({ isOpen, onClose, actionType, specialist }: PreAsse
   const handleProceedWithoutAssessment = () => {
     // Track skipped assessment
     trackAssessmentSkipped(actionType);
-    if (actionType === "book") {
+    if (actionType === "book" || actionType === "consultation") {
       trackBookingClick("pre_assessment_modal_skip");
     } else {
       trackGroupClick("pre_assessment_modal_skip");
@@ -402,7 +402,9 @@ const PreAssessmentModal = ({ isOpen, onClose, actionType, specialist }: PreAsse
     
     onClose();
     const whatsappNumber = "256792085773";
-    let message = actionType === "book" 
+    let message = actionType === "consultation"
+      ? "Hi, I would like a free consultation with Innerspark Africa"
+      : actionType === "book" 
       ? "Hi, I would like to book a therapy session"
       : "Hi, I would like to join a mental health support group";
     
@@ -427,7 +429,7 @@ const PreAssessmentModal = ({ isOpen, onClose, actionType, specialist }: PreAsse
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
             <Brain className="h-6 w-6 text-primary" />
-            {actionType === "book" ? "Book a Therapy Session" : "Join a Support Group"}
+            {actionType === "consultation" ? "Free Consultation" : actionType === "book" ? "Book a Therapy Session" : "Join a Support Group"}
           </DialogTitle>
           <DialogDescription>
             {specialist 

@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { useAssessment } from "@/contexts/AssessmentContext";
 
 type FlowStep = "idle" | "assessment-choice" | "booking-form" | "group-form";
-type ActionType = "book" | "group";
+type ActionType = "book" | "group" | "consultation";
 
 export const useBookingFlow = () => {
   const [flowStep, setFlowStep] = useState<FlowStep>("idle");
@@ -28,9 +28,9 @@ export const useBookingFlow = () => {
       hasCheckedReturn.current = true;
       
       // User just completed an assessment, show the appropriate form
-      if (pendingAction === "book") {
+      if (pendingAction === "book" || pendingAction === "consultation") {
         setFlowStep("booking-form");
-        setActionType("book");
+        setActionType(pendingAction);
       } else if (pendingAction === "group") {
         setFlowStep("group-form");
         setActionType("group");
@@ -60,12 +60,17 @@ export const useBookingFlow = () => {
     setActionType("group");
   }, []);
 
+  const startConsultation = useCallback(() => {
+    setFlowStep("assessment-choice");
+    setActionType("consultation");
+  }, []);
+
   const closeFlow = useCallback(() => {
     setFlowStep("idle");
   }, []);
 
   const goToForm = useCallback(() => {
-    if (actionType === "book") {
+    if (actionType === "book" || actionType === "consultation") {
       setFlowStep("booking-form");
     } else {
       setFlowStep("group-form");
@@ -82,6 +87,7 @@ export const useBookingFlow = () => {
     actionType,
     startBooking,
     startGroup,
+    startConsultation,
     closeFlow,
     goToForm,
     resetFlow,

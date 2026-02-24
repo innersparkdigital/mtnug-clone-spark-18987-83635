@@ -100,7 +100,7 @@ export const trackAssessmentCompleted = (
 };
 
 // Track assessment skipped
-export const trackAssessmentSkipped = (actionType: 'book' | 'group') => {
+export const trackAssessmentSkipped = (actionType: string) => {
   trackEvent(ANALYTICS_EVENTS.ASSESSMENT_SKIPPED, {
     action_type: actionType,
   });
@@ -115,7 +115,7 @@ export const trackBookingFormOpened = (hasAssessment: boolean) => {
 
 // Track booking form submitted (conversion)
 export const trackBookingSubmitted = (
-  formType: 'book' | 'group',
+  formType: string,
   assessmentType?: string,
   severity?: string
 ) => {
