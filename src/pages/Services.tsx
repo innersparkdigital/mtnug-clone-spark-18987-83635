@@ -14,7 +14,7 @@ import virtualTherapy from "@/assets/virtual-therapy-service-new.png";
 import supportGroups from "@/assets/support-groups-service-new.png";
 import wellnessResources from "@/assets/wellness-resources-service-new.png";
 import corporateWellness from "@/assets/corporate-wellness-service-new.png";
-import testimonialBrian from "@/assets/testimonial-brian.jpg";
+
 
 const servicesSchema = {
   "@context": "https://schema.org",
@@ -101,8 +101,6 @@ const defaultTexts = {
   corporateBullet3: "Mental health awareness training",
   corporateBullet4: "Organizational wellness reports",
   partnerWithUs: "Partner With Us",
-  testimonialTitle: "What Our Clients Say",
-  testimonialQuote: "Innerspark's support group changed how I manage stress — it feels like family.",
   ctaTitle: "Ready to Begin Your Wellness Journey?",
   ctaDesc: "Whether for yourself, your team, or your community — Innerspark Africa is here to support you every step of the way.",
   joinGroup: "Join a Group",
@@ -390,33 +388,6 @@ const Services = () => {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="py-20 bg-background">
-        <div className="container mx-auto px-4">
-          <ScrollReveal>
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-foreground">
-              {t.testimonialTitle}
-            </h2>
-          </ScrollReveal>
-          <ScrollReveal delay={0.2} scale>
-            <div className="max-w-4xl mx-auto">
-              <div className="bg-card rounded-2xl shadow-lg p-8 md:p-12">
-                <div className="flex flex-col md:flex-row gap-8 items-center">
-                  <div className="w-32 h-32 flex-shrink-0">
-                    <img src={testimonialBrian} alt="Brian from Kampala" className="w-full h-full rounded-full object-cover border-4 border-primary/20" />
-                  </div>
-                  <div>
-                    <p className="text-lg md:text-xl text-foreground mb-4 italic leading-relaxed">
-                      "{t.testimonialQuote}"
-                    </p>
-                    <p className="text-muted-foreground font-semibold">— Brian, Kampala</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
 
       {/* CTA Footer */}
       <section className="py-20 bg-gradient-to-r from-primary via-purple-deep to-primary text-white">
