@@ -13,6 +13,7 @@ const HeroSection = () => {
   const [heroLoaded, setHeroLoaded] = useState(false);
   const {
     startBooking,
+    startConsultation,
     closeFlow,
     goToForm,
     resetFlow,
@@ -105,15 +106,9 @@ const HeroSection = () => {
               size="lg"
               variant="outline"
               className="px-8 py-7 text-lg font-semibold rounded-full border-2 border-primary-foreground/40 text-primary-foreground hover:bg-primary-foreground/10 transition-all duration-300"
-              asChild
+              onClick={startConsultation}
             >
-              <a
-                href="https://wa.me/256792085773?text=Hi,%20I%20would%20like%20to%20book%20a%20free%20consultation%20with%20Innerspark%20Africa"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Free Consultation
-              </a>
+              Free Consultation
             </Button>
           </motion.div>
 

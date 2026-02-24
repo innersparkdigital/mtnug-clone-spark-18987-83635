@@ -22,9 +22,12 @@ export interface SelectedSpecialist {
   bio: string | null;
 }
 
+// Action types supported by the booking flow
+export type BookingActionType = "book" | "group" | "consultation";
+
 interface AssessmentContextType {
-  pendingAction: "book" | "group" | null;
-  setPendingAction: (action: "book" | "group" | null) => void;
+  pendingAction: BookingActionType | null;
+  setPendingAction: (action: BookingActionType | null) => void;
   assessmentResult: AssessmentResult | null;
   setAssessmentResult: (result: AssessmentResult | null) => void;
   clearAssessment: () => void;
@@ -47,7 +50,7 @@ export const useAssessment = () => {
 };
 
 export const AssessmentProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [pendingAction, setPendingAction] = useState<"book" | "group" | null>(null);
+  const [pendingAction, setPendingAction] = useState<BookingActionType | null>(null);
   const [assessmentResult, setAssessmentResult] = useState<AssessmentResult | null>(null);
   const [returnPath, setReturnPath] = useState<string | null>(null);
   const [justCompletedAssessment, setJustCompletedAssessment] = useState(false);
