@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Header from "@/components/Header";
 import { usePageVisitTracking } from "@/hooks/useMindCheckTracking";
+import { useUserRole } from "@/hooks/useUserRole";
 import Footer from "@/components/Footer";
 import { Helmet } from "react-helmet";
 import { Button } from "@/components/ui/button";
-import { Brain, Heart, AlertTriangle, Users, Zap, Shield, Clock, CheckCircle } from "lucide-react";
+import { Brain, Heart, AlertTriangle, Users, Zap, Shield, Clock, CheckCircle, BarChart3 } from "lucide-react";
 
 interface MentalHealthTest {
   id: string;
