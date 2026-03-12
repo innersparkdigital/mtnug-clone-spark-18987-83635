@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
+import { usePageVisitTracking } from "@/hooks/useMindCheckTracking";
 import Footer from "@/components/Footer";
 import { Helmet } from "react-helmet";
 import { Button } from "@/components/ui/button";
@@ -63,6 +64,9 @@ const MindCheck = () => {
   const [showAllTests, setShowAllTests] = useState(false);
   const [selectedTest, setSelectedTest] = useState<MentalHealthTest | null>(null);
   const navigate = useNavigate();
+  
+  // Track page visit
+  usePageVisitTracking();
 
   const displayedTests = showAllTests ? mentalHealthTests : mentalHealthTests.slice(0, 10);
 

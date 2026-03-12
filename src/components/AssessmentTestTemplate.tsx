@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import Header from "@/components/Header";
@@ -7,8 +8,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { useAssessmentTest } from "@/hooks/useAssessmentTest";
+import { useAssessmentTracking } from "@/hooks/useMindCheckTracking";
 import { trackAssessmentCompleted } from "@/lib/analytics";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -77,6 +80,10 @@ const genericReviews = [
 
 const AssessmentTestTemplate = ({ config }: AssessmentTestTemplateProps) => {
   const navigate = useNavigate();
+  const [emailInput, setEmailInput] = useState('');
+  const [emailSubmitted, setEmailSubmitted] = useState(false);
+  const [emailSubmitting, setEmailSubmitting] = useState(false);
+
   const {
     testStarted,
     setTestStarted,
@@ -103,6 +110,46 @@ const AssessmentTestTemplate = ({ config }: AssessmentTestTemplateProps) => {
     getSeverity: config.getSeverity,
   });
 
+  const {
+    trackStart,
+    trackProgress,
+    trackCompletion,
+    trackAbandonment,
+    submitEmail,
+  } = useAssessmentTracking(config.id, config.questions.length);
+
+  // Track test start
+  const handleStartTest = () => {
+    trackStart();
+    setTestStarted(true);
+  };
+
+  // Track question progress
+  useEffect(() => {
+    if (testStarted && !showResults) {
+      trackProgress(currentQuestion);
+    }
+  }, [currentQuestion, testStarted, showResults, trackProgress]);
+
+  // Track abandonment on unmount if test started but not completed
+  useEffect(() => {
+    return () => {
+      if (testStarted && !showResults) {
+        trackAbandonment();
+      }
+    };
+  }, [testStarted, showResults, trackAbandonment]);
+
+  const handleEmailSubmit = async () => {
+    if (!emailInput.trim()) return;
+    setEmailSubmitting(true);
+    const score = calculateScore();
+    const result = getResultInterpretation(score);
+    await submitEmail(emailInput.trim(), result.level, score);
+    setEmailSubmitted(true);
+    setEmailSubmitting(false);
+  };
+
   const progress = ((currentQuestion + 1) / config.questions.length) * 100;
 
   const renderResults = () => {
@@ -111,7 +158,8 @@ const AssessmentTestTemplate = ({ config }: AssessmentTestTemplateProps) => {
     
     // Track analytics
     trackAssessmentCompleted(config.id, result.level, score);
-    
+    trackCompletion(score, config.maxScore, result.level);
+
     return (
       <Card className="shadow-xl border-0">
         <CardContent className="p-8 md:p-12">
@@ -149,6 +197,45 @@ const AssessmentTestTemplate = ({ config }: AssessmentTestTemplateProps) => {
               <li>• Practice self-care and maintain healthy routines</li>
               <li>• Reach out to friends, family, or support groups</li>
             </ul>
+          </div>
+
+          {/* Email Collection */}
+          <div className="bg-muted/50 border border-border rounded-xl p-6 mb-8">
+            {!emailSubmitted ? (
+              <>
+                <h3 className="font-semibold text-foreground mb-2 text-center">
+                  📧 Would you like to receive your results by email?
+                </h3>
+                <p className="text-sm text-muted-foreground text-center mb-4">
+                  We'll send you a summary of your results. Your data is kept private and secure.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
+                  <Input
+                    type="email"
+                    placeholder="Enter your email address"
+                    value={emailInput}
+                    onChange={(e) => setEmailInput(e.target.value)}
+                    className="flex-1"
+                  />
+                  <Button
+                    onClick={handleEmailSubmit}
+                    disabled={emailSubmitting || !emailInput.trim()}
+                    size="sm"
+                  >
+                    {emailSubmitting ? 'Sending...' : 'Send Results'}
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground text-center mt-2">
+                  By submitting, you consent to Innerspark storing your email and test results in accordance with our privacy policy.
+                </p>
+              </>
+            ) : (
+              <div className="text-center">
+                <CheckCircle2 className="h-8 w-8 text-green-500 mx-auto mb-2" />
+                <p className="font-medium text-foreground">Results sent!</p>
+                <p className="text-sm text-muted-foreground">Check your inbox for your assessment summary.</p>
+              </div>
+            )}
           </div>
 
           {/* CTAs - show all 3 when user came from Mind-Check (no pendingAction) */}
@@ -289,7 +376,7 @@ const AssessmentTestTemplate = ({ config }: AssessmentTestTemplateProps) => {
 
                   <Button 
                     size="lg" 
-                    onClick={() => setTestStarted(true)}
+                    onClick={handleStartTest}
                     className="px-8 py-6 text-lg"
                   >
                     Start Test <ChevronRight className="ml-2 h-5 w-5" />
