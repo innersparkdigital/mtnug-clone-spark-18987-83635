@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import Header from "@/components/Header";
@@ -7,8 +8,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { useAssessmentTest } from "@/hooks/useAssessmentTest";
+import { useAssessmentTracking } from "@/hooks/useMindCheckTracking";
 import { trackAssessmentCompleted } from "@/lib/analytics";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
