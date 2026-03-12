@@ -150,6 +150,7 @@ const AssessmentTestTemplate = ({ config }: AssessmentTestTemplateProps) => {
     setEmailSubmitting(false);
   };
 
+  const progress = ((currentQuestion + 1) / config.questions.length) * 100;
 
   const renderResults = () => {
     const score = calculateScore();
@@ -157,7 +158,8 @@ const AssessmentTestTemplate = ({ config }: AssessmentTestTemplateProps) => {
     
     // Track analytics
     trackAssessmentCompleted(config.id, result.level, score);
-    
+    trackCompletion(score, config.maxScore, result.level);
+
     return (
       <Card className="shadow-xl border-0">
         <CardContent className="p-8 md:p-12">
