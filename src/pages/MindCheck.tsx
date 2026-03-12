@@ -64,6 +64,9 @@ const MindCheck = () => {
   const [showAllTests, setShowAllTests] = useState(false);
   const [selectedTest, setSelectedTest] = useState<MentalHealthTest | null>(null);
   const navigate = useNavigate();
+  
+  // Track page visit
+  usePageVisitTracking();
 
   const displayedTests = showAllTests ? mentalHealthTests : mentalHealthTests.slice(0, 10);
 
