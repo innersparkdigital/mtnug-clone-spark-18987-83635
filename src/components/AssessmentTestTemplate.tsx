@@ -80,6 +80,10 @@ const genericReviews = [
 
 const AssessmentTestTemplate = ({ config }: AssessmentTestTemplateProps) => {
   const navigate = useNavigate();
+  const [emailInput, setEmailInput] = useState('');
+  const [emailSubmitted, setEmailSubmitted] = useState(false);
+  const [emailSubmitting, setEmailSubmitting] = useState(false);
+
   const {
     testStarted,
     setTestStarted,
@@ -106,7 +110,46 @@ const AssessmentTestTemplate = ({ config }: AssessmentTestTemplateProps) => {
     getSeverity: config.getSeverity,
   });
 
-  const progress = ((currentQuestion + 1) / config.questions.length) * 100;
+  const {
+    trackStart,
+    trackProgress,
+    trackCompletion,
+    trackAbandonment,
+    submitEmail,
+  } = useAssessmentTracking(config.id, config.questions.length);
+
+  // Track test start
+  const handleStartTest = () => {
+    trackStart();
+    setTestStarted(true);
+  };
+
+  // Track question progress
+  useEffect(() => {
+    if (testStarted && !showResults) {
+      trackProgress(currentQuestion);
+    }
+  }, [currentQuestion, testStarted, showResults, trackProgress]);
+
+  // Track abandonment on unmount if test started but not completed
+  useEffect(() => {
+    return () => {
+      if (testStarted && !showResults) {
+        trackAbandonment();
+      }
+    };
+  }, [testStarted, showResults, trackAbandonment]);
+
+  const handleEmailSubmit = async () => {
+    if (!emailInput.trim()) return;
+    setEmailSubmitting(true);
+    const score = calculateScore();
+    const result = getResultInterpretation(score);
+    await submitEmail(emailInput.trim(), result.level, score);
+    setEmailSubmitted(true);
+    setEmailSubmitting(false);
+  };
+
 
   const renderResults = () => {
     const score = calculateScore();
