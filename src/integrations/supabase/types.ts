@@ -14,6 +14,102 @@ export type Database = {
   }
   public: {
     Tables: {
+      assessment_emails: {
+        Row: {
+          consent_given: boolean
+          created_at: string
+          device_type: string | null
+          email: string
+          id: string
+          score: number | null
+          session_id: string
+          severity_level: string | null
+          source: string | null
+          test_type: string
+        }
+        Insert: {
+          consent_given?: boolean
+          created_at?: string
+          device_type?: string | null
+          email: string
+          id?: string
+          score?: number | null
+          session_id: string
+          severity_level?: string | null
+          source?: string | null
+          test_type: string
+        }
+        Update: {
+          consent_given?: boolean
+          created_at?: string
+          device_type?: string | null
+          email?: string
+          id?: string
+          score?: number | null
+          session_id?: string
+          severity_level?: string | null
+          source?: string | null
+          test_type?: string
+        }
+        Relationships: []
+      }
+      assessment_sessions: {
+        Row: {
+          abandoned_at: string | null
+          completed_at: string | null
+          created_at: string
+          device_type: string | null
+          id: string
+          last_question_reached: number | null
+          max_score: number | null
+          referrer: string | null
+          score: number | null
+          session_id: string
+          severity_level: string | null
+          source: string | null
+          started_at: string
+          test_type: string
+          total_questions: number
+          user_agent: string | null
+        }
+        Insert: {
+          abandoned_at?: string | null
+          completed_at?: string | null
+          created_at?: string
+          device_type?: string | null
+          id?: string
+          last_question_reached?: number | null
+          max_score?: number | null
+          referrer?: string | null
+          score?: number | null
+          session_id: string
+          severity_level?: string | null
+          source?: string | null
+          started_at?: string
+          test_type: string
+          total_questions: number
+          user_agent?: string | null
+        }
+        Update: {
+          abandoned_at?: string | null
+          completed_at?: string | null
+          created_at?: string
+          device_type?: string | null
+          id?: string
+          last_question_reached?: number | null
+          max_score?: number | null
+          referrer?: string | null
+          score?: number | null
+          session_id?: string
+          severity_level?: string | null
+          source?: string | null
+          started_at?: string
+          test_type?: string
+          total_questions?: number
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       career_applications: {
         Row: {
           country: string
@@ -122,6 +218,36 @@ export type Database = {
           quiz_score?: number | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      mindcheck_page_visits: {
+        Row: {
+          device_type: string | null
+          id: string
+          referrer: string | null
+          session_id: string
+          source: string | null
+          user_agent: string | null
+          visited_at: string
+        }
+        Insert: {
+          device_type?: string | null
+          id?: string
+          referrer?: string | null
+          session_id: string
+          source?: string | null
+          user_agent?: string | null
+          visited_at?: string
+        }
+        Update: {
+          device_type?: string | null
+          id?: string
+          referrer?: string | null
+          session_id?: string
+          source?: string | null
+          user_agent?: string | null
+          visited_at?: string
         }
         Relationships: []
       }
