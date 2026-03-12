@@ -376,7 +376,7 @@ const AssessmentTestTemplate = ({ config }: AssessmentTestTemplateProps) => {
 
                   <Button 
                     size="lg" 
-                    onClick={() => setTestStarted(true)}
+                    onClick={handleStartTest}
                     className="px-8 py-6 text-lg"
                   >
                     Start Test <ChevronRight className="ml-2 h-5 w-5" />
