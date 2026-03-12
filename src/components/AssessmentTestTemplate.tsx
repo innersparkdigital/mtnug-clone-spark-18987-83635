@@ -199,6 +199,45 @@ const AssessmentTestTemplate = ({ config }: AssessmentTestTemplateProps) => {
             </ul>
           </div>
 
+          {/* Email Collection */}
+          <div className="bg-muted/50 border border-border rounded-xl p-6 mb-8">
+            {!emailSubmitted ? (
+              <>
+                <h3 className="font-semibold text-foreground mb-2 text-center">
+                  📧 Would you like to receive your results by email?
+                </h3>
+                <p className="text-sm text-muted-foreground text-center mb-4">
+                  We'll send you a summary of your results. Your data is kept private and secure.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
+                  <Input
+                    type="email"
+                    placeholder="Enter your email address"
+                    value={emailInput}
+                    onChange={(e) => setEmailInput(e.target.value)}
+                    className="flex-1"
+                  />
+                  <Button
+                    onClick={handleEmailSubmit}
+                    disabled={emailSubmitting || !emailInput.trim()}
+                    size="sm"
+                  >
+                    {emailSubmitting ? 'Sending...' : 'Send Results'}
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground text-center mt-2">
+                  By submitting, you consent to Innerspark storing your email and test results in accordance with our privacy policy.
+                </p>
+              </>
+            ) : (
+              <div className="text-center">
+                <CheckCircle2 className="h-8 w-8 text-green-500 mx-auto mb-2" />
+                <p className="font-medium text-foreground">Results sent!</p>
+                <p className="text-sm text-muted-foreground">Check your inbox for your assessment summary.</p>
+              </div>
+            )}
+          </div>
+
           {/* CTAs - show all 3 when user came from Mind-Check (no pendingAction) */}
           <div className="flex flex-col gap-3">
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
