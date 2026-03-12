@@ -65,6 +65,7 @@ const MindCheck = () => {
   const [showAllTests, setShowAllTests] = useState(false);
   const [selectedTest, setSelectedTest] = useState<MentalHealthTest | null>(null);
   const navigate = useNavigate();
+  const { isAdmin } = useUserRole();
   
   // Track page visit
   usePageVisitTracking();
