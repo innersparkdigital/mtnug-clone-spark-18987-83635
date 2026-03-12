@@ -347,6 +347,15 @@ const MindCheck = () => {
             </div>
           </div>
         </div>
+        {/* Admin link - only visible to admins */}
+        {isAdmin && (
+          <div className="text-center mt-4">
+            <Link to="/mind-check/analytics" className="inline-flex items-center gap-1 text-xs text-muted-foreground/50 hover:text-muted-foreground transition-colors">
+              <BarChart3 className="h-3 w-3" />
+              Admin Dashboard
+            </Link>
+          </div>
+        )}
       </section>
 
       {/* Benefits Section */}
