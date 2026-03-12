@@ -96,6 +96,7 @@ import CourseCertificate from "./pages/CourseCertificate";
 import LearningDashboard from "./pages/LearningDashboard";
 import StudentDashboard from "./pages/StudentDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
+import MindCheckAnalytics from "./pages/MindCheckAnalytics";
 import Auth from "./pages/Auth";
 // SEO Landing Pages
 import OnlineTherapy from "./pages/OnlineTherapy";
