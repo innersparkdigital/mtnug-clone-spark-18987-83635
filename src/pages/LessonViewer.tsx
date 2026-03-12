@@ -1492,7 +1492,7 @@ const LessonViewer = () => {
     lessonId: string;
     isNewModule: boolean;
   } | null>(null);
-  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Check for workplace course slides first, then original slides
   const workplaceLesson = lessonId ? allWorkplaceSlides[lessonId] : null;
