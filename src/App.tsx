@@ -96,6 +96,7 @@ import CourseCertificate from "./pages/CourseCertificate";
 import LearningDashboard from "./pages/LearningDashboard";
 import StudentDashboard from "./pages/StudentDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
+import MindCheckAnalytics from "./pages/MindCheckAnalytics";
 import Auth from "./pages/Auth";
 // SEO Landing Pages
 import OnlineTherapy from "./pages/OnlineTherapy";
@@ -180,6 +181,7 @@ const App = () => (
             <Route path="/learning/:courseId/module/:moduleId/lesson/:lessonId" element={<LessonViewer />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/mind-check" element={<MindCheck />} />
+            <Route path="/mind-check/analytics" element={<MindCheckAnalytics />} />
             <Route path="/mind-check/depression" element={<DepressionTest />} />
             <Route path="/mind-check/anxiety" element={<AnxietyTest />} />
             <Route path="/mind-check/adult-adhd" element={<AdultADHDTest />} />
