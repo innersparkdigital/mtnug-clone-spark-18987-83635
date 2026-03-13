@@ -1,0 +1,1 @@
+UPDATE specialists SET is_active = false WHERE id IN ('58f7aa68-f0f5-4c56-856c-fb2f054b2fb0','63b372ec-e01c-445c-a94e-d4b718cd35e2','5b714d8e-a59b-49cb-8b44-1eb8e803e899','560a72fe-1ff2-4a2e-8e8a-18c8c1b697a4','05b43b71-6155-47c1-8995-359b100763b7','ccc918b7-02d6-4f7b-93da-1a7c0ad3d3e4','77a1defb-35ab-43e3-9559-1640ec3f6305','5e67f1a5-b9b7-4733-b020-4f2e42268012');

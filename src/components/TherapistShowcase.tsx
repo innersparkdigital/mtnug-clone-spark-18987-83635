@@ -8,14 +8,14 @@ import ScrollReveal, { Parallax, ScaleOnScroll } from "@/components/ScrollReveal
 import juliusKizito from "@/assets/specialists/julius-kizito.png";
 import nassuunaMargret from "@/assets/specialists/nassuuna-margret.jpg";
 import atwiiinePriscilla from "@/assets/specialists/atwiine-priscilla.jpg";
-import mbabaziJovia from "@/assets/specialists/mbabazi-jovia.jpg";
-import zemeyiRita from "@/assets/specialists/zemeyi-rita.jpg";
+import estherMurungi from "@/assets/specialists/esther-murungi.jpg";
+import atibunSimon from "@/assets/specialists/atibuni-simon.jpg";
 
 const therapists = [
-  { name: "Mbabazi Jovia", image: mbabaziJovia, rotation: -12, id: "560a72fe-1ff2-4a2e-8e8a-18c8c1b697a4" },
+  { name: "Esther Murungi", image: estherMurungi, rotation: -12, id: "2fe81e18-5963-4dd6-bd80-936a0c902d2b" },
   { name: "Atwiine Priscilla", image: atwiiinePriscilla, rotation: -6, id: "01dd47fd-0fcc-459a-b6c3-bf39f7926da6" },
   { name: "Julius Kizito", image: juliusKizito, rotation: 0, id: "7542d74b-3e3c-4437-a329-7865e6cde942" },
-  { name: "Zemeyi Rita", image: zemeyiRita, rotation: 6, id: "05b43b71-6155-47c1-8995-359b100763b7" },
+  { name: "Atibuni Simon", image: atibunSimon, rotation: 6, id: "8fcfbd21-6ce1-4344-83da-ce81a1a413b8" },
   { name: "Nassuuna Margret", image: nassuunaMargret, rotation: 12, id: "fde2986e-81fe-4ed8-b56d-df4c8f542011" },
 ];
 
