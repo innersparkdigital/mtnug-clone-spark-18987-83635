@@ -397,7 +397,7 @@ const AppTrailer = () => {
               style={{ animation: 'cinematicSlideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both' }}
             >
               <a
-                href="https://play.google.com/store/apps/details?id=com.innersparkafrica"
+                href="https://play.google.com/store/apps/details?id=com.innersparkafrica.app"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group relative inline-flex items-center justify-center gap-2 bg-white text-primary font-semibold px-8 py-4 rounded-full hover:bg-white/90 transition-all duration-300 hover:scale-105 hover:shadow-xl overflow-hidden"

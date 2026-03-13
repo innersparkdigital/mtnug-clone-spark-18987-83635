@@ -12,20 +12,10 @@ const AppDownload = () => {
               Innerspark App
             </h2>
             <div className="flex flex-wrap gap-3 items-center justify-center md:justify-start">
-              <Link 
-                to="/app-coming-soon" 
-                className="inline-block transition-transform hover:scale-105"
-                aria-label="Download on App Store"
-              >
-                <img 
-                  src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" 
-                  alt="Download on the App Store" 
-                  className="h-10 w-auto"
-                  style={{ height: '40px' }}
-                />
-              </Link>
-              <Link 
-                to="/app-coming-soon" 
+              <a 
+                href="https://play.google.com/store/apps/details?id=com.innersparkafrica.app"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-block transition-transform hover:scale-105"
                 aria-label="Get it on Google Play"
               >
@@ -35,7 +25,21 @@ const AppDownload = () => {
                   className="h-10 w-auto"
                   style={{ height: '40px' }}
                 />
-              </Link>
+              </a>
+              <a 
+                href="https://play.google.com/store/apps/details?id=com.innersparkafrica.app"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block transition-transform hover:scale-105"
+                aria-label="Download on App Store"
+              >
+                <img 
+                  src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" 
+                  alt="Download on the App Store" 
+                  className="h-10 w-auto"
+                  style={{ height: '40px' }}
+                />
+              </a>
             </div>
           </div>
 
