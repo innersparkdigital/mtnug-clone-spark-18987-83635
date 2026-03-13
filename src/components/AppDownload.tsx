@@ -1,5 +1,4 @@
 import appScreenshot from "@/assets/app-screenshot.jpg";
-import appScreenshot from "@/assets/app-screenshot.jpg";
 
 const AppDownload = () => {
   return (
