@@ -227,7 +227,7 @@ const HowItWorks = () => {
                 {/* App Store Buttons */}
                 <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
                   <a
-                    href="https://play.google.com/store/apps/details?id=com.innerspark.app"
+                    href="https://play.google.com/store/apps/details?id=com.innersparkafrica.app"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 bg-foreground text-background px-5 py-3 rounded-lg hover:bg-foreground/90 transition-colors group"

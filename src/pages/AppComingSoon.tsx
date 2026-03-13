@@ -301,22 +301,26 @@ const AppComingSoon = () => {
                   ))}
                 </div>
 
-                {/* App Store Badges Preview */}
+                {/* App Store Badges */}
                 <div className="bg-muted/50 rounded-xl p-6 text-center">
                   <p className="text-sm text-muted-foreground mb-4">
-                    Coming soon to
+                    Available now on
                   </p>
-                  <div className="flex justify-center gap-4 opacity-50">
-                    <img 
-                      src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" 
-                      alt="App Store" 
-                      className="h-10 grayscale"
-                    />
-                    <img 
-                      src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" 
-                      alt="Google Play" 
-                      className="h-10 grayscale"
-                    />
+                  <div className="flex justify-center gap-4">
+                    <a href="https://play.google.com/store/apps/details?id=com.innersparkafrica.app" target="_blank" rel="noopener noreferrer">
+                      <img 
+                        src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" 
+                        alt="Get it on Google Play" 
+                        className="h-10 hover:scale-105 transition-transform"
+                      />
+                    </a>
+                    <a href="https://play.google.com/store/apps/details?id=com.innersparkafrica.app" target="_blank" rel="noopener noreferrer">
+                      <img 
+                        src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" 
+                        alt="Download on the App Store" 
+                        className="h-10 hover:scale-105 transition-transform"
+                      />
+                    </a>
                   </div>
                 </div>
               </motion.div>
