@@ -11,7 +11,8 @@ const AppDownloadPopup = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   // QR code that links to the app store or website
-  const qrCodeUrl = "https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://www.innersparkafrica.com&bgcolor=ffffff&color=000000";
+  const playStoreUrl = "https://play.google.com/store/apps/details?id=com.innersparkafrica.app";
+  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(playStoreUrl)}&bgcolor=ffffff&color=000000`;
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
