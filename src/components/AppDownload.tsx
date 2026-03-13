@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import appScreenshot from "@/assets/app-screenshot.jpg";
 import appScreenshot from "@/assets/app-screenshot.jpg";
 
 const AppDownload = () => {
