@@ -14,8 +14,6 @@ const features = [
   { name: "Easy scheduling", innerspark: true, inOffice: false, highlight: false },
   { name: "Growth Paths", innerspark: true, inOffice: false, highlight: true },
   { name: "Group sessions", innerspark: true, inOffice: false, highlight: false },
-  { name: "Smart provider matching", innerspark: true, inOffice: false, highlight: true },
-  { name: "Easy to switch providers", innerspark: true, inOffice: false, highlight: false },
 ];
 
 const CounselingComparison = () => {
