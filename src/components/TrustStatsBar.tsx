@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 const stats = [
   { icon: Users, value: "5,000+", label: "Sessions Delivered" },
   { icon: Shield, value: "20+", label: "Licensed Therapists" },
-  { icon: MapPin, value: "3", label: "African Countries" },
+  { icon: Shield, value: "100%", label: "Secure & Private" },
   { icon: Clock, value: "24/7", label: "Support Available" },
 ];
 
