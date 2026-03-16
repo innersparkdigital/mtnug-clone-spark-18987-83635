@@ -31,6 +31,7 @@ const Index = () => {
         <TestimonialsSection />
         {/* <AppFeaturesShowcase /> */}
         <HowItWorks />
+        <CounselingComparison />
         <Partners />
         <EventsSection />
         <Footer />
