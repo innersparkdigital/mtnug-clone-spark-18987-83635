@@ -25,6 +25,7 @@ const Index = () => {
         <Header />
         <HeroSection />
         <TrustStatsBar />
+        <ConcernsSection />
         <TherapistShowcase />
         <TestimonialsSection />
         {/* <AppFeaturesShowcase /> */}
