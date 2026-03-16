@@ -11,6 +11,7 @@ import EventsSection from "@/components/EventsSection";
 import Footer from "@/components/Footer";
 import CookieConsent from "@/components/CookieConsent";
 import StickyMobileCTA from "@/components/StickyMobileCTA";
+import ConcernsSection from "@/components/ConcernsSection";
 
 const Index = () => {
   return (
@@ -24,6 +25,7 @@ const Index = () => {
         <Header />
         <HeroSection />
         <TrustStatsBar />
+        <ConcernsSection />
         <TherapistShowcase />
         <TestimonialsSection />
         {/* <AppFeaturesShowcase /> */}
