@@ -12,6 +12,7 @@ import Footer from "@/components/Footer";
 import CookieConsent from "@/components/CookieConsent";
 import StickyMobileCTA from "@/components/StickyMobileCTA";
 import ConcernsSection from "@/components/ConcernsSection";
+import CounselingComparison from "@/components/CounselingComparison";
 
 const Index = () => {
   return (
@@ -30,6 +31,7 @@ const Index = () => {
         <TestimonialsSection />
         {/* <AppFeaturesShowcase /> */}
         <HowItWorks />
+        <CounselingComparison />
         <Partners />
         <EventsSection />
         <Footer />
