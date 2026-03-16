@@ -184,14 +184,14 @@ const Blog = () => {
   return (
     <>
       <Helmet>
-        <title>Mental Health Blog | Expert Wellness Tips & Resources | Innerspark Africa</title>
-        <meta name="description" content="Discover expert-backed mental health articles, stress management tips, and wellness resources. Read our latest insights on managing anxiety, depression, and building emotional resilience." />
-        <meta name="keywords" content="mental health blog, stress management, anxiety tips, wellness resources, emotional health, therapy advice, mental wellness Africa" />
+        <title>Mental Health Blog Uganda | Therapy Tips, Depression & Anxiety Help | Innerspark Africa</title>
+        <meta name="description" content="Read expert mental health articles on depression, anxiety, stress, trauma, relationship problems & therapy in Uganda. Practical tips from licensed therapists. Free resources for emotional wellness." />
+        <meta name="keywords" content="mental health blog Uganda, therapy tips, depression help Uganda, anxiety help Africa, stress management tips, trauma recovery, relationship counseling advice, online therapy blog, mental wellness Africa, therapist advice Uganda, how to deal with depression, panic attack help, marriage counseling tips, loneliness help, overthinking solutions, sadness therapy" />
         <link rel="canonical" href="https://www.innersparkafrica.com/blog" />
         
         {/* Open Graph */}
-        <meta property="og:title" content="Mental Health Blog | Innerspark Africa" />
-        <meta property="og:description" content="Expert-backed mental health articles and wellness resources from Africa's leading digital wellness platform." />
+        <meta property="og:title" content="Mental Health Blog | Expert Therapy Tips & Resources | Innerspark Africa" />
+        <meta property="og:description" content="Expert-backed mental health articles on depression, anxiety, stress, trauma & relationships from licensed therapists in Uganda." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.innersparkafrica.com/blog" />
         <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
@@ -199,26 +199,104 @@ const Blog = () => {
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Mental Health Blog | Innerspark Africa" />
-        <meta name="twitter:description" content="Expert-backed mental health articles and wellness resources." />
+        <meta name="twitter:description" content="Expert-backed mental health articles on depression, anxiety, stress & therapy tips from licensed therapists." />
         
-        {/* Schema.org Blog */}
+        {/* Schema.org Blog + BlogPosting list + FAQ */}
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "Blog",
-            "name": "Innerspark Africa Mental Health Blog",
-            "description": "Expert-backed mental health articles and wellness resources",
-            "url": "https://www.innersparkafrica.com/blog",
-            "inLanguage": "en",
-            "publisher": {
-              "@type": "Organization",
-              "name": "Innerspark Africa",
-              "url": "https://www.innersparkafrica.com",
-              "logo": {
-                "@type": "ImageObject",
-                "url": "https://www.innersparkafrica.com/innerspark-logo.png"
+            "@graph": [
+              {
+                "@type": "Blog",
+                "name": "Innerspark Africa Mental Health Blog",
+                "description": "Expert-backed mental health articles, therapy tips, and wellness resources for depression, anxiety, stress, trauma and relationship issues in Uganda and Africa",
+                "url": "https://www.innersparkafrica.com/blog",
+                "inLanguage": "en",
+                "publisher": {
+                  "@type": "Organization",
+                  "name": "Innerspark Africa",
+                  "url": "https://www.innersparkafrica.com",
+                  "logo": {
+                    "@type": "ImageObject",
+                    "url": "https://www.innersparkafrica.com/innerspark-logo.png"
+                  }
+                },
+                "blogPost": blogPosts.map(post => ({
+                  "@type": "BlogPosting",
+                  "headline": post.title,
+                  "description": post.excerpt,
+                  "url": `https://www.innersparkafrica.com/blog/${post.slug}`,
+                  "datePublished": post.date,
+                  "author": {
+                    "@type": "Organization",
+                    "name": "Innerspark Africa"
+                  },
+                  "publisher": {
+                    "@type": "Organization",
+                    "name": "Innerspark Africa"
+                  }
+                }))
+              },
+              {
+                "@type": "CollectionPage",
+                "name": "Mental Health Blog",
+                "url": "https://www.innersparkafrica.com/blog",
+                "description": "Browse expert articles on depression, anxiety, stress, trauma, relationship issues and therapy options in Uganda",
+                "isPartOf": { "@id": "https://www.innersparkafrica.com/#website" }
+              },
+              {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                  { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.innersparkafrica.com" },
+                  { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://www.innersparkafrica.com/blog" }
+                ]
+              },
+              {
+                "@type": "FAQPage",
+                "mainEntity": [
+                  {
+                    "@type": "Question",
+                    "name": "How can I manage depression without medication?",
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": "While medication helps many people, therapy (especially CBT), regular exercise, social support, and healthy routines are evidence-based ways to manage depression. A licensed therapist can create a personalized plan. Book a session at Innerspark Africa."
+                    }
+                  },
+                  {
+                    "@type": "Question",
+                    "name": "What are the signs of anxiety?",
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": "Common signs include excessive worry, restlessness, difficulty concentrating, sleep problems, muscle tension, and avoidance of situations. If these persist for weeks, consider speaking with a therapist."
+                    }
+                  },
+                  {
+                    "@type": "Question",
+                    "name": "How do I find affordable therapy in Uganda?",
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": "Innerspark Africa offers affordable online therapy starting from UGX 30,000 per session with licensed therapists. Sessions are available via video, voice, or chat from anywhere."
+                    }
+                  },
+                  {
+                    "@type": "Question",
+                    "name": "Can online therapy help with relationship problems?",
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": "Yes, online couples and individual therapy is highly effective for relationship issues. Licensed therapists can help with communication, conflict resolution, trust, and intimacy concerns through video or chat sessions."
+                    }
+                  },
+                  {
+                    "@type": "Question",
+                    "name": "How do I stop overthinking and anxiety?",
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": "Grounding techniques like the 5-4-3-2-1 method, mindfulness, journaling, and CBT are proven strategies. A therapist can teach you personalized techniques. Read our blog articles for free tips."
+                    }
+                  }
+                ]
               }
-            }
+            ]
           })}
         </script>
       </Helmet>

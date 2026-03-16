@@ -18,8 +18,9 @@ const Index = () => {
   return (
     <>
       <Helmet>
-        <title>Therapy in Uganda – Book a Licensed Therapist Online | Innerspark Africa</title>
-        <meta name="description" content="Uganda's leading online therapy platform. Book affordable sessions with licensed therapists for depression, anxiety, trauma & stress. Video, voice & chat therapy. Start today." />
+        <title>Online Therapy Uganda – Book a Licensed Therapist | Depression, Anxiety, Stress Help | Innerspark Africa</title>
+        <meta name="description" content="Uganda's #1 online therapy platform. Book affordable sessions with licensed therapists for depression, anxiety, trauma, stress, relationship problems, loneliness & overthinking. Video, voice & chat therapy. Start healing today." />
+        <meta name="keywords" content="online therapy Uganda, therapist Uganda, depression help Uganda, anxiety therapy Africa, marriage counseling online, relationship therapy, trauma therapy Uganda, stress management, book therapist online, affordable therapy Uganda, mental health support Africa, loneliness help, overthinking therapy, sadness counseling, licensed therapist Kampala" />
         <link rel="canonical" href="https://www.innersparkafrica.com/" />
       </Helmet>
       <div className="min-h-screen bg-background">
