@@ -125,6 +125,11 @@ const MindCheckAnalytics = () => {
             <TabsTrigger value="users">Users</TabsTrigger>
           </TabsList>
 
+          {/* WHO-5 Tab */}
+          <TabsContent value="who5">
+            <Who5AnalyticsTab />
+          </TabsContent>
+
           {/* Overview Tab */}
           <TabsContent value="overview">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
