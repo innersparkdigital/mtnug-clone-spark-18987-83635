@@ -106,6 +106,7 @@ import VideoTherapy from "./pages/VideoTherapy";
 import ChatTherapy from "./pages/ChatTherapy";
 // App Coming Soon Page
 import AppComingSoon from "./pages/AppComingSoon";
+import WellbeingCheck from "./pages/WellbeingCheck";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentCanceled from "./pages/PaymentCanceled";
 // Location SEO Pages
@@ -180,6 +181,7 @@ const App = () => (
             <Route path="/learning/:courseId/certificate" element={<CourseCertificate />} />
             <Route path="/learning/:courseId/module/:moduleId/lesson/:lessonId" element={<LessonViewer />} />
             <Route path="/blog" element={<Blog />} />
+            <Route path="/wellbeing-check" element={<WellbeingCheck />} />
             <Route path="/mind-check" element={<MindCheck />} />
             <Route path="/mind-check/analytics" element={<MindCheckAnalytics />} />
             <Route path="/mind-check/depression" element={<DepressionTest />} />

@@ -5,6 +5,7 @@ import { useUserRole } from '@/hooks/useUserRole';
 import { useMindCheckAnalytics } from '@/hooks/useMindCheckAnalytics';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import Who5AnalyticsTab from '@/components/Who5AnalyticsTab';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -115,14 +116,20 @@ const MindCheckAnalytics = () => {
         </div>
 
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="who5">WHO-5</TabsTrigger>
             <TabsTrigger value="conditions">Conditions</TabsTrigger>
             <TabsTrigger value="sources">Sources</TabsTrigger>
             <TabsTrigger value="behavior">Behavior</TabsTrigger>
             <TabsTrigger value="advanced">Advanced</TabsTrigger>
             <TabsTrigger value="users">Users</TabsTrigger>
           </TabsList>
+
+          {/* WHO-5 Tab */}
+          <TabsContent value="who5">
+            <Who5AnalyticsTab />
+          </TabsContent>
 
           {/* Overview Tab */}
           <TabsContent value="overview">
