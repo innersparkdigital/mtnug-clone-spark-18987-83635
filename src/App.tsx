@@ -106,6 +106,7 @@ import VideoTherapy from "./pages/VideoTherapy";
 import ChatTherapy from "./pages/ChatTherapy";
 // App Coming Soon Page
 import AppComingSoon from "./pages/AppComingSoon";
+import WellbeingCheck from "./pages/WellbeingCheck";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentCanceled from "./pages/PaymentCanceled";
 // Location SEO Pages
