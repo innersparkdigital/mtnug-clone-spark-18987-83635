@@ -5,6 +5,7 @@ import { useUserRole } from '@/hooks/useUserRole';
 import { useMindCheckAnalytics } from '@/hooks/useMindCheckAnalytics';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import Who5AnalyticsTab from '@/components/Who5AnalyticsTab';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
