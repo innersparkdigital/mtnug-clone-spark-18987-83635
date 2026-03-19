@@ -479,6 +479,87 @@ export type Database = {
         }
         Relationships: []
       }
+      who5_cta_clicks: {
+        Row: {
+          clicked_at: string
+          cta_type: string
+          device_type: string | null
+          id: string
+          session_id: string
+          source: string | null
+        }
+        Insert: {
+          clicked_at?: string
+          cta_type: string
+          device_type?: string | null
+          id?: string
+          session_id: string
+          source?: string | null
+        }
+        Update: {
+          clicked_at?: string
+          cta_type?: string
+          device_type?: string | null
+          id?: string
+          session_id?: string
+          source?: string | null
+        }
+        Relationships: []
+      }
+      who5_sessions: {
+        Row: {
+          abandoned_at: string | null
+          completed_at: string | null
+          created_at: string
+          device_type: string | null
+          id: string
+          last_question_reached: number | null
+          percentage_score: number | null
+          raw_score: number | null
+          referrer: string | null
+          session_id: string
+          source: string | null
+          started_at: string
+          time_taken_seconds: number | null
+          user_agent: string | null
+          wellbeing_level: string | null
+        }
+        Insert: {
+          abandoned_at?: string | null
+          completed_at?: string | null
+          created_at?: string
+          device_type?: string | null
+          id?: string
+          last_question_reached?: number | null
+          percentage_score?: number | null
+          raw_score?: number | null
+          referrer?: string | null
+          session_id: string
+          source?: string | null
+          started_at?: string
+          time_taken_seconds?: number | null
+          user_agent?: string | null
+          wellbeing_level?: string | null
+        }
+        Update: {
+          abandoned_at?: string | null
+          completed_at?: string | null
+          created_at?: string
+          device_type?: string | null
+          id?: string
+          last_question_reached?: number | null
+          percentage_score?: number | null
+          raw_score?: number | null
+          referrer?: string | null
+          session_id?: string
+          source?: string | null
+          started_at?: string
+          time_taken_seconds?: number | null
+          user_agent?: string | null
+          wellbeing_level?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
