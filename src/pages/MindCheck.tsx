@@ -211,6 +211,26 @@ const MindCheck = () => {
         </div>
       </section>
 
+      {/* WHO-5 Wellbeing Check Banner */}
+      <section className="py-8 bg-gradient-to-r from-green-50 to-emerald-50 border-y border-green-200">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+            <div className="flex-shrink-0 w-14 h-14 rounded-full bg-green-100 flex items-center justify-center">
+              <Heart className="w-7 h-7 text-green-600" />
+            </div>
+            <div className="text-center sm:text-left flex-1">
+              <h3 className="text-lg font-bold text-foreground mb-1">WHO-5 Wellbeing Check</h3>
+              <p className="text-sm text-muted-foreground">Quick 5-question check based on the WHO Well-Being Index. Takes under 1 minute.</p>
+            </div>
+            <Link to="/wellbeing-check">
+              <Button className="bg-green-600 hover:bg-green-700 text-white rounded-full px-6">
+                Take the WHO-5 Check
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Tests Section */}
       <section className="py-16 bg-background">
         <div className="container mx-auto px-4">

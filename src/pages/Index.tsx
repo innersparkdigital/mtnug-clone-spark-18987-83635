@@ -1,4 +1,7 @@
 import { Helmet } from "react-helmet";
+import { Link } from "react-router-dom";
+import { Heart } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
 import TrustStatsBar from "@/components/TrustStatsBar";
