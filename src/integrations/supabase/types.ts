@@ -110,6 +110,45 @@ export type Database = {
         }
         Relationships: []
       }
+      callback_requests: {
+        Row: {
+          created_at: string
+          device_type: string | null
+          full_name: string
+          id: string
+          phone_number: string
+          session_id: string | null
+          source: string | null
+          status: string | null
+          wellbeing_percentage: number
+          wellbeing_score: number
+        }
+        Insert: {
+          created_at?: string
+          device_type?: string | null
+          full_name: string
+          id?: string
+          phone_number: string
+          session_id?: string | null
+          source?: string | null
+          status?: string | null
+          wellbeing_percentage: number
+          wellbeing_score: number
+        }
+        Update: {
+          created_at?: string
+          device_type?: string | null
+          full_name?: string
+          id?: string
+          phone_number?: string
+          session_id?: string | null
+          source?: string | null
+          status?: string | null
+          wellbeing_percentage?: number
+          wellbeing_score?: number
+        }
+        Relationships: []
+      }
       career_applications: {
         Row: {
           country: string
