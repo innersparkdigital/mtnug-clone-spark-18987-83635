@@ -497,5 +497,8 @@ export const useMindCheckAnalytics = () => {
     repeatUserStats,
     avgCompletionTime,
     highRiskConditions,
+    // New features
+    generateBackupCSV,
+    clearData,
   };
 };
