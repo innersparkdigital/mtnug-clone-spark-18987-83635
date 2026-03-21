@@ -41,11 +41,11 @@ const WellbeingTest = ({ currentQuestion, answers, onAnswer, onNext, onBack, onS
       className="pt-8"
     >
       <div className="mb-6">
-        <div className="flex items-center justify-between text-sm text-gray-500 mb-2">
+        <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
           <span>Question {currentQuestion + 1} of 5</span>
           <span>Over the past 2 weeks...</span>
         </div>
-        <Progress value={((currentQuestion + 1) / 5) * 100} className="h-2 [&>div]:bg-[#F97316]" />
+        <Progress value={((currentQuestion + 1) / 5) * 100} className="h-2 [&>div]:bg-primary" />
       </div>
 
       <AnimatePresence mode="wait">
@@ -56,7 +56,7 @@ const WellbeingTest = ({ currentQuestion, answers, onAnswer, onNext, onBack, onS
           exit={{ opacity: 0, x: -30 }}
           transition={{ duration: 0.25 }}
         >
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-8 leading-snug">
+          <h2 className="text-xl sm:text-2xl font-bold text-foreground mb-8 leading-snug">
             "{WHO5_QUESTIONS[currentQuestion]}"
           </h2>
 
@@ -67,8 +67,8 @@ const WellbeingTest = ({ currentQuestion, answers, onAnswer, onNext, onBack, onS
                 onClick={() => onAnswer(option.value)}
                 className={`w-full text-left p-4 rounded-xl border-2 transition-all duration-200 text-base font-medium
                   ${answers[currentQuestion] === option.value
-                    ? 'border-[#F97316] bg-[#F97316]/10 text-[#F97316]'
-                    : 'border-gray-200 bg-white hover:border-gray-300 text-gray-700 hover:bg-gray-50'
+                    ? 'border-primary bg-primary/10 text-primary'
+                    : 'border-border bg-card hover:border-muted-foreground/30 text-foreground hover:bg-muted'
                   }`}
               >
                 {option.label}
@@ -83,7 +83,7 @@ const WellbeingTest = ({ currentQuestion, answers, onAnswer, onNext, onBack, onS
           variant="ghost"
           onClick={onBack}
           disabled={currentQuestion === 0}
-          className="text-gray-500"
+          className="text-muted-foreground"
         >
           <ArrowLeft className="w-4 h-4 mr-1" /> Back
         </Button>
@@ -91,7 +91,7 @@ const WellbeingTest = ({ currentQuestion, answers, onAnswer, onNext, onBack, onS
         {currentQuestion === 4 && allAnswered && (
           <Button
             onClick={onSubmit}
-            className="bg-[#F97316] hover:bg-[#EA580C] text-white rounded-full px-8"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full px-8"
           >
             See My Results <ArrowRight className="w-4 h-4 ml-1" />
           </Button>
@@ -101,7 +101,7 @@ const WellbeingTest = ({ currentQuestion, answers, onAnswer, onNext, onBack, onS
           <Button
             variant="ghost"
             onClick={onNext}
-            className="text-[#F97316]"
+            className="text-primary"
           >
             Next <ArrowRight className="w-4 h-4 ml-1" />
           </Button>

@@ -75,7 +75,7 @@ const CallbackForm = ({ percentage, rawScore, sessionId, source, deviceType, onC
           <div className="space-y-2">
             <Button
               onClick={() => setState('form')}
-              className="w-full bg-[#F97316] hover:bg-[#EA580C] text-white rounded-xl py-5"
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl py-5"
             >
               ✅ Yes, I'd like to talk to someone
             </Button>
@@ -106,7 +106,7 @@ const CallbackForm = ({ percentage, rawScore, sessionId, source, deviceType, onC
           className="bg-white border border-gray-200 rounded-2xl p-5 mb-6 shadow-sm"
         >
           <div className="flex items-center gap-2 mb-3">
-            <Phone className="w-5 h-5 text-[#F97316]" />
+            <Phone className="w-5 h-5 text-primary" />
             <h3 className="font-bold text-gray-800">Request a Call Back</h3>
           </div>
           <p className="text-sm text-gray-500 mb-4">
@@ -129,7 +129,7 @@ const CallbackForm = ({ percentage, rawScore, sessionId, source, deviceType, onC
             <Button
               onClick={handleSubmit}
               disabled={submitting}
-              className="w-full bg-[#F97316] hover:bg-[#EA580C] text-white rounded-xl py-5"
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl py-5"
             >
               {submitting ? 'Sending...' : '👉 Request Call Back'}
             </Button>
