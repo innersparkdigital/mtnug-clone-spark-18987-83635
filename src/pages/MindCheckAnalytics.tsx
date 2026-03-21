@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUserRole } from '@/hooks/useUserRole';
@@ -11,11 +11,18 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Input } from '@/components/ui/input';
 import { 
   Eye, Brain, CheckCircle2, XCircle, TrendingUp, Mail, Download,
   BarChart3, PieChart as PieChartIcon, Activity, Users, Loader2, ArrowLeft,
-  Clock, AlertTriangle, Repeat, Zap, Timer, Shield
+  Clock, AlertTriangle, Repeat, Zap, Timer, Shield, Trash2, Send
 } from 'lucide-react';
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import { toast } from '@/hooks/use-toast';
 import {
   BarChart, Bar, XAxis, YAxis, ResponsiveContainer, PieChart, Pie, Cell,
   LineChart, Line, Tooltip, Legend, CartesianGrid, AreaChart, Area, RadarChart,
@@ -35,7 +42,58 @@ const MindCheckAnalytics = () => {
     isRealtime,
     engagementFunnel, hourlyHeatmap, weekdayAnalytics,
     conditionSeverityMatrix, repeatUserStats, avgCompletionTime, highRiskConditions,
+    generateBackupCSV, clearData,
   } = useMindCheckAnalytics();
+
+  const [backupEmail, setBackupEmail] = useState('');
+  const [sendingBackup, setSendingBackup] = useState(false);
+  const [clearing, setClearing] = useState(false);
+
+  const handleBackupToEmail = async () => {
+    if (!backupEmail || !backupEmail.includes('@')) {
+      toast({ title: 'Invalid email', description: 'Please enter a valid email address.', variant: 'destructive' });
+      return;
+    }
+    setSendingBackup(true);
+    try {
+      const csvContent = generateBackupCSV();
+      const blob = new Blob([csvContent], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `mindcheck-backup-${new Date().toISOString().split('T')[0]}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+      
+      // Also open mailto with instructions
+      const subject = encodeURIComponent(`Mind Check Analytics Backup - ${new Date().toLocaleDateString()}`);
+      const body = encodeURIComponent(
+        `Hi,\n\nPlease find the Mind Check Analytics backup data attached.\n\nBackup Date: ${new Date().toLocaleString()}\nTotal Sessions: ${sessions.length}\nTotal Emails: ${emails.length}\n\nNote: The CSV file has been downloaded to your device. Please attach it to this email manually.\n\nBest regards,\nInnerSpark Analytics`
+      );
+      window.open(`mailto:${backupEmail}?subject=${subject}&body=${body}`, '_blank');
+      
+      toast({ title: 'Backup downloaded', description: `CSV backup downloaded. An email draft to ${backupEmail} has been opened — please attach the file.` });
+    } catch (error) {
+      toast({ title: 'Backup failed', description: 'Could not generate backup.', variant: 'destructive' });
+    } finally {
+      setSendingBackup(false);
+    }
+  };
+
+  const handleClearData = async () => {
+    setClearing(true);
+    try {
+      await clearData([
+        'assessment_sessions', 'assessment_emails', 'mindcheck_page_visits',
+        'who5_sessions', 'who5_cta_clicks', 'callback_requests'
+      ]);
+      toast({ title: 'Data cleared', description: 'All analytics data has been reset successfully.' });
+    } catch (error: any) {
+      toast({ title: 'Clear failed', description: error.message || 'Could not clear data.', variant: 'destructive' });
+    } finally {
+      setClearing(false);
+    }
+  };
 
   useEffect(() => {
     if (!authLoading && !user) navigate('/auth?redirect=/mind-check/analytics');
@@ -77,7 +135,7 @@ const MindCheckAnalytics = () => {
             <h1 className="text-3xl font-bold text-foreground">Mind Check Analytics</h1>
             <p className="text-muted-foreground">Real-time engagement, mental health trends, and advanced behavioral insights</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             {(['7d', '30d', '90d', 'all'] as const).map(range => (
               <Button
                 key={range}
@@ -90,6 +148,70 @@ const MindCheckAnalytics = () => {
             ))}
           </div>
         </div>
+
+        {/* Action Buttons: Backup & Clear */}
+        <Card className="mb-6 border-border/50">
+          <CardContent className="pt-4 pb-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between">
+              {/* Backup to Email */}
+              <div className="flex items-center gap-2 flex-1 w-full sm:w-auto">
+                <Send className="h-4 w-4 text-primary flex-shrink-0" />
+                <Input
+                  type="email"
+                  placeholder="Enter email for backup..."
+                  value={backupEmail}
+                  onChange={e => setBackupEmail(e.target.value)}
+                  className="max-w-xs"
+                />
+                <Button size="sm" onClick={handleBackupToEmail} disabled={sendingBackup}>
+                  {sendingBackup ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : <Download className="h-4 w-4 mr-1" />}
+                  Backup & Email
+                </Button>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Button size="sm" variant="outline" onClick={exportCSV}>
+                  <Download className="h-4 w-4 mr-1" /> Export Emails
+                </Button>
+                <Button size="sm" variant="outline" onClick={exportAllSessionsCSV}>
+                  <Download className="h-4 w-4 mr-1" /> Export Sessions
+                </Button>
+
+                {/* Clear Data */}
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button size="sm" variant="destructive" disabled={clearing}>
+                      {clearing ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : <Trash2 className="h-4 w-4 mr-1" />}
+                      Reset Data
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>⚠️ Clear All Analytics Data?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This will permanently delete <strong>all</strong> Mind Check analytics data including:
+                        <ul className="list-disc ml-5 mt-2 space-y-1">
+                          <li>Assessment sessions & scores</li>
+                          <li>Collected emails</li>
+                          <li>Page visit logs</li>
+                          <li>WHO-5 sessions & CTA clicks</li>
+                          <li>Callback requests</li>
+                        </ul>
+                        <p className="mt-3 font-medium text-destructive">This action cannot be undone. Please download a backup first!</p>
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleClearData} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                        Yes, Clear All Data
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Key Metrics */}
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3 mb-8">

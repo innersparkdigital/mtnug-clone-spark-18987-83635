@@ -433,6 +433,46 @@ export const useMindCheckAnalytics = () => {
     URL.revokeObjectURL(url);
   }, [filteredSessions]);
 
+  // Generate full backup CSV content for email
+  const generateBackupCSV = useCallback(() => {
+    const sections: string[] = [];
+    
+    // Sessions
+    const sHeaders = ['Session ID', 'Test Type', 'Source', 'Device', 'Started', 'Completed', 'Abandoned', 'Score', 'Max Score', 'Severity'];
+    const sRows = sessions.map(s => [
+      s.session_id, s.test_type, s.source, s.device_type,
+      new Date(s.started_at).toLocaleString(),
+      s.completed_at ? new Date(s.completed_at).toLocaleString() : '',
+      s.abandoned_at ? new Date(s.abandoned_at).toLocaleString() : '',
+      s.score?.toString() || '', s.max_score?.toString() || '', s.severity_level || '',
+    ]);
+    sections.push('=== ASSESSMENT SESSIONS ===\n' + [sHeaders, ...sRows].map(r => r.map(c => `"${c}"`).join(',')).join('\n'));
+    
+    // Emails
+    const eHeaders = ['Email', 'Test Type', 'Severity', 'Score', 'Source', 'Device', 'Date'];
+    const eRows = emails.map(e => [
+      e.email, e.test_type, e.severity_level || '', e.score?.toString() || '',
+      e.source, e.device_type, new Date(e.created_at).toLocaleDateString(),
+    ]);
+    sections.push('\n\n=== COLLECTED EMAILS ===\n' + [eHeaders, ...eRows].map(r => r.map(c => `"${c}"`).join(',')).join('\n'));
+    
+    // Visits
+    const vHeaders = ['Session ID', 'Source', 'Device', 'Visited At'];
+    const vRows = visits.map(v => [v.session_id, v.source, v.device_type, new Date(v.visited_at).toLocaleString()]);
+    sections.push('\n\n=== PAGE VISITS ===\n' + [vHeaders, ...vRows].map(r => r.map(c => `"${c}"`).join(',')).join('\n'));
+    
+    return sections.join('');
+  }, [sessions, emails, visits]);
+
+  // Clear data
+  const clearData = useCallback(async (tables: string[]) => {
+    const { data, error } = await supabase.rpc('clear_mindcheck_data', { tables_to_clear: tables });
+    if (error) throw error;
+    // Refresh data
+    await fetchData();
+    return data;
+  }, [fetchData]);
+
   return {
     stats,
     conditionDistribution,
@@ -457,5 +497,8 @@ export const useMindCheckAnalytics = () => {
     repeatUserStats,
     avgCompletionTime,
     highRiskConditions,
+    // New features
+    generateBackupCSV,
+    clearData,
   };
 };
