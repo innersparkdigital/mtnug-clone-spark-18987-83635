@@ -39,7 +39,7 @@ const ShareResults = ({ percentage, onCtaClick }: ShareResultsProps) => {
   return (
     <div className="bg-white rounded-2xl p-5 border border-gray-200 shadow-sm mb-6">
       <h3 className="text-base font-bold text-gray-900 mb-3 flex items-center gap-2">
-        <Share2 className="w-4 h-4 text-[#F97316]" />
+        <Share2 className="w-4 h-4 text-primary" />
         Share Your Results
       </h3>
       <div className="grid grid-cols-2 gap-2">

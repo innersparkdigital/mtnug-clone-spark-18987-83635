@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { Heart, Lock } from 'lucide-react';
+import { Lock } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import logo from '@/assets/innerspark-logo.png';
 import { useWho5Tracking } from '@/hooks/useWho5Tracking';
 import { AnimatePresence } from 'framer-motion';
 import WellbeingHero from '@/components/wellbeing/WellbeingHero';
@@ -93,12 +94,10 @@ const WellbeingCheck = () => {
         <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
           <div className="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
             <Link to="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-[#F97316] flex items-center justify-center">
-                <Heart className="w-4 h-4 text-white" />
-              </div>
+              <img src={logo} alt="InnerSpark Africa" className="h-8" />
               <span className="font-bold text-lg text-gray-800">InnerSpark</span>
             </Link>
-            <div className="flex items-center gap-1.5 text-xs text-gray-500">
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
               <Lock className="w-3 h-3" />
               Private & Confidential
             </div>

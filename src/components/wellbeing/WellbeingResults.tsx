@@ -142,7 +142,7 @@ const WellbeingResults = ({ rawScore, percentage, sessionId, source, deviceType,
         <Button
           onClick={() => setShowDownload(true)}
           size="lg"
-          className="w-full bg-[#F97316] hover:bg-[#EA580C] text-white rounded-xl py-6 text-base shadow-lg"
+          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl py-6 text-base shadow-lg"
         >
           <Download className="w-5 h-5 mr-2" />
           Download the InnerSpark App
@@ -152,7 +152,7 @@ const WellbeingResults = ({ rawScore, percentage, sessionId, source, deviceType,
           onClick={() => handleNavigate('talk_therapist', '/specialists')}
           variant="outline"
           size="lg"
-          className="w-full rounded-xl py-6 text-base border-2 border-[#F97316] text-[#F97316] hover:bg-[#F97316]/5"
+          className="w-full rounded-xl py-6 text-base border-2 border-primary text-primary hover:bg-primary/5"
         >
           <MessageCircle className="w-5 h-5 mr-2" />
           Talk to a Therapist
