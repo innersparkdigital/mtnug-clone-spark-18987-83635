@@ -49,7 +49,7 @@ const CallbackForm = ({ percentage, rawScore, sessionId, source, deviceType, onC
       const message = encodeURIComponent(
         `🔔 New Callback Request\n\nName: ${fullName}\nPhone: ${phone}\nWellbeing Score: ${percentage}%\nSource: ${source}\n\nPlease reach out to this person.`
       );
-      fetch(`https://wa.me/256792085773?text=${message}`).catch(() => {});
+      window.open(`https://wa.me/256792085773?text=${message}`, '_blank');
 
       setState('submitted');
     } catch {
