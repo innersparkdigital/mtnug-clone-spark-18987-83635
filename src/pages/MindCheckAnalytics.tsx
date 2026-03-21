@@ -95,6 +95,14 @@ const MindCheckAnalytics = () => {
     }
   };
 
+  useEffect(() => {
+    if (!authLoading && !user) navigate('/auth?redirect=/mind-check/analytics');
+  }, [user, authLoading, navigate]);
+
+  useEffect(() => {
+    if (!roleLoading && !isAdmin && user) navigate('/mind-check');
+  }, [isAdmin, roleLoading, user, navigate]);
+
   if (authLoading || roleLoading || dataLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -127,7 +135,7 @@ const MindCheckAnalytics = () => {
             <h1 className="text-3xl font-bold text-foreground">Mind Check Analytics</h1>
             <p className="text-muted-foreground">Real-time engagement, mental health trends, and advanced behavioral insights</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             {(['7d', '30d', '90d', 'all'] as const).map(range => (
               <Button
                 key={range}
@@ -140,6 +148,70 @@ const MindCheckAnalytics = () => {
             ))}
           </div>
         </div>
+
+        {/* Action Buttons: Backup & Clear */}
+        <Card className="mb-6 border-border/50">
+          <CardContent className="pt-4 pb-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between">
+              {/* Backup to Email */}
+              <div className="flex items-center gap-2 flex-1 w-full sm:w-auto">
+                <Send className="h-4 w-4 text-primary flex-shrink-0" />
+                <Input
+                  type="email"
+                  placeholder="Enter email for backup..."
+                  value={backupEmail}
+                  onChange={e => setBackupEmail(e.target.value)}
+                  className="max-w-xs"
+                />
+                <Button size="sm" onClick={handleBackupToEmail} disabled={sendingBackup}>
+                  {sendingBackup ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : <Download className="h-4 w-4 mr-1" />}
+                  Backup & Email
+                </Button>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Button size="sm" variant="outline" onClick={exportCSV}>
+                  <Download className="h-4 w-4 mr-1" /> Export Emails
+                </Button>
+                <Button size="sm" variant="outline" onClick={exportAllSessionsCSV}>
+                  <Download className="h-4 w-4 mr-1" /> Export Sessions
+                </Button>
+
+                {/* Clear Data */}
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button size="sm" variant="destructive" disabled={clearing}>
+                      {clearing ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : <Trash2 className="h-4 w-4 mr-1" />}
+                      Reset Data
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>⚠️ Clear All Analytics Data?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This will permanently delete <strong>all</strong> Mind Check analytics data including:
+                        <ul className="list-disc ml-5 mt-2 space-y-1">
+                          <li>Assessment sessions & scores</li>
+                          <li>Collected emails</li>
+                          <li>Page visit logs</li>
+                          <li>WHO-5 sessions & CTA clicks</li>
+                          <li>Callback requests</li>
+                        </ul>
+                        <p className="mt-3 font-medium text-destructive">This action cannot be undone. Please download a backup first!</p>
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleClearData} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                        Yes, Clear All Data
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Key Metrics */}
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3 mb-8">
