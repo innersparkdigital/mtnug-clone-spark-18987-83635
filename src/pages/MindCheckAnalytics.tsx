@@ -42,15 +42,58 @@ const MindCheckAnalytics = () => {
     isRealtime,
     engagementFunnel, hourlyHeatmap, weekdayAnalytics,
     conditionSeverityMatrix, repeatUserStats, avgCompletionTime, highRiskConditions,
+    generateBackupCSV, clearData,
   } = useMindCheckAnalytics();
 
-  useEffect(() => {
-    if (!authLoading && !user) navigate('/auth?redirect=/mind-check/analytics');
-  }, [user, authLoading, navigate]);
+  const [backupEmail, setBackupEmail] = useState('');
+  const [sendingBackup, setSendingBackup] = useState(false);
+  const [clearing, setClearing] = useState(false);
 
-  useEffect(() => {
-    if (!roleLoading && !isAdmin && user) navigate('/mind-check');
-  }, [isAdmin, roleLoading, user, navigate]);
+  const handleBackupToEmail = async () => {
+    if (!backupEmail || !backupEmail.includes('@')) {
+      toast({ title: 'Invalid email', description: 'Please enter a valid email address.', variant: 'destructive' });
+      return;
+    }
+    setSendingBackup(true);
+    try {
+      const csvContent = generateBackupCSV();
+      const blob = new Blob([csvContent], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `mindcheck-backup-${new Date().toISOString().split('T')[0]}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+      
+      // Also open mailto with instructions
+      const subject = encodeURIComponent(`Mind Check Analytics Backup - ${new Date().toLocaleDateString()}`);
+      const body = encodeURIComponent(
+        `Hi,\n\nPlease find the Mind Check Analytics backup data attached.\n\nBackup Date: ${new Date().toLocaleString()}\nTotal Sessions: ${sessions.length}\nTotal Emails: ${emails.length}\n\nNote: The CSV file has been downloaded to your device. Please attach it to this email manually.\n\nBest regards,\nInnerSpark Analytics`
+      );
+      window.open(`mailto:${backupEmail}?subject=${subject}&body=${body}`, '_blank');
+      
+      toast({ title: 'Backup downloaded', description: `CSV backup downloaded. An email draft to ${backupEmail} has been opened — please attach the file.` });
+    } catch (error) {
+      toast({ title: 'Backup failed', description: 'Could not generate backup.', variant: 'destructive' });
+    } finally {
+      setSendingBackup(false);
+    }
+  };
+
+  const handleClearData = async () => {
+    setClearing(true);
+    try {
+      await clearData([
+        'assessment_sessions', 'assessment_emails', 'mindcheck_page_visits',
+        'who5_sessions', 'who5_cta_clicks', 'callback_requests'
+      ]);
+      toast({ title: 'Data cleared', description: 'All analytics data has been reset successfully.' });
+    } catch (error: any) {
+      toast({ title: 'Clear failed', description: error.message || 'Could not clear data.', variant: 'destructive' });
+    } finally {
+      setClearing(false);
+    }
+  };
 
   if (authLoading || roleLoading || dataLoading) {
     return (
