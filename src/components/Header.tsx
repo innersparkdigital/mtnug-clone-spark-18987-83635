@@ -273,9 +273,9 @@ const Header = () => {
               <Link to="/blog" className="block text-foreground hover:text-primary transition-colors font-medium">
                 {navLabels.blog}
               </Link>
-              {/* <Link to="/events-training" className="block text-foreground hover:text-primary transition-colors font-medium">
+              <Link to="/events-training" className="block text-foreground hover:text-primary transition-colors font-medium">
                 {navLabels.events}
-              </Link> */}
+              </Link>
               <Link to="/contact" className="block text-foreground hover:text-primary transition-colors font-medium">
                 {navLabels.contact}
               </Link>
