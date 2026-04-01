@@ -137,6 +137,7 @@ const Header = () => {
           <span className="text-primary-foreground/30">|</span>
           <Link to="/for-professionals" className="hover:text-primary-foreground/80 transition-colors">{translations.forProfessionals}</Link>
           <Link to="/for-business" className="hover:text-primary-foreground/80 transition-colors">{translations.forBusiness}</Link>
+          <Link to="/events-training/trainings" className="hover:text-primary-foreground/80 transition-colors font-semibold">Trainings</Link>
           <Link to="/donate-therapy">
             <Button size="sm" variant="secondary" className="text-[10px] px-2 py-0.5 h-5">
               {translations.donateTherapy}
@@ -272,9 +273,9 @@ const Header = () => {
               <Link to="/blog" className="block text-foreground hover:text-primary transition-colors font-medium">
                 {navLabels.blog}
               </Link>
-              {/* <Link to="/events-training" className="block text-foreground hover:text-primary transition-colors font-medium">
+              <Link to="/events-training" className="block text-foreground hover:text-primary transition-colors font-medium">
                 {navLabels.events}
-              </Link> */}
+              </Link>
               <Link to="/contact" className="block text-foreground hover:text-primary transition-colors font-medium">
                 {navLabels.contact}
               </Link>
