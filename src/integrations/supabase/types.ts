@@ -497,6 +497,101 @@ export type Database = {
         }
         Relationships: []
       }
+      training_registrations: {
+        Row: {
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          organisation: string | null
+          phone_number: string
+          position: string | null
+          training_id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          organisation?: string | null
+          phone_number: string
+          position?: string | null
+          training_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          organisation?: string | null
+          phone_number?: string
+          position?: string | null
+          training_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "training_registrations_training_id_fkey"
+            columns: ["training_id"]
+            isOneToOne: false
+            referencedRelation: "trainings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      trainings: {
+        Row: {
+          created_at: string
+          description: string
+          end_time: string | null
+          facilitator_name: string
+          facilitator_title: string
+          flier_image_url: string | null
+          id: string
+          is_active: boolean
+          meeting_link: string | null
+          meeting_password: string | null
+          session_focus: string[] | null
+          target_audience: string
+          title: string
+          training_date: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          end_time?: string | null
+          facilitator_name?: string
+          facilitator_title?: string
+          flier_image_url?: string | null
+          id?: string
+          is_active?: boolean
+          meeting_link?: string | null
+          meeting_password?: string | null
+          session_focus?: string[] | null
+          target_audience?: string
+          title: string
+          training_date: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          end_time?: string | null
+          facilitator_name?: string
+          facilitator_title?: string
+          flier_image_url?: string | null
+          id?: string
+          is_active?: boolean
+          meeting_link?: string | null
+          meeting_password?: string | null
+          session_focus?: string[] | null
+          target_audience?: string
+          title?: string
+          training_date?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string | null

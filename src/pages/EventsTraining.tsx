@@ -127,9 +127,16 @@ const EventsTraining = () => {
             <h1 className="text-4xl md:text-5xl font-bold mb-6 text-foreground">
               Innerspark Events & Training
             </h1>
-            <p className="text-xl text-muted-foreground">
+            <p className="text-xl text-muted-foreground mb-8">
               Stories from our community programs and wellness initiatives
             </p>
+            <Link to="/events-training/trainings">
+              <button className="bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors inline-flex items-center gap-2">
+                <Calendar className="w-5 h-5" />
+                View Upcoming Trainings & Register
+                <ArrowRight className="w-5 h-5" />
+              </button>
+            </Link>
           </div>
         </div>
       </section>
