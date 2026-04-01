@@ -334,8 +334,8 @@ const Trainings = () => {
               ) : submitted ? (
                 <div className="bg-green-50 border border-green-200 rounded-lg p-6 text-center">
                   <CheckCircle className="w-12 h-12 text-green-600 mx-auto mb-3" />
-                  <h4 className="text-lg font-semibold text-green-800 mb-2">Registration Successful!</h4>
-                  <p className="text-green-700">
+                  <h4 className="text-lg font-semibold text-foreground mb-2">Registration Successful!</h4>
+                  <p className="text-muted-foreground">
                     Thank you for registering. Please check your email for the meeting link.
                   </p>
                 </div>
