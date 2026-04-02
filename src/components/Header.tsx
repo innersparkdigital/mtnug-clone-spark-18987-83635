@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Menu, X, ChevronDown, Stethoscope, Building2, LogIn, User, LogOut, Phone, MessageCircle } from "lucide-react";
+import { Menu, X, ChevronDown, Stethoscope, Building2, LogIn, User, LogOut, Phone, MessageCircle, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import logo from "@/assets/innerspark-logo.png";
@@ -7,6 +7,7 @@ import AppDownloadPopup from "@/components/AppDownloadPopup";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { useUserRole } from "@/hooks/useUserRole";
 import PromoSlider from "@/components/PromoSlider";
 import {
   NavigationMenu,
@@ -38,6 +39,7 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { language, translateBatch } = useLanguage();
   const { user, signOut } = useAuth();
+  const { isAdmin } = useUserRole();
   const [translations, setTranslations] = useState({
     forProfessionals: "FOR PROFESSIONALS",
     forBusiness: "FOR BUSINESS",
@@ -139,6 +141,12 @@ const Header = () => {
           <Link to="/for-business" className="hover:text-primary-foreground/80 transition-colors">{translations.forBusiness}</Link>
           <Link to="/events-training/trainings" className="hover:text-primary-foreground/80 transition-colors font-semibold">Trainings</Link>
           <Link to="/corporate-wellbeing-check" className="hover:text-primary-foreground/80 transition-colors font-semibold">Corporate Wellbeing</Link>
+          {isAdmin && (
+            <Link to="/corporate-admin" className="hover:text-primary-foreground/80 transition-colors font-semibold flex items-center gap-1">
+              <Shield className="w-3 h-3" />
+              Corporate Admin
+            </Link>
+          )}
           <Link to="/donate-therapy">
             <Button size="sm" variant="secondary" className="text-[10px] px-2 py-0.5 h-5">
               {translations.donateTherapy}
@@ -287,6 +295,12 @@ const Header = () => {
                   <Link to="/learning/student-dashboard" className="block text-foreground hover:text-primary transition-colors font-medium">
                     My Learning
                   </Link>
+                  {isAdmin && (
+                    <Link to="/corporate-admin" className="flex items-center gap-2 text-primary font-semibold">
+                      <Shield className="w-4 h-4" />
+                      Corporate Admin
+                    </Link>
+                  )}
                   <Button 
                     variant="outline" 
                     className="w-full text-destructive border-destructive hover:bg-destructive hover:text-destructive-foreground"
