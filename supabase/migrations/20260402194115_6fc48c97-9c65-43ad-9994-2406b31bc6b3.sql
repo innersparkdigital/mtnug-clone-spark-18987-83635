@@ -1,0 +1,1 @@
+ALTER TABLE public.corporate_employees ADD COLUMN gender text;

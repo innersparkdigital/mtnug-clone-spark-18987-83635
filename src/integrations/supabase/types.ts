@@ -239,6 +239,7 @@ export type Database = {
           company_id: string
           created_at: string
           email: string
+          gender: string | null
           id: string
           invitation_sent: boolean
           invitation_sent_at: string | null
@@ -253,6 +254,7 @@ export type Database = {
           company_id: string
           created_at?: string
           email: string
+          gender?: string | null
           id?: string
           invitation_sent?: boolean
           invitation_sent_at?: string | null
@@ -267,6 +269,7 @@ export type Database = {
           company_id?: string
           created_at?: string
           email?: string
+          gender?: string | null
           id?: string
           invitation_sent?: boolean
           invitation_sent_at?: string | null
