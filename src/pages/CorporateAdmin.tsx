@@ -369,14 +369,16 @@ const CorporateAdmin = () => {
                         <div className="overflow-x-auto">
                           <table className="w-full text-sm">
                             <thead>
-                              <tr className="border-b bg-muted/50">
+                               <tr className="border-b bg-muted/50">
                                  <th className="text-left p-3 font-medium">Name</th>
-                                 <th className="text-left p-3 font-medium">Contact</th>
+                                 <th className="text-left p-3 font-medium">Email</th>
+                                 <th className="text-left p-3 font-medium">Phone</th>
                                  <th className="text-left p-3 font-medium">Access Code</th>
                                  <th className="text-left p-3 font-medium">Screening</th>
+                                 <th className="text-left p-3 font-medium">Date Taken</th>
                                  <th className="text-left p-3 font-medium">Wellbeing</th>
                                  <th className="text-left p-3 font-medium">Actions</th>
-                              </tr>
+                               </tr>
                             </thead>
                             <tbody>
                               {sortedEmployees.length === 0 ? (
