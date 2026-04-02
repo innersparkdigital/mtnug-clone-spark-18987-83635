@@ -717,13 +717,25 @@ const CorporateAdmin = () => {
                         <thead>
                           <tr className="border-b bg-muted/50">
                             <th className="text-center p-3 font-medium w-12">#</th>
-                            <th className="text-left p-3 font-medium">Name</th>
-                            <th className="text-left p-3 font-medium">Email</th>
-                            <th className="text-left p-3 font-medium">Phone</th>
-                            <th className="text-left p-3 font-medium">Gender</th>
+                            <th className="text-left p-3 font-medium cursor-pointer select-none" onClick={() => toggleSort(employeeSortKey, 'name', employeeSortDir, setEmployeeSortKey, setEmployeeSortDir)}>
+                              <span className="inline-flex items-center">Name<SortIcon column="name" activeKey={employeeSortKey} activeDir={employeeSortDir} /></span>
+                            </th>
+                            <th className="text-left p-3 font-medium cursor-pointer select-none" onClick={() => toggleSort(employeeSortKey, 'email', employeeSortDir, setEmployeeSortKey, setEmployeeSortDir)}>
+                              <span className="inline-flex items-center">Email<SortIcon column="email" activeKey={employeeSortKey} activeDir={employeeSortDir} /></span>
+                            </th>
+                            <th className="text-left p-3 font-medium cursor-pointer select-none" onClick={() => toggleSort(employeeSortKey, 'phone', employeeSortDir, setEmployeeSortKey, setEmployeeSortDir)}>
+                              <span className="inline-flex items-center">Phone<SortIcon column="phone" activeKey={employeeSortKey} activeDir={employeeSortDir} /></span>
+                            </th>
+                            <th className="text-left p-3 font-medium cursor-pointer select-none" onClick={() => toggleSort(employeeSortKey, 'gender', employeeSortDir, setEmployeeSortKey, setEmployeeSortDir)}>
+                              <span className="inline-flex items-center">Gender<SortIcon column="gender" activeKey={employeeSortKey} activeDir={employeeSortDir} /></span>
+                            </th>
                             <th className="text-left p-3 font-medium">Code</th>
-                            <th className="text-left p-3 font-medium">Status</th>
-                            <th className="text-left p-3 font-medium">Date</th>
+                            <th className="text-left p-3 font-medium cursor-pointer select-none" onClick={() => toggleSort(employeeSortKey, 'status', employeeSortDir, setEmployeeSortKey, setEmployeeSortDir)}>
+                              <span className="inline-flex items-center">Status<SortIcon column="status" activeKey={employeeSortKey} activeDir={employeeSortDir} /></span>
+                            </th>
+                            <th className="text-left p-3 font-medium cursor-pointer select-none" onClick={() => toggleSort(employeeSortKey, 'date', employeeSortDir, setEmployeeSortKey, setEmployeeSortDir)}>
+                              <span className="inline-flex items-center">Date<SortIcon column="date" activeKey={employeeSortKey} activeDir={employeeSortDir} /></span>
+                            </th>
                             <th className="text-left p-3 font-medium">Score</th>
                             <th className="text-left p-3 font-medium">Actions</th>
                           </tr>
