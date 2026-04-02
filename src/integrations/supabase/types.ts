@@ -194,6 +194,149 @@ export type Database = {
         }
         Relationships: []
       }
+      corporate_companies: {
+        Row: {
+          contact_email: string | null
+          contact_person: string | null
+          created_at: string
+          created_by: string | null
+          employee_count: number | null
+          id: string
+          industry: string | null
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          contact_email?: string | null
+          contact_person?: string | null
+          created_at?: string
+          created_by?: string | null
+          employee_count?: number | null
+          id?: string
+          industry?: string | null
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          contact_email?: string | null
+          contact_person?: string | null
+          created_at?: string
+          created_by?: string | null
+          employee_count?: number | null
+          id?: string
+          industry?: string | null
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      corporate_employees: {
+        Row: {
+          access_code: string
+          company_id: string
+          created_at: string
+          email: string
+          id: string
+          invitation_sent: boolean
+          invitation_sent_at: string | null
+          name: string
+          phone: string | null
+          screening_completed: boolean
+          secure_token: string
+          updated_at: string
+        }
+        Insert: {
+          access_code?: string
+          company_id: string
+          created_at?: string
+          email: string
+          id?: string
+          invitation_sent?: boolean
+          invitation_sent_at?: string | null
+          name: string
+          phone?: string | null
+          screening_completed?: boolean
+          secure_token?: string
+          updated_at?: string
+        }
+        Update: {
+          access_code?: string
+          company_id?: string
+          created_at?: string
+          email?: string
+          id?: string
+          invitation_sent?: boolean
+          invitation_sent_at?: string | null
+          name?: string
+          phone?: string | null
+          screening_completed?: boolean
+          secure_token?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "corporate_employees_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "corporate_companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      corporate_screenings: {
+        Row: {
+          company_id: string
+          completed_at: string
+          created_at: string
+          employee_id: string
+          id: string
+          total_score: number
+          wellbeing_category: string
+          who5_percentage: number
+          who5_score: number
+          workplace_responses: Json | null
+        }
+        Insert: {
+          company_id: string
+          completed_at?: string
+          created_at?: string
+          employee_id: string
+          id?: string
+          total_score?: number
+          wellbeing_category?: string
+          who5_percentage?: number
+          who5_score?: number
+          workplace_responses?: Json | null
+        }
+        Update: {
+          company_id?: string
+          completed_at?: string
+          created_at?: string
+          employee_id?: string
+          id?: string
+          total_score?: number
+          wellbeing_category?: string
+          who5_percentage?: number
+          who5_score?: number
+          workplace_responses?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "corporate_screenings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "corporate_companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "corporate_screenings_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "corporate_employees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       course_enrollments: {
         Row: {
           completed_at: string | null
