@@ -597,11 +597,7 @@ const CorporateAdmin = () => {
                       </tbody>
                     </table>
                   </div>
-                  {filteredCompanies.length > COMPANIES_PER_PAGE && (
-                    <div className="px-3 pb-3">
-                      <Pagination page={companyPage} totalPages={totalCompanyPages} onPageChange={setCompanyPage} />
-                    </div>
-                  )}
+                  <PaginationBar page={companyPage} totalPages={totalCompanyPages} totalItems={filteredCompanies.length} perPage={COMPANIES_PER_PAGE} onPageChange={setCompanyPage} />
                 </CardContent>
               </Card>
             </div>
