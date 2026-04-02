@@ -409,7 +409,9 @@ const CorporateAdmin = () => {
                                        </td>
                                        <td className="p-3">
                                          <div className="text-xs text-muted-foreground">{emp.email}</div>
-                                         {emp.phone && <div className="text-xs text-muted-foreground">{emp.phone}</div>}
+                                       </td>
+                                       <td className="p-3">
+                                         <div className="text-xs text-muted-foreground">{emp.phone || '—'}</div>
                                        </td>
                                        <td className="p-3 font-mono text-xs">{emp.access_code}</td>
                                       <td className="p-3">
