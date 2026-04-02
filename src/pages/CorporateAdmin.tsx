@@ -82,7 +82,10 @@ const CorporateAdmin = () => {
   }, [isAdmin, roleLoading, navigate]);
 
   useEffect(() => {
-    if (isAdmin) fetchCompanies();
+    if (isAdmin) {
+      fetchCompanies();
+      fetchAllGlobalData();
+    }
   }, [isAdmin]);
 
   useEffect(() => {
