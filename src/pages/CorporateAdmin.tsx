@@ -524,13 +524,23 @@ const CorporateAdmin = () => {
                       <thead>
                         <tr className="border-b bg-muted/50">
                           <th className="text-center p-3 font-medium w-12">#</th>
-                          <th className="text-left p-3 font-medium">Company</th>
-                          <th className="text-left p-3 font-medium">Industry</th>
-                          <th className="text-left p-3 font-medium">Contact</th>
-                          <th className="text-center p-3 font-medium">Employees</th>
+                          <th className="text-left p-3 font-medium cursor-pointer select-none" onClick={() => toggleSort(companySortKey, 'name', companySortDir, setCompanySortKey, setCompanySortDir)}>
+                            <span className="inline-flex items-center">Company<SortIcon column="name" activeKey={companySortKey} activeDir={companySortDir} /></span>
+                          </th>
+                          <th className="text-left p-3 font-medium cursor-pointer select-none" onClick={() => toggleSort(companySortKey, 'industry', companySortDir, setCompanySortKey, setCompanySortDir)}>
+                            <span className="inline-flex items-center">Industry<SortIcon column="industry" activeKey={companySortKey} activeDir={companySortDir} /></span>
+                          </th>
+                          <th className="text-left p-3 font-medium cursor-pointer select-none" onClick={() => toggleSort(companySortKey, 'contact', companySortDir, setCompanySortKey, setCompanySortDir)}>
+                            <span className="inline-flex items-center">Contact<SortIcon column="contact" activeKey={companySortKey} activeDir={companySortDir} /></span>
+                          </th>
+                          <th className="text-center p-3 font-medium cursor-pointer select-none" onClick={() => toggleSort(companySortKey, 'employees', companySortDir, setCompanySortKey, setCompanySortDir)}>
+                            <span className="inline-flex items-center">Employees<SortIcon column="employees" activeKey={companySortKey} activeDir={companySortDir} /></span>
+                          </th>
                           <th className="text-center p-3 font-medium">Screened</th>
                           <th className="text-center p-3 font-medium">Avg Score</th>
-                          <th className="text-center p-3 font-medium">Created</th>
+                          <th className="text-center p-3 font-medium cursor-pointer select-none" onClick={() => toggleSort(companySortKey, 'created', companySortDir, setCompanySortKey, setCompanySortDir)}>
+                            <span className="inline-flex items-center">Created<SortIcon column="created" activeKey={companySortKey} activeDir={companySortDir} /></span>
+                          </th>
                           <th className="text-right p-3 font-medium">Actions</th>
                         </tr>
                       </thead>
