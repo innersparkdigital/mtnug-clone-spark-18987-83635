@@ -231,22 +231,56 @@ const CorporateAdmin = () => {
     return priority(sa) - priority(sb);
   }), [employees, screenings]);
 
-  // Filtered & paginated companies
+  // Filtered, sorted & paginated companies
   const filteredCompanies = useMemo(() => {
-    if (!companySearch.trim()) return companies;
-    const q = companySearch.toLowerCase();
-    return companies.filter(c => c.name.toLowerCase().includes(q) || c.industry?.toLowerCase().includes(q) || c.contact_person?.toLowerCase().includes(q));
-  }, [companies, companySearch]);
+    let result = companies;
+    if (companySearch.trim()) {
+      const q = companySearch.toLowerCase();
+      result = result.filter(c => c.name.toLowerCase().includes(q) || c.industry?.toLowerCase().includes(q) || c.contact_person?.toLowerCase().includes(q));
+    }
+    if (companySortKey) {
+      result = [...result].sort((a, b) => {
+        let va: any, vb: any;
+        if (companySortKey === 'name') { va = a.name.toLowerCase(); vb = b.name.toLowerCase(); }
+        else if (companySortKey === 'industry') { va = (a.industry || '').toLowerCase(); vb = (b.industry || '').toLowerCase(); }
+        else if (companySortKey === 'contact') { va = (a.contact_person || '').toLowerCase(); vb = (b.contact_person || '').toLowerCase(); }
+        else if (companySortKey === 'employees') { va = a.employee_count || 0; vb = b.employee_count || 0; }
+        else if (companySortKey === 'created') { va = a.created_at; vb = b.created_at; }
+        else return 0;
+        if (va < vb) return companySortDir === 'asc' ? -1 : 1;
+        if (va > vb) return companySortDir === 'asc' ? 1 : -1;
+        return 0;
+      });
+    }
+    return result;
+  }, [companies, companySearch, companySortKey, companySortDir]);
 
-  const totalCompanyPages = Math.max(1, Math.ceil(filteredCompanies.length / COMPANIES_PER_PAGE));
-  const paginatedCompanies = filteredCompanies.slice((companyPage - 1) * COMPANIES_PER_PAGE, companyPage * COMPANIES_PER_PAGE);
-
-  // Filtered & paginated employees
+  // Filtered, sorted & paginated employees
   const filteredEmployees = useMemo(() => {
-    if (!employeeSearch.trim()) return sortedEmployees;
-    const q = employeeSearch.toLowerCase();
-    return sortedEmployees.filter(e => e.name.toLowerCase().includes(q) || e.email.toLowerCase().includes(q) || e.phone?.toLowerCase().includes(q));
-  }, [sortedEmployees, employeeSearch]);
+    let result = sortedEmployees;
+    if (employeeSearch.trim()) {
+      const q = employeeSearch.toLowerCase();
+      result = result.filter(e => e.name.toLowerCase().includes(q) || e.email.toLowerCase().includes(q) || e.phone?.toLowerCase().includes(q));
+    }
+    if (employeeSortKey) {
+      result = [...result].sort((a, b) => {
+        let va: any, vb: any;
+        const sa = employeeScreeningMap.get(a.id);
+        const sb = employeeScreeningMap.get(b.id);
+        if (employeeSortKey === 'name') { va = a.name.toLowerCase(); vb = b.name.toLowerCase(); }
+        else if (employeeSortKey === 'email') { va = a.email.toLowerCase(); vb = b.email.toLowerCase(); }
+        else if (employeeSortKey === 'phone') { va = (a.phone || '').toLowerCase(); vb = (b.phone || '').toLowerCase(); }
+        else if (employeeSortKey === 'gender') { va = (a.gender || '').toLowerCase(); vb = (b.gender || '').toLowerCase(); }
+        else if (employeeSortKey === 'status') { va = a.screening_completed ? 2 : a.invitation_sent ? 1 : 0; vb = b.screening_completed ? 2 : b.invitation_sent ? 1 : 0; }
+        else if (employeeSortKey === 'date') { va = sa?.completed_at || ''; vb = sb?.completed_at || ''; }
+        else return 0;
+        if (va < vb) return employeeSortDir === 'asc' ? -1 : 1;
+        if (va > vb) return employeeSortDir === 'asc' ? 1 : -1;
+        return 0;
+      });
+    }
+    return result;
+  }, [sortedEmployees, employeeSearch, employeeSortKey, employeeSortDir, screenings]);
 
   const totalEmployeePages = Math.max(1, Math.ceil(filteredEmployees.length / EMPLOYEES_PER_PAGE));
   const paginatedEmployees = filteredEmployees.slice((employeePage - 1) * EMPLOYEES_PER_PAGE, employeePage * EMPLOYEES_PER_PAGE);
