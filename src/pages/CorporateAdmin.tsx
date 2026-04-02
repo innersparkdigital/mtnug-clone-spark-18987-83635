@@ -348,9 +348,10 @@ const CorporateAdmin = () => {
                               ) : (
                                 employees.map(emp => (
                                   <tr key={emp.id} className="border-b">
-                                    <td className="p-3">{emp.name}</td>
-                                    <td className="p-3 text-muted-foreground">{emp.email}</td>
-                                    <td className="p-3 font-mono text-xs">{emp.access_code}</td>
+                                     <td className="p-3">{emp.name}</td>
+                                     <td className="p-3 text-muted-foreground">{emp.email}</td>
+                                     <td className="p-3 text-muted-foreground">{emp.phone || '—'}</td>
+                                     <td className="p-3 font-mono text-xs">{emp.access_code}</td>
                                     <td className="p-3">
                                       {emp.screening_completed ? (
                                         <span className="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700">Completed</span>
