@@ -504,6 +504,7 @@ const CorporateAdmin = () => {
                     <table className="w-full text-sm">
                       <thead>
                         <tr className="border-b bg-muted/50">
+                          <th className="text-center p-3 font-medium w-12">#</th>
                           <th className="text-left p-3 font-medium">Company</th>
                           <th className="text-left p-3 font-medium">Industry</th>
                           <th className="text-left p-3 font-medium">Contact</th>
@@ -516,15 +517,17 @@ const CorporateAdmin = () => {
                       </thead>
                       <tbody>
                         {paginatedCompanies.length === 0 ? (
-                          <tr><td colSpan={8} className="p-6 text-center text-muted-foreground">
+                          <tr><td colSpan={9} className="p-6 text-center text-muted-foreground">
                             {companySearch ? 'No companies match your search.' : 'No companies yet. Create one to get started.'}
                           </td></tr>
-                        ) : paginatedCompanies.map(c => {
+                        ) : paginatedCompanies.map((c, idx) => {
                           const compEmps = allEmployees.filter(e => e.company_id === c.id);
                           const compScrs = allScreenings.filter(s => s.company_id === c.id);
                           const avg = compScrs.length > 0 ? Math.round(compScrs.reduce((s, x) => s + x.who5_percentage, 0) / compScrs.length) : 0;
+                          const rowNum = (companyPage - 1) * COMPANIES_PER_PAGE + idx + 1;
                           return (
                             <tr key={c.id} className="border-b hover:bg-muted/30 cursor-pointer transition-colors" onClick={() => setSelectedCompany(c)}>
+                              <td className="p-3 text-center text-muted-foreground">{rowNum}</td>
                               <td className="p-3">
                                 <span className="font-medium">{c.name}</span>
                               </td>
@@ -688,6 +691,7 @@ const CorporateAdmin = () => {
                       <table className="w-full text-sm">
                         <thead>
                           <tr className="border-b bg-muted/50">
+                            <th className="text-center p-3 font-medium w-12">#</th>
                             <th className="text-left p-3 font-medium">Name</th>
                             <th className="text-left p-3 font-medium">Email</th>
                             <th className="text-left p-3 font-medium">Phone</th>
@@ -701,17 +705,19 @@ const CorporateAdmin = () => {
                         </thead>
                         <tbody>
                           {paginatedEmployees.length === 0 ? (
-                            <tr><td colSpan={9} className="p-6 text-center text-muted-foreground">
+                            <tr><td colSpan={10} className="p-6 text-center text-muted-foreground">
                               {employeeSearch ? 'No employees match your search.' : 'No employees added yet.'}
                             </td></tr>
-                          ) : paginatedEmployees.map(emp => {
+                          ) : paginatedEmployees.map((emp, idx) => {
                             const screening = employeeScreeningMap.get(emp.id);
                             const isRed = screening?.wellbeing_category === 'red';
                             const isYellow = screening?.wellbeing_category === 'yellow';
                             const needsSupport = isRed || isYellow;
+                            const empRowNum = (employeePage - 1) * EMPLOYEES_PER_PAGE + idx + 1;
 
                             return (
                               <tr key={emp.id} className={`border-b ${isRed ? 'bg-red-50/50' : isYellow ? 'bg-yellow-50/30' : ''}`}>
+                                <td className="p-3 text-center text-muted-foreground">{empRowNum}</td>
                                 <td className="p-3">
                                   <div className="flex items-center gap-1.5">
                                     {needsSupport && <AlertTriangle className={`w-3.5 h-3.5 shrink-0 ${isRed ? 'text-red-500' : 'text-yellow-500'}`} />}
