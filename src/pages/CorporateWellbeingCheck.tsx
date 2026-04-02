@@ -55,9 +55,9 @@ interface EmployeeData {
 }
 
 const getCategory = (percentage: number) => {
-  if (percentage >= 70) return { label: 'Good', color: 'text-green-600', bg: 'bg-green-50 border-green-200', bar: 'bg-green-500', emoji: '✨', key: 'green' };
-  if (percentage >= 40) return { label: 'Moderate', color: 'text-yellow-600', bg: 'bg-yellow-50 border-yellow-200', bar: 'bg-yellow-500', emoji: '🌤️', key: 'yellow' };
-  return { label: 'Needs Support', color: 'text-red-600', bg: 'bg-red-50 border-red-200', bar: 'bg-red-500', emoji: '💛', key: 'red' };
+  if (percentage >= 70) return { label: 'High Wellbeing', color: '#22c55e', bgClass: 'bg-green-50 border-green-200', textClass: 'text-green-700', barClass: 'bg-green-500', emoji: '✨', key: 'green', message: "Your responses suggest good mental wellbeing at this time. Continue maintaining the habits that are supporting you." };
+  if (percentage >= 40) return { label: 'Moderate Wellbeing', color: '#eab308', bgClass: 'bg-yellow-50 border-yellow-200', textClass: 'text-yellow-700', barClass: 'bg-yellow-500', emoji: '🌤️', key: 'yellow', message: "Your wellbeing is at a moderate level. There are areas that seem to be going well, and others that may need more attention." };
+  return { label: 'Low Wellbeing', color: '#ef4444', bgClass: 'bg-red-50 border-red-200', textClass: 'text-red-700', barClass: 'bg-red-500', emoji: '💛', key: 'red', message: "Your responses suggest that your mental wellbeing may be lower at the moment. It might help to take a closer look at what's been affecting you and consider getting support." };
 };
 
 const CorporateWellbeingCheck = () => {
