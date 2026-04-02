@@ -344,7 +344,7 @@ const CorporateAdmin = () => {
                             </thead>
                             <tbody>
                               {employees.length === 0 ? (
-                                <tr><td colSpan={5} className="p-6 text-center text-muted-foreground">No employees added yet.</td></tr>
+                                <tr><td colSpan={6} className="p-6 text-center text-muted-foreground">No employees added yet.</td></tr>
                               ) : (
                                 employees.map(emp => (
                                   <tr key={emp.id} className="border-b">
