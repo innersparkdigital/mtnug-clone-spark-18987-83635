@@ -14,7 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { Building2, Users, Plus, Upload, BarChart3, FileText, Send, Eye, Trash2, UserPlus, ClipboardList, AlertTriangle, Phone, MessageCircle } from 'lucide-react';
+import { Building2, Users, Plus, Upload, BarChart3, FileText, Send, Eye, Trash2, UserPlus, ClipboardList, AlertTriangle, Phone, MessageCircle, Download } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 
