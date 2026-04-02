@@ -14,7 +14,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { Building2, Users, Plus, Upload, BarChart3, FileText, Send, Eye, Trash2, UserPlus, ClipboardList, AlertTriangle, Phone, MessageCircle, Download } from 'lucide-react';
+import { Building2, Users, Plus, Upload, BarChart3, FileText, Send, Eye, Trash2, UserPlus, ClipboardList, AlertTriangle, Phone, MessageCircle, Download, TrendingUp, Activity } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 
@@ -35,6 +36,7 @@ interface Employee {
   name: string;
   email: string;
   phone: string | null;
+  gender: string | null;
   access_code: string;
   secure_token: string;
   invitation_sent: boolean;
@@ -68,8 +70,10 @@ const CorporateAdmin = () => {
   const [showCreateCompany, setShowCreateCompany] = useState(false);
   const [showAddEmployee, setShowAddEmployee] = useState(false);
   const [companyForm, setCompanyForm] = useState({ name: '', industry: '', employee_count: '', contact_person: '', contact_email: '', contact_phone: '' });
-  const [employeeForm, setEmployeeForm] = useState({ name: '', email: '', phone: '' });
+  const [employeeForm, setEmployeeForm] = useState({ name: '', email: '', phone: '', gender: '' });
   const [csvFile, setCsvFile] = useState<File | null>(null);
+  const [allEmployees, setAllEmployees] = useState<Employee[]>([]);
+  const [allScreenings, setAllScreenings] = useState<Screening[]>([]);
 
   useEffect(() => {
     if (!roleLoading && !isAdmin) {
@@ -78,7 +82,10 @@ const CorporateAdmin = () => {
   }, [isAdmin, roleLoading, navigate]);
 
   useEffect(() => {
-    if (isAdmin) fetchCompanies();
+    if (isAdmin) {
+      fetchCompanies();
+      fetchAllGlobalData();
+    }
   }, [isAdmin]);
 
   useEffect(() => {
@@ -92,6 +99,15 @@ const CorporateAdmin = () => {
     const { data } = await supabase.from('corporate_companies').select('*').order('created_at', { ascending: false });
     setCompanies((data as any[]) || []);
     setLoading(false);
+  };
+
+  const fetchAllGlobalData = async () => {
+    const [empRes, scrRes] = await Promise.all([
+      supabase.from('corporate_employees').select('*'),
+      supabase.from('corporate_screenings').select('*'),
+    ]);
+    setAllEmployees((empRes.data as any[]) || []);
+    setAllScreenings((scrRes.data as any[]) || []);
   };
 
   const fetchEmployees = async (companyId: string) => {
@@ -132,12 +148,14 @@ const CorporateAdmin = () => {
       name: employeeForm.name,
       email: employeeForm.email,
       phone: employeeForm.phone || null,
+      gender: employeeForm.gender || null,
     });
     if (error) { toast.error('Failed to add employee'); return; }
     toast.success('Employee added');
     setShowAddEmployee(false);
-    setEmployeeForm({ name: '', email: '', phone: '' });
+    setEmployeeForm({ name: '', email: '', phone: '', gender: '' });
     fetchEmployees(selectedCompany.id);
+    fetchAllGlobalData();
   };
 
   const handleCsvUpload = async () => {
@@ -146,7 +164,7 @@ const CorporateAdmin = () => {
     const rows = text.split('\n').slice(1).filter(r => r.trim());
     const parsed = rows.map(row => {
       const cols = row.split(',').map(c => c.trim().replace(/^"|"$/g, ''));
-      return { company_id: selectedCompany.id, name: cols[0] || '', email: cols[1] || '', phone: cols[2] || null };
+      return { company_id: selectedCompany.id, name: cols[0] || '', email: cols[1] || '', phone: cols[2] || null, gender: cols[3] || null };
     }).filter(e => e.name && e.email);
 
     if (parsed.length === 0) { toast.error('No valid rows found in CSV'); return; }
@@ -333,12 +351,165 @@ const CorporateAdmin = () => {
             {/* Main Content */}
             <div className="lg:col-span-3">
               {!selectedCompany ? (
-                <Card className="flex items-center justify-center h-64">
-                  <div className="text-center text-muted-foreground">
-                    <Building2 className="w-12 h-12 mx-auto mb-3 opacity-30" />
-                    <p>Select a company to view details</p>
+                <div className="space-y-6">
+                  {/* Global Summary Cards */}
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <Card><CardContent className="pt-4 text-center"><div className="text-2xl font-bold text-foreground">{companies.length}</div><p className="text-xs text-muted-foreground">Total Companies</p></CardContent></Card>
+                    <Card><CardContent className="pt-4 text-center"><div className="text-2xl font-bold text-primary">{allEmployees.length}</div><p className="text-xs text-muted-foreground">Total Employees</p></CardContent></Card>
+                    <Card><CardContent className="pt-4 text-center"><div className="text-2xl font-bold text-foreground">{allScreenings.length}</div><p className="text-xs text-muted-foreground">Screenings Completed</p></CardContent></Card>
+                    <Card><CardContent className="pt-4 text-center"><div className="text-2xl font-bold text-foreground">{allEmployees.length > 0 ? Math.round((allScreenings.length / allEmployees.length) * 100) : 0}%</div><p className="text-xs text-muted-foreground">Overall Participation</p></CardContent></Card>
                   </div>
-                </Card>
+
+                  {/* Gender Distribution */}
+                  <Card>
+                    <CardHeader><CardTitle className="text-sm flex items-center gap-2"><Users className="w-4 h-4" /> Gender Distribution</CardTitle></CardHeader>
+                    <CardContent>
+                      {(() => {
+                        const genderCounts: Record<string, number> = {};
+                        allEmployees.forEach(e => {
+                          const g = e.gender ? e.gender.charAt(0).toUpperCase() + e.gender.slice(1).toLowerCase() : 'Not Specified';
+                          genderCounts[g] = (genderCounts[g] || 0) + 1;
+                        });
+                        const total = allEmployees.length;
+                        if (total === 0) return <p className="text-sm text-muted-foreground">No employees registered yet.</p>;
+                        return (
+                          <div className="space-y-3">
+                            {Object.entries(genderCounts).sort((a, b) => b[1] - a[1]).map(([gender, count]) => (
+                              <div key={gender}>
+                                <div className="flex justify-between text-sm mb-1">
+                                  <span className="font-medium">{gender}</span>
+                                  <span>{count} ({Math.round((count / total) * 100)}%)</span>
+                                </div>
+                                <Progress value={(count / total) * 100} className="h-2" />
+                              </div>
+                            ))}
+                          </div>
+                        );
+                      })()}
+                    </CardContent>
+                  </Card>
+
+                  {/* Overall Risk Distribution */}
+                  <Card>
+                    <CardHeader><CardTitle className="text-sm flex items-center gap-2"><Activity className="w-4 h-4" /> Overall Risk Distribution</CardTitle></CardHeader>
+                    <CardContent>
+                      {(() => {
+                        const total = allScreenings.length;
+                        if (total === 0) return <p className="text-sm text-muted-foreground">No screening data yet.</p>;
+                        const gGreen = allScreenings.filter(s => s.wellbeing_category === 'green').length;
+                        const gYellow = allScreenings.filter(s => s.wellbeing_category === 'yellow').length;
+                        const gRed = allScreenings.filter(s => s.wellbeing_category === 'red').length;
+                        const avgWellbeing = Math.round(allScreenings.reduce((s, x) => s + x.who5_percentage, 0) / total);
+                        return (
+                          <div className="space-y-4">
+                            <div className="text-center mb-4">
+                              <div className="text-3xl font-bold text-primary">{avgWellbeing}%</div>
+                              <p className="text-xs text-muted-foreground">Average Wellbeing Score (All Companies)</p>
+                            </div>
+                            <div>
+                              <div className="flex justify-between text-sm mb-1"><span className="font-medium">🟢 Healthy</span><span>{gGreen} ({Math.round((gGreen / total) * 100)}%)</span></div>
+                              <Progress value={(gGreen / total) * 100} className="h-3 [&>div]:bg-green-500" />
+                            </div>
+                            <div>
+                              <div className="flex justify-between text-sm mb-1"><span className="font-medium">🟡 At Risk</span><span>{gYellow} ({Math.round((gYellow / total) * 100)}%)</span></div>
+                              <Progress value={(gYellow / total) * 100} className="h-3 [&>div]:bg-yellow-500" />
+                            </div>
+                            <div>
+                              <div className="flex justify-between text-sm mb-1"><span className="font-medium">🔴 Critical</span><span>{gRed} ({Math.round((gRed / total) * 100)}%)</span></div>
+                              <Progress value={(gRed / total) * 100} className="h-3 [&>div]:bg-red-500" />
+                            </div>
+                          </div>
+                        );
+                      })()}
+                    </CardContent>
+                  </Card>
+
+                  {/* Company Comparison */}
+                  <Card>
+                    <CardHeader><CardTitle className="text-sm flex items-center gap-2"><TrendingUp className="w-4 h-4" /> Company Comparison</CardTitle></CardHeader>
+                    <CardContent>
+                      {companies.length === 0 ? (
+                        <p className="text-sm text-muted-foreground">No companies yet.</p>
+                      ) : (
+                        <div className="space-y-3">
+                          {companies.map(c => {
+                            const compScreenings = allScreenings.filter(s => s.company_id === c.id);
+                            const compEmployees = allEmployees.filter(e => e.company_id === c.id);
+                            const avg = compScreenings.length > 0 ? Math.round(compScreenings.reduce((s, x) => s + x.who5_percentage, 0) / compScreenings.length) : 0;
+                            const participation = compEmployees.length > 0 ? Math.round((compScreenings.length / compEmployees.length) * 100) : 0;
+                            return (
+                              <div key={c.id} className="p-3 rounded-lg border bg-card cursor-pointer hover:bg-muted/50 transition-colors" onClick={() => setSelectedCompany(c)}>
+                                <div className="flex items-center justify-between mb-2">
+                                  <span className="font-medium text-sm">{c.name}</span>
+                                  <Badge variant="outline" className="text-xs">{compEmployees.length} employees</Badge>
+                                </div>
+                                <div className="grid grid-cols-3 gap-2 text-xs text-muted-foreground">
+                                  <div>Participation: <span className="font-semibold text-foreground">{participation}%</span></div>
+                                  <div>Avg Score: <span className="font-semibold text-foreground">{avg}%</span></div>
+                                  <div>Screenings: <span className="font-semibold text-foreground">{compScreenings.length}</span></div>
+                                </div>
+                                {compScreenings.length > 0 && (
+                                  <Progress value={avg} className="h-1.5 mt-2" />
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  {/* Gender x Wellbeing Breakdown */}
+                  <Card>
+                    <CardHeader><CardTitle className="text-sm flex items-center gap-2"><BarChart3 className="w-4 h-4" /> Wellbeing by Gender</CardTitle></CardHeader>
+                    <CardContent>
+                      {(() => {
+                        const genderMap: Record<string, { total: number; score: number; red: number; yellow: number; green: number }> = {};
+                        allScreenings.forEach(s => {
+                          const emp = allEmployees.find(e => e.id === s.employee_id);
+                          const g = emp?.gender ? emp.gender.charAt(0).toUpperCase() + emp.gender.slice(1).toLowerCase() : 'Not Specified';
+                          if (!genderMap[g]) genderMap[g] = { total: 0, score: 0, red: 0, yellow: 0, green: 0 };
+                          genderMap[g].total++;
+                          genderMap[g].score += s.who5_percentage;
+                          if (s.wellbeing_category === 'red') genderMap[g].red++;
+                          else if (s.wellbeing_category === 'yellow') genderMap[g].yellow++;
+                          else genderMap[g].green++;
+                        });
+                        if (Object.keys(genderMap).length === 0) return <p className="text-sm text-muted-foreground">No screening data yet.</p>;
+                        return (
+                          <div className="overflow-x-auto">
+                            <table className="w-full text-sm">
+                              <thead>
+                                <tr className="border-b bg-muted/50">
+                                  <th className="text-left p-2 font-medium">Gender</th>
+                                  <th className="text-center p-2 font-medium">Screened</th>
+                                  <th className="text-center p-2 font-medium">Avg Score</th>
+                                  <th className="text-center p-2 font-medium">🟢</th>
+                                  <th className="text-center p-2 font-medium">🟡</th>
+                                  <th className="text-center p-2 font-medium">🔴</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {Object.entries(genderMap).map(([gender, data]) => (
+                                  <tr key={gender} className="border-b">
+                                    <td className="p-2 font-medium">{gender}</td>
+                                    <td className="p-2 text-center">{data.total}</td>
+                                    <td className="p-2 text-center font-semibold">{Math.round(data.score / data.total)}%</td>
+                                    <td className="p-2 text-center">{data.green}</td>
+                                    <td className="p-2 text-center">{data.yellow}</td>
+                                    <td className="p-2 text-center">{data.red}</td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        );
+                      })()}
+                    </CardContent>
+                  </Card>
+
+                  <p className="text-center text-sm text-muted-foreground">👈 Select a company from the sidebar to view detailed analytics</p>
+                </div>
               ) : (
                 <Tabs defaultValue="analytics">
                   <TabsList className="mb-4">
@@ -395,6 +566,17 @@ const CorporateAdmin = () => {
                             <div><Label>Full Name *</Label><Input value={employeeForm.name} onChange={e => setEmployeeForm(p => ({ ...p, name: e.target.value }))} /></div>
                             <div><Label>Email *</Label><Input type="email" value={employeeForm.email} onChange={e => setEmployeeForm(p => ({ ...p, email: e.target.value }))} /></div>
                             <div><Label>Phone</Label><Input value={employeeForm.phone} onChange={e => setEmployeeForm(p => ({ ...p, phone: e.target.value }))} /></div>
+                            <div>
+                              <Label>Gender</Label>
+                              <Select value={employeeForm.gender} onValueChange={v => setEmployeeForm(p => ({ ...p, gender: v }))}>
+                                <SelectTrigger><SelectValue placeholder="Select gender" /></SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="Male">Male</SelectItem>
+                                  <SelectItem value="Female">Female</SelectItem>
+                                  <SelectItem value="Other">Other</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
                             <Button onClick={addEmployee} className="w-full">Add Employee</Button>
                           </div>
                         </DialogContent>
@@ -412,7 +594,7 @@ const CorporateAdmin = () => {
                       )}
                     </div>
 
-                    <p className="text-xs text-muted-foreground mb-3">CSV format: Name, Email, Phone (one per row, skip header)</p>
+                    <p className="text-xs text-muted-foreground mb-3">CSV format: Name, Email, Phone, Gender (one per row, skip header)</p>
 
                    {/* Needs Support Alert */}
                     {needsSupportCount > 0 && (
