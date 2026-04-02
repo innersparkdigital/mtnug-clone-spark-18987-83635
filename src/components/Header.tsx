@@ -39,6 +39,7 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { language, translateBatch } = useLanguage();
   const { user, signOut } = useAuth();
+  const { isAdmin } = useUserRole();
   const [translations, setTranslations] = useState({
     forProfessionals: "FOR PROFESSIONALS",
     forBusiness: "FOR BUSINESS",
