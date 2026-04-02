@@ -148,12 +148,14 @@ const CorporateAdmin = () => {
       name: employeeForm.name,
       email: employeeForm.email,
       phone: employeeForm.phone || null,
+      gender: employeeForm.gender || null,
     });
     if (error) { toast.error('Failed to add employee'); return; }
     toast.success('Employee added');
     setShowAddEmployee(false);
-    setEmployeeForm({ name: '', email: '', phone: '' });
+    setEmployeeForm({ name: '', email: '', phone: '', gender: '' });
     fetchEmployees(selectedCompany.id);
+    fetchAllGlobalData();
   };
 
   const handleCsvUpload = async () => {
