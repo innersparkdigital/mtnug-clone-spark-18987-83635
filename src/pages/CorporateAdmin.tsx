@@ -400,6 +400,12 @@ const CorporateAdmin = () => {
                         <Input type="file" accept=".csv" onChange={e => setCsvFile(e.target.files?.[0] || null)} className="max-w-[200px] text-xs" />
                         {csvFile && <Button size="sm" variant="outline" onClick={handleCsvUpload}><Upload className="w-4 h-4 mr-1" /> Upload CSV</Button>}
                       </div>
+
+                      {employees.length > 0 && (
+                        <Button size="sm" variant="outline" onClick={exportToCSV}>
+                          <Download className="w-4 h-4 mr-1" /> Export CSV
+                        </Button>
+                      )}
                     </div>
 
                     <p className="text-xs text-muted-foreground mb-3">CSV format: Name, Email, Phone (one per row, skip header)</p>
