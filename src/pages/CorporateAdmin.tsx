@@ -255,6 +255,9 @@ const CorporateAdmin = () => {
     return result;
   }, [companies, companySearch, companySortKey, companySortDir]);
 
+  const totalCompanyPages = Math.max(1, Math.ceil(filteredCompanies.length / COMPANIES_PER_PAGE));
+  const paginatedCompanies = filteredCompanies.slice((companyPage - 1) * COMPANIES_PER_PAGE, companyPage * COMPANIES_PER_PAGE);
+
   // Filtered, sorted & paginated employees
   const filteredEmployees = useMemo(() => {
     let result = sortedEmployees;
