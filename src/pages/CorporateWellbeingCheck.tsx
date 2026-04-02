@@ -69,6 +69,7 @@ const CorporateWellbeingCheck = () => {
   const [answers, setAnswers] = useState<(number | null)[]>(Array(ALL_QUESTIONS.length).fill(null));
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [selectedGender, setSelectedGender] = useState<string>('');
 
   // Check for token in URL
   useEffect(() => {
@@ -192,7 +193,7 @@ const CorporateWellbeingCheck = () => {
 
       await supabase
         .from('corporate_employees')
-        .update({ screening_completed: true })
+        .update({ screening_completed: true, gender: selectedGender || null })
         .eq('id', employee.id);
 
       setPhase('results');
@@ -279,7 +280,7 @@ const CorporateWellbeingCheck = () => {
                   </div>
                 )}
 
-                <div className="bg-card rounded-2xl border p-6 text-left space-y-3 mb-8">
+                <div className="bg-card rounded-2xl border p-6 text-left space-y-3 mb-6">
                   <div className="flex items-start gap-3">
                     <span className="text-lg">⏱️</span>
                     <p className="text-sm text-muted-foreground">Takes only 2–3 minutes</p>
@@ -294,7 +295,27 @@ const CorporateWellbeingCheck = () => {
                   </div>
                 </div>
 
-                <Button onClick={() => setPhase('test')} className="rounded-full px-8" size="lg">
+                {/* Gender Selection */}
+                <div className="mb-8 max-w-xs mx-auto">
+                  <p className="text-sm font-medium text-foreground mb-3">Please select your gender</p>
+                  <div className="flex gap-3 justify-center">
+                    {['Male', 'Female'].map(g => (
+                      <button
+                        key={g}
+                        onClick={() => setSelectedGender(g)}
+                        className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all border ${
+                          selectedGender === g
+                            ? 'bg-primary text-primary-foreground border-primary'
+                            : 'bg-card text-muted-foreground border-border hover:border-primary/50'
+                        }`}
+                      >
+                        {g}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <Button onClick={() => setPhase('test')} className="rounded-full px-8" size="lg" disabled={!selectedGender}>
                   Begin Check <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               </motion.div>
