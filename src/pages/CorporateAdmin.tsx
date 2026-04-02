@@ -222,12 +222,13 @@ const CorporateAdmin = () => {
 
   const exportAllCompanies = () => {
     if (companies.length === 0) return;
-    const headers = ['Company', 'Industry', 'Contact Person', 'Contact Email', 'Employee Count', 'Created'];
+    const headers = ['Company', 'Industry', 'Contact Person', 'Contact Email', 'Contact Phone', 'Employee Count', 'Created'];
     const rows = companies.map(c => [
       c.name,
       c.industry || '',
       c.contact_person || '',
       c.contact_email || '',
+      c.contact_phone || '',
       c.employee_count || '',
       new Date(c.created_at).toLocaleDateString('en-GB'),
     ].map(v => `"${v}"`).join(','));
