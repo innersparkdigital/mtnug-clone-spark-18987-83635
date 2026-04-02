@@ -366,17 +366,53 @@ const CorporateWellbeingCheck = () => {
 
             {/* RESULTS PHASE */}
             {phase === 'results' && (
-              <motion.div key="results" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="pt-8 text-center">
-                <div className="text-4xl mb-3">{category.emoji}</div>
-                <h2 className="text-2xl font-bold text-foreground mb-1">Your Wellbeing Score</h2>
+              <motion.div key="results" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="pt-8">
+                <img src={logo} alt="InnerSpark Africa" className="h-12 mx-auto mb-6" />
 
                 {/* Score Display */}
-                <div className={`rounded-2xl border p-6 mb-6 ${category.bg}`}>
-                  <div className={`text-5xl font-bold mb-1 ${category.color}`}>{totalPercentage}%</div>
-                  <div className={`text-lg font-semibold ${category.color}`}>{category.label}</div>
-                  <div className="w-full bg-white/50 rounded-full h-3 mt-4">
-                    <div className={`h-3 rounded-full ${category.bar} transition-all`} style={{ width: `${totalPercentage}%` }} />
+                <div className="text-center mb-8">
+                  <div className="text-6xl font-extrabold mb-1" style={{ color: category.color }}>
+                    {totalPercentage}%
                   </div>
+                  <div className="text-2xl mb-2">{category.emoji}</div>
+                  <div className={`inline-block px-4 py-1.5 rounded-full text-sm font-semibold border ${category.bgClass} ${category.textClass}`}>
+                    {category.label}
+                  </div>
+                </div>
+
+                {/* Score Bar */}
+                <div className="mb-6">
+                  <div className="h-4 rounded-full bg-gray-100 overflow-hidden relative">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${totalPercentage}%` }}
+                      transition={{ duration: 1, ease: 'easeOut' }}
+                      className={`h-full rounded-full ${category.barClass}`}
+                    />
+                  </div>
+                  <div className="flex justify-between text-xs text-muted-foreground mt-1">
+                    <span>0%</span>
+                    <span>50%</span>
+                    <span>75%</span>
+                    <span>100%</span>
+                  </div>
+                  <div className="flex text-xs mt-0.5">
+                    <span className="flex-[50] text-red-400 text-center">Low</span>
+                    <span className="flex-[25] text-yellow-500 text-center">Moderate</span>
+                    <span className="flex-[25] text-green-500 text-center">High</span>
+                  </div>
+                </div>
+
+                {/* Insight */}
+                <div className={`rounded-2xl p-5 border mb-6 ${category.bgClass}`}>
+                  <p className={`text-base leading-relaxed ${category.textClass}`}>
+                    {category.message}
+                  </p>
+                </div>
+
+                {/* Raw Score */}
+                <div className="text-center text-sm text-muted-foreground mb-6">
+                  Raw score: {totalScore}/{ALL_QUESTIONS.length * 5} • WHO-5 + Workplace Index
                 </div>
 
                 {/* Score Breakdown */}
@@ -391,6 +427,26 @@ const CorporateWellbeingCheck = () => {
                     <span className="font-medium">{Math.round((workplaceScores.reduce((a, b) => a + b, 0) / 15) * 100)}%</span>
                   </div>
                 </div>
+
+                {/* Talk to someone prompt - for low/moderate */}
+                {category.key !== 'green' && (
+                  <div className="bg-yellow-50 rounded-2xl border border-yellow-200 p-5 mb-6 text-left">
+                    <p className="text-sm font-medium text-foreground mb-3">Would you like to talk to someone about how you're feeling?</p>
+                    <div className="space-y-2">
+                      <a href="https://wa.me/256792085773?text=Hi%20InnerSpark%2C%20I%20just%20completed%20the%20corporate%20wellbeing%20check%20and%20would%20like%20to%20talk%20to%20someone." target="_blank" rel="noopener noreferrer">
+                        <Button className="w-full rounded-full bg-green-600 hover:bg-green-700 text-white" size="sm">
+                          ✅ Yes, I'd like to talk to someone
+                        </Button>
+                      </a>
+                      <Button variant="outline" className="w-full rounded-full text-sm" size="sm" onClick={() => toast.info("That's okay! You can reach out anytime.")}>
+                        ⏳ Maybe later
+                      </Button>
+                      <Button variant="ghost" className="w-full text-sm text-muted-foreground" size="sm" onClick={() => toast.info("No worries. Take care of yourself!")}>
+                        ❌ No, I'm okay for now
+                      </Button>
+                    </div>
+                  </div>
+                )}
 
                 {/* Recommendations */}
                 <div className="bg-card rounded-2xl border p-5 mb-6 text-left">
@@ -420,26 +476,82 @@ const CorporateWellbeingCheck = () => {
                   </div>
                 </div>
 
-                {/* CTAs */}
-                <div className="space-y-3">
-                  <a href="https://wa.me/256792085773?text=Hi%20InnerSpark%2C%20I%20just%20completed%20the%20corporate%20wellbeing%20check%20and%20would%20like%20to%20learn%20more%20about%20support%20options." target="_blank" rel="noopener noreferrer">
-                    <Button className="w-full rounded-full" size="lg">
-                      <Heart className="w-4 h-4 mr-2" /> Talk to a Counsellor
+                {/* Share Results */}
+                <div className="bg-card rounded-2xl border p-5 mb-6">
+                  <h3 className="font-semibold text-foreground text-sm mb-3 flex items-center gap-2">
+                    <Share2 className="w-4 h-4" /> Share Your Results
+                  </h3>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Button variant="outline" size="sm" className="rounded-xl text-xs" onClick={() => { window.open(`https://wa.me/?text=${encodeURIComponent(`I scored ${totalPercentage}% on my wellbeing check. Take yours at innersparkafrica.com/wellbeing-check`)}`, '_blank'); }}>
+                      💬 WhatsApp
                     </Button>
-                  </a>
+                    <Button variant="outline" size="sm" className="rounded-xl text-xs" onClick={() => { window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(`I scored ${totalPercentage}% on my wellbeing check with @InnerSparkAfrica. Check yours!`)}`, '_blank'); }}>
+                      🐦 Twitter/X
+                    </Button>
+                    <Button variant="outline" size="sm" className="rounded-xl text-xs" onClick={() => { window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent('https://www.innersparkafrica.com/wellbeing-check')}`, '_blank'); }}>
+                      📘 Facebook
+                    </Button>
+                    <Button variant="outline" size="sm" className="rounded-xl text-xs" onClick={() => { navigator.clipboard.writeText(`I scored ${totalPercentage}% on my wellbeing check. Take yours at innersparkafrica.com/wellbeing-check`); toast.success('Link copied!'); }}>
+                      <Copy className="w-3 h-3 mr-1" /> Copy Link
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Primary CTAs */}
+                <div className="space-y-3 mb-8">
+                  <Button size="lg" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl py-6 text-base shadow-lg" onClick={() => toast.info('App coming soon!')}>
+                    <Download className="w-5 h-5 mr-2" />
+                    Download the InnerSpark App
+                  </Button>
+
                   <Link to="/specialists">
-                    <Button variant="outline" className="w-full rounded-full mt-2" size="lg">
-                      <Users className="w-4 h-4 mr-2" /> Browse Specialists
+                    <Button variant="outline" size="lg" className="w-full rounded-xl py-6 text-base border-2 border-primary text-primary hover:bg-primary/5 mt-2">
+                      <MessageCircle className="w-5 h-5 mr-2" />
+                      Talk to a Therapist
+                    </Button>
+                  </Link>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <Link to="/support-groups">
+                      <Button variant="outline" className="w-full rounded-xl py-5 text-sm">
+                        <Users className="w-4 h-4 mr-1.5" />
+                        Support Groups
+                      </Button>
+                    </Link>
+                    <Link to="/mind-check">
+                      <Button variant="outline" className="w-full rounded-xl py-5 text-sm">
+                        <Brain className="w-4 h-4 mr-1.5" />
+                        Detailed Tests
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+
+                {/* Bridge to Detailed Assessments */}
+                <div className="bg-card rounded-2xl p-6 border shadow-sm text-center mb-8">
+                  <h3 className="text-lg font-bold text-foreground mb-2">Need a deeper understanding?</h3>
+                  <p className="text-muted-foreground text-sm mb-4">
+                    Take detailed clinical assessments for depression, anxiety, PTSD, and 34+ more conditions.
+                  </p>
+                  <Link to="/mind-check">
+                    <Button className="bg-foreground hover:bg-foreground/90 text-background rounded-full px-8">
+                      👉 Take Detailed Mental Health Assessments
                     </Button>
                   </Link>
                 </div>
 
-                <p className="text-xs text-muted-foreground mt-6">
-                  <Lock className="w-3 h-3 inline mr-1" />
-                  Your individual results are private. Your organisation only sees aggregated, anonymous data.
-                </p>
+                {/* Privacy */}
+                <div className="text-center text-xs text-muted-foreground space-y-1">
+                  <p className="flex items-center justify-center gap-1">
+                    <Lock className="w-3 h-3" />
+                    Your responses are private and confidential.
+                  </p>
+                  <p>Your organisation only sees aggregated, anonymous data.</p>
+                  <p>This is not a diagnosis, but a mental wellbeing screening tool.</p>
+                </div>
 
-                <div className="mt-6">
+                {/* Completion */}
+                <div className="text-center mt-6">
                   <CheckCircle className="w-5 h-5 text-green-500 mx-auto mb-1" />
                   <p className="text-sm text-muted-foreground">Screening complete. Thank you for participating.</p>
                 </div>
