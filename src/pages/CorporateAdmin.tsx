@@ -382,7 +382,7 @@ const CorporateAdmin = () => {
                             </thead>
                             <tbody>
                               {sortedEmployees.length === 0 ? (
-                                <tr><td colSpan={6} className="p-6 text-center text-muted-foreground">No employees added yet.</td></tr>
+                                <tr><td colSpan={8} className="p-6 text-center text-muted-foreground">No employees added yet.</td></tr>
                               ) : (
                                 sortedEmployees.map(emp => {
                                   const screening = employeeScreeningMap.get(emp.id);
