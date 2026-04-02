@@ -198,6 +198,7 @@ export type Database = {
         Row: {
           contact_email: string | null
           contact_person: string | null
+          contact_phone: string | null
           created_at: string
           created_by: string | null
           employee_count: number | null
@@ -209,6 +210,7 @@ export type Database = {
         Insert: {
           contact_email?: string | null
           contact_person?: string | null
+          contact_phone?: string | null
           created_at?: string
           created_by?: string | null
           employee_count?: number | null
@@ -220,6 +222,7 @@ export type Database = {
         Update: {
           contact_email?: string | null
           contact_person?: string | null
+          contact_phone?: string | null
           created_at?: string
           created_by?: string | null
           employee_count?: number | null
