@@ -25,6 +25,7 @@ interface Company {
   employee_count: number | null;
   contact_person: string | null;
   contact_email: string | null;
+  contact_phone: string | null;
   created_at: string;
 }
 
@@ -66,7 +67,7 @@ const CorporateAdmin = () => {
   // Form states
   const [showCreateCompany, setShowCreateCompany] = useState(false);
   const [showAddEmployee, setShowAddEmployee] = useState(false);
-  const [companyForm, setCompanyForm] = useState({ name: '', industry: '', employee_count: '', contact_person: '', contact_email: '' });
+  const [companyForm, setCompanyForm] = useState({ name: '', industry: '', employee_count: '', contact_person: '', contact_email: '', contact_phone: '' });
   const [employeeForm, setEmployeeForm] = useState({ name: '', email: '', phone: '' });
   const [csvFile, setCsvFile] = useState<File | null>(null);
 
@@ -111,12 +112,13 @@ const CorporateAdmin = () => {
       employee_count: companyForm.employee_count ? parseInt(companyForm.employee_count) : null,
       contact_person: companyForm.contact_person || null,
       contact_email: companyForm.contact_email || null,
+      contact_phone: companyForm.contact_phone || null,
       created_by: user?.id,
     });
     if (error) { toast.error('Failed to create company'); return; }
     toast.success('Company created');
     setShowCreateCompany(false);
-    setCompanyForm({ name: '', industry: '', employee_count: '', contact_person: '', contact_email: '' });
+    setCompanyForm({ name: '', industry: '', employee_count: '', contact_person: '', contact_email: '', contact_phone: '' });
     fetchCompanies();
   };
 
@@ -220,12 +222,13 @@ const CorporateAdmin = () => {
 
   const exportAllCompanies = () => {
     if (companies.length === 0) return;
-    const headers = ['Company', 'Industry', 'Contact Person', 'Contact Email', 'Employee Count', 'Created'];
+    const headers = ['Company', 'Industry', 'Contact Person', 'Contact Email', 'Contact Phone', 'Employee Count', 'Created'];
     const rows = companies.map(c => [
       c.name,
       c.industry || '',
       c.contact_person || '',
       c.contact_email || '',
+      c.contact_phone || '',
       c.employee_count || '',
       new Date(c.created_at).toLocaleDateString('en-GB'),
     ].map(v => `"${v}"`).join(','));
@@ -274,6 +277,7 @@ const CorporateAdmin = () => {
                   <div><Label>Number of Employees</Label><Input type="number" value={companyForm.employee_count} onChange={e => setCompanyForm(p => ({ ...p, employee_count: e.target.value }))} /></div>
                   <div><Label>Contact Person</Label><Input value={companyForm.contact_person} onChange={e => setCompanyForm(p => ({ ...p, contact_person: e.target.value }))} /></div>
                   <div><Label>Contact Email</Label><Input type="email" value={companyForm.contact_email} onChange={e => setCompanyForm(p => ({ ...p, contact_email: e.target.value }))} /></div>
+                  <div><Label>Contact Phone</Label><Input type="tel" value={companyForm.contact_phone} onChange={e => setCompanyForm(p => ({ ...p, contact_phone: e.target.value }))} /></div>
                   <Button onClick={createCompany} className="w-full">Create Company</Button>
                 </div>
               </DialogContent>
