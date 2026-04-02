@@ -1,0 +1,453 @@
+import { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import { useUserRole } from '@/hooks/useUserRole';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { Building2, Users, Plus, Upload, BarChart3, FileText, Send, Eye, Trash2, UserPlus, ClipboardList } from 'lucide-react';
+import { Progress } from '@/components/ui/progress';
+
+interface Company {
+  id: string;
+  name: string;
+  industry: string | null;
+  employee_count: number | null;
+  contact_person: string | null;
+  contact_email: string | null;
+  created_at: string;
+}
+
+interface Employee {
+  id: string;
+  company_id: string;
+  name: string;
+  email: string;
+  phone: string | null;
+  access_code: string;
+  secure_token: string;
+  invitation_sent: boolean;
+  screening_completed: boolean;
+}
+
+interface Screening {
+  id: string;
+  employee_id: string;
+  company_id: string;
+  who5_score: number;
+  who5_percentage: number;
+  workplace_responses: any;
+  total_score: number;
+  wellbeing_category: string;
+  completed_at: string;
+}
+
+const CorporateAdmin = () => {
+  const { user } = useAuth();
+  const { isAdmin, loading: roleLoading } = useUserRole();
+  const navigate = useNavigate();
+
+  const [companies, setCompanies] = useState<Company[]>([]);
+  const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
+  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [screenings, setScreenings] = useState<Screening[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Form states
+  const [showCreateCompany, setShowCreateCompany] = useState(false);
+  const [showAddEmployee, setShowAddEmployee] = useState(false);
+  const [companyForm, setCompanyForm] = useState({ name: '', industry: '', employee_count: '', contact_person: '', contact_email: '' });
+  const [employeeForm, setEmployeeForm] = useState({ name: '', email: '', phone: '' });
+  const [csvFile, setCsvFile] = useState<File | null>(null);
+
+  useEffect(() => {
+    if (!roleLoading && !isAdmin) {
+      navigate('/auth');
+    }
+  }, [isAdmin, roleLoading, navigate]);
+
+  useEffect(() => {
+    if (isAdmin) fetchCompanies();
+  }, [isAdmin]);
+
+  useEffect(() => {
+    if (selectedCompany) {
+      fetchEmployees(selectedCompany.id);
+      fetchScreenings(selectedCompany.id);
+    }
+  }, [selectedCompany]);
+
+  const fetchCompanies = async () => {
+    const { data } = await supabase.from('corporate_companies').select('*').order('created_at', { ascending: false });
+    setCompanies((data as any[]) || []);
+    setLoading(false);
+  };
+
+  const fetchEmployees = async (companyId: string) => {
+    const { data } = await supabase.from('corporate_employees').select('*').eq('company_id', companyId);
+    setEmployees((data as any[]) || []);
+  };
+
+  const fetchScreenings = async (companyId: string) => {
+    const { data } = await supabase.from('corporate_screenings').select('*').eq('company_id', companyId);
+    setScreenings((data as any[]) || []);
+  };
+
+  const createCompany = async () => {
+    if (!companyForm.name.trim()) { toast.error('Company name is required'); return; }
+    const { error } = await supabase.from('corporate_companies').insert({
+      name: companyForm.name,
+      industry: companyForm.industry || null,
+      employee_count: companyForm.employee_count ? parseInt(companyForm.employee_count) : null,
+      contact_person: companyForm.contact_person || null,
+      contact_email: companyForm.contact_email || null,
+      created_by: user?.id,
+    });
+    if (error) { toast.error('Failed to create company'); return; }
+    toast.success('Company created');
+    setShowCreateCompany(false);
+    setCompanyForm({ name: '', industry: '', employee_count: '', contact_person: '', contact_email: '' });
+    fetchCompanies();
+  };
+
+  const addEmployee = async () => {
+    if (!selectedCompany || !employeeForm.name.trim() || !employeeForm.email.trim()) {
+      toast.error('Name and email are required');
+      return;
+    }
+    const { error } = await supabase.from('corporate_employees').insert({
+      company_id: selectedCompany.id,
+      name: employeeForm.name,
+      email: employeeForm.email,
+      phone: employeeForm.phone || null,
+    });
+    if (error) { toast.error('Failed to add employee'); return; }
+    toast.success('Employee added');
+    setShowAddEmployee(false);
+    setEmployeeForm({ name: '', email: '', phone: '' });
+    fetchEmployees(selectedCompany.id);
+  };
+
+  const handleCsvUpload = async () => {
+    if (!csvFile || !selectedCompany) return;
+    const text = await csvFile.text();
+    const rows = text.split('\n').slice(1).filter(r => r.trim());
+    const parsed = rows.map(row => {
+      const cols = row.split(',').map(c => c.trim().replace(/^"|"$/g, ''));
+      return { company_id: selectedCompany.id, name: cols[0] || '', email: cols[1] || '', phone: cols[2] || null };
+    }).filter(e => e.name && e.email);
+
+    if (parsed.length === 0) { toast.error('No valid rows found in CSV'); return; }
+
+    const { error } = await supabase.from('corporate_employees').insert(parsed);
+    if (error) { toast.error('Upload failed'); return; }
+    toast.success(`${parsed.length} employees added`);
+    setCsvFile(null);
+    fetchEmployees(selectedCompany.id);
+  };
+
+  const deleteCompany = async (id: string) => {
+    await supabase.from('corporate_companies').delete().eq('id', id);
+    toast.success('Company deleted');
+    if (selectedCompany?.id === id) setSelectedCompany(null);
+    fetchCompanies();
+  };
+
+  // Analytics
+  const totalEmployees = employees.length;
+  const completedScreenings = screenings.length;
+  const participationRate = totalEmployees > 0 ? Math.round((completedScreenings / totalEmployees) * 100) : 0;
+  const avgScore = completedScreenings > 0 ? Math.round(screenings.reduce((s, x) => s + x.who5_percentage, 0) / completedScreenings) : 0;
+  const greenCount = screenings.filter(s => s.wellbeing_category === 'green').length;
+  const yellowCount = screenings.filter(s => s.wellbeing_category === 'yellow').length;
+  const redCount = screenings.filter(s => s.wellbeing_category === 'red').length;
+
+  const baseUrl = window.location.origin;
+
+  if (roleLoading || loading) {
+    return <div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" /></div>;
+  }
+
+  if (!isAdmin) return null;
+
+  return (
+    <>
+      <Helmet><title>Corporate Wellbeing Admin | InnerSpark Africa</title></Helmet>
+      <Header />
+      <div className="min-h-screen bg-muted/30 pt-4 pb-16">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
+                <Building2 className="w-6 h-6 text-primary" />
+                Corporate Wellbeing Admin
+              </h1>
+              <p className="text-sm text-muted-foreground">Manage companies, employees, and screening analytics</p>
+            </div>
+            <Dialog open={showCreateCompany} onOpenChange={setShowCreateCompany}>
+              <DialogTrigger asChild>
+                <Button><Plus className="w-4 h-4 mr-2" /> Create Company</Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader><DialogTitle>Create Company</DialogTitle></DialogHeader>
+                <div className="space-y-3">
+                  <div><Label>Company Name *</Label><Input value={companyForm.name} onChange={e => setCompanyForm(p => ({ ...p, name: e.target.value }))} /></div>
+                  <div><Label>Industry</Label><Input value={companyForm.industry} onChange={e => setCompanyForm(p => ({ ...p, industry: e.target.value }))} /></div>
+                  <div><Label>Number of Employees</Label><Input type="number" value={companyForm.employee_count} onChange={e => setCompanyForm(p => ({ ...p, employee_count: e.target.value }))} /></div>
+                  <div><Label>Contact Person</Label><Input value={companyForm.contact_person} onChange={e => setCompanyForm(p => ({ ...p, contact_person: e.target.value }))} /></div>
+                  <div><Label>Contact Email</Label><Input type="email" value={companyForm.contact_email} onChange={e => setCompanyForm(p => ({ ...p, contact_email: e.target.value }))} /></div>
+                  <Button onClick={createCompany} className="w-full">Create Company</Button>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            {/* Companies Sidebar */}
+            <div className="lg:col-span-1">
+              <Card>
+                <CardHeader className="pb-3"><CardTitle className="text-sm">Companies</CardTitle></CardHeader>
+                <CardContent className="space-y-2">
+                  {companies.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">No companies yet.</p>
+                  ) : (
+                    companies.map(c => (
+                      <div key={c.id} className={`p-3 rounded-lg cursor-pointer transition-colors border ${selectedCompany?.id === c.id ? 'bg-primary/10 border-primary' : 'hover:bg-muted border-transparent'}`}>
+                        <div className="flex items-center justify-between">
+                          <div onClick={() => setSelectedCompany(c)} className="flex-1">
+                            <p className="font-medium text-sm">{c.name}</p>
+                            {c.industry && <p className="text-xs text-muted-foreground">{c.industry}</p>}
+                          </div>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-destructive"><Trash2 className="w-3 h-3" /></Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Delete {c.name}?</AlertDialogTitle>
+                                <AlertDialogDescription>This will delete all employees and screenings for this company.</AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction onClick={() => deleteCompany(c.id)} className="bg-destructive text-destructive-foreground">Delete</AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Main Content */}
+            <div className="lg:col-span-3">
+              {!selectedCompany ? (
+                <Card className="flex items-center justify-center h-64">
+                  <div className="text-center text-muted-foreground">
+                    <Building2 className="w-12 h-12 mx-auto mb-3 opacity-30" />
+                    <p>Select a company to view details</p>
+                  </div>
+                </Card>
+              ) : (
+                <Tabs defaultValue="analytics">
+                  <TabsList className="mb-4">
+                    <TabsTrigger value="analytics"><BarChart3 className="w-4 h-4 mr-1" /> Analytics</TabsTrigger>
+                    <TabsTrigger value="employees"><Users className="w-4 h-4 mr-1" /> Employees</TabsTrigger>
+                    <TabsTrigger value="report"><FileText className="w-4 h-4 mr-1" /> Report</TabsTrigger>
+                  </TabsList>
+
+                  {/* ANALYTICS TAB */}
+                  <TabsContent value="analytics">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                      <Card><CardContent className="pt-4 text-center"><div className="text-2xl font-bold text-foreground">{totalEmployees}</div><p className="text-xs text-muted-foreground">Total Employees</p></CardContent></Card>
+                      <Card><CardContent className="pt-4 text-center"><div className="text-2xl font-bold text-primary">{participationRate}%</div><p className="text-xs text-muted-foreground">Participation</p></CardContent></Card>
+                      <Card><CardContent className="pt-4 text-center"><div className="text-2xl font-bold text-foreground">{avgScore}%</div><p className="text-xs text-muted-foreground">Avg Wellbeing</p></CardContent></Card>
+                      <Card><CardContent className="pt-4 text-center"><div className="text-2xl font-bold text-foreground">{completedScreenings}</div><p className="text-xs text-muted-foreground">Completed</p></CardContent></Card>
+                    </div>
+
+                    {/* Risk Segmentation */}
+                    <Card className="mb-6">
+                      <CardHeader><CardTitle className="text-sm">Risk Segmentation</CardTitle></CardHeader>
+                      <CardContent>
+                        {completedScreenings === 0 ? (
+                          <p className="text-sm text-muted-foreground">No screening data yet.</p>
+                        ) : (
+                          <div className="space-y-4">
+                            <div>
+                              <div className="flex justify-between text-sm mb-1"><span className="text-green-600 font-medium">🟢 Healthy</span><span>{greenCount} ({Math.round((greenCount / completedScreenings) * 100)}%)</span></div>
+                              <Progress value={(greenCount / completedScreenings) * 100} className="h-3 [&>div]:bg-green-500" />
+                            </div>
+                            <div>
+                              <div className="flex justify-between text-sm mb-1"><span className="text-yellow-600 font-medium">🟡 At Risk</span><span>{yellowCount} ({Math.round((yellowCount / completedScreenings) * 100)}%)</span></div>
+                              <Progress value={(yellowCount / completedScreenings) * 100} className="h-3 [&>div]:bg-yellow-500" />
+                            </div>
+                            <div>
+                              <div className="flex justify-between text-sm mb-1"><span className="text-red-600 font-medium">🔴 Critical</span><span>{redCount} ({Math.round((redCount / completedScreenings) * 100)}%)</span></div>
+                              <Progress value={(redCount / completedScreenings) * 100} className="h-3 [&>div]:bg-red-500" />
+                            </div>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </TabsContent>
+
+                  {/* EMPLOYEES TAB */}
+                  <TabsContent value="employees">
+                    <div className="flex items-center gap-2 mb-4">
+                      <Dialog open={showAddEmployee} onOpenChange={setShowAddEmployee}>
+                        <DialogTrigger asChild>
+                          <Button size="sm"><UserPlus className="w-4 h-4 mr-1" /> Add Employee</Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader><DialogTitle>Add Employee</DialogTitle></DialogHeader>
+                          <div className="space-y-3">
+                            <div><Label>Full Name *</Label><Input value={employeeForm.name} onChange={e => setEmployeeForm(p => ({ ...p, name: e.target.value }))} /></div>
+                            <div><Label>Email *</Label><Input type="email" value={employeeForm.email} onChange={e => setEmployeeForm(p => ({ ...p, email: e.target.value }))} /></div>
+                            <div><Label>Phone</Label><Input value={employeeForm.phone} onChange={e => setEmployeeForm(p => ({ ...p, phone: e.target.value }))} /></div>
+                            <Button onClick={addEmployee} className="w-full">Add Employee</Button>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
+
+                      <div className="flex items-center gap-2">
+                        <Input type="file" accept=".csv" onChange={e => setCsvFile(e.target.files?.[0] || null)} className="max-w-[200px] text-xs" />
+                        {csvFile && <Button size="sm" variant="outline" onClick={handleCsvUpload}><Upload className="w-4 h-4 mr-1" /> Upload CSV</Button>}
+                      </div>
+                    </div>
+
+                    <p className="text-xs text-muted-foreground mb-3">CSV format: Name, Email, Phone (one per row, skip header)</p>
+
+                    <Card>
+                      <CardContent className="p-0">
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-sm">
+                            <thead>
+                              <tr className="border-b bg-muted/50">
+                                <th className="text-left p-3 font-medium">Name</th>
+                                <th className="text-left p-3 font-medium">Email</th>
+                                <th className="text-left p-3 font-medium">Access Code</th>
+                                <th className="text-left p-3 font-medium">Status</th>
+                                <th className="text-left p-3 font-medium">Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {employees.length === 0 ? (
+                                <tr><td colSpan={5} className="p-6 text-center text-muted-foreground">No employees added yet.</td></tr>
+                              ) : (
+                                employees.map(emp => (
+                                  <tr key={emp.id} className="border-b">
+                                    <td className="p-3">{emp.name}</td>
+                                    <td className="p-3 text-muted-foreground">{emp.email}</td>
+                                    <td className="p-3 font-mono text-xs">{emp.access_code}</td>
+                                    <td className="p-3">
+                                      {emp.screening_completed ? (
+                                        <span className="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700">Completed</span>
+                                      ) : emp.invitation_sent ? (
+                                        <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">Invited</span>
+                                      ) : (
+                                        <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">Pending</span>
+                                      )}
+                                    </td>
+                                    <td className="p-3">
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => {
+                                          const link = `${baseUrl}/corporate-wellbeing-check?token=${emp.secure_token}`;
+                                          navigator.clipboard.writeText(link);
+                                          toast.success('Screening link copied!');
+                                        }}
+                                        className="text-xs h-7"
+                                      >
+                                        <ClipboardList className="w-3 h-3 mr-1" /> Copy Link
+                                      </Button>
+                                    </td>
+                                  </tr>
+                                ))
+                              )}
+                            </tbody>
+                          </table>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </TabsContent>
+
+                  {/* REPORT TAB */}
+                  <TabsContent value="report">
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-lg">Company Mental Health Report</CardTitle>
+                        <CardDescription>{selectedCompany.name} — Generated {new Date().toLocaleDateString()}</CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-6">
+                        {completedScreenings === 0 ? (
+                          <p className="text-muted-foreground">No screenings completed yet. Report will be generated once employees complete their checks.</p>
+                        ) : (
+                          <>
+                            <div>
+                              <h3 className="font-semibold mb-2">📊 Summary</h3>
+                              <ul className="text-sm text-muted-foreground space-y-1">
+                                <li>• {totalEmployees} employees enrolled, {completedScreenings} completed ({participationRate}% participation)</li>
+                                <li>• Average wellbeing score: {avgScore}%</li>
+                              </ul>
+                            </div>
+                            <div>
+                              <h3 className="font-semibold mb-2">🚦 Risk Distribution</h3>
+                              <ul className="text-sm text-muted-foreground space-y-1">
+                                <li>🟢 Healthy: {greenCount} employees ({Math.round((greenCount / completedScreenings) * 100)}%)</li>
+                                <li>🟡 At Risk: {yellowCount} employees ({Math.round((yellowCount / completedScreenings) * 100)}%)</li>
+                                <li>🔴 Critical: {redCount} employees ({Math.round((redCount / completedScreenings) * 100)}%)</li>
+                              </ul>
+                            </div>
+                            <div>
+                              <h3 className="font-semibold mb-2">💡 Recommendations</h3>
+                              <ul className="text-sm text-muted-foreground space-y-1">
+                                {redCount > 0 && <li>• Consider providing EAP (Employee Assistance Programme) access for staff needing immediate support</li>}
+                                {yellowCount > 0 && <li>• Organize wellness workshops or stress management sessions</li>}
+                                <li>• Encourage regular wellbeing check-ins every 30–90 days</li>
+                                <li>• Partner with InnerSpark Africa for ongoing corporate wellness support</li>
+                              </ul>
+                            </div>
+                            <Button
+                              variant="outline"
+                              onClick={() => {
+                                const report = `COMPANY MENTAL HEALTH REPORT\n${selectedCompany.name}\nGenerated: ${new Date().toLocaleDateString()}\n\nSUMMARY\n- Employees: ${totalEmployees}\n- Completed: ${completedScreenings} (${participationRate}%)\n- Avg Score: ${avgScore}%\n\nRISK DISTRIBUTION\n- Healthy: ${greenCount}\n- At Risk: ${yellowCount}\n- Critical: ${redCount}\n`;
+                                const blob = new Blob([report], { type: 'text/plain' });
+                                const url = URL.createObjectURL(blob);
+                                const a = document.createElement('a');
+                                a.href = url;
+                                a.download = `${selectedCompany.name.replace(/\s+/g, '_')}_wellbeing_report.txt`;
+                                a.click();
+                                URL.revokeObjectURL(url);
+                              }}
+                            >
+                              <FileText className="w-4 h-4 mr-2" /> Download Report
+                            </Button>
+                          </>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </TabsContent>
+                </Tabs>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+      <Footer />
+    </>
+  );
+};
+
+export default CorporateAdmin;
