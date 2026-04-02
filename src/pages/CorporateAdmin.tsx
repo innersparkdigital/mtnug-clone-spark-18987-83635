@@ -708,14 +708,16 @@ const CorporateAdmin = () => {
                             <tr><td colSpan={9} className="p-6 text-center text-muted-foreground">
                               {employeeSearch ? 'No employees match your search.' : 'No employees added yet.'}
                             </td></tr>
-                          ) : paginatedEmployees.map(emp => {
+                          ) : paginatedEmployees.map((emp, idx) => {
                             const screening = employeeScreeningMap.get(emp.id);
                             const isRed = screening?.wellbeing_category === 'red';
                             const isYellow = screening?.wellbeing_category === 'yellow';
                             const needsSupport = isRed || isYellow;
+                            const empRowNum = (employeePage - 1) * EMPLOYEES_PER_PAGE + idx + 1;
 
                             return (
                               <tr key={emp.id} className={`border-b ${isRed ? 'bg-red-50/50' : isYellow ? 'bg-yellow-50/30' : ''}`}>
+                                <td className="p-3 text-center text-muted-foreground">{empRowNum}</td>
                                 <td className="p-3">
                                   <div className="flex items-center gap-1.5">
                                     {needsSupport && <AlertTriangle className={`w-3.5 h-3.5 shrink-0 ${isRed ? 'text-red-500' : 'text-yellow-500'}`} />}
