@@ -67,7 +67,7 @@ const CorporateAdmin = () => {
   // Form states
   const [showCreateCompany, setShowCreateCompany] = useState(false);
   const [showAddEmployee, setShowAddEmployee] = useState(false);
-  const [companyForm, setCompanyForm] = useState({ name: '', industry: '', employee_count: '', contact_person: '', contact_email: '' });
+  const [companyForm, setCompanyForm] = useState({ name: '', industry: '', employee_count: '', contact_person: '', contact_email: '', contact_phone: '' });
   const [employeeForm, setEmployeeForm] = useState({ name: '', email: '', phone: '' });
   const [csvFile, setCsvFile] = useState<File | null>(null);
 
