@@ -705,7 +705,7 @@ const CorporateAdmin = () => {
                         </thead>
                         <tbody>
                           {paginatedEmployees.length === 0 ? (
-                            <tr><td colSpan={9} className="p-6 text-center text-muted-foreground">
+                            <tr><td colSpan={10} className="p-6 text-center text-muted-foreground">
                               {employeeSearch ? 'No employees match your search.' : 'No employees added yet.'}
                             </td></tr>
                           ) : paginatedEmployees.map((emp, idx) => {
