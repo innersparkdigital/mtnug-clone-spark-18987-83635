@@ -69,6 +69,7 @@ const CorporateWellbeingCheck = () => {
   const [answers, setAnswers] = useState<(number | null)[]>(Array(ALL_QUESTIONS.length).fill(null));
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [selectedGender, setSelectedGender] = useState<string>('');
 
   // Check for token in URL
   useEffect(() => {
