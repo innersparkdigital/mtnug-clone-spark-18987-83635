@@ -164,7 +164,7 @@ const CorporateAdmin = () => {
     const rows = text.split('\n').slice(1).filter(r => r.trim());
     const parsed = rows.map(row => {
       const cols = row.split(',').map(c => c.trim().replace(/^"|"$/g, ''));
-      return { company_id: selectedCompany.id, name: cols[0] || '', email: cols[1] || '', phone: cols[2] || null };
+      return { company_id: selectedCompany.id, name: cols[0] || '', email: cols[1] || '', phone: cols[2] || null, gender: cols[3] || null };
     }).filter(e => e.name && e.email);
 
     if (parsed.length === 0) { toast.error('No valid rows found in CSV'); return; }
