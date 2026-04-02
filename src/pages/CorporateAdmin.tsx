@@ -347,6 +347,23 @@ const CorporateAdmin = () => {
 
                     <p className="text-xs text-muted-foreground mb-3">CSV format: Name, Email, Phone (one per row, skip header)</p>
 
+                   {/* Needs Support Alert */}
+                    {needsSupportCount > 0 && (
+                      <Card className="mb-4 border-destructive/30 bg-destructive/5">
+                        <CardContent className="pt-4 pb-3 flex items-center gap-3">
+                          <AlertTriangle className="w-5 h-5 text-destructive shrink-0" />
+                          <div>
+                            <p className="font-semibold text-sm text-foreground">
+                              {needsSupportCount} employee{needsSupportCount > 1 ? 's' : ''} flagged for support
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              {redCount > 0 && `${redCount} critical`}{redCount > 0 && yellowCount > 0 && ', '}{yellowCount > 0 && `${yellowCount} at risk`} — consider reaching out.
+                            </p>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    )}
+
                     <Card>
                       <CardContent className="p-0">
                         <div className="overflow-x-auto">
@@ -354,48 +371,114 @@ const CorporateAdmin = () => {
                             <thead>
                               <tr className="border-b bg-muted/50">
                                  <th className="text-left p-3 font-medium">Name</th>
-                                 <th className="text-left p-3 font-medium">Email</th>
-                                 <th className="text-left p-3 font-medium">Phone</th>
+                                 <th className="text-left p-3 font-medium">Contact</th>
                                  <th className="text-left p-3 font-medium">Access Code</th>
-                                 <th className="text-left p-3 font-medium">Status</th>
+                                 <th className="text-left p-3 font-medium">Screening</th>
+                                 <th className="text-left p-3 font-medium">Wellbeing</th>
                                  <th className="text-left p-3 font-medium">Actions</th>
                               </tr>
                             </thead>
                             <tbody>
-                              {employees.length === 0 ? (
+                              {sortedEmployees.length === 0 ? (
                                 <tr><td colSpan={6} className="p-6 text-center text-muted-foreground">No employees added yet.</td></tr>
                               ) : (
-                                employees.map(emp => (
-                                  <tr key={emp.id} className="border-b">
-                                     <td className="p-3">{emp.name}</td>
-                                     <td className="p-3 text-muted-foreground">{emp.email}</td>
-                                     <td className="p-3 text-muted-foreground">{emp.phone || '—'}</td>
-                                     <td className="p-3 font-mono text-xs">{emp.access_code}</td>
-                                    <td className="p-3">
-                                      {emp.screening_completed ? (
-                                        <span className="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700">Completed</span>
-                                      ) : emp.invitation_sent ? (
-                                        <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">Invited</span>
-                                      ) : (
-                                        <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">Pending</span>
-                                      )}
-                                    </td>
-                                    <td className="p-3">
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={() => {
-                                          const link = `${baseUrl}/corporate-wellbeing-check?token=${emp.secure_token}`;
-                                          navigator.clipboard.writeText(link);
-                                          toast.success('Screening link copied!');
-                                        }}
-                                        className="text-xs h-7"
-                                      >
-                                        <ClipboardList className="w-3 h-3 mr-1" /> Copy Link
-                                      </Button>
-                                    </td>
-                                  </tr>
-                                ))
+                                sortedEmployees.map(emp => {
+                                  const screening = employeeScreeningMap.get(emp.id);
+                                  const isRed = screening?.wellbeing_category === 'red';
+                                  const isYellow = screening?.wellbeing_category === 'yellow';
+                                  const needsSupport = isRed || isYellow;
+
+                                  return (
+                                    <tr key={emp.id} className={`border-b ${isRed ? 'bg-red-50/50' : isYellow ? 'bg-yellow-50/30' : ''}`}>
+                                       <td className="p-3">
+                                         <div className="flex items-center gap-2">
+                                           {needsSupport && (
+                                             <AlertTriangle className={`w-4 h-4 shrink-0 ${isRed ? 'text-red-500' : 'text-yellow-500'}`} />
+                                           )}
+                                           <div>
+                                             <span className="font-medium">{emp.name}</span>
+                                             {needsSupport && (
+                                               <Badge variant={isRed ? 'destructive' : 'secondary'} className="ml-2 text-[10px] px-1.5 py-0">
+                                                 {isRed ? 'Needs Support' : 'At Risk'}
+                                               </Badge>
+                                             )}
+                                           </div>
+                                         </div>
+                                       </td>
+                                       <td className="p-3">
+                                         <div className="text-xs text-muted-foreground">{emp.email}</div>
+                                         {emp.phone && <div className="text-xs text-muted-foreground">{emp.phone}</div>}
+                                       </td>
+                                       <td className="p-3 font-mono text-xs">{emp.access_code}</td>
+                                      <td className="p-3">
+                                        {emp.screening_completed ? (
+                                          <span className="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700">Completed</span>
+                                        ) : emp.invitation_sent ? (
+                                          <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">Invited</span>
+                                        ) : (
+                                          <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">Pending</span>
+                                        )}
+                                      </td>
+                                      <td className="p-3">
+                                        {screening ? (
+                                          <div className="flex items-center gap-2">
+                                            <span className={`text-sm font-bold ${isRed ? 'text-red-600' : isYellow ? 'text-yellow-600' : 'text-green-600'}`}>
+                                              {screening.who5_percentage}%
+                                            </span>
+                                            <span className="text-xs">
+                                              {isRed ? '🔴' : isYellow ? '🟡' : '🟢'}
+                                            </span>
+                                          </div>
+                                        ) : (
+                                          <span className="text-xs text-muted-foreground">—</span>
+                                        )}
+                                      </td>
+                                      <td className="p-3">
+                                        <div className="flex items-center gap-1">
+                                          <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() => {
+                                              const link = `${baseUrl}/corporate-wellbeing-check?token=${emp.secure_token}`;
+                                              navigator.clipboard.writeText(link);
+                                              toast.success('Screening link copied!');
+                                            }}
+                                            className="text-xs h-7"
+                                          >
+                                            <ClipboardList className="w-3 h-3 mr-1" /> Link
+                                          </Button>
+                                          {needsSupport && emp.phone && (
+                                            <Button
+                                              variant="ghost"
+                                              size="sm"
+                                              onClick={() => {
+                                                const msg = encodeURIComponent(
+                                                  `Hi ${emp.name}, this is InnerSpark Africa. We noticed from our wellbeing check that you might benefit from some support. We're here for you — would you like to chat with one of our counselors?`
+                                                );
+                                                window.open(`https://wa.me/${emp.phone?.replace(/\D/g, '')}?text=${msg}`, '_blank');
+                                              }}
+                                              className="text-xs h-7 text-green-600 hover:text-green-700"
+                                              title="Reach out via WhatsApp"
+                                            >
+                                              <MessageCircle className="w-3 h-3" />
+                                            </Button>
+                                          )}
+                                          {needsSupport && emp.phone && (
+                                            <Button
+                                              variant="ghost"
+                                              size="sm"
+                                              onClick={() => window.open(`tel:${emp.phone}`, '_self')}
+                                              className="text-xs h-7 text-primary"
+                                              title="Call employee"
+                                            >
+                                              <Phone className="w-3 h-3" />
+                                            </Button>
+                                          )}
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  );
+                                })
                               )}
                             </tbody>
                           </table>
