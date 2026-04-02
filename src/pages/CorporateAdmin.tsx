@@ -284,7 +284,14 @@ const CorporateAdmin = () => {
             {/* Companies Sidebar */}
             <div className="lg:col-span-1">
               <Card>
-                <CardHeader className="pb-3"><CardTitle className="text-sm">Companies</CardTitle></CardHeader>
+                <CardHeader className="pb-3 flex flex-row items-center justify-between">
+                  <CardTitle className="text-sm">Companies</CardTitle>
+                  {companies.length > 0 && (
+                    <Button size="sm" variant="outline" onClick={exportAllCompanies} className="h-7 text-xs">
+                      <Download className="w-3 h-3 mr-1" /> Export
+                    </Button>
+                  )}
+                </CardHeader>
                 <CardContent className="space-y-2">
                   {companies.length === 0 ? (
                     <p className="text-sm text-muted-foreground">No companies yet.</p>
