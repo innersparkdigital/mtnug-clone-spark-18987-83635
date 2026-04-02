@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Menu, X, ChevronDown, Stethoscope, Building2, LogIn, User, LogOut, Phone, MessageCircle } from "lucide-react";
+import { Menu, X, ChevronDown, Stethoscope, Building2, LogIn, User, LogOut, Phone, MessageCircle, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import logo from "@/assets/innerspark-logo.png";
@@ -7,6 +7,7 @@ import AppDownloadPopup from "@/components/AppDownloadPopup";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { useUserRole } from "@/hooks/useUserRole";
 import PromoSlider from "@/components/PromoSlider";
 import {
   NavigationMenu,
