@@ -36,6 +36,7 @@ interface Employee {
   name: string;
   email: string;
   phone: string | null;
+  gender: string | null;
   access_code: string;
   secure_token: string;
   invitation_sent: boolean;
