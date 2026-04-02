@@ -520,12 +520,14 @@ const CorporateAdmin = () => {
                           <tr><td colSpan={9} className="p-6 text-center text-muted-foreground">
                             {companySearch ? 'No companies match your search.' : 'No companies yet. Create one to get started.'}
                           </td></tr>
-                        ) : paginatedCompanies.map(c => {
+                        ) : paginatedCompanies.map((c, idx) => {
                           const compEmps = allEmployees.filter(e => e.company_id === c.id);
                           const compScrs = allScreenings.filter(s => s.company_id === c.id);
                           const avg = compScrs.length > 0 ? Math.round(compScrs.reduce((s, x) => s + x.who5_percentage, 0) / compScrs.length) : 0;
+                          const rowNum = (companyPage - 1) * COMPANIES_PER_PAGE + idx + 1;
                           return (
                             <tr key={c.id} className="border-b hover:bg-muted/30 cursor-pointer transition-colors" onClick={() => setSelectedCompany(c)}>
+                              <td className="p-3 text-center text-muted-foreground">{rowNum}</td>
                               <td className="p-3">
                                 <span className="font-medium">{c.name}</span>
                               </td>
