@@ -70,8 +70,10 @@ const CorporateAdmin = () => {
   const [showCreateCompany, setShowCreateCompany] = useState(false);
   const [showAddEmployee, setShowAddEmployee] = useState(false);
   const [companyForm, setCompanyForm] = useState({ name: '', industry: '', employee_count: '', contact_person: '', contact_email: '', contact_phone: '' });
-  const [employeeForm, setEmployeeForm] = useState({ name: '', email: '', phone: '' });
+  const [employeeForm, setEmployeeForm] = useState({ name: '', email: '', phone: '', gender: '' });
   const [csvFile, setCsvFile] = useState<File | null>(null);
+  const [allEmployees, setAllEmployees] = useState<Employee[]>([]);
+  const [allScreenings, setAllScreenings] = useState<Screening[]>([]);
 
   useEffect(() => {
     if (!roleLoading && !isAdmin) {
