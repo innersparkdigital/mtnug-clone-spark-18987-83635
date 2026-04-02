@@ -14,7 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { Building2, Users, Plus, Upload, BarChart3, FileText, Trash2, UserPlus, ClipboardList, AlertTriangle, Phone, MessageCircle, Download, TrendingUp, Activity, Search, ChevronLeft, ChevronRight, ArrowLeft } from 'lucide-react';
+import { Building2, Users, Plus, Upload, BarChart3, FileText, Trash2, UserPlus, ClipboardList, AlertTriangle, Phone, MessageCircle, Download, TrendingUp, Activity, Search, ChevronLeft, ChevronRight, ArrowLeft, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -83,6 +83,21 @@ const CorporateAdmin = () => {
   const [companySearch, setCompanySearch] = useState('');
   const [employeeSearch, setEmployeeSearch] = useState('');
 
+  // Sorting
+  const [companySortKey, setCompanySortKey] = useState<string>('');
+  const [companySortDir, setCompanySortDir] = useState<'asc' | 'desc'>('asc');
+  const [employeeSortKey, setEmployeeSortKey] = useState<string>('');
+  const [employeeSortDir, setEmployeeSortDir] = useState<'asc' | 'desc'>('asc');
+
+  const toggleSort = (current: string, key: string, dir: 'asc' | 'desc', setKey: (k: string) => void, setDir: (d: 'asc' | 'desc') => void) => {
+    if (current === key) setDir(dir === 'asc' ? 'desc' : 'asc');
+    else { setKey(key); setDir('asc'); }
+  };
+
+  const SortIcon = ({ column, activeKey, activeDir }: { column: string; activeKey: string; activeDir: 'asc' | 'desc' }) => {
+    if (activeKey !== column) return <ArrowUpDown className="w-3 h-3 ml-1 opacity-40" />;
+    return activeDir === 'asc' ? <ArrowUp className="w-3 h-3 ml-1" /> : <ArrowDown className="w-3 h-3 ml-1" />;
+  };
   useEffect(() => {
     if (!roleLoading && !isAdmin) navigate('/auth');
   }, [isAdmin, roleLoading, navigate]);
@@ -216,22 +231,59 @@ const CorporateAdmin = () => {
     return priority(sa) - priority(sb);
   }), [employees, screenings]);
 
-  // Filtered & paginated companies
+  // Filtered, sorted & paginated companies
   const filteredCompanies = useMemo(() => {
-    if (!companySearch.trim()) return companies;
-    const q = companySearch.toLowerCase();
-    return companies.filter(c => c.name.toLowerCase().includes(q) || c.industry?.toLowerCase().includes(q) || c.contact_person?.toLowerCase().includes(q));
-  }, [companies, companySearch]);
+    let result = companies;
+    if (companySearch.trim()) {
+      const q = companySearch.toLowerCase();
+      result = result.filter(c => c.name.toLowerCase().includes(q) || c.industry?.toLowerCase().includes(q) || c.contact_person?.toLowerCase().includes(q));
+    }
+    if (companySortKey) {
+      result = [...result].sort((a, b) => {
+        let va: any, vb: any;
+        if (companySortKey === 'name') { va = a.name.toLowerCase(); vb = b.name.toLowerCase(); }
+        else if (companySortKey === 'industry') { va = (a.industry || '').toLowerCase(); vb = (b.industry || '').toLowerCase(); }
+        else if (companySortKey === 'contact') { va = (a.contact_person || '').toLowerCase(); vb = (b.contact_person || '').toLowerCase(); }
+        else if (companySortKey === 'employees') { va = a.employee_count || 0; vb = b.employee_count || 0; }
+        else if (companySortKey === 'created') { va = a.created_at; vb = b.created_at; }
+        else return 0;
+        if (va < vb) return companySortDir === 'asc' ? -1 : 1;
+        if (va > vb) return companySortDir === 'asc' ? 1 : -1;
+        return 0;
+      });
+    }
+    return result;
+  }, [companies, companySearch, companySortKey, companySortDir]);
 
   const totalCompanyPages = Math.max(1, Math.ceil(filteredCompanies.length / COMPANIES_PER_PAGE));
   const paginatedCompanies = filteredCompanies.slice((companyPage - 1) * COMPANIES_PER_PAGE, companyPage * COMPANIES_PER_PAGE);
 
-  // Filtered & paginated employees
+  // Filtered, sorted & paginated employees
   const filteredEmployees = useMemo(() => {
-    if (!employeeSearch.trim()) return sortedEmployees;
-    const q = employeeSearch.toLowerCase();
-    return sortedEmployees.filter(e => e.name.toLowerCase().includes(q) || e.email.toLowerCase().includes(q) || e.phone?.toLowerCase().includes(q));
-  }, [sortedEmployees, employeeSearch]);
+    let result = sortedEmployees;
+    if (employeeSearch.trim()) {
+      const q = employeeSearch.toLowerCase();
+      result = result.filter(e => e.name.toLowerCase().includes(q) || e.email.toLowerCase().includes(q) || e.phone?.toLowerCase().includes(q));
+    }
+    if (employeeSortKey) {
+      result = [...result].sort((a, b) => {
+        let va: any, vb: any;
+        const sa = employeeScreeningMap.get(a.id);
+        const sb = employeeScreeningMap.get(b.id);
+        if (employeeSortKey === 'name') { va = a.name.toLowerCase(); vb = b.name.toLowerCase(); }
+        else if (employeeSortKey === 'email') { va = a.email.toLowerCase(); vb = b.email.toLowerCase(); }
+        else if (employeeSortKey === 'phone') { va = (a.phone || '').toLowerCase(); vb = (b.phone || '').toLowerCase(); }
+        else if (employeeSortKey === 'gender') { va = (a.gender || '').toLowerCase(); vb = (b.gender || '').toLowerCase(); }
+        else if (employeeSortKey === 'status') { va = a.screening_completed ? 2 : a.invitation_sent ? 1 : 0; vb = b.screening_completed ? 2 : b.invitation_sent ? 1 : 0; }
+        else if (employeeSortKey === 'date') { va = sa?.completed_at || ''; vb = sb?.completed_at || ''; }
+        else return 0;
+        if (va < vb) return employeeSortDir === 'asc' ? -1 : 1;
+        if (va > vb) return employeeSortDir === 'asc' ? 1 : -1;
+        return 0;
+      });
+    }
+    return result;
+  }, [sortedEmployees, employeeSearch, employeeSortKey, employeeSortDir, screenings]);
 
   const totalEmployeePages = Math.max(1, Math.ceil(filteredEmployees.length / EMPLOYEES_PER_PAGE));
   const paginatedEmployees = filteredEmployees.slice((employeePage - 1) * EMPLOYEES_PER_PAGE, employeePage * EMPLOYEES_PER_PAGE);
@@ -286,32 +338,36 @@ const CorporateAdmin = () => {
 
   if (!isAdmin) return null;
 
-  // Pagination component
-  const Pagination = ({ page, totalPages, onPageChange }: { page: number; totalPages: number; onPageChange: (p: number) => void }) => (
-    <div className="flex items-center justify-between pt-3 px-1">
-      <p className="text-xs text-muted-foreground">Page {page} of {totalPages}</p>
-      <div className="flex items-center gap-1">
-        <Button variant="outline" size="sm" className="h-7 w-7 p-0" disabled={page <= 1} onClick={() => onPageChange(page - 1)}>
-          <ChevronLeft className="w-3.5 h-3.5" />
-        </Button>
-        {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
-          let pageNum: number;
-          if (totalPages <= 5) { pageNum = i + 1; }
-          else if (page <= 3) { pageNum = i + 1; }
-          else if (page >= totalPages - 2) { pageNum = totalPages - 4 + i; }
-          else { pageNum = page - 2 + i; }
-          return (
-            <Button key={pageNum} variant={pageNum === page ? 'default' : 'outline'} size="sm" className="h-7 w-7 p-0 text-xs" onClick={() => onPageChange(pageNum)}>
-              {pageNum}
-            </Button>
-          );
-        })}
-        <Button variant="outline" size="sm" className="h-7 w-7 p-0" disabled={page >= totalPages} onClick={() => onPageChange(page + 1)}>
-          <ChevronRight className="w-3.5 h-3.5" />
-        </Button>
+  // Pagination component matching reference style
+  const PaginationBar = ({ page, totalPages, totalItems, perPage, onPageChange }: { page: number; totalPages: number; totalItems: number; perPage: number; onPageChange: (p: number) => void }) => {
+    const start = totalItems === 0 ? 0 : (page - 1) * perPage + 1;
+    const end = Math.min(page * perPage, totalItems);
+    return (
+      <div className="flex items-center justify-between pt-3 px-4 pb-3 flex-wrap gap-2">
+        <p className="text-xs text-muted-foreground">Showing {start} to {end} of {totalItems} entries</p>
+        <div className="flex items-center gap-1">
+          <Button variant="outline" size="sm" className="h-8 px-3 text-xs" disabled={page <= 1} onClick={() => onPageChange(page - 1)}>
+            Previous
+          </Button>
+          {Array.from({ length: Math.min(totalPages, 6) }, (_, i) => {
+            let pageNum: number;
+            if (totalPages <= 6) { pageNum = i + 1; }
+            else if (page <= 3) { pageNum = i + 1; }
+            else if (page >= totalPages - 2) { pageNum = totalPages - 5 + i; }
+            else { pageNum = page - 2 + i; }
+            return (
+              <Button key={pageNum} variant={pageNum === page ? 'default' : 'outline'} size="sm" className="h-8 w-8 p-0 text-xs" onClick={() => onPageChange(pageNum)}>
+                {pageNum}
+              </Button>
+            );
+          })}
+          <Button variant="outline" size="sm" className="h-8 px-3 text-xs" disabled={page >= totalPages} onClick={() => onPageChange(page + 1)}>
+            Next
+          </Button>
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <>
@@ -505,13 +561,23 @@ const CorporateAdmin = () => {
                       <thead>
                         <tr className="border-b bg-muted/50">
                           <th className="text-center p-3 font-medium w-12">#</th>
-                          <th className="text-left p-3 font-medium">Company</th>
-                          <th className="text-left p-3 font-medium">Industry</th>
-                          <th className="text-left p-3 font-medium">Contact</th>
-                          <th className="text-center p-3 font-medium">Employees</th>
+                          <th className="text-left p-3 font-medium cursor-pointer select-none" onClick={() => toggleSort(companySortKey, 'name', companySortDir, setCompanySortKey, setCompanySortDir)}>
+                            <span className="inline-flex items-center">Company<SortIcon column="name" activeKey={companySortKey} activeDir={companySortDir} /></span>
+                          </th>
+                          <th className="text-left p-3 font-medium cursor-pointer select-none" onClick={() => toggleSort(companySortKey, 'industry', companySortDir, setCompanySortKey, setCompanySortDir)}>
+                            <span className="inline-flex items-center">Industry<SortIcon column="industry" activeKey={companySortKey} activeDir={companySortDir} /></span>
+                          </th>
+                          <th className="text-left p-3 font-medium cursor-pointer select-none" onClick={() => toggleSort(companySortKey, 'contact', companySortDir, setCompanySortKey, setCompanySortDir)}>
+                            <span className="inline-flex items-center">Contact<SortIcon column="contact" activeKey={companySortKey} activeDir={companySortDir} /></span>
+                          </th>
+                          <th className="text-center p-3 font-medium cursor-pointer select-none" onClick={() => toggleSort(companySortKey, 'employees', companySortDir, setCompanySortKey, setCompanySortDir)}>
+                            <span className="inline-flex items-center">Employees<SortIcon column="employees" activeKey={companySortKey} activeDir={companySortDir} /></span>
+                          </th>
                           <th className="text-center p-3 font-medium">Screened</th>
                           <th className="text-center p-3 font-medium">Avg Score</th>
-                          <th className="text-center p-3 font-medium">Created</th>
+                          <th className="text-center p-3 font-medium cursor-pointer select-none" onClick={() => toggleSort(companySortKey, 'created', companySortDir, setCompanySortKey, setCompanySortDir)}>
+                            <span className="inline-flex items-center">Created<SortIcon column="created" activeKey={companySortKey} activeDir={companySortDir} /></span>
+                          </th>
                           <th className="text-right p-3 font-medium">Actions</th>
                         </tr>
                       </thead>
@@ -568,11 +634,7 @@ const CorporateAdmin = () => {
                       </tbody>
                     </table>
                   </div>
-                  {filteredCompanies.length > COMPANIES_PER_PAGE && (
-                    <div className="px-3 pb-3">
-                      <Pagination page={companyPage} totalPages={totalCompanyPages} onPageChange={setCompanyPage} />
-                    </div>
-                  )}
+                  <PaginationBar page={companyPage} totalPages={totalCompanyPages} totalItems={filteredCompanies.length} perPage={COMPANIES_PER_PAGE} onPageChange={setCompanyPage} />
                 </CardContent>
               </Card>
             </div>
@@ -692,13 +754,25 @@ const CorporateAdmin = () => {
                         <thead>
                           <tr className="border-b bg-muted/50">
                             <th className="text-center p-3 font-medium w-12">#</th>
-                            <th className="text-left p-3 font-medium">Name</th>
-                            <th className="text-left p-3 font-medium">Email</th>
-                            <th className="text-left p-3 font-medium">Phone</th>
-                            <th className="text-left p-3 font-medium">Gender</th>
+                            <th className="text-left p-3 font-medium cursor-pointer select-none" onClick={() => toggleSort(employeeSortKey, 'name', employeeSortDir, setEmployeeSortKey, setEmployeeSortDir)}>
+                              <span className="inline-flex items-center">Name<SortIcon column="name" activeKey={employeeSortKey} activeDir={employeeSortDir} /></span>
+                            </th>
+                            <th className="text-left p-3 font-medium cursor-pointer select-none" onClick={() => toggleSort(employeeSortKey, 'email', employeeSortDir, setEmployeeSortKey, setEmployeeSortDir)}>
+                              <span className="inline-flex items-center">Email<SortIcon column="email" activeKey={employeeSortKey} activeDir={employeeSortDir} /></span>
+                            </th>
+                            <th className="text-left p-3 font-medium cursor-pointer select-none" onClick={() => toggleSort(employeeSortKey, 'phone', employeeSortDir, setEmployeeSortKey, setEmployeeSortDir)}>
+                              <span className="inline-flex items-center">Phone<SortIcon column="phone" activeKey={employeeSortKey} activeDir={employeeSortDir} /></span>
+                            </th>
+                            <th className="text-left p-3 font-medium cursor-pointer select-none" onClick={() => toggleSort(employeeSortKey, 'gender', employeeSortDir, setEmployeeSortKey, setEmployeeSortDir)}>
+                              <span className="inline-flex items-center">Gender<SortIcon column="gender" activeKey={employeeSortKey} activeDir={employeeSortDir} /></span>
+                            </th>
                             <th className="text-left p-3 font-medium">Code</th>
-                            <th className="text-left p-3 font-medium">Status</th>
-                            <th className="text-left p-3 font-medium">Date</th>
+                            <th className="text-left p-3 font-medium cursor-pointer select-none" onClick={() => toggleSort(employeeSortKey, 'status', employeeSortDir, setEmployeeSortKey, setEmployeeSortDir)}>
+                              <span className="inline-flex items-center">Status<SortIcon column="status" activeKey={employeeSortKey} activeDir={employeeSortDir} /></span>
+                            </th>
+                            <th className="text-left p-3 font-medium cursor-pointer select-none" onClick={() => toggleSort(employeeSortKey, 'date', employeeSortDir, setEmployeeSortKey, setEmployeeSortDir)}>
+                              <span className="inline-flex items-center">Date<SortIcon column="date" activeKey={employeeSortKey} activeDir={employeeSortDir} /></span>
+                            </th>
                             <th className="text-left p-3 font-medium">Score</th>
                             <th className="text-left p-3 font-medium">Actions</th>
                           </tr>
@@ -775,11 +849,7 @@ const CorporateAdmin = () => {
                         </tbody>
                       </table>
                     </div>
-                    {filteredEmployees.length > EMPLOYEES_PER_PAGE && (
-                      <div className="px-3 pb-3">
-                        <Pagination page={employeePage} totalPages={totalEmployeePages} onPageChange={setEmployeePage} />
-                      </div>
-                    )}
+                    <PaginationBar page={employeePage} totalPages={totalEmployeePages} totalItems={filteredEmployees.length} perPage={EMPLOYEES_PER_PAGE} onPageChange={setEmployeePage} />
                   </CardContent>
                 </Card>
               </TabsContent>
