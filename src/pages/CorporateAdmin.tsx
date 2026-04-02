@@ -594,7 +594,7 @@ const CorporateAdmin = () => {
                       )}
                     </div>
 
-                    <p className="text-xs text-muted-foreground mb-3">CSV format: Name, Email, Phone (one per row, skip header)</p>
+                    <p className="text-xs text-muted-foreground mb-3">CSV format: Name, Email, Phone, Gender (one per row, skip header)</p>
 
                    {/* Needs Support Alert */}
                     {needsSupportCount > 0 && (
