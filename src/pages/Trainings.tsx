@@ -121,21 +121,26 @@ const Trainings = () => {
 
       if (error) throw error;
 
-      // Send confirmation email via edge function
+      // Send confirmation email via transactional email system
       const firstName = formData.full_name.trim().split(" ")[0];
       const trainingDateFormatted = format(new Date(selectedTraining.training_date), "EEEE, MMMM d, yyyy");
+      const registrationId = crypto.randomUUID();
 
-      await supabase.functions.invoke("send-training-email", {
+      await supabase.functions.invoke("send-transactional-email", {
         body: {
+          templateName: "training-confirmation",
           recipientEmail: formData.email.trim(),
-          recipientName: firstName,
-          trainingTitle: selectedTraining.title,
-          trainingDate: trainingDateFormatted,
-          trainingTime: "10:00AM – 11:00AM",
-          meetingLink: selectedTraining.meeting_link || "",
-          meetingPassword: selectedTraining.meeting_password || "",
-          facilitatorName: selectedTraining.facilitator_name,
-          facilitatorTitle: selectedTraining.facilitator_title,
+          idempotencyKey: `training-confirm-${registrationId}`,
+          templateData: {
+            recipientName: firstName,
+            trainingTitle: selectedTraining.title,
+            trainingDate: trainingDateFormatted,
+            trainingTime: `10:00AM – ${selectedTraining.end_time || "11:00AM"}`,
+            meetingLink: selectedTraining.meeting_link || "",
+            meetingPassword: selectedTraining.meeting_password || "",
+            facilitatorName: selectedTraining.facilitator_name,
+            facilitatorTitle: selectedTraining.facilitator_title,
+          },
         },
       });
 

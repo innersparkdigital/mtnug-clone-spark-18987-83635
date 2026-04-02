@@ -110,6 +110,7 @@ import WellbeingCheck from "./pages/WellbeingCheck";
 import Trainings from "./pages/Trainings";
 import CorporateWellbeingCheck from "./pages/CorporateWellbeingCheck";
 import CorporateAdmin from "./pages/CorporateAdmin";
+import Unsubscribe from "./pages/Unsubscribe";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentCanceled from "./pages/PaymentCanceled";
 // Location SEO Pages
@@ -257,6 +258,7 @@ const App = () => (
             <Route path="/blog/what-is-therapy" element={<WhatIsTherapyPost />} />
             <Route path="/blog/benefits-of-therapy" element={<BenefitsOfTherapyPost />} />
             <Route path="/blog/types-of-therapy" element={<TypesOfTherapyPost />} />
+            <Route path="/unsubscribe" element={<Unsubscribe />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
             </Routes>
