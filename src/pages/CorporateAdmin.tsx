@@ -190,6 +190,56 @@ const CorporateAdmin = () => {
     return priority(sa) - priority(sb);
   });
 
+  const exportToCSV = () => {
+    if (!selectedCompany) return;
+    const headers = ['Name', 'Email', 'Phone', 'Access Code', 'Screening Status', 'Date Taken', 'WHO-5 Score', 'WHO-5 %', 'Wellbeing Category'];
+    const rows = sortedEmployees.map(emp => {
+      const screening = employeeScreeningMap.get(emp.id);
+      return [
+        emp.name,
+        emp.email,
+        emp.phone || '',
+        emp.access_code,
+        emp.screening_completed ? 'Completed' : emp.invitation_sent ? 'Invited' : 'Pending',
+        screening ? new Date(screening.completed_at).toLocaleDateString('en-GB') : '',
+        screening ? screening.who5_score : '',
+        screening ? screening.who5_percentage + '%' : '',
+        screening ? screening.wellbeing_category : '',
+      ].map(v => `"${v}"`).join(',');
+    });
+    const csv = [headers.join(','), ...rows].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${selectedCompany.name.replace(/\s+/g, '_')}_employees_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success('CSV exported');
+  };
+
+  const exportAllCompanies = () => {
+    if (companies.length === 0) return;
+    const headers = ['Company', 'Industry', 'Contact Person', 'Contact Email', 'Employee Count', 'Created'];
+    const rows = companies.map(c => [
+      c.name,
+      c.industry || '',
+      c.contact_person || '',
+      c.contact_email || '',
+      c.employee_count || '',
+      new Date(c.created_at).toLocaleDateString('en-GB'),
+    ].map(v => `"${v}"`).join(','));
+    const csv = [headers.join(','), ...rows].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `all_companies_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success('Companies CSV exported');
+  };
+
   const baseUrl = window.location.origin;
 
   if (roleLoading || loading) {
