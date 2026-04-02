@@ -112,6 +112,7 @@ const CorporateAdmin = () => {
       employee_count: companyForm.employee_count ? parseInt(companyForm.employee_count) : null,
       contact_person: companyForm.contact_person || null,
       contact_email: companyForm.contact_email || null,
+      contact_phone: companyForm.contact_phone || null,
       created_by: user?.id,
     });
     if (error) { toast.error('Failed to create company'); return; }
