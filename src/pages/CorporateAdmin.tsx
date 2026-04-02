@@ -83,6 +83,21 @@ const CorporateAdmin = () => {
   const [companySearch, setCompanySearch] = useState('');
   const [employeeSearch, setEmployeeSearch] = useState('');
 
+  // Sorting
+  const [companySortKey, setCompanySortKey] = useState<string>('');
+  const [companySortDir, setCompanySortDir] = useState<'asc' | 'desc'>('asc');
+  const [employeeSortKey, setEmployeeSortKey] = useState<string>('');
+  const [employeeSortDir, setEmployeeSortDir] = useState<'asc' | 'desc'>('asc');
+
+  const toggleSort = (current: string, key: string, dir: 'asc' | 'desc', setKey: (k: string) => void, setDir: (d: 'asc' | 'desc') => void) => {
+    if (current === key) setDir(dir === 'asc' ? 'desc' : 'asc');
+    else { setKey(key); setDir('asc'); }
+  };
+
+  const SortIcon = ({ column, activeKey, activeDir }: { column: string; activeKey: string; activeDir: 'asc' | 'desc' }) => {
+    if (activeKey !== column) return <ArrowUpDown className="w-3 h-3 ml-1 opacity-40" />;
+    return activeDir === 'asc' ? <ArrowUp className="w-3 h-3 ml-1" /> : <ArrowDown className="w-3 h-3 ml-1" />;
+  };
   useEffect(() => {
     if (!roleLoading && !isAdmin) navigate('/auth');
   }, [isAdmin, roleLoading, navigate]);
