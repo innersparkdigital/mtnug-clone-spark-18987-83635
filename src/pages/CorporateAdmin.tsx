@@ -334,11 +334,12 @@ const CorporateAdmin = () => {
                           <table className="w-full text-sm">
                             <thead>
                               <tr className="border-b bg-muted/50">
-                                <th className="text-left p-3 font-medium">Name</th>
-                                <th className="text-left p-3 font-medium">Email</th>
-                                <th className="text-left p-3 font-medium">Access Code</th>
-                                <th className="text-left p-3 font-medium">Status</th>
-                                <th className="text-left p-3 font-medium">Actions</th>
+                                 <th className="text-left p-3 font-medium">Name</th>
+                                 <th className="text-left p-3 font-medium">Email</th>
+                                 <th className="text-left p-3 font-medium">Phone</th>
+                                 <th className="text-left p-3 font-medium">Access Code</th>
+                                 <th className="text-left p-3 font-medium">Status</th>
+                                 <th className="text-left p-3 font-medium">Actions</th>
                               </tr>
                             </thead>
                             <tbody>
