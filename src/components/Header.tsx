@@ -295,6 +295,12 @@ const Header = () => {
                   <Link to="/learning/student-dashboard" className="block text-foreground hover:text-primary transition-colors font-medium">
                     My Learning
                   </Link>
+                  {isAdmin && (
+                    <Link to="/corporate-admin" className="flex items-center gap-2 text-primary font-semibold">
+                      <Shield className="w-4 h-4" />
+                      Corporate Admin
+                    </Link>
+                  )}
                   <Button 
                     variant="outline" 
                     className="w-full text-destructive border-destructive hover:bg-destructive hover:text-destructive-foreground"
