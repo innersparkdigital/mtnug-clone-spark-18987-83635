@@ -422,8 +422,17 @@ const CorporateAdmin = () => {
                                         ) : (
                                           <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">Pending</span>
                                         )}
-                                      </td>
-                                      <td className="p-3">
+                                       </td>
+                                       <td className="p-3">
+                                         {screening ? (
+                                           <span className="text-xs text-muted-foreground">
+                                             {new Date(screening.completed_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                           </span>
+                                         ) : (
+                                           <span className="text-xs text-muted-foreground">—</span>
+                                         )}
+                                       </td>
+                                       <td className="p-3">
                                         {screening ? (
                                           <div className="flex items-center gap-2">
                                             <span className={`text-sm font-bold ${isRed ? 'text-red-600' : isYellow ? 'text-yellow-600' : 'text-green-600'}`}>
