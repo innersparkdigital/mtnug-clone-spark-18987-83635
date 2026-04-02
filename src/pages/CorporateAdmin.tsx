@@ -504,6 +504,7 @@ const CorporateAdmin = () => {
                     <table className="w-full text-sm">
                       <thead>
                         <tr className="border-b bg-muted/50">
+                          <th className="text-center p-3 font-medium w-12">#</th>
                           <th className="text-left p-3 font-medium">Company</th>
                           <th className="text-left p-3 font-medium">Industry</th>
                           <th className="text-left p-3 font-medium">Contact</th>
