@@ -14,7 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { Building2, Users, Plus, Upload, BarChart3, FileText, Send, Eye, Trash2, UserPlus, ClipboardList, AlertTriangle, Phone, MessageCircle } from 'lucide-react';
+import { Building2, Users, Plus, Upload, BarChart3, FileText, Send, Eye, Trash2, UserPlus, ClipboardList, AlertTriangle, Phone, MessageCircle, Download } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 
@@ -190,6 +190,56 @@ const CorporateAdmin = () => {
     return priority(sa) - priority(sb);
   });
 
+  const exportToCSV = () => {
+    if (!selectedCompany) return;
+    const headers = ['Name', 'Email', 'Phone', 'Access Code', 'Screening Status', 'Date Taken', 'WHO-5 Score', 'WHO-5 %', 'Wellbeing Category'];
+    const rows = sortedEmployees.map(emp => {
+      const screening = employeeScreeningMap.get(emp.id);
+      return [
+        emp.name,
+        emp.email,
+        emp.phone || '',
+        emp.access_code,
+        emp.screening_completed ? 'Completed' : emp.invitation_sent ? 'Invited' : 'Pending',
+        screening ? new Date(screening.completed_at).toLocaleDateString('en-GB') : '',
+        screening ? screening.who5_score : '',
+        screening ? screening.who5_percentage + '%' : '',
+        screening ? screening.wellbeing_category : '',
+      ].map(v => `"${v}"`).join(',');
+    });
+    const csv = [headers.join(','), ...rows].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${selectedCompany.name.replace(/\s+/g, '_')}_employees_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success('CSV exported');
+  };
+
+  const exportAllCompanies = () => {
+    if (companies.length === 0) return;
+    const headers = ['Company', 'Industry', 'Contact Person', 'Contact Email', 'Employee Count', 'Created'];
+    const rows = companies.map(c => [
+      c.name,
+      c.industry || '',
+      c.contact_person || '',
+      c.contact_email || '',
+      c.employee_count || '',
+      new Date(c.created_at).toLocaleDateString('en-GB'),
+    ].map(v => `"${v}"`).join(','));
+    const csv = [headers.join(','), ...rows].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `all_companies_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success('Companies CSV exported');
+  };
+
   const baseUrl = window.location.origin;
 
   if (roleLoading || loading) {
@@ -234,7 +284,14 @@ const CorporateAdmin = () => {
             {/* Companies Sidebar */}
             <div className="lg:col-span-1">
               <Card>
-                <CardHeader className="pb-3"><CardTitle className="text-sm">Companies</CardTitle></CardHeader>
+                <CardHeader className="pb-3 flex flex-row items-center justify-between">
+                  <CardTitle className="text-sm">Companies</CardTitle>
+                  {companies.length > 0 && (
+                    <Button size="sm" variant="outline" onClick={exportAllCompanies} className="h-7 text-xs">
+                      <Download className="w-3 h-3 mr-1" /> Export
+                    </Button>
+                  )}
+                </CardHeader>
                 <CardContent className="space-y-2">
                   {companies.length === 0 ? (
                     <p className="text-sm text-muted-foreground">No companies yet.</p>
@@ -323,7 +380,7 @@ const CorporateAdmin = () => {
 
                   {/* EMPLOYEES TAB */}
                   <TabsContent value="employees">
-                    <div className="flex items-center gap-2 mb-4">
+                    <div className="flex items-center gap-2 mb-4 flex-wrap">
                       <Dialog open={showAddEmployee} onOpenChange={setShowAddEmployee}>
                         <DialogTrigger asChild>
                           <Button size="sm"><UserPlus className="w-4 h-4 mr-1" /> Add Employee</Button>
@@ -343,6 +400,12 @@ const CorporateAdmin = () => {
                         <Input type="file" accept=".csv" onChange={e => setCsvFile(e.target.files?.[0] || null)} className="max-w-[200px] text-xs" />
                         {csvFile && <Button size="sm" variant="outline" onClick={handleCsvUpload}><Upload className="w-4 h-4 mr-1" /> Upload CSV</Button>}
                       </div>
+
+                      {employees.length > 0 && (
+                        <Button size="sm" variant="outline" onClick={exportToCSV}>
+                          <Download className="w-4 h-4 mr-1" /> Export CSV
+                        </Button>
+                      )}
                     </div>
 
                     <p className="text-xs text-muted-foreground mb-3">CSV format: Name, Email, Phone (one per row, skip header)</p>
