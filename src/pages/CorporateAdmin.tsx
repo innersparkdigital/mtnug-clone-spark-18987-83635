@@ -369,18 +369,20 @@ const CorporateAdmin = () => {
                         <div className="overflow-x-auto">
                           <table className="w-full text-sm">
                             <thead>
-                              <tr className="border-b bg-muted/50">
+                               <tr className="border-b bg-muted/50">
                                  <th className="text-left p-3 font-medium">Name</th>
-                                 <th className="text-left p-3 font-medium">Contact</th>
+                                 <th className="text-left p-3 font-medium">Email</th>
+                                 <th className="text-left p-3 font-medium">Phone</th>
                                  <th className="text-left p-3 font-medium">Access Code</th>
                                  <th className="text-left p-3 font-medium">Screening</th>
+                                 <th className="text-left p-3 font-medium">Date Taken</th>
                                  <th className="text-left p-3 font-medium">Wellbeing</th>
                                  <th className="text-left p-3 font-medium">Actions</th>
-                              </tr>
+                               </tr>
                             </thead>
                             <tbody>
                               {sortedEmployees.length === 0 ? (
-                                <tr><td colSpan={6} className="p-6 text-center text-muted-foreground">No employees added yet.</td></tr>
+                                <tr><td colSpan={8} className="p-6 text-center text-muted-foreground">No employees added yet.</td></tr>
                               ) : (
                                 sortedEmployees.map(emp => {
                                   const screening = employeeScreeningMap.get(emp.id);
@@ -407,7 +409,9 @@ const CorporateAdmin = () => {
                                        </td>
                                        <td className="p-3">
                                          <div className="text-xs text-muted-foreground">{emp.email}</div>
-                                         {emp.phone && <div className="text-xs text-muted-foreground">{emp.phone}</div>}
+                                       </td>
+                                       <td className="p-3">
+                                         <div className="text-xs text-muted-foreground">{emp.phone || '—'}</div>
                                        </td>
                                        <td className="p-3 font-mono text-xs">{emp.access_code}</td>
                                       <td className="p-3">
@@ -418,8 +422,17 @@ const CorporateAdmin = () => {
                                         ) : (
                                           <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">Pending</span>
                                         )}
-                                      </td>
-                                      <td className="p-3">
+                                       </td>
+                                       <td className="p-3">
+                                         {screening ? (
+                                           <span className="text-xs text-muted-foreground">
+                                             {new Date(screening.completed_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                           </span>
+                                         ) : (
+                                           <span className="text-xs text-muted-foreground">—</span>
+                                         )}
+                                       </td>
+                                       <td className="p-3">
                                         {screening ? (
                                           <div className="flex items-center gap-2">
                                             <span className={`text-sm font-bold ${isRed ? 'text-red-600' : isYellow ? 'text-yellow-600' : 'text-green-600'}`}>
