@@ -193,7 +193,7 @@ const CorporateWellbeingCheck = () => {
 
       await supabase
         .from('corporate_employees')
-        .update({ screening_completed: true })
+        .update({ screening_completed: true, gender: selectedGender || null })
         .eq('id', employee.id);
 
       setPhase('results');
