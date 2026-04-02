@@ -301,32 +301,36 @@ const CorporateAdmin = () => {
 
   if (!isAdmin) return null;
 
-  // Pagination component
-  const Pagination = ({ page, totalPages, onPageChange }: { page: number; totalPages: number; onPageChange: (p: number) => void }) => (
-    <div className="flex items-center justify-between pt-3 px-1">
-      <p className="text-xs text-muted-foreground">Page {page} of {totalPages}</p>
-      <div className="flex items-center gap-1">
-        <Button variant="outline" size="sm" className="h-7 w-7 p-0" disabled={page <= 1} onClick={() => onPageChange(page - 1)}>
-          <ChevronLeft className="w-3.5 h-3.5" />
-        </Button>
-        {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
-          let pageNum: number;
-          if (totalPages <= 5) { pageNum = i + 1; }
-          else if (page <= 3) { pageNum = i + 1; }
-          else if (page >= totalPages - 2) { pageNum = totalPages - 4 + i; }
-          else { pageNum = page - 2 + i; }
-          return (
-            <Button key={pageNum} variant={pageNum === page ? 'default' : 'outline'} size="sm" className="h-7 w-7 p-0 text-xs" onClick={() => onPageChange(pageNum)}>
-              {pageNum}
-            </Button>
-          );
-        })}
-        <Button variant="outline" size="sm" className="h-7 w-7 p-0" disabled={page >= totalPages} onClick={() => onPageChange(page + 1)}>
-          <ChevronRight className="w-3.5 h-3.5" />
-        </Button>
+  // Pagination component matching reference style
+  const PaginationBar = ({ page, totalPages, totalItems, perPage, onPageChange }: { page: number; totalPages: number; totalItems: number; perPage: number; onPageChange: (p: number) => void }) => {
+    const start = totalItems === 0 ? 0 : (page - 1) * perPage + 1;
+    const end = Math.min(page * perPage, totalItems);
+    return (
+      <div className="flex items-center justify-between pt-3 px-4 pb-3 flex-wrap gap-2">
+        <p className="text-xs text-muted-foreground">Showing {start} to {end} of {totalItems} entries</p>
+        <div className="flex items-center gap-1">
+          <Button variant="outline" size="sm" className="h-8 px-3 text-xs" disabled={page <= 1} onClick={() => onPageChange(page - 1)}>
+            Previous
+          </Button>
+          {Array.from({ length: Math.min(totalPages, 6) }, (_, i) => {
+            let pageNum: number;
+            if (totalPages <= 6) { pageNum = i + 1; }
+            else if (page <= 3) { pageNum = i + 1; }
+            else if (page >= totalPages - 2) { pageNum = totalPages - 5 + i; }
+            else { pageNum = page - 2 + i; }
+            return (
+              <Button key={pageNum} variant={pageNum === page ? 'default' : 'outline'} size="sm" className="h-8 w-8 p-0 text-xs" onClick={() => onPageChange(pageNum)}>
+                {pageNum}
+              </Button>
+            );
+          })}
+          <Button variant="outline" size="sm" className="h-8 px-3 text-xs" disabled={page >= totalPages} onClick={() => onPageChange(page + 1)}>
+            Next
+          </Button>
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <>
