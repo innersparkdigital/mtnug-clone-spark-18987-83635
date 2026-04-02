@@ -141,6 +141,12 @@ const Header = () => {
           <Link to="/for-business" className="hover:text-primary-foreground/80 transition-colors">{translations.forBusiness}</Link>
           <Link to="/events-training/trainings" className="hover:text-primary-foreground/80 transition-colors font-semibold">Trainings</Link>
           <Link to="/corporate-wellbeing-check" className="hover:text-primary-foreground/80 transition-colors font-semibold">Corporate Wellbeing</Link>
+          {isAdmin && (
+            <Link to="/corporate-admin" className="hover:text-primary-foreground/80 transition-colors font-semibold flex items-center gap-1">
+              <Shield className="w-3 h-3" />
+              Corporate Admin
+            </Link>
+          )}
           <Link to="/donate-therapy">
             <Button size="sm" variant="secondary" className="text-[10px] px-2 py-0.5 h-5">
               {translations.donateTherapy}
