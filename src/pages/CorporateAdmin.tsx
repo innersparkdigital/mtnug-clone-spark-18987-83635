@@ -350,6 +350,7 @@ const CorporateAdmin = () => {
 
             {/* Main Content */}
             <div className="lg:col-span-3">
+              {!selectedCompany ? (
                 <div className="space-y-6">
                   {/* Global Summary Cards */}
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
