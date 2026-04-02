@@ -163,6 +163,10 @@ const CorporateAdmin = () => {
     fetchCompanies();
   };
 
+  // Build employee-screening map
+  const employeeScreeningMap = new Map<string, Screening>();
+  screenings.forEach(s => employeeScreeningMap.set(s.employee_id, s));
+
   // Analytics
   const totalEmployees = employees.length;
   const completedScreenings = screenings.length;
@@ -171,6 +175,20 @@ const CorporateAdmin = () => {
   const greenCount = screenings.filter(s => s.wellbeing_category === 'green').length;
   const yellowCount = screenings.filter(s => s.wellbeing_category === 'yellow').length;
   const redCount = screenings.filter(s => s.wellbeing_category === 'red').length;
+  const needsSupportCount = redCount + yellowCount;
+
+  // Sort employees: red first, then yellow, then others
+  const sortedEmployees = [...employees].sort((a, b) => {
+    const sa = employeeScreeningMap.get(a.id);
+    const sb = employeeScreeningMap.get(b.id);
+    const priority = (s: Screening | undefined) => {
+      if (!s) return 3;
+      if (s.wellbeing_category === 'red') return 0;
+      if (s.wellbeing_category === 'yellow') return 1;
+      return 2;
+    };
+    return priority(sa) - priority(sb);
+  });
 
   const baseUrl = window.location.origin;
 
