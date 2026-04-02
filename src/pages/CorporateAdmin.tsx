@@ -334,22 +334,24 @@ const CorporateAdmin = () => {
                           <table className="w-full text-sm">
                             <thead>
                               <tr className="border-b bg-muted/50">
-                                <th className="text-left p-3 font-medium">Name</th>
-                                <th className="text-left p-3 font-medium">Email</th>
-                                <th className="text-left p-3 font-medium">Access Code</th>
-                                <th className="text-left p-3 font-medium">Status</th>
-                                <th className="text-left p-3 font-medium">Actions</th>
+                                 <th className="text-left p-3 font-medium">Name</th>
+                                 <th className="text-left p-3 font-medium">Email</th>
+                                 <th className="text-left p-3 font-medium">Phone</th>
+                                 <th className="text-left p-3 font-medium">Access Code</th>
+                                 <th className="text-left p-3 font-medium">Status</th>
+                                 <th className="text-left p-3 font-medium">Actions</th>
                               </tr>
                             </thead>
                             <tbody>
                               {employees.length === 0 ? (
-                                <tr><td colSpan={5} className="p-6 text-center text-muted-foreground">No employees added yet.</td></tr>
+                                <tr><td colSpan={6} className="p-6 text-center text-muted-foreground">No employees added yet.</td></tr>
                               ) : (
                                 employees.map(emp => (
                                   <tr key={emp.id} className="border-b">
-                                    <td className="p-3">{emp.name}</td>
-                                    <td className="p-3 text-muted-foreground">{emp.email}</td>
-                                    <td className="p-3 font-mono text-xs">{emp.access_code}</td>
+                                     <td className="p-3">{emp.name}</td>
+                                     <td className="p-3 text-muted-foreground">{emp.email}</td>
+                                     <td className="p-3 text-muted-foreground">{emp.phone || '—'}</td>
+                                     <td className="p-3 font-mono text-xs">{emp.access_code}</td>
                                     <td className="p-3">
                                       {emp.screening_completed ? (
                                         <span className="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700">Completed</span>
