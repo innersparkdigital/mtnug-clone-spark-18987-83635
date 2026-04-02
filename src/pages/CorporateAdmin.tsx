@@ -380,7 +380,7 @@ const CorporateAdmin = () => {
 
                   {/* EMPLOYEES TAB */}
                   <TabsContent value="employees">
-                    <div className="flex items-center gap-2 mb-4">
+                    <div className="flex items-center gap-2 mb-4 flex-wrap">
                       <Dialog open={showAddEmployee} onOpenChange={setShowAddEmployee}>
                         <DialogTrigger asChild>
                           <Button size="sm"><UserPlus className="w-4 h-4 mr-1" /> Add Employee</Button>
