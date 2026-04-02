@@ -101,6 +101,15 @@ const CorporateAdmin = () => {
     setLoading(false);
   };
 
+  const fetchAllGlobalData = async () => {
+    const [empRes, scrRes] = await Promise.all([
+      supabase.from('corporate_employees').select('*'),
+      supabase.from('corporate_screenings').select('*'),
+    ]);
+    setAllEmployees((empRes.data as any[]) || []);
+    setAllScreenings((scrRes.data as any[]) || []);
+  };
+
   const fetchEmployees = async (companyId: string) => {
     const { data } = await supabase.from('corporate_employees').select('*').eq('company_id', companyId);
     setEmployees((data as any[]) || []);
