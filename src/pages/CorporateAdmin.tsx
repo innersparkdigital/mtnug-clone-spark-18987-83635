@@ -517,7 +517,7 @@ const CorporateAdmin = () => {
                       </thead>
                       <tbody>
                         {paginatedCompanies.length === 0 ? (
-                          <tr><td colSpan={8} className="p-6 text-center text-muted-foreground">
+                          <tr><td colSpan={9} className="p-6 text-center text-muted-foreground">
                             {companySearch ? 'No companies match your search.' : 'No companies yet. Create one to get started.'}
                           </td></tr>
                         ) : paginatedCompanies.map(c => {
