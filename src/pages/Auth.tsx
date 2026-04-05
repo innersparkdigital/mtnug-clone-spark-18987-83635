@@ -33,11 +33,33 @@ const Auth = () => {
   const [signupConfirmPassword, setSignupConfirmPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
 
+  const [googleLoading, setGoogleLoading] = useState(false);
+
   useEffect(() => {
     if (user && !loading) {
       navigate('/learning');
     }
   }, [user, loading, navigate]);
+
+  const handleGoogleSignIn = async () => {
+    setGoogleLoading(true);
+    try {
+      const result = await lovable.auth.signInWithOAuth("google", {
+        redirect_uri: window.location.origin,
+      });
+      if (result.error) {
+        toast.error('Google sign-in failed. Please try again.');
+        return;
+      }
+      if (result.redirected) return;
+      toast.success('Welcome!');
+      navigate('/learning');
+    } catch {
+      toast.error('Google sign-in failed. Please try again.');
+    } finally {
+      setGoogleLoading(false);
+    }
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
