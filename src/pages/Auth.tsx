@@ -324,7 +324,8 @@ const Auth = () => {
                         'Create Account'
                       )}
                     </Button>
-                  </form>
+                    </form>
+                  </div>
                 </TabsContent>
               </CardContent>
             </Tabs>
