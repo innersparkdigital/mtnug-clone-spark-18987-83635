@@ -816,7 +816,12 @@ const CorporateAdmin = () => {
                                 <td className="p-3 font-mono text-xs">{emp.access_code}</td>
                                 <td className="p-3">
                                   {emp.screening_completed ? (
-                                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-green-100 text-green-700">Done</span>
+                                    <div className="flex items-center gap-1">
+                                      <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-green-100 text-green-700">Done</span>
+                                      {(employeeScreeningCount.get(emp.id) || 0) > 1 && (
+                                        <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-primary/10 text-primary font-medium">×{employeeScreeningCount.get(emp.id)}</span>
+                                      )}
+                                    </div>
                                   ) : emp.invitation_sent ? (
                                     <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-blue-100 text-blue-700">Invited</span>
                                   ) : (
