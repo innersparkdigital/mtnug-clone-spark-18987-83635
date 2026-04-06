@@ -483,6 +483,17 @@ export const useMindCheckAnalytics = () => {
     ]);
     sections.push('=== ASSESSMENT SESSIONS ===\n' + [sHeaders, ...sRows].map(r => r.map(c => `"${c}"`).join(',')).join('\n'));
     
+    // WHO-5 Sessions
+    const wHeaders = ['Session ID', 'Source', 'Device', 'Started', 'Completed', 'Raw Score', 'Percentage', 'Wellbeing Level', 'Time (s)'];
+    const wRows = who5Sessions.map(s => [
+      s.session_id, s.source || '', s.device_type || '',
+      new Date(s.started_at).toLocaleString(),
+      s.completed_at ? new Date(s.completed_at).toLocaleString() : '',
+      s.raw_score?.toString() || '', s.percentage_score?.toString() || '',
+      s.wellbeing_level || '', s.time_taken_seconds?.toString() || '',
+    ]);
+    sections.push('\n\n=== WHO-5 SESSIONS ===\n' + [wHeaders, ...wRows].map(r => r.map(c => `"${c}"`).join(',')).join('\n'));
+    
     // Emails
     const eHeaders = ['Email', 'Test Type', 'Severity', 'Score', 'Source', 'Device', 'Date'];
     const eRows = emails.map(e => [
@@ -497,7 +508,7 @@ export const useMindCheckAnalytics = () => {
     sections.push('\n\n=== PAGE VISITS ===\n' + [vHeaders, ...vRows].map(r => r.map(c => `"${c}"`).join(',')).join('\n'));
     
     return sections.join('');
-  }, [sessions, emails, visits]);
+  }, [sessions, emails, visits, who5Sessions]);
 
   // Clear data
   const clearData = useCallback(async (tables: string[]) => {
