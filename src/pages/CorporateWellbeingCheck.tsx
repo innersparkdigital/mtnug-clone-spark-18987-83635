@@ -46,12 +46,21 @@ const WORKPLACE_OPTIONS = [
 
 type Phase = 'entry' | 'welcome' | 'test' | 'results';
 
+interface ScreeningHistory {
+  id: string;
+  completed_at: string;
+  total_score: number;
+  who5_percentage: number;
+  wellbeing_category: string;
+}
+
 interface EmployeeData {
   id: string;
   name: string;
   email: string;
   company_id: string;
   company_name?: string;
+  screening_history: ScreeningHistory[];
 }
 
 const getCategory = (percentage: number) => {
