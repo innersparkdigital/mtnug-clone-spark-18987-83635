@@ -833,7 +833,15 @@ const CorporateAdmin = () => {
                                     <div className="flex items-center gap-1">
                                       <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-green-100 text-green-700">Done</span>
                                       {(employeeScreeningCount.get(emp.id) || 0) > 1 && (
-                                        <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-primary/10 text-primary font-medium">×{employeeScreeningCount.get(emp.id)}</span>
+                                        <button
+                                          onClick={() => toggleEmployeeExpand(emp.id)}
+                                          className="inline-flex items-center gap-0.5 text-[10px] px-1.5 py-0.5 rounded-full bg-primary/10 text-primary font-medium hover:bg-primary/20 transition-colors cursor-pointer"
+                                          title="View screening history"
+                                        >
+                                          <History className="w-2.5 h-2.5" />
+                                          {employeeScreeningCount.get(emp.id)} check-ins
+                                          {expandedEmployees.has(emp.id) ? <ChevronUpIcon className="w-2.5 h-2.5" /> : <ChevronDown className="w-2.5 h-2.5" />}
+                                        </button>
                                       )}
                                     </div>
                                   ) : emp.invitation_sent ? (
@@ -843,7 +851,7 @@ const CorporateAdmin = () => {
                                   )}
                                 </td>
                                 <td className="p-3 text-xs text-muted-foreground">
-                                  {screening ? new Date(screening.completed_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : '—'}
+                                  {screening ? new Date(screening.completed_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '—'}
                                 </td>
                                 <td className="p-3">
                                   {screening ? (
@@ -870,6 +878,49 @@ const CorporateAdmin = () => {
                                   </div>
                                 </td>
                               </tr>
+                              {/* Screening History Expansion Row */}
+                              {expandedEmployees.has(emp.id) && (employeeScreeningHistory.get(emp.id) || []).length > 0 && (
+                                <tr key={`${emp.id}-history`} className="bg-muted/30">
+                                  <td colSpan={10} className="p-0">
+                                    <div className="px-6 py-3">
+                                      <div className="text-[11px] font-semibold text-muted-foreground mb-2 flex items-center gap-1.5">
+                                        <History className="w-3 h-3" />
+                                        Screening History for {emp.name}
+                                      </div>
+                                      <div className="grid gap-1.5">
+                                        {(employeeScreeningHistory.get(emp.id) || []).map((s, i) => {
+                                          const cat = s.wellbeing_category;
+                                          const prevScreening = (employeeScreeningHistory.get(emp.id) || [])[i + 1];
+                                          const trend = prevScreening ? s.who5_percentage - prevScreening.who5_percentage : null;
+                                          return (
+                                            <div key={s.id} className="flex items-center gap-3 text-xs py-1.5 px-3 rounded-md bg-background border">
+                                              <span className="font-medium text-muted-foreground w-6">#{(employeeScreeningHistory.get(emp.id) || []).length - i}</span>
+                                              <span className="font-medium min-w-[100px]">
+                                                {new Date(s.completed_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                              </span>
+                                              <span className="text-muted-foreground min-w-[60px]">
+                                                {new Date(s.completed_at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
+                                              </span>
+                                              <span className={`font-bold min-w-[50px] ${cat === 'red' ? 'text-red-600' : cat === 'yellow' ? 'text-yellow-600' : 'text-green-600'}`}>
+                                                {s.who5_percentage}%
+                                              </span>
+                                              <Badge variant={cat === 'red' ? 'destructive' : cat === 'yellow' ? 'secondary' : 'default'} className="text-[9px] px-1.5 py-0">
+                                                {cat === 'red' ? 'Critical' : cat === 'yellow' ? 'At Risk' : 'Good'}
+                                              </Badge>
+                                              {trend !== null && (
+                                                <span className={`text-[10px] font-medium ${trend > 0 ? 'text-green-600' : trend < 0 ? 'text-red-600' : 'text-muted-foreground'}`}>
+                                                  {trend > 0 ? `↑ +${trend}%` : trend < 0 ? `↓ ${trend}%` : '→ no change'}
+                                                </span>
+                                              )}
+                                              {i === 0 && <Badge variant="outline" className="text-[9px] px-1 py-0 ml-auto">Latest</Badge>}
+                                            </div>
+                                          );
+                                        })}
+                                      </div>
+                                    </div>
+                                  </td>
+                                </tr>
+                              )}
                             );
                           })}
                         </tbody>
