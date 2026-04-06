@@ -229,14 +229,17 @@ const CorporateAdmin = () => {
     });
   };
 
-  // Analytics
+  // Analytics — use unique employees (latest screening) for support counts, all screenings for totals
   const totalEmployees = employees.length;
+  const uniqueScreenedEmployees = new Set(screenings.map(s => s.employee_id)).size;
   const completedScreenings = screenings.length;
-  const participationRate = totalEmployees > 0 ? Math.round((completedScreenings / totalEmployees) * 100) : 0;
+  const participationRate = totalEmployees > 0 ? Math.round((uniqueScreenedEmployees / totalEmployees) * 100) : 0;
   const avgScore = completedScreenings > 0 ? Math.round(screenings.reduce((s, x) => s + x.who5_percentage, 0) / completedScreenings) : 0;
-  const greenCount = screenings.filter(s => s.wellbeing_category === 'green').length;
-  const yellowCount = screenings.filter(s => s.wellbeing_category === 'yellow').length;
-  const redCount = screenings.filter(s => s.wellbeing_category === 'red').length;
+  // Count by latest screening per employee only
+  const latestScreenings = Array.from(employeeScreeningMap.values());
+  const greenCount = latestScreenings.filter(s => s.wellbeing_category === 'green').length;
+  const yellowCount = latestScreenings.filter(s => s.wellbeing_category === 'yellow').length;
+  const redCount = latestScreenings.filter(s => s.wellbeing_category === 'red').length;
   const needsSupportCount = redCount + yellowCount;
 
   // Sort employees: red first, then yellow, then others
