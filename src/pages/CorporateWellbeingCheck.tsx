@@ -646,8 +646,35 @@ const CorporateWellbeingCheck = () => {
                   <p>This is not a diagnosis, but a mental wellbeing screening tool.</p>
                 </div>
 
+                {/* Retake */}
+                <div className="text-center mt-6 mb-4">
+                  <Button
+                    variant="outline"
+                    className="rounded-full px-6"
+                    onClick={() => {
+                      setPhase('welcome');
+                      setCurrentQuestion(0);
+                      setAnswers(Array(ALL_QUESTIONS.length).fill(null));
+                      setSelectedGender('');
+                      // Refresh history
+                      if (employee) {
+                        supabase.from('corporate_screenings')
+                          .select('id, completed_at, total_score, who5_percentage, wellbeing_category')
+                          .eq('employee_id', employee.id)
+                          .order('completed_at', { ascending: false })
+                          .then(({ data }) => {
+                            setEmployee({ ...employee, screening_history: (data || []) as ScreeningHistory[] });
+                          });
+                      }
+                    }}
+                  >
+                    <RotateCcw className="w-4 h-4 mr-2" />
+                    Take Another Check-in
+                  </Button>
+                </div>
+
                 {/* Completion */}
-                <div className="text-center mt-6">
+                <div className="text-center mt-4">
                   <CheckCircle className="w-5 h-5 text-green-500 mx-auto mb-1" />
                   <p className="text-sm text-muted-foreground">Screening complete. Thank you for participating.</p>
                 </div>
