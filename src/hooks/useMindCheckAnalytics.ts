@@ -502,11 +502,17 @@ export const useMindCheckAnalytics = () => {
   // Clear data
   const clearData = useCallback(async (tables: string[]) => {
     const { data, error } = await supabase.rpc('clear_mindcheck_data', { tables_to_clear: tables });
-    if (error) throw error;
-    // Refresh data
-    await fetchData();
+    if (error) {
+      console.error('Clear data error:', error);
+      throw new Error(error.message || 'Failed to clear data. Make sure you are logged in as an admin.');
+    }
+    // Reset local state immediately
+    setSessions([]);
+    setEmails([]);
+    setVisits([]);
+    setWho5Sessions([]);
     return data;
-  }, [fetchData]);
+  }, []);
 
   return {
     stats,
