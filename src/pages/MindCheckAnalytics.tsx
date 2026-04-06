@@ -57,6 +57,8 @@ const MindCheckAnalytics = () => {
     setSendingBackup(true);
     try {
       const csvContent = generateBackupCSV();
+      
+      // Always download the CSV first
       const blob = new Blob([csvContent], { type: 'text/csv' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -65,14 +67,28 @@ const MindCheckAnalytics = () => {
       a.click();
       URL.revokeObjectURL(url);
       
-      // Also open mailto with instructions
-      const subject = encodeURIComponent(`Mind Check Analytics Backup - ${new Date().toLocaleDateString()}`);
-      const body = encodeURIComponent(
-        `Hi,\n\nPlease find the Mind Check Analytics backup data attached.\n\nBackup Date: ${new Date().toLocaleString()}\nTotal Sessions: ${sessions.length}\nTotal Emails: ${emails.length}\n\nNote: The CSV file has been downloaded to your device. Please attach it to this email manually.\n\nBest regards,\nInnerSpark Analytics`
-      );
-      window.open(`mailto:${backupEmail}?subject=${subject}&body=${body}`, '_blank');
-      
-      toast({ title: 'Backup downloaded', description: `CSV backup downloaded. An email draft to ${backupEmail} has been opened — please attach the file.` });
+      // Then try to send via edge function
+      try {
+        const { data, error } = await supabase.functions.invoke('send-backup-email', {
+          body: {
+            email: backupEmail,
+            csvContent,
+            totalSessions: sessions.length,
+            totalEmails: emails.length,
+          },
+        });
+        
+        if (error) throw error;
+        
+        if (data?.method === 'email_sent') {
+          toast({ title: 'Backup complete', description: `CSV downloaded and email queued to ${backupEmail}.` });
+        } else {
+          toast({ title: 'CSV downloaded', description: data?.message || 'Email sending is not yet available. CSV has been downloaded.' });
+        }
+      } catch (emailError) {
+        console.warn('Email send failed, CSV still downloaded:', emailError);
+        toast({ title: 'CSV downloaded', description: 'Backup CSV downloaded successfully. Email sending is not yet available (DNS pending).' });
+      }
     } catch (error) {
       toast({ title: 'Backup failed', description: 'Could not generate backup.', variant: 'destructive' });
     } finally {
