@@ -186,6 +186,8 @@ const CorporateWellbeingCheck = () => {
     if (!employee) return;
     setSubmitting(true);
     try {
+      const attemptNumber = employee.screening_history.length + 1;
+
       await supabase.from('corporate_screenings').insert({
         employee_id: employee.id,
         company_id: employee.company_id,
@@ -200,6 +202,7 @@ const CorporateWellbeingCheck = () => {
         wellbeing_category: category.key,
       });
 
+      // Update employee record (gender + mark screening done)
       await supabase
         .from('corporate_employees')
         .update({ screening_completed: true, gender: selectedGender || null })
