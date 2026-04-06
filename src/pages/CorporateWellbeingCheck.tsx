@@ -283,12 +283,58 @@ const CorporateWellbeingCheck = () => {
                 <h1 className="text-2xl font-bold text-foreground mb-2">
                   Hi {employee.name.split(' ')[0]}
                 </h1>
-                <p className="text-lg text-muted-foreground mb-6">Welcome to your confidential wellbeing check.</p>
+                <p className="text-lg text-muted-foreground mb-6">
+                  {employee.screening_history.length > 0
+                    ? `Welcome back! This will be your check #${employee.screening_history.length + 1}.`
+                    : 'Welcome to your confidential wellbeing check.'}
+                </p>
 
                 {employee.company_name && (
                   <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/5 rounded-full text-sm text-primary mb-6">
                     <Users className="w-3.5 h-3.5" />
                     {employee.company_name}
+                  </div>
+                )}
+
+                {/* Previous Screening History */}
+                {employee.screening_history.length > 0 && (
+                  <div className="bg-card rounded-2xl border p-5 text-left mb-6">
+                    <h3 className="font-semibold text-foreground text-sm mb-3 flex items-center gap-2">
+                      <RotateCcw className="w-4 h-4 text-primary" />
+                      Your Previous Check-ins ({employee.screening_history.length})
+                    </h3>
+                    <div className="space-y-2 max-h-40 overflow-y-auto">
+                      {employee.screening_history.slice(0, 5).map((entry, idx) => {
+                        const cat = getCategory(Math.round((entry.total_score / (ALL_QUESTIONS.length * 5)) * 100));
+                        const pct = Math.round((entry.total_score / (ALL_QUESTIONS.length * 5)) * 100);
+                        return (
+                          <div key={entry.id} className="flex items-center justify-between text-sm py-1.5 border-b last:border-0 border-border/50">
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs text-muted-foreground">#{employee.screening_history.length - idx}</span>
+                              <span className="text-muted-foreground">{new Date(entry.completed_at).toLocaleDateString()}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="font-semibold" style={{ color: cat.color }}>{pct}%</span>
+                              <span className={`text-xs px-2 py-0.5 rounded-full border ${cat.bgClass} ${cat.textClass}`}>{cat.label}</span>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    {employee.screening_history.length > 1 && (
+                      <div className="mt-3 pt-2 border-t border-border/50">
+                        {(() => {
+                          const latest = Math.round((employee.screening_history[0].total_score / (ALL_QUESTIONS.length * 5)) * 100);
+                          const previous = Math.round((employee.screening_history[1].total_score / (ALL_QUESTIONS.length * 5)) * 100);
+                          const diff = latest - previous;
+                          return (
+                            <p className="text-xs text-muted-foreground text-center">
+                              {diff > 0 ? `📈 +${diff}% improvement since last check` : diff < 0 ? `📉 ${diff}% change since last check` : '➡️ Same score as last check'}
+                            </p>
+                          );
+                        })()}
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -328,7 +374,7 @@ const CorporateWellbeingCheck = () => {
                 </div>
 
                 <Button onClick={() => setPhase('test')} className="rounded-full px-8" size="lg" disabled={!selectedGender}>
-                  Begin Check <ArrowRight className="w-4 h-4 ml-2" />
+                  {employee.screening_history.length > 0 ? 'Take Another Check' : 'Begin Check'} <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               </motion.div>
             )}
