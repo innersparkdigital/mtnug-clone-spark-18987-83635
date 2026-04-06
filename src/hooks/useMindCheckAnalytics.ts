@@ -326,11 +326,11 @@ export const useMindCheckAnalytics = () => {
 
   // ===== ADVANCED ANALYTICS =====
 
-  // Engagement funnel
+  // Engagement funnel (includes WHO-5)
   const engagementFunnel: EngagementFunnel[] = useMemo(() => {
     const visitCount = filteredVisits.length;
-    const startCount = filteredSessions.length;
-    const completedCount = filteredSessions.filter(s => s.completed_at).length;
+    const startCount = filteredSessions.length + filteredWho5.length;
+    const completedCount = filteredSessions.filter(s => s.completed_at).length + filteredWho5.filter(s => s.completed_at).length;
     const emailCount = filteredEmails.length;
     const base = Math.max(visitCount, 1);
     return [
