@@ -139,7 +139,7 @@ const CorporateAdmin = () => {
   };
 
   const fetchScreenings = async (companyId: string) => {
-    const { data } = await supabase.from('corporate_screenings').select('*').eq('company_id', companyId);
+    const { data } = await supabase.from('corporate_screenings').select('*').eq('company_id', companyId).order('completed_at', { ascending: false });
     setScreenings((data as any[]) || []);
   };
 
@@ -204,9 +204,16 @@ const CorporateAdmin = () => {
     fetchCompanies();
   };
 
-  // Build employee-screening map
+  // Build employee-screening map (latest screening per employee + count)
   const employeeScreeningMap = new Map<string, Screening>();
-  screenings.forEach(s => employeeScreeningMap.set(s.employee_id, s));
+  const employeeScreeningCount = new Map<string, number>();
+  // screenings are ordered by completed_at desc from fetch, so first match = latest
+  screenings.forEach(s => {
+    employeeScreeningCount.set(s.employee_id, (employeeScreeningCount.get(s.employee_id) || 0) + 1);
+    if (!employeeScreeningMap.has(s.employee_id)) {
+      employeeScreeningMap.set(s.employee_id, s);
+    }
+  });
 
   // Analytics
   const totalEmployees = employees.length;
@@ -809,7 +816,12 @@ const CorporateAdmin = () => {
                                 <td className="p-3 font-mono text-xs">{emp.access_code}</td>
                                 <td className="p-3">
                                   {emp.screening_completed ? (
-                                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-green-100 text-green-700">Done</span>
+                                    <div className="flex items-center gap-1">
+                                      <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-green-100 text-green-700">Done</span>
+                                      {(employeeScreeningCount.get(emp.id) || 0) > 1 && (
+                                        <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-primary/10 text-primary font-medium">×{employeeScreeningCount.get(emp.id)}</span>
+                                      )}
+                                    </div>
                                   ) : emp.invitation_sent ? (
                                     <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-blue-100 text-blue-700">Invited</span>
                                   ) : (

@@ -46,12 +46,21 @@ const WORKPLACE_OPTIONS = [
 
 type Phase = 'entry' | 'welcome' | 'test' | 'results';
 
+interface ScreeningHistory {
+  id: string;
+  completed_at: string;
+  total_score: number;
+  who5_percentage: number;
+  wellbeing_category: string;
+}
+
 interface EmployeeData {
   id: string;
   name: string;
   email: string;
   company_id: string;
   company_name?: string;
+  screening_history: ScreeningHistory[];
 }
 
 const getCategory = (percentage: number) => {
@@ -94,20 +103,20 @@ const CorporateWellbeingCheck = () => {
         return;
       }
 
-      if (data.screening_completed) {
-        toast.info('You have already completed this screening.');
-        setLoading(false);
-        return;
-      }
+      // Fetch company name and screening history in parallel
+      const [companyRes, historyRes] = await Promise.all([
+        supabase.from('corporate_companies').select('name').eq('id', data.company_id).single(),
+        supabase.from('corporate_screenings').select('id, completed_at, total_score, who5_percentage, wellbeing_category').eq('employee_id', data.id).order('completed_at', { ascending: false }),
+      ]);
 
-      // Get company name
-      const { data: company } = await supabase
-        .from('corporate_companies')
-        .select('name')
-        .eq('id', data.company_id)
-        .single();
-
-      setEmployee({ ...data, company_name: company?.name || '' });
+      setEmployee({
+        id: data.id,
+        name: data.name,
+        email: data.email,
+        company_id: data.company_id,
+        company_name: companyRes.data?.name || '',
+        screening_history: (historyRes.data || []) as ScreeningHistory[],
+      });
       setPhase('welcome');
     } catch {
       toast.error('Something went wrong. Please try again.');
@@ -134,19 +143,19 @@ const CorporateWellbeingCheck = () => {
         return;
       }
 
-      if (data.screening_completed) {
-        toast.info('You have already completed this screening.');
-        setLoading(false);
-        return;
-      }
+      const [companyRes, historyRes] = await Promise.all([
+        supabase.from('corporate_companies').select('name').eq('id', data.company_id).single(),
+        supabase.from('corporate_screenings').select('id, completed_at, total_score, who5_percentage, wellbeing_category').eq('employee_id', data.id).order('completed_at', { ascending: false }),
+      ]);
 
-      const { data: company } = await supabase
-        .from('corporate_companies')
-        .select('name')
-        .eq('id', data.company_id)
-        .single();
-
-      setEmployee({ ...data, company_name: company?.name || '' });
+      setEmployee({
+        id: data.id,
+        name: data.name,
+        email: data.email,
+        company_id: data.company_id,
+        company_name: companyRes.data?.name || '',
+        screening_history: (historyRes.data || []) as ScreeningHistory[],
+      });
       setPhase('welcome');
     } catch {
       toast.error('Something went wrong. Please try again.');
@@ -177,6 +186,8 @@ const CorporateWellbeingCheck = () => {
     if (!employee) return;
     setSubmitting(true);
     try {
+      const attemptNumber = employee.screening_history.length + 1;
+
       await supabase.from('corporate_screenings').insert({
         employee_id: employee.id,
         company_id: employee.company_id,
@@ -191,6 +202,7 @@ const CorporateWellbeingCheck = () => {
         wellbeing_category: category.key,
       });
 
+      // Update employee record (gender + mark screening done)
       await supabase
         .from('corporate_employees')
         .update({ screening_completed: true, gender: selectedGender || null })
@@ -271,12 +283,58 @@ const CorporateWellbeingCheck = () => {
                 <h1 className="text-2xl font-bold text-foreground mb-2">
                   Hi {employee.name.split(' ')[0]}
                 </h1>
-                <p className="text-lg text-muted-foreground mb-6">Welcome to your confidential wellbeing check.</p>
+                <p className="text-lg text-muted-foreground mb-6">
+                  {employee.screening_history.length > 0
+                    ? `Welcome back! This will be your check #${employee.screening_history.length + 1}.`
+                    : 'Welcome to your confidential wellbeing check.'}
+                </p>
 
                 {employee.company_name && (
                   <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/5 rounded-full text-sm text-primary mb-6">
                     <Users className="w-3.5 h-3.5" />
                     {employee.company_name}
+                  </div>
+                )}
+
+                {/* Previous Screening History */}
+                {employee.screening_history.length > 0 && (
+                  <div className="bg-card rounded-2xl border p-5 text-left mb-6">
+                    <h3 className="font-semibold text-foreground text-sm mb-3 flex items-center gap-2">
+                      <RotateCcw className="w-4 h-4 text-primary" />
+                      Your Previous Check-ins ({employee.screening_history.length})
+                    </h3>
+                    <div className="space-y-2 max-h-40 overflow-y-auto">
+                      {employee.screening_history.slice(0, 5).map((entry, idx) => {
+                        const cat = getCategory(Math.round((entry.total_score / (ALL_QUESTIONS.length * 5)) * 100));
+                        const pct = Math.round((entry.total_score / (ALL_QUESTIONS.length * 5)) * 100);
+                        return (
+                          <div key={entry.id} className="flex items-center justify-between text-sm py-1.5 border-b last:border-0 border-border/50">
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs text-muted-foreground">#{employee.screening_history.length - idx}</span>
+                              <span className="text-muted-foreground">{new Date(entry.completed_at).toLocaleDateString()}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="font-semibold" style={{ color: cat.color }}>{pct}%</span>
+                              <span className={`text-xs px-2 py-0.5 rounded-full border ${cat.bgClass} ${cat.textClass}`}>{cat.label}</span>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    {employee.screening_history.length > 1 && (
+                      <div className="mt-3 pt-2 border-t border-border/50">
+                        {(() => {
+                          const latest = Math.round((employee.screening_history[0].total_score / (ALL_QUESTIONS.length * 5)) * 100);
+                          const previous = Math.round((employee.screening_history[1].total_score / (ALL_QUESTIONS.length * 5)) * 100);
+                          const diff = latest - previous;
+                          return (
+                            <p className="text-xs text-muted-foreground text-center">
+                              {diff > 0 ? `📈 +${diff}% improvement since last check` : diff < 0 ? `📉 ${diff}% change since last check` : '➡️ Same score as last check'}
+                            </p>
+                          );
+                        })()}
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -316,7 +374,7 @@ const CorporateWellbeingCheck = () => {
                 </div>
 
                 <Button onClick={() => setPhase('test')} className="rounded-full px-8" size="lg" disabled={!selectedGender}>
-                  Begin Check <ArrowRight className="w-4 h-4 ml-2" />
+                  {employee.screening_history.length > 0 ? 'Take Another Check' : 'Begin Check'} <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               </motion.div>
             )}
@@ -388,7 +446,17 @@ const CorporateWellbeingCheck = () => {
             {/* RESULTS PHASE */}
             {phase === 'results' && (
               <motion.div key="results" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="pt-8">
-                <img src={logo} alt="InnerSpark Africa" className="h-12 mx-auto mb-6" />
+                <img src={logo} alt="InnerSpark Africa" className="h-12 mx-auto mb-4" />
+
+                {/* Attempt Badge */}
+                {employee && employee.screening_history.length > 0 && (
+                  <div className="text-center mb-4">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-primary/10 rounded-full text-xs font-medium text-primary">
+                      <RotateCcw className="w-3 h-3" />
+                      Check-in #{employee.screening_history.length + 1}
+                    </span>
+                  </div>
+                )}
 
                 {/* Score Display */}
                 <div className="text-center mb-8">
@@ -399,6 +467,13 @@ const CorporateWellbeingCheck = () => {
                   <div className={`inline-block px-4 py-1.5 rounded-full text-sm font-semibold border ${category.bgClass} ${category.textClass}`}>
                     {category.label}
                   </div>
+                  {/* Trend vs previous */}
+                  {employee && employee.screening_history.length > 0 && (() => {
+                    const prevPct = Math.round((employee.screening_history[0].total_score / (ALL_QUESTIONS.length * 5)) * 100);
+                    const diff = totalPercentage - prevPct;
+                    if (diff === 0) return <p className="text-xs text-muted-foreground mt-2">➡️ Same as your last check</p>;
+                    return <p className="text-xs mt-2" style={{ color: diff > 0 ? '#22c55e' : '#ef4444' }}>{diff > 0 ? `📈 +${diff}%` : `📉 ${diff}%`} compared to your last check</p>;
+                  })()}
                 </div>
 
                 {/* Score Bar */}
@@ -571,8 +646,35 @@ const CorporateWellbeingCheck = () => {
                   <p>This is not a diagnosis, but a mental wellbeing screening tool.</p>
                 </div>
 
+                {/* Retake */}
+                <div className="text-center mt-6 mb-4">
+                  <Button
+                    variant="outline"
+                    className="rounded-full px-6"
+                    onClick={() => {
+                      setPhase('welcome');
+                      setCurrentQuestion(0);
+                      setAnswers(Array(ALL_QUESTIONS.length).fill(null));
+                      setSelectedGender('');
+                      // Refresh history
+                      if (employee) {
+                        supabase.from('corporate_screenings')
+                          .select('id, completed_at, total_score, who5_percentage, wellbeing_category')
+                          .eq('employee_id', employee.id)
+                          .order('completed_at', { ascending: false })
+                          .then(({ data }) => {
+                            setEmployee({ ...employee, screening_history: (data || []) as ScreeningHistory[] });
+                          });
+                      }
+                    }}
+                  >
+                    <RotateCcw className="w-4 h-4 mr-2" />
+                    Take Another Check-in
+                  </Button>
+                </div>
+
                 {/* Completion */}
-                <div className="text-center mt-6">
+                <div className="text-center mt-4">
                   <CheckCircle className="w-5 h-5 text-green-500 mx-auto mb-1" />
                   <p className="text-sm text-muted-foreground">Screening complete. Thank you for participating.</p>
                 </div>
