@@ -115,12 +115,27 @@ export interface WeekdayAnalytics {
   completions: number;
 }
 
+interface Who5Session {
+  id: string;
+  session_id: string;
+  source: string | null;
+  device_type: string | null;
+  started_at: string;
+  completed_at: string | null;
+  abandoned_at: string | null;
+  raw_score: number | null;
+  percentage_score: number | null;
+  wellbeing_level: string | null;
+  time_taken_seconds: number | null;
+}
+
 export const useMindCheckAnalytics = () => {
   const { user } = useAuth();
   const { isAdmin } = useUserRole();
   const [sessions, setSessions] = useState<AssessmentSession[]>([]);
   const [emails, setEmails] = useState<AssessmentEmail[]>([]);
   const [visits, setVisits] = useState<PageVisit[]>([]);
+  const [who5Sessions, setWho5Sessions] = useState<Who5Session[]>([]);
   const [loading, setLoading] = useState(true);
   const [dateRange, setDateRange] = useState<'7d' | '30d' | '90d' | 'all'>('30d');
   const [isRealtime, setIsRealtime] = useState(false);
@@ -132,19 +147,22 @@ export const useMindCheckAnalytics = () => {
     }
 
     try {
-      const [sessionsRes, emailsRes, visitsRes] = await Promise.all([
+      const [sessionsRes, emailsRes, visitsRes, who5Res] = await Promise.all([
         supabase.from('assessment_sessions').select('*').order('started_at', { ascending: false }),
         supabase.from('assessment_emails').select('*').order('created_at', { ascending: false }),
         supabase.from('mindcheck_page_visits').select('*').order('visited_at', { ascending: false }),
+        supabase.from('who5_sessions').select('*').order('started_at', { ascending: false }),
       ]);
 
       if (sessionsRes.error) throw sessionsRes.error;
       if (emailsRes.error) throw emailsRes.error;
       if (visitsRes.error) throw visitsRes.error;
+      if (who5Res.error) throw who5Res.error;
 
       setSessions((sessionsRes.data || []) as unknown as AssessmentSession[]);
       setEmails((emailsRes.data || []) as unknown as AssessmentEmail[]);
       setVisits((visitsRes.data || []) as unknown as PageVisit[]);
+      setWho5Sessions((who5Res.data || []) as unknown as Who5Session[]);
     } catch (error) {
       console.error('Error fetching Mind Check analytics:', error);
     } finally {
