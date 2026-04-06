@@ -14,7 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { Building2, Users, Plus, Upload, BarChart3, FileText, Trash2, UserPlus, ClipboardList, AlertTriangle, Phone, MessageCircle, Download, TrendingUp, Activity, Search, ChevronLeft, ChevronRight, ArrowLeft, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
+import { Building2, Users, Plus, Upload, BarChart3, FileText, Trash2, UserPlus, ClipboardList, AlertTriangle, Phone, MessageCircle, Download, TrendingUp, Activity, Search, ChevronLeft, ChevronRight, ArrowLeft, ArrowUpDown, ArrowUp, ArrowDown, ChevronDown, ChevronUp as ChevronUpIcon, History } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -76,6 +76,7 @@ const CorporateAdmin = () => {
   const [csvFile, setCsvFile] = useState<File | null>(null);
   const [allEmployees, setAllEmployees] = useState<Employee[]>([]);
   const [allScreenings, setAllScreenings] = useState<Screening[]>([]);
+  const [expandedEmployees, setExpandedEmployees] = useState<Set<string>>(new Set());
 
   // Pagination & search
   const [companyPage, setCompanyPage] = useState(1);
@@ -204,16 +205,29 @@ const CorporateAdmin = () => {
     fetchCompanies();
   };
 
-  // Build employee-screening map (latest screening per employee + count)
+  // Build employee-screening map (latest screening per employee + full history)
   const employeeScreeningMap = new Map<string, Screening>();
   const employeeScreeningCount = new Map<string, number>();
+  const employeeScreeningHistory = new Map<string, Screening[]>();
   // screenings are ordered by completed_at desc from fetch, so first match = latest
   screenings.forEach(s => {
     employeeScreeningCount.set(s.employee_id, (employeeScreeningCount.get(s.employee_id) || 0) + 1);
     if (!employeeScreeningMap.has(s.employee_id)) {
       employeeScreeningMap.set(s.employee_id, s);
     }
+    const history = employeeScreeningHistory.get(s.employee_id) || [];
+    history.push(s);
+    employeeScreeningHistory.set(s.employee_id, history);
   });
+
+  const toggleEmployeeExpand = (empId: string) => {
+    setExpandedEmployees(prev => {
+      const next = new Set(prev);
+      if (next.has(empId)) next.delete(empId);
+      else next.add(empId);
+      return next;
+    });
+  };
 
   // Analytics
   const totalEmployees = employees.length;
