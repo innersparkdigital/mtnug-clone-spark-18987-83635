@@ -446,7 +446,17 @@ const CorporateWellbeingCheck = () => {
             {/* RESULTS PHASE */}
             {phase === 'results' && (
               <motion.div key="results" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="pt-8">
-                <img src={logo} alt="InnerSpark Africa" className="h-12 mx-auto mb-6" />
+                <img src={logo} alt="InnerSpark Africa" className="h-12 mx-auto mb-4" />
+
+                {/* Attempt Badge */}
+                {employee && employee.screening_history.length > 0 && (
+                  <div className="text-center mb-4">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-primary/10 rounded-full text-xs font-medium text-primary">
+                      <RotateCcw className="w-3 h-3" />
+                      Check-in #{employee.screening_history.length + 1}
+                    </span>
+                  </div>
+                )}
 
                 {/* Score Display */}
                 <div className="text-center mb-8">
@@ -457,6 +467,13 @@ const CorporateWellbeingCheck = () => {
                   <div className={`inline-block px-4 py-1.5 rounded-full text-sm font-semibold border ${category.bgClass} ${category.textClass}`}>
                     {category.label}
                   </div>
+                  {/* Trend vs previous */}
+                  {employee && employee.screening_history.length > 0 && (() => {
+                    const prevPct = Math.round((employee.screening_history[0].total_score / (ALL_QUESTIONS.length * 5)) * 100);
+                    const diff = totalPercentage - prevPct;
+                    if (diff === 0) return <p className="text-xs text-muted-foreground mt-2">➡️ Same as your last check</p>;
+                    return <p className="text-xs mt-2" style={{ color: diff > 0 ? '#22c55e' : '#ef4444' }}>{diff > 0 ? `📈 +${diff}%` : `📉 ${diff}%`} compared to your last check</p>;
+                  })()}
                 </div>
 
                 {/* Score Bar */}
