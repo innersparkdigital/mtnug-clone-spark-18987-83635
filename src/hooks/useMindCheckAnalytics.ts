@@ -403,15 +403,20 @@ export const useMindCheckAnalytics = () => {
     };
   }, [filteredEmails]);
 
-  // Average completion time (minutes)
+  // Average completion time (minutes) - includes WHO-5
   const avgCompletionTime = useMemo(() => {
-    const completed = filteredSessions.filter(s => s.completed_at && s.started_at);
-    if (completed.length === 0) return 0;
-    const totalMs = completed.reduce((sum, s) => {
+    const assessmentCompleted = filteredSessions.filter(s => s.completed_at && s.started_at);
+    const who5Completed = filteredWho5.filter(s => s.completed_at && s.started_at);
+    const totalCompleted = assessmentCompleted.length + who5Completed.length;
+    if (totalCompleted === 0) return 0;
+    const assessmentMs = assessmentCompleted.reduce((sum, s) => {
       return sum + (new Date(s.completed_at!).getTime() - new Date(s.started_at).getTime());
     }, 0);
-    return Math.round((totalMs / completed.length) / 60000 * 10) / 10;
-  }, [filteredSessions]);
+    const who5Ms = who5Completed.reduce((sum, s) => {
+      return sum + (new Date(s.completed_at!).getTime() - new Date(s.started_at).getTime());
+    }, 0);
+    return Math.round(((assessmentMs + who5Ms) / totalCompleted) / 60000 * 10) / 10;
+  }, [filteredSessions, filteredWho5]);
 
   // Top severity conditions (conditions with highest severe %)
   const highRiskConditions = useMemo(() => {
