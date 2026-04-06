@@ -216,23 +216,35 @@ export const useMindCheckAnalytics = () => {
   const filteredSessions = useMemo(() => sessions.filter(s => new Date(s.started_at) >= getDateFilter()), [sessions, getDateFilter]);
   const filteredVisits = useMemo(() => visits.filter(v => new Date(v.visited_at) >= getDateFilter()), [visits, getDateFilter]);
   const filteredEmails = useMemo(() => emails.filter(e => new Date(e.created_at) >= getDateFilter()), [emails, getDateFilter]);
+  const filteredWho5 = useMemo(() => who5Sessions.filter(s => new Date(s.started_at) >= getDateFilter()), [who5Sessions, getDateFilter]);
 
-  // Overview stats
+  // Overview stats (combines assessment sessions + WHO-5 sessions)
   const stats: MindCheckStats = useMemo(() => {
-    const completed = filteredSessions.filter(s => s.completed_at);
-    const completedWithScores = filteredSessions.filter(s => s.score !== null && s.max_score !== null);
+    const assessmentCompleted = filteredSessions.filter(s => s.completed_at);
+    const who5Completed = filteredWho5.filter(s => s.completed_at);
+    
+    const totalStarted = filteredSessions.length + filteredWho5.length;
+    const totalCompleted = assessmentCompleted.length + who5Completed.length;
+    const totalAbandoned = filteredSessions.filter(s => s.abandoned_at && !s.completed_at).length + 
+                           filteredWho5.filter(s => s.abandoned_at && !s.completed_at).length;
+    
+    // Average score: combine assessment % scores and WHO-5 % scores
+    const assessmentWithScores = filteredSessions.filter(s => s.score !== null && s.max_score !== null);
+    const who5WithScores = filteredWho5.filter(s => s.percentage_score !== null);
+    const totalScored = assessmentWithScores.length + who5WithScores.length;
+    const totalScoreSum = assessmentWithScores.reduce((sum, s) => sum + ((s.score! / s.max_score!) * 100), 0) +
+                          who5WithScores.reduce((sum, s) => sum + s.percentage_score!, 0);
+    
     return {
       totalPageVisits: filteredVisits.length,
-      testsStarted: filteredSessions.length,
-      testsCompleted: completed.length,
-      testsAbandoned: filteredSessions.filter(s => s.abandoned_at && !s.completed_at).length,
-      completionRate: filteredSessions.length > 0 ? Math.round((completed.length / filteredSessions.length) * 100) : 0,
-      averageScore: completedWithScores.length > 0
-        ? Math.round(completedWithScores.reduce((sum, s) => sum + ((s.score! / s.max_score!) * 100), 0) / completedWithScores.length)
-        : 0,
+      testsStarted: totalStarted,
+      testsCompleted: totalCompleted,
+      testsAbandoned: totalAbandoned,
+      completionRate: totalStarted > 0 ? Math.round((totalCompleted / totalStarted) * 100) : 0,
+      averageScore: totalScored > 0 ? Math.round(totalScoreSum / totalScored) : 0,
       emailsCollected: filteredEmails.length,
     };
-  }, [filteredSessions, filteredVisits, filteredEmails]);
+  }, [filteredSessions, filteredVisits, filteredEmails, filteredWho5]);
 
   // Condition distribution
   const conditionDistribution: ConditionDistribution[] = useMemo(() => {
