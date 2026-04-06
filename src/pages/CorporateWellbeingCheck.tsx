@@ -143,19 +143,19 @@ const CorporateWellbeingCheck = () => {
         return;
       }
 
-      if (data.screening_completed) {
-        toast.info('You have already completed this screening.');
-        setLoading(false);
-        return;
-      }
+      const [companyRes, historyRes] = await Promise.all([
+        supabase.from('corporate_companies').select('name').eq('id', data.company_id).single(),
+        supabase.from('corporate_screenings').select('id, completed_at, total_score, who5_percentage, wellbeing_category').eq('employee_id', data.id).order('completed_at', { ascending: false }),
+      ]);
 
-      const { data: company } = await supabase
-        .from('corporate_companies')
-        .select('name')
-        .eq('id', data.company_id)
-        .single();
-
-      setEmployee({ ...data, company_name: company?.name || '' });
+      setEmployee({
+        id: data.id,
+        name: data.name,
+        email: data.email,
+        company_id: data.company_id,
+        company_name: companyRes.data?.name || '',
+        screening_history: (historyRes.data || []) as ScreeningHistory[],
+      });
       setPhase('welcome');
     } catch {
       toast.error('Something went wrong. Please try again.');
