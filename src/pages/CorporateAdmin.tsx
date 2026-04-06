@@ -811,7 +811,8 @@ const CorporateAdmin = () => {
                             const empRowNum = (employeePage - 1) * EMPLOYEES_PER_PAGE + idx + 1;
 
                             return (
-                              <tr key={emp.id} className={`border-b ${isRed ? 'bg-red-50/50' : isYellow ? 'bg-yellow-50/30' : ''}`}>
+                              <React.Fragment key={emp.id}>
+                              <tr className={`border-b ${isRed ? 'bg-red-50/50' : isYellow ? 'bg-yellow-50/30' : ''}`}>
                                 <td className="p-3 text-center text-muted-foreground">{empRowNum}</td>
                                 <td className="p-3">
                                   <div className="flex items-center gap-1.5">
