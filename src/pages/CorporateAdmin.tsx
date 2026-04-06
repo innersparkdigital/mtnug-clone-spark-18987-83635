@@ -14,7 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { Building2, Users, Plus, Upload, BarChart3, FileText, Trash2, UserPlus, ClipboardList, AlertTriangle, Phone, MessageCircle, Download, TrendingUp, Activity, Search, ChevronLeft, ChevronRight, ArrowLeft, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
+import { Building2, Users, Plus, Upload, BarChart3, FileText, Trash2, UserPlus, ClipboardList, AlertTriangle, Phone, MessageCircle, Download, TrendingUp, Activity, Search, ChevronLeft, ChevronRight, ArrowLeft, ArrowUpDown, ArrowUp, ArrowDown, ChevronDown, ChevronUp as ChevronUpIcon, History } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -76,6 +76,7 @@ const CorporateAdmin = () => {
   const [csvFile, setCsvFile] = useState<File | null>(null);
   const [allEmployees, setAllEmployees] = useState<Employee[]>([]);
   const [allScreenings, setAllScreenings] = useState<Screening[]>([]);
+  const [expandedEmployees, setExpandedEmployees] = useState<Set<string>>(new Set());
 
   // Pagination & search
   const [companyPage, setCompanyPage] = useState(1);
@@ -204,16 +205,29 @@ const CorporateAdmin = () => {
     fetchCompanies();
   };
 
-  // Build employee-screening map (latest screening per employee + count)
+  // Build employee-screening map (latest screening per employee + full history)
   const employeeScreeningMap = new Map<string, Screening>();
   const employeeScreeningCount = new Map<string, number>();
+  const employeeScreeningHistory = new Map<string, Screening[]>();
   // screenings are ordered by completed_at desc from fetch, so first match = latest
   screenings.forEach(s => {
     employeeScreeningCount.set(s.employee_id, (employeeScreeningCount.get(s.employee_id) || 0) + 1);
     if (!employeeScreeningMap.has(s.employee_id)) {
       employeeScreeningMap.set(s.employee_id, s);
     }
+    const history = employeeScreeningHistory.get(s.employee_id) || [];
+    history.push(s);
+    employeeScreeningHistory.set(s.employee_id, history);
   });
+
+  const toggleEmployeeExpand = (empId: string) => {
+    setExpandedEmployees(prev => {
+      const next = new Set(prev);
+      if (next.has(empId)) next.delete(empId);
+      else next.add(empId);
+      return next;
+    });
+  };
 
   // Analytics
   const totalEmployees = employees.length;
@@ -797,7 +811,8 @@ const CorporateAdmin = () => {
                             const empRowNum = (employeePage - 1) * EMPLOYEES_PER_PAGE + idx + 1;
 
                             return (
-                              <tr key={emp.id} className={`border-b ${isRed ? 'bg-red-50/50' : isYellow ? 'bg-yellow-50/30' : ''}`}>
+                              <>
+                              <tr className={`border-b ${isRed ? 'bg-red-50/50' : isYellow ? 'bg-yellow-50/30' : ''}`}>
                                 <td className="p-3 text-center text-muted-foreground">{empRowNum}</td>
                                 <td className="p-3">
                                   <div className="flex items-center gap-1.5">
@@ -819,7 +834,15 @@ const CorporateAdmin = () => {
                                     <div className="flex items-center gap-1">
                                       <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-green-100 text-green-700">Done</span>
                                       {(employeeScreeningCount.get(emp.id) || 0) > 1 && (
-                                        <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-primary/10 text-primary font-medium">×{employeeScreeningCount.get(emp.id)}</span>
+                                        <button
+                                          onClick={() => toggleEmployeeExpand(emp.id)}
+                                          className="inline-flex items-center gap-0.5 text-[10px] px-1.5 py-0.5 rounded-full bg-primary/10 text-primary font-medium hover:bg-primary/20 transition-colors cursor-pointer"
+                                          title="View screening history"
+                                        >
+                                          <History className="w-2.5 h-2.5" />
+                                          {employeeScreeningCount.get(emp.id)} check-ins
+                                          {expandedEmployees.has(emp.id) ? <ChevronUpIcon className="w-2.5 h-2.5" /> : <ChevronDown className="w-2.5 h-2.5" />}
+                                        </button>
                                       )}
                                     </div>
                                   ) : emp.invitation_sent ? (
@@ -829,7 +852,7 @@ const CorporateAdmin = () => {
                                   )}
                                 </td>
                                 <td className="p-3 text-xs text-muted-foreground">
-                                  {screening ? new Date(screening.completed_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : '—'}
+                                  {screening ? new Date(screening.completed_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '—'}
                                 </td>
                                 <td className="p-3">
                                   {screening ? (
@@ -856,6 +879,50 @@ const CorporateAdmin = () => {
                                   </div>
                                 </td>
                               </tr>
+                              {/* Screening History Expansion Row */}
+                              {expandedEmployees.has(emp.id) && (employeeScreeningHistory.get(emp.id) || []).length > 0 && (
+                                <tr key={`${emp.id}-history`} className="bg-muted/30">
+                                  <td colSpan={10} className="p-0">
+                                    <div className="px-6 py-3">
+                                      <div className="text-[11px] font-semibold text-muted-foreground mb-2 flex items-center gap-1.5">
+                                        <History className="w-3 h-3" />
+                                        Screening History for {emp.name}
+                                      </div>
+                                      <div className="grid gap-1.5">
+                                        {(employeeScreeningHistory.get(emp.id) || []).map((s, i) => {
+                                          const cat = s.wellbeing_category;
+                                          const prevScreening = (employeeScreeningHistory.get(emp.id) || [])[i + 1];
+                                          const trend = prevScreening ? s.who5_percentage - prevScreening.who5_percentage : null;
+                                          return (
+                                            <div key={s.id} className="flex items-center gap-3 text-xs py-1.5 px-3 rounded-md bg-background border">
+                                              <span className="font-medium text-muted-foreground w-6">#{(employeeScreeningHistory.get(emp.id) || []).length - i}</span>
+                                              <span className="font-medium min-w-[100px]">
+                                                {new Date(s.completed_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                              </span>
+                                              <span className="text-muted-foreground min-w-[60px]">
+                                                {new Date(s.completed_at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
+                                              </span>
+                                              <span className={`font-bold min-w-[50px] ${cat === 'red' ? 'text-red-600' : cat === 'yellow' ? 'text-yellow-600' : 'text-green-600'}`}>
+                                                {s.who5_percentage}%
+                                              </span>
+                                              <Badge variant={cat === 'red' ? 'destructive' : cat === 'yellow' ? 'secondary' : 'default'} className="text-[9px] px-1.5 py-0">
+                                                {cat === 'red' ? 'Critical' : cat === 'yellow' ? 'At Risk' : 'Good'}
+                                              </Badge>
+                                              {trend !== null && (
+                                                <span className={`text-[10px] font-medium ${trend > 0 ? 'text-green-600' : trend < 0 ? 'text-red-600' : 'text-muted-foreground'}`}>
+                                                  {trend > 0 ? `↑ +${trend}%` : trend < 0 ? `↓ ${trend}%` : '→ no change'}
+                                                </span>
+                                              )}
+                                              {i === 0 && <Badge variant="outline" className="text-[9px] px-1 py-0 ml-auto">Latest</Badge>}
+                                            </div>
+                                          );
+                                        })}
+                                      </div>
+                                    </div>
+                                  </td>
+                                </tr>
+                              )}
+                              </>
                             );
                           })}
                         </tbody>
