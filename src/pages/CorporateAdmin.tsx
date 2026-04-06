@@ -204,9 +204,16 @@ const CorporateAdmin = () => {
     fetchCompanies();
   };
 
-  // Build employee-screening map
+  // Build employee-screening map (latest screening per employee + count)
   const employeeScreeningMap = new Map<string, Screening>();
-  screenings.forEach(s => employeeScreeningMap.set(s.employee_id, s));
+  const employeeScreeningCount = new Map<string, number>();
+  // screenings are ordered by completed_at desc from fetch, so first match = latest
+  screenings.forEach(s => {
+    employeeScreeningCount.set(s.employee_id, (employeeScreeningCount.get(s.employee_id) || 0) + 1);
+    if (!employeeScreeningMap.has(s.employee_id)) {
+      employeeScreeningMap.set(s.employee_id, s);
+    }
+  });
 
   // Analytics
   const totalEmployees = employees.length;
