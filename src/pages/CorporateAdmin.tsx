@@ -924,6 +924,7 @@ const CorporateAdmin = () => {
                               )}
                               </React.Fragment>
                             );
+                          })}
                         </tbody>
                       </table>
                     </div>
