@@ -139,7 +139,7 @@ const CorporateAdmin = () => {
   };
 
   const fetchScreenings = async (companyId: string) => {
-    const { data } = await supabase.from('corporate_screenings').select('*').eq('company_id', companyId);
+    const { data } = await supabase.from('corporate_screenings').select('*').eq('company_id', companyId).order('completed_at', { ascending: false });
     setScreenings((data as any[]) || []);
   };
 
