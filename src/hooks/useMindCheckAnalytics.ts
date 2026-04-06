@@ -115,12 +115,27 @@ export interface WeekdayAnalytics {
   completions: number;
 }
 
+interface Who5Session {
+  id: string;
+  session_id: string;
+  source: string | null;
+  device_type: string | null;
+  started_at: string;
+  completed_at: string | null;
+  abandoned_at: string | null;
+  raw_score: number | null;
+  percentage_score: number | null;
+  wellbeing_level: string | null;
+  time_taken_seconds: number | null;
+}
+
 export const useMindCheckAnalytics = () => {
   const { user } = useAuth();
   const { isAdmin } = useUserRole();
   const [sessions, setSessions] = useState<AssessmentSession[]>([]);
   const [emails, setEmails] = useState<AssessmentEmail[]>([]);
   const [visits, setVisits] = useState<PageVisit[]>([]);
+  const [who5Sessions, setWho5Sessions] = useState<Who5Session[]>([]);
   const [loading, setLoading] = useState(true);
   const [dateRange, setDateRange] = useState<'7d' | '30d' | '90d' | 'all'>('30d');
   const [isRealtime, setIsRealtime] = useState(false);
@@ -132,19 +147,22 @@ export const useMindCheckAnalytics = () => {
     }
 
     try {
-      const [sessionsRes, emailsRes, visitsRes] = await Promise.all([
+      const [sessionsRes, emailsRes, visitsRes, who5Res] = await Promise.all([
         supabase.from('assessment_sessions').select('*').order('started_at', { ascending: false }),
         supabase.from('assessment_emails').select('*').order('created_at', { ascending: false }),
         supabase.from('mindcheck_page_visits').select('*').order('visited_at', { ascending: false }),
+        supabase.from('who5_sessions').select('*').order('started_at', { ascending: false }),
       ]);
 
       if (sessionsRes.error) throw sessionsRes.error;
       if (emailsRes.error) throw emailsRes.error;
       if (visitsRes.error) throw visitsRes.error;
+      if (who5Res.error) throw who5Res.error;
 
       setSessions((sessionsRes.data || []) as unknown as AssessmentSession[]);
       setEmails((emailsRes.data || []) as unknown as AssessmentEmail[]);
       setVisits((visitsRes.data || []) as unknown as PageVisit[]);
+      setWho5Sessions((who5Res.data || []) as unknown as Who5Session[]);
     } catch (error) {
       console.error('Error fetching Mind Check analytics:', error);
     } finally {
@@ -198,23 +216,35 @@ export const useMindCheckAnalytics = () => {
   const filteredSessions = useMemo(() => sessions.filter(s => new Date(s.started_at) >= getDateFilter()), [sessions, getDateFilter]);
   const filteredVisits = useMemo(() => visits.filter(v => new Date(v.visited_at) >= getDateFilter()), [visits, getDateFilter]);
   const filteredEmails = useMemo(() => emails.filter(e => new Date(e.created_at) >= getDateFilter()), [emails, getDateFilter]);
+  const filteredWho5 = useMemo(() => who5Sessions.filter(s => new Date(s.started_at) >= getDateFilter()), [who5Sessions, getDateFilter]);
 
-  // Overview stats
+  // Overview stats (combines assessment sessions + WHO-5 sessions)
   const stats: MindCheckStats = useMemo(() => {
-    const completed = filteredSessions.filter(s => s.completed_at);
-    const completedWithScores = filteredSessions.filter(s => s.score !== null && s.max_score !== null);
+    const assessmentCompleted = filteredSessions.filter(s => s.completed_at);
+    const who5Completed = filteredWho5.filter(s => s.completed_at);
+    
+    const totalStarted = filteredSessions.length + filteredWho5.length;
+    const totalCompleted = assessmentCompleted.length + who5Completed.length;
+    const totalAbandoned = filteredSessions.filter(s => s.abandoned_at && !s.completed_at).length + 
+                           filteredWho5.filter(s => s.abandoned_at && !s.completed_at).length;
+    
+    // Average score: combine assessment % scores and WHO-5 % scores
+    const assessmentWithScores = filteredSessions.filter(s => s.score !== null && s.max_score !== null);
+    const who5WithScores = filteredWho5.filter(s => s.percentage_score !== null);
+    const totalScored = assessmentWithScores.length + who5WithScores.length;
+    const totalScoreSum = assessmentWithScores.reduce((sum, s) => sum + ((s.score! / s.max_score!) * 100), 0) +
+                          who5WithScores.reduce((sum, s) => sum + s.percentage_score!, 0);
+    
     return {
       totalPageVisits: filteredVisits.length,
-      testsStarted: filteredSessions.length,
-      testsCompleted: completed.length,
-      testsAbandoned: filteredSessions.filter(s => s.abandoned_at && !s.completed_at).length,
-      completionRate: filteredSessions.length > 0 ? Math.round((completed.length / filteredSessions.length) * 100) : 0,
-      averageScore: completedWithScores.length > 0
-        ? Math.round(completedWithScores.reduce((sum, s) => sum + ((s.score! / s.max_score!) * 100), 0) / completedWithScores.length)
-        : 0,
+      testsStarted: totalStarted,
+      testsCompleted: totalCompleted,
+      testsAbandoned: totalAbandoned,
+      completionRate: totalStarted > 0 ? Math.round((totalCompleted / totalStarted) * 100) : 0,
+      averageScore: totalScored > 0 ? Math.round(totalScoreSum / totalScored) : 0,
       emailsCollected: filteredEmails.length,
     };
-  }, [filteredSessions, filteredVisits, filteredEmails]);
+  }, [filteredSessions, filteredVisits, filteredEmails, filteredWho5]);
 
   // Condition distribution
   const conditionDistribution: ConditionDistribution[] = useMemo(() => {
@@ -296,11 +326,11 @@ export const useMindCheckAnalytics = () => {
 
   // ===== ADVANCED ANALYTICS =====
 
-  // Engagement funnel
+  // Engagement funnel (includes WHO-5)
   const engagementFunnel: EngagementFunnel[] = useMemo(() => {
     const visitCount = filteredVisits.length;
-    const startCount = filteredSessions.length;
-    const completedCount = filteredSessions.filter(s => s.completed_at).length;
+    const startCount = filteredSessions.length + filteredWho5.length;
+    const completedCount = filteredSessions.filter(s => s.completed_at).length + filteredWho5.filter(s => s.completed_at).length;
     const emailCount = filteredEmails.length;
     const base = Math.max(visitCount, 1);
     return [
@@ -373,15 +403,20 @@ export const useMindCheckAnalytics = () => {
     };
   }, [filteredEmails]);
 
-  // Average completion time (minutes)
+  // Average completion time (minutes) - includes WHO-5
   const avgCompletionTime = useMemo(() => {
-    const completed = filteredSessions.filter(s => s.completed_at && s.started_at);
-    if (completed.length === 0) return 0;
-    const totalMs = completed.reduce((sum, s) => {
+    const assessmentCompleted = filteredSessions.filter(s => s.completed_at && s.started_at);
+    const who5Completed = filteredWho5.filter(s => s.completed_at && s.started_at);
+    const totalCompleted = assessmentCompleted.length + who5Completed.length;
+    if (totalCompleted === 0) return 0;
+    const assessmentMs = assessmentCompleted.reduce((sum, s) => {
       return sum + (new Date(s.completed_at!).getTime() - new Date(s.started_at).getTime());
     }, 0);
-    return Math.round((totalMs / completed.length) / 60000 * 10) / 10;
-  }, [filteredSessions]);
+    const who5Ms = who5Completed.reduce((sum, s) => {
+      return sum + (new Date(s.completed_at!).getTime() - new Date(s.started_at).getTime());
+    }, 0);
+    return Math.round(((assessmentMs + who5Ms) / totalCompleted) / 60000 * 10) / 10;
+  }, [filteredSessions, filteredWho5]);
 
   // Top severity conditions (conditions with highest severe %)
   const highRiskConditions = useMemo(() => {
@@ -448,6 +483,17 @@ export const useMindCheckAnalytics = () => {
     ]);
     sections.push('=== ASSESSMENT SESSIONS ===\n' + [sHeaders, ...sRows].map(r => r.map(c => `"${c}"`).join(',')).join('\n'));
     
+    // WHO-5 Sessions
+    const wHeaders = ['Session ID', 'Source', 'Device', 'Started', 'Completed', 'Raw Score', 'Percentage', 'Wellbeing Level', 'Time (s)'];
+    const wRows = who5Sessions.map(s => [
+      s.session_id, s.source || '', s.device_type || '',
+      new Date(s.started_at).toLocaleString(),
+      s.completed_at ? new Date(s.completed_at).toLocaleString() : '',
+      s.raw_score?.toString() || '', s.percentage_score?.toString() || '',
+      s.wellbeing_level || '', s.time_taken_seconds?.toString() || '',
+    ]);
+    sections.push('\n\n=== WHO-5 SESSIONS ===\n' + [wHeaders, ...wRows].map(r => r.map(c => `"${c}"`).join(',')).join('\n'));
+    
     // Emails
     const eHeaders = ['Email', 'Test Type', 'Severity', 'Score', 'Source', 'Device', 'Date'];
     const eRows = emails.map(e => [
@@ -462,16 +508,22 @@ export const useMindCheckAnalytics = () => {
     sections.push('\n\n=== PAGE VISITS ===\n' + [vHeaders, ...vRows].map(r => r.map(c => `"${c}"`).join(',')).join('\n'));
     
     return sections.join('');
-  }, [sessions, emails, visits]);
+  }, [sessions, emails, visits, who5Sessions]);
 
   // Clear data
   const clearData = useCallback(async (tables: string[]) => {
     const { data, error } = await supabase.rpc('clear_mindcheck_data', { tables_to_clear: tables });
-    if (error) throw error;
-    // Refresh data
-    await fetchData();
+    if (error) {
+      console.error('Clear data error:', error);
+      throw new Error(error.message || 'Failed to clear data. Make sure you are logged in as an admin.');
+    }
+    // Reset local state immediately
+    setSessions([]);
+    setEmails([]);
+    setVisits([]);
+    setWho5Sessions([]);
     return data;
-  }, [fetchData]);
+  }, []);
 
   return {
     stats,
