@@ -616,7 +616,7 @@ const CorporateAdmin = () => {
                           const avg = compScrs.length > 0 ? Math.round(compScrs.reduce((s, x) => s + x.who5_percentage, 0) / compScrs.length) : 0;
                           const rowNum = (companyPage - 1) * COMPANIES_PER_PAGE + idx + 1;
                           return (
-                            <tr key={c.id} className="border-b hover:bg-muted/30 cursor-pointer transition-colors" <tr key={c.id} className="border-b hover:bg-muted/30 cursor-pointer transition-colors" onClick={() => { setSelectedCompany(c); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>>
+                            <tr key={c.id} className="border-b hover:bg-muted/30 cursor-pointer transition-colors" onClick={() => { setSelectedCompany(c); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>>
                               <td className="p-3 text-center text-muted-foreground">{rowNum}</td>
                               <td className="p-3">
                                 <span className="font-medium">{c.name}</span>
