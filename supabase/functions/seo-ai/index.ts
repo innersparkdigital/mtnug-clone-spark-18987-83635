@@ -102,7 +102,9 @@ Be specific and actionable in your recommendations.`;
     const toolCall = data.choices?.[0]?.message?.tool_calls?.[0];
     let result;
     if (toolCall) {
-      result = JSON.parse(toolCall.function.arguments).result;
+      const args = JSON.parse(toolCall.function.arguments);
+      // The AI may return data under "result" key or directly as the arguments
+      result = args.result && Object.keys(args.result).length > 0 ? args.result : args;
     } else {
       const content = data.choices?.[0]?.message?.content || "";
       try {
