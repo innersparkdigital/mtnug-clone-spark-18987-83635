@@ -23,16 +23,50 @@ const NewsletterForm = () => {
 
     setIsLoading(true);
     
-    // Simulate subscription (replace with actual API call later)
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    toast({
-      title: "Successfully subscribed!",
-      description: "Thank you for subscribing to our newsletter."
-    });
-    
-    setEmail("");
-    setIsLoading(false);
+    try {
+      // Save to newsletter_subscribers table
+      const { error: dbError } = await supabase
+        .from("newsletter_subscribers")
+        .insert({ email: email.toLowerCase().trim() });
+
+      if (dbError) {
+        if (dbError.code === "23505") {
+          toast({
+            title: "Already subscribed!",
+            description: "You're already on our mailing list."
+          });
+          setEmail("");
+          setIsLoading(false);
+          return;
+        }
+        throw dbError;
+      }
+
+      // Send welcome email via Resend
+      await supabase.functions.invoke('send-resend-email', {
+        body: {
+          type: 'newsletter-welcome',
+          to: email.toLowerCase().trim(),
+          data: {},
+        },
+      });
+
+      toast({
+        title: "Successfully subscribed!",
+        description: "Thank you for subscribing to our newsletter."
+      });
+      
+      setEmail("");
+    } catch (error) {
+      console.error("Newsletter error:", error);
+      toast({
+        title: "Something went wrong",
+        description: "Please try again later.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
