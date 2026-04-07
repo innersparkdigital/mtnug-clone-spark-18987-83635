@@ -51,6 +51,11 @@ Be specific and actionable in your recommendations.`;
       });
     }
 
+    const aiMessages = [
+      { role: "system", content: systemPrompt + "\n\nIMPORTANT: You MUST respond with valid JSON only, no markdown, no code fences, no extra text." },
+      { role: "user", content: userPrompt },
+    ];
+
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -59,25 +64,8 @@ Be specific and actionable in your recommendations.`;
       },
       body: JSON.stringify({
         model: "google/gemini-2.5-flash",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt },
-        ],
-        tools: [{
-          type: "function",
-          function: {
-            name: "seo_result",
-            description: "Return the SEO analysis result as structured JSON",
-            parameters: {
-              type: "object",
-              properties: {
-                result: { type: "object" }
-              },
-              required: ["result"]
-            }
-          }
-        }],
-        tool_choice: { type: "function", function: { name: "seo_result" } },
+        messages: aiMessages,
+        response_format: { type: "json_object" },
       }),
     });
 
@@ -98,20 +86,15 @@ Be specific and actionable in your recommendations.`;
     }
 
     const data = await response.json();
+    const content = data.choices?.[0]?.message?.content || "{}";
     
-    const toolCall = data.choices?.[0]?.message?.tool_calls?.[0];
     let result;
-    if (toolCall) {
-      const args = JSON.parse(toolCall.function.arguments);
-      // The AI may return data under "result" key or directly as the arguments
-      result = args.result && Object.keys(args.result).length > 0 ? args.result : args;
-    } else {
-      const content = data.choices?.[0]?.message?.content || "";
-      try {
-        result = JSON.parse(content);
-      } catch {
-        result = { rawContent: content };
-      }
+    try {
+      // Strip markdown code fences if present
+      const cleaned = content.replace(/^```json?\s*/i, "").replace(/\s*```$/i, "").trim();
+      result = JSON.parse(cleaned);
+    } catch {
+      result = { rawContent: content };
     }
 
     return new Response(JSON.stringify({ success: true, data: result }), {
