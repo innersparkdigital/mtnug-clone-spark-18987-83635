@@ -172,8 +172,10 @@ function wrap(title: string, body: string): string {
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
 <body style="margin:0;padding:0;background:#f5f5f5;font-family:'Segoe UI',Arial,sans-serif;">
   <div style="max-width:600px;margin:0 auto;background:#ffffff;">
-    <div style="background:${BRAND_COLOR};padding:20px 25px;text-align:center;">
-      <img src="${LOGO_URL}" alt="${SITE}" style="max-width:220px;height:auto;" />
+    <div style="background:${BRAND_COLOR};padding:28px 25px;text-align:center;">
+      <div style="display:inline-block;background:#ffffff;border-radius:12px;padding:10px 24px;">
+        <img src="${LOGO_URL}" alt="${SITE}" style="max-width:200px;height:auto;display:block;" />
+      </div>
     </div>
     <div style="padding:30px 25px 20px;">
       <h2 style="font-size:22px;font-weight:bold;color:#1a1a1a;margin:0 0 16px;">${title}</h2>
