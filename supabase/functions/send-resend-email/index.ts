@@ -331,3 +331,15 @@ function bookingConfirmation(d: Record<string, any>): EmailContent {
     ),
   }
 }
+
+function backupEmail(d: Record<string, any>): EmailContent {
+  return {
+    subject: d.subject || `Data Backup — ${SITE}`,
+    html: wrap(
+      d.title || 'Data Backup',
+      p(`Here is your requested data backup containing <strong>${d.totalRecords || 0}</strong> records.`) +
+      (d.tableHtml || '') +
+      p(`<em>Generated on ${new Date().toLocaleString('en-GB', { dateStyle: 'full', timeStyle: 'short' })}</em>`)
+    ),
+  }
+}
