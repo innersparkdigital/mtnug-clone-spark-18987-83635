@@ -61,6 +61,14 @@ const AppComingSoon = () => {
           throw error;
         }
       } else {
+        // Send waitlist confirmation email
+        await supabase.functions.invoke('send-resend-email', {
+          body: {
+            type: 'app-waitlist',
+            to: formData.email.toLowerCase().trim(),
+            data: { name: formData.name || '' },
+          },
+        });
         toast.success("You're on the list! We'll notify you when the app launches.");
       }
       

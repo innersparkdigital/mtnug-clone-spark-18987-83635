@@ -102,15 +102,32 @@ const ForBusiness = () => {
     });
   }, [language, translateBatch]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Send confirmation email via Resend
+    try {
+      await supabase.functions.invoke('send-resend-email', {
+        body: {
+          type: 'business-inquiry',
+          to: formData.email,
+          data: {
+            name: formData.name,
+            company: formData.company,
+          },
+        },
+      });
+    } catch (err) {
+      console.error('Email send error:', err);
+    }
+
     const whatsappMessage = encodeURIComponent(
       `Hi, I'm ${formData.name} from ${formData.company}. I'm interested in Innerspark for Business. ${formData.message}`
     );
     window.open(`https://wa.me/256792085773?text=${whatsappMessage}`, "_blank");
     toast({
-      title: "Redirecting to WhatsApp",
-      description: "We'll connect with you shortly to discuss your business needs.",
+      title: "Inquiry Submitted!",
+      description: "We've sent you a confirmation email and will connect with you shortly.",
     });
   };
 
