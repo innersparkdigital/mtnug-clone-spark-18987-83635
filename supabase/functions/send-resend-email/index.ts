@@ -116,23 +116,79 @@ function buildEmail(type: string, data: Record<string, any>): EmailContent | nul
 
 const BRAND_COLOR = '#5B6ABF'
 const SITE = 'InnerSpark Africa'
+const LOGO_URL = 'https://hnjpsvpudwwyzrrwzbpa.supabase.co/storage/v1/object/public/email-assets/logo.png'
+const FOOTER_BANNER_URL = 'https://hnjpsvpudwwyzrrwzbpa.supabase.co/storage/v1/object/public/email-assets/footer-banner.png'
+
+function googleCalendarUrl(title: string, date: string, time: string, location?: string): string {
+  try {
+    const cleanDate = date.replace(/^(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday),?\s*/i, '')
+    const startMatch = time.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i)
+    const endMatch = time.match(/[–\-]\s*(\d{1,2}):(\d{2})\s*(AM|PM)/i)
+
+    if (!startMatch) return ''
+
+    let startHour = parseInt(startMatch[1])
+    const startMin = startMatch[2]
+    if (startMatch[3].toUpperCase() === 'PM' && startHour !== 12) startHour += 12
+    if (startMatch[3].toUpperCase() === 'AM' && startHour === 12) startHour = 0
+
+    let endHour = startHour + 1
+    let endMin = startMin
+    if (endMatch) {
+      endHour = parseInt(endMatch[1])
+      endMin = endMatch[2]
+      if (endMatch[3].toUpperCase() === 'PM' && endHour !== 12) endHour += 12
+      if (endMatch[3].toUpperCase() === 'AM' && endHour === 12) endHour = 0
+    }
+
+    const dateObj = new Date(cleanDate)
+    if (isNaN(dateObj.getTime())) return ''
+
+    const y = dateObj.getFullYear()
+    const m = String(dateObj.getMonth() + 1).padStart(2, '0')
+    const d = String(dateObj.getDate()).padStart(2, '0')
+
+    const startDt = `${y}${m}${d}T${String(startHour).padStart(2, '0')}${startMin}00`
+    const endDt = `${y}${m}${d}T${String(endHour).padStart(2, '0')}${endMin}00`
+
+    const params = new URLSearchParams({
+      action: 'TEMPLATE',
+      text: title,
+      dates: `${startDt}/${endDt}`,
+      details: `Join us for this InnerSpark Africa wellness session.${location ? `\n\nMeeting link: ${location}` : ''}`,
+      ctz: 'Africa/Nairobi',
+    })
+    if (location) params.set('location', location)
+
+    return `https://calendar.google.com/calendar/render?${params.toString()}`
+  } catch {
+    return ''
+  }
+}
 
 function wrap(title: string, body: string): string {
   return `<!DOCTYPE html>
 <html lang="en">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-<body style="margin:0;padding:0;background:#ffffff;font-family:'Segoe UI',Arial,sans-serif;">
-  <div style="max-width:600px;margin:0 auto;padding:0 25px 40px;">
-    <div style="background:${BRAND_COLOR};padding:24px 25px;margin:0 -25px 30px;border-radius:0 0 8px 8px;text-align:center;">
-      <h1 style="margin:0;font-size:20px;font-weight:700;color:#ffffff;">${SITE}</h1>
+<body style="margin:0;padding:0;background:#f5f5f5;font-family:'Segoe UI',Arial,sans-serif;">
+  <div style="max-width:600px;margin:0 auto;background:#ffffff;">
+    <div style="background:${BRAND_COLOR};padding:20px 25px;text-align:center;">
+      <img src="${LOGO_URL}" alt="${SITE}" style="max-width:220px;height:auto;" />
     </div>
-    <h2 style="font-size:22px;font-weight:bold;color:#1a1a1a;margin:0 0 16px;">${title}</h2>
-    ${body}
-    <hr style="border:none;border-top:1px solid #e5e5e5;margin:24px 0;">
-    <p style="font-size:13px;color:#999;margin:0;line-height:1.5;">
-      Warm regards,<br>The ${SITE} Team<br>
-      <a href="https://www.innersparkafrica.com" style="color:${BRAND_COLOR};">www.innersparkafrica.com</a>
-    </p>
+    <div style="padding:30px 25px 20px;">
+      <h2 style="font-size:22px;font-weight:bold;color:#1a1a1a;margin:0 0 16px;">${title}</h2>
+      ${body}
+      <hr style="border:none;border-top:1px solid #e5e5e5;margin:24px 0;">
+      <p style="font-size:13px;color:#999;margin:0 0 20px;line-height:1.5;">
+        Warm regards,<br>The ${SITE} Team<br>
+        <a href="https://www.innersparkafrica.com" style="color:${BRAND_COLOR};">www.innersparkafrica.com</a>
+      </p>
+    </div>
+    <div style="margin:0;">
+      <a href="https://www.innersparkafrica.com" target="_blank">
+        <img src="${FOOTER_BANNER_URL}" alt="Get the InnerSpark Mobile App" style="width:100%;max-width:600px;height:auto;display:block;" />
+      </a>
+    </div>
   </div>
 </body></html>`
 }
@@ -141,6 +197,7 @@ const p = (text: string) => `<p style="font-size:15px;color:#555;line-height:1.6
 const detail = (label: string, value: string) => `<p style="font-size:12px;color:#888;margin:0 0 4px;text-transform:uppercase;letter-spacing:0.5px;">${label}</p><p style="font-size:14px;color:#333;margin:0 0 12px;line-height:1.5;">${value}</p>`
 const box = (content: string) => `<div style="background:#f4f5fb;border-radius:8px;padding:16px 20px;margin:0 0 24px;">${content}</div>`
 const btn = (text: string, url: string) => `<div style="text-align:center;margin:24px 0;"><a href="${url}" style="display:inline-block;background:${BRAND_COLOR};color:#fff;padding:14px 28px;border-radius:8px;text-decoration:none;font-weight:600;font-size:15px;">${text}</a></div>`
+const btnOutline = (text: string, url: string) => `<div style="text-align:center;margin:12px 0;"><a href="${url}" style="display:inline-block;border:2px solid ${BRAND_COLOR};color:${BRAND_COLOR};padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px;">${text}</a></div>`
 
 function contactConfirmation(d: Record<string, any>): EmailContent {
   const name = d.name || 'there'
@@ -156,6 +213,12 @@ function contactConfirmation(d: Record<string, any>): EmailContent {
 }
 
 function trainingConfirmation(d: Record<string, any>): EmailContent {
+  const calUrl = googleCalendarUrl(
+    d.trainingTitle || 'InnerSpark Wellness Training',
+    d.trainingDate || '',
+    d.trainingTime || '',
+    d.meetingLink || ''
+  )
   return {
     subject: `Registration Confirmed: ${d.trainingTitle || 'Wellness Training'}`,
     html: wrap(
@@ -164,10 +227,10 @@ function trainingConfirmation(d: Record<string, any>): EmailContent {
       box(
         detail('📅 Date', d.trainingDate || 'TBC') +
         detail('⏰ Time', d.trainingTime || 'TBC') +
-        detail('👩‍⚕️ Facilitator', `${d.facilitatorName || ''} — ${d.facilitatorTitle || ''}`) +
-        (d.meetingPassword ? detail('🔒 Password', d.meetingPassword) : '')
+        detail('👩‍⚕️ Facilitator', `${d.facilitatorName || ''} — ${d.facilitatorTitle || ''}`)
       ) +
       (d.meetingLink ? btn('Join Google Meet', d.meetingLink) : '') +
+      (calUrl ? btnOutline('📅 Add to Google Calendar', calUrl) : '') +
       p('If you have any questions, feel free to reply to this email or reach us on WhatsApp at <strong>+256 792 085 773</strong>.')
     ),
   }
