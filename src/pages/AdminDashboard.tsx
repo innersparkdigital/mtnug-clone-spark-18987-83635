@@ -489,6 +489,12 @@ const AdminDashboard = () => {
             )}
           </CardContent>
         </Card>
+          </TabsContent>
+
+          <TabsContent value="registrations">
+            <TrainingRegistrationsTab />
+          </TabsContent>
+        </Tabs>
       </main>
 
       <Footer />
