@@ -12,6 +12,8 @@ import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import TrainingRegistrationsTab from '@/components/admin/TrainingRegistrationsTab';
 import { 
   BookOpen, 
   GraduationCap, 
@@ -25,7 +27,8 @@ import {
   Activity,
   PieChart,
   ArrowUpRight,
-  ArrowDownRight
+  ArrowDownRight,
+  ClipboardList
 } from 'lucide-react';
 import {
   ChartContainer,
@@ -144,14 +147,26 @@ const AdminDashboard = () => {
             Admin Dashboard
           </Badge>
           <h1 className="text-3xl font-bold text-foreground mb-2">
-            Learning Analytics
+            Platform Management
           </h1>
           <p className="text-muted-foreground">
-            Monitor learner progress and platform performance
+            Monitor learner progress, training registrations & platform performance
           </p>
         </div>
 
-        {/* Key Metrics */}
+        <Tabs defaultValue="learning" className="space-y-6">
+          <TabsList>
+            <TabsTrigger value="learning" className="gap-2">
+              <GraduationCap className="h-4 w-4" />
+              Learning Analytics
+            </TabsTrigger>
+            <TabsTrigger value="registrations" className="gap-2">
+              <ClipboardList className="h-4 w-4" />
+              Training Registrations
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="learning">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           <Card className="bg-gradient-to-br from-blue-500/10 to-blue-600/5 border-blue-500/20">
             <CardContent className="pt-6">
@@ -474,6 +489,12 @@ const AdminDashboard = () => {
             )}
           </CardContent>
         </Card>
+          </TabsContent>
+
+          <TabsContent value="registrations">
+            <TrainingRegistrationsTab />
+          </TabsContent>
+        </Tabs>
       </main>
 
       <Footer />
