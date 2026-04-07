@@ -12,6 +12,8 @@ import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import TrainingRegistrationsTab from '@/components/admin/TrainingRegistrationsTab';
 import { 
   BookOpen, 
   GraduationCap, 
@@ -25,7 +27,8 @@ import {
   Activity,
   PieChart,
   ArrowUpRight,
-  ArrowDownRight
+  ArrowDownRight,
+  ClipboardList
 } from 'lucide-react';
 import {
   ChartContainer,
