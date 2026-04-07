@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Mail, Phone, MapPin } from "lucide-react";
 import contactHero from "@/assets/contact-hero.jpg";
+import { supabase } from "@/integrations/supabase/client";
 
 const contactSchema = {
   "@context": "https://schema.org",
@@ -95,19 +96,47 @@ const Contact = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const mailtoLink = `mailto:info@innersparkafrica.com?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(
-      `Name: ${formData.name}\nEmail: ${formData.email}\nPhone: ${formData.phone}\n\nMessage:\n${formData.message}`
-    )}`;
+    try {
+      const submissionId = crypto.randomUUID();
 
-    window.location.href = mailtoLink;
+      // Send confirmation email to the user
+      const { error } = await supabase.functions.invoke('send-transactional-email', {
+        body: {
+          templateName: 'contact-confirmation',
+          recipientEmail: formData.email,
+          idempotencyKey: `contact-confirm-${submissionId}`,
+          templateData: {
+            name: formData.name,
+            subject: formData.subject,
+            message: formData.message,
+          },
+        },
+      });
 
-    toast({
-      title: "Opening your email client",
-      description: "Please send the email to complete your message.",
-    });
+      if (error) throw error;
 
-    setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
-    setIsSubmitting(false);
+      // Also open mailto for the team to receive the inquiry
+      const mailtoLink = `mailto:info@innersparkafrica.com?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(
+        `Name: ${formData.name}\nEmail: ${formData.email}\nPhone: ${formData.phone}\n\nMessage:\n${formData.message}`
+      )}`;
+      window.open(mailtoLink, '_blank');
+
+      toast({
+        title: "Message sent successfully!",
+        description: "We've sent you a confirmation email. Our team will get back to you soon.",
+      });
+
+      setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
+    } catch (err) {
+      console.error('Contact form error:', err);
+      toast({
+        title: "Something went wrong",
+        description: "Please try again or contact us directly via WhatsApp.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
