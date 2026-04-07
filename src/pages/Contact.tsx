@@ -99,13 +99,12 @@ const Contact = () => {
     try {
       const submissionId = crypto.randomUUID();
 
-      // Send confirmation email to the user
-      const { error } = await supabase.functions.invoke('send-transactional-email', {
+      // Send confirmation email via Resend
+      const { error } = await supabase.functions.invoke('send-resend-email', {
         body: {
-          templateName: 'contact-confirmation',
-          recipientEmail: formData.email,
-          idempotencyKey: `contact-confirm-${submissionId}`,
-          templateData: {
+          type: 'contact-confirmation',
+          to: formData.email,
+          data: {
             name: formData.name,
             subject: formData.subject,
             message: formData.message,

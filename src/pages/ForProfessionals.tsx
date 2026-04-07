@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Accordion,
   AccordionContent,
@@ -38,16 +39,32 @@ const ForProfessionals = () => {
     message: ""
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Send confirmation email via Resend
+    try {
+      await supabase.functions.invoke('send-resend-email', {
+        body: {
+          type: 'professional-application',
+          to: formData.email,
+          data: {
+            name: formData.name,
+            specialty: formData.specialty,
+          },
+        },
+      });
+    } catch (err) {
+      console.error('Email send error:', err);
+    }
+
     const message = `Hi, I'm ${formData.name}, a ${formData.specialty} (License: ${formData.licenseNumber}). I'd like to join the Innerspark professional network. Contact: ${formData.email}, ${formData.phone}. ${formData.message}`;
     const whatsappUrl = `https://wa.me/256792085773?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
     
     toast({
       title: "Application Initiated",
-      description: "You'll be redirected to WhatsApp to complete your application.",
+      description: "We've sent you a confirmation email. You'll also be redirected to WhatsApp.",
     });
   };
 

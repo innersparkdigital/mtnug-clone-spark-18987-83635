@@ -126,12 +126,11 @@ const Trainings = () => {
       const trainingDateFormatted = format(new Date(selectedTraining.training_date), "EEEE, MMMM d, yyyy");
       const registrationId = crypto.randomUUID();
 
-      await supabase.functions.invoke("send-transactional-email", {
+      await supabase.functions.invoke("send-resend-email", {
         body: {
-          templateName: "training-confirmation",
-          recipientEmail: formData.email.trim(),
-          idempotencyKey: `training-confirm-${registrationId}`,
-          templateData: {
+          type: "training-confirmation",
+          to: formData.email.trim(),
+          data: {
             recipientName: firstName,
             trainingTitle: selectedTraining.title,
             trainingDate: trainingDateFormatted,
