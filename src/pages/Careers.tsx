@@ -85,9 +85,22 @@ export default function Careers() {
 
       if (error) throw error;
 
+      // Send confirmation email via Resend
+      await supabase.functions.invoke('send-resend-email', {
+        body: {
+          type: 'career-application',
+          to: values.email,
+          data: {
+            name: values.full_name,
+            position: values.position,
+            experience_years: values.experience_years,
+          },
+        },
+      });
+
       toast({
         title: "Application Submitted!",
-        description: "Thank you for your interest. We'll review your application and get back to you soon.",
+        description: "Thank you for your interest. We've sent you a confirmation email.",
       });
       form.reset();
       setResumeFile(null);
