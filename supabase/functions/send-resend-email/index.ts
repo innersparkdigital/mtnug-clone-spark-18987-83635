@@ -109,6 +109,8 @@ function buildEmail(type: string, data: Record<string, any>): EmailContent | nul
       return professionalApplication(data)
     case 'booking-confirmation':
       return bookingConfirmation(data)
+    case 'backup':
+      return backupEmail(data)
     default:
       return null
   }
@@ -326,6 +328,18 @@ function bookingConfirmation(d: Record<string, any>): EmailContent {
       ) +
       p('Our team will reach out via WhatsApp to confirm your session details.') +
       p('If you need immediate support, call us at <strong>+256 792 085 773</strong>.')
+    ),
+  }
+}
+
+function backupEmail(d: Record<string, any>): EmailContent {
+  return {
+    subject: d.subject || `Data Backup — ${SITE}`,
+    html: wrap(
+      d.title || 'Data Backup',
+      p(`Here is your requested data backup containing <strong>${d.totalRecords || 0}</strong> records.`) +
+      (d.tableHtml || '') +
+      p(`<em>Generated on ${new Date().toLocaleString('en-GB', { dateStyle: 'full', timeStyle: 'short' })}</em>`)
     ),
   }
 }
