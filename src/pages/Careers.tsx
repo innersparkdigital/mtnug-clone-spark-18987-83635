@@ -98,6 +98,24 @@ export default function Careers() {
         },
       });
 
+      // Notify admin
+      await supabase.functions.invoke('send-resend-email', {
+        body: {
+          type: 'career-application-notify',
+          to: 'info@innersparkafrica.com',
+          data: {
+            name: values.full_name,
+            email: values.email,
+            phone: values.phone,
+            position: values.position,
+            specialization: values.specialization,
+            experience_years: values.experience_years,
+            cover_letter: values.cover_letter,
+            resume_url: publicUrl,
+          },
+        },
+      });
+
       toast({
         title: "Application Submitted!",
         description: "Thank you for your interest. We've sent you a confirmation email.",

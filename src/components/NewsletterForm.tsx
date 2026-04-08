@@ -52,6 +52,15 @@ const NewsletterForm = () => {
         },
       });
 
+      // Notify admin
+      await supabase.functions.invoke('send-resend-email', {
+        body: {
+          type: 'newsletter-notify',
+          to: 'info@innersparkafrica.com',
+          data: { email: email.toLowerCase().trim() },
+        },
+      });
+
       toast({
         title: "Successfully subscribed!",
         description: "Thank you for subscribing to our newsletter."

@@ -54,6 +54,22 @@ const ForProfessionals = () => {
           },
         },
       });
+
+      // Notify admin
+      await supabase.functions.invoke('send-resend-email', {
+        body: {
+          type: 'professional-application-notify',
+          to: 'info@innersparkafrica.com',
+          data: {
+            name: formData.name,
+            email: formData.email,
+            phone: formData.phone,
+            specialty: formData.specialty,
+            licenseNumber: formData.licenseNumber,
+            message: formData.message,
+          },
+        },
+      });
     } catch (err) {
       console.error('Email send error:', err);
     }

@@ -118,6 +118,20 @@ const ForBusiness = () => {
           },
         },
       });
+
+      // Notify admin
+      await supabase.functions.invoke('send-resend-email', {
+        body: {
+          type: 'business-inquiry-notify',
+          to: 'info@innersparkafrica.com',
+          data: {
+            name: formData.name,
+            email: formData.email,
+            company: formData.company,
+            message: formData.message,
+          },
+        },
+      });
     } catch (err) {
       console.error('Email send error:', err);
     }

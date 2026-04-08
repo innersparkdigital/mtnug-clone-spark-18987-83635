@@ -113,6 +113,16 @@ function buildEmail(type: string, data: Record<string, any>): EmailContent | nul
       return backupEmail(data)
     case 'contact-inquiry':
       return contactInquiry(data)
+    case 'career-application-notify':
+      return careerApplicationNotify(data)
+    case 'app-waitlist-notify':
+      return appWaitlistNotify(data)
+    case 'business-inquiry-notify':
+      return businessInquiryNotify(data)
+    case 'professional-application-notify':
+      return professionalApplicationNotify(data)
+    case 'newsletter-notify':
+      return newsletterNotify(data)
     default:
       return null
   }
@@ -363,6 +373,98 @@ function contactInquiry(d: Record<string, any>): EmailContent {
       </div>` +
       btn(`Reply to ${d.name || 'Sender'}`, `mailto:${d.email || ''}`) +
       p(`<em>Submitted on ${new Date().toLocaleString('en-GB', { dateStyle: 'full', timeStyle: 'short' })}</em>`)
+    ),
+  }
+}
+
+function careerApplicationNotify(d: Record<string, any>): EmailContent {
+  return {
+    subject: `New Career Application: ${d.position || 'General'}`,
+    html: wrap(
+      'New Career Application',
+      box(
+        detail('👤 Name', d.name || 'N/A') +
+        detail('📧 Email', d.email || 'N/A') +
+        detail('📱 Phone', d.phone || 'Not provided') +
+        detail('💼 Position', d.position || 'N/A') +
+        detail('🎓 Specialization', d.specialization || 'N/A') +
+        detail('📅 Experience', `${d.experience_years || 'N/A'} years`)
+      ) +
+      (d.cover_letter ? `<div style="background:#f9f9f9;border-left:4px solid ${BRAND_COLOR};padding:16px 20px;margin:0 0 24px;border-radius:0 8px 8px 0;">
+        <p style="font-size:12px;color:#888;margin:0 0 8px;text-transform:uppercase;letter-spacing:0.5px;">Cover Letter</p>
+        <p style="font-size:14px;color:#333;margin:0;line-height:1.6;white-space:pre-wrap;">${(d.cover_letter || '').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>
+      </div>` : '') +
+      (d.resume_url ? btn('View Resume/CV', d.resume_url) : '') +
+      btn(`Reply to ${d.name || 'Applicant'}`, `mailto:${d.email || ''}`) +
+      p(`<em>Submitted on ${new Date().toLocaleString('en-GB', { dateStyle: 'full', timeStyle: 'short' })}</em>`)
+    ),
+  }
+}
+
+function appWaitlistNotify(d: Record<string, any>): EmailContent {
+  return {
+    subject: 'New App Waitlist Signup',
+    html: wrap(
+      'New App Waitlist Signup',
+      box(
+        detail('👤 Name', d.name || 'N/A') +
+        detail('📧 Email', d.email || 'N/A')
+      ) +
+      p(`<em>Signed up on ${new Date().toLocaleString('en-GB', { dateStyle: 'full', timeStyle: 'short' })}</em>`)
+    ),
+  }
+}
+
+function businessInquiryNotify(d: Record<string, any>): EmailContent {
+  return {
+    subject: `New Business Inquiry: ${d.company || 'Unknown Company'}`,
+    html: wrap(
+      'New Business Inquiry',
+      box(
+        detail('👤 Name', d.name || 'N/A') +
+        detail('📧 Email', d.email || 'N/A') +
+        detail('🏢 Company', d.company || 'N/A') +
+        detail('👥 Employees', d.employees || 'N/A')
+      ) +
+      (d.message ? `<div style="background:#f9f9f9;border-left:4px solid ${BRAND_COLOR};padding:16px 20px;margin:0 0 24px;border-radius:0 8px 8px 0;">
+        <p style="font-size:12px;color:#888;margin:0 0 8px;text-transform:uppercase;letter-spacing:0.5px;">Message</p>
+        <p style="font-size:14px;color:#333;margin:0;line-height:1.6;white-space:pre-wrap;">${(d.message || '').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>
+      </div>` : '') +
+      btn(`Reply to ${d.name || 'Sender'}`, `mailto:${d.email || ''}`) +
+      p(`<em>Submitted on ${new Date().toLocaleString('en-GB', { dateStyle: 'full', timeStyle: 'short' })}</em>`)
+    ),
+  }
+}
+
+function professionalApplicationNotify(d: Record<string, any>): EmailContent {
+  return {
+    subject: `New Professional Application: ${d.specialty || 'General'}`,
+    html: wrap(
+      'New Professional Application',
+      box(
+        detail('👤 Name', d.name || 'N/A') +
+        detail('📧 Email', d.email || 'N/A') +
+        detail('📱 Phone', d.phone || 'Not provided') +
+        detail('🩺 Specialty', d.specialty || 'N/A') +
+        detail('📋 License #', d.licenseNumber || 'N/A')
+      ) +
+      (d.message ? `<div style="background:#f9f9f9;border-left:4px solid ${BRAND_COLOR};padding:16px 20px;margin:0 0 24px;border-radius:0 8px 8px 0;">
+        <p style="font-size:12px;color:#888;margin:0 0 8px;text-transform:uppercase;letter-spacing:0.5px;">Message</p>
+        <p style="font-size:14px;color:#333;margin:0;line-height:1.6;white-space:pre-wrap;">${(d.message || '').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>
+      </div>` : '') +
+      btn(`Reply to ${d.name || 'Applicant'}`, `mailto:${d.email || ''}`) +
+      p(`<em>Submitted on ${new Date().toLocaleString('en-GB', { dateStyle: 'full', timeStyle: 'short' })}</em>`)
+    ),
+  }
+}
+
+function newsletterNotify(d: Record<string, any>): EmailContent {
+  return {
+    subject: 'New Newsletter Subscriber',
+    html: wrap(
+      'New Newsletter Subscriber',
+      box(detail('📧 Email', d.email || 'N/A')) +
+      p(`<em>Subscribed on ${new Date().toLocaleString('en-GB', { dateStyle: 'full', timeStyle: 'short' })}</em>`)
     ),
   }
 }
