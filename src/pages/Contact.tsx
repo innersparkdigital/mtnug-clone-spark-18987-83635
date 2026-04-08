@@ -99,8 +99,18 @@ const Contact = () => {
     try {
       const submissionId = crypto.randomUUID();
 
-      // Send confirmation email via Resend
-      const { error } = await supabase.functions.invoke('send-resend-email', {
+      // Store submission in database
+      await supabase.from('contact_submissions').insert({
+        id: submissionId,
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone || null,
+        subject: formData.subject,
+        message: formData.message,
+      });
+
+      // Send confirmation email to the submitter
+      await supabase.functions.invoke('send-resend-email', {
         body: {
           type: 'contact-confirmation',
           to: formData.email,
@@ -112,13 +122,20 @@ const Contact = () => {
         },
       });
 
-      if (error) throw error;
-
-      // Also open mailto for the team to receive the inquiry
-      const mailtoLink = `mailto:info@innersparkafrica.com?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(
-        `Name: ${formData.name}\nEmail: ${formData.email}\nPhone: ${formData.phone}\n\nMessage:\n${formData.message}`
-      )}`;
-      window.open(mailtoLink, '_blank');
+      // Send the inquiry to admin email
+      await supabase.functions.invoke('send-resend-email', {
+        body: {
+          type: 'contact-inquiry',
+          to: 'info@innersparkafrica.com',
+          data: {
+            name: formData.name,
+            email: formData.email,
+            phone: formData.phone,
+            subject: formData.subject,
+            message: formData.message,
+          },
+        },
+      });
 
       toast({
         title: "Message sent successfully!",

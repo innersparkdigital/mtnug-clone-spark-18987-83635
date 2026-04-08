@@ -345,3 +345,24 @@ function backupEmail(d: Record<string, any>): EmailContent {
     ),
   }
 }
+
+function contactInquiry(d: Record<string, any>): EmailContent {
+  return {
+    subject: `New Contact Inquiry: ${d.subject || 'General'}`,
+    html: wrap(
+      'New Contact Form Submission',
+      box(
+        detail('👤 Name', d.name || 'N/A') +
+        detail('📧 Email', d.email || 'N/A') +
+        detail('📱 Phone', d.phone || 'Not provided') +
+        detail('📋 Subject', d.subject || 'N/A')
+      ) +
+      `<div style="background:#f9f9f9;border-left:4px solid ${BRAND_COLOR};padding:16px 20px;margin:0 0 24px;border-radius:0 8px 8px 0;">
+        <p style="font-size:12px;color:#888;margin:0 0 8px;text-transform:uppercase;letter-spacing:0.5px;">Message</p>
+        <p style="font-size:14px;color:#333;margin:0;line-height:1.6;white-space:pre-wrap;">${(d.message || '').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>
+      </div>` +
+      btn(`Reply to ${d.name || 'Sender'}`, `mailto:${d.email || ''}`) +
+      p(`<em>Submitted on ${new Date().toLocaleString('en-GB', { dateStyle: 'full', timeStyle: 'short' })}</em>`)
+    ),
+  }
+}
