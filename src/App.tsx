@@ -98,6 +98,7 @@ import StudentDashboard from "./pages/StudentDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import MindCheckAnalytics from "./pages/MindCheckAnalytics";
 import Auth from "./pages/Auth";
+import ResetPassword from "./pages/ResetPassword";
 // SEO Landing Pages
 import OnlineTherapy from "./pages/OnlineTherapy";
 import BookTherapist from "./pages/BookTherapist";
@@ -145,6 +146,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/virtual-therapy" element={<VirtualTherapy />} />
             {/* SEO Landing Pages */}
             <Route path="/online-therapy" element={<OnlineTherapy />} />
