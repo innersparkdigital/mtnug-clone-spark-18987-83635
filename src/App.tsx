@@ -98,6 +98,7 @@ import StudentDashboard from "./pages/StudentDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import MindCheckAnalytics from "./pages/MindCheckAnalytics";
 import Auth from "./pages/Auth";
+import ResetPassword from "./pages/ResetPassword";
 // SEO Landing Pages
 import OnlineTherapy from "./pages/OnlineTherapy";
 import BookTherapist from "./pages/BookTherapist";
