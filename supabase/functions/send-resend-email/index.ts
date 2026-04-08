@@ -111,6 +111,8 @@ function buildEmail(type: string, data: Record<string, any>): EmailContent | nul
       return bookingConfirmation(data)
     case 'backup':
       return backupEmail(data)
+    case 'contact-inquiry':
+      return contactInquiry(data)
     default:
       return null
   }
