@@ -14,6 +14,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import TrainingRegistrationsTab from '@/components/admin/TrainingRegistrationsTab';
+import NewsletterTab from '@/components/admin/NewsletterTab';
 import { 
   BookOpen, 
   GraduationCap, 
@@ -28,7 +29,8 @@ import {
   PieChart,
   ArrowUpRight,
   ArrowDownRight,
-  ClipboardList
+  ClipboardList,
+  Mail
 } from 'lucide-react';
 import {
   ChartContainer,
@@ -163,6 +165,10 @@ const AdminDashboard = () => {
             <TabsTrigger value="registrations" className="gap-2">
               <ClipboardList className="h-4 w-4" />
               Training Registrations
+            </TabsTrigger>
+            <TabsTrigger value="newsletter" className="gap-2">
+              <Mail className="h-4 w-4" />
+              Newsletter
             </TabsTrigger>
           </TabsList>
 
@@ -493,6 +499,10 @@ const AdminDashboard = () => {
 
           <TabsContent value="registrations">
             <TrainingRegistrationsTab />
+          </TabsContent>
+
+          <TabsContent value="newsletter">
+            <NewsletterTab />
           </TabsContent>
         </Tabs>
       </main>
