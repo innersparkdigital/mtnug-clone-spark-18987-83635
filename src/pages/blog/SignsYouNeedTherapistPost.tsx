@@ -4,6 +4,7 @@ import RelatedArticles from "@/components/RelatedArticles";
 import { ArrowLeft, Calendar, Clock, CheckCircle, AlertTriangle } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import AppDownload from "@/components/AppDownload";
 import SocialShareButtons from "@/components/SocialShareButtons";
 import { Button } from "@/components/ui/button";
 import depressionHeroImage from "@/assets/blog/depression-hero.jpg";
@@ -184,6 +185,7 @@ const SignsYouNeedTherapistPost = () => {
           <RelatedArticles currentSlug="signs-you-need-a-therapist" />
         </article>
       </main>
+      <AppDownload />
       <Footer />
     </>
   );

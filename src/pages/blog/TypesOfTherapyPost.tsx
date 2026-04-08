@@ -4,6 +4,7 @@ import RelatedArticles from "@/components/RelatedArticles";
 import { ArrowLeft, Calendar, Clock, CheckCircle, Brain, MessageCircle, Users, Video, Heart, Lightbulb } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import AppDownload from "@/components/AppDownload";
 import SocialShareButtons from "@/components/SocialShareButtons";
 import { Button } from "@/components/ui/button";
 import stressHeroImage from "@/assets/blog/stress-management-hero.jpg";
@@ -252,6 +253,7 @@ const TypesOfTherapyPost = () => {
           <RelatedArticles currentSlug="types-of-therapy" />
         </article>
       </main>
+      <AppDownload />
       <Footer />
     </>
   );

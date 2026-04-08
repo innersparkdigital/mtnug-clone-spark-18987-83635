@@ -4,6 +4,7 @@ import RelatedArticles from "@/components/RelatedArticles";
 import { ArrowLeft, Calendar, Clock, CheckCircle, Heart } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import AppDownload from "@/components/AppDownload";
 import SocialShareButtons from "@/components/SocialShareButtons";
 import { Button } from "@/components/ui/button";
 import mentalHealthHeroImage from "@/assets/blog/mental-health-hero.jpg";
@@ -206,6 +207,7 @@ const WhatIsTherapyPost = () => {
           <RelatedArticles currentSlug="what-is-therapy" />
         </article>
       </main>
+      <AppDownload />
       <Footer />
     </>
   );

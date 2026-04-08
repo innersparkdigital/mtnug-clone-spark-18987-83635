@@ -1,5 +1,6 @@
 import { Helmet } from "react-helmet";
 import { supabase } from "@/integrations/supabase/client";
+import { autoSubscribeNewsletter } from "@/lib/autoSubscribe";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -135,6 +136,9 @@ const ForBusiness = () => {
     } catch (err) {
       console.error('Email send error:', err);
     }
+
+    // Auto-subscribe to newsletter
+    autoSubscribeNewsletter(formData.email);
 
     const whatsappMessage = encodeURIComponent(
       `Hi, I'm ${formData.name} from ${formData.company}. I'm interested in Innerspark for Business. ${formData.message}`

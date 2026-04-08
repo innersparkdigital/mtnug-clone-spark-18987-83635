@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { autoSubscribeNewsletter } from "@/lib/autoSubscribe";
 import { Heart, Users, TrendingUp, Briefcase, CheckCircle2, Award, Upload } from "lucide-react";
 
 const formSchema = z.object({
@@ -115,6 +116,9 @@ export default function Careers() {
           },
         },
       });
+
+      // Auto-subscribe to newsletter
+      autoSubscribeNewsletter(values.email);
 
       toast({
         title: "Application Submitted!",

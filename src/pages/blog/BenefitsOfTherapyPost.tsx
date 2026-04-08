@@ -4,6 +4,7 @@ import RelatedArticles from "@/components/RelatedArticles";
 import { ArrowLeft, Calendar, Clock, CheckCircle, TrendingUp } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import AppDownload from "@/components/AppDownload";
 import SocialShareButtons from "@/components/SocialShareButtons";
 import { Button } from "@/components/ui/button";
 import anxietyHeroImage from "@/assets/blog/anxiety-management-hero.jpg";
@@ -196,6 +197,7 @@ const BenefitsOfTherapyPost = () => {
           <RelatedArticles currentSlug="benefits-of-therapy" />
         </article>
       </main>
+      <AppDownload />
       <Footer />
     </>
   );

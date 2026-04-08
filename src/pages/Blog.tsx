@@ -401,7 +401,7 @@ const Blog = () => {
         </section>
       </main>
 
-      {/* <AppDownload /> */}
+      <AppDownload />
       <Footer />
     </>
   );

@@ -20,6 +20,7 @@ import {
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { autoSubscribeNewsletter } from "@/lib/autoSubscribe";
 import {
   Accordion,
   AccordionContent,
@@ -73,6 +74,9 @@ const ForProfessionals = () => {
     } catch (err) {
       console.error('Email send error:', err);
     }
+
+    // Auto-subscribe to newsletter
+    autoSubscribeNewsletter(formData.email);
 
     toast({
       title: "Application Submitted",

@@ -714,7 +714,7 @@ const AnxietyManagementPost = () => {
       </main>
 
       <RelatedArticles currentSlug="how-to-manage-anxiety" />
-      {/* <AppDownload /> */}
+      <AppDownload />
       <Footer />
     </>
   );
