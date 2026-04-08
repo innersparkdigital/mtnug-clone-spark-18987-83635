@@ -146,6 +146,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/virtual-therapy" element={<VirtualTherapy />} />
             {/* SEO Landing Pages */}
             <Route path="/online-therapy" element={<OnlineTherapy />} />
