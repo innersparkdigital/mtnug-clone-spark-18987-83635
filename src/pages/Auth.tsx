@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/contexts/AuthContext';
 import { lovable } from '@/integrations/lovable/index';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { BookOpen, Loader2, ArrowLeft } from 'lucide-react';
 import { z } from 'zod';
@@ -22,6 +23,9 @@ const Auth = () => {
   const redirectTo = searchParams.get('redirect') || '/learning';
   const { user, loading, signIn, signUp } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [forgotSubmitting, setForgotSubmitting] = useState(false);
   
   // Login form
   const [loginEmail, setLoginEmail] = useState('');
@@ -236,6 +240,16 @@ const Auth = () => {
                         )}
                       </Button>
                     </form>
+
+                    <div className="text-center">
+                      <button
+                        type="button"
+                        onClick={() => setShowForgotPassword(true)}
+                        className="text-sm text-primary hover:underline"
+                      >
+                        Forgot your password?
+                      </button>
+                    </div>
                   </div>
                 </TabsContent>
 
