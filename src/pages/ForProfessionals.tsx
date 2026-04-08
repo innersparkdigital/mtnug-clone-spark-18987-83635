@@ -74,13 +74,9 @@ const ForProfessionals = () => {
       console.error('Email send error:', err);
     }
 
-    const message = `Hi, I'm ${formData.name}, a ${formData.specialty} (License: ${formData.licenseNumber}). I'd like to join the Innerspark professional network. Contact: ${formData.email}, ${formData.phone}. ${formData.message}`;
-    const whatsappUrl = `https://wa.me/256792085773?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, '_blank');
-    
     toast({
-      title: "Application Initiated",
-      description: "We've sent you a confirmation email. You'll also be redirected to WhatsApp.",
+      title: "Application Submitted",
+      description: "Your application has been sent to our team. We'll review it and get back to you soon.",
     });
   };
 
