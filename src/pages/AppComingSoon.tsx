@@ -69,6 +69,15 @@ const AppComingSoon = () => {
             data: { name: formData.name || '' },
           },
         });
+
+        // Notify admin
+        await supabase.functions.invoke('send-resend-email', {
+          body: {
+            type: 'app-waitlist-notify',
+            to: 'info@innersparkafrica.com',
+            data: { name: formData.name || '', email: formData.email.toLowerCase().trim() },
+          },
+        });
         toast.success("You're on the list! We'll notify you when the app launches.");
       }
       
