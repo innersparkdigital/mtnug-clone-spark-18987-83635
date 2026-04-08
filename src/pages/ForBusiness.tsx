@@ -128,7 +128,6 @@ const ForBusiness = () => {
             name: formData.name,
             email: formData.email,
             company: formData.company,
-            employees: formData.employees,
             message: formData.message,
           },
         },
