@@ -351,7 +351,7 @@ function backupEmail(d: Record<string, any>): EmailContent {
       d.title || 'Data Backup',
       p(`Here is your requested data backup containing <strong>${d.totalRecords || 0}</strong> records.`) +
       (d.tableHtml || '') +
-      p(`<em>Generated on ${new Date().toLocaleString('en-GB', { dateStyle: 'full', timeStyle: 'short' })}</em>`)
+      p(`<em>Generated on ${new Date().toLocaleString('en-GB', { dateStyle: 'full', timeStyle: 'short', timeZone: 'Africa/Nairobi' })}</em>`)
     ),
   }
 }
@@ -372,7 +372,7 @@ function contactInquiry(d: Record<string, any>): EmailContent {
         <p style="font-size:14px;color:#333;margin:0;line-height:1.6;white-space:pre-wrap;">${(d.message || '').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>
       </div>` +
       btn(`Reply to ${d.name || 'Sender'}`, `mailto:${d.email || ''}`) +
-      p(`<em>Submitted on ${new Date().toLocaleString('en-GB', { dateStyle: 'full', timeStyle: 'short' })}</em>`)
+      p(`<em>Submitted on ${new Date().toLocaleString('en-GB', { dateStyle: 'full', timeStyle: 'short', timeZone: 'Africa/Nairobi' })}</em>`)
     ),
   }
 }
@@ -396,7 +396,7 @@ function careerApplicationNotify(d: Record<string, any>): EmailContent {
       </div>` : '') +
       (d.resume_url ? btn('View Resume/CV', d.resume_url) : '') +
       btn(`Reply to ${d.name || 'Applicant'}`, `mailto:${d.email || ''}`) +
-      p(`<em>Submitted on ${new Date().toLocaleString('en-GB', { dateStyle: 'full', timeStyle: 'short' })}</em>`)
+      p(`<em>Submitted on ${new Date().toLocaleString('en-GB', { dateStyle: 'full', timeStyle: 'short', timeZone: 'Africa/Nairobi' })}</em>`)
     ),
   }
 }
@@ -410,7 +410,7 @@ function appWaitlistNotify(d: Record<string, any>): EmailContent {
         detail('👤 Name', d.name || 'N/A') +
         detail('📧 Email', d.email || 'N/A')
       ) +
-      p(`<em>Signed up on ${new Date().toLocaleString('en-GB', { dateStyle: 'full', timeStyle: 'short' })}</em>`)
+      p(`<em>Signed up on ${new Date().toLocaleString('en-GB', { dateStyle: 'full', timeStyle: 'short', timeZone: 'Africa/Nairobi' })}</em>`)
     ),
   }
 }
@@ -431,7 +431,7 @@ function businessInquiryNotify(d: Record<string, any>): EmailContent {
         <p style="font-size:14px;color:#333;margin:0;line-height:1.6;white-space:pre-wrap;">${(d.message || '').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>
       </div>` : '') +
       btn(`Reply to ${d.name || 'Sender'}`, `mailto:${d.email || ''}`) +
-      p(`<em>Submitted on ${new Date().toLocaleString('en-GB', { dateStyle: 'full', timeStyle: 'short' })}</em>`)
+      p(`<em>Submitted on ${new Date().toLocaleString('en-GB', { dateStyle: 'full', timeStyle: 'short', timeZone: 'Africa/Nairobi' })}</em>`)
     ),
   }
 }
@@ -453,7 +453,7 @@ function professionalApplicationNotify(d: Record<string, any>): EmailContent {
         <p style="font-size:14px;color:#333;margin:0;line-height:1.6;white-space:pre-wrap;">${(d.message || '').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>
       </div>` : '') +
       btn(`Reply to ${d.name || 'Applicant'}`, `mailto:${d.email || ''}`) +
-      p(`<em>Submitted on ${new Date().toLocaleString('en-GB', { dateStyle: 'full', timeStyle: 'short' })}</em>`)
+      p(`<em>Submitted on ${new Date().toLocaleString('en-GB', { dateStyle: 'full', timeStyle: 'short', timeZone: 'Africa/Nairobi' })}</em>`)
     ),
   }
 }
@@ -464,7 +464,7 @@ function newsletterNotify(d: Record<string, any>): EmailContent {
     html: wrap(
       'New Newsletter Subscriber',
       box(detail('📧 Email', d.email || 'N/A')) +
-      p(`<em>Subscribed on ${new Date().toLocaleString('en-GB', { dateStyle: 'full', timeStyle: 'short' })}</em>`)
+      p(`<em>Subscribed on ${new Date().toLocaleString('en-GB', { dateStyle: 'full', timeStyle: 'short', timeZone: 'Africa/Nairobi' })}</em>`)
     ),
   }
 }
