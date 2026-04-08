@@ -10,6 +10,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { Mail, Phone, MapPin } from "lucide-react";
 import contactHero from "@/assets/contact-hero.jpg";
 import { supabase } from "@/integrations/supabase/client";
+import { autoSubscribeNewsletter } from "@/lib/autoSubscribe";
 
 const contactSchema = {
   "@context": "https://schema.org",

@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { autoSubscribeNewsletter } from "@/lib/autoSubscribe";
 import { useToast } from "@/hooks/use-toast";
 import { format, isPast, differenceInDays, differenceInHours, differenceInMinutes } from "date-fns";
 
