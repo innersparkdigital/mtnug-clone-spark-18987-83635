@@ -730,7 +730,7 @@ const MentalHealthPost = () => {
           </div>
         </article>
 
-        {/* <AppDownload /> */}
+        <AppDownload />
         <RelatedArticles currentSlug="what-is-mental-health" />
       </main>
 

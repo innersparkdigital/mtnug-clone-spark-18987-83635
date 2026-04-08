@@ -539,7 +539,7 @@ const HowToHandleStressPost = () => {
       </main>
 
       <RelatedArticles currentSlug="how-to-handle-stress" />
-      {/* <AppDownload /> */}
+      <AppDownload />
       <Footer />
     </>
   );

@@ -677,7 +677,7 @@ const PanicAttackPost = () => {
       </main>
 
       <RelatedArticles currentSlug="how-to-stop-a-panic-attack" />
-      {/* <AppDownload /> */}
+      <AppDownload />
       <Footer />
     </>
   );

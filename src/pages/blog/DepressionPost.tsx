@@ -704,7 +704,7 @@ const DepressionPost = () => {
       </main>
 
       <RelatedArticles currentSlug="how-to-deal-with-depression" />
-      {/* <AppDownload /> */}
+      <AppDownload />
       <Footer />
     </>
   );
