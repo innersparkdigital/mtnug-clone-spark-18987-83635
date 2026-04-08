@@ -4,6 +4,7 @@ import RelatedArticles from "@/components/RelatedArticles";
 import { ArrowLeft, Calendar, Clock, AlertTriangle, CheckCircle, Heart } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import AppDownload from "@/components/AppDownload";
 import SocialShareButtons from "@/components/SocialShareButtons";
 import { Button } from "@/components/ui/button";
 import depressionHeroImage from "@/assets/blog/depression-hero.jpg";
@@ -335,6 +336,7 @@ const SignsOfDepressionPost = () => {
       </main>
 
       <RelatedArticles currentSlug="signs-of-depression" />
+      <AppDownload />
       <Footer />
     </>
   );
