@@ -113,6 +113,16 @@ function buildEmail(type: string, data: Record<string, any>): EmailContent | nul
       return backupEmail(data)
     case 'contact-inquiry':
       return contactInquiry(data)
+    case 'career-application-notify':
+      return careerApplicationNotify(data)
+    case 'app-waitlist-notify':
+      return appWaitlistNotify(data)
+    case 'business-inquiry-notify':
+      return businessInquiryNotify(data)
+    case 'professional-application-notify':
+      return professionalApplicationNotify(data)
+    case 'newsletter-notify':
+      return newsletterNotify(data)
     default:
       return null
   }
