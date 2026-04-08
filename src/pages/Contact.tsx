@@ -138,6 +138,9 @@ const Contact = () => {
         },
       });
 
+      // Auto-subscribe to newsletter
+      autoSubscribeNewsletter(formData.email);
+
       toast({
         title: "Message sent successfully!",
         description: "We've sent you a confirmation email. Our team will get back to you soon.",

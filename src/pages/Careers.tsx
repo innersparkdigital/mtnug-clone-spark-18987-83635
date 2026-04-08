@@ -117,6 +117,9 @@ export default function Careers() {
         },
       });
 
+      // Auto-subscribe to newsletter
+      autoSubscribeNewsletter(values.email);
+
       toast({
         title: "Application Submitted!",
         description: "Thank you for your interest. We've sent you a confirmation email.",

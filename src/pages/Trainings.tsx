@@ -144,6 +144,9 @@ const Trainings = () => {
         },
       });
 
+      // Auto-subscribe to newsletter
+      autoSubscribeNewsletter(formData.email);
+
       setSubmitted(true);
       setFormData({ full_name: "", email: "", organisation: "", position: "", phone_number: "" });
     } catch (err) {

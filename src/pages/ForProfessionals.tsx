@@ -75,6 +75,9 @@ const ForProfessionals = () => {
       console.error('Email send error:', err);
     }
 
+    // Auto-subscribe to newsletter
+    autoSubscribeNewsletter(formData.email);
+
     toast({
       title: "Application Submitted",
       description: "Your application has been sent to our team. We'll review it and get back to you soon.",

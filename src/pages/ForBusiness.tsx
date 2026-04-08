@@ -137,6 +137,9 @@ const ForBusiness = () => {
       console.error('Email send error:', err);
     }
 
+    // Auto-subscribe to newsletter
+    autoSubscribeNewsletter(formData.email);
+
     const whatsappMessage = encodeURIComponent(
       `Hi, I'm ${formData.name} from ${formData.company}. I'm interested in Innerspark for Business. ${formData.message}`
     );
