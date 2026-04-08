@@ -357,6 +357,58 @@ const Auth = () => {
           </p>
         </div>
       </div>
+
+      {/* Forgot Password Dialog */}
+      {showForgotPassword && (
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+          <Card className="w-full max-w-md shadow-lg">
+            <CardHeader>
+              <CardTitle>Reset Password</CardTitle>
+              <CardDescription>Enter your email and we'll send you a reset link.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  setForgotSubmitting(true);
+                  const { error } = await supabase.auth.resetPasswordForEmail(forgotEmail, {
+                    redirectTo: `${window.location.origin}/reset-password`,
+                  });
+                  setForgotSubmitting(false);
+                  if (error) {
+                    toast.error(error.message);
+                  } else {
+                    toast.success('Password reset link sent! Check your email.');
+                    setShowForgotPassword(false);
+                    setForgotEmail('');
+                  }
+                }}
+                className="space-y-4"
+              >
+                <div className="space-y-2">
+                  <Label htmlFor="forgot-email">Email</Label>
+                  <Input
+                    id="forgot-email"
+                    type="email"
+                    placeholder="you@example.com"
+                    value={forgotEmail}
+                    onChange={(e) => setForgotEmail(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="flex gap-2">
+                  <Button type="button" variant="outline" className="flex-1" onClick={() => setShowForgotPassword(false)}>
+                    Cancel
+                  </Button>
+                  <Button type="submit" className="flex-1" disabled={forgotSubmitting}>
+                    {forgotSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Send Reset Link'}
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </>
   );
 };
