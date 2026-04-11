@@ -1032,6 +1032,10 @@ export type Database = {
         Args: { tables_to_clear: string[] }
         Returns: Json
       }
+      complete_employee_screening: {
+        Args: { _employee_id: string; _gender?: string }
+        Returns: boolean
+      }
       delete_email: {
         Args: { message_id: number; queue_name: string }
         Returns: boolean
@@ -1047,6 +1051,8 @@ export type Database = {
         }
         Returns: boolean
       }
+      lookup_employee_by_code: { Args: { _code: string }; Returns: Json }
+      lookup_employee_by_token: { Args: { _token: string }; Returns: Json }
       move_to_dlq: {
         Args: {
           dlq_name: string
