@@ -92,10 +92,7 @@ const CorporateWellbeingCheck = () => {
     setLoading(true);
     try {
       const { data, error } = await supabase
-        .from('corporate_employees')
-        .select('id, name, email, company_id, screening_completed')
-        .eq('secure_token', token)
-        .single();
+        .rpc('lookup_employee_by_token', { _token: token }) as { data: any; error: any };
 
       if (error || !data) {
         toast.error('Invalid or expired link. Please use your access code.');
