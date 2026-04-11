@@ -45,6 +45,7 @@ const NewsletterTab = () => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [sending, setSending] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   const [editId, setEditId] = useState<string | null>(null);
   const [subject, setSubject] = useState('');
