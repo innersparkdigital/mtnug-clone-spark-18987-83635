@@ -92,10 +92,7 @@ const CorporateWellbeingCheck = () => {
     setLoading(true);
     try {
       const { data, error } = await supabase
-        .from('corporate_employees')
-        .select('id, name, email, company_id, screening_completed')
-        .eq('secure_token', token)
-        .single();
+        .rpc('lookup_employee_by_token', { _token: token }) as { data: any; error: any };
 
       if (error || !data) {
         toast.error('Invalid or expired link. Please use your access code.');
@@ -132,10 +129,7 @@ const CorporateWellbeingCheck = () => {
     setLoading(true);
     try {
       const { data, error } = await supabase
-        .from('corporate_employees')
-        .select('id, name, email, company_id, screening_completed')
-        .eq('access_code', accessCode.trim().toUpperCase())
-        .single();
+        .rpc('lookup_employee_by_code', { _code: accessCode.trim().toUpperCase() }) as { data: any; error: any };
 
       if (error || !data) {
         toast.error('Invalid access code. Please check and try again.');
@@ -204,9 +198,10 @@ const CorporateWellbeingCheck = () => {
 
       // Update employee record (gender + mark screening done)
       await supabase
-        .from('corporate_employees')
-        .update({ screening_completed: true, gender: selectedGender || null })
-        .eq('id', employee.id);
+        .rpc('complete_employee_screening', { 
+          _employee_id: employee.id, 
+          _gender: selectedGender || null 
+        });
 
       setPhase('results');
     } catch {
