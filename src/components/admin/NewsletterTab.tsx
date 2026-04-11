@@ -21,6 +21,7 @@ import {
   Users,
   FileText,
   Image as ImageIcon,
+  Upload,
 } from 'lucide-react';
 
 interface Newsletter {
@@ -44,6 +45,7 @@ const NewsletterTab = () => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [sending, setSending] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   const [editId, setEditId] = useState<string | null>(null);
   const [subject, setSubject] = useState('');
@@ -330,12 +332,56 @@ const NewsletterTab = () => {
             </div>
 
             <div>
-              <Label>Hero Image URL (optional)</Label>
-              <div className="flex gap-2">
-                <Input value={imageUrl} onChange={e => setImageUrl(e.target.value)}
-                  placeholder="https://example.com/image.jpg" className="flex-1" />
+              <Label>Hero Image (optional)</Label>
+              <div className="flex gap-2 items-center">
+                <label className="flex-1 cursor-pointer">
+                  <div className="flex items-center gap-2 border rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-accent transition-colors">
+                    <Upload className="h-4 w-4" />
+                    {uploadingImage ? 'Uploading...' : imageUrl ? 'Change image' : 'Upload an image'}
+                  </div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    disabled={uploadingImage}
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      setUploadingImage(true);
+                      try {
+                        const ext = file.name.split('.').pop() || 'jpg';
+                        const fileName = `newsletter-${Date.now()}.${ext}`;
+                        const { error: uploadError } = await supabase.storage
+                          .from('email-assets')
+                          .upload(fileName, file, { upsert: true });
+                        if (uploadError) throw uploadError;
+                        const { data: urlData } = supabase.storage
+                          .from('email-assets')
+                          .getPublicUrl(fileName);
+                        setImageUrl(urlData.publicUrl);
+                        toast({ title: 'Image uploaded!' });
+                      } catch (err: any) {
+                        toast({ title: 'Upload failed', description: err.message, variant: 'destructive' });
+                      } finally {
+                        setUploadingImage(false);
+                        e.target.value = '';
+                      }
+                    }}
+                  />
+                </label>
+                {imageUrl && (
+                  <Button variant="ghost" size="sm" onClick={() => setImageUrl('')}
+                    className="text-destructive hover:text-destructive">
+                    Remove
+                  </Button>
+                )}
               </div>
-              {imageUrl && (
+              {uploadingImage && (
+                <div className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
+                  <Loader2 className="h-4 w-4 animate-spin" /> Uploading image...
+                </div>
+              )}
+              {imageUrl && !uploadingImage && (
                 <div className="mt-2 rounded-lg overflow-hidden border">
                   <img src={imageUrl} alt="Preview" className="w-full h-40 object-cover"
                     onError={e => (e.currentTarget.style.display = 'none')} />
