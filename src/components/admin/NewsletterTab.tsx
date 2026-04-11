@@ -21,6 +21,7 @@ import {
   Users,
   FileText,
   Image as ImageIcon,
+  Upload,
 } from 'lucide-react';
 
 interface Newsletter {
