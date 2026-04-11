@@ -29,7 +29,6 @@ Deno.serve(async (req) => {
     })
   }
 
-  // Verify caller is authenticated
   const authHeader = req.headers.get('Authorization')
   if (!authHeader) {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), {
@@ -40,7 +39,6 @@ Deno.serve(async (req) => {
 
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
 
-  // Verify admin role
   const anonClient = createClient(
     SUPABASE_URL,
     Deno.env.get('SUPABASE_ANON_KEY') || ''
@@ -78,7 +76,6 @@ Deno.serve(async (req) => {
       })
     }
 
-    // Fetch newsletter
     const { data: newsletter, error: nlErr } = await supabase
       .from('newsletters')
       .select('*')
@@ -99,19 +96,16 @@ Deno.serve(async (req) => {
       })
     }
 
-    // Determine recipients
     let recipients: string[] = []
     const filter = newsletter.recipient_filter as any
 
     if (filter?.type === 'custom' && Array.isArray(filter.emails)) {
       recipients = filter.emails
     } else {
-      // Get all active subscribers
       const { data: subs } = await supabase
         .from('newsletter_subscribers')
         .select('email')
         .eq('is_active', true)
-
       recipients = (subs || []).map((s: any) => s.email)
     }
 
@@ -122,17 +116,27 @@ Deno.serve(async (req) => {
       })
     }
 
-    // Build the newsletter HTML
     const html = buildNewsletterHtml(newsletter)
 
-    // Send emails in batches of 50
     let sentCount = 0
+    let failedCount = 0
     const batchSize = 50
+
     for (let i = 0; i < recipients.length; i += batchSize) {
       const batch = recipients.slice(i, i + batchSize)
 
-      // Resend supports batch sending via bcc, but for tracking we send individually
       for (const email of batch) {
+        const messageId = `newsletter-${newsletterId}-${email}`
+
+        // Log pending
+        await supabase.from('email_send_log').insert({
+          message_id: messageId,
+          template_name: 'newsletter',
+          recipient_email: email,
+          status: 'pending',
+          metadata: { newsletter_id: newsletterId, subject: newsletter.subject },
+        })
+
         try {
           const response = await fetch(`${GATEWAY_URL}/emails`, {
             method: 'POST',
@@ -151,19 +155,43 @@ Deno.serve(async (req) => {
 
           if (response.ok) {
             sentCount++
+            await supabase.from('email_send_log').insert({
+              message_id: messageId,
+              template_name: 'newsletter',
+              recipient_email: email,
+              status: 'sent',
+              metadata: { newsletter_id: newsletterId, subject: newsletter.subject },
+            })
           } else {
-            console.error(`Failed to send to ${email}:`, await response.text())
+            const errText = await response.text()
+            failedCount++
+            console.error(`Failed to send to ${email}:`, errText)
+            await supabase.from('email_send_log').insert({
+              message_id: messageId,
+              template_name: 'newsletter',
+              recipient_email: email,
+              status: 'failed',
+              error_message: errText.slice(0, 500),
+              metadata: { newsletter_id: newsletterId, subject: newsletter.subject },
+            })
           }
 
-          // Small delay to avoid rate limits
           await new Promise(r => setTimeout(r, 100))
         } catch (err) {
+          failedCount++
           console.error(`Error sending to ${email}:`, err)
+          await supabase.from('email_send_log').insert({
+            message_id: messageId,
+            template_name: 'newsletter',
+            recipient_email: email,
+            status: 'failed',
+            error_message: err instanceof Error ? err.message : 'Unknown error',
+            metadata: { newsletter_id: newsletterId, subject: newsletter.subject },
+          })
         }
       }
     }
 
-    // Update newsletter status
     await supabase
       .from('newsletters')
       .update({
@@ -173,9 +201,9 @@ Deno.serve(async (req) => {
       })
       .eq('id', newsletterId)
 
-    console.log(`Newsletter "${newsletter.subject}" sent to ${sentCount}/${recipients.length} recipients`)
+    console.log(`Newsletter "${newsletter.subject}" sent to ${sentCount}/${recipients.length} recipients (${failedCount} failed)`)
 
-    return new Response(JSON.stringify({ success: true, recipientCount: sentCount }), {
+    return new Response(JSON.stringify({ success: true, recipientCount: sentCount, failedCount }), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
@@ -192,7 +220,6 @@ Deno.serve(async (req) => {
 function buildNewsletterHtml(newsletter: any): string {
   const imageUrl = newsletter.image_url
 
-  // Convert **bold** syntax to <strong> tags
   const formatText = (text: string) =>
     text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
 
