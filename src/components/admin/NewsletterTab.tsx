@@ -12,22 +12,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import {
-  Mail,
-  Plus,
-  Send,
-  Edit,
-  Trash2,
-  Eye,
-  Loader2,
-  Users,
-  FileText,
-  Upload,
-  BarChart3,
-  CheckCircle,
-  XCircle,
-  Clock,
-  AlertTriangle,
-  Search,
+  Mail, Plus, Send, Edit, Trash2, Eye, Loader2, Users, FileText, Upload,
+  BarChart3, CheckCircle, XCircle, Clock, AlertTriangle, Search,
+  CalendarClock, RefreshCw,
 } from 'lucide-react';
 
 interface Newsletter {
@@ -39,6 +26,7 @@ interface Newsletter {
   recipient_filter: any;
   recipient_count: number;
   sent_at: string | null;
+  scheduled_at: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -63,6 +51,7 @@ const NewsletterTab = () => {
   const [sending, setSending] = useState(false);
   const [saving, setSaving] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [syncingSubscribers, setSyncingSubscribers] = useState(false);
 
   const [editId, setEditId] = useState<string | null>(null);
   const [subject, setSubject] = useState('');
@@ -71,6 +60,10 @@ const NewsletterTab = () => {
   const [recipientType, setRecipientType] = useState<'all' | 'custom'>('all');
   const [customEmails, setCustomEmails] = useState('');
   const [previewNewsletter, setPreviewNewsletter] = useState<Newsletter | null>(null);
+
+  // Scheduling
+  const [scheduleDate, setScheduleDate] = useState('');
+  const [scheduleTime, setScheduleTime] = useState('');
 
   const [subscriberCount, setSubscriberCount] = useState(0);
 
@@ -81,10 +74,7 @@ const NewsletterTab = () => {
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [analyticsStats, setAnalyticsStats] = useState({
-    total: 0,
-    sent: 0,
-    failed: 0,
-    pending: 0,
+    total: 0, sent: 0, failed: 0, pending: 0,
   });
 
   const fetchNewsletters = useCallback(async () => {
@@ -92,7 +82,6 @@ const NewsletterTab = () => {
       .from('newsletters')
       .select('*')
       .order('created_at', { ascending: false });
-
     if (!error && data) setNewsletters(data as Newsletter[]);
     setLoading(false);
   }, []);
@@ -114,7 +103,6 @@ const NewsletterTab = () => {
         .eq('template_name', 'newsletter')
         .order('created_at', { ascending: false });
 
-      // Time range filter
       if (timeRange !== 'all') {
         const now = new Date();
         let startDate: Date;
@@ -128,15 +116,9 @@ const NewsletterTab = () => {
       }
 
       const { data, error } = await query;
-
-      if (error) {
-        console.error('Error fetching analytics:', error);
-        return;
-      }
+      if (error) { console.error('Error fetching analytics:', error); return; }
 
       const logs = (data || []) as EmailLogEntry[];
-
-      // Deduplicate by message_id — keep latest status per message
       const latestByMessage = new Map<string, EmailLogEntry>();
       for (const log of logs) {
         const existing = latestByMessage.get(log.message_id);
@@ -149,7 +131,6 @@ const NewsletterTab = () => {
 
       setEmailLogs(deduplicated);
 
-      // Calculate stats
       const stats = { total: deduplicated.length, sent: 0, failed: 0, pending: 0 };
       for (const log of deduplicated) {
         if (log.status === 'sent') stats.sent++;
@@ -178,12 +159,11 @@ const NewsletterTab = () => {
     setImageUrl('');
     setRecipientType('all');
     setCustomEmails('');
+    setScheduleDate('');
+    setScheduleTime('');
   };
 
-  const openNew = () => {
-    resetForm();
-    setEditorOpen(true);
-  };
+  const openNew = () => { resetForm(); setEditorOpen(true); };
 
   const openEdit = (n: Newsletter) => {
     setEditId(n.id);
@@ -193,7 +173,34 @@ const NewsletterTab = () => {
     const filter = n.recipient_filter as any;
     setRecipientType(filter?.type === 'custom' ? 'custom' : 'all');
     setCustomEmails(filter?.emails?.join(', ') || '');
+    if (n.scheduled_at) {
+      const d = new Date(n.scheduled_at);
+      setScheduleDate(d.toISOString().split('T')[0]);
+      setScheduleTime(d.toTimeString().slice(0, 5));
+    } else {
+      setScheduleDate('');
+      setScheduleTime('');
+    }
     setEditorOpen(true);
+  };
+
+  const buildPayload = () => {
+    const recipientFilter = recipientType === 'custom'
+      ? { type: 'custom', emails: customEmails.split(',').map(e => e.trim()).filter(Boolean) }
+      : { type: 'all' };
+
+    const scheduledAt = scheduleDate && scheduleTime
+      ? new Date(`${scheduleDate}T${scheduleTime}:00`).toISOString()
+      : null;
+
+    return {
+      subject: subject.trim(),
+      content,
+      image_url: imageUrl || null,
+      recipient_filter: recipientFilter,
+      status: scheduledAt ? 'scheduled' : 'draft',
+      scheduled_at: scheduledAt,
+    };
   };
 
   const saveDraft = async () => {
@@ -202,30 +209,18 @@ const NewsletterTab = () => {
       return;
     }
     setSaving(true);
-    const recipientFilter = recipientType === 'custom'
-      ? { type: 'custom', emails: customEmails.split(',').map(e => e.trim()).filter(Boolean) }
-      : { type: 'all' };
-
-    const payload = {
-      subject: subject.trim(),
-      content,
-      image_url: imageUrl || null,
-      recipient_filter: recipientFilter,
-      status: 'draft',
-    };
-
+    const payload = buildPayload();
     let error;
     if (editId) {
       ({ error } = await supabase.from('newsletters').update(payload).eq('id', editId));
     } else {
       ({ error } = await supabase.from('newsletters').insert(payload));
     }
-
     setSaving(false);
     if (error) {
-      toast({ title: 'Error saving draft', description: error.message, variant: 'destructive' });
+      toast({ title: 'Error saving', description: error.message, variant: 'destructive' });
     } else {
-      toast({ title: 'Draft saved!' });
+      toast({ title: payload.status === 'scheduled' ? 'Newsletter scheduled!' : 'Draft saved!' });
       setEditorOpen(false);
       resetForm();
       fetchNewsletters();
@@ -237,15 +232,12 @@ const NewsletterTab = () => {
       `Send this newsletter "${newsletter.subject}" to ${recipientType === 'custom' ? 'selected' : 'all'} subscribers?`
     );
     if (!confirmed) return;
-
     setSending(true);
     try {
       const { data, error } = await supabase.functions.invoke('send-newsletter', {
         body: { newsletterId: newsletter.id },
       });
-
       if (error) throw error;
-
       toast({
         title: 'Newsletter sent!',
         description: `Sent to ${data?.recipientCount || 0} recipients${data?.failedCount ? ` (${data.failedCount} failed)` : ''}.`,
@@ -253,31 +245,38 @@ const NewsletterTab = () => {
       fetchNewsletters();
       fetchEmailAnalytics();
     } catch (err: any) {
-      toast({
-        title: 'Error sending newsletter',
-        description: err.message || 'Something went wrong',
-        variant: 'destructive',
-      });
+      toast({ title: 'Error sending newsletter', description: err.message || 'Something went wrong', variant: 'destructive' });
     } finally {
       setSending(false);
     }
   };
 
   const deleteNewsletter = async (id: string) => {
-    if (!window.confirm('Delete this newsletter draft?')) return;
+    if (!window.confirm('Delete this newsletter?')) return;
     const { error } = await supabase.from('newsletters').delete().eq('id', id);
-    if (!error) {
-      toast({ title: 'Newsletter deleted' });
-      fetchNewsletters();
+    if (!error) { toast({ title: 'Newsletter deleted' }); fetchNewsletters(); }
+  };
+
+  const openPreview = (n: Newsletter) => { setPreviewNewsletter(n); setPreviewOpen(true); };
+
+  const syncSubscribers = async () => {
+    setSyncingSubscribers(true);
+    try {
+      const { data, error } = await supabase.rpc('sync_form_emails_to_subscribers');
+      if (error) throw error;
+      const result = data as any;
+      toast({
+        title: 'Subscribers synced!',
+        description: `${result?.new_subscribers || 0} new emails added from form submissions.`,
+      });
+      fetchSubscriberCount();
+    } catch (err: any) {
+      toast({ title: 'Sync failed', description: err.message, variant: 'destructive' });
+    } finally {
+      setSyncingSubscribers(false);
     }
   };
 
-  const openPreview = (n: Newsletter) => {
-    setPreviewNewsletter(n);
-    setPreviewOpen(true);
-  };
-
-  // Filter logs for display
   const filteredLogs = emailLogs.filter(log => {
     if (statusFilter !== 'all' && log.status !== statusFilter) return false;
     if (searchQuery) {
@@ -304,6 +303,12 @@ const NewsletterTab = () => {
     }
   };
 
+  const getNewsletterStatusBadge = (n: Newsletter) => {
+    if (n.status === 'sent') return <Badge className="bg-green-500 text-white">Sent</Badge>;
+    if (n.status === 'scheduled') return <Badge className="bg-blue-500 text-white gap-1"><CalendarClock className="h-3 w-3" /> Scheduled</Badge>;
+    return <Badge variant="secondary">Draft</Badge>;
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -315,24 +320,17 @@ const NewsletterTab = () => {
   return (
     <Tabs defaultValue="campaigns" className="space-y-6">
       <TabsList>
-        <TabsTrigger value="campaigns" className="gap-2">
-          <Mail className="h-4 w-4" /> Campaigns
-        </TabsTrigger>
-        <TabsTrigger value="analytics" className="gap-2">
-          <BarChart3 className="h-4 w-4" /> Analytics
-        </TabsTrigger>
+        <TabsTrigger value="campaigns" className="gap-2"><Mail className="h-4 w-4" /> Campaigns</TabsTrigger>
+        <TabsTrigger value="analytics" className="gap-2"><BarChart3 className="h-4 w-4" /> Analytics</TabsTrigger>
       </TabsList>
 
       {/* CAMPAIGNS TAB */}
       <TabsContent value="campaigns" className="space-y-6">
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-blue-500/10 rounded-lg">
-                  <Users className="h-5 w-5 text-blue-500" />
-                </div>
+                <div className="p-2 bg-blue-500/10 rounded-lg"><Users className="h-5 w-5 text-blue-500" /></div>
                 <div>
                   <p className="text-sm text-muted-foreground">Active Subscribers</p>
                   <p className="text-2xl font-bold">{subscriberCount}</p>
@@ -343,9 +341,7 @@ const NewsletterTab = () => {
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-amber-500/10 rounded-lg">
-                  <FileText className="h-5 w-5 text-amber-500" />
-                </div>
+                <div className="p-2 bg-amber-500/10 rounded-lg"><FileText className="h-5 w-5 text-amber-500" /></div>
                 <div>
                   <p className="text-sm text-muted-foreground">Drafts</p>
                   <p className="text-2xl font-bold">{newsletters.filter(n => n.status === 'draft').length}</p>
@@ -356,11 +352,20 @@ const NewsletterTab = () => {
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-green-500/10 rounded-lg">
-                  <Send className="h-5 w-5 text-green-500" />
-                </div>
+                <div className="p-2 bg-blue-600/10 rounded-lg"><CalendarClock className="h-5 w-5 text-blue-600" /></div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Sent Campaigns</p>
+                  <p className="text-sm text-muted-foreground">Scheduled</p>
+                  <p className="text-2xl font-bold">{newsletters.filter(n => n.status === 'scheduled').length}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-green-500/10 rounded-lg"><Send className="h-5 w-5 text-green-500" /></div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Sent</p>
                   <p className="text-2xl font-bold">{newsletters.filter(n => n.status === 'sent').length}</p>
                 </div>
               </div>
@@ -368,19 +373,30 @@ const NewsletterTab = () => {
           </Card>
         </div>
 
+        {/* Sync subscribers */}
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-medium">Sync Form Submissions</p>
+                <p className="text-sm text-muted-foreground">Pull all emails from Contact, Careers, Training & Assessment forms into your subscriber list.</p>
+              </div>
+              <Button variant="outline" onClick={syncSubscribers} disabled={syncingSubscribers} className="gap-2">
+                {syncingSubscribers ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
+                Sync Now
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Newsletters list */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
-              <CardTitle className="flex items-center gap-2">
-                <Mail className="h-5 w-5" />
-                Email Campaigns
-              </CardTitle>
+              <CardTitle className="flex items-center gap-2"><Mail className="h-5 w-5" /> Email Campaigns</CardTitle>
               <CardDescription>Create and manage your email marketing campaigns</CardDescription>
             </div>
-            <Button onClick={openNew} className="gap-2">
-              <Plus className="h-4 w-4" /> New Campaign
-            </Button>
+            <Button onClick={openNew} className="gap-2"><Plus className="h-4 w-4" /> New Campaign</Button>
           </CardHeader>
           <CardContent>
             {newsletters.length === 0 ? (
@@ -406,30 +422,34 @@ const NewsletterTab = () => {
                     <TableRow key={n.id}>
                       <TableCell className="font-medium">{i + 1}</TableCell>
                       <TableCell className="max-w-[200px] truncate">{n.subject}</TableCell>
-                      <TableCell>
-                        <Badge variant={n.status === 'sent' ? 'default' : 'secondary'}
-                          className={n.status === 'sent' ? 'bg-green-500' : ''}>
-                          {n.status === 'sent' ? 'Sent' : 'Draft'}
-                        </Badge>
-                      </TableCell>
+                      <TableCell>{getNewsletterStatusBadge(n)}</TableCell>
                       <TableCell>{n.status === 'sent' ? n.recipient_count : '—'}</TableCell>
                       <TableCell className="text-muted-foreground text-sm">
-                        {new Date(n.status === 'sent' ? n.sent_at! : n.created_at).toLocaleDateString('en-GB', { dateStyle: 'medium' })}
+                        {n.status === 'scheduled' && n.scheduled_at ? (
+                          <span className="flex items-center gap-1">
+                            <CalendarClock className="h-3 w-3" />
+                            {new Date(n.scheduled_at).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' })}
+                          </span>
+                        ) : (
+                          new Date(n.status === 'sent' ? n.sent_at! : n.created_at).toLocaleDateString('en-GB', { dateStyle: 'medium' })
+                        )}
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center justify-end gap-1">
                           <Button size="icon" variant="ghost" onClick={() => openPreview(n)} title="Preview">
                             <Eye className="h-4 w-4" />
                           </Button>
-                          {n.status === 'draft' && (
+                          {(n.status === 'draft' || n.status === 'scheduled') && (
                             <>
                               <Button size="icon" variant="ghost" onClick={() => openEdit(n)} title="Edit">
                                 <Edit className="h-4 w-4" />
                               </Button>
-                              <Button size="icon" variant="ghost" onClick={() => sendNewsletter(n)}
-                                disabled={sending} title="Send">
-                                {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-                              </Button>
+                              {n.status === 'draft' && (
+                                <Button size="icon" variant="ghost" onClick={() => sendNewsletter(n)}
+                                  disabled={sending} title="Send Now">
+                                  {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                                </Button>
+                              )}
                               <Button size="icon" variant="ghost" onClick={() => deleteNewsletter(n.id)} title="Delete"
                                 className="text-destructive hover:text-destructive">
                                 <Trash2 className="h-4 w-4" />
@@ -449,14 +469,11 @@ const NewsletterTab = () => {
 
       {/* ANALYTICS TAB */}
       <TabsContent value="analytics" className="space-y-6">
-        {/* Analytics Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-blue-500/10 rounded-lg">
-                  <Mail className="h-5 w-5 text-blue-500" />
-                </div>
+                <div className="p-2 bg-blue-500/10 rounded-lg"><Mail className="h-5 w-5 text-blue-500" /></div>
                 <div>
                   <p className="text-sm text-muted-foreground">Total Emails</p>
                   <p className="text-2xl font-bold">{analyticsStats.total}</p>
@@ -467,9 +484,7 @@ const NewsletterTab = () => {
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-green-500/10 rounded-lg">
-                  <CheckCircle className="h-5 w-5 text-green-500" />
-                </div>
+                <div className="p-2 bg-green-500/10 rounded-lg"><CheckCircle className="h-5 w-5 text-green-500" /></div>
                 <div>
                   <p className="text-sm text-muted-foreground">Delivered</p>
                   <p className="text-2xl font-bold">{analyticsStats.sent}</p>
@@ -485,9 +500,7 @@ const NewsletterTab = () => {
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-red-500/10 rounded-lg">
-                  <XCircle className="h-5 w-5 text-red-500" />
-                </div>
+                <div className="p-2 bg-red-500/10 rounded-lg"><XCircle className="h-5 w-5 text-red-500" /></div>
                 <div>
                   <p className="text-sm text-muted-foreground">Failed</p>
                   <p className="text-2xl font-bold">{analyticsStats.failed}</p>
@@ -503,9 +516,7 @@ const NewsletterTab = () => {
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-amber-500/10 rounded-lg">
-                  <Clock className="h-5 w-5 text-amber-500" />
-                </div>
+                <div className="p-2 bg-amber-500/10 rounded-lg"><Clock className="h-5 w-5 text-amber-500" /></div>
                 <div>
                   <p className="text-sm text-muted-foreground">Pending</p>
                   <p className="text-2xl font-bold">{analyticsStats.pending}</p>
@@ -515,32 +526,23 @@ const NewsletterTab = () => {
           </Card>
         </div>
 
-        {/* Filters */}
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <BarChart3 className="h-5 w-5" /> Email Delivery Log
-            </CardTitle>
+            <CardTitle className="flex items-center gap-2"><BarChart3 className="h-5 w-5" /> Email Delivery Log</CardTitle>
             <CardDescription>Track the delivery status of every newsletter email sent</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex flex-wrap gap-3 items-center">
-              {/* Time range */}
               <div className="flex gap-1">
                 {(['24h', '7d', '30d', 'all'] as const).map(range => (
-                  <Button key={range} size="sm"
-                    variant={timeRange === range ? 'default' : 'outline'}
+                  <Button key={range} size="sm" variant={timeRange === range ? 'default' : 'outline'}
                     onClick={() => setTimeRange(range)}>
                     {range === '24h' ? '24h' : range === '7d' ? '7 Days' : range === '30d' ? '30 Days' : 'All Time'}
                   </Button>
                 ))}
               </div>
-
-              {/* Status filter */}
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-[140px]">
-                  <SelectValue placeholder="Status" />
-                </SelectTrigger>
+                <SelectTrigger className="w-[140px]"><SelectValue placeholder="Status" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Status</SelectItem>
                   <SelectItem value="sent">Sent</SelectItem>
@@ -549,24 +551,16 @@ const NewsletterTab = () => {
                   <SelectItem value="suppressed">Suppressed</SelectItem>
                 </SelectContent>
               </Select>
-
-              {/* Search */}
               <div className="relative flex-1 min-w-[200px]">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search by email or subject..."
-                  value={searchQuery}
-                  onChange={e => setSearchQuery(e.target.value)}
-                  className="pl-9"
-                />
+                <Input placeholder="Search by email or subject..." value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)} className="pl-9" />
               </div>
-
               <Button variant="outline" size="sm" onClick={fetchEmailAnalytics} disabled={analyticsLoading}>
                 {analyticsLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Refresh'}
               </Button>
             </div>
 
-            {/* Log Table */}
             {analyticsLoading ? (
               <div className="flex items-center justify-center py-12">
                 <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
@@ -598,20 +592,12 @@ const NewsletterTab = () => {
                       {filteredLogs.slice(0, 100).map((log, i) => (
                         <TableRow key={log.id}>
                           <TableCell className="font-medium text-muted-foreground">{i + 1}</TableCell>
-                          <TableCell className="font-mono text-sm max-w-[200px] truncate">
-                            {log.recipient_email}
-                          </TableCell>
-                          <TableCell className="max-w-[180px] truncate text-sm">
-                            {log.metadata?.subject || '—'}
-                          </TableCell>
+                          <TableCell className="font-mono text-sm max-w-[200px] truncate">{log.recipient_email}</TableCell>
+                          <TableCell className="max-w-[180px] truncate text-sm">{log.metadata?.subject || '—'}</TableCell>
                           <TableCell>{getStatusBadge(log.status)}</TableCell>
                           <TableCell className="text-sm text-muted-foreground whitespace-nowrap">
                             {new Date(log.created_at).toLocaleString('en-GB', {
-                              day: 'numeric',
-                              month: 'short',
-                              year: 'numeric',
-                              hour: '2-digit',
-                              minute: '2-digit',
+                              day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit',
                             })}
                           </TableCell>
                           <TableCell className="max-w-[200px] truncate text-sm text-destructive">
@@ -651,11 +637,7 @@ const NewsletterTab = () => {
                     <Upload className="h-4 w-4" />
                     {uploadingImage ? 'Uploading...' : imageUrl ? 'Change image' : 'Upload an image'}
                   </div>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    disabled={uploadingImage}
+                  <input type="file" accept="image/*" className="hidden" disabled={uploadingImage}
                     onChange={async (e) => {
                       const file = e.target.files?.[0];
                       if (!file) return;
@@ -664,12 +646,9 @@ const NewsletterTab = () => {
                         const ext = file.name.split('.').pop() || 'jpg';
                         const fileName = `newsletter-${Date.now()}.${ext}`;
                         const { error: uploadError } = await supabase.storage
-                          .from('email-assets')
-                          .upload(fileName, file, { upsert: true });
+                          .from('email-assets').upload(fileName, file, { upsert: true });
                         if (uploadError) throw uploadError;
-                        const { data: urlData } = supabase.storage
-                          .from('email-assets')
-                          .getPublicUrl(fileName);
+                        const { data: urlData } = supabase.storage.from('email-assets').getPublicUrl(fileName);
                         setImageUrl(urlData.publicUrl);
                         toast({ title: 'Image uploaded!' });
                       } catch (err: any) {
@@ -683,9 +662,7 @@ const NewsletterTab = () => {
                 </label>
                 {imageUrl && (
                   <Button variant="ghost" size="sm" onClick={() => setImageUrl('')}
-                    className="text-destructive hover:text-destructive">
-                    Remove
-                  </Button>
+                    className="text-destructive hover:text-destructive">Remove</Button>
                 )}
               </div>
               {uploadingImage && (
@@ -707,16 +684,13 @@ const NewsletterTab = () => {
                 Use simple text. Each paragraph will be formatted. Use **bold** for emphasis.
               </p>
               <Textarea value={content} onChange={e => setContent(e.target.value)}
-                placeholder="Write your newsletter content here..."
-                className="min-h-[200px]" />
+                placeholder="Write your newsletter content here..." className="min-h-[200px]" />
             </div>
 
             <div>
               <Label>Recipients</Label>
               <Select value={recipientType} onValueChange={v => setRecipientType(v as any)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
+                <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Subscribers ({subscriberCount})</SelectItem>
                   <SelectItem value="custom">Specific Emails</SelectItem>
@@ -724,8 +698,36 @@ const NewsletterTab = () => {
               </Select>
               {recipientType === 'custom' && (
                 <Textarea value={customEmails} onChange={e => setCustomEmails(e.target.value)}
-                  placeholder="email1@example.com, email2@example.com"
-                  className="mt-2" />
+                  placeholder="email1@example.com, email2@example.com" className="mt-2" />
+              )}
+            </div>
+
+            {/* Scheduling */}
+            <div className="border rounded-lg p-4 space-y-3 bg-muted/30">
+              <Label className="flex items-center gap-2">
+                <CalendarClock className="h-4 w-4" /> Schedule for Later (optional)
+              </Label>
+              <p className="text-xs text-muted-foreground">
+                Set a date and time to automatically send this newsletter. Leave empty to save as draft.
+              </p>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <Label className="text-xs">Date</Label>
+                  <Input type="date" value={scheduleDate}
+                    onChange={e => setScheduleDate(e.target.value)}
+                    min={new Date().toISOString().split('T')[0]} />
+                </div>
+                <div>
+                  <Label className="text-xs">Time</Label>
+                  <Input type="time" value={scheduleTime}
+                    onChange={e => setScheduleTime(e.target.value)} />
+                </div>
+              </div>
+              {scheduleDate && scheduleTime && (
+                <p className="text-xs text-blue-600 flex items-center gap-1">
+                  <CalendarClock className="h-3 w-3" />
+                  Will be sent on {new Date(`${scheduleDate}T${scheduleTime}:00`).toLocaleString('en-GB', { dateStyle: 'full', timeStyle: 'short' })}
+                </p>
               )}
             </div>
           </div>
@@ -734,7 +736,7 @@ const NewsletterTab = () => {
             <Button variant="outline" onClick={() => setEditorOpen(false)}>Cancel</Button>
             <Button variant="secondary" onClick={saveDraft} disabled={saving}>
               {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-              Save Draft
+              {scheduleDate && scheduleTime ? 'Schedule' : 'Save Draft'}
             </Button>
           </DialogFooter>
         </DialogContent>
