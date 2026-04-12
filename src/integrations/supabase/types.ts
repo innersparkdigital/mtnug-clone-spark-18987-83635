@@ -585,6 +585,7 @@ export type Database = {
           image_url: string | null
           recipient_count: number | null
           recipient_filter: Json | null
+          scheduled_at: string | null
           sent_at: string | null
           status: string
           subject: string
@@ -597,6 +598,7 @@ export type Database = {
           image_url?: string | null
           recipient_count?: number | null
           recipient_filter?: Json | null
+          scheduled_at?: string | null
           sent_at?: string | null
           status?: string
           subject: string
@@ -609,6 +611,7 @@ export type Database = {
           image_url?: string | null
           recipient_count?: number | null
           recipient_filter?: Json | null
+          scheduled_at?: string | null
           sent_at?: string | null
           status?: string
           subject?: string
@@ -1070,6 +1073,7 @@ export type Database = {
           read_ct: number
         }[]
       }
+      sync_form_emails_to_subscribers: { Args: never; Returns: Json }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
