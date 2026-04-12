@@ -33,6 +33,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
 import { trackBookingFormOpened, trackBookingSubmitted, trackWhatsAppClick } from "@/lib/analytics";
+import { trackGadsBookingConversion, trackGadsWhatsAppClick } from "@/lib/gadsTracking";
 import TherapistRecommendationCard from "./TherapistRecommendationCard";
 
 interface BookingFormModalProps {
@@ -230,6 +231,8 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
       assessmentResult?.severity
     );
     trackWhatsAppClick(formType === "book" ? "booking_form" : "group_form");
+    trackGadsBookingConversion(formType, assessmentResult?.assessmentType);
+    trackGadsWhatsAppClick(formType === "book" ? "booking_form" : "group_form");
     
     window.open(whatsappUrl, "_blank");
     

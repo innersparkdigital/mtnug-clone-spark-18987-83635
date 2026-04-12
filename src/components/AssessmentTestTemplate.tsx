@@ -13,6 +13,7 @@ import { Progress } from "@/components/ui/progress";
 import { useAssessmentTest } from "@/hooks/useAssessmentTest";
 import { useAssessmentTracking } from "@/hooks/useMindCheckTracking";
 import { trackAssessmentCompleted } from "@/lib/analytics";
+import { trackGadsAssessmentCompleted } from "@/lib/gadsTracking";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Brain, 
@@ -158,6 +159,7 @@ const AssessmentTestTemplate = ({ config }: AssessmentTestTemplateProps) => {
     
     // Track analytics
     trackAssessmentCompleted(config.id, result.level, score);
+    trackGadsAssessmentCompleted(config.id, result.level, score);
     trackCompletion(score, config.maxScore, result.level);
 
     return (

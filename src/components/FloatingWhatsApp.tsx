@@ -1,12 +1,18 @@
 import { motion } from "framer-motion";
 import whatsappIcon from "@/assets/whatsapp-icon.png";
+import { trackGadsWhatsAppClick } from "@/lib/gadsTracking";
 
 const FloatingWhatsApp = () => {
+  const handleClick = () => {
+    trackGadsWhatsAppClick('floating_widget');
+  };
+
   return (
     <motion.a
       href="https://wa.me/256792085773"
       target="_blank"
       rel="noopener noreferrer"
+      onClick={handleClick}
       className="fixed bottom-6 right-6 z-50 flex items-center justify-center w-14 h-14 rounded-full bg-[#25D366] shadow-lg hover:shadow-xl transition-shadow"
       initial={{ scale: 0, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
