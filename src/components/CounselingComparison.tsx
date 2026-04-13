@@ -20,6 +20,7 @@ const CounselingComparison = () => {
   const {
     startBooking,
     closeFlow,
+    goToForm,
     actionType,
     isAssessmentModalOpen,
     isBookingFormOpen,

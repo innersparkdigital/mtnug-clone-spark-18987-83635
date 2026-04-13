@@ -131,6 +131,7 @@ const ConcernsSection = () => {
   const {
     startBooking,
     closeFlow,
+    goToForm,
     actionType,
     isAssessmentModalOpen,
     isBookingFormOpen,
