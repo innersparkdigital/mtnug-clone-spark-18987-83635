@@ -150,6 +150,7 @@ const ConcernsSection = () => {
       <PreAssessmentModal
         isOpen={isAssessmentModalOpen}
         onClose={closeFlow}
+        onSkipToForm={goToForm}
         actionType={actionType}
       />
       <BookingFormModal
