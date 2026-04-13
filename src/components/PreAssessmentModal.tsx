@@ -401,19 +401,12 @@ const PreAssessmentModal = ({ isOpen, onClose, onSkipToForm, actionType, special
       trackGroupClick("pre_assessment_modal_skip");
     }
     
-    onClose();
-    const whatsappNumber = "256792085773";
-    let message = actionType === "consultation"
-      ? "Hi, I would like a free consultation with Innerspark Africa"
-      : actionType === "book" 
-      ? "Hi, I would like to book a therapy session"
-      : "Hi, I would like to join a mental health support group";
-    
-    if (specialist) {
-      message += ` with ${specialist.name}`;
+    // Open the booking form directly
+    if (onSkipToForm) {
+      onSkipToForm();
+    } else {
+      onClose();
     }
-    
-    window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, "_blank");
   };
 
   const handleReset = () => {
