@@ -429,6 +429,7 @@ const Specialists = () => {
     startBooking,
     closeFlow,
     resetFlow,
+    goToForm,
     isAssessmentModalOpen,
     isBookingFormOpen,
     actionType
