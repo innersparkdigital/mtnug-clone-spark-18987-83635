@@ -20,6 +20,7 @@ const CounselingComparison = () => {
   const {
     startBooking,
     closeFlow,
+    goToForm,
     actionType,
     isAssessmentModalOpen,
     isBookingFormOpen,
@@ -30,6 +31,7 @@ const CounselingComparison = () => {
       <PreAssessmentModal
         isOpen={isAssessmentModalOpen}
         onClose={closeFlow}
+        onSkipToForm={goToForm}
         actionType={actionType}
       />
       <BookingFormModal

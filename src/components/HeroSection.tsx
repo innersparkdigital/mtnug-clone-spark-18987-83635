@@ -142,6 +142,7 @@ const HeroSection = () => {
       <PreAssessmentModal
         isOpen={isAssessmentModalOpen}
         onClose={closeFlow}
+        onSkipToForm={goToForm}
         actionType={actionType}
       />
 

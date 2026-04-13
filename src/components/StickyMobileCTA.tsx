@@ -8,6 +8,7 @@ const StickyMobileCTA = () => {
     startBooking,
     closeFlow,
     resetFlow,
+    goToForm,
     isAssessmentModalOpen,
     isBookingFormOpen,
     actionType
@@ -43,6 +44,7 @@ const StickyMobileCTA = () => {
       <PreAssessmentModal
         isOpen={isAssessmentModalOpen}
         onClose={closeFlow}
+        onSkipToForm={goToForm}
         actionType={actionType}
       />
       <BookingFormModal

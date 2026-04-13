@@ -11,7 +11,8 @@ import { useBookingFlow } from "@/hooks/useBookingFlow";
 const BookTherapist = () => {
   const { 
     startBooking, 
-    closeFlow, 
+    closeFlow,
+    goToForm,
     actionType,
     isAssessmentModalOpen,
     isBookingFormOpen,
@@ -100,6 +101,7 @@ const BookTherapist = () => {
       <PreAssessmentModal 
         isOpen={isAssessmentModalOpen} 
         onClose={closeFlow}
+        onSkipToForm={goToForm}
         actionType={actionType}
       />
 
