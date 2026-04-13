@@ -213,7 +213,83 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
   const handleSubmit = async (data: BookingFormData | GroupFormData) => {
     setIsSubmitting(true);
     
-    // All payment methods now go via WhatsApp (manual processing)
+    try {
+      // Determine amount based on form type
+      const amount = formType === "group" ? 25000 : 75000;
+      const description = formType === "group" 
+        ? "InnerSpark Africa - Support Group Session" 
+        : formType === "consultation"
+        ? "InnerSpark Africa - Free Consultation"
+        : "InnerSpark Africa - Therapy Session";
+
+      // For free consultations, skip payment and go directly to WhatsApp
+      if (formType === "consultation") {
+        await sendViaWhatsApp(data);
+        return;
+      }
+
+      // Initiate PesaPal payment
+      const { data: paymentData, error: paymentError } = await supabase.functions.invoke(
+        "create-pesapal-payment",
+        {
+          body: {
+            customerName: data.name,
+            customerPhone: data.phone,
+            customerEmail: "",
+            amount,
+            currency: "UGX",
+            description,
+            callbackUrl: window.location.origin,
+          },
+        }
+      );
+
+      if (paymentError || !paymentData?.url) {
+        throw new Error(paymentError?.message || "Failed to initiate payment");
+      }
+
+      // Track the booking
+      trackBookingSubmitted(
+        formType,
+        assessmentResult?.assessmentType,
+        assessmentResult?.severity
+      );
+      trackGadsBookingConversion(formType, assessmentResult?.assessmentType);
+
+      // Also send booking details via WhatsApp for admin tracking
+      await sendViaWhatsApp(data, paymentData.merchantReference);
+
+      // Redirect to PesaPal payment page
+      window.open(paymentData.url, "_blank");
+
+      toast({
+        title: "Payment initiated!",
+        description: "Complete your payment on the PesaPal page. We'll also follow up via WhatsApp.",
+      });
+
+      clearAssessment();
+      onClose();
+
+      if (formType === "book") {
+        bookingForm.reset();
+      } else {
+        groupForm.reset();
+      }
+    } catch (error) {
+      console.error("Payment error:", error);
+      toast({
+        title: "Payment Error",
+        description: "Could not initiate payment. Sending your request via WhatsApp instead.",
+        variant: "destructive",
+      });
+      // Fallback to WhatsApp only
+      await sendViaWhatsApp(data);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const sendViaWhatsApp = async (data: BookingFormData | GroupFormData, paymentRef?: string) => {
     let message = formatWhatsAppMessage(formType, data, assessmentResult);
     
     if (selectedSpecialist && formType === "book") {
@@ -222,34 +298,31 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
         `*New Booking Request – Innerspark Africa*\n\n*Selected Therapist:* ${selectedSpecialist.name}`
       );
     }
+
+    if (paymentRef) {
+      message += `\n\n*Payment Reference:* ${paymentRef}`;
+    }
     
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/256792085773?text=${encodedMessage}`;
     
-    trackBookingSubmitted(
-      formType,
-      assessmentResult?.assessmentType,
-      assessmentResult?.severity
-    );
     trackWhatsAppClick(formType === "book" ? "booking_form" : "group_form");
-    trackGadsBookingConversion(formType, assessmentResult?.assessmentType);
     trackGadsWhatsAppClick(formType === "book" ? "booking_form" : "group_form");
     
     window.open(whatsappUrl, "_blank");
     
-    toast({
-      title: "Request sent!",
-      description: "We'll contact you shortly to confirm your booking.",
-    });
-    
-    clearAssessment();
-    onClose();
-    setIsSubmitting(false);
-    
-    if (formType === "book") {
-      bookingForm.reset();
-    } else {
-      groupForm.reset();
+    if (!paymentRef) {
+      toast({
+        title: "Request sent!",
+        description: "We'll contact you shortly to confirm your booking.",
+      });
+      clearAssessment();
+      onClose();
+      if (formType === "book") {
+        bookingForm.reset();
+      } else {
+        groupForm.reset();
+      }
     }
   };
 
