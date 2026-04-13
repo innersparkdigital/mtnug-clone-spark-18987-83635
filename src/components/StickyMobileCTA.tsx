@@ -8,6 +8,7 @@ const StickyMobileCTA = () => {
     startBooking,
     closeFlow,
     resetFlow,
+    goToForm,
     isAssessmentModalOpen,
     isBookingFormOpen,
     actionType
