@@ -35,6 +35,7 @@ import { toast } from "@/hooks/use-toast";
 import { trackBookingFormOpened, trackBookingSubmitted, trackWhatsAppClick } from "@/lib/analytics";
 import { trackGadsBookingConversion, trackGadsWhatsAppClick } from "@/lib/gadsTracking";
 import TherapistRecommendationCard from "./TherapistRecommendationCard";
+import { supabase } from "@/integrations/supabase/client";
 
 interface BookingFormModalProps {
   isOpen: boolean;
