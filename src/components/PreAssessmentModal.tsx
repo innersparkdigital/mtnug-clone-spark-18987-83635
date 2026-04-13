@@ -337,7 +337,7 @@ const assessmentOptions = [
   },
 ];
 
-const PreAssessmentModal = ({ isOpen, onClose, actionType, specialist }: PreAssessmentModalProps) => {
+const PreAssessmentModal = ({ isOpen, onClose, onSkipToForm, actionType, specialist }: PreAssessmentModalProps) => {
   const [wantsAssessment, setWantsAssessment] = useState<boolean | null>(null);
   const [selectedCondition, setSelectedCondition] = useState<string>("");
   const navigate = useNavigate();
