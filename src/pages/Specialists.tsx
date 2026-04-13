@@ -773,6 +773,7 @@ const Specialists = () => {
           closeFlow();
           setBookingSpecialist(null);
         }}
+        onSkipToForm={goToForm}
         actionType={actionType}
         specialist={bookingSpecialist ? {
           id: bookingSpecialist.id,

@@ -541,6 +541,7 @@ Please confirm availability. Thank you!`;
                   onClose={() => {
                     setShowPreAssessment(false);
                   }}
+                  onSkipToForm={() => setShowPreAssessment(false)}
                   actionType="book"
                   specialist={specialist ? {
                     id: specialist.id,
