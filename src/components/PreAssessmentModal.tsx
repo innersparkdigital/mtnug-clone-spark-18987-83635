@@ -23,6 +23,7 @@ import { getRelevantAssessments } from "@/lib/specialistAssessmentMapping";
 interface PreAssessmentModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onSkipToForm?: () => void;
   actionType: BookingActionType;
   specialist?: SelectedSpecialist | null;
 }
