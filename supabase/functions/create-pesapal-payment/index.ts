@@ -100,7 +100,7 @@ serve(async (req) => {
       currency: currency || "UGX",
       amount: Number(amount),
       description: description || "InnerSpark Africa Therapy Session",
-      callback_url: `${req.headers.get("origin")}/payment-success?merchant_reference=${merchantReference}`,
+      callback_url: `${callbackUrl || req.headers.get("origin")}/payment-success?merchant_reference=${merchantReference}`,
       notification_id: ipnId,
       billing_address: {
         email_address: customerEmail || "",
