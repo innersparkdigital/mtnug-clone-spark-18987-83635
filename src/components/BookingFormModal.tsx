@@ -366,7 +366,7 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
                 : "Based on your assessment, we've matched you with a recommended therapist."
               : formType === "book" 
               ? showForm 
-                ? "Complete your booking details and we'll connect you with the right therapist."
+                ? "Complete your booking details and continue to secure PesaPal payment for your therapy session."
                 : "Based on your assessment, we've matched you with a recommended therapist."
               : "Fill in your details to join a supportive community."}
           </DialogDescription>
@@ -484,21 +484,26 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
                     name="paymentMethod"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Preferred Payment Method</FormLabel>
+                        <div className="space-y-1">
+                          <FormLabel>Pay with PesaPal</FormLabel>
+                          <p className="text-sm text-muted-foreground">
+                            Choose your preferred method below. You’ll complete payment securely on PesaPal.
+                          </p>
+                        </div>
                         <FormControl>
                           <RadioGroup onValueChange={field.onChange} value={field.value} className="flex gap-4">
                             <div className="flex items-center gap-2 border rounded-lg p-3 flex-1 cursor-pointer hover:border-primary/50 transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/5">
                               <RadioGroupItem value="mobile_money" id="booking_mobile_money" />
                               <Label htmlFor="booking_mobile_money" className="flex items-center gap-2 cursor-pointer">
                                 <Smartphone className="h-4 w-4 text-primary" />
-                                Mobile Money
+                                PesaPal Mobile Money
                               </Label>
                             </div>
                             <div className="flex items-center gap-2 border rounded-lg p-3 flex-1 cursor-pointer hover:border-primary/50 transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/5">
                               <RadioGroupItem value="visa" id="booking_visa" />
                               <Label htmlFor="booking_visa" className="flex items-center gap-2 cursor-pointer">
                                 <CreditCard className="h-4 w-4 text-primary" />
-                                Visa / Card
+                                PesaPal Visa / Card
                               </Label>
                             </div>
                           </RadioGroup>
@@ -576,7 +581,7 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
                     ) : (
                       <>
                         <Send className="h-4 w-4" />
-                        Submit Booking Request
+                        Continue to PesaPal
                       </>
                     )}
                   </Button>
