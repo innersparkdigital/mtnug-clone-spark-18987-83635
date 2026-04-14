@@ -28,7 +28,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useAssessment, AssessmentResult, BookingActionType } from "@/contexts/AssessmentContext";
-import { Calendar, Clock, CheckCircle, Send, AlertCircle, Users, Phone, User, ArrowRight, CreditCard, Smartphone, Languages, Globe, Loader2 } from "lucide-react";
+import { Calendar, Clock, CheckCircle, Send, AlertCircle, Users, Phone, User, ArrowRight, CreditCard, Smartphone, Languages, Globe, Loader2, Mail } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
@@ -45,6 +45,7 @@ interface BookingFormModalProps {
 
 const bookingSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters").max(100),
+  email: z.string().email("Enter a valid email address"),
   phone: z.string().min(10, "Enter a valid phone number").max(20),
   preferredDay: z.string().min(1, "Please select a preferred day"),
   preferredTime: z.string().min(1, "Please select a preferred time"),
@@ -56,6 +57,7 @@ const bookingSchema = z.object({
 
 const groupSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters").max(100),
+  email: z.string().email("Enter a valid email address"),
   phone: z.string().min(10, "Enter a valid phone number").max(20),
   groupType: z.string().min(1, "Please select a group"),
   paymentMethod: z.string().min(1, "Please select a payment method"),
@@ -95,6 +97,7 @@ const formatWhatsAppMessage = (
       ? `*🟢 FREE CONSULTATION Request – Innerspark Africa*\n\n`
       : `*New Booking Request – Innerspark Africa*\n\n`;
     message += `*Name:* ${bookingData.name}\n`;
+    message += `*Email:* ${bookingData.email}\n`;
     message += `*Phone:* ${bookingData.phone}\n\n`;
     
     if (hasAssessment) {
@@ -127,6 +130,7 @@ const formatWhatsAppMessage = (
     
     let message = `*New Support Group Request – Innerspark Africa*\n\n`;
     message += `*Name:* ${groupData.name}\n`;
+    message += `*Email:* ${groupData.email}\n`;
     message += `*Phone:* ${groupData.phone}\n\n`;
     
     if (hasAssessment) {
@@ -177,7 +181,6 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
   const handleSwitchToGroup = () => {
     setPendingAction("group");
     onClose();
-    // Re-open as group form
     setTimeout(() => {
       window.dispatchEvent(new CustomEvent('openGroupForm'));
     }, 100);
@@ -187,6 +190,7 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
     resolver: zodResolver(bookingSchema),
     defaultValues: {
       name: "",
+      email: "",
       phone: "",
       preferredDay: "",
       preferredTime: "",
@@ -201,6 +205,7 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
     resolver: zodResolver(groupSchema),
     defaultValues: {
       name: "",
+      email: "",
       phone: "",
       groupType: "",
       paymentMethod: "",
@@ -214,8 +219,8 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
     setIsSubmitting(true);
     
     try {
-      // Determine amount based on form type
       const amount = formType === "group" ? 25000 : 75000;
+      const amountFormatted = formType === "group" ? "25,000" : "75,000";
       const description = formType === "group" 
         ? "InnerSpark Africa - Support Group Session" 
         : formType === "consultation"
@@ -235,7 +240,7 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
           body: {
             customerName: data.name,
             customerPhone: data.phone,
-            customerEmail: "",
+            customerEmail: data.email,
             amount,
             currency: "UGX",
             description,
@@ -256,25 +261,21 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
       );
       trackGadsBookingConversion(formType, assessmentResult?.assessmentType);
 
-      // Also send booking details via WhatsApp for admin tracking
-      await sendViaWhatsApp(data, paymentData.merchantReference);
+      // Save booking data to sessionStorage so PaymentSuccess page can send WhatsApp + email
+      const bookingPayload = {
+        formType,
+        formData: data,
+        assessment: assessmentResult,
+        selectedSpecialist: selectedSpecialist ? { name: selectedSpecialist.name } : null,
+        merchantReference: paymentData.merchantReference,
+        amount: amountFormatted,
+        description,
+      };
+      sessionStorage.setItem("innerspark_pending_booking", JSON.stringify(bookingPayload));
 
-      // Redirect to PesaPal payment page
-      window.open(paymentData.url, "_blank");
+      // Redirect to PesaPal payment page in same tab
+      window.location.href = paymentData.url;
 
-      toast({
-        title: "Payment initiated!",
-        description: "Complete your payment on the PesaPal page. We'll also follow up via WhatsApp.",
-      });
-
-      clearAssessment();
-      onClose();
-
-      if (formType === "book") {
-        bookingForm.reset();
-      } else {
-        groupForm.reset();
-      }
     } catch (error) {
       console.error("Payment error:", error);
       toast({
@@ -282,7 +283,6 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
         description: "Could not initiate payment. Sending your request via WhatsApp instead.",
         variant: "destructive",
       });
-      // Fallback to WhatsApp only
       await sendViaWhatsApp(data);
     } finally {
       setIsSubmitting(false);
@@ -301,6 +301,7 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
 
     if (paymentRef) {
       message += `\n\n*Payment Reference:* ${paymentRef}`;
+      message += `\n*Payment Status:* ✅ PAID`;
     }
     
     const encodedMessage = encodeURIComponent(message);
@@ -336,6 +337,26 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
       default: return "text-primary bg-primary/10";
     }
   };
+
+  const renderEmailField = (form: any, prefix: string) => (
+    <FormField
+      control={form.control}
+      name="email"
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>Email Address</FormLabel>
+          <FormControl>
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input placeholder="your@email.com" type="email" className="pl-10" {...field} />
+            </div>
+          </FormControl>
+          <p className="text-xs text-muted-foreground">Payment receipt will be sent to this email</p>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -414,6 +435,8 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
                     )}
                   />
 
+                  {renderEmailField(bookingForm, "booking")}
+
                   <FormField
                     control={bookingForm.control}
                     name="phone"
@@ -487,7 +510,7 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
                         <div className="space-y-1">
                           <FormLabel>Pay with PesaPal</FormLabel>
                           <p className="text-sm text-muted-foreground">
-                            Choose your preferred method below. You’ll complete payment securely on PesaPal.
+                            Choose your preferred method below. You'll complete payment securely on PesaPal.
                           </p>
                         </div>
                         <FormControl>
@@ -604,6 +627,8 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
                     )}
                   />
 
+                  {renderEmailField(groupForm, "group")}
+
                   <FormField
                     control={groupForm.control}
                     name="phone"
@@ -653,21 +678,21 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
                     name="paymentMethod"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Preferred Payment Method</FormLabel>
+                        <FormLabel>Pay with PesaPal</FormLabel>
                         <FormControl>
                           <RadioGroup onValueChange={field.onChange} value={field.value} className="flex gap-4">
                             <div className="flex items-center gap-2 border rounded-lg p-3 flex-1 cursor-pointer hover:border-primary/50 transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/5">
                               <RadioGroupItem value="mobile_money" id="group_mobile_money" />
                               <Label htmlFor="group_mobile_money" className="flex items-center gap-2 cursor-pointer">
                                 <Smartphone className="h-4 w-4 text-primary" />
-                                Mobile Money
+                                PesaPal Mobile Money
                               </Label>
                             </div>
                             <div className="flex items-center gap-2 border rounded-lg p-3 flex-1 cursor-pointer hover:border-primary/50 transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/5">
                               <RadioGroupItem value="visa" id="group_visa" />
                               <Label htmlFor="group_visa" className="flex items-center gap-2 cursor-pointer">
                                 <CreditCard className="h-4 w-4 text-primary" />
-                                Visa / Card
+                                PesaPal Visa / Card
                               </Label>
                             </div>
                           </RadioGroup>
@@ -737,8 +762,17 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
                   </div>
 
                   <Button type="submit" className="w-full gap-2" disabled={isSubmitting}>
-                    <Send className="h-4 w-4" />
-                    {isSubmitting ? "Sending..." : "Submit Group Request"}
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Processing...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="h-4 w-4" />
+                        Continue to PesaPal
+                      </>
+                    )}
                   </Button>
                 </form>
               </Form>
