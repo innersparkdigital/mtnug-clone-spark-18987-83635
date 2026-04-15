@@ -29,13 +29,12 @@ import {
 } from "@/components/ui/select";
 import { useAssessment, AssessmentResult, BookingActionType } from "@/contexts/AssessmentContext";
 import { Calendar, Clock, CheckCircle, Send, AlertCircle, Users, Phone, User, ArrowRight, CreditCard, Smartphone, Languages, Globe, Loader2, Mail } from "lucide-react";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
 import { trackBookingFormOpened, trackBookingSubmitted, trackWhatsAppClick } from "@/lib/analytics";
 import { trackGadsBookingConversion, trackGadsWhatsAppClick } from "@/lib/gadsTracking";
 import TherapistRecommendationCard from "./TherapistRecommendationCard";
 import { supabase } from "@/integrations/supabase/client";
+import PesaPalMethodSelector from "@/components/booking/PesaPalMethodSelector";
 
 interface BookingFormModalProps {
   isOpen: boolean;
@@ -360,7 +359,7 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-xl max-h-[92vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
             {formType === "consultation" ? (
@@ -420,22 +419,24 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
 
             {(formType === "book" || formType === "consultation") ? (
               <Form {...bookingForm}>
-                <form onSubmit={bookingForm.handleSubmit(handleSubmit)} className="space-y-4">
-                  <FormField
-                    control={bookingForm.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Full Name</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Your name" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                <form onSubmit={bookingForm.handleSubmit(handleSubmit)} className="space-y-3">
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <FormField
+                      control={bookingForm.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Full Name</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Your name" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                  {renderEmailField(bookingForm, "booking")}
+                    {renderEmailField(bookingForm, "booking")}
+                  </div>
 
                   <FormField
                     control={bookingForm.control}
@@ -449,6 +450,21 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
                             <Input placeholder="+256 XXX XXXXXX" className="pl-10" {...field} />
                           </div>
                         </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={bookingForm.control}
+                    name="paymentMethod"
+                    render={({ field }) => (
+                      <FormItem>
+                        <PesaPalMethodSelector
+                          value={field.value}
+                          onChange={field.onChange}
+                          idPrefix="booking"
+                        />
                         <FormMessage />
                       </FormItem>
                     )}
@@ -502,91 +518,41 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
                     />
                   </div>
 
-                  <FormField
-                    control={bookingForm.control}
-                    name="paymentMethod"
-                    render={({ field }) => (
-                      <FormItem>
-                        <div className="space-y-1">
-                          <FormLabel>Pay with PesaPal</FormLabel>
-                          <p className="text-sm text-muted-foreground">
-                            Choose your preferred method below. You'll complete payment securely on PesaPal.
-                          </p>
-                        </div>
-                        <FormControl>
-                          <RadioGroup onValueChange={field.onChange} value={field.value} className="flex gap-4">
-                            <div className="flex items-center gap-2 border rounded-lg p-3 flex-1 cursor-pointer hover:border-primary/50 transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/5">
-                              <RadioGroupItem value="mobile_money" id="booking_mobile_money" />
-                              <Label htmlFor="booking_mobile_money" className="flex items-center gap-2 cursor-pointer">
-                                <Smartphone className="h-4 w-4 text-primary" />
-                                PesaPal Mobile Money
-                              </Label>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <FormField
+                      control={bookingForm.control}
+                      name="preferredLanguage"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Preferred Language</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Languages className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                              <Input placeholder="e.g. English, Luganda" className="pl-10" {...field} />
                             </div>
-                            <div className="flex items-center gap-2 border rounded-lg p-3 flex-1 cursor-pointer hover:border-primary/50 transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/5">
-                              <RadioGroupItem value="visa" id="booking_visa" />
-                              <Label htmlFor="booking_visa" className="flex items-center gap-2 cursor-pointer">
-                                <CreditCard className="h-4 w-4 text-primary" />
-                                PesaPal Visa / Card
-                              </Label>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={bookingForm.control}
+                      name="country"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Country</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                              <Input placeholder="e.g. Uganda" className="pl-10" {...field} />
                             </div>
-                          </RadioGroup>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={bookingForm.control}
-                    name="preferredLanguage"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Preferred Language</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Languages className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                            <Input placeholder="e.g. English, Luganda, Swahili" className="pl-10" {...field} />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={bookingForm.control}
-                    name="country"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Country</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                            <Input placeholder="e.g. Uganda, Kenya, Nigeria" className="pl-10" {...field} />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={bookingForm.control}
-                    name="notes"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Additional Notes (Optional)</FormLabel>
-                        <FormControl>
-                          <Textarea 
-                            placeholder="Any specific concerns or preferences..." 
-                            className="resize-none" 
-                            {...field} 
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
 
                   <div className="bg-primary/5 rounded-lg p-3 flex items-center gap-2">
                     <Clock className="h-4 w-4 text-primary" />
@@ -608,26 +574,47 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
                       </>
                     )}
                   </Button>
-                </form>
-              </Form>
-            ) : (
-              <Form {...groupForm}>
-                <form onSubmit={groupForm.handleSubmit(handleSubmit)} className="space-y-4">
+
                   <FormField
-                    control={groupForm.control}
-                    name="name"
+                    control={bookingForm.control}
+                    name="notes"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Full Name</FormLabel>
+                        <FormLabel>Additional Notes (Optional)</FormLabel>
                         <FormControl>
-                          <Input placeholder="Your name" {...field} />
+                          <Textarea 
+                            placeholder="Any specific concerns or preferences..." 
+                            className="resize-none" 
+                            {...field} 
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
 
-                  {renderEmailField(groupForm, "group")}
+                </form>
+              </Form>
+            ) : (
+              <Form {...groupForm}>
+                <form onSubmit={groupForm.handleSubmit(handleSubmit)} className="space-y-3">
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <FormField
+                      control={groupForm.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Full Name</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Your name" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {renderEmailField(groupForm, "group")}
+                  </div>
 
                   <FormField
                     control={groupForm.control}
@@ -678,81 +665,51 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
                     name="paymentMethod"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Pay with PesaPal</FormLabel>
-                        <FormControl>
-                          <RadioGroup onValueChange={field.onChange} value={field.value} className="flex gap-4">
-                            <div className="flex items-center gap-2 border rounded-lg p-3 flex-1 cursor-pointer hover:border-primary/50 transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/5">
-                              <RadioGroupItem value="mobile_money" id="group_mobile_money" />
-                              <Label htmlFor="group_mobile_money" className="flex items-center gap-2 cursor-pointer">
-                                <Smartphone className="h-4 w-4 text-primary" />
-                                PesaPal Mobile Money
-                              </Label>
+                        <PesaPalMethodSelector
+                          value={field.value}
+                          onChange={field.onChange}
+                          idPrefix="group"
+                        />
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <FormField
+                      control={groupForm.control}
+                      name="preferredLanguage"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Preferred Language</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Languages className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                              <Input placeholder="e.g. English, Luganda" className="pl-10" {...field} />
                             </div>
-                            <div className="flex items-center gap-2 border rounded-lg p-3 flex-1 cursor-pointer hover:border-primary/50 transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/5">
-                              <RadioGroupItem value="visa" id="group_visa" />
-                              <Label htmlFor="group_visa" className="flex items-center gap-2 cursor-pointer">
-                                <CreditCard className="h-4 w-4 text-primary" />
-                                PesaPal Visa / Card
-                              </Label>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={groupForm.control}
+                      name="country"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Country</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                              <Input placeholder="e.g. Uganda" className="pl-10" {...field} />
                             </div>
-                          </RadioGroup>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={groupForm.control}
-                    name="preferredLanguage"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Preferred Language</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Languages className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                            <Input placeholder="e.g. English, Luganda, Swahili" className="pl-10" {...field} />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={groupForm.control}
-                    name="country"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Country</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                            <Input placeholder="e.g. Uganda, Kenya, Nigeria" className="pl-10" {...field} />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={groupForm.control}
-                    name="notes"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Additional Notes (Optional)</FormLabel>
-                        <FormControl>
-                          <Textarea 
-                            placeholder="Any specific concerns or preferences..." 
-                            className="resize-none" 
-                            {...field} 
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
 
                   <div className="bg-primary/5 rounded-lg p-3 flex items-center gap-2">
                     <Users className="h-4 w-4 text-primary" />
@@ -774,6 +731,25 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
                       </>
                     )}
                   </Button>
+
+                  <FormField
+                    control={groupForm.control}
+                    name="notes"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Additional Notes (Optional)</FormLabel>
+                        <FormControl>
+                          <Textarea 
+                            placeholder="Any specific concerns or preferences..." 
+                            className="resize-none" 
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
                 </form>
               </Form>
             )}
