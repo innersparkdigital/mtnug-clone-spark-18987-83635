@@ -420,21 +420,23 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
             {(formType === "book" || formType === "consultation") ? (
               <Form {...bookingForm}>
                 <form onSubmit={bookingForm.handleSubmit(handleSubmit)} className="space-y-3">
-                  <FormField
-                    control={bookingForm.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Full Name</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Your name" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <FormField
+                      control={bookingForm.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Full Name</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Your name" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                  {renderEmailField(bookingForm, "booking")}
+                    {renderEmailField(bookingForm, "booking")}
+                  </div>
 
                   <FormField
                     control={bookingForm.control}
@@ -448,6 +450,21 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
                             <Input placeholder="+256 XXX XXXXXX" className="pl-10" {...field} />
                           </div>
                         </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={bookingForm.control}
+                    name="paymentMethod"
+                    render={({ field }) => (
+                      <FormItem>
+                        <PesaPalMethodSelector
+                          value={field.value}
+                          onChange={field.onChange}
+                          idPrefix="booking"
+                        />
                         <FormMessage />
                       </FormItem>
                     )}
@@ -537,21 +554,6 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
                     />
                   </div>
 
-                  <FormField
-                    control={bookingForm.control}
-                    name="paymentMethod"
-                    render={({ field }) => (
-                      <FormItem>
-                        <PesaPalMethodSelector
-                          value={field.value}
-                          onChange={field.onChange}
-                          idPrefix="booking"
-                        />
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
                   <div className="bg-primary/5 rounded-lg p-3 flex items-center gap-2">
                     <Clock className="h-4 w-4 text-primary" />
                     <span className="text-sm text-foreground">
@@ -596,21 +598,23 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
             ) : (
               <Form {...groupForm}>
                 <form onSubmit={groupForm.handleSubmit(handleSubmit)} className="space-y-3">
-                  <FormField
-                    control={groupForm.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Full Name</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Your name" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <FormField
+                      control={groupForm.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Full Name</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Your name" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                  {renderEmailField(groupForm, "group")}
+                    {renderEmailField(groupForm, "group")}
+                  </div>
 
                   <FormField
                     control={groupForm.control}
@@ -656,6 +660,21 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
                     )}
                   />
 
+                  <FormField
+                    control={groupForm.control}
+                    name="paymentMethod"
+                    render={({ field }) => (
+                      <FormItem>
+                        <PesaPalMethodSelector
+                          value={field.value}
+                          onChange={field.onChange}
+                          idPrefix="group"
+                        />
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
                   <div className="grid gap-4 sm:grid-cols-2">
                     <FormField
                       control={groupForm.control}
@@ -691,21 +710,6 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
                       )}
                     />
                   </div>
-
-                  <FormField
-                    control={groupForm.control}
-                    name="paymentMethod"
-                    render={({ field }) => (
-                      <FormItem>
-                        <PesaPalMethodSelector
-                          value={field.value}
-                          onChange={field.onChange}
-                          idPrefix="group"
-                        />
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
 
                   <div className="bg-primary/5 rounded-lg p-3 flex items-center gap-2">
                     <Users className="h-4 w-4 text-primary" />
