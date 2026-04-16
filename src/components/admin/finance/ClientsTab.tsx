@@ -51,7 +51,7 @@ const ClientsTab = () => {
       await supabase.from('activity_logs').insert({ user_id: user?.id, action: 'Updated client', entity_type: 'client', entity_id: editing.id });
       toast({ title: 'Client updated' });
     } else {
-      await supabase.from('admin_clients').insert({ ...data, created_by: user?.id });
+      await supabase.from('admin_clients').insert([{ ...data, created_by: user?.id } as any]);
       await supabase.from('activity_logs').insert({ user_id: user?.id, action: 'Created client', entity_type: 'client' });
       toast({ title: 'Client created' });
     }
