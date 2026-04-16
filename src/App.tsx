@@ -96,6 +96,7 @@ import CourseCertificate from "./pages/CourseCertificate";
 import LearningDashboard from "./pages/LearningDashboard";
 import StudentDashboard from "./pages/StudentDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminFinance from "./pages/AdminFinance";
 import MindCheckAnalytics from "./pages/MindCheckAnalytics";
 import Auth from "./pages/Auth";
 import ResetPassword from "./pages/ResetPassword";
@@ -186,6 +187,7 @@ const App = () => (
             <Route path="/learning/dashboard" element={<LearningDashboard />} />
             <Route path="/learning/student-dashboard" element={<StudentDashboard />} />
             <Route path="/learning/admin-dashboard" element={<AdminDashboard />} />
+            <Route path="/admin/finance" element={<AdminFinance />} />
             <Route path="/learning/:courseId" element={<CourseDetail />} />
             <Route path="/learning/:courseId/certificate" element={<CourseCertificate />} />
             <Route path="/learning/:courseId/module/:moduleId/lesson/:lessonId" element={<LessonViewer />} />
