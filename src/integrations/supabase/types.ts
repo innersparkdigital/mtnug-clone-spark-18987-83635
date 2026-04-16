@@ -1076,7 +1076,12 @@ export type Database = {
       sync_form_emails_to_subscribers: { Args: never; Returns: Json }
     }
     Enums: {
-      app_role: "admin" | "moderator" | "user"
+      app_role:
+        | "admin"
+        | "moderator"
+        | "user"
+        | "finance_admin"
+        | "operations_admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1204,7 +1209,13 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "moderator", "user"],
+      app_role: [
+        "admin",
+        "moderator",
+        "user",
+        "finance_admin",
+        "operations_admin",
+      ],
     },
   },
 } as const
