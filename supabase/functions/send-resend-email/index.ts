@@ -133,6 +133,10 @@ function buildEmail(type: string, data: Record<string, any>): EmailContent | nul
       return accountDeletionConfirmation(data)
     case 'account-deletion-notify':
       return accountDeletionNotify(data)
+    case 'invoice':
+      return invoiceEmail(data)
+    case 'payment-receipt':
+      return paymentReceiptEmail(data)
     default:
       return null
   }
