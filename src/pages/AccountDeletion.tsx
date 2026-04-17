@@ -76,17 +76,33 @@ const AccountDeletion = () => {
       });
       if (error) throw error;
 
-      // Send confirmation email (non-blocking)
+      // Send confirmation to user
       supabase.functions
-        .invoke("send-transactional-email", {
+        .invoke("send-resend-email", {
           body: {
-            templateName: "account-deletion-request",
-            recipientEmail: values.email,
-            idempotencyKey: `acct-deletion-${id}`,
-            templateData: { name: values.full_name },
+            type: "account-deletion-confirmation",
+            to: values.email,
+            data: { name: values.full_name },
           },
         })
-        .catch(() => {});
+        .catch((e) => console.error("User confirmation failed:", e));
+
+      // Notify support team
+      supabase.functions
+        .invoke("send-resend-email", {
+          body: {
+            type: "account-deletion-notify",
+            to: "support@innersparkafrica.com",
+            data: {
+              name: values.full_name,
+              email: values.email,
+              phone: values.phone,
+              reason: values.reason,
+              comments: values.comments,
+            },
+          },
+        })
+        .catch((e) => console.error("Support notification failed:", e));
 
       setSubmitted(true);
       toast.success("Your deletion request has been submitted.");
