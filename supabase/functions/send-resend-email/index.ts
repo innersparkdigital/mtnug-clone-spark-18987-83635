@@ -57,10 +57,11 @@ Deno.serve(async (req) => {
         'X-Connection-Api-Key': RESEND_API_KEY,
       },
       body: JSON.stringify({
-        from: FROM_EMAIL,
+        from: FINANCE_TYPES.has(type) ? FINANCE_FROM_EMAIL : FROM_EMAIL,
         to: [to],
         subject: email.subject,
         html: email.html,
+        ...(email.replyTo ? { reply_to: email.replyTo } : {}),
       }),
     })
 
