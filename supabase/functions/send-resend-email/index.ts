@@ -92,6 +92,7 @@ Deno.serve(async (req) => {
 interface EmailContent {
   subject: string
   html: string
+  replyTo?: string
 }
 
 function buildEmail(type: string, data: Record<string, any>): EmailContent | null {
