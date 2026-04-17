@@ -123,6 +123,10 @@ function buildEmail(type: string, data: Record<string, any>): EmailContent | nul
       return professionalApplicationNotify(data)
     case 'newsletter-notify':
       return newsletterNotify(data)
+    case 'account-deletion-confirmation':
+      return accountDeletionConfirmation(data)
+    case 'account-deletion-notify':
+      return accountDeletionNotify(data)
     default:
       return null
   }
@@ -465,6 +469,46 @@ function newsletterNotify(d: Record<string, any>): EmailContent {
       'New Newsletter Subscriber',
       box(detail('📧 Email', d.email || 'N/A')) +
       p(`<em>Subscribed on ${new Date().toLocaleString('en-GB', { dateStyle: 'full', timeStyle: 'short', timeZone: 'Africa/Nairobi' })}</em>`)
+    ),
+  }
+}
+
+function accountDeletionConfirmation(d: Record<string, any>): EmailContent {
+  return {
+    subject: "We've received your account deletion request — InnerSpark Africa",
+    html: wrap(
+      `Hi ${d.name || 'there'},`,
+      p("We've received your account deletion request. Our team will verify and process it within <strong>7 days</strong>.") +
+      box(
+        `<p style="font-size:13px;font-weight:bold;color:${BRAND_COLOR};margin:0 0 8px;text-transform:uppercase;letter-spacing:0.5px;">What happens next</p>` +
+        `<p style="font-size:14px;color:#333;margin:4px 0;line-height:1.6;">• Your account will be permanently deleted</p>` +
+        `<p style="font-size:14px;color:#333;margin:4px 0;line-height:1.6;">• Personal data will be removed from our systems</p>` +
+        `<p style="font-size:14px;color:#333;margin:4px 0;line-height:1.6;">• Active sessions will be terminated</p>` +
+        `<p style="font-size:14px;color:#333;margin:4px 0;line-height:1.6;">• Some data may be retained where required by law</p>`
+      ) +
+      p(`If you didn't make this request or have questions, please contact us immediately at <a href="mailto:support@innersparkafrica.com" style="color:${BRAND_COLOR};">support@innersparkafrica.com</a>.`)
+    ),
+  }
+}
+
+function accountDeletionNotify(d: Record<string, any>): EmailContent {
+  return {
+    subject: `New Account Deletion Request: ${d.name || 'Unknown'}`,
+    html: wrap(
+      'New Account Deletion Request',
+      box(
+        detail('👤 Full Name', d.name || 'N/A') +
+        detail('📧 Email', d.email || 'N/A') +
+        detail('📱 Phone', d.phone || 'Not provided') +
+        detail('📋 Reason', d.reason || 'Not provided')
+      ) +
+      (d.comments ? `<div style="background:#f9f9f9;border-left:4px solid ${BRAND_COLOR};padding:16px 20px;margin:0 0 24px;border-radius:0 8px 8px 0;">
+        <p style="font-size:12px;color:#888;margin:0 0 8px;text-transform:uppercase;letter-spacing:0.5px;">Additional Comments</p>
+        <p style="font-size:14px;color:#333;margin:0;line-height:1.6;white-space:pre-wrap;">${(d.comments || '').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>
+      </div>` : '') +
+      p('⚠️ <strong>Action required:</strong> Verify and process this deletion request within 7 days per Google Play compliance.') +
+      btn(`Reply to ${d.name || 'User'}`, `mailto:${d.email || ''}`) +
+      p(`<em>Submitted on ${new Date().toLocaleString('en-GB', { dateStyle: 'full', timeStyle: 'short', timeZone: 'Africa/Nairobi' })}</em>`)
     ),
   }
 }
