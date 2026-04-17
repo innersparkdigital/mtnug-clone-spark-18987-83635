@@ -522,3 +522,115 @@ function accountDeletionNotify(d: Record<string, any>): EmailContent {
     ),
   }
 }
+
+// ============== FINANCE EMAILS ==============
+
+function invoiceEmail(d: Record<string, any>): EmailContent {
+  const clientName = d.clientName || d.name || 'Valued Client'
+  const invoiceNumber = d.invoiceNumber || 'INS-0000'
+  const totalAmount = d.totalAmount || '0'
+  const dueDate = d.dueDate || ''
+  const issueDate = d.issueDate || new Date().toLocaleDateString('en-UG')
+  const services = d.services || 'professional services'
+  const paymentInstructions = d.paymentInstructions || 'Payment via Mobile Money: +256 792 085 773 (MTN) or Bank Transfer'
+  const items: Array<{ description: string; quantity: number; unit_price: number; total: number }> = d.items || []
+  const subtotal = d.subtotal || totalAmount
+  const taxAmount = d.taxAmount || '0'
+  const taxRate = d.taxRate || 0
+  const balanceDue = d.balanceDue || totalAmount
+  const notes = d.notes || ''
+
+  const itemsRows = items.length
+    ? items.map(it => `
+        <tr>
+          <td style="padding:10px 8px;border-bottom:1px solid #eee;font-size:13px;color:#333;">${escapeHtml(it.description)}</td>
+          <td style="padding:10px 8px;border-bottom:1px solid #eee;font-size:13px;color:#333;text-align:center;">${it.quantity}</td>
+          <td style="padding:10px 8px;border-bottom:1px solid #eee;font-size:13px;color:#333;text-align:right;">UGX ${Number(it.unit_price).toLocaleString()}</td>
+          <td style="padding:10px 8px;border-bottom:1px solid #eee;font-size:13px;color:#333;text-align:right;font-weight:600;">UGX ${Number(it.total).toLocaleString()}</td>
+        </tr>`).join('')
+    : `<tr><td colspan="4" style="padding:10px 8px;border-bottom:1px solid #eee;font-size:13px;color:#666;text-align:center;">${escapeHtml(services)}</td></tr>`
+
+  const itemsTable = `
+    <table style="width:100%;border-collapse:collapse;margin:8px 0 16px;background:#fff;border:1px solid #e5e5e5;border-radius:6px;overflow:hidden;">
+      <thead>
+        <tr style="background:${BRAND_COLOR};color:#fff;">
+          <th style="padding:10px 8px;text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Description</th>
+          <th style="padding:10px 8px;text-align:center;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;width:60px;">Qty</th>
+          <th style="padding:10px 8px;text-align:right;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Unit Price</th>
+          <th style="padding:10px 8px;text-align:right;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Total</th>
+        </tr>
+      </thead>
+      <tbody>${itemsRows}</tbody>
+    </table>`
+
+  const totalsBlock = `
+    <table style="width:100%;margin:0 0 20px;">
+      <tr><td style="padding:4px 8px;text-align:right;font-size:13px;color:#666;">Subtotal</td><td style="padding:4px 8px;text-align:right;font-size:13px;color:#333;width:120px;">UGX ${Number(subtotal).toLocaleString()}</td></tr>
+      ${Number(taxAmount) > 0 ? `<tr><td style="padding:4px 8px;text-align:right;font-size:13px;color:#666;">Tax (${taxRate}%)</td><td style="padding:4px 8px;text-align:right;font-size:13px;color:#333;">UGX ${Number(taxAmount).toLocaleString()}</td></tr>` : ''}
+      <tr><td style="padding:8px;text-align:right;font-size:15px;color:#1a1a1a;font-weight:700;border-top:2px solid ${BRAND_COLOR};">TOTAL</td><td style="padding:8px;text-align:right;font-size:15px;color:${BRAND_COLOR};font-weight:700;border-top:2px solid ${BRAND_COLOR};">UGX ${Number(totalAmount).toLocaleString()}</td></tr>
+      ${Number(balanceDue) !== Number(totalAmount) ? `<tr><td style="padding:4px 8px;text-align:right;font-size:13px;color:#d97706;font-weight:600;">Balance Due</td><td style="padding:4px 8px;text-align:right;font-size:13px;color:#d97706;font-weight:600;">UGX ${Number(balanceDue).toLocaleString()}</td></tr>` : ''}
+    </table>`
+
+  return {
+    subject: `Invoice ${invoiceNumber} from InnerSpark Africa — UGX ${Number(totalAmount).toLocaleString()}`,
+    replyTo: 'finance@innersparkafrica.com',
+    html: wrap(
+      `Invoice ${invoiceNumber}`,
+      p(`Dear ${escapeHtml(clientName)},`) +
+      p(`Thank you for choosing <strong>InnerSpark Africa</strong>. Please find your invoice for <strong>${escapeHtml(services)}</strong> below. We truly appreciate your partnership.`) +
+      box(
+        detail('Invoice Number', invoiceNumber) +
+        detail('Issue Date', issueDate) +
+        detail('Due Date', dueDate)
+      ) +
+      itemsTable +
+      totalsBlock +
+      `<div style="background:#fff8e1;border-left:4px solid #d97706;padding:12px 16px;margin:0 0 20px;border-radius:4px;">
+        <p style="font-size:13px;color:#92400e;margin:0 0 4px;font-weight:600;">💳 Payment Instructions</p>
+        <p style="font-size:13px;color:#555;margin:0;line-height:1.6;">${escapeHtml(paymentInstructions).replace(/\n/g, '<br/>')}</p>
+      </div>` +
+      (notes ? p(`<strong>Notes:</strong> ${escapeHtml(notes)}`) : '') +
+      p(`If you have any questions about this invoice, please reply to this email or contact us on WhatsApp at <strong>+256 792 085 773</strong>. Once payment is received, we will send a receipt confirmation.`) +
+      p(`Best regards,<br/><strong>Finance Team</strong><br/>InnerSpark Africa`)
+    ),
+  }
+}
+
+function paymentReceiptEmail(d: Record<string, any>): EmailContent {
+  const clientName = d.clientName || d.name || 'Valued Client'
+  const invoiceNumber = d.invoiceNumber || 'INS-0000'
+  const amountPaid = d.amountPaid || '0'
+  const paymentDate = d.paymentDate || new Date().toLocaleDateString('en-UG')
+  const paymentMethod = d.paymentMethod || 'Mobile Money'
+  const reference = d.reference || ''
+  const balanceDue = d.balanceDue || '0'
+
+  return {
+    subject: `Payment Received — ${invoiceNumber} | InnerSpark Africa`,
+    replyTo: 'finance@innersparkafrica.com',
+    html: wrap(
+      `Payment Received ✓`,
+      p(`Dear ${escapeHtml(clientName)},`) +
+      p(`We have received your payment. Thank you for your prompt response and continued partnership with <strong>InnerSpark Africa</strong>.`) +
+      box(
+        detail('Invoice', invoiceNumber) +
+        detail('Amount Paid', `UGX ${Number(amountPaid).toLocaleString()}`) +
+        detail('Payment Date', paymentDate) +
+        detail('Payment Method', paymentMethod.replace('_', ' ')) +
+        (reference ? detail('Reference', reference) : '') +
+        (Number(balanceDue) > 0
+          ? detail('Outstanding Balance', `UGX ${Number(balanceDue).toLocaleString()}`)
+          : detail('Status', '✅ Fully Paid'))
+      ) +
+      p(`This email serves as your official receipt. Please keep it for your records.`) +
+      p(`Best regards,<br/><strong>Finance Team</strong><br/>InnerSpark Africa`)
+    ),
+  }
+}
+
+function escapeHtml(s: string): string {
+  if (!s) return ''
+  return String(s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#039;')
+}
