@@ -73,10 +73,36 @@ const InvoiceDetailModal = ({ invoiceId, clients, onClose }: InvoiceDetailModalP
   };
 
   const handleAddPayment = async (data: any) => {
-    await supabase.from('payments').insert([{ ...data, invoice_id: invoiceId, recorded_by: user?.id } as any]);
+    const { data: payment } = await supabase.from('payments').insert([{ ...data, invoice_id: invoiceId, recorded_by: user?.id } as any]).select().single();
     await supabase.from('activity_logs').insert([{ user_id: user?.id, action: 'Recorded payment', entity_type: 'payment', entity_id: invoiceId } as any]);
-    toast({ title: 'Payment recorded' });
+    toast({ title: 'Payment recorded', description: 'Income auto-logged. Sending receipt…' });
     setShowAddPayment(false);
+
+    // Auto-send receipt to client
+    if (client?.email && payment) {
+      try {
+        // refetch invoice to get updated balance after payment trigger
+        const { data: freshInv } = await supabase.from('invoices').select('balance_due').eq('id', invoiceId).single();
+        await supabase.functions.invoke('send-resend-email', {
+          body: {
+            type: 'payment-receipt',
+            to: client.email,
+            data: {
+              clientName: client.contact_person || client.company_name,
+              invoiceNumber: invoice.invoice_number,
+              amountPaid: data.amount,
+              paymentDate: new Date(data.payment_date).toLocaleDateString('en-UG'),
+              paymentMethod: data.payment_method,
+              reference: data.reference_number || '',
+              balanceDue: freshInv?.balance_due ?? 0,
+            },
+          },
+        });
+        toast({ title: 'Receipt sent', description: `Receipt emailed to ${client.email}` });
+      } catch (err) {
+        console.error('Receipt send failed:', err);
+      }
+    }
     fetchDetails();
   };
 
@@ -86,25 +112,41 @@ const InvoiceDetailModal = ({ invoiceId, clients, onClose }: InvoiceDetailModalP
       return;
     }
     try {
-      await supabase.functions.invoke('send-transactional-email', {
+      const services = items.length
+        ? items.map(it => it.description).join(', ')
+        : 'professional services';
+      await supabase.functions.invoke('send-resend-email', {
         body: {
-          templateName: 'invoice-email',
-          recipientEmail: client.email,
-          idempotencyKey: `invoice-${invoice.id}-${Date.now()}`,
-          templateData: {
-            name: client.contact_person || client.company_name,
+          type: 'invoice',
+          to: client.email,
+          data: {
+            clientName: client.contact_person || client.company_name,
             invoiceNumber: invoice.invoice_number,
-            totalAmount: Number(invoice.total_amount).toLocaleString(),
-            dueDate: new Date(invoice.due_date).toLocaleDateString(),
+            issueDate: new Date(invoice.issue_date).toLocaleDateString('en-UG'),
+            dueDate: new Date(invoice.due_date).toLocaleDateString('en-UG'),
+            services,
+            items: items.map(it => ({
+              description: it.description,
+              quantity: it.quantity,
+              unit_price: it.unit_price,
+              total: it.total,
+            })),
+            subtotal: invoice.subtotal,
+            taxAmount: invoice.tax_amount,
+            taxRate: invoice.tax_rate,
+            totalAmount: invoice.total_amount,
+            balanceDue: invoice.balance_due,
             paymentInstructions: invoice.payment_instructions,
+            notes: invoice.notes,
           },
         },
       });
       await supabase.from('invoices').update({ status: 'sent' }).eq('id', invoiceId);
-      await supabase.from('activity_logs').insert([{ user_id: user?.id, action: 'Sent invoice email', entity_type: 'invoice', entity_id: invoiceId } as any]);
-      toast({ title: 'Invoice sent via email' });
+      await supabase.from('activity_logs').insert([{ user_id: user?.id, action: 'Sent invoice email via Resend', entity_type: 'invoice', entity_id: invoiceId } as any]);
+      toast({ title: 'Invoice sent', description: `Sent from finance@innersparkafrica.com to ${client.email}` });
       fetchDetails();
-    } catch {
+    } catch (err) {
+      console.error(err);
       toast({ title: 'Email sending failed', variant: 'destructive' });
     }
   };
