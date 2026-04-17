@@ -5,6 +5,10 @@ const corsHeaders = {
 
 const GATEWAY_URL = 'https://connector-gateway.lovable.dev/resend'
 const FROM_EMAIL = 'InnerSpark Africa <info@innersparkafrica.com>'
+const FINANCE_FROM_EMAIL = 'InnerSpark Finance <finance@innersparkafrica.com>'
+
+// Map email types that should be sent from finance@
+const FINANCE_TYPES = new Set(['invoice', 'payment-receipt', 'invoice-reminder'])
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
