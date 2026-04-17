@@ -73,10 +73,36 @@ const InvoiceDetailModal = ({ invoiceId, clients, onClose }: InvoiceDetailModalP
   };
 
   const handleAddPayment = async (data: any) => {
-    await supabase.from('payments').insert([{ ...data, invoice_id: invoiceId, recorded_by: user?.id } as any]);
+    const { data: payment } = await supabase.from('payments').insert([{ ...data, invoice_id: invoiceId, recorded_by: user?.id } as any]).select().single();
     await supabase.from('activity_logs').insert([{ user_id: user?.id, action: 'Recorded payment', entity_type: 'payment', entity_id: invoiceId } as any]);
-    toast({ title: 'Payment recorded' });
+    toast({ title: 'Payment recorded', description: 'Income auto-logged. Sending receipt…' });
     setShowAddPayment(false);
+
+    // Auto-send receipt to client
+    if (client?.email && payment) {
+      try {
+        // refetch invoice to get updated balance after payment trigger
+        const { data: freshInv } = await supabase.from('invoices').select('balance_due').eq('id', invoiceId).single();
+        await supabase.functions.invoke('send-resend-email', {
+          body: {
+            type: 'payment-receipt',
+            to: client.email,
+            data: {
+              clientName: client.contact_person || client.company_name,
+              invoiceNumber: invoice.invoice_number,
+              amountPaid: data.amount,
+              paymentDate: new Date(data.payment_date).toLocaleDateString('en-UG'),
+              paymentMethod: data.payment_method,
+              reference: data.reference_number || '',
+              balanceDue: freshInv?.balance_due ?? 0,
+            },
+          },
+        });
+        toast({ title: 'Receipt sent', description: `Receipt emailed to ${client.email}` });
+      } catch (err) {
+        console.error('Receipt send failed:', err);
+      }
+    }
     fetchDetails();
   };
 
@@ -86,25 +112,41 @@ const InvoiceDetailModal = ({ invoiceId, clients, onClose }: InvoiceDetailModalP
       return;
     }
     try {
-      await supabase.functions.invoke('send-transactional-email', {
+      const services = items.length
+        ? items.map(it => it.description).join(', ')
+        : 'professional services';
+      await supabase.functions.invoke('send-resend-email', {
         body: {
-          templateName: 'invoice-email',
-          recipientEmail: client.email,
-          idempotencyKey: `invoice-${invoice.id}-${Date.now()}`,
-          templateData: {
-            name: client.contact_person || client.company_name,
+          type: 'invoice',
+          to: client.email,
+          data: {
+            clientName: client.contact_person || client.company_name,
             invoiceNumber: invoice.invoice_number,
-            totalAmount: Number(invoice.total_amount).toLocaleString(),
-            dueDate: new Date(invoice.due_date).toLocaleDateString(),
+            issueDate: new Date(invoice.issue_date).toLocaleDateString('en-UG'),
+            dueDate: new Date(invoice.due_date).toLocaleDateString('en-UG'),
+            services,
+            items: items.map(it => ({
+              description: it.description,
+              quantity: it.quantity,
+              unit_price: it.unit_price,
+              total: it.total,
+            })),
+            subtotal: invoice.subtotal,
+            taxAmount: invoice.tax_amount,
+            taxRate: invoice.tax_rate,
+            totalAmount: invoice.total_amount,
+            balanceDue: invoice.balance_due,
             paymentInstructions: invoice.payment_instructions,
+            notes: invoice.notes,
           },
         },
       });
       await supabase.from('invoices').update({ status: 'sent' }).eq('id', invoiceId);
-      await supabase.from('activity_logs').insert([{ user_id: user?.id, action: 'Sent invoice email', entity_type: 'invoice', entity_id: invoiceId } as any]);
-      toast({ title: 'Invoice sent via email' });
+      await supabase.from('activity_logs').insert([{ user_id: user?.id, action: 'Sent invoice email via Resend', entity_type: 'invoice', entity_id: invoiceId } as any]);
+      toast({ title: 'Invoice sent', description: `Sent from finance@innersparkafrica.com to ${client.email}` });
       fetchDetails();
-    } catch {
+    } catch (err) {
+      console.error(err);
       toast({ title: 'Email sending failed', variant: 'destructive' });
     }
   };
@@ -118,24 +160,81 @@ const InvoiceDetailModal = ({ invoiceId, clients, onClose }: InvoiceDetailModalP
   };
 
   const handleDownloadPDF = () => {
-    // Generate a simple printable invoice
-    const w = window.open('', '_blank');
+    const w = window.open('', '_blank', 'width=900,height=1100');
     if (!w) return;
-    const itemsHtml = items.map(it => `<tr><td>${it.description}</td><td>${it.quantity}</td><td>UGX ${Number(it.unit_price).toLocaleString()}</td><td>UGX ${Number(it.total).toLocaleString()}</td></tr>`).join('');
+    const LOGO = 'https://hnjpsvpudwwyzrrwzbpa.supabase.co/storage/v1/object/public/email-assets/logo.png';
+    const FOOTER = 'https://hnjpsvpudwwyzrrwzbpa.supabase.co/storage/v1/object/public/email-assets/footer-banner.png';
+    const itemsHtml = items.map(it => `<tr><td style="padding:10px;border-bottom:1px solid #eee">${it.description}</td><td style="padding:10px;border-bottom:1px solid #eee;text-align:center">${it.quantity}</td><td style="padding:10px;border-bottom:1px solid #eee;text-align:right">UGX ${Number(it.unit_price).toLocaleString()}</td><td style="padding:10px;border-bottom:1px solid #eee;text-align:right;font-weight:600">UGX ${Number(it.total).toLocaleString()}</td></tr>`).join('');
     w.document.write(`<!DOCTYPE html><html><head><title>Invoice ${invoice?.invoice_number}</title>
-      <style>body{font-family:Arial;padding:40px;color:#333}table{width:100%;border-collapse:collapse;margin:20px 0}th,td{border:1px solid #ddd;padding:8px;text-align:left}th{background:#f5f5f5}.header{display:flex;justify-content:space-between;align-items:center}.logo{font-size:24px;font-weight:bold;color:#5B6ABF}.totals{text-align:right;margin-top:20px}.footer{margin-top:40px;padding-top:20px;border-top:1px solid #ddd;font-size:12px;color:#666}</style>
-      </head><body>
-      <div class="header"><div class="logo">InnerSpark Africa</div><div><h2>INVOICE</h2><p>${invoice?.invoice_number}</p></div></div>
-      <p><strong>Bill To:</strong> ${client?.company_name || 'N/A'}<br/>${client?.contact_person || ''}<br/>${client?.email || ''}<br/>${client?.phone || ''}</p>
-      <p><strong>Date:</strong> ${new Date(invoice?.issue_date).toLocaleDateString()} | <strong>Due:</strong> ${new Date(invoice?.due_date).toLocaleDateString()}</p>
-      <table><thead><tr><th>Description</th><th>Qty</th><th>Unit Price</th><th>Total</th></tr></thead><tbody>${itemsHtml}</tbody></table>
-      <div class="totals"><p>Subtotal: UGX ${Number(invoice?.subtotal).toLocaleString()}</p>${Number(invoice?.tax_amount) > 0 ? `<p>Tax: UGX ${Number(invoice?.tax_amount).toLocaleString()}</p>` : ''}<p><strong>Total: UGX ${Number(invoice?.total_amount).toLocaleString()}</strong></p><p>Paid: UGX ${Number(invoice?.amount_paid).toLocaleString()}</p><p><strong>Balance Due: UGX ${Number(invoice?.balance_due).toLocaleString()}</strong></p></div>
-      <p><strong>Payment Instructions:</strong><br/>${invoice?.payment_instructions || ''}</p>
-      ${invoice?.notes ? `<p><strong>Notes:</strong> ${invoice.notes}</p>` : ''}
-      <div class="footer"><p>InnerSpark Africa | info@innersparkafrica.com | +256 792 085 773</p></div>
+      <style>
+        @page { size: A4; margin: 15mm }
+        @media print { .no-print { display:none } body { padding:0 } }
+        body{font-family:'Segoe UI',Arial,sans-serif;padding:30px;color:#333;max-width:800px;margin:0 auto;background:#fff}
+        .controls{position:fixed;top:10px;right:10px;background:#fff;padding:8px;border:1px solid #ddd;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,0.1);z-index:999}
+        .controls button{margin:0 4px;padding:6px 12px;background:#5B6ABF;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:13px}
+        .header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #5B6ABF;padding-bottom:20px;margin-bottom:24px}
+        .brand img{max-width:180px;height:auto;display:block;margin-bottom:8px}
+        .brand p{margin:2px 0;font-size:12px;color:#666}
+        .invmeta{text-align:right}
+        .invmeta h1{color:#5B6ABF;margin:0;font-size:32px;letter-spacing:2px}
+        .invmeta p{margin:4px 0;font-size:13px}
+        .billto{background:#f4f5fb;padding:16px;border-radius:6px;margin-bottom:20px}
+        .billto h3{margin:0 0 8px;font-size:12px;color:#5B6ABF;text-transform:uppercase;letter-spacing:1px}
+        table{width:100%;border-collapse:collapse;margin:16px 0;background:#fff}
+        thead tr{background:#5B6ABF;color:#fff}
+        thead th{padding:10px;text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:0.5px}
+        .totals{margin-left:auto;width:300px;margin-top:12px}
+        .totals tr td{padding:6px 12px;font-size:13px}
+        .totals tr.grand td{border-top:2px solid #5B6ABF;font-weight:700;font-size:16px;color:#5B6ABF;padding-top:10px}
+        .pay-box{background:#fff8e1;border-left:4px solid #d97706;padding:12px 16px;margin:20px 0;border-radius:4px}
+        .footer-banner{margin-top:40px}
+        .footer-banner img{width:100%;display:block;border-radius:6px}
+        .small{font-size:11px;color:#999;text-align:center;margin-top:12px}
+      </style></head><body>
+      <div class="controls no-print">
+        <button onclick="document.body.style.zoom=(parseFloat(document.body.style.zoom||1)+0.1)">Zoom +</button>
+        <button onclick="document.body.style.zoom=(parseFloat(document.body.style.zoom||1)-0.1)">Zoom −</button>
+        <button onclick="document.body.style.zoom=1">Reset</button>
+        <button onclick="window.print()">🖨 Print / Save PDF</button>
+      </div>
+      <div class="header">
+        <div class="brand">
+          <img src="${LOGO}" alt="InnerSpark Africa"/>
+          <p><strong>InnerSpark Africa</strong></p>
+          <p>Kampala, Uganda</p>
+          <p>finance@innersparkafrica.com</p>
+          <p>+256 792 085 773</p>
+        </div>
+        <div class="invmeta">
+          <h1>INVOICE</h1>
+          <p><strong>${invoice?.invoice_number}</strong></p>
+          <p>Issued: ${new Date(invoice?.issue_date).toLocaleDateString('en-UG')}</p>
+          <p>Due: ${new Date(invoice?.due_date).toLocaleDateString('en-UG')}</p>
+          <p>Status: <strong style="text-transform:uppercase">${invoice?.status?.replace('_',' ')}</strong></p>
+        </div>
+      </div>
+      <div class="billto">
+        <h3>Bill To</h3>
+        <p style="margin:0;font-weight:600">${client?.company_name || 'N/A'}</p>
+        <p style="margin:4px 0 0;font-size:13px;color:#555">${client?.contact_person || ''}${client?.email ? ' • ' + client.email : ''}${client?.phone ? ' • ' + client.phone : ''}</p>
+      </div>
+      <table><thead><tr><th>Description</th><th style="text-align:center;width:60px">Qty</th><th style="text-align:right">Unit Price</th><th style="text-align:right">Total</th></tr></thead><tbody>${itemsHtml || '<tr><td colspan="4" style="padding:20px;text-align:center;color:#999">No items</td></tr>'}</tbody></table>
+      <table class="totals">
+        <tr><td>Subtotal</td><td style="text-align:right">UGX ${Number(invoice?.subtotal).toLocaleString()}</td></tr>
+        ${Number(invoice?.tax_amount) > 0 ? `<tr><td>Tax (${invoice?.tax_rate}%)</td><td style="text-align:right">UGX ${Number(invoice?.tax_amount).toLocaleString()}</td></tr>` : ''}
+        <tr class="grand"><td>TOTAL</td><td style="text-align:right">UGX ${Number(invoice?.total_amount).toLocaleString()}</td></tr>
+        <tr><td>Paid</td><td style="text-align:right">UGX ${Number(invoice?.amount_paid).toLocaleString()}</td></tr>
+        <tr><td style="color:#d97706;font-weight:700">Balance Due</td><td style="text-align:right;color:#d97706;font-weight:700">UGX ${Number(invoice?.balance_due).toLocaleString()}</td></tr>
+      </table>
+      <div class="pay-box">
+        <p style="margin:0 0 4px;font-weight:600;color:#92400e">💳 Payment Instructions</p>
+        <p style="margin:0;font-size:13px;line-height:1.5">${(invoice?.payment_instructions || '').replace(/\n/g,'<br/>')}</p>
+      </div>
+      ${invoice?.notes ? `<p style="font-size:13px;color:#555"><strong>Notes:</strong> ${invoice.notes}</p>` : ''}
+      <div class="footer-banner"><img src="${FOOTER}" alt="InnerSpark Africa"/></div>
+      <p class="small">Thank you for choosing InnerSpark Africa. www.innersparkafrica.com</p>
       </body></html>`);
     w.document.close();
-    w.print();
   };
 
   if (!invoice) return null;

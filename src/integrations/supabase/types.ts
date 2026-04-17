@@ -591,6 +591,7 @@ export type Database = {
           amount: number
           category: string
           created_at: string
+          custom_category: string | null
           description: string
           expense_date: string
           id: string
@@ -601,6 +602,7 @@ export type Database = {
           amount: number
           category?: string
           created_at?: string
+          custom_category?: string | null
           description: string
           expense_date?: string
           id?: string
@@ -611,6 +613,7 @@ export type Database = {
           amount?: number
           category?: string
           created_at?: string
+          custom_category?: string | null
           description?: string
           expense_date?: string
           id?: string
@@ -618,6 +621,75 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      income_entries: {
+        Row: {
+          amount: number
+          client_name: string | null
+          created_at: string
+          custom_service: string | null
+          id: string
+          income_date: string
+          invoice_id: string | null
+          notes: string | null
+          payment_id: string | null
+          payment_method: string | null
+          recorded_by: string | null
+          reference: string | null
+          service_type: string
+          source: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          client_name?: string | null
+          created_at?: string
+          custom_service?: string | null
+          id?: string
+          income_date?: string
+          invoice_id?: string | null
+          notes?: string | null
+          payment_id?: string | null
+          payment_method?: string | null
+          recorded_by?: string | null
+          reference?: string | null
+          service_type?: string
+          source?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          client_name?: string | null
+          created_at?: string
+          custom_service?: string | null
+          id?: string
+          income_date?: string
+          invoice_id?: string | null
+          notes?: string | null
+          payment_id?: string | null
+          payment_method?: string | null
+          recorded_by?: string | null
+          reference?: string | null
+          service_type?: string
+          source?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "income_entries_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "income_entries_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: false
+            referencedRelation: "payments"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       invoice_items: {
         Row: {
