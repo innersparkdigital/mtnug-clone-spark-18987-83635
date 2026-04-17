@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { Helmet } from "react-helmet-async";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -98,16 +97,32 @@ const AccountDeletion = () => {
     }
   };
 
+  useEffect(() => {
+    document.title = "Account Deletion Request | Innerspark Africa";
+    const setMeta = (name: string, content: string) => {
+      let el = document.querySelector(`meta[name="${name}"]`) as HTMLMetaElement | null;
+      if (!el) {
+        el = document.createElement("meta");
+        el.setAttribute("name", name);
+        document.head.appendChild(el);
+      }
+      el.setAttribute("content", content);
+    };
+    setMeta(
+      "description",
+      "Request permanent deletion of your Innerspark Africa account and personal data. Processed within 7 days."
+    );
+    let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+    if (!canonical) {
+      canonical = document.createElement("link");
+      canonical.setAttribute("rel", "canonical");
+      document.head.appendChild(canonical);
+    }
+    canonical.setAttribute("href", "https://www.innersparkafrica.com/account-deletion");
+  }, []);
+
   return (
     <div className="min-h-screen bg-background">
-      <Helmet>
-        <title>Account Deletion Request | Innerspark Africa</title>
-        <meta
-          name="description"
-          content="Request permanent deletion of your Innerspark Africa account and personal data. Submitted requests are processed within 7 days."
-        />
-        <link rel="canonical" href="https://www.innersparkafrica.com/account-deletion" />
-      </Helmet>
       <Header />
       <main className="container mx-auto px-4 py-12 md:py-16 max-w-3xl">
         <header className="mb-8">
