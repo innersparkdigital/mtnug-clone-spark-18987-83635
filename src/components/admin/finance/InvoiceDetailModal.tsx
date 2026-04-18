@@ -203,7 +203,7 @@ const InvoiceDetailModal = ({ invoiceId, clients, onClose }: InvoiceDetailModalP
           <p><strong>InnerSpark Africa</strong></p>
           <p>Kampala, Uganda</p>
           <p>finance@innersparkafrica.com</p>
-          <p>+256 792 085 773</p>
+          <p>MTN: 0740 616 404</p>
         </div>
         <div class="invmeta">
           <h1>INVOICE</h1>

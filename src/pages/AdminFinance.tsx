@@ -6,7 +6,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Loader2, FileText, DollarSign, Users, BarChart3, Activity, Settings, TrendingUp, PieChart } from 'lucide-react';
+import { Loader2, FileText, DollarSign, Users, BarChart3, Activity, Settings, TrendingUp, PieChart, Receipt } from 'lucide-react';
 import InvoicesTab from '@/components/admin/finance/InvoicesTab';
 import FinanceDashboardTab from '@/components/admin/finance/FinanceDashboardTab';
 import ClientsTab from '@/components/admin/finance/ClientsTab';
@@ -15,6 +15,7 @@ import IncomeTab from '@/components/admin/finance/IncomeTab';
 import ReportsTab from '@/components/admin/finance/ReportsTab';
 import ActivityLogsTab from '@/components/admin/finance/ActivityLogsTab';
 import AccountsTab from '@/components/admin/finance/AccountsTab';
+import TaxCodesTab from '@/components/admin/finance/TaxCodesTab';
 
 const AdminFinance = () => {
   const navigate = useNavigate();
@@ -87,6 +88,10 @@ const AdminFinance = () => {
               <Users className="h-4 w-4" />
               Clients
             </TabsTrigger>
+            <TabsTrigger value="tax" className="gap-2">
+              <Receipt className="h-4 w-4" />
+              Tax Codes
+            </TabsTrigger>
             <TabsTrigger value="activity" className="gap-2">
               <Activity className="h-4 w-4" />
               Activity Log
@@ -116,6 +121,9 @@ const AdminFinance = () => {
           </TabsContent>
           <TabsContent value="clients">
             <ClientsTab />
+          </TabsContent>
+          <TabsContent value="tax">
+            <TaxCodesTab />
           </TabsContent>
           <TabsContent value="activity">
             <ActivityLogsTab />

@@ -532,7 +532,7 @@ function invoiceEmail(d: Record<string, any>): EmailContent {
   const dueDate = d.dueDate || ''
   const issueDate = d.issueDate || new Date().toLocaleDateString('en-UG')
   const services = d.services || 'professional services'
-  const paymentInstructions = d.paymentInstructions || 'Payment via Mobile Money: +256 792 085 773 (MTN) or Bank Transfer'
+  const paymentInstructions = d.paymentInstructions || 'Mobile Money (MTN): 0740 616 404 | Bank Transfer: 9030016556032'
   const items: Array<{ description: string; quantity: number; unit_price: number; total: number }> = d.items || []
   const subtotal = d.subtotal || totalAmount
   const taxAmount = d.taxAmount || '0'

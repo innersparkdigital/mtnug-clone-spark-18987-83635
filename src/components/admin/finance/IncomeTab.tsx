@@ -6,12 +6,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { toast } from '@/hooks/use-toast';
-import { Plus, Search, Trash2, Download, FileSpreadsheet } from 'lucide-react';
+import { Plus, Search, Trash2, Download, FileSpreadsheet, TrendingUp } from 'lucide-react';
 import { SERVICE_LABELS, exportCSV, exportXLSX, formatUGX } from '@/lib/financeExports';
+import { useTaxCodes } from '@/hooks/useTaxCodes';
 
 interface Income {
   id: string;
@@ -19,17 +21,22 @@ interface Income {
   service_type: string;
   custom_service: string | null;
   amount: number;
+  linked_expense_total: number;
+  net_amount: number;
   income_date: string;
   client_name: string | null;
   reference: string | null;
   payment_method: string;
   notes: string | null;
   invoice_id: string | null;
+  tax_code_id: string | null;
+  is_taxable: boolean;
   created_at: string;
 }
 
 const IncomeTab = () => {
   const { user } = useAuth();
+  const { taxCodes } = useTaxCodes();
   const [income, setIncome] = useState<Income[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -45,6 +52,14 @@ const IncomeTab = () => {
 
   useEffect(() => { fetchIncome(); }, [fetchIncome]);
 
+  useEffect(() => {
+    const ch = supabase.channel('income-rt')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'income_entries' }, fetchIncome)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'expenses' }, fetchIncome)
+      .subscribe();
+    return () => { supabase.removeChannel(ch); };
+  }, [fetchIncome]);
+
   const filtered = income.filter(e => {
     const matchSearch =
       (e.client_name || '').toLowerCase().includes(search.toLowerCase()) ||
@@ -54,15 +69,14 @@ const IncomeTab = () => {
     return matchSearch && matchSvc;
   });
 
-  const totalAmount = filtered.reduce((sum, e) => sum + Number(e.amount), 0);
-  const byService = filtered.reduce<Record<string, number>>((acc, e) => {
-    acc[e.service_type] = (acc[e.service_type] || 0) + Number(e.amount);
-    return acc;
-  }, {});
+  const totalGross = filtered.reduce((sum, e) => sum + Number(e.amount), 0);
+  const totalLinked = filtered.reduce((sum, e) => sum + Number(e.linked_expense_total || 0), 0);
+  const totalNet = filtered.reduce((sum, e) => sum + Number(e.net_amount || e.amount), 0);
 
   const handleCreate = async (data: any) => {
     const { error } = await supabase.from('income_entries').insert({
       ...data,
+      tax_code_id: data.tax_code_id || null,
       source: 'manual',
       recorded_by: user?.id,
     });
@@ -80,40 +94,47 @@ const IncomeTab = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Delete this income record? Auto-recorded payments cannot be undone here.')) return;
+    if (!confirm('Delete this income record? Linked expenses will be unlinked.')) return;
     await supabase.from('income_entries').delete().eq('id', id);
     toast({ title: 'Income deleted' });
     fetchIncome();
   };
 
-  const exportRows = filtered.map(e => ({
-    Date: new Date(e.income_date).toLocaleDateString(),
-    Service: SERVICE_LABELS[e.service_type] || e.service_type,
-    'Custom Service': e.custom_service || '',
-    Source: e.source.replace('_', ' '),
-    Client: e.client_name || '',
-    Reference: e.reference || '',
-    'Payment Method': e.payment_method.replace('_', ' '),
-    'Amount (UGX)': Number(e.amount),
-    Notes: e.notes || '',
-  }));
+  const exportRows = filtered.map(e => {
+    const tax = e.tax_code_id ? taxCodes.find(t => t.id === e.tax_code_id) : null;
+    return {
+      Date: new Date(e.income_date).toLocaleDateString(),
+      Service: e.service_type === 'other' && e.custom_service ? e.custom_service : (SERVICE_LABELS[e.service_type] || e.service_type),
+      Source: e.source.replace('_', ' '),
+      Client: e.client_name || '',
+      Reference: e.reference || '',
+      'Payment Method': e.payment_method.replace('_', ' '),
+      'Gross (UGX)': Number(e.amount),
+      'Linked Expenses (UGX)': Number(e.linked_expense_total || 0),
+      'Net (UGX)': Number(e.net_amount || e.amount),
+      'Tax Code': tax ? tax.name : '',
+      Taxable: e.is_taxable ? 'Yes' : 'No',
+      Notes: e.notes || '',
+    };
+  });
 
   return (
     <div className="space-y-4">
-      {/* Service breakdown chips */}
-      {Object.keys(byService).length > 0 && (
-        <Card className="p-4">
-          <p className="text-sm text-muted-foreground mb-2 font-medium">Income by Service ({filtered.length} entries)</p>
-          <div className="flex flex-wrap gap-2">
-            {Object.entries(byService).map(([svc, amt]) => (
-              <div key={svc} className="bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-md text-xs">
-                <span className="text-muted-foreground">{SERVICE_LABELS[svc] || svc}: </span>
-                <span className="font-bold text-emerald-700">{formatUGX(amt)}</span>
-              </div>
-            ))}
-          </div>
+      {/* Summary chips */}
+      <div className="grid grid-cols-3 gap-3">
+        <Card className="p-3 bg-emerald-500/5 border-emerald-500/20">
+          <p className="text-xs text-muted-foreground">Gross Income</p>
+          <p className="text-lg font-bold text-emerald-700">{formatUGX(totalGross)}</p>
         </Card>
-      )}
+        <Card className="p-3 bg-red-500/5 border-red-500/20">
+          <p className="text-xs text-muted-foreground">Linked Expenses</p>
+          <p className="text-lg font-bold text-red-700">−{formatUGX(totalLinked)}</p>
+        </Card>
+        <Card className="p-3 bg-primary/5 border-primary/20">
+          <p className="text-xs text-muted-foreground">Net Income</p>
+          <p className="text-lg font-bold text-primary">{formatUGX(totalNet)}</p>
+        </Card>
+      </div>
 
       <div className="flex flex-col sm:flex-row gap-3 justify-between">
         <div className="flex gap-2 flex-1">
@@ -132,7 +153,6 @@ const IncomeTab = () => {
           </Select>
         </div>
         <div className="flex gap-2 items-center flex-wrap">
-          <span className="text-sm text-muted-foreground">Total: <strong className="text-emerald-600">{formatUGX(totalAmount)}</strong></span>
           <Button size="sm" variant="outline" className="gap-1" onClick={() => exportCSV(exportRows, `income-${new Date().toISOString().slice(0,10)}`)}>
             <Download className="h-3.5 w-3.5" /> CSV
           </Button>
@@ -145,7 +165,7 @@ const IncomeTab = () => {
             </DialogTrigger>
             <DialogContent>
               <DialogHeader><DialogTitle>Record Income</DialogTitle></DialogHeader>
-              <IncomeForm onSubmit={handleCreate} />
+              <IncomeForm onSubmit={handleCreate} taxCodes={taxCodes} />
             </DialogContent>
           </Dialog>
         </div>
@@ -164,14 +184,15 @@ const IncomeTab = () => {
                 <TableHead>Source</TableHead>
                 <TableHead>Client</TableHead>
                 <TableHead>Reference</TableHead>
-                <TableHead>Method</TableHead>
-                <TableHead className="text-right">Amount</TableHead>
+                <TableHead className="text-right">Gross</TableHead>
+                <TableHead className="text-right">Linked Exp.</TableHead>
+                <TableHead className="text-right">Net</TableHead>
                 <TableHead></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filtered.length === 0 ? (
-                <TableRow><TableCell colSpan={9} className="text-center text-muted-foreground py-8">No income records found</TableCell></TableRow>
+                <TableRow><TableCell colSpan={10} className="text-center text-muted-foreground py-8">No income records found</TableCell></TableRow>
               ) : filtered.map((e, i) => (
                 <TableRow key={e.id}>
                   <TableCell>{i + 1}</TableCell>
@@ -184,8 +205,11 @@ const IncomeTab = () => {
                   <TableCell className="text-xs capitalize">{e.source.replace('_', ' ')}</TableCell>
                   <TableCell className="text-xs">{e.client_name || '—'}</TableCell>
                   <TableCell className="text-xs">{e.reference || '—'}</TableCell>
-                  <TableCell className="text-xs capitalize">{e.payment_method.replace('_', ' ')}</TableCell>
-                  <TableCell className="text-right font-semibold text-emerald-700">{formatUGX(Number(e.amount))}</TableCell>
+                  <TableCell className="text-right text-sm">{formatUGX(Number(e.amount))}</TableCell>
+                  <TableCell className="text-right text-sm text-red-600">
+                    {Number(e.linked_expense_total) > 0 ? `−${formatUGX(Number(e.linked_expense_total))}` : '—'}
+                  </TableCell>
+                  <TableCell className="text-right font-semibold text-primary">{formatUGX(Number(e.net_amount || e.amount))}</TableCell>
                   <TableCell>
                     <Button size="sm" variant="ghost" className="text-destructive h-7 w-7 p-0" onClick={() => handleDelete(e.id)}>
                       <Trash2 className="h-3.5 w-3.5" />
@@ -197,11 +221,15 @@ const IncomeTab = () => {
           </Table>
         </Card>
       )}
+
+      <p className="text-xs text-muted-foreground flex items-center gap-1">
+        <TrendingUp className="h-3 w-3" /> Tip: Link expenses (e.g. facilitator fees) to specific income from the Expenses tab to see real per-service profit.
+      </p>
     </div>
   );
 };
 
-const IncomeForm = ({ onSubmit }: { onSubmit: (data: any) => void }) => {
+const IncomeForm = ({ onSubmit, taxCodes }: { onSubmit: (data: any) => void; taxCodes: any[] }) => {
   const [form, setForm] = useState({
     service_type: 'therapy',
     custom_service: '',
@@ -211,6 +239,8 @@ const IncomeForm = ({ onSubmit }: { onSubmit: (data: any) => void }) => {
     reference: '',
     payment_method: 'mobile_money',
     notes: '',
+    tax_code_id: '',
+    is_taxable: true,
   });
 
   return (
@@ -265,6 +295,22 @@ const IncomeForm = ({ onSubmit }: { onSubmit: (data: any) => void }) => {
         <div>
           <Label>Reference</Label>
           <Input value={form.reference} onChange={e => setForm(f => ({ ...f, reference: e.target.value }))} placeholder="Receipt no, txn id" />
+        </div>
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <Label>Tax Code</Label>
+          <Select value={form.tax_code_id || 'none'} onValueChange={v => setForm(f => ({ ...f, tax_code_id: v === 'none' ? '' : v }))}>
+            <SelectTrigger><SelectValue placeholder="None" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="none">No tax code</SelectItem>
+              {taxCodes.map(t => <SelectItem key={t.id} value={t.id}>{t.name} ({t.code})</SelectItem>)}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex items-center justify-between border rounded-md px-3">
+          <Label htmlFor="taxable">Taxable</Label>
+          <Switch id="taxable" checked={form.is_taxable} onCheckedChange={v => setForm(f => ({ ...f, is_taxable: v }))} />
         </div>
       </div>
       <div>
