@@ -6,11 +6,13 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Loader2, FileText, DollarSign, Users, BarChart3, Activity, Settings } from 'lucide-react';
+import { Loader2, FileText, DollarSign, Users, BarChart3, Activity, Settings, TrendingUp, PieChart } from 'lucide-react';
 import InvoicesTab from '@/components/admin/finance/InvoicesTab';
 import FinanceDashboardTab from '@/components/admin/finance/FinanceDashboardTab';
 import ClientsTab from '@/components/admin/finance/ClientsTab';
 import ExpensesTab from '@/components/admin/finance/ExpensesTab';
+import IncomeTab from '@/components/admin/finance/IncomeTab';
+import ReportsTab from '@/components/admin/finance/ReportsTab';
 import ActivityLogsTab from '@/components/admin/finance/ActivityLogsTab';
 import AccountsTab from '@/components/admin/finance/AccountsTab';
 
@@ -69,13 +71,21 @@ const AdminFinance = () => {
               <FileText className="h-4 w-4" />
               Invoices
             </TabsTrigger>
-            <TabsTrigger value="clients" className="gap-2">
-              <Users className="h-4 w-4" />
-              Clients
+            <TabsTrigger value="income" className="gap-2">
+              <TrendingUp className="h-4 w-4" />
+              Income
             </TabsTrigger>
             <TabsTrigger value="expenses" className="gap-2">
               <DollarSign className="h-4 w-4" />
               Expenses
+            </TabsTrigger>
+            <TabsTrigger value="reports" className="gap-2">
+              <PieChart className="h-4 w-4" />
+              Reports
+            </TabsTrigger>
+            <TabsTrigger value="clients" className="gap-2">
+              <Users className="h-4 w-4" />
+              Clients
             </TabsTrigger>
             <TabsTrigger value="activity" className="gap-2">
               <Activity className="h-4 w-4" />
@@ -95,11 +105,17 @@ const AdminFinance = () => {
           <TabsContent value="invoices">
             <InvoicesTab />
           </TabsContent>
-          <TabsContent value="clients">
-            <ClientsTab />
+          <TabsContent value="income">
+            <IncomeTab />
           </TabsContent>
           <TabsContent value="expenses">
             <ExpensesTab />
+          </TabsContent>
+          <TabsContent value="reports">
+            <ReportsTab />
+          </TabsContent>
+          <TabsContent value="clients">
+            <ClientsTab />
           </TabsContent>
           <TabsContent value="activity">
             <ActivityLogsTab />
