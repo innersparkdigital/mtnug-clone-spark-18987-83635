@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Download, FileSpreadsheet, TrendingUp, TrendingDown, DollarSign } from 'lucide-react';
+import { Download, FileSpreadsheet, TrendingUp, TrendingDown, DollarSign, RefreshCw } from 'lucide-react';
 import { Period, SERVICE_LABELS, filterByPeriod, exportCSV, exportXLSX, formatUGX } from '@/lib/financeExports';
 
 const ReportsTab = () => {
@@ -13,19 +13,35 @@ const ReportsTab = () => {
   const [income, setIncome] = useState<any[]>([]);
   const [expenses, setExpenses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
 
-  const fetchAll = useCallback(async () => {
-    setLoading(true);
+  const fetchAll = useCallback(async (showLoader = true) => {
+    if (showLoader) setLoading(true);
     const [incRes, expRes] = await Promise.all([
       supabase.from('income_entries').select('*').order('income_date', { ascending: false }),
       supabase.from('expenses').select('*').order('expense_date', { ascending: false }),
     ]);
     setIncome(incRes.data || []);
     setExpenses(expRes.data || []);
+    setLastUpdated(new Date());
     setLoading(false);
   }, []);
 
   useEffect(() => { fetchAll(); }, [fetchAll]);
+
+  // Real-time sync: refetch on any change to income, expenses, or payments (which auto-creates income)
+  useEffect(() => {
+    const channel = supabase
+      .channel('reports-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'income_entries' }, () => fetchAll(false))
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'expenses' }, () => fetchAll(false))
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'payments' }, () => fetchAll(false))
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'invoices' }, () => fetchAll(false))
+      .subscribe();
+    // Polling fallback every 30s in case realtime isn't enabled on a table
+    const interval = setInterval(() => fetchAll(false), 30000);
+    return () => { supabase.removeChannel(channel); clearInterval(interval); };
+  }, [fetchAll]);
 
   const incomeFiltered = useMemo(
     () => filterByPeriod(income.map(i => ({ ...i, date: i.income_date })), period),
