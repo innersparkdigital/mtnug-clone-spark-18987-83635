@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { DollarSign, FileText, Clock, TrendingUp, AlertTriangle } from 'lucide-react';
+import { DollarSign, FileText, Clock, TrendingUp } from 'lucide-react';
 
 const FinanceDashboardTab = () => {
   const [stats, setStats] = useState({
@@ -13,40 +13,52 @@ const FinanceDashboardTab = () => {
   });
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const [invoiceRes, expenseRes, paymentRes] = await Promise.all([
-          supabase.from('invoices').select('*'),
-          supabase.from('expenses').select('*'),
-          supabase.from('payments').select('*'),
-        ]);
+  const fetchStats = useCallback(async () => {
+    try {
+      const [invoiceRes, expenseRes, incomeRes] = await Promise.all([
+        supabase.from('invoices').select('*').order('created_at', { ascending: false }),
+        supabase.from('expenses').select('*'),
+        supabase.from('income_entries').select('*'),
+      ]);
 
-        const invoices = (invoiceRes.data || []) as any[];
-        const expenses = (expenseRes.data || []) as any[];
-        const payments = (paymentRes.data || []) as any[];
+      const invoices = (invoiceRes.data || []) as any[];
+      const expenses = (expenseRes.data || []) as any[];
+      const incomes = (incomeRes.data || []) as any[];
 
-        const totalRevenue = payments.reduce((sum: number, p: any) => sum + Number(p.amount), 0);
-        const totalExpenses = expenses.reduce((sum: number, e: any) => sum + Number(e.amount), 0);
-        const pendingPayments = invoices
-          .filter((i: any) => ['sent', 'overdue', 'partially_paid'].includes(i.status))
-          .reduce((sum: number, i: any) => sum + Number(i.balance_due), 0);
+      const totalRevenue = incomes.reduce((sum, i) => sum + Number(i.amount), 0);
+      const totalExpenses = expenses.reduce((sum, e) => sum + Number(e.amount), 0);
+      const pendingPayments = invoices
+        .filter((i) => ['sent', 'overdue', 'partially_paid'].includes(i.status))
+        .reduce((sum, i) => sum + Number(i.balance_due), 0);
 
-        setStats({
-          totalInvoices: invoices.length,
-          totalRevenue,
-          pendingPayments,
-          totalExpenses,
-          recentInvoices: invoices.slice(0, 5),
-        });
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchStats();
+      setStats({
+        totalInvoices: invoices.length,
+        totalRevenue,
+        pendingPayments,
+        totalExpenses,
+        recentInvoices: invoices.slice(0, 5),
+      });
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => { fetchStats(); }, [fetchStats]);
+
+  // Real-time sync across all financial tables
+  useEffect(() => {
+    const channel = supabase
+      .channel('dashboard-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'invoices' }, () => fetchStats())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'expenses' }, () => fetchStats())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'income_entries' }, () => fetchStats())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'payments' }, () => fetchStats())
+      .subscribe();
+    const interval = setInterval(fetchStats, 30000);
+    return () => { supabase.removeChannel(channel); clearInterval(interval); };
+  }, [fetchStats]);
 
   const formatUGX = (amount: number) => `UGX ${amount.toLocaleString()}`;
 
