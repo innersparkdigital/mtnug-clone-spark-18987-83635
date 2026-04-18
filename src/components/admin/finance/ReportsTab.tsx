@@ -130,7 +130,13 @@ const ReportsTab = () => {
               </SelectContent>
             </Select>
           </div>
-          <div className="flex gap-2 flex-wrap">
+          <div className="flex gap-2 flex-wrap items-center">
+            <span className="text-xs text-muted-foreground hidden sm:inline">
+              Updated {lastUpdated.toLocaleTimeString()}
+            </span>
+            <Button variant="ghost" size="sm" className="gap-1" onClick={() => fetchAll(false)} title="Refresh now">
+              <RefreshCw className="h-3.5 w-3.5" /> Refresh
+            </Button>
             <Button variant="outline" size="sm" className="gap-1" onClick={() => handleExportCSV('income')}>
               <Download className="h-3.5 w-3.5" /> Income CSV
             </Button>
