@@ -595,7 +595,10 @@ export type Database = {
           description: string
           expense_date: string
           id: string
+          is_tax_deductible: boolean
+          linked_income_id: string | null
           recorded_by: string | null
+          tax_code_id: string | null
           updated_at: string
         }
         Insert: {
@@ -606,7 +609,10 @@ export type Database = {
           description: string
           expense_date?: string
           id?: string
+          is_tax_deductible?: boolean
+          linked_income_id?: string | null
           recorded_by?: string | null
+          tax_code_id?: string | null
           updated_at?: string
         }
         Update: {
@@ -617,8 +623,71 @@ export type Database = {
           description?: string
           expense_date?: string
           id?: string
+          is_tax_deductible?: boolean
+          linked_income_id?: string | null
           recorded_by?: string | null
+          tax_code_id?: string | null
           updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expenses_linked_income_id_fkey"
+            columns: ["linked_income_id"]
+            isOneToOne: false
+            referencedRelation: "income_entries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "expenses_tax_code_id_fkey"
+            columns: ["tax_code_id"]
+            isOneToOne: false
+            referencedRelation: "tax_codes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      financial_snapshots: {
+        Row: {
+          cash_balance: number
+          created_at: string
+          created_by: string | null
+          id: string
+          label: string
+          notes: string | null
+          receivables: number
+          retained_earnings: number
+          snapshot_date: string
+          total_assets: number
+          total_equity: number
+          total_liabilities: number
+        }
+        Insert: {
+          cash_balance?: number
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          label: string
+          notes?: string | null
+          receivables?: number
+          retained_earnings?: number
+          snapshot_date?: string
+          total_assets?: number
+          total_equity?: number
+          total_liabilities?: number
+        }
+        Update: {
+          cash_balance?: number
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          label?: string
+          notes?: string | null
+          receivables?: number
+          retained_earnings?: number
+          snapshot_date?: string
+          total_assets?: number
+          total_equity?: number
+          total_liabilities?: number
         }
         Relationships: []
       }
@@ -631,6 +700,9 @@ export type Database = {
           id: string
           income_date: string
           invoice_id: string | null
+          is_taxable: boolean
+          linked_expense_total: number
+          net_amount: number
           notes: string | null
           payment_id: string | null
           payment_method: string | null
@@ -638,6 +710,7 @@ export type Database = {
           reference: string | null
           service_type: string
           source: string
+          tax_code_id: string | null
           updated_at: string
         }
         Insert: {
@@ -648,6 +721,9 @@ export type Database = {
           id?: string
           income_date?: string
           invoice_id?: string | null
+          is_taxable?: boolean
+          linked_expense_total?: number
+          net_amount?: number
           notes?: string | null
           payment_id?: string | null
           payment_method?: string | null
@@ -655,6 +731,7 @@ export type Database = {
           reference?: string | null
           service_type?: string
           source?: string
+          tax_code_id?: string | null
           updated_at?: string
         }
         Update: {
@@ -665,6 +742,9 @@ export type Database = {
           id?: string
           income_date?: string
           invoice_id?: string | null
+          is_taxable?: boolean
+          linked_expense_total?: number
+          net_amount?: number
           notes?: string | null
           payment_id?: string | null
           payment_method?: string | null
@@ -672,6 +752,7 @@ export type Database = {
           reference?: string | null
           service_type?: string
           source?: string
+          tax_code_id?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -687,6 +768,13 @@ export type Database = {
             columns: ["payment_id"]
             isOneToOne: false
             referencedRelation: "payments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "income_entries_tax_code_id_fkey"
+            columns: ["tax_code_id"]
+            isOneToOne: false
+            referencedRelation: "tax_codes"
             referencedColumns: ["id"]
           },
         ]
@@ -1186,6 +1274,42 @@ export type Database = {
           id?: string
           metadata?: Json | null
           reason?: string
+        }
+        Relationships: []
+      }
+      tax_codes: {
+        Row: {
+          code: string
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          rate: number
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          rate?: number
+          type?: string
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          rate?: number
+          type?: string
+          updated_at?: string
         }
         Relationships: []
       }
