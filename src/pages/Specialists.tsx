@@ -429,6 +429,7 @@ const Specialists = () => {
     startBooking,
     closeFlow,
     resetFlow,
+    goToForm,
     isAssessmentModalOpen,
     isBookingFormOpen,
     actionType
@@ -773,6 +774,7 @@ const Specialists = () => {
           closeFlow();
           setBookingSpecialist(null);
         }}
+        onSkipToForm={goToForm}
         actionType={actionType}
         specialist={bookingSpecialist ? {
           id: bookingSpecialist.id,

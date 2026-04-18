@@ -113,7 +113,8 @@ const Services = () => {
   const { 
     startBooking, 
     startGroup, 
-    closeFlow, 
+    closeFlow,
+    goToForm,
     actionType,
     isAssessmentModalOpen,
     isBookingFormOpen,
@@ -166,6 +167,7 @@ const Services = () => {
       <PreAssessmentModal 
         isOpen={isAssessmentModalOpen} 
         onClose={closeFlow}
+        onSkipToForm={goToForm}
         actionType={actionType}
       />
 

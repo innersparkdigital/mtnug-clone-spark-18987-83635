@@ -170,6 +170,12 @@ const AdminDashboard = () => {
               <Mail className="h-4 w-4" />
               Newsletter
             </TabsTrigger>
+            <TabsTrigger value="finance" className="gap-2" asChild>
+              <Link to="/admin/finance">
+                <BarChart3 className="h-4 w-4" />
+                Finance & Accounts
+              </Link>
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="learning">

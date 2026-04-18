@@ -11,7 +11,8 @@ import { useBookingFlow } from "@/hooks/useBookingFlow";
 const OnlineTherapy = () => {
   const { 
     startBooking, 
-    closeFlow, 
+    closeFlow,
+    goToForm,
     actionType,
     isAssessmentModalOpen,
     isBookingFormOpen,
@@ -115,6 +116,7 @@ const OnlineTherapy = () => {
       <PreAssessmentModal 
         isOpen={isAssessmentModalOpen} 
         onClose={closeFlow}
+        onSkipToForm={goToForm}
         actionType={actionType}
       />
 

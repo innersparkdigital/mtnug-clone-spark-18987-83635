@@ -14,6 +14,108 @@ export type Database = {
   }
   public: {
     Tables: {
+      account_deletion_requests: {
+        Row: {
+          comments: string | null
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          phone: string | null
+          reason: string | null
+          status: string
+        }
+        Insert: {
+          comments?: string | null
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          phone?: string | null
+          reason?: string | null
+          status?: string
+        }
+        Update: {
+          comments?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          phone?: string | null
+          reason?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
+      activity_logs: {
+        Row: {
+          action: string
+          created_at: string
+          details: Json | null
+          entity_id: string | null
+          entity_type: string
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          details?: Json | null
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          details?: Json | null
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      admin_clients: {
+        Row: {
+          address: string | null
+          company_name: string
+          contact_person: string | null
+          created_at: string
+          created_by: string | null
+          email: string | null
+          id: string
+          notes: string | null
+          phone: string | null
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          company_name: string
+          contact_person?: string | null
+          created_at?: string
+          created_by?: string | null
+          email?: string | null
+          id?: string
+          notes?: string | null
+          phone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          company_name?: string
+          contact_person?: string | null
+          created_at?: string
+          created_by?: string | null
+          email?: string | null
+          id?: string
+          notes?: string | null
+          phone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       assessment_emails: {
         Row: {
           consent_given: boolean
@@ -484,6 +586,308 @@ export type Database = {
         }
         Relationships: []
       }
+      expenses: {
+        Row: {
+          amount: number
+          category: string
+          created_at: string
+          custom_category: string | null
+          description: string
+          expense_date: string
+          id: string
+          is_tax_deductible: boolean
+          linked_income_id: string | null
+          recorded_by: string | null
+          tax_code_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          category?: string
+          created_at?: string
+          custom_category?: string | null
+          description: string
+          expense_date?: string
+          id?: string
+          is_tax_deductible?: boolean
+          linked_income_id?: string | null
+          recorded_by?: string | null
+          tax_code_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          category?: string
+          created_at?: string
+          custom_category?: string | null
+          description?: string
+          expense_date?: string
+          id?: string
+          is_tax_deductible?: boolean
+          linked_income_id?: string | null
+          recorded_by?: string | null
+          tax_code_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expenses_linked_income_id_fkey"
+            columns: ["linked_income_id"]
+            isOneToOne: false
+            referencedRelation: "income_entries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "expenses_tax_code_id_fkey"
+            columns: ["tax_code_id"]
+            isOneToOne: false
+            referencedRelation: "tax_codes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      financial_snapshots: {
+        Row: {
+          cash_balance: number
+          created_at: string
+          created_by: string | null
+          id: string
+          label: string
+          notes: string | null
+          receivables: number
+          retained_earnings: number
+          snapshot_date: string
+          total_assets: number
+          total_equity: number
+          total_liabilities: number
+        }
+        Insert: {
+          cash_balance?: number
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          label: string
+          notes?: string | null
+          receivables?: number
+          retained_earnings?: number
+          snapshot_date?: string
+          total_assets?: number
+          total_equity?: number
+          total_liabilities?: number
+        }
+        Update: {
+          cash_balance?: number
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          label?: string
+          notes?: string | null
+          receivables?: number
+          retained_earnings?: number
+          snapshot_date?: string
+          total_assets?: number
+          total_equity?: number
+          total_liabilities?: number
+        }
+        Relationships: []
+      }
+      income_entries: {
+        Row: {
+          amount: number
+          client_name: string | null
+          created_at: string
+          custom_service: string | null
+          id: string
+          income_date: string
+          invoice_id: string | null
+          is_taxable: boolean
+          linked_expense_total: number
+          net_amount: number
+          notes: string | null
+          payment_id: string | null
+          payment_method: string | null
+          recorded_by: string | null
+          reference: string | null
+          service_type: string
+          source: string
+          tax_code_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          client_name?: string | null
+          created_at?: string
+          custom_service?: string | null
+          id?: string
+          income_date?: string
+          invoice_id?: string | null
+          is_taxable?: boolean
+          linked_expense_total?: number
+          net_amount?: number
+          notes?: string | null
+          payment_id?: string | null
+          payment_method?: string | null
+          recorded_by?: string | null
+          reference?: string | null
+          service_type?: string
+          source?: string
+          tax_code_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          client_name?: string | null
+          created_at?: string
+          custom_service?: string | null
+          id?: string
+          income_date?: string
+          invoice_id?: string | null
+          is_taxable?: boolean
+          linked_expense_total?: number
+          net_amount?: number
+          notes?: string | null
+          payment_id?: string | null
+          payment_method?: string | null
+          recorded_by?: string | null
+          reference?: string | null
+          service_type?: string
+          source?: string
+          tax_code_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "income_entries_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "income_entries_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: false
+            referencedRelation: "payments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "income_entries_tax_code_id_fkey"
+            columns: ["tax_code_id"]
+            isOneToOne: false
+            referencedRelation: "tax_codes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      invoice_items: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          invoice_id: string
+          quantity: number
+          service_type: string
+          total: number
+          unit_price: number
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: string
+          invoice_id: string
+          quantity?: number
+          service_type?: string
+          total?: number
+          unit_price?: number
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          invoice_id?: string
+          quantity?: number
+          service_type?: string
+          total?: number
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoice_items_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      invoices: {
+        Row: {
+          amount_paid: number
+          balance_due: number
+          client_id: string | null
+          created_at: string
+          created_by: string | null
+          due_date: string
+          id: string
+          invoice_number: string
+          issue_date: string
+          notes: string | null
+          payment_instructions: string | null
+          status: string
+          subtotal: number
+          tax_amount: number
+          tax_rate: number
+          total_amount: number
+          updated_at: string
+        }
+        Insert: {
+          amount_paid?: number
+          balance_due?: number
+          client_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          due_date?: string
+          id?: string
+          invoice_number: string
+          issue_date?: string
+          notes?: string | null
+          payment_instructions?: string | null
+          status?: string
+          subtotal?: number
+          tax_amount?: number
+          tax_rate?: number
+          total_amount?: number
+          updated_at?: string
+        }
+        Update: {
+          amount_paid?: number
+          balance_due?: number
+          client_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          due_date?: string
+          id?: string
+          invoice_number?: string
+          issue_date?: string
+          notes?: string | null
+          payment_instructions?: string | null
+          status?: string
+          subtotal?: number
+          tax_amount?: number
+          tax_rate?: number
+          total_amount?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoices_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "admin_clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lesson_progress: {
         Row: {
           completed: boolean | null
@@ -618,6 +1022,50 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      payments: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          invoice_id: string
+          notes: string | null
+          payment_date: string
+          payment_method: string
+          recorded_by: string | null
+          reference_number: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          invoice_id: string
+          notes?: string | null
+          payment_date?: string
+          payment_method?: string
+          recorded_by?: string | null
+          reference_number?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          invoice_id?: string
+          notes?: string | null
+          payment_date?: string
+          payment_method?: string
+          recorded_by?: string | null
+          reference_number?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -826,6 +1274,42 @@ export type Database = {
           id?: string
           metadata?: Json | null
           reason?: string
+        }
+        Relationships: []
+      }
+      tax_codes: {
+        Row: {
+          code: string
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          rate: number
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          rate?: number
+          type?: string
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          rate?: number
+          type?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -1076,7 +1560,12 @@ export type Database = {
       sync_form_emails_to_subscribers: { Args: never; Returns: Json }
     }
     Enums: {
-      app_role: "admin" | "moderator" | "user"
+      app_role:
+        | "admin"
+        | "moderator"
+        | "user"
+        | "finance_admin"
+        | "operations_admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1204,7 +1693,13 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "moderator", "user"],
+      app_role: [
+        "admin",
+        "moderator",
+        "user",
+        "finance_admin",
+        "operations_admin",
+      ],
     },
   },
 } as const

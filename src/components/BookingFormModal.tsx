@@ -28,13 +28,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useAssessment, AssessmentResult, BookingActionType } from "@/contexts/AssessmentContext";
-import { Calendar, Clock, CheckCircle, Send, AlertCircle, Users, Phone, User, ArrowRight, CreditCard, Smartphone, Languages, Globe, Loader2 } from "lucide-react";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
+import { Calendar, Clock, CheckCircle, Send, AlertCircle, Users, Phone, User, ArrowRight, CreditCard, Smartphone, Languages, Globe, Loader2, Mail } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { trackBookingFormOpened, trackBookingSubmitted, trackWhatsAppClick } from "@/lib/analytics";
 import { trackGadsBookingConversion, trackGadsWhatsAppClick } from "@/lib/gadsTracking";
 import TherapistRecommendationCard from "./TherapistRecommendationCard";
+import { supabase } from "@/integrations/supabase/client";
+import PesaPalMethodSelector from "@/components/booking/PesaPalMethodSelector";
 
 interface BookingFormModalProps {
   isOpen: boolean;
@@ -44,6 +44,7 @@ interface BookingFormModalProps {
 
 const bookingSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters").max(100),
+  email: z.string().email("Enter a valid email address"),
   phone: z.string().min(10, "Enter a valid phone number").max(20),
   preferredDay: z.string().min(1, "Please select a preferred day"),
   preferredTime: z.string().min(1, "Please select a preferred time"),
@@ -55,6 +56,7 @@ const bookingSchema = z.object({
 
 const groupSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters").max(100),
+  email: z.string().email("Enter a valid email address"),
   phone: z.string().min(10, "Enter a valid phone number").max(20),
   groupType: z.string().min(1, "Please select a group"),
   paymentMethod: z.string().min(1, "Please select a payment method"),
@@ -94,6 +96,7 @@ const formatWhatsAppMessage = (
       ? `*🟢 FREE CONSULTATION Request – Innerspark Africa*\n\n`
       : `*New Booking Request – Innerspark Africa*\n\n`;
     message += `*Name:* ${bookingData.name}\n`;
+    message += `*Email:* ${bookingData.email}\n`;
     message += `*Phone:* ${bookingData.phone}\n\n`;
     
     if (hasAssessment) {
@@ -126,6 +129,7 @@ const formatWhatsAppMessage = (
     
     let message = `*New Support Group Request – Innerspark Africa*\n\n`;
     message += `*Name:* ${groupData.name}\n`;
+    message += `*Email:* ${groupData.email}\n`;
     message += `*Phone:* ${groupData.phone}\n\n`;
     
     if (hasAssessment) {
@@ -176,7 +180,6 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
   const handleSwitchToGroup = () => {
     setPendingAction("group");
     onClose();
-    // Re-open as group form
     setTimeout(() => {
       window.dispatchEvent(new CustomEvent('openGroupForm'));
     }, 100);
@@ -186,6 +189,7 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
     resolver: zodResolver(bookingSchema),
     defaultValues: {
       name: "",
+      email: "",
       phone: "",
       preferredDay: "",
       preferredTime: "",
@@ -200,6 +204,7 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
     resolver: zodResolver(groupSchema),
     defaultValues: {
       name: "",
+      email: "",
       phone: "",
       groupType: "",
       paymentMethod: "",
@@ -212,7 +217,78 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
   const handleSubmit = async (data: BookingFormData | GroupFormData) => {
     setIsSubmitting(true);
     
-    // All payment methods now go via WhatsApp (manual processing)
+    try {
+      const amount = formType === "group" ? 25000 : 75000;
+      const amountFormatted = formType === "group" ? "25,000" : "75,000";
+      const description = formType === "group" 
+        ? "InnerSpark Africa - Support Group Session" 
+        : formType === "consultation"
+        ? "InnerSpark Africa - Free Consultation"
+        : "InnerSpark Africa - Therapy Session";
+
+      // For free consultations, skip payment and go directly to WhatsApp
+      if (formType === "consultation") {
+        await sendViaWhatsApp(data);
+        return;
+      }
+
+      // Initiate PesaPal payment
+      const { data: paymentData, error: paymentError } = await supabase.functions.invoke(
+        "create-pesapal-payment",
+        {
+          body: {
+            customerName: data.name,
+            customerPhone: data.phone,
+            customerEmail: data.email,
+            amount,
+            currency: "UGX",
+            description,
+            callbackUrl: window.location.origin,
+          },
+        }
+      );
+
+      if (paymentError || !paymentData?.url) {
+        throw new Error(paymentError?.message || "Failed to initiate payment");
+      }
+
+      // Track the booking
+      trackBookingSubmitted(
+        formType,
+        assessmentResult?.assessmentType,
+        assessmentResult?.severity
+      );
+      trackGadsBookingConversion(formType, assessmentResult?.assessmentType);
+
+      // Save booking data to sessionStorage so PaymentSuccess page can send WhatsApp + email
+      const bookingPayload = {
+        formType,
+        formData: data,
+        assessment: assessmentResult,
+        selectedSpecialist: selectedSpecialist ? { name: selectedSpecialist.name } : null,
+        merchantReference: paymentData.merchantReference,
+        amount: amountFormatted,
+        description,
+      };
+      sessionStorage.setItem("innerspark_pending_booking", JSON.stringify(bookingPayload));
+
+      // Redirect to PesaPal payment page in same tab
+      window.location.href = paymentData.url;
+
+    } catch (error) {
+      console.error("Payment error:", error);
+      toast({
+        title: "Payment Error",
+        description: "Could not initiate payment. Sending your request via WhatsApp instead.",
+        variant: "destructive",
+      });
+      await sendViaWhatsApp(data);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const sendViaWhatsApp = async (data: BookingFormData | GroupFormData, paymentRef?: string) => {
     let message = formatWhatsAppMessage(formType, data, assessmentResult);
     
     if (selectedSpecialist && formType === "book") {
@@ -221,34 +297,32 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
         `*New Booking Request – Innerspark Africa*\n\n*Selected Therapist:* ${selectedSpecialist.name}`
       );
     }
+
+    if (paymentRef) {
+      message += `\n\n*Payment Reference:* ${paymentRef}`;
+      message += `\n*Payment Status:* ✅ PAID`;
+    }
     
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/256792085773?text=${encodedMessage}`;
     
-    trackBookingSubmitted(
-      formType,
-      assessmentResult?.assessmentType,
-      assessmentResult?.severity
-    );
     trackWhatsAppClick(formType === "book" ? "booking_form" : "group_form");
-    trackGadsBookingConversion(formType, assessmentResult?.assessmentType);
     trackGadsWhatsAppClick(formType === "book" ? "booking_form" : "group_form");
     
     window.open(whatsappUrl, "_blank");
     
-    toast({
-      title: "Request sent!",
-      description: "We'll contact you shortly to confirm your booking.",
-    });
-    
-    clearAssessment();
-    onClose();
-    setIsSubmitting(false);
-    
-    if (formType === "book") {
-      bookingForm.reset();
-    } else {
-      groupForm.reset();
+    if (!paymentRef) {
+      toast({
+        title: "Request sent!",
+        description: "We'll contact you shortly to confirm your booking.",
+      });
+      clearAssessment();
+      onClose();
+      if (formType === "book") {
+        bookingForm.reset();
+      } else {
+        groupForm.reset();
+      }
     }
   };
 
@@ -263,9 +337,29 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
     }
   };
 
+  const renderEmailField = (form: any, prefix: string) => (
+    <FormField
+      control={form.control}
+      name="email"
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>Email Address</FormLabel>
+          <FormControl>
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input placeholder="your@email.com" type="email" className="pl-10" {...field} />
+            </div>
+          </FormControl>
+          <p className="text-xs text-muted-foreground">Payment receipt will be sent to this email</p>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-xl max-h-[92vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
             {formType === "consultation" ? (
@@ -292,7 +386,7 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
                 : "Based on your assessment, we've matched you with a recommended therapist."
               : formType === "book" 
               ? showForm 
-                ? "Complete your booking details and we'll connect you with the right therapist."
+                ? "Complete your booking details and continue to secure PesaPal payment for your therapy session."
                 : "Based on your assessment, we've matched you with a recommended therapist."
               : "Fill in your details to join a supportive community."}
           </DialogDescription>
@@ -325,20 +419,24 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
 
             {(formType === "book" || formType === "consultation") ? (
               <Form {...bookingForm}>
-                <form onSubmit={bookingForm.handleSubmit(handleSubmit)} className="space-y-4">
-                  <FormField
-                    control={bookingForm.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Full Name</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Your name" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                <form onSubmit={bookingForm.handleSubmit(handleSubmit)} className="space-y-3">
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <FormField
+                      control={bookingForm.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Full Name</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Your name" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {renderEmailField(bookingForm, "booking")}
+                  </div>
 
                   <FormField
                     control={bookingForm.control}
@@ -352,6 +450,21 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
                             <Input placeholder="+256 XXX XXXXXX" className="pl-10" {...field} />
                           </div>
                         </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={bookingForm.control}
+                    name="paymentMethod"
+                    render={({ field }) => (
+                      <FormItem>
+                        <PesaPalMethodSelector
+                          value={field.value}
+                          onChange={field.onChange}
+                          idPrefix="booking"
+                        />
                         <FormMessage />
                       </FormItem>
                     )}
@@ -405,68 +518,62 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
                     />
                   </div>
 
-                  <FormField
-                    control={bookingForm.control}
-                    name="paymentMethod"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Preferred Payment Method</FormLabel>
-                        <FormControl>
-                          <RadioGroup onValueChange={field.onChange} value={field.value} className="flex gap-4">
-                            <div className="flex items-center gap-2 border rounded-lg p-3 flex-1 cursor-pointer hover:border-primary/50 transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/5">
-                              <RadioGroupItem value="mobile_money" id="booking_mobile_money" />
-                              <Label htmlFor="booking_mobile_money" className="flex items-center gap-2 cursor-pointer">
-                                <Smartphone className="h-4 w-4 text-primary" />
-                                Mobile Money
-                              </Label>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <FormField
+                      control={bookingForm.control}
+                      name="preferredLanguage"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Preferred Language</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Languages className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                              <Input placeholder="e.g. English, Luganda" className="pl-10" {...field} />
                             </div>
-                            <div className="flex items-center gap-2 border rounded-lg p-3 flex-1 cursor-pointer hover:border-primary/50 transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/5">
-                              <RadioGroupItem value="visa" id="booking_visa" />
-                              <Label htmlFor="booking_visa" className="flex items-center gap-2 cursor-pointer">
-                                <CreditCard className="h-4 w-4 text-primary" />
-                                Visa / Card
-                              </Label>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={bookingForm.control}
+                      name="country"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Country</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                              <Input placeholder="e.g. Uganda" className="pl-10" {...field} />
                             </div>
-                          </RadioGroup>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
 
-                  <FormField
-                    control={bookingForm.control}
-                    name="preferredLanguage"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Preferred Language</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Languages className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                            <Input placeholder="e.g. English, Luganda, Swahili" className="pl-10" {...field} />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  <div className="bg-primary/5 rounded-lg p-3 flex items-center gap-2">
+                    <Clock className="h-4 w-4 text-primary" />
+                    <span className="text-sm text-foreground">
+                      Session Cost: <strong>$22 / UGX 75,000 per hour</strong>
+                    </span>
+                  </div>
 
-                  <FormField
-                    control={bookingForm.control}
-                    name="country"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Country</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                            <Input placeholder="e.g. Uganda, Kenya, Nigeria" className="pl-10" {...field} />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
+                  <Button type="submit" className="w-full gap-2" disabled={isSubmitting}>
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Processing...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="h-4 w-4" />
+                        Continue to PesaPal
+                      </>
                     )}
-                  />
+                  </Button>
 
                   <FormField
                     control={bookingForm.control}
@@ -486,44 +593,28 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
                     )}
                   />
 
-                  <div className="bg-primary/5 rounded-lg p-3 flex items-center gap-2">
-                    <Clock className="h-4 w-4 text-primary" />
-                    <span className="text-sm text-foreground">
-                      Session Cost: <strong>$22 / UGX 75,000 per hour</strong>
-                    </span>
-                  </div>
-
-                  <Button type="submit" className="w-full gap-2" disabled={isSubmitting}>
-                    {isSubmitting ? (
-                      <>
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        Processing...
-                      </>
-                    ) : (
-                      <>
-                        <Send className="h-4 w-4" />
-                        Submit Booking Request
-                      </>
-                    )}
-                  </Button>
                 </form>
               </Form>
             ) : (
               <Form {...groupForm}>
-                <form onSubmit={groupForm.handleSubmit(handleSubmit)} className="space-y-4">
-                  <FormField
-                    control={groupForm.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Full Name</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Your name" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                <form onSubmit={groupForm.handleSubmit(handleSubmit)} className="space-y-3">
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <FormField
+                      control={groupForm.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Full Name</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Your name" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {renderEmailField(groupForm, "group")}
+                  </div>
 
                   <FormField
                     control={groupForm.control}
@@ -574,63 +665,72 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
                     name="paymentMethod"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Preferred Payment Method</FormLabel>
-                        <FormControl>
-                          <RadioGroup onValueChange={field.onChange} value={field.value} className="flex gap-4">
-                            <div className="flex items-center gap-2 border rounded-lg p-3 flex-1 cursor-pointer hover:border-primary/50 transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/5">
-                              <RadioGroupItem value="mobile_money" id="group_mobile_money" />
-                              <Label htmlFor="group_mobile_money" className="flex items-center gap-2 cursor-pointer">
-                                <Smartphone className="h-4 w-4 text-primary" />
-                                Mobile Money
-                              </Label>
-                            </div>
-                            <div className="flex items-center gap-2 border rounded-lg p-3 flex-1 cursor-pointer hover:border-primary/50 transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/5">
-                              <RadioGroupItem value="visa" id="group_visa" />
-                              <Label htmlFor="group_visa" className="flex items-center gap-2 cursor-pointer">
-                                <CreditCard className="h-4 w-4 text-primary" />
-                                Visa / Card
-                              </Label>
-                            </div>
-                          </RadioGroup>
-                        </FormControl>
+                        <PesaPalMethodSelector
+                          value={field.value}
+                          onChange={field.onChange}
+                          idPrefix="group"
+                        />
                         <FormMessage />
                       </FormItem>
                     )}
                   />
 
-                  <FormField
-                    control={groupForm.control}
-                    name="preferredLanguage"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Preferred Language</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Languages className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                            <Input placeholder="e.g. English, Luganda, Swahili" className="pl-10" {...field} />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <FormField
+                      control={groupForm.control}
+                      name="preferredLanguage"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Preferred Language</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Languages className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                              <Input placeholder="e.g. English, Luganda" className="pl-10" {...field} />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                  <FormField
-                    control={groupForm.control}
-                    name="country"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Country</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                            <Input placeholder="e.g. Uganda, Kenya, Nigeria" className="pl-10" {...field} />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
+                    <FormField
+                      control={groupForm.control}
+                      name="country"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Country</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                              <Input placeholder="e.g. Uganda" className="pl-10" {...field} />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className="bg-primary/5 rounded-lg p-3 flex items-center gap-2">
+                    <Users className="h-4 w-4 text-primary" />
+                    <span className="text-sm text-foreground">
+                      Weekly Fee: <strong>UGX 25,000</strong>
+                    </span>
+                  </div>
+
+                  <Button type="submit" className="w-full gap-2" disabled={isSubmitting}>
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Processing...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="h-4 w-4" />
+                        Continue to PesaPal
+                      </>
                     )}
-                  />
+                  </Button>
 
                   <FormField
                     control={groupForm.control}
@@ -650,17 +750,6 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
                     )}
                   />
 
-                  <div className="bg-primary/5 rounded-lg p-3 flex items-center gap-2">
-                    <Users className="h-4 w-4 text-primary" />
-                    <span className="text-sm text-foreground">
-                      Weekly Fee: <strong>UGX 25,000</strong>
-                    </span>
-                  </div>
-
-                  <Button type="submit" className="w-full gap-2" disabled={isSubmitting}>
-                    <Send className="h-4 w-4" />
-                    {isSubmitting ? "Sending..." : "Submit Group Request"}
-                  </Button>
                 </form>
               </Form>
             )}

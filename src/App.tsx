@@ -23,6 +23,7 @@ import ProfileSettings from "./pages/ProfileSettings";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import CookiePolicy from "./pages/CookiePolicy";
+import AccountDeletion from "./pages/AccountDeletion";
 import Services from "./pages/Services";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
@@ -96,6 +97,7 @@ import CourseCertificate from "./pages/CourseCertificate";
 import LearningDashboard from "./pages/LearningDashboard";
 import StudentDashboard from "./pages/StudentDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminFinance from "./pages/AdminFinance";
 import MindCheckAnalytics from "./pages/MindCheckAnalytics";
 import Auth from "./pages/Auth";
 import ResetPassword from "./pages/ResetPassword";
@@ -174,6 +176,7 @@ const App = () => (
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-of-service" element={<TermsOfService />} />
             <Route path="/cookie-policy" element={<CookiePolicy />} />
+            <Route path="/account-deletion" element={<AccountDeletion />} />
             <Route path="/services" element={<Services />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
@@ -186,6 +189,7 @@ const App = () => (
             <Route path="/learning/dashboard" element={<LearningDashboard />} />
             <Route path="/learning/student-dashboard" element={<StudentDashboard />} />
             <Route path="/learning/admin-dashboard" element={<AdminDashboard />} />
+            <Route path="/admin/finance" element={<AdminFinance />} />
             <Route path="/learning/:courseId" element={<CourseDetail />} />
             <Route path="/learning/:courseId/certificate" element={<CourseCertificate />} />
             <Route path="/learning/:courseId/module/:moduleId/lesson/:lessonId" element={<LessonViewer />} />
