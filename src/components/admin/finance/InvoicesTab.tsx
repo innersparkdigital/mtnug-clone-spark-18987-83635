@@ -139,6 +139,11 @@ const InvoicesTab = () => {
               <SelectItem value="partially_paid">Partial</SelectItem>
             </SelectContent>
           </Select>
+          {hasColFilters && (
+            <Button size="sm" variant="ghost" className="gap-1 text-xs" onClick={() => setColFilters({ number: '', client: '', date: '', minTotal: '', maxTotal: '' })}>
+              <FilterX className="h-3.5 w-3.5" /> Clear filters
+            </Button>
+          )}
         </div>
         <Dialog open={showCreate} onOpenChange={setShowCreate}>
           <DialogTrigger asChild>
@@ -158,15 +163,31 @@ const InvoicesTab = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>#</TableHead>
-                <TableHead>Invoice No.</TableHead>
-                <TableHead>Client</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Total</TableHead>
+                <TableHead className="w-10">#</TableHead>
+                <TableHead className="min-w-[140px]">Invoice No.</TableHead>
+                <TableHead className="min-w-[140px]">Client</TableHead>
+                <TableHead className="min-w-[140px]">Date</TableHead>
+                <TableHead className="min-w-[140px]">Total</TableHead>
                 <TableHead>Paid</TableHead>
                 <TableHead>Balance</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Actions</TableHead>
+              </TableRow>
+              <TableRow className="bg-muted/30 hover:bg-muted/30">
+                <TableHead></TableHead>
+                <TableHead><ColumnFilter value={colFilters.number} onChange={v => setColFilters(f => ({ ...f, number: v }))} placeholder="Number..." /></TableHead>
+                <TableHead><ColumnFilter value={colFilters.client} onChange={v => setColFilters(f => ({ ...f, client: v }))} placeholder="Client..." /></TableHead>
+                <TableHead><ColumnFilter type="date" value={colFilters.date} onChange={v => setColFilters(f => ({ ...f, date: v }))} /></TableHead>
+                <TableHead>
+                  <div className="flex gap-1">
+                    <ColumnFilter type="number" value={colFilters.minTotal} onChange={v => setColFilters(f => ({ ...f, minTotal: v }))} placeholder="Min" />
+                    <ColumnFilter type="number" value={colFilters.maxTotal} onChange={v => setColFilters(f => ({ ...f, maxTotal: v }))} placeholder="Max" />
+                  </div>
+                </TableHead>
+                <TableHead></TableHead>
+                <TableHead></TableHead>
+                <TableHead></TableHead>
+                <TableHead></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
