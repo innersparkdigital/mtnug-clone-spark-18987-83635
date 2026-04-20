@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card } from '@/components/ui/card';
@@ -11,9 +11,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { toast } from '@/hooks/use-toast';
-import { Plus, Search, Trash2, Download, FileSpreadsheet, Link2 } from 'lucide-react';
+import { Plus, Search, Trash2, Download, FileSpreadsheet, Link2, Pencil, FilterX } from 'lucide-react';
 import { exportCSV, exportXLSX, formatUGX } from '@/lib/financeExports';
 import { useTaxCodes } from '@/hooks/useTaxCodes';
+import ColumnFilter from './ColumnFilter';
 
 interface Expense {
   id: string;
@@ -55,6 +56,10 @@ const incomeLabel = (i: IncomeOpt) => {
   return `${svc} – ${ref} (${formatUGX(Number(i.amount))})`;
 };
 
+const emptyColFilters = {
+  date: '', category: '', description: '', linked: '', minAmount: '', maxAmount: '',
+};
+
 const ExpensesTab = () => {
   const { user } = useAuth();
   const { taxCodes } = useTaxCodes();
@@ -63,6 +68,8 @@ const ExpensesTab = () => {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [showForm, setShowForm] = useState(false);
+  const [editing, setEditing] = useState<Expense | null>(null);
+  const [colFilters, setColFilters] = useState(emptyColFilters);
 
   const fetchAll = useCallback(async () => {
     setLoading(true);
@@ -85,29 +92,62 @@ const ExpensesTab = () => {
     return () => { supabase.removeChannel(ch); };
   }, [fetchAll]);
 
-  const filtered = expenses.filter(e =>
-    e.description.toLowerCase().includes(search.toLowerCase()) ||
-    e.category.toLowerCase().includes(search.toLowerCase()) ||
-    (e.custom_category || '').toLowerCase().includes(search.toLowerCase())
-  );
+  const incomeMap = useMemo(() => new Map(incomes.map(i => [i.id, i])), [incomes]);
+
+  const filtered = useMemo(() => expenses.filter(e => {
+    if (search) {
+      const s = search.toLowerCase();
+      const match = e.description.toLowerCase().includes(s) ||
+        e.category.toLowerCase().includes(s) ||
+        (e.custom_category || '').toLowerCase().includes(s);
+      if (!match) return false;
+    }
+    if (colFilters.date && !e.expense_date.startsWith(colFilters.date)) return false;
+    if (colFilters.category) {
+      const cat = e.category === 'other' && e.custom_category ? e.custom_category : (CATEGORY_LABELS[e.category] || e.category);
+      if (!cat.toLowerCase().includes(colFilters.category.toLowerCase())) return false;
+    }
+    if (colFilters.description && !e.description.toLowerCase().includes(colFilters.description.toLowerCase())) return false;
+    if (colFilters.linked) {
+      const linked = e.linked_income_id ? incomeMap.get(e.linked_income_id) : null;
+      const lbl = linked ? incomeLabel(linked) : '';
+      if (colFilters.linked === 'yes' && !linked) return false;
+      if (colFilters.linked === 'no' && linked) return false;
+      if (colFilters.linked !== 'yes' && colFilters.linked !== 'no' && !lbl.toLowerCase().includes(colFilters.linked.toLowerCase())) return false;
+    }
+    if (colFilters.minAmount && Number(e.amount) < Number(colFilters.minAmount)) return false;
+    if (colFilters.maxAmount && Number(e.amount) > Number(colFilters.maxAmount)) return false;
+    return true;
+  }), [expenses, search, colFilters, incomeMap]);
 
   const totalAmount = filtered.reduce((sum, e) => sum + Number(e.amount), 0);
+  const hasColFilters = Object.values(colFilters).some(v => v);
 
-  const incomeMap = new Map(incomes.map(i => [i.id, i]));
-
-  const handleCreate = async (data: any) => {
-    const payload = { ...data, recorded_by: user?.id };
-    const { error } = await supabase.from('expenses').insert(payload);
-    if (error) {
-      toast({ title: 'Error', description: error.message, variant: 'destructive' });
-      return;
+  const handleSave = async (data: any, id?: string) => {
+    const payload = {
+      ...data,
+      linked_income_id: data.linked_income_id || null,
+      tax_code_id: data.tax_code_id || null,
+    };
+    if (id) {
+      const { error } = await supabase.from('expenses').update(payload).eq('id', id);
+      if (error) { toast({ title: 'Error', description: error.message, variant: 'destructive' }); return; }
+      await supabase.from('activity_logs').insert({
+        user_id: user?.id, action: 'Edited expense', entity_type: 'expense', entity_id: id,
+        details: { amount: data.amount, category: data.category },
+      });
+      toast({ title: 'Expense updated' });
+      setEditing(null);
+    } else {
+      const { error } = await supabase.from('expenses').insert({ ...payload, recorded_by: user?.id });
+      if (error) { toast({ title: 'Error', description: error.message, variant: 'destructive' }); return; }
+      await supabase.from('activity_logs').insert({
+        user_id: user?.id, action: 'Added expense', entity_type: 'expense',
+        details: { amount: data.amount, category: data.category, linked: !!data.linked_income_id },
+      });
+      toast({ title: 'Expense added', description: data.linked_income_id ? 'Linked to income — net profit updated' : undefined });
+      setShowForm(false);
     }
-    await supabase.from('activity_logs').insert({
-      user_id: user?.id, action: 'Added expense', entity_type: 'expense',
-      details: { amount: data.amount, category: data.category, linked: !!data.linked_income_id },
-    });
-    toast({ title: 'Expense added', description: data.linked_income_id ? 'Linked to income — net profit updated' : undefined });
-    setShowForm(false);
     fetchAll();
   };
 
@@ -136,9 +176,16 @@ const ExpensesTab = () => {
   return (
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row gap-3 justify-between">
-        <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input placeholder="Search expenses..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
+        <div className="flex gap-2 flex-1 items-center">
+          <div className="relative flex-1 max-w-sm">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input placeholder="Search expenses..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
+          </div>
+          {hasColFilters && (
+            <Button size="sm" variant="ghost" className="gap-1 text-xs" onClick={() => setColFilters(emptyColFilters)}>
+              <FilterX className="h-3.5 w-3.5" /> Clear filters
+            </Button>
+          )}
         </div>
         <div className="flex gap-2 items-center flex-wrap">
           <span className="text-sm text-muted-foreground">Total: <strong className="text-red-600">{formatUGX(totalAmount)}</strong></span>
@@ -154,7 +201,7 @@ const ExpensesTab = () => {
             </DialogTrigger>
             <DialogContent className="max-w-xl">
               <DialogHeader><DialogTitle>Add Expense</DialogTitle></DialogHeader>
-              <ExpenseForm onSubmit={handleCreate} incomes={incomes} taxCodes={taxCodes} />
+              <ExpenseForm onSubmit={(d) => handleSave(d)} incomes={incomes} taxCodes={taxCodes} />
             </DialogContent>
           </Dialog>
         </div>
@@ -167,13 +214,31 @@ const ExpensesTab = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>#</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead>Description</TableHead>
-                <TableHead>Linked Income</TableHead>
+                <TableHead className="w-10">#</TableHead>
+                <TableHead className="min-w-[140px]">Date</TableHead>
+                <TableHead className="min-w-[140px]">Category</TableHead>
+                <TableHead className="min-w-[160px]">Description</TableHead>
+                <TableHead className="min-w-[160px]">Linked Income</TableHead>
                 <TableHead>Tax</TableHead>
-                <TableHead className="text-right">Amount</TableHead>
+                <TableHead className="text-right min-w-[140px]">Amount</TableHead>
+                <TableHead className="w-20"></TableHead>
+              </TableRow>
+              <TableRow className="bg-muted/30 hover:bg-muted/30">
+                <TableHead></TableHead>
+                <TableHead><ColumnFilter type="date" value={colFilters.date} onChange={v => setColFilters(f => ({ ...f, date: v }))} /></TableHead>
+                <TableHead><ColumnFilter value={colFilters.category} onChange={v => setColFilters(f => ({ ...f, category: v }))} placeholder="Category..." /></TableHead>
+                <TableHead><ColumnFilter value={colFilters.description} onChange={v => setColFilters(f => ({ ...f, description: v }))} placeholder="Description..." /></TableHead>
+                <TableHead>
+                  <ColumnFilter type="select" value={colFilters.linked} onChange={v => setColFilters(f => ({ ...f, linked: v }))}
+                    options={[{ value: 'yes', label: 'Linked only' }, { value: 'no', label: 'Unlinked only' }]} />
+                </TableHead>
+                <TableHead></TableHead>
+                <TableHead>
+                  <div className="flex gap-1">
+                    <ColumnFilter type="number" value={colFilters.minAmount} onChange={v => setColFilters(f => ({ ...f, minAmount: v }))} placeholder="Min" />
+                    <ColumnFilter type="number" value={colFilters.maxAmount} onChange={v => setColFilters(f => ({ ...f, maxAmount: v }))} placeholder="Max" />
+                  </div>
+                </TableHead>
                 <TableHead></TableHead>
               </TableRow>
             </TableHeader>
@@ -206,9 +271,14 @@ const ExpensesTab = () => {
                     </TableCell>
                     <TableCell className="text-right font-semibold text-red-700">{formatUGX(Number(e.amount))}</TableCell>
                     <TableCell>
-                      <Button size="sm" variant="ghost" className="text-destructive h-7 w-7 p-0" onClick={() => handleDelete(e.id)}>
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </Button>
+                      <div className="flex gap-0.5">
+                        <Button size="sm" variant="ghost" className="h-7 w-7 p-0" onClick={() => setEditing(e)}>
+                          <Pencil className="h-3.5 w-3.5" />
+                        </Button>
+                        <Button size="sm" variant="ghost" className="text-destructive h-7 w-7 p-0" onClick={() => handleDelete(e.id)}>
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 );
@@ -217,33 +287,32 @@ const ExpensesTab = () => {
           </Table>
         </Card>
       )}
+
+      <Dialog open={!!editing} onOpenChange={(o) => !o && setEditing(null)}>
+        <DialogContent className="max-w-xl">
+          <DialogHeader><DialogTitle>Edit Expense</DialogTitle></DialogHeader>
+          {editing && <ExpenseForm onSubmit={(d) => handleSave(d, editing.id)} incomes={incomes} taxCodes={taxCodes} initial={editing} />}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
 
 const ExpenseForm = ({
-  onSubmit, incomes, taxCodes,
-}: { onSubmit: (data: any) => void; incomes: IncomeOpt[]; taxCodes: any[] }) => {
+  onSubmit, incomes, taxCodes, initial,
+}: { onSubmit: (data: any) => void; incomes: IncomeOpt[]; taxCodes: any[]; initial?: Expense }) => {
   const [form, setForm] = useState({
-    category: 'operations',
-    custom_category: '',
-    description: '',
-    amount: 0,
-    expense_date: new Date().toISOString().split('T')[0],
-    linked_income_id: '',
-    tax_code_id: '',
-    is_tax_deductible: true,
+    category: initial?.category || 'operations',
+    custom_category: initial?.custom_category || '',
+    description: initial?.description || '',
+    amount: initial?.amount || 0,
+    expense_date: initial?.expense_date || new Date().toISOString().split('T')[0],
+    linked_income_id: initial?.linked_income_id || '',
+    tax_code_id: initial?.tax_code_id || '',
+    is_tax_deductible: initial?.is_tax_deductible ?? true,
   });
 
   const isOther = form.category === 'other';
-
-  const submit = () => {
-    onSubmit({
-      ...form,
-      linked_income_id: form.linked_income_id || null,
-      tax_code_id: form.tax_code_id || null,
-    });
-  };
 
   return (
     <div className="space-y-4">
@@ -310,8 +379,8 @@ const ExpenseForm = ({
         </div>
         <Switch id="ded" checked={form.is_tax_deductible} onCheckedChange={v => setForm(f => ({ ...f, is_tax_deductible: v }))} />
       </div>
-      <Button onClick={submit} className="w-full" disabled={!form.description || form.amount <= 0 || (isOther && !form.custom_category)}>
-        Add Expense
+      <Button onClick={() => onSubmit(form)} className="w-full" disabled={!form.description || form.amount <= 0 || (isOther && !form.custom_category)}>
+        {initial ? 'Save Changes' : 'Add Expense'}
       </Button>
     </div>
   );

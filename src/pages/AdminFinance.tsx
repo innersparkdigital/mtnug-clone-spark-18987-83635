@@ -6,7 +6,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Loader2, FileText, DollarSign, Users, BarChart3, Activity, Settings, TrendingUp, PieChart, Receipt } from 'lucide-react';
+import { Loader2, FileText, DollarSign, Users, BarChart3, Activity, Settings, TrendingUp, PieChart, Receipt, Camera } from 'lucide-react';
 import InvoicesTab from '@/components/admin/finance/InvoicesTab';
 import FinanceDashboardTab from '@/components/admin/finance/FinanceDashboardTab';
 import ClientsTab from '@/components/admin/finance/ClientsTab';
@@ -16,6 +16,7 @@ import ReportsTab from '@/components/admin/finance/ReportsTab';
 import ActivityLogsTab from '@/components/admin/finance/ActivityLogsTab';
 import AccountsTab from '@/components/admin/finance/AccountsTab';
 import TaxCodesTab from '@/components/admin/finance/TaxCodesTab';
+import SnapshotsTab from '@/components/admin/finance/SnapshotsTab';
 
 const AdminFinance = () => {
   const navigate = useNavigate();
@@ -84,6 +85,10 @@ const AdminFinance = () => {
               <PieChart className="h-4 w-4" />
               Reports
             </TabsTrigger>
+            <TabsTrigger value="snapshots" className="gap-2">
+              <Camera className="h-4 w-4" />
+              Snapshots
+            </TabsTrigger>
             <TabsTrigger value="clients" className="gap-2">
               <Users className="h-4 w-4" />
               Clients
@@ -118,6 +123,9 @@ const AdminFinance = () => {
           </TabsContent>
           <TabsContent value="reports">
             <ReportsTab />
+          </TabsContent>
+          <TabsContent value="snapshots">
+            <SnapshotsTab />
           </TabsContent>
           <TabsContent value="clients">
             <ClientsTab />
