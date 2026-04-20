@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card } from '@/components/ui/card';
@@ -11,9 +11,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { toast } from '@/hooks/use-toast';
-import { Plus, Search, Trash2, Download, FileSpreadsheet, TrendingUp } from 'lucide-react';
+import { Plus, Search, Trash2, Download, FileSpreadsheet, TrendingUp, Pencil, FilterX } from 'lucide-react';
 import { SERVICE_LABELS, exportCSV, exportXLSX, formatUGX } from '@/lib/financeExports';
 import { useTaxCodes } from '@/hooks/useTaxCodes';
+import ColumnFilter from './ColumnFilter';
 
 interface Income {
   id: string;
@@ -34,6 +35,10 @@ interface Income {
   created_at: string;
 }
 
+const emptyColFilters = {
+  date: '', service: '', source: '', client: '', reference: '', minAmount: '', maxAmount: '',
+};
+
 const IncomeTab = () => {
   const { user } = useAuth();
   const { taxCodes } = useTaxCodes();
@@ -42,6 +47,8 @@ const IncomeTab = () => {
   const [search, setSearch] = useState('');
   const [serviceFilter, setServiceFilter] = useState('all');
   const [showForm, setShowForm] = useState(false);
+  const [editing, setEditing] = useState<Income | null>(null);
+  const [colFilters, setColFilters] = useState(emptyColFilters);
 
   const fetchIncome = useCallback(async () => {
     setLoading(true);
@@ -60,36 +67,58 @@ const IncomeTab = () => {
     return () => { supabase.removeChannel(ch); };
   }, [fetchIncome]);
 
-  const filtered = income.filter(e => {
+  const filtered = useMemo(() => income.filter(e => {
     const matchSearch =
       (e.client_name || '').toLowerCase().includes(search.toLowerCase()) ||
       (e.reference || '').toLowerCase().includes(search.toLowerCase()) ||
       (e.notes || '').toLowerCase().includes(search.toLowerCase());
     const matchSvc = serviceFilter === 'all' || e.service_type === serviceFilter;
-    return matchSearch && matchSvc;
-  });
+    if (!matchSearch || !matchSvc) return false;
+
+    // Per-column filters
+    if (colFilters.date && !e.income_date.startsWith(colFilters.date)) return false;
+    if (colFilters.service) {
+      const svc = e.service_type === 'other' && e.custom_service ? e.custom_service : (SERVICE_LABELS[e.service_type] || e.service_type);
+      if (!svc.toLowerCase().includes(colFilters.service.toLowerCase())) return false;
+    }
+    if (colFilters.source && !e.source.toLowerCase().includes(colFilters.source.toLowerCase())) return false;
+    if (colFilters.client && !(e.client_name || '').toLowerCase().includes(colFilters.client.toLowerCase())) return false;
+    if (colFilters.reference && !(e.reference || '').toLowerCase().includes(colFilters.reference.toLowerCase())) return false;
+    if (colFilters.minAmount && Number(e.amount) < Number(colFilters.minAmount)) return false;
+    if (colFilters.maxAmount && Number(e.amount) > Number(colFilters.maxAmount)) return false;
+    return true;
+  }), [income, search, serviceFilter, colFilters]);
 
   const totalGross = filtered.reduce((sum, e) => sum + Number(e.amount), 0);
   const totalLinked = filtered.reduce((sum, e) => sum + Number(e.linked_expense_total || 0), 0);
   const totalNet = filtered.reduce((sum, e) => sum + Number(e.net_amount || e.amount), 0);
 
-  const handleCreate = async (data: any) => {
-    const { error } = await supabase.from('income_entries').insert({
+  const hasColFilters = Object.values(colFilters).some(v => v);
+
+  const handleSave = async (data: any, id?: string) => {
+    const payload = {
       ...data,
       tax_code_id: data.tax_code_id || null,
-      source: 'manual',
-      recorded_by: user?.id,
-    });
-    if (error) {
-      toast({ title: 'Error', description: error.message, variant: 'destructive' });
-      return;
+    };
+    if (id) {
+      const { error } = await supabase.from('income_entries').update(payload).eq('id', id);
+      if (error) { toast({ title: 'Error', description: error.message, variant: 'destructive' }); return; }
+      await supabase.from('activity_logs').insert({
+        user_id: user?.id, action: 'Edited income', entity_type: 'income', entity_id: id,
+        details: { amount: data.amount, service: data.service_type },
+      });
+      toast({ title: 'Income updated' });
+      setEditing(null);
+    } else {
+      const { error } = await supabase.from('income_entries').insert({ ...payload, source: 'manual', recorded_by: user?.id });
+      if (error) { toast({ title: 'Error', description: error.message, variant: 'destructive' }); return; }
+      await supabase.from('activity_logs').insert({
+        user_id: user?.id, action: 'Recorded income', entity_type: 'income',
+        details: { amount: data.amount, service: data.service_type },
+      });
+      toast({ title: 'Income recorded' });
+      setShowForm(false);
     }
-    await supabase.from('activity_logs').insert({
-      user_id: user?.id, action: 'Recorded income', entity_type: 'income',
-      details: { amount: data.amount, service: data.service_type },
-    });
-    toast({ title: 'Income recorded' });
-    setShowForm(false);
     fetchIncome();
   };
 
@@ -120,7 +149,6 @@ const IncomeTab = () => {
 
   return (
     <div className="space-y-4">
-      {/* Summary chips */}
       <div className="grid grid-cols-3 gap-3">
         <Card className="p-3 bg-emerald-500/5 border-emerald-500/20">
           <p className="text-xs text-muted-foreground">Gross Income</p>
@@ -151,6 +179,11 @@ const IncomeTab = () => {
               ))}
             </SelectContent>
           </Select>
+          {hasColFilters && (
+            <Button size="sm" variant="ghost" className="gap-1 text-xs" onClick={() => setColFilters(emptyColFilters)}>
+              <FilterX className="h-3.5 w-3.5" /> Clear filters
+            </Button>
+          )}
         </div>
         <div className="flex gap-2 items-center flex-wrap">
           <Button size="sm" variant="outline" className="gap-1" onClick={() => exportCSV(exportRows, `income-${new Date().toISOString().slice(0,10)}`)}>
@@ -165,7 +198,7 @@ const IncomeTab = () => {
             </DialogTrigger>
             <DialogContent>
               <DialogHeader><DialogTitle>Record Income</DialogTitle></DialogHeader>
-              <IncomeForm onSubmit={handleCreate} taxCodes={taxCodes} />
+              <IncomeForm onSubmit={(d) => handleSave(d)} taxCodes={taxCodes} />
             </DialogContent>
           </Dialog>
         </div>
@@ -178,15 +211,32 @@ const IncomeTab = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>#</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Service</TableHead>
-                <TableHead>Source</TableHead>
-                <TableHead>Client</TableHead>
-                <TableHead>Reference</TableHead>
-                <TableHead className="text-right">Gross</TableHead>
+                <TableHead className="w-10">#</TableHead>
+                <TableHead className="min-w-[140px]">Date</TableHead>
+                <TableHead className="min-w-[140px]">Service</TableHead>
+                <TableHead className="min-w-[120px]">Source</TableHead>
+                <TableHead className="min-w-[140px]">Client</TableHead>
+                <TableHead className="min-w-[120px]">Reference</TableHead>
+                <TableHead className="text-right min-w-[110px]">Gross</TableHead>
                 <TableHead className="text-right">Linked Exp.</TableHead>
                 <TableHead className="text-right">Net</TableHead>
+                <TableHead className="w-20"></TableHead>
+              </TableRow>
+              <TableRow className="bg-muted/30 hover:bg-muted/30">
+                <TableHead></TableHead>
+                <TableHead><ColumnFilter type="date" value={colFilters.date} onChange={v => setColFilters(f => ({ ...f, date: v }))} /></TableHead>
+                <TableHead><ColumnFilter value={colFilters.service} onChange={v => setColFilters(f => ({ ...f, service: v }))} placeholder="Service..." /></TableHead>
+                <TableHead><ColumnFilter value={colFilters.source} onChange={v => setColFilters(f => ({ ...f, source: v }))} placeholder="Source..." /></TableHead>
+                <TableHead><ColumnFilter value={colFilters.client} onChange={v => setColFilters(f => ({ ...f, client: v }))} placeholder="Client..." /></TableHead>
+                <TableHead><ColumnFilter value={colFilters.reference} onChange={v => setColFilters(f => ({ ...f, reference: v }))} placeholder="Ref..." /></TableHead>
+                <TableHead>
+                  <div className="flex gap-1">
+                    <ColumnFilter type="number" value={colFilters.minAmount} onChange={v => setColFilters(f => ({ ...f, minAmount: v }))} placeholder="Min" />
+                    <ColumnFilter type="number" value={colFilters.maxAmount} onChange={v => setColFilters(f => ({ ...f, maxAmount: v }))} placeholder="Max" />
+                  </div>
+                </TableHead>
+                <TableHead></TableHead>
+                <TableHead></TableHead>
                 <TableHead></TableHead>
               </TableRow>
             </TableHeader>
@@ -211,9 +261,14 @@ const IncomeTab = () => {
                   </TableCell>
                   <TableCell className="text-right font-semibold text-primary">{formatUGX(Number(e.net_amount || e.amount))}</TableCell>
                   <TableCell>
-                    <Button size="sm" variant="ghost" className="text-destructive h-7 w-7 p-0" onClick={() => handleDelete(e.id)}>
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </Button>
+                    <div className="flex gap-0.5">
+                      <Button size="sm" variant="ghost" className="h-7 w-7 p-0" onClick={() => setEditing(e)} disabled={e.source === 'invoice_payment'} title={e.source === 'invoice_payment' ? 'Auto-generated from payment' : 'Edit'}>
+                        <Pencil className="h-3.5 w-3.5" />
+                      </Button>
+                      <Button size="sm" variant="ghost" className="text-destructive h-7 w-7 p-0" onClick={() => handleDelete(e.id)}>
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
@@ -225,22 +280,31 @@ const IncomeTab = () => {
       <p className="text-xs text-muted-foreground flex items-center gap-1">
         <TrendingUp className="h-3 w-3" /> Tip: Link expenses (e.g. facilitator fees) to specific income from the Expenses tab to see real per-service profit.
       </p>
+
+      <Dialog open={!!editing} onOpenChange={(o) => !o && setEditing(null)}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Edit Income</DialogTitle></DialogHeader>
+          {editing && <IncomeForm onSubmit={(d) => handleSave(d, editing.id)} taxCodes={taxCodes} initial={editing} />}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
 
-const IncomeForm = ({ onSubmit, taxCodes }: { onSubmit: (data: any) => void; taxCodes: any[] }) => {
+const IncomeForm = ({
+  onSubmit, taxCodes, initial,
+}: { onSubmit: (data: any) => void; taxCodes: any[]; initial?: Income }) => {
   const [form, setForm] = useState({
-    service_type: 'therapy',
-    custom_service: '',
-    amount: 0,
-    income_date: new Date().toISOString().split('T')[0],
-    client_name: '',
-    reference: '',
-    payment_method: 'mobile_money',
-    notes: '',
-    tax_code_id: '',
-    is_taxable: true,
+    service_type: initial?.service_type || 'therapy',
+    custom_service: initial?.custom_service || '',
+    amount: initial?.amount || 0,
+    income_date: initial?.income_date || new Date().toISOString().split('T')[0],
+    client_name: initial?.client_name || '',
+    reference: initial?.reference || '',
+    payment_method: initial?.payment_method || 'mobile_money',
+    notes: initial?.notes || '',
+    tax_code_id: initial?.tax_code_id || '',
+    is_taxable: initial?.is_taxable ?? true,
   });
 
   return (
@@ -322,7 +386,7 @@ const IncomeForm = ({ onSubmit, taxCodes }: { onSubmit: (data: any) => void; tax
         className="w-full"
         disabled={form.amount <= 0 || (form.service_type === 'other' && !form.custom_service)}
       >
-        Record Income
+        {initial ? 'Save Changes' : 'Record Income'}
       </Button>
     </div>
   );
