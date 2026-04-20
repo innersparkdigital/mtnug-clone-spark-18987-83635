@@ -10,8 +10,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { toast } from '@/hooks/use-toast';
-import { Plus, Send, Download, Search, Eye, Trash2 } from 'lucide-react';
+import { Plus, Send, Search, Eye, Trash2, FilterX } from 'lucide-react';
 import InvoiceDetailModal from './InvoiceDetailModal';
+import ColumnFilter from './ColumnFilter';
 
 interface Client {
   id: string;
@@ -48,6 +49,7 @@ const InvoicesTab = () => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [showCreate, setShowCreate] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState<string | null>(null);
+  const [colFilters, setColFilters] = useState({ number: '', client: '', date: '', minTotal: '', maxTotal: '' });
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -71,8 +73,15 @@ const InvoicesTab = () => {
     const matchSearch = inv.invoice_number.toLowerCase().includes(search.toLowerCase()) ||
       getClientName(inv.client_id).toLowerCase().includes(search.toLowerCase());
     const matchStatus = statusFilter === 'all' || inv.status === statusFilter;
-    return matchSearch && matchStatus;
+    if (!matchSearch || !matchStatus) return false;
+    if (colFilters.number && !inv.invoice_number.toLowerCase().includes(colFilters.number.toLowerCase())) return false;
+    if (colFilters.client && !getClientName(inv.client_id).toLowerCase().includes(colFilters.client.toLowerCase())) return false;
+    if (colFilters.date && !inv.issue_date.startsWith(colFilters.date)) return false;
+    if (colFilters.minTotal && Number(inv.total_amount) < Number(colFilters.minTotal)) return false;
+    if (colFilters.maxTotal && Number(inv.total_amount) > Number(colFilters.maxTotal)) return false;
+    return true;
   });
+  const hasColFilters = Object.values(colFilters).some(v => v);
 
   const handleCreateInvoice = async (data: { client_id: string; notes: string; tax_rate: number; due_date: string; payment_instructions: string }) => {
     const { error } = await supabase.from('invoices').insert({
