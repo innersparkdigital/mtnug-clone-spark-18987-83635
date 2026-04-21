@@ -499,6 +499,98 @@ export type Database = {
         }
         Relationships: []
       }
+      doctor_referrals: {
+        Row: {
+          admin_notes: string | null
+          concern: string | null
+          consent_confirmed: boolean
+          created_at: string
+          doctor_id: string
+          doctor_name: string
+          doctor_phone: string
+          id: string
+          location: string | null
+          patient_name: string
+          patient_phone: string
+          preferred_mode: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          concern?: string | null
+          consent_confirmed?: boolean
+          created_at?: string
+          doctor_id: string
+          doctor_name: string
+          doctor_phone: string
+          id?: string
+          location?: string | null
+          patient_name: string
+          patient_phone: string
+          preferred_mode?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          concern?: string | null
+          consent_confirmed?: boolean
+          created_at?: string
+          doctor_id?: string
+          doctor_name?: string
+          doctor_phone?: string
+          id?: string
+          location?: string | null
+          patient_name?: string
+          patient_phone?: string
+          preferred_mode?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "doctor_referrals_doctor_id_fkey"
+            columns: ["doctor_id"]
+            isOneToOne: false
+            referencedRelation: "doctors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      doctors: {
+        Row: {
+          created_at: string
+          email: string
+          facility: string | null
+          full_name: string
+          id: string
+          phone: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          facility?: string | null
+          full_name: string
+          id?: string
+          phone: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          facility?: string | null
+          full_name?: string
+          id?: string
+          phone?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       email_send_log: {
         Row: {
           created_at: string
@@ -1531,6 +1623,7 @@ export type Database = {
         Args: { payload: Json; queue_name: string }
         Returns: number
       }
+      get_doctor_email_by_phone: { Args: { _phone: string }; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

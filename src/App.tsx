@@ -86,6 +86,7 @@ import AnxietySymptomsPost from "./pages/blog/AnxietySymptomsPost";
 import HowToFindATherapistPost from "./pages/blog/HowToFindATherapistPost";
 import ForBusiness from "./pages/ForBusiness";
 import ForProfessionals from "./pages/ForProfessionals";
+import DoctorRefer from "./pages/professionals/DoctorRefer";
 import Specialists from "./pages/Specialists";
 import SpecialistProfile from "./pages/SpecialistProfile";
 import ScrollToTop from "./components/ScrollToTop";
@@ -183,6 +184,7 @@ const App = () => (
             {/* <Route path="/careers" element={<Careers />} /> */}
             <Route path="/for-business" element={<ForBusiness />} />
             <Route path="/for-professionals" element={<ForProfessionals />} />
+            <Route path="/for-professionals/refer" element={<DoctorRefer />} />
             <Route path="/specialists" element={<Specialists />} />
             <Route path="/specialists/:id" element={<SpecialistProfile />} />
             <Route path="/learning" element={<Learning />} />
