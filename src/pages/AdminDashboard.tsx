@@ -15,6 +15,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import TrainingRegistrationsTab from '@/components/admin/TrainingRegistrationsTab';
 import NewsletterTab from '@/components/admin/NewsletterTab';
+import ReferralsTab from '@/components/admin/ReferralsTab';
 import { 
   BookOpen, 
   GraduationCap, 
@@ -30,7 +31,8 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   ClipboardList,
-  Mail
+  Mail,
+  Stethoscope
 } from 'lucide-react';
 import {
   ChartContainer,
@@ -169,6 +171,10 @@ const AdminDashboard = () => {
             <TabsTrigger value="newsletter" className="gap-2">
               <Mail className="h-4 w-4" />
               Newsletter
+            </TabsTrigger>
+            <TabsTrigger value="referrals" className="gap-2">
+              <Stethoscope className="h-4 w-4" />
+              Referrals
             </TabsTrigger>
             <TabsTrigger value="finance" className="gap-2" asChild>
               <Link to="/admin/finance">
@@ -509,6 +515,10 @@ const AdminDashboard = () => {
 
           <TabsContent value="newsletter">
             <NewsletterTab />
+          </TabsContent>
+
+          <TabsContent value="referrals">
+            <ReferralsTab />
           </TabsContent>
         </Tabs>
       </main>
