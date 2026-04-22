@@ -9,7 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Loader2, Trash2, FileText, Users, Phone, MapPin } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { Loader2, Trash2, FileText, Users, Phone, MapPin, UserPlus, Stethoscope, Copy } from "lucide-react";
 
 type Referral = {
   id: string;
@@ -23,6 +24,15 @@ type Referral = {
   preferred_mode: string;
   status: string;
   admin_notes: string | null;
+  created_at: string;
+};
+
+type DoctorRow = {
+  id: string;
+  full_name: string;
+  phone: string;
+  email: string;
+  facility: string | null;
   created_at: string;
 };
 
@@ -47,6 +57,11 @@ const ReferralsTab = () => {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [selected, setSelected] = useState<Referral | null>(null);
   const [noteDraft, setNoteDraft] = useState("");
+  const [doctors, setDoctors] = useState<DoctorRow[]>([]);
+  const [onboardOpen, setOnboardOpen] = useState(false);
+  const [onboardSubmitting, setOnboardSubmitting] = useState(false);
+  const [createdCreds, setCreatedCreds] = useState<{ phone: string; password: string } | null>(null);
+  const [form, setForm] = useState({ full_name: "", phone: "", email: "", facility: "", password: "" });
 
   const fetchReferrals = async () => {
     setLoading(true);
@@ -62,14 +77,68 @@ const ReferralsTab = () => {
     setLoading(false);
   };
 
+  const fetchDoctors = async () => {
+    const { data } = await supabase
+      .from("doctors")
+      .select("id, full_name, phone, email, facility, created_at")
+      .order("created_at", { ascending: false });
+    setDoctors((data || []) as DoctorRow[]);
+  };
+
   useEffect(() => {
     fetchReferrals();
+    fetchDoctors();
     const channel = supabase
       .channel("referrals-changes")
       .on("postgres_changes", { event: "*", schema: "public", table: "doctor_referrals" }, fetchReferrals)
+      .on("postgres_changes", { event: "*", schema: "public", table: "doctors" }, fetchDoctors)
       .subscribe();
     return () => { supabase.removeChannel(channel); };
   }, []);
+
+  const generatePassword = () => {
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
+    let p = "";
+    for (let i = 0; i < 10; i++) p += chars[Math.floor(Math.random() * chars.length)];
+    setForm((f) => ({ ...f, password: p + "!" }));
+  };
+
+  const handleOnboard = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.full_name.trim() || !form.phone.trim() || !form.email.trim() || form.password.length < 8) {
+      toast({ title: "Missing fields", description: "Name, phone, email and 8+ char password required", variant: "destructive" });
+      return;
+    }
+    setOnboardSubmitting(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("admin-create-doctor", {
+        body: {
+          full_name: form.full_name.trim(),
+          phone: form.phone.trim(),
+          email: form.email.trim().toLowerCase(),
+          facility: form.facility.trim() || null,
+          password: form.password,
+        },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      setCreatedCreds({ phone: form.phone.trim(), password: form.password });
+      toast({ title: "Doctor onboarded", description: `Account created for Dr. ${form.full_name}` });
+      setForm({ full_name: "", phone: "", email: "", facility: "", password: "" });
+      fetchDoctors();
+    } catch (err: any) {
+      toast({ title: "Onboarding failed", description: err.message, variant: "destructive" });
+    } finally {
+      setOnboardSubmitting(false);
+    }
+  };
+
+  const copyCreds = () => {
+    if (!createdCreds) return;
+    const text = `InnerSpark Doctor Portal\nLogin: https://www.innersparkafrica.com/for-professionals/refer\nPhone: ${createdCreds.phone}\nPassword: ${createdCreds.password}`;
+    navigator.clipboard.writeText(text);
+    toast({ title: "Credentials copied" });
+  };
 
   const updateStatus = async (id: string, status: string) => {
     const { error } = await supabase.from("doctor_referrals").update({ status }).eq("id", id);
@@ -136,6 +205,19 @@ const ReferralsTab = () => {
 
   return (
     <div className="space-y-6">
+      {/* Header with Onboard button */}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 className="text-lg font-semibold flex items-center gap-2">
+            <Stethoscope className="w-5 h-5 text-primary" /> Doctor Referrals
+          </h2>
+          <p className="text-sm text-muted-foreground">Onboard doctors and manage incoming patient referrals.</p>
+        </div>
+        <Button onClick={() => { setCreatedCreds(null); setOnboardOpen(true); }}>
+          <UserPlus className="w-4 h-4 mr-2" /> Onboard Doctor
+        </Button>
+      </div>
+
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
         {STATUSES.map((s) => (
@@ -178,6 +260,47 @@ const ReferralsTab = () => {
                       <TableCell className="text-right">{d.total}</TableCell>
                       <TableCell className="text-right">{d.converted}</TableCell>
                       <TableCell className="text-right">{d.total > 0 ? Math.round((d.converted / d.total) * 100) : 0}%</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Onboarded doctors */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Stethoscope className="w-4 h-4" /> Onboarded Doctors ({doctors.length})
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {doctors.length === 0 ? (
+            <p className="text-sm text-muted-foreground">No doctors onboarded yet. Click "Onboard Doctor" above to add one.</p>
+          ) : (
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>#</TableHead>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Phone (login)</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead>Facility</TableHead>
+                    <TableHead>Onboarded</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {doctors.map((d, i) => (
+                    <TableRow key={d.id}>
+                      <TableCell className="text-muted-foreground">{i + 1}</TableCell>
+                      <TableCell className="font-medium">Dr. {d.full_name}</TableCell>
+                      <TableCell><a href={`tel:${d.phone}`} className="text-primary hover:underline">{d.phone}</a></TableCell>
+                      <TableCell className="text-sm">{d.email}</TableCell>
+                      <TableCell className="text-sm">{d.facility || "—"}</TableCell>
+                      <TableCell className="text-xs">{new Date(d.created_at).toLocaleDateString()}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
