@@ -414,6 +414,60 @@ const ReferralsTab = () => {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Onboard Doctor dialog */}
+      <Dialog open={onboardOpen} onOpenChange={(o) => { setOnboardOpen(o); if (!o) setCreatedCreds(null); }}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Onboard a Doctor</DialogTitle>
+          </DialogHeader>
+          {createdCreds ? (
+            <div className="space-y-4">
+              <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 space-y-2">
+                <p className="text-sm font-medium">Account created. Share these credentials with the doctor:</p>
+                <div className="text-sm space-y-1">
+                  <div><span className="text-muted-foreground">Login URL:</span> <span className="font-mono text-xs">/for-professionals/refer</span></div>
+                  <div><span className="text-muted-foreground">Phone:</span> <span className="font-mono">{createdCreds.phone}</span></div>
+                  <div><span className="text-muted-foreground">Password:</span> <span className="font-mono">{createdCreds.password}</span></div>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <Button onClick={copyCreds} variant="outline" className="flex-1"><Copy className="w-4 h-4 mr-2" /> Copy</Button>
+                <Button onClick={() => { setCreatedCreds(null); }} className="flex-1">Onboard another</Button>
+              </div>
+            </div>
+          ) : (
+            <form onSubmit={handleOnboard} className="space-y-3">
+              <div>
+                <Label htmlFor="d-name">Full Name *</Label>
+                <Input id="d-name" value={form.full_name} onChange={(e) => setForm({ ...form, full_name: e.target.value })} required />
+              </div>
+              <div>
+                <Label htmlFor="d-phone">Phone Number * (used as login ID)</Label>
+                <Input id="d-phone" type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="+256 700 000 000" required />
+              </div>
+              <div>
+                <Label htmlFor="d-email">Email *</Label>
+                <Input id="d-email" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
+              </div>
+              <div>
+                <Label htmlFor="d-fac">Facility (optional)</Label>
+                <Input id="d-fac" value={form.facility} onChange={(e) => setForm({ ...form, facility: e.target.value })} />
+              </div>
+              <div>
+                <Label htmlFor="d-pwd">Password * (min 8 chars)</Label>
+                <div className="flex gap-2">
+                  <Input id="d-pwd" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required minLength={8} />
+                  <Button type="button" variant="outline" onClick={generatePassword}>Generate</Button>
+                </div>
+              </div>
+              <Button type="submit" className="w-full" disabled={onboardSubmitting}>
+                {onboardSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Create Doctor Account"}
+              </Button>
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
