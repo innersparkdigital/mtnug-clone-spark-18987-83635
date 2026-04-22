@@ -364,6 +364,8 @@ const ReferralsTab = () => {
                     <TableHead>Referred By</TableHead>
                     <TableHead>Date</TableHead>
                     <TableHead>Status</TableHead>
+                    <TableHead>Payment</TableHead>
+                    <TableHead className="text-right">Amount</TableHead>
                     <TableHead></TableHead>
                   </TableRow>
                 </TableHeader>
@@ -389,6 +391,27 @@ const ReferralsTab = () => {
                             {STATUSES.map((s) => <SelectItem key={s} value={s} className="capitalize">{s.replace("_", " ")}</SelectItem>)}
                           </SelectContent>
                         </Select>
+                      </TableCell>
+                      <TableCell>
+                        <Select value={r.payment_status} onValueChange={(v) => updatePayment(r.id, v)}>
+                          <SelectTrigger className="h-8 text-xs w-[110px]"><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="not_paid">Not paid</SelectItem>
+                            <SelectItem value="paid">Paid</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Input
+                          type="number"
+                          defaultValue={r.payment_amount || ""}
+                          onBlur={(e) => {
+                            const val = parseFloat(e.target.value) || 0;
+                            if (val !== Number(r.payment_amount || 0)) updatePayment(r.id, r.payment_status, val);
+                          }}
+                          className="h-8 w-24 text-xs ml-auto"
+                          placeholder="0"
+                        />
                       </TableCell>
                       <TableCell>
                         <div className="flex gap-1">
