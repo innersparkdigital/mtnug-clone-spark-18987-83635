@@ -181,59 +181,32 @@ const DoctorRefer = () => {
         {!authLoading && !loadingDoctor && !user && (
           <Card>
             <CardHeader>
-              <CardTitle>Login or Register to Refer a Client</CardTitle>
-              <CardDescription>Phone number is your unique ID</CardDescription>
+              <CardTitle>Doctor Login</CardTitle>
+              <CardDescription>
+                Use the phone number and password issued to you by InnerSpark Africa.
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <Tabs value={authMode} onValueChange={(v) => setAuthMode(v as "login" | "register")}>
-                <TabsList className="grid w-full grid-cols-2 mb-4">
-                  <TabsTrigger value="login">Login</TabsTrigger>
-                  <TabsTrigger value="register">Register</TabsTrigger>
-                </TabsList>
-                <TabsContent value="login">
-                  <form onSubmit={handleLogin} className="space-y-4">
-                    <div>
-                      <Label htmlFor="login-phone">Phone Number</Label>
-                      <Input id="login-phone" type="tel" value={loginPhone} onChange={(e) => setLoginPhone(e.target.value)} placeholder="+256 700 000 000" required />
-                    </div>
-                    <div>
-                      <Label htmlFor="login-pwd">Password</Label>
-                      <Input id="login-pwd" type="password" value={loginPassword} onChange={(e) => setLoginPassword(e.target.value)} required />
-                    </div>
-                    <Button type="submit" className="w-full" disabled={submitting}>
-                      {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Login"}
-                    </Button>
-                  </form>
-                </TabsContent>
-                <TabsContent value="register">
-                  <form onSubmit={handleRegister} className="space-y-4">
-                    <div>
-                      <Label htmlFor="reg-name">Full Name</Label>
-                      <Input id="reg-name" value={regName} onChange={(e) => setRegName(e.target.value)} required />
-                    </div>
-                    <div>
-                      <Label htmlFor="reg-phone">Phone Number *</Label>
-                      <Input id="reg-phone" type="tel" value={regPhone} onChange={(e) => setRegPhone(e.target.value)} placeholder="+256 700 000 000" required />
-                    </div>
-                    <div>
-                      <Label htmlFor="reg-email">Email *</Label>
-                      <Input id="reg-email" type="email" value={regEmail} onChange={(e) => setRegEmail(e.target.value)} required />
-                      <p className="text-xs text-muted-foreground mt-1">Used only for password recovery</p>
-                    </div>
-                    <div>
-                      <Label htmlFor="reg-facility">Facility / Organization (optional)</Label>
-                      <Input id="reg-facility" value={regFacility} onChange={(e) => setRegFacility(e.target.value)} />
-                    </div>
-                    <div>
-                      <Label htmlFor="reg-pwd">Create Password (min 8 characters)</Label>
-                      <Input id="reg-pwd" type="password" value={regPassword} onChange={(e) => setRegPassword(e.target.value)} required />
-                    </div>
-                    <Button type="submit" className="w-full" disabled={submitting}>
-                      {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Create Account"}
-                    </Button>
-                  </form>
-                </TabsContent>
-              </Tabs>
+              <form onSubmit={handleLogin} className="space-y-4">
+                <div>
+                  <Label htmlFor="login-phone">Phone Number</Label>
+                  <Input id="login-phone" type="tel" value={loginPhone} onChange={(e) => setLoginPhone(e.target.value)} placeholder="+256 700 000 000" required />
+                </div>
+                <div>
+                  <Label htmlFor="login-pwd">Password</Label>
+                  <Input id="login-pwd" type="password" value={loginPassword} onChange={(e) => setLoginPassword(e.target.value)} required />
+                </div>
+                <Button type="submit" className="w-full" disabled={submitting}>
+                  {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Login"}
+                </Button>
+              </form>
+              <p className="text-xs text-muted-foreground mt-4 text-center">
+                Don't have an account? Email{" "}
+                <a href="mailto:info@innersparkafrica.com" className="text-primary hover:underline">
+                  info@innersparkafrica.com
+                </a>{" "}
+                to be onboarded.
+              </p>
             </CardContent>
           </Card>
         )}
