@@ -52,29 +52,72 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Reject if phone already exists
-    const { data: existing } = await admin
+    // Reject if phone already linked to a doctor
+    const { data: existingByPhone } = await admin
       .from("doctors")
       .select("id")
       .eq("phone", phone)
       .maybeSingle();
-    if (existing) {
+    if (existingByPhone) {
       return new Response(JSON.stringify({ error: "Phone already registered" }), {
         status: 409,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    // Create auth user (auto-confirmed)
+    // Reject if email already linked to a doctor
+    const { data: existingByEmail } = await admin
+      .from("doctors")
+      .select("id")
+      .eq("email", email)
+      .maybeSingle();
+    if (existingByEmail) {
+      return new Response(JSON.stringify({ error: "Email already registered as a doctor" }), {
+        status: 409,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Try to create auth user (auto-confirmed). If email exists, reuse it and reset its password.
+    let userId: string | undefined;
+    let createdAuthUser = false;
     const { data: created, error: createErr } = await admin.auth.admin.createUser({
       email,
       password,
       email_confirm: true,
       user_metadata: { display_name: full_name, is_doctor: true },
     });
-    if (createErr) throw createErr;
-    const userId = created.user?.id;
-    if (!userId) throw new Error("Failed to create auth user");
+
+    if (createErr) {
+      const code = (createErr as { code?: string }).code;
+      const msg = (createErr as Error).message || "";
+      const isExists = code === "email_exists" || /already been registered|already registered/i.test(msg);
+      if (!isExists) throw createErr;
+
+      // Find the existing user by email
+      let foundId: string | undefined;
+      for (let page = 1; page <= 20 && !foundId; page++) {
+        const { data: list, error: listErr } = await admin.auth.admin.listUsers({ page, perPage: 200 });
+        if (listErr) throw listErr;
+        const match = list.users.find((u) => (u.email || "").toLowerCase() === email);
+        if (match) foundId = match.id;
+        if (list.users.length < 200) break;
+      }
+      if (!foundId) throw new Error("Email already registered but user not found");
+      userId = foundId;
+
+      // Reset the password and ensure metadata is set
+      const { error: updErr } = await admin.auth.admin.updateUserById(userId, {
+        password,
+        email_confirm: true,
+        user_metadata: { display_name: full_name, is_doctor: true },
+      });
+      if (updErr) throw updErr;
+    } else {
+      userId = created.user?.id;
+      createdAuthUser = true;
+    }
+    if (!userId) throw new Error("Failed to resolve auth user");
 
     const { data: doctor, error: insertErr } = await admin
       .from("doctors")
@@ -82,8 +125,8 @@ Deno.serve(async (req) => {
       .select()
       .single();
     if (insertErr) {
-      // Rollback the auth user if doctor insert fails
-      await admin.auth.admin.deleteUser(userId);
+      // Only rollback the auth user if we created it in this call
+      if (createdAuthUser) await admin.auth.admin.deleteUser(userId);
       throw insertErr;
     }
 
