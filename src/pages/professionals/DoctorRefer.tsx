@@ -13,7 +13,6 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, Stethoscope, CheckCircle2, LogOut } from "lucide-react";
 import { z } from "zod";
 
@@ -39,15 +38,9 @@ const DoctorRefer = () => {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  // Auth tab state
-  const [authMode, setAuthMode] = useState<"login" | "register">("login");
+  // Login state (admin onboards doctors; no self-signup)
   const [loginPhone, setLoginPhone] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
-  const [regName, setRegName] = useState("");
-  const [regPhone, setRegPhone] = useState("");
-  const [regEmail, setRegEmail] = useState("");
-  const [regFacility, setRegFacility] = useState("");
-  const [regPassword, setRegPassword] = useState("");
 
   // Referral form state
   const [patientName, setPatientName] = useState("");
@@ -76,60 +69,6 @@ const DoctorRefer = () => {
     loadDoctor();
   }, [user]);
 
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      nameSchema.parse(regName);
-      phoneSchema.parse(regPhone);
-      emailSchema.parse(regEmail);
-      passwordSchema.parse(regPassword);
-    } catch (err: any) {
-      toast({ title: "Invalid input", description: err.errors?.[0]?.message || "Check your details", variant: "destructive" });
-      return;
-    }
-
-    setSubmitting(true);
-    try {
-      // Check phone is not already used
-      const { data: existing } = await supabase.rpc("get_doctor_email_by_phone", { _phone: regPhone.trim() });
-      if (existing) {
-        toast({ title: "Phone already registered", description: "Please log in instead.", variant: "destructive" });
-        setAuthMode("login");
-        setLoginPhone(regPhone.trim());
-        setSubmitting(false);
-        return;
-      }
-
-      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-        email: regEmail.trim().toLowerCase(),
-        password: regPassword,
-        options: {
-          emailRedirectTo: `${window.location.origin}/for-professionals/refer`,
-          data: { display_name: regName.trim(), is_doctor: true },
-        },
-      });
-      if (signUpError) throw signUpError;
-      const newUserId = signUpData.user?.id;
-      if (!newUserId) throw new Error("Signup failed");
-
-      const { error: insertError } = await supabase.from("doctors").insert({
-        user_id: newUserId,
-        full_name: regName.trim(),
-        phone: regPhone.trim(),
-        email: regEmail.trim().toLowerCase(),
-        facility: regFacility.trim() || null,
-      });
-      if (insertError) throw insertError;
-
-      toast({ title: "Account created", description: `Welcome, Dr. ${regName.trim()}` });
-      // Session is automatically active after signUp
-    } catch (err: any) {
-      toast({ title: "Registration failed", description: err.message, variant: "destructive" });
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -144,9 +83,11 @@ const DoctorRefer = () => {
       const { data: emailRes, error: rpcError } = await supabase.rpc("get_doctor_email_by_phone", { _phone: loginPhone.trim() });
       if (rpcError) throw rpcError;
       if (!emailRes) {
-        toast({ title: "Phone not registered", description: "Please register first.", variant: "destructive" });
-        setAuthMode("register");
-        setRegPhone(loginPhone.trim());
+        toast({
+          title: "Phone not registered",
+          description: "Contact InnerSpark Africa admin to get an account.",
+          variant: "destructive",
+        });
         setSubmitting(false);
         return;
       }
