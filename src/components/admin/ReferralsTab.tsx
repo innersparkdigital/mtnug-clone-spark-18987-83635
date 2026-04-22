@@ -407,6 +407,12 @@ const ReferralsTab = () => {
               </div>
               <div>
                 <label className="text-sm font-medium mb-1 block">Internal Notes</label>
+                {selected.admin_notes && (
+                  <div className="mb-2 rounded-md border bg-muted/40 p-3 text-sm whitespace-pre-wrap">
+                    <div className="text-xs text-muted-foreground mb-1">Saved note</div>
+                    {selected.admin_notes}
+                  </div>
+                )}
                 <Textarea value={noteDraft} onChange={(e) => setNoteDraft(e.target.value)} rows={5} placeholder="Add internal notes about follow-up, booking status, etc." />
               </div>
               <Button onClick={saveNote} className="w-full">Save Note</Button>
