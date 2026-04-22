@@ -492,6 +492,58 @@ const ReferralsTab = () => {
         </DialogContent>
       </Dialog>
 
+      {/* Commission Claims */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Commission Claims ({claims.length})</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {claims.length === 0 ? (
+            <p className="text-sm text-muted-foreground">No commission claims yet.</p>
+          ) : (
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Doctor</TableHead>
+                    <TableHead className="text-right">Amount</TableHead>
+                    <TableHead>Method</TableHead>
+                    <TableHead>Details</TableHead>
+                    <TableHead>Status</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {claims.map((c) => (
+                    <TableRow key={c.id}>
+                      <TableCell className="text-xs">{new Date(c.created_at).toLocaleDateString()}</TableCell>
+                      <TableCell>
+                        <div className="text-sm font-medium">Dr. {c.doctor_name}</div>
+                        <div className="text-xs text-muted-foreground">{c.doctor_phone}</div>
+                      </TableCell>
+                      <TableCell className="text-right font-medium">UGX {Math.round(Number(c.amount)).toLocaleString()}</TableCell>
+                      <TableCell className="text-sm">{c.payout_method || "—"}</TableCell>
+                      <TableCell className="text-xs max-w-[200px] truncate">{c.payout_details || "—"}</TableCell>
+                      <TableCell>
+                        <Select value={c.status} onValueChange={(v) => updateClaimStatus(c.id, v)}>
+                          <SelectTrigger className="h-8 text-xs w-[120px]"><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="pending">Pending</SelectItem>
+                            <SelectItem value="approved">Approved</SelectItem>
+                            <SelectItem value="paid">Paid</SelectItem>
+                            <SelectItem value="rejected">Rejected</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
       {/* Onboard Doctor dialog */}
       <Dialog open={onboardOpen} onOpenChange={(o) => { setOnboardOpen(o); if (!o) setCreatedCreds(null); }}>
         <DialogContent className="max-w-lg">
