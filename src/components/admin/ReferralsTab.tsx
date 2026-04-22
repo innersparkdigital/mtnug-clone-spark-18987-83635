@@ -153,6 +153,14 @@ const ReferralsTab = () => {
     }
   };
 
+  const updatePayment = async (id: string, payment_status: string, payment_amount?: number) => {
+    const patch: any = { payment_status };
+    if (payment_amount !== undefined) patch.payment_amount = payment_amount;
+    const { error } = await supabase.from("doctor_referrals").update(patch).eq("id", id);
+    if (error) toast({ title: "Update failed", description: error.message, variant: "destructive" });
+    else toast({ title: "Payment updated" });
+  };
+
   const saveNote = async () => {
     if (!selected) return;
     const { data, error } = await supabase
