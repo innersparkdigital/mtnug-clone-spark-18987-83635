@@ -13,7 +13,6 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, Stethoscope, CheckCircle2, LogOut } from "lucide-react";
 import { z } from "zod";
 
@@ -39,15 +38,9 @@ const DoctorRefer = () => {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  // Auth tab state
-  const [authMode, setAuthMode] = useState<"login" | "register">("login");
+  // Login state (admin onboards doctors; no self-signup)
   const [loginPhone, setLoginPhone] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
-  const [regName, setRegName] = useState("");
-  const [regPhone, setRegPhone] = useState("");
-  const [regEmail, setRegEmail] = useState("");
-  const [regFacility, setRegFacility] = useState("");
-  const [regPassword, setRegPassword] = useState("");
 
   // Referral form state
   const [patientName, setPatientName] = useState("");
@@ -76,60 +69,6 @@ const DoctorRefer = () => {
     loadDoctor();
   }, [user]);
 
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      nameSchema.parse(regName);
-      phoneSchema.parse(regPhone);
-      emailSchema.parse(regEmail);
-      passwordSchema.parse(regPassword);
-    } catch (err: any) {
-      toast({ title: "Invalid input", description: err.errors?.[0]?.message || "Check your details", variant: "destructive" });
-      return;
-    }
-
-    setSubmitting(true);
-    try {
-      // Check phone is not already used
-      const { data: existing } = await supabase.rpc("get_doctor_email_by_phone", { _phone: regPhone.trim() });
-      if (existing) {
-        toast({ title: "Phone already registered", description: "Please log in instead.", variant: "destructive" });
-        setAuthMode("login");
-        setLoginPhone(regPhone.trim());
-        setSubmitting(false);
-        return;
-      }
-
-      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-        email: regEmail.trim().toLowerCase(),
-        password: regPassword,
-        options: {
-          emailRedirectTo: `${window.location.origin}/for-professionals/refer`,
-          data: { display_name: regName.trim(), is_doctor: true },
-        },
-      });
-      if (signUpError) throw signUpError;
-      const newUserId = signUpData.user?.id;
-      if (!newUserId) throw new Error("Signup failed");
-
-      const { error: insertError } = await supabase.from("doctors").insert({
-        user_id: newUserId,
-        full_name: regName.trim(),
-        phone: regPhone.trim(),
-        email: regEmail.trim().toLowerCase(),
-        facility: regFacility.trim() || null,
-      });
-      if (insertError) throw insertError;
-
-      toast({ title: "Account created", description: `Welcome, Dr. ${regName.trim()}` });
-      // Session is automatically active after signUp
-    } catch (err: any) {
-      toast({ title: "Registration failed", description: err.message, variant: "destructive" });
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -144,9 +83,11 @@ const DoctorRefer = () => {
       const { data: emailRes, error: rpcError } = await supabase.rpc("get_doctor_email_by_phone", { _phone: loginPhone.trim() });
       if (rpcError) throw rpcError;
       if (!emailRes) {
-        toast({ title: "Phone not registered", description: "Please register first.", variant: "destructive" });
-        setAuthMode("register");
-        setRegPhone(loginPhone.trim());
+        toast({
+          title: "Phone not registered",
+          description: "Contact InnerSpark Africa admin to get an account.",
+          variant: "destructive",
+        });
         setSubmitting(false);
         return;
       }
@@ -240,59 +181,32 @@ const DoctorRefer = () => {
         {!authLoading && !loadingDoctor && !user && (
           <Card>
             <CardHeader>
-              <CardTitle>Login or Register to Refer a Client</CardTitle>
-              <CardDescription>Phone number is your unique ID</CardDescription>
+              <CardTitle>Doctor Login</CardTitle>
+              <CardDescription>
+                Use the phone number and password issued to you by InnerSpark Africa.
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <Tabs value={authMode} onValueChange={(v) => setAuthMode(v as "login" | "register")}>
-                <TabsList className="grid w-full grid-cols-2 mb-4">
-                  <TabsTrigger value="login">Login</TabsTrigger>
-                  <TabsTrigger value="register">Register</TabsTrigger>
-                </TabsList>
-                <TabsContent value="login">
-                  <form onSubmit={handleLogin} className="space-y-4">
-                    <div>
-                      <Label htmlFor="login-phone">Phone Number</Label>
-                      <Input id="login-phone" type="tel" value={loginPhone} onChange={(e) => setLoginPhone(e.target.value)} placeholder="+256 700 000 000" required />
-                    </div>
-                    <div>
-                      <Label htmlFor="login-pwd">Password</Label>
-                      <Input id="login-pwd" type="password" value={loginPassword} onChange={(e) => setLoginPassword(e.target.value)} required />
-                    </div>
-                    <Button type="submit" className="w-full" disabled={submitting}>
-                      {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Login"}
-                    </Button>
-                  </form>
-                </TabsContent>
-                <TabsContent value="register">
-                  <form onSubmit={handleRegister} className="space-y-4">
-                    <div>
-                      <Label htmlFor="reg-name">Full Name</Label>
-                      <Input id="reg-name" value={regName} onChange={(e) => setRegName(e.target.value)} required />
-                    </div>
-                    <div>
-                      <Label htmlFor="reg-phone">Phone Number *</Label>
-                      <Input id="reg-phone" type="tel" value={regPhone} onChange={(e) => setRegPhone(e.target.value)} placeholder="+256 700 000 000" required />
-                    </div>
-                    <div>
-                      <Label htmlFor="reg-email">Email *</Label>
-                      <Input id="reg-email" type="email" value={regEmail} onChange={(e) => setRegEmail(e.target.value)} required />
-                      <p className="text-xs text-muted-foreground mt-1">Used only for password recovery</p>
-                    </div>
-                    <div>
-                      <Label htmlFor="reg-facility">Facility / Organization (optional)</Label>
-                      <Input id="reg-facility" value={regFacility} onChange={(e) => setRegFacility(e.target.value)} />
-                    </div>
-                    <div>
-                      <Label htmlFor="reg-pwd">Create Password (min 8 characters)</Label>
-                      <Input id="reg-pwd" type="password" value={regPassword} onChange={(e) => setRegPassword(e.target.value)} required />
-                    </div>
-                    <Button type="submit" className="w-full" disabled={submitting}>
-                      {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Create Account"}
-                    </Button>
-                  </form>
-                </TabsContent>
-              </Tabs>
+              <form onSubmit={handleLogin} className="space-y-4">
+                <div>
+                  <Label htmlFor="login-phone">Phone Number</Label>
+                  <Input id="login-phone" type="tel" value={loginPhone} onChange={(e) => setLoginPhone(e.target.value)} placeholder="+256 700 000 000" required />
+                </div>
+                <div>
+                  <Label htmlFor="login-pwd">Password</Label>
+                  <Input id="login-pwd" type="password" value={loginPassword} onChange={(e) => setLoginPassword(e.target.value)} required />
+                </div>
+                <Button type="submit" className="w-full" disabled={submitting}>
+                  {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Login"}
+                </Button>
+              </form>
+              <p className="text-xs text-muted-foreground mt-4 text-center">
+                Don't have an account? Email{" "}
+                <a href="mailto:info@innersparkafrica.com" className="text-primary hover:underline">
+                  info@innersparkafrica.com
+                </a>{" "}
+                to be onboarded.
+              </p>
             </CardContent>
           </Card>
         )}
