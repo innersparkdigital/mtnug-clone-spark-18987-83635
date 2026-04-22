@@ -12,6 +12,17 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Label } from "@/components/ui/label";
 import { Loader2, Trash2, FileText, Users, Phone, MapPin, UserPlus, Stethoscope, Copy } from "lucide-react";
 
+type Claim = {
+  id: string;
+  doctor_name: string;
+  doctor_phone: string;
+  amount: number;
+  status: string;
+  payout_method: string | null;
+  payout_details: string | null;
+  created_at: string;
+};
+
 type Referral = {
   id: string;
   doctor_id: string;
