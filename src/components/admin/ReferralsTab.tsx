@@ -151,12 +151,20 @@ const ReferralsTab = () => {
 
   const saveNote = async () => {
     if (!selected) return;
-    const { error } = await supabase.from("doctor_referrals").update({ admin_notes: noteDraft }).eq("id", selected.id);
+    const { data, error } = await supabase
+      .from("doctor_referrals")
+      .update({ admin_notes: noteDraft })
+      .eq("id", selected.id)
+      .select()
+      .maybeSingle();
     if (error) {
       toast({ title: "Save failed", description: error.message, variant: "destructive" });
+    } else if (!data) {
+      toast({ title: "Save blocked", description: "You don't have permission to update this referral.", variant: "destructive" });
     } else {
       toast({ title: "Note saved" });
       setSelected({ ...selected, admin_notes: noteDraft });
+      fetchReferrals();
     }
   };
 
