@@ -73,6 +73,7 @@ const ReferralsTab = () => {
   const [selected, setSelected] = useState<Referral | null>(null);
   const [noteDraft, setNoteDraft] = useState("");
   const [doctors, setDoctors] = useState<DoctorRow[]>([]);
+  const [claims, setClaims] = useState<Claim[]>([]);
   const [onboardOpen, setOnboardOpen] = useState(false);
   const [onboardSubmitting, setOnboardSubmitting] = useState(false);
   const [createdCreds, setCreatedCreds] = useState<{ phone: string; password: string } | null>(null);
@@ -100,13 +101,29 @@ const ReferralsTab = () => {
     setDoctors((data || []) as DoctorRow[]);
   };
 
+  const fetchClaims = async () => {
+    const { data } = await supabase
+      .from("commission_claims")
+      .select("id, doctor_name, doctor_phone, amount, status, payout_method, payout_details, created_at")
+      .order("created_at", { ascending: false });
+    setClaims((data || []) as Claim[]);
+  };
+
+  const updateClaimStatus = async (id: string, status: string) => {
+    const { error } = await supabase.from("commission_claims").update({ status }).eq("id", id);
+    if (error) toast({ title: "Update failed", description: error.message, variant: "destructive" });
+    else toast({ title: `Claim ${status}` });
+  };
+
   useEffect(() => {
     fetchReferrals();
     fetchDoctors();
+    fetchClaims();
     const channel = supabase
       .channel("referrals-changes")
       .on("postgres_changes", { event: "*", schema: "public", table: "doctor_referrals" }, fetchReferrals)
       .on("postgres_changes", { event: "*", schema: "public", table: "doctors" }, fetchDoctors)
+      .on("postgres_changes", { event: "*", schema: "public", table: "commission_claims" }, fetchClaims)
       .subscribe();
     return () => { supabase.removeChannel(channel); };
   }, []);
