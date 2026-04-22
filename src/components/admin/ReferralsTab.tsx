@@ -25,6 +25,10 @@ type Referral = {
   status: string;
   admin_notes: string | null;
   created_at: string;
+  payment_status: string;
+  payment_amount: number | null;
+  commission_amount: number | null;
+  commission_status: string;
 };
 
 type DoctorRow = {
