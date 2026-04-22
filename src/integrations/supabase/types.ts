@@ -296,6 +296,98 @@ export type Database = {
         }
         Relationships: []
       }
+      commission_claim_items: {
+        Row: {
+          amount: number
+          claim_id: string
+          created_at: string
+          id: string
+          referral_id: string
+        }
+        Insert: {
+          amount: number
+          claim_id: string
+          created_at?: string
+          id?: string
+          referral_id: string
+        }
+        Update: {
+          amount?: number
+          claim_id?: string
+          created_at?: string
+          id?: string
+          referral_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "commission_claim_items_claim_id_fkey"
+            columns: ["claim_id"]
+            isOneToOne: false
+            referencedRelation: "commission_claims"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "commission_claim_items_referral_id_fkey"
+            columns: ["referral_id"]
+            isOneToOne: true
+            referencedRelation: "doctor_referrals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      commission_claims: {
+        Row: {
+          admin_notes: string | null
+          amount: number
+          created_at: string
+          doctor_id: string
+          doctor_name: string
+          doctor_phone: string
+          id: string
+          paid_at: string | null
+          payout_details: string | null
+          payout_method: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          amount: number
+          created_at?: string
+          doctor_id: string
+          doctor_name: string
+          doctor_phone: string
+          id?: string
+          paid_at?: string | null
+          payout_details?: string | null
+          payout_method?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          amount?: number
+          created_at?: string
+          doctor_id?: string
+          doctor_name?: string
+          doctor_phone?: string
+          id?: string
+          paid_at?: string | null
+          payout_details?: string | null
+          payout_method?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "commission_claims_doctor_id_fkey"
+            columns: ["doctor_id"]
+            isOneToOne: false
+            referencedRelation: "doctors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contact_submissions: {
         Row: {
           created_at: string
@@ -502,6 +594,9 @@ export type Database = {
       doctor_referrals: {
         Row: {
           admin_notes: string | null
+          commission_amount: number | null
+          commission_rate: number
+          commission_status: string
           concern: string | null
           consent_confirmed: boolean
           created_at: string
@@ -512,12 +607,17 @@ export type Database = {
           location: string | null
           patient_name: string
           patient_phone: string
+          payment_amount: number | null
+          payment_status: string
           preferred_mode: string
           status: string
           updated_at: string
         }
         Insert: {
           admin_notes?: string | null
+          commission_amount?: number | null
+          commission_rate?: number
+          commission_status?: string
           concern?: string | null
           consent_confirmed?: boolean
           created_at?: string
@@ -528,12 +628,17 @@ export type Database = {
           location?: string | null
           patient_name: string
           patient_phone: string
+          payment_amount?: number | null
+          payment_status?: string
           preferred_mode?: string
           status?: string
           updated_at?: string
         }
         Update: {
           admin_notes?: string | null
+          commission_amount?: number | null
+          commission_rate?: number
+          commission_status?: string
           concern?: string | null
           consent_confirmed?: boolean
           created_at?: string
@@ -544,6 +649,8 @@ export type Database = {
           location?: string | null
           patient_name?: string
           patient_phone?: string
+          payment_amount?: number | null
+          payment_status?: string
           preferred_mode?: string
           status?: string
           updated_at?: string
