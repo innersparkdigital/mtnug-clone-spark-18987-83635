@@ -12,6 +12,17 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Label } from "@/components/ui/label";
 import { Loader2, Trash2, FileText, Users, Phone, MapPin, UserPlus, Stethoscope, Copy } from "lucide-react";
 
+type Claim = {
+  id: string;
+  doctor_name: string;
+  doctor_phone: string;
+  amount: number;
+  status: string;
+  payout_method: string | null;
+  payout_details: string | null;
+  created_at: string;
+};
+
 type Referral = {
   id: string;
   doctor_id: string;
@@ -25,6 +36,10 @@ type Referral = {
   status: string;
   admin_notes: string | null;
   created_at: string;
+  payment_status: string;
+  payment_amount: number | null;
+  commission_amount: number | null;
+  commission_status: string;
 };
 
 type DoctorRow = {
@@ -58,6 +73,7 @@ const ReferralsTab = () => {
   const [selected, setSelected] = useState<Referral | null>(null);
   const [noteDraft, setNoteDraft] = useState("");
   const [doctors, setDoctors] = useState<DoctorRow[]>([]);
+  const [claims, setClaims] = useState<Claim[]>([]);
   const [onboardOpen, setOnboardOpen] = useState(false);
   const [onboardSubmitting, setOnboardSubmitting] = useState(false);
   const [createdCreds, setCreatedCreds] = useState<{ phone: string; password: string } | null>(null);
@@ -85,13 +101,29 @@ const ReferralsTab = () => {
     setDoctors((data || []) as DoctorRow[]);
   };
 
+  const fetchClaims = async () => {
+    const { data } = await supabase
+      .from("commission_claims")
+      .select("id, doctor_name, doctor_phone, amount, status, payout_method, payout_details, created_at")
+      .order("created_at", { ascending: false });
+    setClaims((data || []) as Claim[]);
+  };
+
+  const updateClaimStatus = async (id: string, status: string) => {
+    const { error } = await supabase.from("commission_claims").update({ status }).eq("id", id);
+    if (error) toast({ title: "Update failed", description: error.message, variant: "destructive" });
+    else toast({ title: `Claim ${status}` });
+  };
+
   useEffect(() => {
     fetchReferrals();
     fetchDoctors();
+    fetchClaims();
     const channel = supabase
       .channel("referrals-changes")
       .on("postgres_changes", { event: "*", schema: "public", table: "doctor_referrals" }, fetchReferrals)
       .on("postgres_changes", { event: "*", schema: "public", table: "doctors" }, fetchDoctors)
+      .on("postgres_changes", { event: "*", schema: "public", table: "commission_claims" }, fetchClaims)
       .subscribe();
     return () => { supabase.removeChannel(channel); };
   }, []);
@@ -149,14 +181,30 @@ const ReferralsTab = () => {
     }
   };
 
+  const updatePayment = async (id: string, payment_status: string, payment_amount?: number) => {
+    const patch: any = { payment_status };
+    if (payment_amount !== undefined) patch.payment_amount = payment_amount;
+    const { error } = await supabase.from("doctor_referrals").update(patch).eq("id", id);
+    if (error) toast({ title: "Update failed", description: error.message, variant: "destructive" });
+    else toast({ title: "Payment updated" });
+  };
+
   const saveNote = async () => {
     if (!selected) return;
-    const { error } = await supabase.from("doctor_referrals").update({ admin_notes: noteDraft }).eq("id", selected.id);
+    const { data, error } = await supabase
+      .from("doctor_referrals")
+      .update({ admin_notes: noteDraft })
+      .eq("id", selected.id)
+      .select()
+      .maybeSingle();
     if (error) {
       toast({ title: "Save failed", description: error.message, variant: "destructive" });
+    } else if (!data) {
+      toast({ title: "Save blocked", description: "You don't have permission to update this referral.", variant: "destructive" });
     } else {
       toast({ title: "Note saved" });
       setSelected({ ...selected, admin_notes: noteDraft });
+      fetchReferrals();
     }
   };
 
@@ -344,6 +392,8 @@ const ReferralsTab = () => {
                     <TableHead>Referred By</TableHead>
                     <TableHead>Date</TableHead>
                     <TableHead>Status</TableHead>
+                    <TableHead>Payment</TableHead>
+                    <TableHead className="text-right">Amount</TableHead>
                     <TableHead></TableHead>
                   </TableRow>
                 </TableHeader>
@@ -369,6 +419,27 @@ const ReferralsTab = () => {
                             {STATUSES.map((s) => <SelectItem key={s} value={s} className="capitalize">{s.replace("_", " ")}</SelectItem>)}
                           </SelectContent>
                         </Select>
+                      </TableCell>
+                      <TableCell>
+                        <Select value={r.payment_status} onValueChange={(v) => updatePayment(r.id, v)}>
+                          <SelectTrigger className="h-8 text-xs w-[110px]"><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="not_paid">Not paid</SelectItem>
+                            <SelectItem value="paid">Paid</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Input
+                          type="number"
+                          defaultValue={r.payment_amount || ""}
+                          onBlur={(e) => {
+                            const val = parseFloat(e.target.value) || 0;
+                            if (val !== Number(r.payment_amount || 0)) updatePayment(r.id, r.payment_status, val);
+                          }}
+                          className="h-8 w-24 text-xs ml-auto"
+                          placeholder="0"
+                        />
                       </TableCell>
                       <TableCell>
                         <div className="flex gap-1">
@@ -407,6 +478,12 @@ const ReferralsTab = () => {
               </div>
               <div>
                 <label className="text-sm font-medium mb-1 block">Internal Notes</label>
+                {selected.admin_notes && (
+                  <div className="mb-2 rounded-md border bg-muted/40 p-3 text-sm whitespace-pre-wrap">
+                    <div className="text-xs text-muted-foreground mb-1">Saved note</div>
+                    {selected.admin_notes}
+                  </div>
+                )}
                 <Textarea value={noteDraft} onChange={(e) => setNoteDraft(e.target.value)} rows={5} placeholder="Add internal notes about follow-up, booking status, etc." />
               </div>
               <Button onClick={saveNote} className="w-full">Save Note</Button>
@@ -414,6 +491,58 @@ const ReferralsTab = () => {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Commission Claims */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Commission Claims ({claims.length})</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {claims.length === 0 ? (
+            <p className="text-sm text-muted-foreground">No commission claims yet.</p>
+          ) : (
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Doctor</TableHead>
+                    <TableHead className="text-right">Amount</TableHead>
+                    <TableHead>Method</TableHead>
+                    <TableHead>Details</TableHead>
+                    <TableHead>Status</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {claims.map((c) => (
+                    <TableRow key={c.id}>
+                      <TableCell className="text-xs">{new Date(c.created_at).toLocaleDateString()}</TableCell>
+                      <TableCell>
+                        <div className="text-sm font-medium">Dr. {c.doctor_name}</div>
+                        <div className="text-xs text-muted-foreground">{c.doctor_phone}</div>
+                      </TableCell>
+                      <TableCell className="text-right font-medium">UGX {Math.round(Number(c.amount)).toLocaleString()}</TableCell>
+                      <TableCell className="text-sm">{c.payout_method || "—"}</TableCell>
+                      <TableCell className="text-xs max-w-[200px] truncate">{c.payout_details || "—"}</TableCell>
+                      <TableCell>
+                        <Select value={c.status} onValueChange={(v) => updateClaimStatus(c.id, v)}>
+                          <SelectTrigger className="h-8 text-xs w-[120px]"><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="pending">Pending</SelectItem>
+                            <SelectItem value="approved">Approved</SelectItem>
+                            <SelectItem value="paid">Paid</SelectItem>
+                            <SelectItem value="rejected">Rejected</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Onboard Doctor dialog */}
       <Dialog open={onboardOpen} onOpenChange={(o) => { setOnboardOpen(o); if (!o) setCreatedCreds(null); }}>
