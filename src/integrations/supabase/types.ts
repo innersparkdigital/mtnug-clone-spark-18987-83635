@@ -296,6 +296,98 @@ export type Database = {
         }
         Relationships: []
       }
+      commission_claim_items: {
+        Row: {
+          amount: number
+          claim_id: string
+          created_at: string
+          id: string
+          referral_id: string
+        }
+        Insert: {
+          amount: number
+          claim_id: string
+          created_at?: string
+          id?: string
+          referral_id: string
+        }
+        Update: {
+          amount?: number
+          claim_id?: string
+          created_at?: string
+          id?: string
+          referral_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "commission_claim_items_claim_id_fkey"
+            columns: ["claim_id"]
+            isOneToOne: false
+            referencedRelation: "commission_claims"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "commission_claim_items_referral_id_fkey"
+            columns: ["referral_id"]
+            isOneToOne: true
+            referencedRelation: "doctor_referrals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      commission_claims: {
+        Row: {
+          admin_notes: string | null
+          amount: number
+          created_at: string
+          doctor_id: string
+          doctor_name: string
+          doctor_phone: string
+          id: string
+          paid_at: string | null
+          payout_details: string | null
+          payout_method: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          amount: number
+          created_at?: string
+          doctor_id: string
+          doctor_name: string
+          doctor_phone: string
+          id?: string
+          paid_at?: string | null
+          payout_details?: string | null
+          payout_method?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          amount?: number
+          created_at?: string
+          doctor_id?: string
+          doctor_name?: string
+          doctor_phone?: string
+          id?: string
+          paid_at?: string | null
+          payout_details?: string | null
+          payout_method?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "commission_claims_doctor_id_fkey"
+            columns: ["doctor_id"]
+            isOneToOne: false
+            referencedRelation: "doctors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contact_submissions: {
         Row: {
           created_at: string
@@ -495,6 +587,113 @@ export type Database = {
           course_id?: string
           enrolled_at?: string
           id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      doctor_referrals: {
+        Row: {
+          admin_notes: string | null
+          commission_amount: number | null
+          commission_rate: number
+          commission_status: string
+          concern: string | null
+          consent_confirmed: boolean
+          created_at: string
+          doctor_id: string
+          doctor_name: string
+          doctor_phone: string
+          id: string
+          location: string | null
+          patient_name: string
+          patient_phone: string
+          payment_amount: number | null
+          payment_status: string
+          preferred_mode: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          commission_amount?: number | null
+          commission_rate?: number
+          commission_status?: string
+          concern?: string | null
+          consent_confirmed?: boolean
+          created_at?: string
+          doctor_id: string
+          doctor_name: string
+          doctor_phone: string
+          id?: string
+          location?: string | null
+          patient_name: string
+          patient_phone: string
+          payment_amount?: number | null
+          payment_status?: string
+          preferred_mode?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          commission_amount?: number | null
+          commission_rate?: number
+          commission_status?: string
+          concern?: string | null
+          consent_confirmed?: boolean
+          created_at?: string
+          doctor_id?: string
+          doctor_name?: string
+          doctor_phone?: string
+          id?: string
+          location?: string | null
+          patient_name?: string
+          patient_phone?: string
+          payment_amount?: number | null
+          payment_status?: string
+          preferred_mode?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "doctor_referrals_doctor_id_fkey"
+            columns: ["doctor_id"]
+            isOneToOne: false
+            referencedRelation: "doctors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      doctors: {
+        Row: {
+          created_at: string
+          email: string
+          facility: string | null
+          full_name: string
+          id: string
+          phone: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          facility?: string | null
+          full_name: string
+          id?: string
+          phone: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          facility?: string | null
+          full_name?: string
+          id?: string
+          phone?: string
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
@@ -1531,6 +1730,7 @@ export type Database = {
         Args: { payload: Json; queue_name: string }
         Returns: number
       }
+      get_doctor_email_by_phone: { Args: { _phone: string }; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

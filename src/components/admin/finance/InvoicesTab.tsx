@@ -10,8 +10,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { toast } from '@/hooks/use-toast';
-import { Plus, Send, Download, Search, Eye, Trash2 } from 'lucide-react';
+import { Plus, Send, Search, Eye, Trash2, FilterX } from 'lucide-react';
 import InvoiceDetailModal from './InvoiceDetailModal';
+import ColumnFilter from './ColumnFilter';
 
 interface Client {
   id: string;
@@ -48,6 +49,7 @@ const InvoicesTab = () => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [showCreate, setShowCreate] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState<string | null>(null);
+  const [colFilters, setColFilters] = useState({ number: '', client: '', date: '', minTotal: '', maxTotal: '' });
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -71,8 +73,15 @@ const InvoicesTab = () => {
     const matchSearch = inv.invoice_number.toLowerCase().includes(search.toLowerCase()) ||
       getClientName(inv.client_id).toLowerCase().includes(search.toLowerCase());
     const matchStatus = statusFilter === 'all' || inv.status === statusFilter;
-    return matchSearch && matchStatus;
+    if (!matchSearch || !matchStatus) return false;
+    if (colFilters.number && !inv.invoice_number.toLowerCase().includes(colFilters.number.toLowerCase())) return false;
+    if (colFilters.client && !getClientName(inv.client_id).toLowerCase().includes(colFilters.client.toLowerCase())) return false;
+    if (colFilters.date && !inv.issue_date.startsWith(colFilters.date)) return false;
+    if (colFilters.minTotal && Number(inv.total_amount) < Number(colFilters.minTotal)) return false;
+    if (colFilters.maxTotal && Number(inv.total_amount) > Number(colFilters.maxTotal)) return false;
+    return true;
   });
+  const hasColFilters = Object.values(colFilters).some(v => v);
 
   const handleCreateInvoice = async (data: { client_id: string; notes: string; tax_rate: number; due_date: string; payment_instructions: string }) => {
     const { error } = await supabase.from('invoices').insert({
@@ -130,6 +139,11 @@ const InvoicesTab = () => {
               <SelectItem value="partially_paid">Partial</SelectItem>
             </SelectContent>
           </Select>
+          {hasColFilters && (
+            <Button size="sm" variant="ghost" className="gap-1 text-xs" onClick={() => setColFilters({ number: '', client: '', date: '', minTotal: '', maxTotal: '' })}>
+              <FilterX className="h-3.5 w-3.5" /> Clear filters
+            </Button>
+          )}
         </div>
         <Dialog open={showCreate} onOpenChange={setShowCreate}>
           <DialogTrigger asChild>
@@ -149,15 +163,31 @@ const InvoicesTab = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>#</TableHead>
-                <TableHead>Invoice No.</TableHead>
-                <TableHead>Client</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Total</TableHead>
+                <TableHead className="w-10">#</TableHead>
+                <TableHead className="min-w-[140px]">Invoice No.</TableHead>
+                <TableHead className="min-w-[140px]">Client</TableHead>
+                <TableHead className="min-w-[140px]">Date</TableHead>
+                <TableHead className="min-w-[140px]">Total</TableHead>
                 <TableHead>Paid</TableHead>
                 <TableHead>Balance</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Actions</TableHead>
+              </TableRow>
+              <TableRow className="bg-muted/30 hover:bg-muted/30">
+                <TableHead></TableHead>
+                <TableHead><ColumnFilter value={colFilters.number} onChange={v => setColFilters(f => ({ ...f, number: v }))} placeholder="Number..." /></TableHead>
+                <TableHead><ColumnFilter value={colFilters.client} onChange={v => setColFilters(f => ({ ...f, client: v }))} placeholder="Client..." /></TableHead>
+                <TableHead><ColumnFilter type="date" value={colFilters.date} onChange={v => setColFilters(f => ({ ...f, date: v }))} /></TableHead>
+                <TableHead>
+                  <div className="flex gap-1">
+                    <ColumnFilter type="number" value={colFilters.minTotal} onChange={v => setColFilters(f => ({ ...f, minTotal: v }))} placeholder="Min" />
+                    <ColumnFilter type="number" value={colFilters.maxTotal} onChange={v => setColFilters(f => ({ ...f, maxTotal: v }))} placeholder="Max" />
+                  </div>
+                </TableHead>
+                <TableHead></TableHead>
+                <TableHead></TableHead>
+                <TableHead></TableHead>
+                <TableHead></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

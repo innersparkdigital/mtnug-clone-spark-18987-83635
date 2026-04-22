@@ -21,6 +21,8 @@ import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { autoSubscribeNewsletter } from "@/lib/autoSubscribe";
+import { Link } from "react-router-dom";
+import { Stethoscope, ArrowRight } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -183,13 +185,22 @@ const ForProfessionals = () => {
                 <p className="text-sm text-muted-foreground italic mb-8">
                   *Compensation details are discussed only during the selection process.
                 </p>
-                <Button 
-                  size="lg" 
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground"
-                  onClick={() => document.getElementById('join-form')?.scrollIntoView({ behavior: 'smooth' })}
-                >
-                  Join Our Network
-                </Button>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
+                  <Button 
+                    size="lg" 
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                    onClick={() => document.getElementById('join-form')?.scrollIntoView({ behavior: 'smooth' })}
+                  >
+                    Join Our Network
+                  </Button>
+                  <Button asChild size="lg" variant="outline" className="border-primary text-primary hover:bg-primary/10">
+                    <Link to="/for-professionals/refer">
+                      <Stethoscope className="w-4 h-4 mr-2" />
+                      Refer a Patient
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </Link>
+                  </Button>
+                </div>
               </div>
               
               {/* Hero Image */}
