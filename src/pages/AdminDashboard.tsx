@@ -550,6 +550,10 @@ const AdminDashboard = () => {
             <ReferralsTab />
           </TabsContent>
 
+          <TabsContent value="content">
+            <ContentTab />
+          </TabsContent>
+
           {isAdmin && (
             <TabsContent value="users">
               <AdminUsersTab />
