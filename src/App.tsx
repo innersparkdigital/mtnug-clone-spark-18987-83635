@@ -130,6 +130,8 @@ import StudentTherapyUgandaPost from "./pages/blog/StudentTherapyUgandaPost";
 import WhatIsTherapyPost from "./pages/blog/WhatIsTherapyPost";
 import BenefitsOfTherapyPost from "./pages/blog/BenefitsOfTherapyPost";
 import TypesOfTherapyPost from "./pages/blog/TypesOfTherapyPost";
+import CmsBlogPost from "./pages/CmsBlogPost";
+import CmsEventPost from "./pages/CmsEventPost";
 
 const queryClient = new QueryClient();
 
@@ -266,6 +268,9 @@ const App = () => (
             <Route path="/blog/what-is-therapy" element={<WhatIsTherapyPost />} />
             <Route path="/blog/benefits-of-therapy" element={<BenefitsOfTherapyPost />} />
             <Route path="/blog/types-of-therapy" element={<TypesOfTherapyPost />} />
+            {/* CMS-driven dynamic posts (fallback after hardcoded routes) */}
+            <Route path="/blog/:slug" element={<CmsBlogPost />} />
+            <Route path="/events-training/:slug" element={<CmsEventPost />} />
             <Route path="/unsubscribe" element={<Unsubscribe />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
