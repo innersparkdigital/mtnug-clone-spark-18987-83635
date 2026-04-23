@@ -18,6 +18,7 @@ import TrainingRegistrationsTab from '@/components/admin/TrainingRegistrationsTa
 import NewsletterTab from '@/components/admin/NewsletterTab';
 import ReferralsTab from '@/components/admin/ReferralsTab';
 import AdminUsersTab from '@/components/admin/AdminUsersTab';
+import ContentTab from '@/components/admin/ContentTab';
 import { 
   BookOpen, 
   GraduationCap, 
@@ -35,7 +36,8 @@ import {
   ClipboardList,
   Mail,
   Stethoscope,
-  Shield
+  Shield,
+  FileText
 } from 'lucide-react';
 import {
   ChartContainer,
@@ -187,6 +189,12 @@ const AdminDashboard = () => {
               <TabsTrigger value="referrals" className="gap-2">
                 <Stethoscope className="h-4 w-4" />
                 Referrals
+              </TabsTrigger>
+            )}
+            {hasPageAccess('content') && (
+              <TabsTrigger value="content" className="gap-2">
+                <FileText className="h-4 w-4" />
+                Content
               </TabsTrigger>
             )}
             {hasPageAccess('finance') && (
