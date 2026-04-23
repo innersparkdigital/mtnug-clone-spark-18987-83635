@@ -6,6 +6,8 @@ import { Calendar, ArrowRight } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Pagination,
   PaginationContent,
@@ -94,11 +96,35 @@ const POSTS_PER_PAGE = 3;
 
 const EventsTraining = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  
-  const totalPages = Math.ceil(blogPosts.length / POSTS_PER_PAGE);
+  const [cmsEvents, setCmsEvents] = useState<typeof blogPosts>([]);
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase
+        .from("events")
+        .select("slug,title,summary,event_date,hero_image_url,published_at")
+        .eq("status", "published")
+        .order("event_date", { ascending: false, nullsFirst: false });
+      if (data) {
+        setCmsEvents(
+          data.map((e: any, i: number) => ({
+            id: 1000 + i,
+            slug: e.slug,
+            image: e.hero_image_url || "/placeholder.svg",
+            date: e.event_date ? new Date(e.event_date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }) : "",
+            title: e.title,
+            excerpt: e.summary || "",
+          })),
+        );
+      }
+    })();
+  }, []);
+
+  const allPosts = [...cmsEvents, ...blogPosts];
+  const totalPages = Math.ceil(allPosts.length / POSTS_PER_PAGE);
   const startIndex = (currentPage - 1) * POSTS_PER_PAGE;
   const endIndex = startIndex + POSTS_PER_PAGE;
-  const currentPosts = blogPosts.slice(startIndex, endIndex);
+  const currentPosts = allPosts.slice(startIndex, endIndex);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
