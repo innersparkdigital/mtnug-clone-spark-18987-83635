@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUserRole } from '@/hooks/useUserRole';
 import { useAdminDashboard } from '@/hooks/useAdminDashboard';
+import { usePagePermissions } from '@/hooks/usePagePermissions';
 import { allWorkplaceCourses, getWorkplaceCourseById, careerTracks } from '@/lib/workplaceCourseData';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -16,6 +17,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import TrainingRegistrationsTab from '@/components/admin/TrainingRegistrationsTab';
 import NewsletterTab from '@/components/admin/NewsletterTab';
 import ReferralsTab from '@/components/admin/ReferralsTab';
+import AdminUsersTab from '@/components/admin/AdminUsersTab';
 import { 
   BookOpen, 
   GraduationCap, 
@@ -32,7 +34,8 @@ import {
   ArrowDownRight,
   ClipboardList,
   Mail,
-  Stethoscope
+  Stethoscope,
+  Shield
 } from 'lucide-react';
 import {
   ChartContainer,
@@ -45,6 +48,7 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const { isAdmin, loading: roleLoading } = useUserRole();
+  const { hasPageAccess, loading: permLoading } = usePagePermissions();
   const { users, stats, loading: adminLoading } = useAdminDashboard();
 
   useEffect(() => {
@@ -54,12 +58,13 @@ const AdminDashboard = () => {
   }, [user, authLoading, navigate]);
 
   useEffect(() => {
-    if (!roleLoading && !isAdmin && user) {
+    // Allow if super admin OR has any granted page
+    if (!roleLoading && !permLoading && user && !isAdmin && !hasPageAccess('learning') && !hasPageAccess('registrations') && !hasPageAccess('newsletter') && !hasPageAccess('referrals') && !hasPageAccess('finance') && !hasPageAccess('content')) {
       navigate('/learning/student-dashboard');
     }
-  }, [isAdmin, roleLoading, user, navigate]);
+  }, [isAdmin, roleLoading, permLoading, hasPageAccess, user, navigate]);
 
-  if (authLoading || roleLoading || adminLoading) {
+  if (authLoading || roleLoading || permLoading || adminLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -67,7 +72,7 @@ const AdminDashboard = () => {
     );
   }
 
-  if (!user || !isAdmin) {
+  if (!user) {
     return null;
   }
 
