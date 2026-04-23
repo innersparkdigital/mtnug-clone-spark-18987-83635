@@ -236,6 +236,60 @@ export type Database = {
         }
         Relationships: []
       }
+      blog_posts: {
+        Row: {
+          author: string | null
+          category: string | null
+          content: string
+          created_at: string
+          created_by: string | null
+          excerpt: string | null
+          hero_image_url: string | null
+          id: string
+          published_at: string | null
+          read_time: string | null
+          scheduled_for: string | null
+          slug: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author?: string | null
+          category?: string | null
+          content?: string
+          created_at?: string
+          created_by?: string | null
+          excerpt?: string | null
+          hero_image_url?: string | null
+          id?: string
+          published_at?: string | null
+          read_time?: string | null
+          scheduled_for?: string | null
+          slug: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author?: string | null
+          category?: string | null
+          content?: string
+          created_at?: string
+          created_by?: string | null
+          excerpt?: string | null
+          hero_image_url?: string | null
+          id?: string
+          published_at?: string | null
+          read_time?: string | null
+          scheduled_for?: string | null
+          slug?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       callback_requests: {
         Row: {
           created_at: string
@@ -806,6 +860,54 @@ export type Database = {
           id?: string
           token?: string
           used_at?: string | null
+        }
+        Relationships: []
+      }
+      events: {
+        Row: {
+          body: string | null
+          created_at: string
+          created_by: string | null
+          event_date: string | null
+          gallery: string[] | null
+          hero_image_url: string | null
+          id: string
+          published_at: string | null
+          slug: string
+          status: string
+          summary: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          created_by?: string | null
+          event_date?: string | null
+          gallery?: string[] | null
+          hero_image_url?: string | null
+          id?: string
+          published_at?: string | null
+          slug: string
+          status?: string
+          summary?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          created_by?: string | null
+          event_date?: string | null
+          gallery?: string[] | null
+          hero_image_url?: string | null
+          id?: string
+          published_at?: string | null
+          slug?: string
+          status?: string
+          summary?: string | null
+          title?: string
+          updated_at?: string
         }
         Relationships: []
       }
