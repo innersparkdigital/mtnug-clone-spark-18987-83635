@@ -163,30 +163,46 @@ const AdminDashboard = () => {
           </p>
         </div>
 
-        <Tabs defaultValue="learning" className="space-y-6">
-          <TabsList>
-            <TabsTrigger value="learning" className="gap-2">
-              <GraduationCap className="h-4 w-4" />
-              Learning Analytics
-            </TabsTrigger>
-            <TabsTrigger value="registrations" className="gap-2">
-              <ClipboardList className="h-4 w-4" />
-              Training Registrations
-            </TabsTrigger>
-            <TabsTrigger value="newsletter" className="gap-2">
-              <Mail className="h-4 w-4" />
-              Newsletter
-            </TabsTrigger>
-            <TabsTrigger value="referrals" className="gap-2">
-              <Stethoscope className="h-4 w-4" />
-              Referrals
-            </TabsTrigger>
-            <TabsTrigger value="finance" className="gap-2" asChild>
-              <Link to="/admin/finance">
-                <BarChart3 className="h-4 w-4" />
-                Finance & Accounts
-              </Link>
-            </TabsTrigger>
+        <Tabs defaultValue={hasPageAccess('learning') ? 'learning' : hasPageAccess('registrations') ? 'registrations' : hasPageAccess('newsletter') ? 'newsletter' : hasPageAccess('referrals') ? 'referrals' : 'users'} className="space-y-6">
+          <TabsList className="flex-wrap h-auto">
+            {hasPageAccess('learning') && (
+              <TabsTrigger value="learning" className="gap-2">
+                <GraduationCap className="h-4 w-4" />
+                Learning Analytics
+              </TabsTrigger>
+            )}
+            {hasPageAccess('registrations') && (
+              <TabsTrigger value="registrations" className="gap-2">
+                <ClipboardList className="h-4 w-4" />
+                Training Registrations
+              </TabsTrigger>
+            )}
+            {hasPageAccess('newsletter') && (
+              <TabsTrigger value="newsletter" className="gap-2">
+                <Mail className="h-4 w-4" />
+                Newsletter
+              </TabsTrigger>
+            )}
+            {hasPageAccess('referrals') && (
+              <TabsTrigger value="referrals" className="gap-2">
+                <Stethoscope className="h-4 w-4" />
+                Referrals
+              </TabsTrigger>
+            )}
+            {hasPageAccess('finance') && (
+              <TabsTrigger value="finance" className="gap-2" asChild>
+                <Link to="/admin/finance">
+                  <BarChart3 className="h-4 w-4" />
+                  Finance & Accounts
+                </Link>
+              </TabsTrigger>
+            )}
+            {isAdmin && (
+              <TabsTrigger value="users" className="gap-2">
+                <Shield className="h-4 w-4" />
+                Admin Users
+              </TabsTrigger>
+            )}
           </TabsList>
 
           <TabsContent value="learning">
@@ -525,6 +541,12 @@ const AdminDashboard = () => {
           <TabsContent value="referrals">
             <ReferralsTab />
           </TabsContent>
+
+          {isAdmin && (
+            <TabsContent value="users">
+              <AdminUsersTab />
+            </TabsContent>
+          )}
         </Tabs>
       </main>
 
