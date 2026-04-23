@@ -116,6 +116,30 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_page_permissions: {
+        Row: {
+          granted_at: string
+          granted_by: string | null
+          id: string
+          page_key: string
+          user_id: string
+        }
+        Insert: {
+          granted_at?: string
+          granted_by?: string | null
+          id?: string
+          page_key: string
+          user_id: string
+        }
+        Update: {
+          granted_at?: string
+          granted_by?: string | null
+          id?: string
+          page_key?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       assessment_emails: {
         Row: {
           consent_given: boolean
@@ -1731,6 +1755,10 @@ export type Database = {
         Returns: number
       }
       get_doctor_email_by_phone: { Args: { _phone: string }; Returns: string }
+      has_page_access: {
+        Args: { _page_key: string; _user_id: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -1766,6 +1794,7 @@ export type Database = {
         | "user"
         | "finance_admin"
         | "operations_admin"
+        | "content_admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1899,6 +1928,7 @@ export const Constants = {
         "user",
         "finance_admin",
         "operations_admin",
+        "content_admin",
       ],
     },
   },

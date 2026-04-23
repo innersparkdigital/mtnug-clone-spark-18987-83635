@@ -2,6 +2,8 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUserRole } from '@/hooks/useUserRole';
+import { usePagePermissions } from '@/hooks/usePagePermissions';
+import SensitiveAccessGate from '@/components/admin/SensitiveAccessGate';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Badge } from '@/components/ui/badge';
@@ -22,8 +24,9 @@ const AdminFinance = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const { isAdmin, hasRole, loading: roleLoading } = useUserRole();
+  const { hasPageAccess, loading: permLoading } = usePagePermissions();
 
-  const canAccess = isAdmin || hasRole('finance_admin') || hasRole('operations_admin');
+  const canAccess = isAdmin || hasRole('finance_admin') || hasRole('operations_admin') || hasPageAccess('finance');
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -32,12 +35,12 @@ const AdminFinance = () => {
   }, [user, authLoading, navigate]);
 
   useEffect(() => {
-    if (!roleLoading && !canAccess && user) {
+    if (!roleLoading && !permLoading && !canAccess && user) {
       navigate('/');
     }
-  }, [canAccess, roleLoading, user, navigate]);
+  }, [canAccess, roleLoading, permLoading, user, navigate]);
 
-  if (authLoading || roleLoading) {
+  if (authLoading || roleLoading || permLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -48,6 +51,7 @@ const AdminFinance = () => {
   if (!user || !canAccess) return null;
 
   return (
+    <SensitiveAccessGate pageKey="finance" pageLabel="Finance & Accounts">
     <div className="min-h-screen bg-background">
       <Header />
       <main className="container mx-auto px-4 py-8 pt-24">
@@ -145,6 +149,7 @@ const AdminFinance = () => {
       </main>
       <Footer />
     </div>
+    </SensitiveAccessGate>
   );
 };
 
