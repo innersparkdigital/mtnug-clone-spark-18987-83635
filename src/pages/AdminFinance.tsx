@@ -149,6 +149,7 @@ const AdminFinance = () => {
       </main>
       <Footer />
     </div>
+    </SensitiveAccessGate>
   );
 };
 
