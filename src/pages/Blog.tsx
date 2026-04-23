@@ -183,6 +183,33 @@ const blogPosts: BlogPost[] = [
 ];
 
 const Blog = () => {
+  const [cmsPosts, setCmsPosts] = useState<BlogPost[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase
+        .from("blog_posts")
+        .select("slug,title,excerpt,category,hero_image_url,read_time,published_at,created_at")
+        .eq("status", "published")
+        .order("published_at", { ascending: false, nullsFirst: false });
+      if (data) {
+        setCmsPosts(
+          data.map((p: any) => ({
+            slug: p.slug,
+            title: p.title,
+            excerpt: p.excerpt || "",
+            date: new Date(p.published_at || p.created_at).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }),
+            readTime: p.read_time || "5 min read",
+            image: p.hero_image_url || "/placeholder.svg",
+            category: p.category || "Mental Health",
+          })),
+        );
+      }
+    })();
+  }, []);
+
+  const allPosts = [...cmsPosts, ...blogPosts];
+
   return (
     <>
       <Helmet>
@@ -330,7 +357,7 @@ const Blog = () => {
         <section className="py-16 bg-background">
           <div className="container mx-auto px-4">
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {blogPosts.map((post) => (
+              {allPosts.map((post) => (
                 <article key={post.slug} className="group">
                   <Link to={`/blog/${post.slug}`} className="block">
                     <div className="relative overflow-hidden rounded-xl mb-4 aspect-video">
@@ -373,7 +400,7 @@ const Blog = () => {
               ))}
             </div>
 
-            {blogPosts.length === 0 && (
+            {allPosts.length === 0 && (
               <div className="text-center py-16">
                 <p className="text-muted-foreground text-lg">More articles coming soon...</p>
               </div>
