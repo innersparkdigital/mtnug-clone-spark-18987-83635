@@ -10,6 +10,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Plus, Wallet, TrendingUp, CheckCircle2, Clock, Users, Eye } from "lucide-react";
+import {
+  TIERS,
+  tierForCount,
+  referralsToNextTier,
+  buildMonthlyBreakdown,
+  isSuccessful,
+  monthKey,
+  fmtUGX as fmtTierUGX,
+  SESSION_FEE_UGX,
+  INNERSPARK_MARGIN_UGX,
+} from "@/lib/commissionTiers";
+import { Progress } from "@/components/ui/progress";
 
 type Doctor = { id: string; full_name: string; phone: string };
 type Referral = {
@@ -45,7 +57,7 @@ const statusColor = (s: string) => {
   }
 };
 
-const fmtUGX = (n: number) => `UGX ${Math.round(n || 0).toLocaleString()}`;
+const fmtUGX = fmtTierUGX;
 
 interface Props {
   doctor: Doctor;
@@ -107,6 +119,23 @@ const DoctorDashboard = ({ doctor, onNewReferral }: Props) => {
   }, [referrals]);
 
   const earnedReferrals = useMemo(() => referrals.filter((r) => r.commission_status === "earned"), [referrals]);
+
+  // Tier breakdown (per month)
+  const monthly = useMemo(() => buildMonthlyBreakdown(referrals), [referrals]);
+  const currentMonthKey = monthKey(new Date());
+  const currentMonth = monthly.find((m) => m.monthKey === currentMonthKey) || {
+    monthKey: currentMonthKey,
+    monthLabel: new Date().toLocaleString(undefined, { month: "long", year: "numeric" }),
+    successCount: 0,
+    totalCount: referrals.filter((r) => monthKey(r.created_at) === currentMonthKey).length,
+    tier: tierForCount(0),
+    perPatient: 0,
+    earned: 0,
+  };
+  const toNext = referralsToNextTier(currentMonth.successCount);
+  const tierProgress = currentMonth.tier.level === 3
+    ? 100
+    : Math.min(100, Math.round((currentMonth.successCount / (currentMonth.tier.max - 0)) * 100));
 
   const handleClaimSubmit = async () => {
     if (earnedReferrals.length === 0 || commission.earned <= 0) {
@@ -237,6 +266,100 @@ const DoctorDashboard = ({ doctor, onNewReferral }: Props) => {
           </Button>
         </CardContent>
       </Card>
+
+      {/* Tier progress (current month) */}
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base flex items-center justify-between gap-2">
+            <span>This Month — {currentMonth.monthLabel}</span>
+            <Badge className="bg-primary/10 text-primary border-primary/20">{currentMonth.tier.label} • {fmtUGX(currentMonth.tier.perPatient)}/patient</Badge>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+            <div>
+              <p className="text-xs text-muted-foreground">Successful referrals</p>
+              <p className="text-xl font-bold">{currentMonth.successCount}</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">Total referrals</p>
+              <p className="text-xl font-bold">{currentMonth.totalCount}</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">Per-patient rate</p>
+              <p className="text-xl font-bold">{fmtUGX(currentMonth.tier.perPatient)}</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">Earned this month</p>
+              <p className="text-xl font-bold text-green-600">{fmtUGX(currentMonth.earned)}</p>
+            </div>
+          </div>
+          {currentMonth.tier.level < 3 ? (
+            <div className="space-y-1">
+              <div className="flex items-center justify-between text-xs text-muted-foreground">
+                <span>{toNext} more successful {toNext === 1 ? "referral" : "referrals"} to reach Tier {currentMonth.tier.level + 1}</span>
+                <span>+{fmtUGX(TIERS[currentMonth.tier.level].perPatient - currentMonth.tier.perPatient)}/patient</span>
+              </div>
+              <Progress value={tierProgress} className="h-2" />
+            </div>
+          ) : (
+            <p className="text-xs text-green-600 font-medium">🎉 You've reached the top tier this month!</p>
+          )}
+
+          {/* Tier table */}
+          <div className="grid grid-cols-3 gap-2 pt-2">
+            {TIERS.map((t) => {
+              const active = t.level === currentMonth.tier.level && currentMonth.successCount > 0;
+              return (
+                <div key={t.level} className={`rounded-md border p-2 text-center text-xs ${active ? "border-primary bg-primary/5" : "bg-muted/30"}`}>
+                  <div className="font-semibold">{t.label}</div>
+                  <div className="text-muted-foreground">{t.range}</div>
+                  <div className="font-medium mt-1">{fmtUGX(t.perPatient)}/patient</div>
+                  <div className="text-[10px] text-muted-foreground">{t.marginPct}% of margin</div>
+                </div>
+              );
+            })}
+          </div>
+          <p className="text-[11px] text-muted-foreground border-t pt-2">
+            Session fee {fmtUGX(SESSION_FEE_UGX)} • InnerSpark margin {fmtUGX(INNERSPARK_MARGIN_UGX)}. A referral counts when the patient books, attends, and pays. Tier is recalculated for the entire month each time.
+          </p>
+        </CardContent>
+      </Card>
+
+      {/* Monthly history */}
+      {monthly.length > 0 && (
+        <Card>
+          <CardHeader><CardTitle className="text-base">Monthly Earnings</CardTitle></CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Month</TableHead>
+                    <TableHead className="text-right">Total</TableHead>
+                    <TableHead className="text-right">Successful</TableHead>
+                    <TableHead>Tier</TableHead>
+                    <TableHead className="text-right">Per patient</TableHead>
+                    <TableHead className="text-right">Earned</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {monthly.map((m) => (
+                    <TableRow key={m.monthKey}>
+                      <TableCell className="font-medium">{m.monthLabel}</TableCell>
+                      <TableCell className="text-right">{m.totalCount}</TableCell>
+                      <TableCell className="text-right font-medium text-green-600">{m.successCount}</TableCell>
+                      <TableCell><Badge variant="outline">{m.tier.label}</Badge></TableCell>
+                      <TableCell className="text-right">{m.successCount > 0 ? fmtUGX(m.perPatient) : "—"}</TableCell>
+                      <TableCell className="text-right font-bold">{fmtUGX(m.earned)}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Referrals table */}
       <Card>
