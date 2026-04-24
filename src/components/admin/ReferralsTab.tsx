@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Loader2, Trash2, FileText, Users, Phone, MapPin, UserPlus, Stethoscope, Copy } from "lucide-react";
+import { Loader2, Trash2, FileText, Users, Phone, MapPin, UserPlus, Stethoscope, Copy, Mail, Ban, CheckCircle2, Calendar } from "lucide-react";
 import {
   buildMonthlyBreakdown,
   tierForCount,
@@ -19,6 +19,7 @@ import {
   TIERS,
   isSuccessful,
 } from "@/lib/commissionTiers";
+import SuccessChecklist from "@/components/doctor/SuccessChecklist";
 
 type Claim = {
   id: string;
@@ -57,6 +58,9 @@ type DoctorRow = {
   email: string;
   facility: string | null;
   created_at: string;
+  is_active?: boolean;
+  deactivated_at?: string | null;
+  deactivated_reason?: string | null;
 };
 
 const STATUSES = ["new", "contacted", "booked", "completed", "no_response"] as const;
@@ -85,6 +89,10 @@ const ReferralsTab = () => {
   const [onboardOpen, setOnboardOpen] = useState(false);
   const [onboardSubmitting, setOnboardSubmitting] = useState(false);
   const [createdCreds, setCreatedCreds] = useState<{ phone: string; password: string } | null>(null);
+  const [createdEmailSent, setCreatedEmailSent] = useState<boolean>(false);
+  const [deactivateTarget, setDeactivateTarget] = useState<DoctorRow | null>(null);
+  const [deactivateReason, setDeactivateReason] = useState("");
+  const [deactivating, setDeactivating] = useState(false);
   const [form, setForm] = useState({ full_name: "", phone: "", email: "", facility: "", password: "" });
 
   const fetchReferrals = async () => {
@@ -104,7 +112,7 @@ const ReferralsTab = () => {
   const fetchDoctors = async () => {
     const { data } = await supabase
       .from("doctors")
-      .select("id, full_name, phone, email, facility, created_at")
+      .select("id, full_name, phone, email, facility, created_at, is_active, deactivated_at, deactivated_reason")
       .order("created_at", { ascending: false });
     setDoctors((data || []) as DoctorRow[]);
   };
@@ -163,7 +171,13 @@ const ReferralsTab = () => {
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
       setCreatedCreds({ phone: form.phone.trim(), password: form.password });
-      toast({ title: "Doctor onboarded", description: `Account created for Dr. ${form.full_name}` });
+      setCreatedEmailSent(Boolean((data as any)?.email_sent));
+      toast({
+        title: "Doctor onboarded",
+        description: (data as any)?.email_sent
+          ? `Credentials emailed to ${form.email}`
+          : `Account created — please share credentials manually with Dr. ${form.full_name}`,
+      });
       setForm({ full_name: "", phone: "", email: "", facility: "", password: "" });
       fetchDoctors();
     } catch (err: any) {
@@ -178,6 +192,27 @@ const ReferralsTab = () => {
     const text = `InnerSpark Doctor Portal\nLogin: https://www.innersparkafrica.com/for-professionals/refer\nPhone: ${createdCreds.phone}\nPassword: ${createdCreds.password}`;
     navigator.clipboard.writeText(text);
     toast({ title: "Credentials copied" });
+  };
+
+  const handleDeactivate = async () => {
+    if (!deactivateTarget) return;
+    setDeactivating(true);
+    try {
+      const action = deactivateTarget.is_active === false ? "reactivate" : "deactivate";
+      const { data, error } = await supabase.functions.invoke("admin-create-doctor", {
+        body: { action, doctor_id: deactivateTarget.id, reason: deactivateReason },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      toast({ title: action === "deactivate" ? "Doctor deactivated" : "Doctor reactivated" });
+      setDeactivateTarget(null);
+      setDeactivateReason("");
+      fetchDoctors();
+    } catch (err: any) {
+      toast({ title: "Action failed", description: err.message, variant: "destructive" });
+    } finally {
+      setDeactivating(false);
+    }
   };
 
   const updateStatus = async (id: string, status: string) => {
@@ -256,6 +291,30 @@ const ReferralsTab = () => {
     });
     return Array.from(map.values()).sort((a, b) => b.total - a.total);
   }, [referrals]);
+
+  // Platform-wide payout window summary (current month)
+  const platformMonth = useMemo(() => {
+    const cm = monthKey(new Date());
+    let totalSuccess = 0;
+    let totalEarned = 0;
+    doctorStats.forEach((d) => {
+      totalSuccess += d.successThisMonth;
+      totalEarned += d.earnedThisMonth;
+    });
+    const label = new Date().toLocaleString(undefined, { month: "long", year: "numeric" });
+    const now = new Date();
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    // 5th business day of next month
+    const firstNext = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+    const d = new Date(firstNext.getFullYear(), firstNext.getMonth(), 0);
+    let added = 0;
+    while (added < 5) {
+      d.setDate(d.getDate() + 1);
+      const dow = d.getDay();
+      if (dow !== 0 && dow !== 6) added += 1;
+    }
+    return { cm, label, totalSuccess, totalEarned, endOfMonth, fifthBiz: d };
+  }, [doctorStats]);
 
   const counts = useMemo(() => {
     const c: Record<string, number> = { new: 0, contacted: 0, booked: 0, completed: 0, no_response: 0 };
