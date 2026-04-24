@@ -535,6 +535,7 @@ const ReferralsTab = () => {
                     <TableHead>Date</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Payment</TableHead>
+                    <TableHead>Success Checklist</TableHead>
                     <TableHead className="text-right">Amount</TableHead>
                     <TableHead></TableHead>
                   </TableRow>
@@ -570,6 +571,9 @@ const ReferralsTab = () => {
                             <SelectItem value="paid">Paid</SelectItem>
                           </SelectContent>
                         </Select>
+                      </TableCell>
+                      <TableCell>
+                        <SuccessChecklist status={r.status} payment_status={r.payment_status} />
                       </TableCell>
                       <TableCell className="text-right">
                         <Input
@@ -696,6 +700,10 @@ const ReferralsTab = () => {
             <div className="space-y-4">
               <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 space-y-2">
                 <p className="text-sm font-medium">Account created. Share these credentials with the doctor:</p>
+                <Badge className={createdEmailSent ? "bg-green-500/10 text-green-700 dark:text-green-300" : "bg-amber-500/10 text-amber-700 dark:text-amber-300"}>
+                  <Mail className="w-3 h-3 mr-1" />
+                  {createdEmailSent ? "Credentials emailed to doctor" : "Email not sent — share manually"}
+                </Badge>
                 <div className="text-sm space-y-1">
                   <div><span className="text-muted-foreground">Login URL:</span> <span className="font-mono text-xs">/for-professionals/refer</span></div>
                   <div><span className="text-muted-foreground">Phone:</span> <span className="font-mono">{createdCreds.phone}</span></div>
