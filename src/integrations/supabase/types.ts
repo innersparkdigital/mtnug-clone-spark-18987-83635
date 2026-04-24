@@ -746,30 +746,39 @@ export type Database = {
       doctors: {
         Row: {
           created_at: string
+          deactivated_at: string | null
+          deactivated_reason: string | null
           email: string
           facility: string | null
           full_name: string
           id: string
+          is_active: boolean
           phone: string
           updated_at: string
           user_id: string
         }
         Insert: {
           created_at?: string
+          deactivated_at?: string | null
+          deactivated_reason?: string | null
           email: string
           facility?: string | null
           full_name: string
           id?: string
+          is_active?: boolean
           phone: string
           updated_at?: string
           user_id: string
         }
         Update: {
           created_at?: string
+          deactivated_at?: string | null
+          deactivated_reason?: string | null
           email?: string
           facility?: string | null
           full_name?: string
           id?: string
+          is_active?: boolean
           phone?: string
           updated_at?: string
           user_id?: string
