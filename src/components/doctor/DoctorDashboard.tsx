@@ -472,6 +472,11 @@ const DoctorDashboard = ({ doctor, onNewReferral }: Props) => {
                 <div><span className="text-muted-foreground">Status:</span> <Badge className={`capitalize ${statusColor(selected.status)}`}>{selected.status.replace("_", " ")}</Badge></div>
                 <div className="mt-1"><span className="text-muted-foreground">Payment:</span> {selected.payment_status === "paid" ? `Paid (${fmtUGX(Number(selected.payment_amount || 0))})` : "Not paid"}</div>
                 <div className="mt-1"><span className="text-muted-foreground">Commission:</span> {fmtUGX(Number(selected.commission_amount || 0))} ({selected.commission_status})</div>
+                <div className="mt-3 border-t pt-2">
+                  <p className="text-xs text-muted-foreground mb-1">Successful Referral Checklist</p>
+                  <SuccessChecklist status={selected.status} payment_status={selected.payment_status} />
+                  <p className="text-[11px] text-muted-foreground mt-1">All four steps must complete to earn commission.</p>
+                </div>
               </div>
             </div>
           )}
