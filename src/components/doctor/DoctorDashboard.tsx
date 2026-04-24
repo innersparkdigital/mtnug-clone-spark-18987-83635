@@ -386,8 +386,7 @@ const DoctorDashboard = ({ doctor, onNewReferral }: Props) => {
                     <TableHead className="hidden md:table-cell">Phone</TableHead>
                     <TableHead className="hidden md:table-cell">Date</TableHead>
                     <TableHead>Mode</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Payment</TableHead>
+                    <TableHead>Progress</TableHead>
                     <TableHead className="text-right">Commission</TableHead>
                     <TableHead></TableHead>
                   </TableRow>
@@ -399,13 +398,8 @@ const DoctorDashboard = ({ doctor, onNewReferral }: Props) => {
                       <TableCell className="hidden md:table-cell text-sm">{r.patient_phone}</TableCell>
                       <TableCell className="hidden md:table-cell text-xs">{new Date(r.created_at).toLocaleDateString()}</TableCell>
                       <TableCell><Badge variant="outline" className="capitalize">{r.preferred_mode}</Badge></TableCell>
-                      <TableCell><Badge className={`capitalize ${statusColor(r.status)}`}>{r.status.replace("_", " ")}</Badge></TableCell>
                       <TableCell>
-                        {r.payment_status === "paid" ? (
-                          <Badge className="bg-green-500/10 text-green-700 dark:text-green-300">Paid</Badge>
-                        ) : (
-                          <Badge variant="outline">Not paid</Badge>
-                        )}
+                        <SuccessChecklist status={r.status} payment_status={r.payment_status} />
                       </TableCell>
                       <TableCell className="text-right text-sm font-medium">
                         {Number(r.commission_amount || 0) > 0 ? fmtUGX(Number(r.commission_amount)) : "—"}
