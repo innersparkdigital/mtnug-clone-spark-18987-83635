@@ -404,6 +404,38 @@ const ReferralsTab = () => {
         </CardContent>
       </Card>
 
+      {/* Platform Payout Window */}
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base flex items-center gap-2">
+            <Calendar className="w-4 h-4 text-primary" /> Commission Payout Cycle — {platformMonth.label}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3 text-sm">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <div>
+              <p className="text-xs text-muted-foreground">Successful referrals (all doctors)</p>
+              <p className="text-xl font-bold">{platformMonth.totalSuccess}</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">Total commission accruing</p>
+              <p className="text-xl font-bold text-green-600">{fmtUGX(platformMonth.totalEarned)}</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">State</p>
+              <Badge className={platformMonth.totalSuccess > 0 ? "bg-amber-500/10 text-amber-700 dark:text-amber-300" : "bg-muted text-muted-foreground"}>
+                {platformMonth.totalSuccess > 0 ? "Calculating — pending end of month" : "No earnings this cycle yet"}
+              </Badge>
+            </div>
+          </div>
+          <div className="rounded-md border bg-muted/30 p-3 text-xs space-y-1">
+            <p><strong>Cycle closes:</strong> {platformMonth.endOfMonth.toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" })}</p>
+            <p><strong>Payout sent by:</strong> {platformMonth.fifthBiz.toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" })} (within first 5 working days of next month)</p>
+            <p className="text-muted-foreground">Tiers are recalculated for the entire month each time a new success is recorded.</p>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Onboarded doctors */}
       <Card>
         <CardHeader>
@@ -425,6 +457,8 @@ const ReferralsTab = () => {
                     <TableHead>Email</TableHead>
                     <TableHead>Facility</TableHead>
                     <TableHead>Onboarded</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -436,6 +470,27 @@ const ReferralsTab = () => {
                       <TableCell className="text-sm">{d.email}</TableCell>
                       <TableCell className="text-sm">{d.facility || "—"}</TableCell>
                       <TableCell className="text-xs">{new Date(d.created_at).toLocaleDateString()}</TableCell>
+                      <TableCell>
+                        {d.is_active === false ? (
+                          <Badge className="bg-red-500/10 text-red-700 dark:text-red-300">Deactivated</Badge>
+                        ) : (
+                          <Badge className="bg-green-500/10 text-green-700 dark:text-green-300">Active</Badge>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Button
+                          size="sm"
+                          variant={d.is_active === false ? "outline" : "ghost"}
+                          onClick={() => { setDeactivateTarget(d); setDeactivateReason(""); }}
+                          title={d.is_active === false ? "Reactivate doctor" : "Deactivate doctor"}
+                        >
+                          {d.is_active === false ? (
+                            <><CheckCircle2 className="w-4 h-4 mr-1 text-green-600" /> Reactivate</>
+                          ) : (
+                            <><Ban className="w-4 h-4 mr-1 text-destructive" /> Deactivate</>
+                          )}
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
