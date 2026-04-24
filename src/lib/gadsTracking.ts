@@ -116,3 +116,44 @@ export const trackGadsWellbeingCompleted = (percentage: number, level: string) =
 export const resetGadsDedup = () => {
   firedEvents.clear();
 };
+
+// ─── THANK-YOU PAGE CONVERSIONS ───
+// Fired when a user lands on a /thank-you-* page after a successful action.
+// Each conversion type has a unique URL for Google Ads conversion tracking.
+export type ThankYouConversionType =
+  | 'booking'
+  | 'contact'
+  | 'corporate'
+  | 'referral'
+  | 'newsletter'
+  | 'download';
+
+const conversionValues: Record<ThankYouConversionType, number> = {
+  booking: 75000,
+  contact: 5000,
+  corporate: 25000,
+  referral: 15000,
+  newsletter: 1000,
+  download: 2000,
+};
+
+export const trackGadsThankYouConversion = (
+  type: ThankYouConversionType,
+  meta?: Record<string, unknown>,
+) => {
+  const eventName = `ads_conversion_${type}`;
+  // Allow once per type per page-session
+  fireOnce(`thankyou_${type}`, eventName, {
+    value: conversionValues[type],
+    currency: 'UGX',
+    conversion_type: type,
+    ...(meta || {}),
+  });
+  // Also fire a generic GA4 event
+  gtagEvent('conversion_completed', {
+    conversion_type: type,
+    value: conversionValues[type],
+    currency: 'UGX',
+    ...(meta || {}),
+  });
+};

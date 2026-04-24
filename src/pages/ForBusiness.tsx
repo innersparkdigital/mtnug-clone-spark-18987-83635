@@ -1,4 +1,5 @@
 import { Helmet } from "react-helmet";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { autoSubscribeNewsletter } from "@/lib/autoSubscribe";
 import Header from "@/components/Header";
@@ -78,6 +79,7 @@ const defaultTexts = {
 
 const ForBusiness = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const { language, translateBatch } = useLanguage();
   const [t, setT] = useState(defaultTexts);
   const [formData, setFormData] = useState({
@@ -140,14 +142,14 @@ const ForBusiness = () => {
     // Auto-subscribe to newsletter
     autoSubscribeNewsletter(formData.email);
 
+    // Open WhatsApp in a new tab so the redirect still happens
     const whatsappMessage = encodeURIComponent(
       `Hi, I'm ${formData.name} from ${formData.company}. I'm interested in Innerspark for Business. ${formData.message}`
     );
     window.open(`https://wa.me/256792085773?text=${whatsappMessage}`, "_blank");
-    toast({
-      title: "Inquiry Submitted!",
-      description: "We've sent you a confirmation email and will connect with you shortly.",
-    });
+
+    setFormData({ name: "", email: "", company: "", message: "" });
+    navigate("/thank-you-corporate");
   };
 
   const stats = [

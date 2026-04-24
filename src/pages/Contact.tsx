@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
+import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -65,6 +66,7 @@ const defaultTexts = {
 
 const Contact = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const { language, translateBatch } = useLanguage();
   const [t, setT] = useState(defaultTexts);
   const [formData, setFormData] = useState({
@@ -141,12 +143,9 @@ const Contact = () => {
       // Auto-subscribe to newsletter
       autoSubscribeNewsletter(formData.email);
 
-      toast({
-        title: "Message sent successfully!",
-        description: "We've sent you a confirmation email. Our team will get back to you soon.",
-      });
-
       setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
+      navigate("/thank-you-contact");
+      return;
     } catch (err) {
       console.error('Contact form error:', err);
       toast({

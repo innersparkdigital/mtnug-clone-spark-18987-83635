@@ -132,6 +132,7 @@ import BenefitsOfTherapyPost from "./pages/blog/BenefitsOfTherapyPost";
 import TypesOfTherapyPost from "./pages/blog/TypesOfTherapyPost";
 import CmsBlogPost from "./pages/CmsBlogPost";
 import CmsEventPost from "./pages/CmsEventPost";
+import ThankYou from "./pages/ThankYou";
 
 const queryClient = new QueryClient();
 
@@ -272,6 +273,13 @@ const App = () => (
             <Route path="/blog/:slug" element={<CmsBlogPost />} />
             <Route path="/events-training/:slug" element={<CmsEventPost />} />
             <Route path="/unsubscribe" element={<Unsubscribe />} />
+            {/* Thank You / Conversion Tracking pages */}
+            <Route path="/thank-you-booking" element={<ThankYou type="booking" />} />
+            <Route path="/thank-you-contact" element={<ThankYou type="contact" />} />
+            <Route path="/thank-you-corporate" element={<ThankYou type="corporate" />} />
+            <Route path="/thank-you-referral" element={<ThankYou type="referral" />} />
+            <Route path="/thank-you-newsletter" element={<ThankYou type="newsletter" />} />
+            <Route path="/thank-you-download" element={<ThankYou type="download" />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
             </Routes>
