@@ -39,6 +39,43 @@ Deno.serve(async (req) => {
     }
 
     const body = await req.json();
+    const action = String(body.action || "create");
+
+    // ---- DEACTIVATE / REACTIVATE ----
+    if (action === "deactivate" || action === "reactivate") {
+      const doctor_id = String(body.doctor_id || "");
+      if (!doctor_id) throw new Error("doctor_id required");
+      const { data: doc, error: docErr } = await admin
+        .from("doctors")
+        .select("id, user_id")
+        .eq("id", doctor_id)
+        .single();
+      if (docErr || !doc) throw new Error("Doctor not found");
+
+      const isDeactivate = action === "deactivate";
+      const { error: updErr } = await admin
+        .from("doctors")
+        .update({
+          is_active: !isDeactivate,
+          deactivated_at: isDeactivate ? new Date().toISOString() : null,
+          deactivated_reason: isDeactivate ? (String(body.reason || "").trim() || null) : null,
+        })
+        .eq("id", doctor_id);
+      if (updErr) throw updErr;
+
+      // Ban / unban auth user so they cannot log in
+      try {
+        await admin.auth.admin.updateUserById(doc.user_id, {
+          ban_duration: isDeactivate ? "876000h" : "none", // ~100y or remove ban
+        });
+      } catch (e) {
+        console.warn("auth ban update failed (non-fatal)", e);
+      }
+      return new Response(JSON.stringify({ ok: true, is_active: !isDeactivate }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const full_name = String(body.full_name || "").trim();
     const phone = String(body.phone || "").trim();
     const email = String(body.email || "").trim().toLowerCase();
@@ -130,8 +167,32 @@ Deno.serve(async (req) => {
       throw insertErr;
     }
 
+    // Send credentials email (best-effort, non-fatal)
+    const LOGIN_URL = "https://www.innersparkafrica.com/for-professionals/refer";
+    let email_sent = false;
+    try {
+      const { error: emailErr } = await admin.functions.invoke("send-transactional-email", {
+        body: {
+          template: "account-credentials",
+          to: email,
+          data: {
+            full_name,
+            account_type: "doctor",
+            login_url: LOGIN_URL,
+            login_id: phone,
+            login_id_label: "Phone",
+            password,
+          },
+        },
+      });
+      if (emailErr) throw emailErr;
+      email_sent = true;
+    } catch (e) {
+      console.warn("credentials email failed (non-fatal)", e);
+    }
+
     return new Response(
-      JSON.stringify({ ok: true, doctor, credentials: { phone, email, password } }),
+      JSON.stringify({ ok: true, doctor, email_sent, credentials: { phone, email, password, login_url: LOGIN_URL } }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (err) {

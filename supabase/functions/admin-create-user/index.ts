@@ -151,8 +151,32 @@ Deno.serve(async (req) => {
       );
     }
 
+    // Send credentials email (best-effort, non-fatal)
+    const LOGIN_URL = "https://www.innersparkafrica.com/auth";
+    let email_sent = false;
+    try {
+      const { error: emailErr } = await admin.functions.invoke("send-transactional-email", {
+        body: {
+          template: "account-credentials",
+          to: email,
+          data: {
+            full_name,
+            account_type: "admin",
+            login_url: LOGIN_URL,
+            login_id: email,
+            login_id_label: "Email",
+            password,
+          },
+        },
+      });
+      if (emailErr) throw emailErr;
+      email_sent = true;
+    } catch (e) {
+      console.warn("admin credentials email failed (non-fatal)", e);
+    }
+
     return new Response(
-      JSON.stringify({ ok: true, user_id: userId, credentials: { email, password } }),
+      JSON.stringify({ ok: true, user_id: userId, email_sent, credentials: { email, password, login_url: LOGIN_URL } }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (err) {

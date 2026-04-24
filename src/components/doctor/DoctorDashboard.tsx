@@ -22,6 +22,8 @@ import {
   INNERSPARK_MARGIN_UGX,
 } from "@/lib/commissionTiers";
 import { Progress } from "@/components/ui/progress";
+import PayoutWindowCard from "./PayoutWindowCard";
+import SuccessChecklist from "./SuccessChecklist";
 
 type Doctor = { id: string; full_name: string; phone: string };
 type Referral = {
@@ -326,6 +328,14 @@ const DoctorDashboard = ({ doctor, onNewReferral }: Props) => {
         </CardContent>
       </Card>
 
+      {/* Payout window */}
+      <PayoutWindowCard
+        tier={currentMonth.tier}
+        successCount={currentMonth.successCount}
+        earnedThisMonth={currentMonth.earned}
+        monthLabel={currentMonth.monthLabel}
+      />
+
       {/* Monthly history */}
       {monthly.length > 0 && (
         <Card>
@@ -376,8 +386,7 @@ const DoctorDashboard = ({ doctor, onNewReferral }: Props) => {
                     <TableHead className="hidden md:table-cell">Phone</TableHead>
                     <TableHead className="hidden md:table-cell">Date</TableHead>
                     <TableHead>Mode</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Payment</TableHead>
+                    <TableHead>Progress</TableHead>
                     <TableHead className="text-right">Commission</TableHead>
                     <TableHead></TableHead>
                   </TableRow>
@@ -389,13 +398,8 @@ const DoctorDashboard = ({ doctor, onNewReferral }: Props) => {
                       <TableCell className="hidden md:table-cell text-sm">{r.patient_phone}</TableCell>
                       <TableCell className="hidden md:table-cell text-xs">{new Date(r.created_at).toLocaleDateString()}</TableCell>
                       <TableCell><Badge variant="outline" className="capitalize">{r.preferred_mode}</Badge></TableCell>
-                      <TableCell><Badge className={`capitalize ${statusColor(r.status)}`}>{r.status.replace("_", " ")}</Badge></TableCell>
                       <TableCell>
-                        {r.payment_status === "paid" ? (
-                          <Badge className="bg-green-500/10 text-green-700 dark:text-green-300">Paid</Badge>
-                        ) : (
-                          <Badge variant="outline">Not paid</Badge>
-                        )}
+                        <SuccessChecklist status={r.status} payment_status={r.payment_status} />
                       </TableCell>
                       <TableCell className="text-right text-sm font-medium">
                         {Number(r.commission_amount || 0) > 0 ? fmtUGX(Number(r.commission_amount)) : "—"}
@@ -468,6 +472,11 @@ const DoctorDashboard = ({ doctor, onNewReferral }: Props) => {
                 <div><span className="text-muted-foreground">Status:</span> <Badge className={`capitalize ${statusColor(selected.status)}`}>{selected.status.replace("_", " ")}</Badge></div>
                 <div className="mt-1"><span className="text-muted-foreground">Payment:</span> {selected.payment_status === "paid" ? `Paid (${fmtUGX(Number(selected.payment_amount || 0))})` : "Not paid"}</div>
                 <div className="mt-1"><span className="text-muted-foreground">Commission:</span> {fmtUGX(Number(selected.commission_amount || 0))} ({selected.commission_status})</div>
+                <div className="mt-3 border-t pt-2">
+                  <p className="text-xs text-muted-foreground mb-1">Successful Referral Checklist</p>
+                  <SuccessChecklist status={selected.status} payment_status={selected.payment_status} />
+                  <p className="text-[11px] text-muted-foreground mt-1">All four steps must complete to earn commission.</p>
+                </div>
               </div>
             </div>
           )}
