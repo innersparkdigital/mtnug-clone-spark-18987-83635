@@ -4,9 +4,11 @@ import Footer from "@/components/Footer";
 import { CheckCircle, MessageSquare, Home, Loader2, XCircle, Download, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { trackGadsThankYouConversion } from "@/lib/gadsTracking";
 
 type PaymentStatus = "loading" | "success" | "failed" | "pending";
 
@@ -33,6 +35,7 @@ interface PendingBooking {
 
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [status, setStatus] = useState<PaymentStatus>("loading");
   const [bookingData, setBookingData] = useState<PendingBooking | null>(null);
   const [receiptSent, setReceiptSent] = useState(false);
@@ -64,9 +67,16 @@ const PaymentSuccess = () => {
   useEffect(() => {
     if (status === "success" && bookingData && !hasProcessed.current) {
       hasProcessed.current = true;
-      handlePostPayment(bookingData);
+      handlePostPayment(bookingData).then(() => {
+        // Fire booking conversion + redirect to dedicated thank-you URL for Google Ads
+        trackGadsThankYouConversion("booking", {
+          merchant_reference: bookingData.merchantReference,
+          amount: bookingData.amount,
+        });
+        navigate("/thank-you-booking", { replace: true });
+      });
     }
-  }, [status, bookingData]);
+  }, [status, bookingData, navigate]);
 
   const checkPesaPalStatus = async (trackingId: string) => {
     try {
