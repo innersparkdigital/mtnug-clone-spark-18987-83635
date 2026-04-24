@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -24,6 +25,7 @@ interface Props {
 
 const DoctorReferralForm = ({ doctor, onBack, onSubmitted }: Props) => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [patientName, setPatientName] = useState("");
@@ -62,8 +64,9 @@ const DoctorReferralForm = ({ doctor, onBack, onSubmitted }: Props) => {
       const { error } = await supabase.from("doctor_referrals").insert(payload);
       if (error) throw error;
       supabase.functions.invoke("notify-doctor-referral", { body: payload }).catch(() => null);
-      setSubmitted(true);
       onSubmitted();
+      navigate("/thank-you-referral");
+      return;
     } catch (err: any) {
       toast({ title: "Submission failed", description: err.message, variant: "destructive" });
     } finally {
