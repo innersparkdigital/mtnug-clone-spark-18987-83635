@@ -22,6 +22,8 @@ import {
   INNERSPARK_MARGIN_UGX,
 } from "@/lib/commissionTiers";
 import { Progress } from "@/components/ui/progress";
+import PayoutWindowCard from "./PayoutWindowCard";
+import SuccessChecklist from "./SuccessChecklist";
 
 type Doctor = { id: string; full_name: string; phone: string };
 type Referral = {
@@ -325,6 +327,14 @@ const DoctorDashboard = ({ doctor, onNewReferral }: Props) => {
           </p>
         </CardContent>
       </Card>
+
+      {/* Payout window */}
+      <PayoutWindowCard
+        tier={currentMonth.tier}
+        successCount={currentMonth.successCount}
+        earnedThisMonth={currentMonth.earned}
+        monthLabel={currentMonth.monthLabel}
+      />
 
       {/* Monthly history */}
       {monthly.length > 0 && (
