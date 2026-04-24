@@ -11,6 +11,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Loader2, Trash2, FileText, Users, Phone, MapPin, UserPlus, Stethoscope, Copy } from "lucide-react";
+import {
+  buildMonthlyBreakdown,
+  tierForCount,
+  monthKey,
+  fmtUGX,
+  TIERS,
+  isSuccessful,
+} from "@/lib/commissionTiers";
 
 type Claim = {
   id: string;
@@ -191,21 +199,17 @@ const ReferralsTab = () => {
 
   const saveNote = async () => {
     if (!selected) return;
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("doctor_referrals")
       .update({ admin_notes: noteDraft })
-      .eq("id", selected.id)
-      .select()
-      .maybeSingle();
+      .eq("id", selected.id);
     if (error) {
       toast({ title: "Save failed", description: error.message, variant: "destructive" });
-    } else if (!data) {
-      toast({ title: "Save blocked", description: "You don't have permission to update this referral.", variant: "destructive" });
-    } else {
-      toast({ title: "Note saved" });
-      setSelected({ ...selected, admin_notes: noteDraft });
-      fetchReferrals();
+      return;
     }
+    toast({ title: "Note saved" });
+    setSelected({ ...selected, admin_notes: noteDraft });
+    fetchReferrals();
   };
 
   const deleteReferral = async (id: string) => {
@@ -235,12 +239,20 @@ const ReferralsTab = () => {
 
   // Doctor tracking aggregation
   const doctorStats = useMemo(() => {
-    const map = new Map<string, { name: string; phone: string; total: number; converted: number }>();
+    const currentMonth = monthKey(new Date());
+    const map = new Map<string, { name: string; phone: string; total: number; converted: number; successThisMonth: number; earnedThisMonth: number; lifetimeEarned: number }>();
     referrals.forEach((r) => {
-      const cur = map.get(r.doctor_id) || { name: r.doctor_name, phone: r.doctor_phone, total: 0, converted: 0 };
+      const cur = map.get(r.doctor_id) || { name: r.doctor_name, phone: r.doctor_phone, total: 0, converted: 0, successThisMonth: 0, earnedThisMonth: 0, lifetimeEarned: 0 };
       cur.total += 1;
       if (r.status === "booked" || r.status === "completed") cur.converted += 1;
+      if (monthKey(r.created_at) === currentMonth && isSuccessful(r)) cur.successThisMonth += 1;
+      cur.lifetimeEarned += Number(r.commission_amount || 0);
       map.set(r.doctor_id, cur);
+    });
+    // Apply tier rate to current-month successes
+    map.forEach((v) => {
+      const t = tierForCount(v.successThisMonth);
+      v.earnedThisMonth = v.successThisMonth * (v.successThisMonth > 0 ? t.perPatient : 0);
     });
     return Array.from(map.values()).sort((a, b) => b.total - a.total);
   }, [referrals]);
@@ -298,6 +310,10 @@ const ReferralsTab = () => {
                     <TableHead className="text-right">Total Referrals</TableHead>
                     <TableHead className="text-right">Converted</TableHead>
                     <TableHead className="text-right">Conversion %</TableHead>
+                    <TableHead className="text-right">Successes (this month)</TableHead>
+                    <TableHead>Tier</TableHead>
+                    <TableHead className="text-right">Earned (this month)</TableHead>
+                    <TableHead className="text-right">Lifetime Commission</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -308,12 +324,24 @@ const ReferralsTab = () => {
                       <TableCell className="text-right">{d.total}</TableCell>
                       <TableCell className="text-right">{d.converted}</TableCell>
                       <TableCell className="text-right">{d.total > 0 ? Math.round((d.converted / d.total) * 100) : 0}%</TableCell>
+                      <TableCell className="text-right">{d.successThisMonth}</TableCell>
+                      <TableCell><Badge variant="outline">{tierForCount(d.successThisMonth).label}</Badge></TableCell>
+                      <TableCell className="text-right font-medium">{fmtUGX(d.earnedThisMonth)}</TableCell>
+                      <TableCell className="text-right">{fmtUGX(d.lifetimeEarned)}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
             </div>
           )}
+          <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
+            {TIERS.map((t) => (
+              <div key={t.level} className="rounded-md border bg-muted/30 p-2">
+                <div className="font-semibold">{t.label} <span className="text-muted-foreground font-normal">({t.range})</span></div>
+                <div className="text-muted-foreground">{fmtUGX(t.perPatient)}/patient · {t.marginPct}% of margin</div>
+              </div>
+            ))}
+          </div>
         </CardContent>
       </Card>
 

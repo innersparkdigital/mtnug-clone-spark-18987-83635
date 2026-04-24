@@ -1887,6 +1887,10 @@ export type Database = {
           read_ct: number
         }[]
       }
+      recalc_doctor_monthly_commissions: {
+        Args: { _doctor_id: string; _month_start: string }
+        Returns: undefined
+      }
       sync_form_emails_to_subscribers: { Args: never; Returns: Json }
     }
     Enums: {
