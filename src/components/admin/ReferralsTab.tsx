@@ -784,15 +784,34 @@ const ReferralsTab = () => {
           <CardTitle className="text-base">Referrals</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-col md:flex-row gap-3 mb-4">
-            <Input placeholder="Search patient, doctor, location..." value={search} onChange={(e) => setSearch(e.target.value)} className="flex-1" />
+          <div className="grid grid-cols-1 md:grid-cols-6 gap-2 mb-4">
+            <Input placeholder="Search patient, doctor, location…" value={search} onChange={(e) => setSearch(e.target.value)} className="md:col-span-2" />
+            <Select value={doctorFilter} onValueChange={setDoctorFilter}>
+              <SelectTrigger><SelectValue placeholder="Doctor" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All doctors</SelectItem>
+                {doctors.map((d) => <SelectItem key={d.id} value={d.id}>Dr. {d.full_name}</SelectItem>)}
+              </SelectContent>
+            </Select>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-full md:w-[200px]"><SelectValue /></SelectTrigger>
+              <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All statuses</SelectItem>
                 {STATUSES.map((s) => <SelectItem key={s} value={s} className="capitalize">{s.replace("_", " ")}</SelectItem>)}
               </SelectContent>
             </Select>
+            <Select value={paymentFilter} onValueChange={setPaymentFilter}>
+              <SelectTrigger><SelectValue placeholder="Payment" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All payments</SelectItem>
+                <SelectItem value="paid">Paid</SelectItem>
+                <SelectItem value="not_paid">Not paid</SelectItem>
+              </SelectContent>
+            </Select>
+            <div className="flex gap-1">
+              <Input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className="text-xs" title="From" />
+              <Input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} className="text-xs" title="To" />
+            </div>
           </div>
 
           {loading ? (
@@ -819,7 +838,7 @@ const ReferralsTab = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filtered.map((r) => (
+                  {pagedReferrals.map((r) => (
                     <TableRow key={r.id}>
                       <TableCell className="font-medium">{r.patient_name}</TableCell>
                       <TableCell><a href={`tel:${r.patient_phone}`} className="text-primary hover:underline">{r.patient_phone}</a></TableCell>
@@ -879,6 +898,26 @@ const ReferralsTab = () => {
                   ))}
                 </TableBody>
               </Table>
+            </div>
+          )}
+
+          {/* Referrals pagination */}
+          {filtered.length > 0 && (
+            <div className="flex flex-wrap items-center justify-between gap-2 mt-3 text-sm">
+              <div className="text-muted-foreground">Showing {pagedReferrals.length} of {filtered.length} (total {referrals.length})</div>
+              <div className="flex items-center gap-2">
+                <Select value={String(refPageSize)} onValueChange={(v) => setRefPageSize(Number(v))}>
+                  <SelectTrigger className="h-8 w-[80px]"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="10">10</SelectItem>
+                    <SelectItem value="25">25</SelectItem>
+                    <SelectItem value="50">50</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Button size="sm" variant="outline" onClick={() => setRefPage((p) => Math.max(1, p - 1))} disabled={refPage === 1}><ChevronLeft className="w-4 h-4" /></Button>
+                <span className="text-xs">Page {refPage} of {Math.max(1, Math.ceil(filtered.length / refPageSize))}</span>
+                <Button size="sm" variant="outline" onClick={() => setRefPage((p) => p + 1)} disabled={refPage >= Math.ceil(filtered.length / refPageSize)}><ChevronRight className="w-4 h-4" /></Button>
+              </div>
             </div>
           )}
         </CardContent>
