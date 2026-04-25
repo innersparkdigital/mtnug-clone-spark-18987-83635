@@ -11,7 +11,7 @@ interface AccountCredentialsProps {
   full_name?: string
   account_type?: 'doctor' | 'admin'
   login_url?: string
-  login_id?: string // phone (doctor) or email (admin)
+  login_id?: string
   login_id_label?: string
   password?: string
 }
@@ -26,43 +26,127 @@ const AccountCredentialsEmail = ({
 }: AccountCredentialsProps) => {
   const greeting = account_type === 'doctor' ? `Dr. ${full_name || ''}`.trim() : (full_name || 'there')
   const portalName = account_type === 'doctor' ? 'Doctor Referral Portal' : 'Admin Portal'
+  const isDoctor = account_type === 'doctor'
   return (
     <Html lang="en" dir="ltr">
       <Head />
-      <Preview>Your {SITE_NAME} {portalName} login details</Preview>
+      <Preview>{isDoctor ? `Welcome to ${SITE_NAME} – Referral Partnership Onboarding` : `Your ${SITE_NAME} ${portalName} login details`}</Preview>
       <Body style={main}>
         <Container style={container}>
           <Section style={headerSection}>
             <Heading style={logo}>{SITE_NAME}</Heading>
           </Section>
 
-          <Heading style={h1}>Welcome, {greeting}</Heading>
-          <Text style={text}>
-            An account has been created for you on the {SITE_NAME} {portalName}. Use the credentials
-            below to sign in for the first time. We recommend changing your password after your first login.
-          </Text>
+          <Heading style={h1}>{isDoctor ? `Hello ${greeting},` : `Welcome, ${greeting}`}</Heading>
 
-          <Section style={detailsBox}>
-            <Text style={detailLabel}>Login URL</Text>
-            <Text style={detailValue}><a href={login_url} style={link}>{login_url}</a></Text>
-            <Text style={detailLabel}>{login_id_label}</Text>
-            <Text style={detailValue}><strong>{login_id}</strong></Text>
-            <Text style={detailLabel}>Temporary Password</Text>
-            <Text style={detailValue}><strong>{password}</strong></Text>
-          </Section>
+          {isDoctor ? (
+            <>
+              <Text style={text}>Welcome to {SITE_NAME}.</Text>
+              <Text style={text}>
+                We are pleased to onboard you as a <strong>Referral Partner</strong>, and we look forward
+                to working with you to improve access to mental health support for patients who require
+                counselling services.
+              </Text>
+              <Text style={text}>
+                Through this partnership, you will refer patients, and our team will ensure they receive
+                timely, confidential, and professional care through our digital platform.
+              </Text>
 
-          <Section style={{ textAlign: 'center' as const, margin: '24px 0' }}>
-            <Button style={button} href={login_url}>Sign in to your account</Button>
-          </Section>
+              <Heading as="h2" style={h2}>Our Services & Pricing</Heading>
+              <Text style={text}>
+                All services are delivered virtually through the InnerSpark App (available on Play Store and Apple Store):
+              </Text>
+              <Section style={listBox}>
+                <Text style={listItem}>• <strong>Video Therapy Sessions:</strong> UGX 75,000 per hour</Text>
+                <Text style={listItem}>• <strong>Chat-Based Consultation:</strong> UGX 30,000 per hour</Text>
+                <Text style={listItem}>• <strong>Support Groups:</strong> UGX 25,000 per week</Text>
+              </Section>
 
-          <Text style={text}>
-            For your security, please do not share these credentials with anyone. If you did not expect this
-            email, contact us immediately at <strong>info@innersparkafrica.com</strong>.
-          </Text>
+              <Heading as="h2" style={h2}>Referral Commission Structure</Heading>
+              <Text style={text}>
+                Your earnings are based on a <strong>monthly tiered commission model</strong> (flat rate):
+              </Text>
+              <Section style={listBox}>
+                <Text style={listItem}><strong>🔹 Tier 1: 1–5 referrals</strong><br />30% of margin = <strong>UGX 3,375 per patient</strong></Text>
+                <Text style={listItem}><strong>🔹 Tier 2: 6–15 referrals</strong><br />40% of margin = <strong>UGX 4,500 per patient</strong></Text>
+                <Text style={listItem}><strong>🔹 Tier 3: 15+ referrals</strong><br />50% of margin = <strong>UGX 5,625 per patient</strong></Text>
+              </Section>
+
+              <Heading as="h2" style={h2}>How It Works</Heading>
+              <Text style={text}>
+                • Your tier is based on total successful referrals per month<br />
+                • Once you reach a tier, all referrals in that month are paid at that rate
+              </Text>
+              <Text style={textMuted}>
+                <em>Example: 12 referrals → Tier 2 → 12 × 4,500 = <strong>UGX 54,000</strong></em>
+              </Text>
+
+              <Heading as="h2" style={h2}>What Counts as a Successful Referral</Heading>
+              <Text style={text}>A referral qualifies when:</Text>
+              <Section style={listBox}>
+                <Text style={listItem}>✅ Patient is submitted through the platform</Text>
+                <Text style={listItem}>✅ Patient books a session</Text>
+                <Text style={listItem}>✅ Patient attends the session</Text>
+                <Text style={listItem}>✅ Patient completes payment</Text>
+              </Section>
+
+              <Heading as="h2" style={h2}>Payment Cycle</Heading>
+              <Text style={text}>
+                • Calculated monthly<br />
+                • Paid at the end of the month, or within the first 5 working days of the next month
+              </Text>
+
+              <Heading as="h2" style={h2}>Your Login Details</Heading>
+              <Section style={detailsBox}>
+                <Text style={detailLabel}>Login URL</Text>
+                <Text style={detailValue}><a href={login_url} style={link}>{login_url}</a></Text>
+                <Text style={detailLabel}>{login_id_label}</Text>
+                <Text style={detailValue}><strong>{login_id}</strong></Text>
+                <Text style={detailLabel}>Temporary Password</Text>
+                <Text style={detailValue}><strong>{password}</strong></Text>
+              </Section>
+
+              <Section style={{ textAlign: 'center' as const, margin: '24px 0' }}>
+                <Button style={button} href={login_url}>Access Your Dashboard</Button>
+              </Section>
+
+              <Text style={textMuted}>
+                <strong>Important:</strong> Please log in and update your password after your first login.
+                For your security, do not share these credentials with anyone.
+              </Text>
+
+              <Text style={text}>We are excited to have you as part of this partnership.</Text>
+            </>
+          ) : (
+            <>
+              <Text style={text}>
+                An account has been created for you on the {SITE_NAME} {portalName}. Use the credentials
+                below to sign in for the first time. We recommend changing your password after your first login.
+              </Text>
+
+              <Section style={detailsBox}>
+                <Text style={detailLabel}>Login URL</Text>
+                <Text style={detailValue}><a href={login_url} style={link}>{login_url}</a></Text>
+                <Text style={detailLabel}>{login_id_label}</Text>
+                <Text style={detailValue}><strong>{login_id}</strong></Text>
+                <Text style={detailLabel}>Temporary Password</Text>
+                <Text style={detailValue}><strong>{password}</strong></Text>
+              </Section>
+
+              <Section style={{ textAlign: 'center' as const, margin: '24px 0' }}>
+                <Button style={button} href={login_url}>Sign in to your account</Button>
+              </Section>
+
+              <Text style={text}>
+                For your security, please do not share these credentials with anyone. If you did not expect this
+                email, contact us immediately at <strong>info@innersparkafrica.com</strong>.
+              </Text>
+            </>
+          )}
 
           <Hr style={hr} />
           <Text style={footer}>
-            Warm regards,<br />
+            Regards,<br />
             The {SITE_NAME} Team
           </Text>
         </Container>
@@ -74,7 +158,9 @@ const AccountCredentialsEmail = ({
 export const template = {
   component: AccountCredentialsEmail,
   subject: (data: Record<string, any>) =>
-    `Your ${SITE_NAME} ${data.account_type === 'admin' ? 'Admin' : 'Doctor'} Portal credentials`,
+    data.account_type === 'admin'
+      ? `Your ${SITE_NAME} Admin Portal credentials`
+      : `Welcome to ${SITE_NAME} – Referral Partnership Onboarding`,
   displayName: 'Account credentials (admin/doctor)',
   previewData: {
     full_name: 'Jane Doe',
@@ -91,7 +177,11 @@ const container = { padding: '0 25px 40px' }
 const headerSection = { backgroundColor: PRIMARY_COLOR, padding: '24px 25px', margin: '0 -25px 30px', borderRadius: '0 0 8px 8px' }
 const logo = { fontSize: '20px', fontWeight: '700' as const, color: '#ffffff', margin: '0', textAlign: 'center' as const }
 const h1 = { fontSize: '22px', fontWeight: 'bold' as const, color: '#1a1a1a', margin: '0 0 16px' }
-const text = { fontSize: '15px', color: '#555555', lineHeight: '1.6', margin: '0 0 20px' }
+const h2 = { fontSize: '17px', fontWeight: '700' as const, color: '#1a1a1a', margin: '24px 0 10px' }
+const text = { fontSize: '15px', color: '#555555', lineHeight: '1.6', margin: '0 0 16px' }
+const textMuted = { fontSize: '13px', color: '#777777', lineHeight: '1.5', margin: '0 0 16px' }
+const listBox = { backgroundColor: '#f9fafc', borderRadius: '8px', padding: '14px 18px', margin: '0 0 16px' }
+const listItem = { fontSize: '14px', color: '#444444', margin: '0 0 8px', lineHeight: '1.5' }
 const detailsBox = { backgroundColor: '#f4f5fb', borderRadius: '8px', padding: '16px 20px', margin: '0 0 24px' }
 const detailLabel = { fontSize: '12px', color: '#888888', margin: '0 0 4px', textTransform: 'uppercase' as const, letterSpacing: '0.5px' }
 const detailValue = { fontSize: '14px', color: '#333333', margin: '0 0 12px', lineHeight: '1.5', wordBreak: 'break-all' as const }
