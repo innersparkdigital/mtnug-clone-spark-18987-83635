@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Loader2, Trash2, FileText, Users, Phone, MapPin, UserPlus, Stethoscope, Copy, Mail, Ban, CheckCircle2, Calendar, Pencil, AlertTriangle } from "lucide-react";
+import { Loader2, Trash2, FileText, Users, Phone, MapPin, UserPlus, Stethoscope, Copy, Mail, Ban, CheckCircle2, Calendar, Pencil, AlertTriangle, Send, ChevronLeft, ChevronRight } from "lucide-react";
 import {
   buildMonthlyBreakdown,
   tierForCount,
@@ -62,6 +62,9 @@ type DoctorRow = {
   is_active?: boolean;
   deactivated_at?: string | null;
   deactivated_reason?: string | null;
+  credentials_email_status?: string | null;
+  credentials_email_sent_at?: string | null;
+  credentials_email_error?: string | null;
 };
 
 const STATUSES = ["new", "contacted", "booked", "completed", "no_response"] as const;
@@ -97,7 +100,27 @@ const ReferralsTab = () => {
   const [editTarget, setEditTarget] = useState<DoctorRow | null>(null);
   const [editForm, setEditForm] = useState({ full_name: "", phone: "", email: "", facility: "", location: "", is_active: true });
   const [editSubmitting, setEditSubmitting] = useState(false);
-  const [form, setForm] = useState({ full_name: "", phone: "", email: "", facility: "", password: "" });
+  const [form, setForm] = useState({ full_name: "", phone: "", email: "", facility: "", location: "", password: "" });
+
+  // Resend credentials dialog
+  const [resendTarget, setResendTarget] = useState<DoctorRow | null>(null);
+  const [resendPassword, setResendPassword] = useState("");
+  const [resending, setResending] = useState(false);
+
+  // Doctor table filters & pagination
+  const [docSearch, setDocSearch] = useState("");
+  const [docStatusFilter, setDocStatusFilter] = useState<"active" | "inactive" | "all">("active");
+  const [docLocationFilter, setDocLocationFilter] = useState<string>("all");
+  const [docPage, setDocPage] = useState(1);
+  const [docPageSize, setDocPageSize] = useState(10);
+
+  // Referrals filters & pagination
+  const [doctorFilter, setDoctorFilter] = useState<string>("all");
+  const [paymentFilter, setPaymentFilter] = useState<string>("all");
+  const [dateFrom, setDateFrom] = useState<string>("");
+  const [dateTo, setDateTo] = useState<string>("");
+  const [refPage, setRefPage] = useState(1);
+  const [refPageSize, setRefPageSize] = useState(10);
 
   const fetchReferrals = async () => {
     setLoading(true);
@@ -116,7 +139,7 @@ const ReferralsTab = () => {
   const fetchDoctors = async () => {
     const { data } = await supabase
       .from("doctors")
-      .select("id, full_name, phone, email, facility, location, created_at, is_active, deactivated_at, deactivated_reason")
+      .select("id, full_name, phone, email, facility, location, created_at, is_active, deactivated_at, deactivated_reason, credentials_email_status, credentials_email_sent_at, credentials_email_error")
       .order("created_at", { ascending: false });
     setDoctors((data || []) as DoctorRow[]);
   };
@@ -161,6 +184,10 @@ const ReferralsTab = () => {
       toast({ title: "Missing fields", description: "Name, phone, email and 8+ char password required", variant: "destructive" });
       return;
     }
+    if (!form.location.trim()) {
+      toast({ title: "Location required", description: "Please enter the doctor's location.", variant: "destructive" });
+      return;
+    }
     setOnboardSubmitting(true);
     try {
       const { data, error } = await supabase.functions.invoke("admin-create-doctor", {
@@ -169,6 +196,7 @@ const ReferralsTab = () => {
           phone: form.phone.trim(),
           email: form.email.trim().toLowerCase(),
           facility: form.facility.trim() || null,
+          location: form.location.trim(),
           password: form.password,
         },
       });
@@ -181,8 +209,9 @@ const ReferralsTab = () => {
         description: (data as any)?.email_sent
           ? `Credentials emailed to ${form.email}`
           : `Account created — please share credentials manually with Dr. ${form.full_name}`,
+        variant: (data as any)?.email_sent ? "default" : "destructive",
       });
-      setForm({ full_name: "", phone: "", email: "", facility: "", password: "" });
+      setForm({ full_name: "", phone: "", email: "", facility: "", location: "", password: "" });
       fetchDoctors();
     } catch (err: any) {
       toast({ title: "Onboarding failed", description: err.message, variant: "destructive" });
@@ -196,6 +225,42 @@ const ReferralsTab = () => {
     const text = `InnerSpark Doctor Portal\nLogin: https://www.innersparkafrica.com/for-professionals/refer\nPhone: ${createdCreds.phone}\nPassword: ${createdCreds.password}`;
     navigator.clipboard.writeText(text);
     toast({ title: "Credentials copied" });
+  };
+
+  const openResend = (d: DoctorRow) => {
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
+    let p = "";
+    for (let i = 0; i < 10; i++) p += chars[Math.floor(Math.random() * chars.length)];
+    setResendPassword(p + "!");
+    setResendTarget(d);
+  };
+
+  const handleResendCreds = async () => {
+    if (!resendTarget) return;
+    if (!resendPassword || resendPassword.length < 8) {
+      toast({ title: "Password too short", description: "Use at least 8 characters.", variant: "destructive" });
+      return;
+    }
+    setResending(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("admin-create-doctor", {
+        body: { action: "resend_credentials", doctor_id: resendTarget.id, password: resendPassword },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      const sent = Boolean((data as any)?.email_sent);
+      toast({
+        title: sent ? "Credentials email sent" : "Email failed to send",
+        description: sent ? `New password emailed to ${resendTarget.email}.` : ((data as any)?.email_error || "Please retry."),
+        variant: sent ? "default" : "destructive",
+      });
+      if (sent) setResendTarget(null);
+      fetchDoctors();
+    } catch (err: any) {
+      toast({ title: "Email failed to send. Please retry.", description: err.message, variant: "destructive" });
+    } finally {
+      setResending(false);
+    }
   };
 
   const handleDeactivate = async () => {
@@ -312,8 +377,17 @@ const ReferralsTab = () => {
   };
 
   const filtered = useMemo(() => {
+    const fromTs = dateFrom ? new Date(dateFrom).getTime() : null;
+    const toTs = dateTo ? new Date(dateTo).getTime() + 86400000 : null;
     return referrals.filter((r) => {
       if (statusFilter !== "all" && r.status !== statusFilter) return false;
+      if (paymentFilter !== "all" && r.payment_status !== paymentFilter) return false;
+      if (doctorFilter !== "all" && r.doctor_id !== doctorFilter) return false;
+      if (fromTs || toTs) {
+        const ts = new Date(r.created_at).getTime();
+        if (fromTs && ts < fromTs) return false;
+        if (toTs && ts >= toTs) return false;
+      }
       if (search) {
         const q = search.toLowerCase();
         return (
@@ -327,7 +401,49 @@ const ReferralsTab = () => {
       }
       return true;
     });
-  }, [referrals, statusFilter, search]);
+  }, [referrals, statusFilter, search, paymentFilter, doctorFilter, dateFrom, dateTo]);
+
+  const pagedReferrals = useMemo(() => {
+    const start = (refPage - 1) * refPageSize;
+    return filtered.slice(start, start + refPageSize);
+  }, [filtered, refPage, refPageSize]);
+
+  // Reset page when filters change
+  useEffect(() => { setRefPage(1); }, [statusFilter, search, paymentFilter, doctorFilter, dateFrom, dateTo, refPageSize]);
+
+  // Doctors filtering & pagination
+  const docLocations = useMemo(() => {
+    const set = new Set<string>();
+    doctors.forEach((d) => { if (d.location) set.add(d.location); });
+    return Array.from(set).sort();
+  }, [doctors]);
+
+  const filteredDoctors = useMemo(() => {
+    return doctors.filter((d) => {
+      const isActive = d.is_active !== false;
+      if (docStatusFilter === "active" && !isActive) return false;
+      if (docStatusFilter === "inactive" && isActive) return false;
+      if (docLocationFilter !== "all" && (d.location || "") !== docLocationFilter) return false;
+      if (docSearch) {
+        const q = docSearch.toLowerCase();
+        return (
+          d.full_name.toLowerCase().includes(q) ||
+          d.phone.toLowerCase().includes(q) ||
+          d.email.toLowerCase().includes(q) ||
+          (d.facility || "").toLowerCase().includes(q) ||
+          (d.location || "").toLowerCase().includes(q)
+        );
+      }
+      return true;
+    });
+  }, [doctors, docStatusFilter, docLocationFilter, docSearch]);
+
+  const pagedDoctors = useMemo(() => {
+    const start = (docPage - 1) * docPageSize;
+    return filteredDoctors.slice(start, start + docPageSize);
+  }, [filteredDoctors, docPage, docPageSize]);
+
+  useEffect(() => { setDocPage(1); }, [docStatusFilter, docLocationFilter, docSearch, docPageSize]);
 
   // Doctor tracking aggregation
   const doctorStats = useMemo(() => {
