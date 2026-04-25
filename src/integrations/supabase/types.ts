@@ -753,6 +753,7 @@ export type Database = {
           full_name: string
           id: string
           is_active: boolean
+          location: string | null
           phone: string
           updated_at: string
           user_id: string
@@ -766,6 +767,7 @@ export type Database = {
           full_name: string
           id?: string
           is_active?: boolean
+          location?: string | null
           phone: string
           updated_at?: string
           user_id: string
@@ -779,6 +781,7 @@ export type Database = {
           full_name?: string
           id?: string
           is_active?: boolean
+          location?: string | null
           phone?: string
           updated_at?: string
           user_id?: string
