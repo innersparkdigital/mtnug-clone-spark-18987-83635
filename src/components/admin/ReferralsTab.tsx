@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Loader2, Trash2, FileText, Users, Phone, MapPin, UserPlus, Stethoscope, Copy, Mail, Ban, CheckCircle2, Calendar } from "lucide-react";
+import { Loader2, Trash2, FileText, Users, Phone, MapPin, UserPlus, Stethoscope, Copy, Mail, Ban, CheckCircle2, Calendar, Pencil, AlertTriangle } from "lucide-react";
 import {
   buildMonthlyBreakdown,
   tierForCount,
@@ -57,6 +57,7 @@ type DoctorRow = {
   phone: string;
   email: string;
   facility: string | null;
+  location?: string | null;
   created_at: string;
   is_active?: boolean;
   deactivated_at?: string | null;
@@ -93,6 +94,9 @@ const ReferralsTab = () => {
   const [deactivateTarget, setDeactivateTarget] = useState<DoctorRow | null>(null);
   const [deactivateReason, setDeactivateReason] = useState("");
   const [deactivating, setDeactivating] = useState(false);
+  const [editTarget, setEditTarget] = useState<DoctorRow | null>(null);
+  const [editForm, setEditForm] = useState({ full_name: "", phone: "", email: "", facility: "", location: "", is_active: true });
+  const [editSubmitting, setEditSubmitting] = useState(false);
   const [form, setForm] = useState({ full_name: "", phone: "", email: "", facility: "", password: "" });
 
   const fetchReferrals = async () => {
@@ -112,7 +116,7 @@ const ReferralsTab = () => {
   const fetchDoctors = async () => {
     const { data } = await supabase
       .from("doctors")
-      .select("id, full_name, phone, email, facility, created_at, is_active, deactivated_at, deactivated_reason")
+      .select("id, full_name, phone, email, facility, location, created_at, is_active, deactivated_at, deactivated_reason")
       .order("created_at", { ascending: false });
     setDoctors((data || []) as DoctorRow[]);
   };
@@ -196,15 +200,23 @@ const ReferralsTab = () => {
 
   const handleDeactivate = async () => {
     if (!deactivateTarget) return;
+    const willDeactivate = deactivateTarget.is_active !== false;
+    if (willDeactivate && !deactivateReason.trim()) {
+      toast({ title: "Reason required", description: "Please enter a reason for deactivation.", variant: "destructive" });
+      return;
+    }
     setDeactivating(true);
     try {
-      const action = deactivateTarget.is_active === false ? "reactivate" : "deactivate";
+      const action = willDeactivate ? "deactivate" : "reactivate";
       const { data, error } = await supabase.functions.invoke("admin-create-doctor", {
         body: { action, doctor_id: deactivateTarget.id, reason: deactivateReason },
       });
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
-      toast({ title: action === "deactivate" ? "Doctor deactivated" : "Doctor reactivated" });
+      toast({
+        title: action === "deactivate" ? "Doctor deactivated" : "Doctor reactivated",
+        description: action === "deactivate" ? "Account access has been restricted." : "Doctor can now log in again.",
+      });
       setDeactivateTarget(null);
       setDeactivateReason("");
       fetchDoctors();
@@ -212,6 +224,51 @@ const ReferralsTab = () => {
       toast({ title: "Action failed", description: err.message, variant: "destructive" });
     } finally {
       setDeactivating(false);
+    }
+  };
+
+  const openEdit = (d: DoctorRow) => {
+    setEditTarget(d);
+    setEditForm({
+      full_name: d.full_name || "",
+      phone: d.phone || "",
+      email: d.email || "",
+      facility: d.facility || "",
+      location: d.location || "",
+      is_active: d.is_active !== false,
+    });
+  };
+
+  const handleEditSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editTarget) return;
+    if (!editForm.full_name.trim() || !editForm.phone.trim() || !editForm.email.trim()) {
+      toast({ title: "Missing fields", description: "Name, phone and email are required", variant: "destructive" });
+      return;
+    }
+    setEditSubmitting(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("admin-create-doctor", {
+        body: {
+          action: "update_doctor",
+          doctor_id: editTarget.id,
+          full_name: editForm.full_name.trim(),
+          phone: editForm.phone.trim(),
+          email: editForm.email.trim().toLowerCase(),
+          facility: editForm.facility.trim() || null,
+          location: editForm.location.trim() || null,
+          is_active: editForm.is_active,
+        },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      toast({ title: "Doctor profile updated" });
+      setEditTarget(null);
+      fetchDoctors();
+    } catch (err: any) {
+      toast({ title: "Update failed", description: err.message, variant: "destructive" });
+    } finally {
+      setEditSubmitting(false);
     }
   };
 
@@ -456,6 +513,7 @@ const ReferralsTab = () => {
                     <TableHead>Phone (login)</TableHead>
                     <TableHead>Email</TableHead>
                     <TableHead>Facility</TableHead>
+                    <TableHead>Location</TableHead>
                     <TableHead>Onboarded</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
@@ -469,6 +527,7 @@ const ReferralsTab = () => {
                       <TableCell><a href={`tel:${d.phone}`} className="text-primary hover:underline">{d.phone}</a></TableCell>
                       <TableCell className="text-sm">{d.email}</TableCell>
                       <TableCell className="text-sm">{d.facility || "—"}</TableCell>
+                      <TableCell className="text-sm">{d.location || "—"}</TableCell>
                       <TableCell className="text-xs">{new Date(d.created_at).toLocaleDateString()}</TableCell>
                       <TableCell>
                         {d.is_active === false ? (
@@ -477,19 +536,24 @@ const ReferralsTab = () => {
                           <Badge className="bg-green-500/10 text-green-700 dark:text-green-300">Active</Badge>
                         )}
                       </TableCell>
-                      <TableCell className="text-right">
-                        <Button
-                          size="sm"
-                          variant={d.is_active === false ? "outline" : "ghost"}
-                          onClick={() => { setDeactivateTarget(d); setDeactivateReason(""); }}
-                          title={d.is_active === false ? "Reactivate doctor" : "Deactivate doctor"}
-                        >
-                          {d.is_active === false ? (
-                            <><CheckCircle2 className="w-4 h-4 mr-1 text-green-600" /> Reactivate</>
-                          ) : (
-                            <><Ban className="w-4 h-4 mr-1 text-destructive" /> Deactivate</>
-                          )}
-                        </Button>
+                      <TableCell className="text-right whitespace-nowrap">
+                        <div className="flex justify-end gap-1.5 flex-wrap">
+                          <Button size="sm" variant="outline" onClick={() => openEdit(d)} title="Edit doctor profile">
+                            <Pencil className="w-3.5 h-3.5 mr-1" /> Edit
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant={d.is_active === false ? "outline" : "ghost"}
+                            onClick={() => { setDeactivateTarget(d); setDeactivateReason(""); }}
+                            title={d.is_active === false ? "Reactivate doctor" : "Deactivate doctor"}
+                          >
+                            {d.is_active === false ? (
+                              <><CheckCircle2 className="w-3.5 h-3.5 mr-1 text-green-600" /> Reactivate</>
+                            ) : (
+                              <><Ban className="w-3.5 h-3.5 mr-1 text-destructive" /> Deactivate</>
+                            )}
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -744,6 +808,114 @@ const ReferralsTab = () => {
                 {onboardSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Create Doctor Account"}
               </Button>
             </form>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Doctor dialog */}
+      <Dialog open={!!editTarget} onOpenChange={(o) => { if (!o) setEditTarget(null); }}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Edit Doctor Profile</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleEditSave} className="space-y-3">
+            <div>
+              <Label htmlFor="e-name">Full Name *</Label>
+              <Input id="e-name" value={editForm.full_name} onChange={(e) => setEditForm({ ...editForm, full_name: e.target.value })} required />
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <Label htmlFor="e-phone">Phone *</Label>
+                <Input id="e-phone" type="tel" value={editForm.phone} onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })} required />
+              </div>
+              <div>
+                <Label htmlFor="e-email">Email *</Label>
+                <Input id="e-email" type="email" value={editForm.email} onChange={(e) => setEditForm({ ...editForm, email: e.target.value })} required />
+              </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <Label htmlFor="e-fac">Facility</Label>
+                <Input id="e-fac" value={editForm.facility} onChange={(e) => setEditForm({ ...editForm, facility: e.target.value })} />
+              </div>
+              <div>
+                <Label htmlFor="e-loc">Location</Label>
+                <Input id="e-loc" value={editForm.location} onChange={(e) => setEditForm({ ...editForm, location: e.target.value })} placeholder="e.g. Kampala" />
+              </div>
+            </div>
+            <div>
+              <Label htmlFor="e-status">Status</Label>
+              <Select value={editForm.is_active ? "active" : "inactive"} onValueChange={(v) => setEditForm({ ...editForm, is_active: v === "active" })}>
+                <SelectTrigger id="e-status"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="active">Active</SelectItem>
+                  <SelectItem value="inactive">Inactive</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex flex-col-reverse sm:flex-row gap-2 pt-2">
+              <Button type="button" variant="outline" className="flex-1" onClick={() => setEditTarget(null)}>Cancel</Button>
+              <Button type="submit" className="flex-1" disabled={editSubmitting}>
+                {editSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Save Changes"}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Deactivate / Reactivate confirmation dialog */}
+      <Dialog open={!!deactivateTarget} onOpenChange={(o) => { if (!o) { setDeactivateTarget(null); setDeactivateReason(""); } }}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              {deactivateTarget?.is_active === false ? (
+                <><CheckCircle2 className="w-5 h-5 text-green-600" /> Reactivate Doctor Account</>
+              ) : (
+                <><AlertTriangle className="w-5 h-5 text-destructive" /> Deactivate Doctor Account</>
+              )}
+            </DialogTitle>
+          </DialogHeader>
+          {deactivateTarget?.is_active === false ? (
+            <div className="space-y-4">
+              <p className="text-sm text-muted-foreground">
+                Restore login access for <strong>Dr. {deactivateTarget?.full_name}</strong>? They will be able to sign in to the referral portal again.
+              </p>
+              <div className="flex flex-col-reverse sm:flex-row gap-2">
+                <Button variant="outline" className="flex-1" onClick={() => setDeactivateTarget(null)}>Cancel</Button>
+                <Button className="flex-1" onClick={handleDeactivate} disabled={deactivating}>
+                  {deactivating ? <Loader2 className="w-4 h-4 animate-spin" /> : "Confirm Reactivation"}
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <div className="rounded-lg bg-destructive/5 border border-destructive/20 p-3 text-sm text-destructive">
+                Are you sure you want to deactivate <strong>Dr. {deactivateTarget?.full_name}</strong>? This action will restrict access to the platform.
+              </div>
+              <div>
+                <Label htmlFor="deact-reason">Reason for deactivation <span className="text-destructive">*</span></Label>
+                <Textarea
+                  id="deact-reason"
+                  value={deactivateReason}
+                  onChange={(e) => setDeactivateReason(e.target.value)}
+                  placeholder="Enter reason for deactivation…"
+                  rows={3}
+                  required
+                />
+                <p className="text-xs text-muted-foreground mt-1">This reason will be saved for accountability and audit logs.</p>
+              </div>
+              <div className="flex flex-col-reverse sm:flex-row gap-2">
+                <Button variant="outline" className="flex-1" onClick={() => setDeactivateTarget(null)}>Cancel</Button>
+                <Button
+                  variant="destructive"
+                  className="flex-1"
+                  onClick={handleDeactivate}
+                  disabled={deactivating || !deactivateReason.trim()}
+                >
+                  {deactivating ? <Loader2 className="w-4 h-4 animate-spin" /> : "Confirm Deactivation"}
+                </Button>
+              </div>
+            </div>
           )}
         </DialogContent>
       </Dialog>
