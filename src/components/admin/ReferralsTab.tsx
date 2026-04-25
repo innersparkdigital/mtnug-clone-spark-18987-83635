@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Loader2, Trash2, FileText, Users, Phone, MapPin, UserPlus, Stethoscope, Copy, Mail, Ban, CheckCircle2, Calendar } from "lucide-react";
+import { Loader2, Trash2, FileText, Users, Phone, MapPin, UserPlus, Stethoscope, Copy, Mail, Ban, CheckCircle2, Calendar, Pencil, AlertTriangle } from "lucide-react";
 import {
   buildMonthlyBreakdown,
   tierForCount,
@@ -57,6 +57,7 @@ type DoctorRow = {
   phone: string;
   email: string;
   facility: string | null;
+  location?: string | null;
   created_at: string;
   is_active?: boolean;
   deactivated_at?: string | null;
@@ -93,6 +94,9 @@ const ReferralsTab = () => {
   const [deactivateTarget, setDeactivateTarget] = useState<DoctorRow | null>(null);
   const [deactivateReason, setDeactivateReason] = useState("");
   const [deactivating, setDeactivating] = useState(false);
+  const [editTarget, setEditTarget] = useState<DoctorRow | null>(null);
+  const [editForm, setEditForm] = useState({ full_name: "", phone: "", email: "", facility: "", location: "", is_active: true });
+  const [editSubmitting, setEditSubmitting] = useState(false);
   const [form, setForm] = useState({ full_name: "", phone: "", email: "", facility: "", password: "" });
 
   const fetchReferrals = async () => {
@@ -112,7 +116,7 @@ const ReferralsTab = () => {
   const fetchDoctors = async () => {
     const { data } = await supabase
       .from("doctors")
-      .select("id, full_name, phone, email, facility, created_at, is_active, deactivated_at, deactivated_reason")
+      .select("id, full_name, phone, email, facility, location, created_at, is_active, deactivated_at, deactivated_reason")
       .order("created_at", { ascending: false });
     setDoctors((data || []) as DoctorRow[]);
   };
@@ -196,15 +200,23 @@ const ReferralsTab = () => {
 
   const handleDeactivate = async () => {
     if (!deactivateTarget) return;
+    const willDeactivate = deactivateTarget.is_active !== false;
+    if (willDeactivate && !deactivateReason.trim()) {
+      toast({ title: "Reason required", description: "Please enter a reason for deactivation.", variant: "destructive" });
+      return;
+    }
     setDeactivating(true);
     try {
-      const action = deactivateTarget.is_active === false ? "reactivate" : "deactivate";
+      const action = willDeactivate ? "deactivate" : "reactivate";
       const { data, error } = await supabase.functions.invoke("admin-create-doctor", {
         body: { action, doctor_id: deactivateTarget.id, reason: deactivateReason },
       });
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
-      toast({ title: action === "deactivate" ? "Doctor deactivated" : "Doctor reactivated" });
+      toast({
+        title: action === "deactivate" ? "Doctor deactivated" : "Doctor reactivated",
+        description: action === "deactivate" ? "Account access has been restricted." : "Doctor can now log in again.",
+      });
       setDeactivateTarget(null);
       setDeactivateReason("");
       fetchDoctors();
@@ -212,6 +224,51 @@ const ReferralsTab = () => {
       toast({ title: "Action failed", description: err.message, variant: "destructive" });
     } finally {
       setDeactivating(false);
+    }
+  };
+
+  const openEdit = (d: DoctorRow) => {
+    setEditTarget(d);
+    setEditForm({
+      full_name: d.full_name || "",
+      phone: d.phone || "",
+      email: d.email || "",
+      facility: d.facility || "",
+      location: d.location || "",
+      is_active: d.is_active !== false,
+    });
+  };
+
+  const handleEditSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editTarget) return;
+    if (!editForm.full_name.trim() || !editForm.phone.trim() || !editForm.email.trim()) {
+      toast({ title: "Missing fields", description: "Name, phone and email are required", variant: "destructive" });
+      return;
+    }
+    setEditSubmitting(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("admin-create-doctor", {
+        body: {
+          action: "update_doctor",
+          doctor_id: editTarget.id,
+          full_name: editForm.full_name.trim(),
+          phone: editForm.phone.trim(),
+          email: editForm.email.trim().toLowerCase(),
+          facility: editForm.facility.trim() || null,
+          location: editForm.location.trim() || null,
+          is_active: editForm.is_active,
+        },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      toast({ title: "Doctor profile updated" });
+      setEditTarget(null);
+      fetchDoctors();
+    } catch (err: any) {
+      toast({ title: "Update failed", description: err.message, variant: "destructive" });
+    } finally {
+      setEditSubmitting(false);
     }
   };
 
