@@ -612,6 +612,7 @@ const ReferralsTab = () => {
           <div className="rounded-md border bg-muted/30 p-3 text-xs space-y-1">
             <p><strong>Cycle closes:</strong> {platformMonth.endOfMonth.toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" })}</p>
             <p><strong>Payout sent by:</strong> {platformMonth.fifthBiz.toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" })} (within first 5 working days of next month)</p>
+            <p><strong>Days until cycle closes:</strong> {platformMonth.daysToClose}</p>
             <p className="text-muted-foreground">Tiers are recalculated for the entire month each time a new success is recorded.</p>
           </div>
         </CardContent>
