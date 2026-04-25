@@ -1176,6 +1176,40 @@ const ReferralsTab = () => {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Resend Credentials dialog */}
+      <Dialog open={!!resendTarget} onOpenChange={(o) => { if (!o) setResendTarget(null); }}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2"><Send className="w-5 h-5 text-primary" /> Resend Credentials</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3 text-sm">
+            <p>This will reset <strong>Dr. {resendTarget?.full_name}</strong>'s password and email the new credentials to <strong>{resendTarget?.email}</strong>.</p>
+            <div>
+              <Label htmlFor="r-pwd">New temporary password *</Label>
+              <div className="flex gap-2">
+                <Input id="r-pwd" value={resendPassword} onChange={(e) => setResendPassword(e.target.value)} minLength={8} />
+                <Button type="button" variant="outline" onClick={() => {
+                  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
+                  let p = ""; for (let i = 0; i < 10; i++) p += chars[Math.floor(Math.random() * chars.length)];
+                  setResendPassword(p + "!");
+                }}>Generate</Button>
+              </div>
+            </div>
+            {resendTarget?.credentials_email_status === "failed" && resendTarget?.credentials_email_error && (
+              <div className="rounded-md bg-destructive/5 border border-destructive/20 p-2 text-xs text-destructive">
+                Last error: {resendTarget.credentials_email_error}
+              </div>
+            )}
+            <div className="flex flex-col-reverse sm:flex-row gap-2 pt-2">
+              <Button variant="outline" className="flex-1" onClick={() => setResendTarget(null)}>Cancel</Button>
+              <Button className="flex-1" onClick={handleResendCreds} disabled={resending || resendPassword.length < 8}>
+                {resending ? <Loader2 className="w-4 h-4 animate-spin" /> : "Reset Password & Email"}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
