@@ -41,6 +41,71 @@ Deno.serve(async (req) => {
     const body = await req.json();
     const action = String(body.action || "create");
 
+    // ---- RESEND credentials email ----
+    if (action === "resend_credentials") {
+      const doctor_id = String(body.doctor_id || "");
+      const password = String(body.password || "").trim();
+      if (!doctor_id) throw new Error("doctor_id required");
+      if (!password || password.length < 8) {
+        return new Response(JSON.stringify({ error: "A new password (8+ chars) is required to resend credentials" }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      const { data: doc, error: docErr } = await admin
+        .from("doctors")
+        .select("id, user_id, full_name, phone, email")
+        .eq("id", doctor_id)
+        .single();
+      if (docErr || !doc) throw new Error("Doctor not found");
+
+      // Reset auth password so what we email actually works
+      try {
+        await admin.auth.admin.updateUserById(doc.user_id, { password, email_confirm: true });
+      } catch (e) {
+        console.error("password reset failed", e);
+        throw new Error("Failed to reset password: " + (e as Error).message);
+      }
+
+      const LOGIN_URL = "https://www.innersparkafrica.com/for-professionals/refer";
+      let email_sent = false;
+      let email_error: string | null = null;
+      try {
+        const { data: emailData, error: emailErr } = await admin.functions.invoke("send-transactional-email", {
+          body: {
+            templateName: "account-credentials",
+            recipientEmail: doc.email,
+            idempotencyKey: `doctor-creds-${doctor_id}-${Date.now()}`,
+            templateData: {
+              full_name: doc.full_name,
+              account_type: "doctor",
+              login_url: LOGIN_URL,
+              login_id: doc.phone,
+              login_id_label: "Phone",
+              password,
+            },
+          },
+        });
+        if (emailErr) throw emailErr;
+        if ((emailData as any)?.error) throw new Error((emailData as any).error);
+        email_sent = true;
+      } catch (e) {
+        email_error = (e as Error).message || String(e);
+        console.error("resend credentials email failed", email_error);
+      }
+
+      await admin.from("doctors").update({
+        credentials_email_status: email_sent ? "sent" : "failed",
+        credentials_email_sent_at: email_sent ? new Date().toISOString() : null,
+        credentials_email_error: email_sent ? null : email_error,
+      }).eq("id", doctor_id);
+
+      return new Response(JSON.stringify({ ok: true, email_sent, email_error }), {
+        status: email_sent ? 200 : 502,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     // ---- DEACTIVATE / REACTIVATE ----
     if (action === "deactivate" || action === "reactivate") {
       const doctor_id = String(body.doctor_id || "");
@@ -174,10 +239,19 @@ Deno.serve(async (req) => {
     const phone = String(body.phone || "").trim();
     const email = String(body.email || "").trim().toLowerCase();
     const facility = body.facility ? String(body.facility).trim() : null;
+    const location = body.location ? String(body.location).trim() : null;
     const password = String(body.password || "").trim();
 
     if (!full_name || !phone || !email || !password || password.length < 8) {
       return new Response(JSON.stringify({ error: "Missing or invalid fields (password must be 8+ chars)" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Basic email format validation
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return new Response(JSON.stringify({ error: "Invalid email format" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -252,7 +326,7 @@ Deno.serve(async (req) => {
 
     const { data: doctor, error: insertErr } = await admin
       .from("doctors")
-      .insert({ user_id: userId, full_name, phone, email, facility })
+      .insert({ user_id: userId, full_name, phone, email, facility, location, credentials_email_status: "pending" })
       .select()
       .single();
     if (insertErr) {
@@ -261,15 +335,17 @@ Deno.serve(async (req) => {
       throw insertErr;
     }
 
-    // Send credentials email (best-effort, non-fatal)
+    // Send credentials email (best-effort, non-fatal). Track outcome on the doctor row.
     const LOGIN_URL = "https://www.innersparkafrica.com/for-professionals/refer";
     let email_sent = false;
+    let email_error: string | null = null;
     try {
-      const { error: emailErr } = await admin.functions.invoke("send-transactional-email", {
+      const { data: emailData, error: emailErr } = await admin.functions.invoke("send-transactional-email", {
         body: {
-          template: "account-credentials",
-          to: email,
-          data: {
+          templateName: "account-credentials",
+          recipientEmail: email,
+          idempotencyKey: `doctor-creds-${doctor.id}`,
+          templateData: {
             full_name,
             account_type: "doctor",
             login_url: LOGIN_URL,
@@ -280,13 +356,25 @@ Deno.serve(async (req) => {
         },
       });
       if (emailErr) throw emailErr;
+      if ((emailData as any)?.error) throw new Error((emailData as any).error);
       email_sent = true;
     } catch (e) {
-      console.warn("credentials email failed (non-fatal)", e);
+      email_error = (e as Error).message || String(e);
+      console.error("credentials email failed (non-fatal)", email_error);
+    }
+
+    try {
+      await admin.from("doctors").update({
+        credentials_email_status: email_sent ? "sent" : "failed",
+        credentials_email_sent_at: email_sent ? new Date().toISOString() : null,
+        credentials_email_error: email_sent ? null : email_error,
+      }).eq("id", doctor.id);
+    } catch (e) {
+      console.warn("failed to update email tracking", e);
     }
 
     return new Response(
-      JSON.stringify({ ok: true, doctor, email_sent, credentials: { phone, email, password, login_url: LOGIN_URL } }),
+      JSON.stringify({ ok: true, doctor, email_sent, email_error, credentials: { phone, email, password, login_url: LOGIN_URL } }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (err) {
