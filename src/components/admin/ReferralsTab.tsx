@@ -811,6 +811,114 @@ const ReferralsTab = () => {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Edit Doctor dialog */}
+      <Dialog open={!!editTarget} onOpenChange={(o) => { if (!o) setEditTarget(null); }}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Edit Doctor Profile</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleEditSave} className="space-y-3">
+            <div>
+              <Label htmlFor="e-name">Full Name *</Label>
+              <Input id="e-name" value={editForm.full_name} onChange={(e) => setEditForm({ ...editForm, full_name: e.target.value })} required />
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <Label htmlFor="e-phone">Phone *</Label>
+                <Input id="e-phone" type="tel" value={editForm.phone} onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })} required />
+              </div>
+              <div>
+                <Label htmlFor="e-email">Email *</Label>
+                <Input id="e-email" type="email" value={editForm.email} onChange={(e) => setEditForm({ ...editForm, email: e.target.value })} required />
+              </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <Label htmlFor="e-fac">Facility</Label>
+                <Input id="e-fac" value={editForm.facility} onChange={(e) => setEditForm({ ...editForm, facility: e.target.value })} />
+              </div>
+              <div>
+                <Label htmlFor="e-loc">Location</Label>
+                <Input id="e-loc" value={editForm.location} onChange={(e) => setEditForm({ ...editForm, location: e.target.value })} placeholder="e.g. Kampala" />
+              </div>
+            </div>
+            <div>
+              <Label htmlFor="e-status">Status</Label>
+              <Select value={editForm.is_active ? "active" : "inactive"} onValueChange={(v) => setEditForm({ ...editForm, is_active: v === "active" })}>
+                <SelectTrigger id="e-status"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="active">Active</SelectItem>
+                  <SelectItem value="inactive">Inactive</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex flex-col-reverse sm:flex-row gap-2 pt-2">
+              <Button type="button" variant="outline" className="flex-1" onClick={() => setEditTarget(null)}>Cancel</Button>
+              <Button type="submit" className="flex-1" disabled={editSubmitting}>
+                {editSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Save Changes"}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Deactivate / Reactivate confirmation dialog */}
+      <Dialog open={!!deactivateTarget} onOpenChange={(o) => { if (!o) { setDeactivateTarget(null); setDeactivateReason(""); } }}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              {deactivateTarget?.is_active === false ? (
+                <><CheckCircle2 className="w-5 h-5 text-green-600" /> Reactivate Doctor Account</>
+              ) : (
+                <><AlertTriangle className="w-5 h-5 text-destructive" /> Deactivate Doctor Account</>
+              )}
+            </DialogTitle>
+          </DialogHeader>
+          {deactivateTarget?.is_active === false ? (
+            <div className="space-y-4">
+              <p className="text-sm text-muted-foreground">
+                Restore login access for <strong>Dr. {deactivateTarget?.full_name}</strong>? They will be able to sign in to the referral portal again.
+              </p>
+              <div className="flex flex-col-reverse sm:flex-row gap-2">
+                <Button variant="outline" className="flex-1" onClick={() => setDeactivateTarget(null)}>Cancel</Button>
+                <Button className="flex-1" onClick={handleDeactivate} disabled={deactivating}>
+                  {deactivating ? <Loader2 className="w-4 h-4 animate-spin" /> : "Confirm Reactivation"}
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <div className="rounded-lg bg-destructive/5 border border-destructive/20 p-3 text-sm text-destructive">
+                Are you sure you want to deactivate <strong>Dr. {deactivateTarget?.full_name}</strong>? This action will restrict access to the platform.
+              </div>
+              <div>
+                <Label htmlFor="deact-reason">Reason for deactivation <span className="text-destructive">*</span></Label>
+                <Textarea
+                  id="deact-reason"
+                  value={deactivateReason}
+                  onChange={(e) => setDeactivateReason(e.target.value)}
+                  placeholder="Enter reason for deactivation…"
+                  rows={3}
+                  required
+                />
+                <p className="text-xs text-muted-foreground mt-1">This reason will be saved for accountability and audit logs.</p>
+              </div>
+              <div className="flex flex-col-reverse sm:flex-row gap-2">
+                <Button variant="outline" className="flex-1" onClick={() => setDeactivateTarget(null)}>Cancel</Button>
+                <Button
+                  variant="destructive"
+                  className="flex-1"
+                  onClick={handleDeactivate}
+                  disabled={deactivating || !deactivateReason.trim()}
+                >
+                  {deactivating ? <Loader2 className="w-4 h-4 animate-spin" /> : "Confirm Deactivation"}
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
