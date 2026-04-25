@@ -1051,6 +1051,10 @@ const ReferralsTab = () => {
                 <Input id="d-fac" value={form.facility} onChange={(e) => setForm({ ...form, facility: e.target.value })} />
               </div>
               <div>
+                <Label htmlFor="d-loc">Location *</Label>
+                <Input id="d-loc" value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} placeholder="e.g. Kampala" required />
+              </div>
+              <div>
                 <Label htmlFor="d-pwd">Password * (min 8 chars)</Label>
                 <div className="flex gap-2">
                   <Input id="d-pwd" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required minLength={8} />
