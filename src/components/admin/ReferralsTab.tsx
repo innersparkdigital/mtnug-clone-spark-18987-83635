@@ -513,6 +513,7 @@ const ReferralsTab = () => {
                     <TableHead>Phone (login)</TableHead>
                     <TableHead>Email</TableHead>
                     <TableHead>Facility</TableHead>
+                    <TableHead>Location</TableHead>
                     <TableHead>Onboarded</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
@@ -526,6 +527,7 @@ const ReferralsTab = () => {
                       <TableCell><a href={`tel:${d.phone}`} className="text-primary hover:underline">{d.phone}</a></TableCell>
                       <TableCell className="text-sm">{d.email}</TableCell>
                       <TableCell className="text-sm">{d.facility || "—"}</TableCell>
+                      <TableCell className="text-sm">{d.location || "—"}</TableCell>
                       <TableCell className="text-xs">{new Date(d.created_at).toLocaleDateString()}</TableCell>
                       <TableCell>
                         {d.is_active === false ? (
@@ -534,19 +536,24 @@ const ReferralsTab = () => {
                           <Badge className="bg-green-500/10 text-green-700 dark:text-green-300">Active</Badge>
                         )}
                       </TableCell>
-                      <TableCell className="text-right">
-                        <Button
-                          size="sm"
-                          variant={d.is_active === false ? "outline" : "ghost"}
-                          onClick={() => { setDeactivateTarget(d); setDeactivateReason(""); }}
-                          title={d.is_active === false ? "Reactivate doctor" : "Deactivate doctor"}
-                        >
-                          {d.is_active === false ? (
-                            <><CheckCircle2 className="w-4 h-4 mr-1 text-green-600" /> Reactivate</>
-                          ) : (
-                            <><Ban className="w-4 h-4 mr-1 text-destructive" /> Deactivate</>
-                          )}
-                        </Button>
+                      <TableCell className="text-right whitespace-nowrap">
+                        <div className="flex justify-end gap-1.5 flex-wrap">
+                          <Button size="sm" variant="outline" onClick={() => openEdit(d)} title="Edit doctor profile">
+                            <Pencil className="w-3.5 h-3.5 mr-1" /> Edit
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant={d.is_active === false ? "outline" : "ghost"}
+                            onClick={() => { setDeactivateTarget(d); setDeactivateReason(""); }}
+                            title={d.is_active === false ? "Reactivate doctor" : "Deactivate doctor"}
+                          >
+                            {d.is_active === false ? (
+                              <><CheckCircle2 className="w-3.5 h-3.5 mr-1 text-green-600" /> Reactivate</>
+                            ) : (
+                              <><Ban className="w-3.5 h-3.5 mr-1 text-destructive" /> Deactivate</>
+                            )}
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}
