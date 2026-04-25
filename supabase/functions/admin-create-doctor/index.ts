@@ -45,6 +45,12 @@ Deno.serve(async (req) => {
     if (action === "deactivate" || action === "reactivate") {
       const doctor_id = String(body.doctor_id || "");
       if (!doctor_id) throw new Error("doctor_id required");
+      if (action === "deactivate" && !String(body.reason || "").trim()) {
+        return new Response(JSON.stringify({ error: "Deactivation reason is required" }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
       const { data: doc, error: docErr } = await admin
         .from("doctors")
         .select("id, user_id")
@@ -71,7 +77,95 @@ Deno.serve(async (req) => {
       } catch (e) {
         console.warn("auth ban update failed (non-fatal)", e);
       }
+
+      // Activity log
+      try {
+        await admin.from("activity_logs").insert({
+          user_id: userData.user.id,
+          action: isDeactivate ? "doctor_deactivated" : "doctor_reactivated",
+          entity_type: "doctor",
+          entity_id: doctor_id,
+          details: { reason: isDeactivate ? String(body.reason || "").trim() : null },
+        });
+      } catch (e) {
+        console.warn("activity log insert failed (non-fatal)", e);
+      }
+
       return new Response(JSON.stringify({ ok: true, is_active: !isDeactivate }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // ---- UPDATE doctor profile ----
+    if (action === "update_doctor") {
+      const doctor_id = String(body.doctor_id || "");
+      if (!doctor_id) throw new Error("doctor_id required");
+
+      const patch: Record<string, unknown> = {};
+      if (typeof body.full_name === "string") patch.full_name = body.full_name.trim();
+      if (typeof body.phone === "string") patch.phone = body.phone.trim();
+      if (typeof body.email === "string") patch.email = body.email.trim().toLowerCase();
+      if (typeof body.facility !== "undefined") patch.facility = body.facility ? String(body.facility).trim() : null;
+      if (typeof body.location !== "undefined") patch.location = body.location ? String(body.location).trim() : null;
+      if (typeof body.is_active === "boolean") {
+        patch.is_active = body.is_active;
+        patch.deactivated_at = body.is_active ? null : new Date().toISOString();
+        if (!body.is_active && typeof body.deactivated_reason === "string") {
+          patch.deactivated_reason = body.deactivated_reason.trim() || null;
+        }
+        if (body.is_active) patch.deactivated_reason = null;
+      }
+
+      if (Object.keys(patch).length === 0) {
+        return new Response(JSON.stringify({ error: "No fields to update" }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      // Uniqueness checks for phone/email if being changed
+      if (patch.phone) {
+        const { data: dup } = await admin.from("doctors").select("id").eq("phone", patch.phone as string).neq("id", doctor_id).maybeSingle();
+        if (dup) return new Response(JSON.stringify({ error: "Phone already used by another doctor" }), { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+      if (patch.email) {
+        const { data: dup } = await admin.from("doctors").select("id").eq("email", patch.email as string).neq("id", doctor_id).maybeSingle();
+        if (dup) return new Response(JSON.stringify({ error: "Email already used by another doctor" }), { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+
+      const { data: updated, error: updErr } = await admin
+        .from("doctors")
+        .update(patch)
+        .eq("id", doctor_id)
+        .select()
+        .single();
+      if (updErr) throw updErr;
+
+      // Mirror auth user (email + ban status) when changed
+      try {
+        const authPatch: Record<string, unknown> = {};
+        if (patch.email) authPatch.email = patch.email;
+        if (typeof body.is_active === "boolean") authPatch.ban_duration = body.is_active ? "none" : "876000h";
+        if (Object.keys(authPatch).length > 0 && updated?.user_id) {
+          await admin.auth.admin.updateUserById(updated.user_id, authPatch);
+        }
+      } catch (e) {
+        console.warn("auth update failed (non-fatal)", e);
+      }
+
+      try {
+        await admin.from("activity_logs").insert({
+          user_id: userData.user.id,
+          action: "doctor_updated",
+          entity_type: "doctor",
+          entity_id: doctor_id,
+          details: { changed: Object.keys(patch) },
+        });
+      } catch (e) {
+        console.warn("activity log insert failed (non-fatal)", e);
+      }
+
+      return new Response(JSON.stringify({ ok: true, doctor: updated }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
