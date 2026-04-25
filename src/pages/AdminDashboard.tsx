@@ -151,22 +151,22 @@ const AdminDashboard = () => {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <main className="container mx-auto px-4 py-8 pt-24">
+      <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 pt-20 sm:pt-24">
         {/* Admin Header */}
-        <div className="mb-8">
+        <div className="mb-6 sm:mb-8">
           <Badge className="mb-2 bg-purple-500/10 text-purple-600 border-purple-500/20">
             Admin Dashboard
           </Badge>
-          <h1 className="text-3xl font-bold text-foreground mb-2">
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
             Platform Management
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-sm sm:text-base text-muted-foreground">
             Monitor learner progress, training registrations & platform performance
           </p>
         </div>
 
         <Tabs defaultValue={hasPageAccess('learning') ? 'learning' : hasPageAccess('registrations') ? 'registrations' : hasPageAccess('newsletter') ? 'newsletter' : hasPageAccess('referrals') ? 'referrals' : 'users'} className="space-y-6">
-          <TabsList className="flex-wrap h-auto">
+          <TabsList className="flex-wrap h-auto w-full justify-start gap-1 p-1">
             {hasPageAccess('learning') && (
               <TabsTrigger value="learning" className="gap-2">
                 <GraduationCap className="h-4 w-4" />
