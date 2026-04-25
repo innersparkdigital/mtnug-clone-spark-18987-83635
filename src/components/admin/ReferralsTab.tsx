@@ -122,6 +122,13 @@ const ReferralsTab = () => {
   const [refPage, setRefPage] = useState(1);
   const [refPageSize, setRefPageSize] = useState(10);
 
+  // Real-time clock — re-renders every minute so month/payout labels update naturally
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 60_000);
+    return () => clearInterval(id);
+  }, []);
+
   const fetchReferrals = async () => {
     setLoading(true);
     const { data, error } = await supabase
@@ -467,15 +474,14 @@ const ReferralsTab = () => {
 
   // Platform-wide payout window summary (current month)
   const platformMonth = useMemo(() => {
-    const cm = monthKey(new Date());
+    const cm = monthKey(now);
     let totalSuccess = 0;
     let totalEarned = 0;
     doctorStats.forEach((d) => {
       totalSuccess += d.successThisMonth;
       totalEarned += d.earnedThisMonth;
     });
-    const label = new Date().toLocaleString(undefined, { month: "long", year: "numeric" });
-    const now = new Date();
+    const label = now.toLocaleString(undefined, { month: "long", year: "numeric" });
     const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
     // 5th business day of next month
     const firstNext = new Date(now.getFullYear(), now.getMonth() + 1, 1);
@@ -486,8 +492,10 @@ const ReferralsTab = () => {
       const dow = d.getDay();
       if (dow !== 0 && dow !== 6) added += 1;
     }
-    return { cm, label, totalSuccess, totalEarned, endOfMonth, fifthBiz: d };
-  }, [doctorStats]);
+    const msToClose = endOfMonth.getTime() + 86400000 - now.getTime();
+    const daysToClose = Math.max(0, Math.ceil(msToClose / 86400000));
+    return { cm, label, totalSuccess, totalEarned, endOfMonth, fifthBiz: d, daysToClose };
+  }, [doctorStats, now]);
 
   const counts = useMemo(() => {
     const c: Record<string, number> = { new: 0, contacted: 0, booked: 0, completed: 0, no_response: 0 };
