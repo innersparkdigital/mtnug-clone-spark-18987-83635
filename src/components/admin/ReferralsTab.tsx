@@ -613,14 +613,76 @@ const ReferralsTab = () => {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
-            <Stethoscope className="w-4 h-4" /> Onboarded Doctors ({doctors.length})
+            <Stethoscope className="w-4 h-4" /> Onboarded Doctors ({filteredDoctors.length} of {doctors.length})
           </CardTitle>
         </CardHeader>
         <CardContent>
+          {/* Filters */}
+          <div className="flex flex-col md:flex-row gap-2 mb-4">
+            <Input placeholder="Search name, phone, email, location…" value={docSearch} onChange={(e) => setDocSearch(e.target.value)} className="flex-1" />
+            <Select value={docStatusFilter} onValueChange={(v) => setDocStatusFilter(v as any)}>
+              <SelectTrigger className="w-full md:w-[140px]"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="active">Active</SelectItem>
+                <SelectItem value="inactive">Inactive</SelectItem>
+                <SelectItem value="all">All</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={docLocationFilter} onValueChange={setDocLocationFilter}>
+              <SelectTrigger className="w-full md:w-[180px]"><SelectValue placeholder="Location" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All locations</SelectItem>
+                {docLocations.map((l) => <SelectItem key={l} value={l}>{l}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+
           {doctors.length === 0 ? (
             <p className="text-sm text-muted-foreground">No doctors onboarded yet. Click "Onboard Doctor" above to add one.</p>
+          ) : filteredDoctors.length === 0 ? (
+            <p className="text-sm text-muted-foreground">No doctors match the current filters.</p>
           ) : (
-            <div className="overflow-x-auto">
+            <>
+            {/* Mobile cards */}
+            <div className="md:hidden space-y-3">
+              {pagedDoctors.map((d) => {
+                const emailStatus = d.credentials_email_status || "pending";
+                const emailBadge = emailStatus === "sent" ? "bg-green-500/10 text-green-700" : emailStatus === "failed" ? "bg-red-500/10 text-red-700" : "bg-amber-500/10 text-amber-700";
+                return (
+                  <div key={d.id} className="rounded-lg border p-3 bg-card space-y-2">
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <p className="font-medium">Dr. {d.full_name}</p>
+                        <p className="text-xs text-muted-foreground">{d.facility || "—"} · {d.location || "—"}</p>
+                      </div>
+                      {d.is_active === false ? (
+                        <Badge className="bg-red-500/10 text-red-700">Inactive</Badge>
+                      ) : (
+                        <Badge className="bg-green-500/10 text-green-700">Active</Badge>
+                      )}
+                    </div>
+                    <div className="text-xs space-y-0.5">
+                      <div><Phone className="w-3 h-3 inline mr-1" /><a href={`tel:${d.phone}`} className="text-primary">{d.phone}</a></div>
+                      <div><Mail className="w-3 h-3 inline mr-1" />{d.email}</div>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs">
+                      <Badge className={emailBadge}>Email: {emailStatus}</Badge>
+                      {d.credentials_email_sent_at && <span className="text-muted-foreground">{new Date(d.credentials_email_sent_at).toLocaleString()}</span>}
+                    </div>
+                    <div className="flex flex-wrap gap-1.5 pt-1">
+                      <Button size="sm" variant="outline" onClick={() => openEdit(d)}><Pencil className="w-3.5 h-3.5 mr-1" />Edit</Button>
+                      <Button size="sm" variant="outline" onClick={() => openResend(d)}><Send className="w-3.5 h-3.5 mr-1" />Resend</Button>
+                      <Button size="sm" variant="ghost" onClick={() => { setDeactivateTarget(d); setDeactivateReason(""); }}>
+                        {d.is_active === false ? <><CheckCircle2 className="w-3.5 h-3.5 mr-1 text-green-600" />Reactivate</> : <><Ban className="w-3.5 h-3.5 mr-1 text-destructive" />Deactivate</>}
+                      </Button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Desktop table */}
+            <div className="overflow-x-auto hidden md:block">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -632,13 +694,17 @@ const ReferralsTab = () => {
                     <TableHead>Location</TableHead>
                     <TableHead>Onboarded</TableHead>
                     <TableHead>Status</TableHead>
+                    <TableHead>Credentials Email</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {doctors.map((d, i) => (
+                  {pagedDoctors.map((d, i) => {
+                    const emailStatus = d.credentials_email_status || "pending";
+                    const emailBadge = emailStatus === "sent" ? "bg-green-500/10 text-green-700 dark:text-green-300" : emailStatus === "failed" ? "bg-red-500/10 text-red-700 dark:text-red-300" : "bg-amber-500/10 text-amber-700 dark:text-amber-300";
+                    return (
                     <TableRow key={d.id}>
-                      <TableCell className="text-muted-foreground">{i + 1}</TableCell>
+                      <TableCell className="text-muted-foreground">{(docPage - 1) * docPageSize + i + 1}</TableCell>
                       <TableCell className="font-medium">Dr. {d.full_name}</TableCell>
                       <TableCell><a href={`tel:${d.phone}`} className="text-primary hover:underline">{d.phone}</a></TableCell>
                       <TableCell className="text-sm">{d.email}</TableCell>
@@ -652,10 +718,20 @@ const ReferralsTab = () => {
                           <Badge className="bg-green-500/10 text-green-700 dark:text-green-300">Active</Badge>
                         )}
                       </TableCell>
+                      <TableCell>
+                        <div className="flex flex-col gap-0.5">
+                          <Badge className={`${emailBadge} capitalize w-fit`}>{emailStatus}</Badge>
+                          {d.credentials_email_sent_at && <span className="text-[10px] text-muted-foreground">{new Date(d.credentials_email_sent_at).toLocaleString()}</span>}
+                          {emailStatus === "failed" && d.credentials_email_error && <span className="text-[10px] text-destructive truncate max-w-[160px]" title={d.credentials_email_error}>{d.credentials_email_error}</span>}
+                        </div>
+                      </TableCell>
                       <TableCell className="text-right whitespace-nowrap">
                         <div className="flex justify-end gap-1.5 flex-wrap">
                           <Button size="sm" variant="outline" onClick={() => openEdit(d)} title="Edit doctor profile">
                             <Pencil className="w-3.5 h-3.5 mr-1" /> Edit
+                          </Button>
+                          <Button size="sm" variant="outline" onClick={() => openResend(d)} title="Resend credentials email">
+                            <Send className="w-3.5 h-3.5 mr-1" /> Resend
                           </Button>
                           <Button
                             size="sm"
@@ -672,10 +748,32 @@ const ReferralsTab = () => {
                         </div>
                       </TableCell>
                     </TableRow>
-                  ))}
+                    );
+                  })}
                 </TableBody>
               </Table>
             </div>
+
+            {/* Doctors pagination */}
+            <div className="flex flex-wrap items-center justify-between gap-2 mt-3 text-sm">
+              <div className="text-muted-foreground">
+                Showing {pagedDoctors.length} of {filteredDoctors.length}
+              </div>
+              <div className="flex items-center gap-2">
+                <Select value={String(docPageSize)} onValueChange={(v) => setDocPageSize(Number(v))}>
+                  <SelectTrigger className="h-8 w-[80px]"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="10">10</SelectItem>
+                    <SelectItem value="25">25</SelectItem>
+                    <SelectItem value="50">50</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Button size="sm" variant="outline" onClick={() => setDocPage((p) => Math.max(1, p - 1))} disabled={docPage === 1}><ChevronLeft className="w-4 h-4" /></Button>
+                <span className="text-xs">Page {docPage} of {Math.max(1, Math.ceil(filteredDoctors.length / docPageSize))}</span>
+                <Button size="sm" variant="outline" onClick={() => setDocPage((p) => p + 1)} disabled={docPage >= Math.ceil(filteredDoctors.length / docPageSize)}><ChevronRight className="w-4 h-4" /></Button>
+              </div>
+            </div>
+            </>
           )}
         </CardContent>
       </Card>
