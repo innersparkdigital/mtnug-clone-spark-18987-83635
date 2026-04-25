@@ -155,11 +155,12 @@ Deno.serve(async (req) => {
     const LOGIN_URL = "https://www.innersparkafrica.com/auth";
     let email_sent = false;
     try {
-      const { error: emailErr } = await admin.functions.invoke("send-transactional-email", {
+      const { data: emailData, error: emailErr } = await admin.functions.invoke("send-transactional-email", {
         body: {
-          template: "account-credentials",
-          to: email,
-          data: {
+          templateName: "account-credentials",
+          recipientEmail: email,
+          idempotencyKey: `admin-creds-${userId}`,
+          templateData: {
             full_name,
             account_type: "admin",
             login_url: LOGIN_URL,
@@ -170,6 +171,7 @@ Deno.serve(async (req) => {
         },
       });
       if (emailErr) throw emailErr;
+      if ((emailData as any)?.error) throw new Error((emailData as any).error);
       email_sent = true;
     } catch (e) {
       console.warn("admin credentials email failed (non-fatal)", e);

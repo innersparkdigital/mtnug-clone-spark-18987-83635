@@ -746,6 +746,9 @@ export type Database = {
       doctors: {
         Row: {
           created_at: string
+          credentials_email_error: string | null
+          credentials_email_sent_at: string | null
+          credentials_email_status: string
           deactivated_at: string | null
           deactivated_reason: string | null
           email: string
@@ -760,6 +763,9 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          credentials_email_error?: string | null
+          credentials_email_sent_at?: string | null
+          credentials_email_status?: string
           deactivated_at?: string | null
           deactivated_reason?: string | null
           email: string
@@ -774,6 +780,9 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          credentials_email_error?: string | null
+          credentials_email_sent_at?: string | null
+          credentials_email_status?: string
           deactivated_at?: string | null
           deactivated_reason?: string | null
           email?: string
