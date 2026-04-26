@@ -591,6 +591,51 @@ export type Database = {
           },
         ]
       }
+      corporate_screening_bookings: {
+        Row: {
+          company_name: string
+          contact_email: string
+          contact_name: string
+          contact_phone: string | null
+          created_at: string
+          employee_count: number | null
+          id: string
+          notes: string | null
+          preferred_date: string | null
+          preferred_format: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          company_name: string
+          contact_email: string
+          contact_name: string
+          contact_phone?: string | null
+          created_at?: string
+          employee_count?: number | null
+          id?: string
+          notes?: string | null
+          preferred_date?: string | null
+          preferred_format?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          company_name?: string
+          contact_email?: string
+          contact_name?: string
+          contact_phone?: string | null
+          created_at?: string
+          employee_count?: number | null
+          id?: string
+          notes?: string | null
+          preferred_date?: string | null
+          preferred_format?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       corporate_screenings: {
         Row: {
           company_id: string
