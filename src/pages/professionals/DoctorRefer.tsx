@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable/index";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/Header";
@@ -9,6 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import { Loader2, Stethoscope, LogOut } from "lucide-react";
 import { z } from "zod";
 import DoctorDashboard from "@/components/doctor/DoctorDashboard";
@@ -35,6 +37,8 @@ const DoctorRefer = () => {
 
   const [loginPhone, setLoginPhone] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
+  const [googleLoading, setGoogleLoading] = useState(false);
+  const [unlinkedNotice, setUnlinkedNotice] = useState(false);
 
   useEffect(() => {
     const loadDoctor = async () => {
@@ -48,11 +52,51 @@ const DoctorRefer = () => {
         .select("*")
         .eq("user_id", user.id)
         .maybeSingle();
-      setDoctor(data as Doctor | null);
+      let doc = data as Doctor | null;
+      // Fallback: match by email (for Google sign-in where user_id wasn't pre-linked)
+      if (!doc && user.email) {
+        const { data: byEmail } = await supabase
+          .from("doctors")
+          .select("*")
+          .eq("email", user.email)
+          .maybeSingle();
+        doc = byEmail as Doctor | null;
+      }
+      setDoctor(doc);
+      if (!doc) {
+        // Doctor record not found — sign out and notify
+        setUnlinkedNotice(true);
+        await supabase.auth.signOut();
+        toast({
+          title: "No doctor account found",
+          description: "This Google email is not registered as a doctor. Contact admin to be onboarded.",
+          variant: "destructive",
+        });
+      } else {
+        setUnlinkedNotice(false);
+      }
       setLoadingDoctor(false);
     };
     loadDoctor();
   }, [user]);
+
+  const handleGoogleSignIn = async () => {
+    setGoogleLoading(true);
+    try {
+      const result = await lovable.auth.signInWithOAuth("google", {
+        redirect_uri: window.location.origin + "/for-professionals/refer",
+      });
+      if (result.error) {
+        toast({ title: "Google sign-in failed", description: "Please try again.", variant: "destructive" });
+        return;
+      }
+      if (result.redirected) return;
+    } catch {
+      toast({ title: "Google sign-in failed", description: "Please try again.", variant: "destructive" });
+    } finally {
+      setGoogleLoading(false);
+    }
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
