@@ -15,6 +15,7 @@ import { Plus, Search, Trash2, Download, FileSpreadsheet, Link2, Pencil, FilterX
 import { exportCSV, exportXLSX, formatUGX } from '@/lib/financeExports';
 import { useTaxCodes } from '@/hooks/useTaxCodes';
 import ColumnFilter from './ColumnFilter';
+import TablePagination from './TablePagination';
 
 interface Expense {
   id: string;
