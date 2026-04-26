@@ -442,6 +442,9 @@ const ForBusiness = () => {
           </div>
         </section>
 
+        {/* B2B Mental Health Screening Booking */}
+        <B2BScreeningBookingSection />
+
         {/* Contact Form Section */}
         <section id="contact-form" className="py-20 bg-slate-900 text-white">
           <div className="container mx-auto px-4">
