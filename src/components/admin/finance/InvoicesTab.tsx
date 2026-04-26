@@ -13,6 +13,7 @@ import { toast } from '@/hooks/use-toast';
 import { Plus, Send, Search, Eye, Trash2, FilterX } from 'lucide-react';
 import InvoiceDetailModal from './InvoiceDetailModal';
 import ColumnFilter from './ColumnFilter';
+import TablePagination from './TablePagination';
 
 interface Client {
   id: string;
@@ -50,6 +51,8 @@ const InvoicesTab = () => {
   const [showCreate, setShowCreate] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState<string | null>(null);
   const [colFilters, setColFilters] = useState({ number: '', client: '', date: '', minTotal: '', maxTotal: '' });
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -82,6 +85,8 @@ const InvoicesTab = () => {
     return true;
   });
   const hasColFilters = Object.values(colFilters).some(v => v);
+  const paged = filtered.slice((page - 1) * pageSize, page * pageSize);
+  useEffect(() => { setPage(1); }, [search, statusFilter, colFilters, pageSize]);
 
   const handleCreateInvoice = async (data: { client_id: string; notes: string; tax_rate: number; due_date: string; payment_instructions: string }) => {
     const { error } = await supabase.from('invoices').insert({
