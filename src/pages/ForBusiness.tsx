@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Brain, Cog, Users, Calendar, Video, BookOpen, GraduationCap, BarChart3, UserCheck, MessageSquare, TrendingDown, TrendingUp, ArrowRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
+import B2BScreeningBookingSection from "@/components/business/B2BScreeningBookingSection";
 import { useLanguage } from "@/contexts/LanguageContext";
 import corporateWellnessImage from "@/assets/for-business-hero-new.png";
 import markhLogo from "@/assets/partners/markh.png";
