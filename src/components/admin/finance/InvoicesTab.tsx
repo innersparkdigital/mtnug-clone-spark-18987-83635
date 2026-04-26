@@ -198,9 +198,9 @@ const InvoicesTab = () => {
             <TableBody>
               {filtered.length === 0 ? (
                 <TableRow><TableCell colSpan={9} className="text-center text-muted-foreground py-8">No invoices found</TableCell></TableRow>
-              ) : filtered.map((inv, i) => (
+              ) : paged.map((inv, i) => (
                 <TableRow key={inv.id}>
-                  <TableCell>{i + 1}</TableCell>
+                  <TableCell>{(page - 1) * pageSize + i + 1}</TableCell>
                   <TableCell className="font-medium">{inv.invoice_number}</TableCell>
                   <TableCell>{getClientName(inv.client_id)}</TableCell>
                   <TableCell>{new Date(inv.issue_date).toLocaleDateString()}</TableCell>
@@ -227,6 +227,7 @@ const InvoicesTab = () => {
               ))}
             </TableBody>
           </Table>
+          <TablePagination page={page} pageSize={pageSize} total={filtered.length} onPageChange={setPage} onPageSizeChange={setPageSize} />
         </Card>
       )}
 
