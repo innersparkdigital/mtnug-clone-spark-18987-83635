@@ -186,9 +186,9 @@ const ForBusiness = () => {
   return (
     <>
       <Helmet>
-        <title>Innerspark for Business | Corporate Mental Health Solutions in Africa</title>
-        <meta name="description" content="Transform your workplace with Innerspark's corporate mental health programs. Reduce absenteeism, improve productivity, and support employee wellbeing across Africa." />
-        <meta name="keywords" content="corporate wellness, employee mental health, workplace wellbeing, corporate therapy, business mental health Africa, EAP programs Uganda" />
+        <title>Corporate Mental Health & Employee Wellness Programs | Workplace Wellbeing Screening | Innerspark Africa</title>
+        <meta name="description" content="Corporate mental health services & employee wellness programs across Uganda, Kenya, Tanzania & Africa. Workplace wellbeing screening, employee mental health audits, EAP and corporate therapy that reduce absenteeism and boost productivity." />
+        <meta name="keywords" content="employee mental health screening, workplace wellbeing assessment, staff mental health check, corporate mental health screening, employee wellbeing survey, workplace mental health audit, corporate wellness program, employee wellness program, workplace mental health program, corporate mental health services, employee assistance program, workplace wellbeing program, EAP programs Uganda, corporate therapy, business mental health Africa, workplace mental health Kenya, employee wellbeing Tanzania" />
         <link rel="canonical" href="https://www.innersparkafrica.com/for-business" />
         <meta property="og:url" content="https://www.innersparkafrica.com/for-business" />
         <meta property="og:title" content="Innerspark for Business | Corporate Mental Health Solutions" />
