@@ -21,9 +21,9 @@ const Index = () => {
   return (
     <>
       <Helmet>
-        <title>Online Therapy Uganda – Book a Licensed Therapist | Depression, Anxiety, Stress Help | Innerspark Africa</title>
-        <meta name="description" content="Uganda's #1 online therapy platform. Book affordable sessions with licensed therapists for depression, anxiety, trauma, stress, relationship problems, loneliness & overthinking. Video, voice & chat therapy. Start healing today." />
-        <meta name="keywords" content="online therapy Uganda, therapist Uganda, depression help Uganda, anxiety therapy Africa, marriage counseling online, relationship therapy, trauma therapy Uganda, stress management, book therapist online, affordable therapy Uganda, mental health support Africa, loneliness help, overthinking therapy, sadness counseling, licensed therapist Kampala" />
+        <title>Online Therapy & Virtual Counselling | Talk to a Therapist Now – Uganda, Kenya, Tanzania | Innerspark Africa</title>
+        <meta name="description" content="Affordable online therapy with licensed therapists. Get anxiety help, depression support, stress management & relationship counseling online. Same-day video, chat & phone therapy across Uganda, Kenya, Tanzania & Africa." />
+        <meta name="keywords" content="online therapy, virtual counselling, talk to therapist online, talk to therapist now, therapy app, teletherapy, anxiety help online, depression support online, stress management therapy, relationship counseling online, mental health help now, emotional support online, therapist available now, instant therapy session, same day therapy, affordable therapy online, low cost counseling, cheap therapy online, chat therapy, video therapy session, phone therapy, messaging therapy, licensed therapist online, certified counselor online, best online therapy, therapist in Uganda online, counseling services Kenya online, therapy services Tanzania, African online therapy" />
         <link rel="canonical" href="https://www.innersparkafrica.com/" />
       </Helmet>
       <div className="min-h-screen bg-background">
