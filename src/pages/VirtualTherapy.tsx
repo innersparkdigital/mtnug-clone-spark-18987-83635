@@ -123,9 +123,9 @@ const VirtualTherapy = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Virtual Counselling – Talk to a Counsellor from Home | Innerspark</title>
-        <meta name="description" content="Get virtual counselling from licensed professionals. Secure video, voice & chat sessions for depression, anxiety, trauma & stress. Affordable rates. Book your session now." />
-        <meta name="keywords" content="virtual counselling, talk to counsellor online, e-counselling, telehealth therapy, remote counselling, digital mental health" />
+        <title>Virtual Counselling Online | Talk to a Licensed Counsellor Now | Innerspark Africa</title>
+        <meta name="description" content="Affordable virtual counselling with licensed therapists. Same-day video, chat & phone sessions for anxiety, depression, stress & relationship help. Available across Uganda, Kenya, Tanzania & Africa." />
+        <meta name="keywords" content="virtual counselling, online therapy, talk to therapist online, talk to therapist now, teletherapy, therapy app, counseling online services, anxiety help online, depression support online, stress management therapy, relationship counseling online, emotional support online, therapist available now, instant therapy session, same day therapy, affordable therapy online, low cost counseling, cheap therapy online, budget mental health support, video therapy session, chat therapy, phone therapy, messaging therapy, licensed therapist online, certified counselor online, best online therapy, therapist in Uganda online, counseling services Kenya online, therapy services Tanzania, African online therapy" />
         <link rel="canonical" href="https://www.innersparkafrica.com/virtual-therapy" />
         
         {/* Open Graph */}

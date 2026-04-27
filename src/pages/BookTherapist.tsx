@@ -77,9 +77,9 @@ const BookTherapist = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Book a Therapy Session Online – Same-Day Appointments | Innerspark</title>
-        <meta name="description" content="Schedule a therapy session online in minutes. Same-day appointments with licensed counselors. Video, voice & chat options. Affordable rates from UGX 50,000." />
-        <meta name="keywords" content="book therapy session, schedule therapy appointment, same-day therapy, therapy appointment online, book counselor, therapy booking" />
+        <title>Book a Therapist Online | Same-Day Therapy with Licensed Counselors | Innerspark Africa</title>
+        <meta name="description" content="Book a licensed therapist online in minutes. Same-day therapy appointments via video, chat or phone. Affordable rates from UGX 50,000. Available across Uganda, Kenya, Tanzania & Africa." />
+        <meta name="keywords" content="book therapist online, book therapy session, schedule therapy appointment, same day therapy, instant therapy session, therapist available now, talk to therapist now, online therapy, virtual counselling, teletherapy, anxiety help online, depression support online, stress management therapy, relationship counseling online, emotional support online, urgent mental health help, affordable therapy online, low cost counseling, cheap therapy online, video therapy session, chat therapy, phone therapy, messaging therapy, licensed therapist online, certified counselor online, best online therapy, therapist in Uganda online, counseling services Kenya online, therapy services Tanzania, African online therapy" />
         <link rel="canonical" href="https://www.innersparkafrica.com/book-therapist" />
         
         <meta property="og:title" content="Book a Therapist Online | Schedule Therapy Today" />

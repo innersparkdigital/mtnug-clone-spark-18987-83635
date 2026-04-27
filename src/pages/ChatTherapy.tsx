@@ -65,9 +65,9 @@ const ChatTherapy = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Chat Therapy - Text-Based Online Therapy | Chat with a Therapist | Innerspark</title>
-        <meta name="description" content="Get therapy through secure text messaging. Chat with a licensed therapist anytime. Private, convenient, and effective mental health support. Start chatting with a therapist today!" />
-        <meta name="keywords" content="chat therapy, text therapy, chat with therapist, text-based therapy, messaging therapy, chat counseling, text counseling, online chat therapist, therapy through text, message a therapist" />
+        <title>Chat Therapy & Messaging Therapy | Text a Licensed Therapist Now | Innerspark Africa</title>
+        <meta name="description" content="Affordable chat therapy & messaging therapy with licensed counselors. Talk to a therapist now via secure text for anxiety help, depression support & stress management. Same-day across Uganda, Kenya & Tanzania." />
+        <meta name="keywords" content="chat therapy, messaging therapy, text therapy, online therapy, virtual counselling, talk to therapist online, talk to therapist now, teletherapy, anxiety help online, depression support online, stress management therapy, relationship counseling online, emotional support online, therapist available now, instant therapy session, same day therapy, affordable therapy online, low cost counseling, cheap therapy online, licensed therapist online, certified counselor online, best online therapy, therapist in Uganda online, counseling services Kenya online, therapy services Tanzania, African online therapy" />
         <link rel="canonical" href="https://www.innersparkafrica.com/chat-therapy" />
         
         <meta property="og:title" content="Chat Therapy - Text with a Therapist | Innerspark" />
