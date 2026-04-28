@@ -38,6 +38,7 @@ const Auth = () => {
   const [displayName, setDisplayName] = useState('');
 
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [appleLoading, setAppleLoading] = useState(false);
 
   useEffect(() => {
     if (user && !loading) {
@@ -62,6 +63,26 @@ const Auth = () => {
       toast.error('Google sign-in failed. Please try again.');
     } finally {
       setGoogleLoading(false);
+    }
+  };
+
+  const handleAppleSignIn = async () => {
+    setAppleLoading(true);
+    try {
+      const result = await lovable.auth.signInWithOAuth("apple", {
+        redirect_uri: window.location.origin,
+      });
+      if (result.error) {
+        toast.error('Apple sign-in failed. Please try again.');
+        return;
+      }
+      if (result.redirected) return;
+      toast.success('Welcome!');
+      navigate('/learning');
+    } catch {
+      toast.error('Apple sign-in failed. Please try again.');
+    } finally {
+      setAppleLoading(false);
     }
   };
 
