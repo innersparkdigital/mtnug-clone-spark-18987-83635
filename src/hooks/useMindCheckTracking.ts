@@ -102,7 +102,7 @@ export const useAssessmentTracking = (testType: string, totalQuestions: number) 
       .then(() => {});
   }, []);
 
-  const submitEmail = useCallback(async (email: string, severityLevel: string, score: number) => {
+  const submitEmail = useCallback(async (email: string, severityLevel: string, score: number, maxScore?: number) => {
     const sessionId = sessionIdRef.current || generateSessionId();
     // 1. Save consent + record
     await supabase.from('assessment_emails').insert({
@@ -126,6 +126,7 @@ export const useAssessmentTracking = (testType: string, totalQuestions: number) 
           templateData: {
             test_title: testType,
             score,
+            max_score: maxScore,
             severity_level: severityLevel,
           },
         },

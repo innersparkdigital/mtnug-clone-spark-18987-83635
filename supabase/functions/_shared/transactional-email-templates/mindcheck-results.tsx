@@ -26,6 +26,60 @@ const SEVERITY_META: Record<string, { color: string; emoji: string; message: str
   Moderate: { color: '#eab308', emoji: '🌤️', message: 'Your responses suggest moderate symptoms. Speaking with a professional could be helpful.' },
   'Moderately Severe': { color: '#f97316', emoji: '⚠️', message: 'Your responses suggest moderately severe symptoms. We strongly recommend speaking with a therapist soon.' },
   Severe: { color: '#ef4444', emoji: '🚨', message: 'Your responses suggest severe symptoms. Please consider reaching out to a professional today — we are here to help.' },
+  // WHO-5 wellbeing levels
+  'High Wellbeing': { color: '#22c55e', emoji: '✨', message: 'Your responses suggest good mental wellbeing at this time. Continue maintaining the habits that are supporting you.' },
+  'Moderate Wellbeing': { color: '#eab308', emoji: '🌤️', message: 'Your wellbeing is at a moderate level. Some areas are going well, others may need more attention.' },
+  'Low Wellbeing': { color: '#ef4444', emoji: '💛', message: 'Your responses suggest your mental wellbeing may be lower at the moment. It may help to consider getting some support.' },
+}
+
+// Severity-aware recommendations. These adapt to the score so a "Minimal" result
+// never receives the same advice as a "Severe" one.
+const RECOMMENDATIONS: Record<string, string[]> = {
+  Minimal: [
+    'Keep up the healthy habits that are working for you — sleep, movement, and connection.',
+    'Check in with yourself regularly using a quick journal or mood log.',
+    'Bookmark our free resources so support is one tap away if you ever need it.',
+  ],
+  Mild: [
+    'Build a simple daily routine: 10 minutes of breathing, a short walk, and consistent sleep.',
+    'Talk to a trusted friend or family member about what you are noticing.',
+    'Consider a single check-in session with a counsellor to stay ahead of things.',
+  ],
+  Moderate: [
+    'We recommend speaking with a licensed therapist for a professional evaluation.',
+    'Try to keep a regular sleep schedule and limit alcohol and caffeine.',
+    'Joining a peer support group can help you feel less alone in what you are going through.',
+  ],
+  'Moderately Severe': [
+    'Please book a session with a licensed therapist as soon as you can — early support makes a real difference.',
+    'Tell someone you trust how you are feeling so you don\'t carry this alone.',
+    'Avoid making major life decisions while symptoms are intense; focus on rest and basic routines.',
+  ],
+  Severe: [
+    'Please reach out to a mental health professional today — you do not have to manage this alone.',
+    'If you are in crisis or thinking about harming yourself, contact our support line on WhatsApp +256 792 085 773 immediately.',
+    'Stay with someone you trust tonight, and remove access to anything that could cause you harm.',
+  ],
+  // WHO-5
+  'High Wellbeing': [
+    'Keep nurturing the habits that are supporting you — sleep, movement, social connection, and rest.',
+    'Consider sharing what is working with someone who may be struggling.',
+    'Re-take this check every few weeks to notice changes early.',
+  ],
+  'Moderate Wellbeing': [
+    'Identify one area of life that feels low and add one small, kind action this week.',
+    'Protect your sleep and reduce screen time before bed.',
+    'A short conversation with a counsellor can help you build on what is already working.',
+  ],
+  'Low Wellbeing': [
+    'We recommend speaking with a licensed therapist — your wellbeing score suggests support would really help right now.',
+    'Reach out to one person you trust today, even just to say "I\'m not feeling great."',
+    'Focus on the basics this week: regular meals, sleep, daylight, and gentle movement.',
+  ],
+}
+
+const getRecommendations = (severity: string): string[] => {
+  return RECOMMENDATIONS[severity] || RECOMMENDATIONS.Moderate
 }
 
 const MindCheckResultsEmail = ({
@@ -38,11 +92,9 @@ const MindCheckResultsEmail = ({
   next_step_url = BOOK_URL,
 }: Props) => {
   const meta = SEVERITY_META[severity_level] || SEVERITY_META.Moderate
-  const recs = recommendations && recommendations.length > 0 ? recommendations : [
-    'Talk to a licensed therapist privately, online or in person.',
-    'Consider joining a peer support group for shared experiences.',
-    'Practice daily self-care: sleep, movement, and a moment to breathe.',
-  ]
+  const recs = recommendations && recommendations.length > 0
+    ? recommendations
+    : getRecommendations(severity_level)
   return (
     <Html lang="en" dir="ltr">
       <Head />
