@@ -48,12 +48,21 @@ const B2BScreeningBookingSection = () => {
       });
       if (error) throw error;
 
-      // Confirmation email to company
-      supabase.functions.invoke('send-resend-email', {
+      // Branded confirmation email to company contact
+      const idemKey = `b2b-screening-${Date.now()}-${form.contact_email}`;
+      supabase.functions.invoke('send-transactional-email', {
         body: {
-          type: 'business-inquiry',
-          to: form.contact_email,
-          data: { name: form.contact_name, company: form.company_name },
+          templateName: 'b2b-company-confirmation',
+          recipientEmail: form.contact_email,
+          idempotencyKey: idemKey,
+          templateData: {
+            contact_name: form.contact_name,
+            company_name: form.company_name,
+            employee_count: form.employee_count || undefined,
+            preferred_date: form.preferred_date || undefined,
+            preferred_format: form.preferred_format,
+            notes: form.notes || undefined,
+          },
         },
       }).catch(err => console.error('confirmation email failed', err));
 
