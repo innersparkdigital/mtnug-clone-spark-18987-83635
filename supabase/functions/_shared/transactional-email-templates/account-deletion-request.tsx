@@ -3,6 +3,7 @@ import {
   Body, Container, Head, Heading, Html, Preview, Text, Section,
 } from 'npm:@react-email/components@0.0.22'
 import type { TemplateEntry } from './registry.ts'
+import { EmailFooterBanner } from './_brand-footer.tsx'
 
 const SITE_NAME = "InnerSpark Africa"
 const PRIMARY_COLOR = "#5B6ABF"
@@ -46,6 +47,8 @@ const AccountDeletionRequestEmail = ({ name }: Props) => (
         </Text>
 
         <Text style={footer}>— The {SITE_NAME} Team</Text>
+
+        <EmailFooterBanner />
       </Container>
     </Body>
   </Html>

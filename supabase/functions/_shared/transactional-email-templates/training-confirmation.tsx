@@ -3,6 +3,7 @@ import {
   Body, Container, Head, Heading, Html, Preview, Text, Button, Hr, Section,
 } from 'npm:@react-email/components@0.0.22'
 import type { TemplateEntry } from './registry.ts'
+import { EmailFooterBanner } from './_brand-footer.tsx'
 
 const SITE_NAME = "InnerSpark Africa"
 
@@ -77,6 +78,8 @@ const TrainingConfirmationEmail = ({
           {SITE_NAME}<br />
           www.innersparkafrica.com
         </Text>
+
+        <EmailFooterBanner />
       </Container>
     </Body>
   </Html>

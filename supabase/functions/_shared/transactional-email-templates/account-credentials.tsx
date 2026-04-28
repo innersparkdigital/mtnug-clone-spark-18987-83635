@@ -3,6 +3,7 @@ import {
   Body, Button, Container, Head, Heading, Html, Img, Link, Preview, Text, Hr, Section,
 } from 'npm:@react-email/components@0.0.22'
 import type { TemplateEntry } from './registry.ts'
+import { EmailFooterBanner } from './_brand-footer.tsx'
 
 const SITE_NAME = "InnerSpark Africa"
 const PRIMARY_COLOR = "#5B6ABF"
@@ -161,17 +162,7 @@ const AccountCredentialsEmail = ({
             The {SITE_NAME} Team
           </Text>
 
-          <Section style={footerBanner}>
-            <Heading as="h3" style={footerTagline}>{TAGLINE}</Heading>
-            <Text style={footerLinkText}>
-              <Link href={`mailto:${CONTACT_EMAIL}`} style={footerLink}>{CONTACT_EMAIL}</Link>
-              {' · '}
-              <Link href={SITE_URL} style={footerLink}>www.innersparkafrica.com</Link>
-            </Text>
-            <Text style={footerCopy}>
-              © {new Date().getFullYear()} {SITE_NAME}. All rights reserved.
-            </Text>
-          </Section>
+          <EmailFooterBanner />
         </Container>
       </Body>
     </Html>
