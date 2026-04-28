@@ -103,8 +103,10 @@ export const useAssessmentTracking = (testType: string, totalQuestions: number) 
   }, []);
 
   const submitEmail = useCallback(async (email: string, severityLevel: string, score: number) => {
+    const sessionId = sessionIdRef.current || generateSessionId();
+    // 1. Save consent + record
     await supabase.from('assessment_emails').insert({
-      session_id: sessionIdRef.current || generateSessionId(),
+      session_id: sessionId,
       email,
       test_type: testType,
       severity_level: severityLevel,
@@ -113,6 +115,24 @@ export const useAssessmentTracking = (testType: string, totalQuestions: number) 
       device_type: deviceType,
       consent_given: true,
     } as any);
+
+    // 2. Send branded results email (non-blocking)
+    try {
+      await supabase.functions.invoke('send-transactional-email', {
+        body: {
+          templateName: 'mindcheck-results',
+          recipientEmail: email,
+          idempotencyKey: `mindcheck-${sessionId}`,
+          templateData: {
+            test_title: testType,
+            score,
+            severity_level: severityLevel,
+          },
+        },
+      });
+    } catch (e) {
+      console.error('mindcheck-results email failed', e);
+    }
   }, [testType, source, deviceType]);
 
   return {

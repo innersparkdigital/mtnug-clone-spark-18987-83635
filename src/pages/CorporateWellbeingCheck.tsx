@@ -203,6 +203,24 @@ const CorporateWellbeingCheck = () => {
           _gender: selectedGender || null 
         });
 
+      // Send branded private results email (non-blocking)
+      if (employee.email) {
+        supabase.functions.invoke('send-transactional-email', {
+          body: {
+            templateName: 'b2b-employee-results',
+            recipientEmail: employee.email,
+            idempotencyKey: `b2b-emp-results-${employee.id}-${Date.now()}`,
+            templateData: {
+              employee_name: employee.name,
+              company_name: employee.company_name,
+              who5_percentage: who5Percentage,
+              total_percentage: totalPercentage,
+              wellbeing_category: category.key,
+            },
+          },
+        }).catch(e => console.error('b2b-employee-results email failed', e));
+      }
+
       setPhase('results');
     } catch {
       toast.error('Failed to submit. Please try again.');

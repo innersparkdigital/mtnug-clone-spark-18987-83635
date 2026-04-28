@@ -19,6 +19,7 @@ import NewsletterTab from '@/components/admin/NewsletterTab';
 import ReferralsTab from '@/components/admin/ReferralsTab';
 import AdminUsersTab from '@/components/admin/AdminUsersTab';
 import ContentTab from '@/components/admin/ContentTab';
+import EmailLogTab from '@/components/admin/EmailLogTab';
 import { 
   BookOpen, 
   GraduationCap, 
@@ -209,6 +210,12 @@ const AdminDashboard = () => {
               <TabsTrigger value="users" className="gap-2">
                 <Shield className="h-4 w-4" />
                 Admin Users
+              </TabsTrigger>
+            )}
+            {isAdmin && (
+              <TabsTrigger value="emails" className="gap-2">
+                <Mail className="h-4 w-4" />
+                Emails
               </TabsTrigger>
             )}
           </TabsList>
@@ -557,6 +564,11 @@ const AdminDashboard = () => {
           {isAdmin && (
             <TabsContent value="users">
               <AdminUsersTab />
+            </TabsContent>
+          )}
+          {isAdmin && (
+            <TabsContent value="emails">
+              <EmailLogTab />
             </TabsContent>
           )}
         </Tabs>
