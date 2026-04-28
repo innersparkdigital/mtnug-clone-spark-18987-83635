@@ -19,6 +19,7 @@ import NewsletterTab from '@/components/admin/NewsletterTab';
 import ReferralsTab from '@/components/admin/ReferralsTab';
 import AdminUsersTab from '@/components/admin/AdminUsersTab';
 import ContentTab from '@/components/admin/ContentTab';
+import EmailLogTab from '@/components/admin/EmailLogTab';
 import { 
   BookOpen, 
   GraduationCap, 
