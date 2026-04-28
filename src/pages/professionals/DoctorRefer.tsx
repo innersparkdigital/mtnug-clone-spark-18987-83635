@@ -38,6 +38,7 @@ const DoctorRefer = () => {
   const [loginPhone, setLoginPhone] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [appleLoading, setAppleLoading] = useState(false);
   const [unlinkedNotice, setUnlinkedNotice] = useState(false);
 
   useEffect(() => {
@@ -95,6 +96,24 @@ const DoctorRefer = () => {
       toast({ title: "Google sign-in failed", description: "Please try again.", variant: "destructive" });
     } finally {
       setGoogleLoading(false);
+    }
+  };
+
+  const handleAppleSignIn = async () => {
+    setAppleLoading(true);
+    try {
+      const result = await lovable.auth.signInWithOAuth("apple", {
+        redirect_uri: window.location.origin + "/for-professionals/refer",
+      });
+      if (result.error) {
+        toast({ title: "Apple sign-in failed", description: "Please try again.", variant: "destructive" });
+        return;
+      }
+      if (result.redirected) return;
+    } catch {
+      toast({ title: "Apple sign-in failed", description: "Please try again.", variant: "destructive" });
+    } finally {
+      setAppleLoading(false);
     }
   };
 
@@ -186,6 +205,22 @@ const DoctorRefer = () => {
                     </svg>
                   )}
                   Continue with Google
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full gap-2 mb-4 bg-black text-white hover:bg-black/90 hover:text-white border-black"
+                  onClick={handleAppleSignIn}
+                  disabled={appleLoading}
+                >
+                  {appleLoading ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M17.05 12.04c-.03-2.93 2.4-4.34 2.5-4.41-1.36-1.99-3.48-2.26-4.24-2.29-1.81-.18-3.53 1.06-4.45 1.06-.92 0-2.34-1.03-3.84-1-1.98.03-3.8 1.15-4.82 2.92-2.05 3.56-.53 8.83 1.47 11.72.98 1.42 2.15 3.01 3.69 2.95 1.48-.06 2.04-.96 3.83-.96 1.79 0 2.29.96 3.86.93 1.59-.03 2.6-1.45 3.58-2.87 1.13-1.65 1.59-3.25 1.62-3.33-.04-.02-3.11-1.19-3.14-4.72zM14.13 3.42c.81-.99 1.36-2.36 1.21-3.72-1.17.05-2.59.78-3.43 1.76-.75.87-1.41 2.27-1.23 3.6 1.31.1 2.64-.66 3.45-1.64z"/>
+                    </svg>
+                  )}
+                  Continue with Apple
                 </Button>
                 <div className="relative mb-4">
                   <div className="absolute inset-0 flex items-center"><Separator className="w-full" /></div>
