@@ -212,6 +212,12 @@ const AdminDashboard = () => {
                 Admin Users
               </TabsTrigger>
             )}
+            {isAdmin && (
+              <TabsTrigger value="emails" className="gap-2">
+                <Mail className="h-4 w-4" />
+                Emails
+              </TabsTrigger>
+            )}
           </TabsList>
 
           <TabsContent value="learning">
@@ -558,6 +564,11 @@ const AdminDashboard = () => {
           {isAdmin && (
             <TabsContent value="users">
               <AdminUsersTab />
+            </TabsContent>
+          )}
+          {isAdmin && (
+            <TabsContent value="emails">
+              <EmailLogTab />
             </TabsContent>
           )}
         </Tabs>
