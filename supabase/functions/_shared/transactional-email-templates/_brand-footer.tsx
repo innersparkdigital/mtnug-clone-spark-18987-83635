@@ -5,11 +5,12 @@ import { Img, Section, Link } from 'npm:@react-email/components@0.0.22'
 // The banner image is the canonical branded footer (logo, tagline, contacts).
 const BANNER_URL =
   'https://hnjpsvpudwwyzrrwzbpa.supabase.co/storage/v1/object/public/email-assets/email-footer-banner.png'
-const SITE_URL = 'https://www.innersparkafrica.com'
+const PLAY_STORE_URL =
+  'https://play.google.com/store/apps/details?id=com.innersparkafrica.app'
 
 export const EmailFooterBanner = () => (
   <Section style={wrap}>
-    <Link href={SITE_URL} style={{ textDecoration: 'none' }}>
+    <Link href={PLAY_STORE_URL} style={{ textDecoration: 'none' }}>
       <Img
         src={BANNER_URL}
         alt="InnerSpark Africa – Get the mobile app on Google Play or the App Store"
