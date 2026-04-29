@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Mail } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
@@ -9,6 +10,7 @@ const NewsletterForm = () => {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,12 +63,10 @@ const NewsletterForm = () => {
         },
       });
 
-      toast({
-        title: "Successfully subscribed!",
-        description: "Thank you for subscribing to our newsletter."
-      });
-      
       setEmail("");
+      setIsLoading(false);
+      navigate("/thank-you-newsletter");
+      return;
     } catch (error) {
       console.error("Newsletter error:", error);
       toast({

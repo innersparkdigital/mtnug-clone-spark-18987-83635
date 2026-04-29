@@ -65,9 +65,9 @@ const VideoTherapy = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Video Therapy Sessions - Face-to-Face Online Therapy | Innerspark</title>
-        <meta name="description" content="Get face-to-face video therapy with licensed therapists. Secure, private video sessions for depression, anxiety, stress & more. Book your video therapy session today!" />
-        <meta name="keywords" content="video therapy, video therapy sessions, online video counseling, face to face therapy online, video call therapist, virtual face to face therapy, video counseling, teletherapy video, online video therapy, video psychotherapy" />
+        <title>Video Therapy Sessions | Face-to-Face Online Therapy with Licensed Therapists | Innerspark Africa</title>
+        <meta name="description" content="Affordable video therapy sessions with licensed therapists. Same-day face-to-face online therapy for anxiety, depression & stress across Uganda, Kenya, Tanzania & Africa. Book a video session now." />
+        <meta name="keywords" content="video therapy session, video therapy, online therapy, virtual counselling, talk to therapist online, talk to therapist now, teletherapy, anxiety help online, depression support online, stress management therapy, relationship counseling online, emotional support online, therapist available now, instant therapy session, same day therapy, affordable therapy online, low cost counseling, cheap therapy online, chat therapy, phone therapy, messaging therapy, licensed therapist online, certified counselor online, best online therapy, therapist in Uganda online, counseling services Kenya online, therapy services Tanzania, African online therapy" />
         <link rel="canonical" href="https://www.innersparkafrica.com/video-therapy" />
         
         <meta property="og:title" content="Video Therapy Sessions - Face-to-Face Online | Innerspark" />

@@ -39,14 +39,219 @@ Deno.serve(async (req) => {
     }
 
     const body = await req.json();
+    const action = String(body.action || "create");
+
+    // ---- RESEND credentials email ----
+    if (action === "resend_credentials") {
+      const doctor_id = String(body.doctor_id || "");
+      const password = String(body.password || "").trim();
+      if (!doctor_id) throw new Error("doctor_id required");
+      if (!password || password.length < 8) {
+        return new Response(JSON.stringify({ error: "A new password (8+ chars) is required to resend credentials" }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      const { data: doc, error: docErr } = await admin
+        .from("doctors")
+        .select("id, user_id, full_name, phone, email")
+        .eq("id", doctor_id)
+        .single();
+      if (docErr || !doc) throw new Error("Doctor not found");
+
+      // Reset auth password so what we email actually works
+      try {
+        await admin.auth.admin.updateUserById(doc.user_id, { password, email_confirm: true });
+      } catch (e) {
+        console.error("password reset failed", e);
+        throw new Error("Failed to reset password: " + (e as Error).message);
+      }
+
+      const LOGIN_URL = "https://www.innersparkafrica.com/for-professionals/refer";
+      let email_sent = false;
+      let email_error: string | null = null;
+      try {
+        const { data: emailData, error: emailErr } = await admin.functions.invoke("send-transactional-email", {
+          body: {
+            templateName: "account-credentials",
+            recipientEmail: doc.email,
+            idempotencyKey: `doctor-creds-${doctor_id}-${Date.now()}`,
+            templateData: {
+              full_name: doc.full_name,
+              account_type: "doctor",
+              login_url: LOGIN_URL,
+              login_id: doc.phone,
+              login_id_label: "Phone",
+              password,
+            },
+          },
+        });
+        if (emailErr) throw emailErr;
+        if ((emailData as any)?.error) throw new Error((emailData as any).error);
+        email_sent = true;
+      } catch (e) {
+        email_error = (e as Error).message || String(e);
+        console.error("resend credentials email failed", email_error);
+      }
+
+      await admin.from("doctors").update({
+        credentials_email_status: email_sent ? "sent" : "failed",
+        credentials_email_sent_at: email_sent ? new Date().toISOString() : null,
+        credentials_email_error: email_sent ? null : email_error,
+      }).eq("id", doctor_id);
+
+      return new Response(JSON.stringify({ ok: true, email_sent, email_error }), {
+        status: email_sent ? 200 : 502,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // ---- DEACTIVATE / REACTIVATE ----
+    if (action === "deactivate" || action === "reactivate") {
+      const doctor_id = String(body.doctor_id || "");
+      if (!doctor_id) throw new Error("doctor_id required");
+      if (action === "deactivate" && !String(body.reason || "").trim()) {
+        return new Response(JSON.stringify({ error: "Deactivation reason is required" }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      const { data: doc, error: docErr } = await admin
+        .from("doctors")
+        .select("id, user_id")
+        .eq("id", doctor_id)
+        .single();
+      if (docErr || !doc) throw new Error("Doctor not found");
+
+      const isDeactivate = action === "deactivate";
+      const { error: updErr } = await admin
+        .from("doctors")
+        .update({
+          is_active: !isDeactivate,
+          deactivated_at: isDeactivate ? new Date().toISOString() : null,
+          deactivated_reason: isDeactivate ? (String(body.reason || "").trim() || null) : null,
+        })
+        .eq("id", doctor_id);
+      if (updErr) throw updErr;
+
+      // Ban / unban auth user so they cannot log in
+      try {
+        await admin.auth.admin.updateUserById(doc.user_id, {
+          ban_duration: isDeactivate ? "876000h" : "none", // ~100y or remove ban
+        });
+      } catch (e) {
+        console.warn("auth ban update failed (non-fatal)", e);
+      }
+
+      // Activity log
+      try {
+        await admin.from("activity_logs").insert({
+          user_id: userData.user.id,
+          action: isDeactivate ? "doctor_deactivated" : "doctor_reactivated",
+          entity_type: "doctor",
+          entity_id: doctor_id,
+          details: { reason: isDeactivate ? String(body.reason || "").trim() : null },
+        });
+      } catch (e) {
+        console.warn("activity log insert failed (non-fatal)", e);
+      }
+
+      return new Response(JSON.stringify({ ok: true, is_active: !isDeactivate }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // ---- UPDATE doctor profile ----
+    if (action === "update_doctor") {
+      const doctor_id = String(body.doctor_id || "");
+      if (!doctor_id) throw new Error("doctor_id required");
+
+      const patch: Record<string, unknown> = {};
+      if (typeof body.full_name === "string") patch.full_name = body.full_name.trim();
+      if (typeof body.phone === "string") patch.phone = body.phone.trim();
+      if (typeof body.email === "string") patch.email = body.email.trim().toLowerCase();
+      if (typeof body.facility !== "undefined") patch.facility = body.facility ? String(body.facility).trim() : null;
+      if (typeof body.location !== "undefined") patch.location = body.location ? String(body.location).trim() : null;
+      if (typeof body.is_active === "boolean") {
+        patch.is_active = body.is_active;
+        patch.deactivated_at = body.is_active ? null : new Date().toISOString();
+        if (!body.is_active && typeof body.deactivated_reason === "string") {
+          patch.deactivated_reason = body.deactivated_reason.trim() || null;
+        }
+        if (body.is_active) patch.deactivated_reason = null;
+      }
+
+      if (Object.keys(patch).length === 0) {
+        return new Response(JSON.stringify({ error: "No fields to update" }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      // Uniqueness checks for phone/email if being changed
+      if (patch.phone) {
+        const { data: dup } = await admin.from("doctors").select("id").eq("phone", patch.phone as string).neq("id", doctor_id).maybeSingle();
+        if (dup) return new Response(JSON.stringify({ error: "Phone already used by another doctor" }), { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+      if (patch.email) {
+        const { data: dup } = await admin.from("doctors").select("id").eq("email", patch.email as string).neq("id", doctor_id).maybeSingle();
+        if (dup) return new Response(JSON.stringify({ error: "Email already used by another doctor" }), { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+
+      const { data: updated, error: updErr } = await admin
+        .from("doctors")
+        .update(patch)
+        .eq("id", doctor_id)
+        .select()
+        .single();
+      if (updErr) throw updErr;
+
+      // Mirror auth user (email + ban status) when changed
+      try {
+        const authPatch: Record<string, unknown> = {};
+        if (patch.email) authPatch.email = patch.email;
+        if (typeof body.is_active === "boolean") authPatch.ban_duration = body.is_active ? "none" : "876000h";
+        if (Object.keys(authPatch).length > 0 && updated?.user_id) {
+          await admin.auth.admin.updateUserById(updated.user_id, authPatch);
+        }
+      } catch (e) {
+        console.warn("auth update failed (non-fatal)", e);
+      }
+
+      try {
+        await admin.from("activity_logs").insert({
+          user_id: userData.user.id,
+          action: "doctor_updated",
+          entity_type: "doctor",
+          entity_id: doctor_id,
+          details: { changed: Object.keys(patch) },
+        });
+      } catch (e) {
+        console.warn("activity log insert failed (non-fatal)", e);
+      }
+
+      return new Response(JSON.stringify({ ok: true, doctor: updated }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const full_name = String(body.full_name || "").trim();
     const phone = String(body.phone || "").trim();
     const email = String(body.email || "").trim().toLowerCase();
     const facility = body.facility ? String(body.facility).trim() : null;
+    const location = body.location ? String(body.location).trim() : null;
     const password = String(body.password || "").trim();
 
     if (!full_name || !phone || !email || !password || password.length < 8) {
       return new Response(JSON.stringify({ error: "Missing or invalid fields (password must be 8+ chars)" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Basic email format validation
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return new Response(JSON.stringify({ error: "Invalid email format" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -121,7 +326,7 @@ Deno.serve(async (req) => {
 
     const { data: doctor, error: insertErr } = await admin
       .from("doctors")
-      .insert({ user_id: userId, full_name, phone, email, facility })
+      .insert({ user_id: userId, full_name, phone, email, facility, location, credentials_email_status: "pending" })
       .select()
       .single();
     if (insertErr) {
@@ -130,8 +335,46 @@ Deno.serve(async (req) => {
       throw insertErr;
     }
 
+    // Send credentials email (best-effort, non-fatal). Track outcome on the doctor row.
+    const LOGIN_URL = "https://www.innersparkafrica.com/for-professionals/refer";
+    let email_sent = false;
+    let email_error: string | null = null;
+    try {
+      const { data: emailData, error: emailErr } = await admin.functions.invoke("send-transactional-email", {
+        body: {
+          templateName: "account-credentials",
+          recipientEmail: email,
+          idempotencyKey: `doctor-creds-${doctor.id}`,
+          templateData: {
+            full_name,
+            account_type: "doctor",
+            login_url: LOGIN_URL,
+            login_id: phone,
+            login_id_label: "Phone",
+            password,
+          },
+        },
+      });
+      if (emailErr) throw emailErr;
+      if ((emailData as any)?.error) throw new Error((emailData as any).error);
+      email_sent = true;
+    } catch (e) {
+      email_error = (e as Error).message || String(e);
+      console.error("credentials email failed (non-fatal)", email_error);
+    }
+
+    try {
+      await admin.from("doctors").update({
+        credentials_email_status: email_sent ? "sent" : "failed",
+        credentials_email_sent_at: email_sent ? new Date().toISOString() : null,
+        credentials_email_error: email_sent ? null : email_error,
+      }).eq("id", doctor.id);
+    } catch (e) {
+      console.warn("failed to update email tracking", e);
+    }
+
     return new Response(
-      JSON.stringify({ ok: true, doctor, credentials: { phone, email, password } }),
+      JSON.stringify({ ok: true, doctor, email_sent, email_error, credentials: { phone, email, password, login_url: LOGIN_URL } }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (err) {

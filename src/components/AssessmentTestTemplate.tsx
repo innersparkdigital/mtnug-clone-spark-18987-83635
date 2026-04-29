@@ -146,7 +146,7 @@ const AssessmentTestTemplate = ({ config }: AssessmentTestTemplateProps) => {
     setEmailSubmitting(true);
     const score = calculateScore();
     const result = getResultInterpretation(score);
-    await submitEmail(emailInput.trim(), result.level, score);
+    await submitEmail(emailInput.trim(), result.level, score, config.maxScore);
     setEmailSubmitted(true);
     setEmailSubmitting(false);
   };

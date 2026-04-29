@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUserRole } from '@/hooks/useUserRole';
+import { usePagePermissions } from '@/hooks/usePagePermissions';
+import SensitiveAccessGate from '@/components/admin/SensitiveAccessGate';
 import { useMindCheckAnalytics } from '@/hooks/useMindCheckAnalytics';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -36,6 +38,8 @@ const MindCheckAnalytics = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const { isAdmin, loading: roleLoading } = useUserRole();
+  const { hasPageAccess, loading: permLoading } = usePagePermissions();
+  const canView = isAdmin || hasPageAccess('mindcheck');
   const {
     stats, conditionDistribution, severityDistribution, sourceAnalytics,
     dailyTrends, dropOffData, emails, sessions,
@@ -117,10 +121,10 @@ const MindCheckAnalytics = () => {
   }, [user, authLoading, navigate]);
 
   useEffect(() => {
-    if (!roleLoading && !isAdmin && user) navigate('/mind-check');
-  }, [isAdmin, roleLoading, user, navigate]);
+    if (!roleLoading && !permLoading && !canView && user) navigate('/mind-check');
+  }, [canView, roleLoading, permLoading, user, navigate]);
 
-  if (authLoading || roleLoading || dataLoading) {
+  if (authLoading || roleLoading || permLoading || dataLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -128,9 +132,10 @@ const MindCheckAnalytics = () => {
     );
   }
 
-  if (!user || !isAdmin) return null;
+  if (!user || !canView) return null;
 
   return (
+    <SensitiveAccessGate pageKey="mindcheck" pageLabel="Mind Check Analytics">
     <div className="min-h-screen bg-background">
       <Header />
       <main className="container mx-auto px-4 py-8 pt-24">
@@ -936,6 +941,7 @@ const MindCheckAnalytics = () => {
       </main>
       <Footer />
     </div>
+    </SensitiveAccessGate>
   );
 };
 

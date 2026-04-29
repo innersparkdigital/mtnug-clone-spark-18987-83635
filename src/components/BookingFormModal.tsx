@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -31,7 +32,7 @@ import { useAssessment, AssessmentResult, BookingActionType } from "@/contexts/A
 import { Calendar, Clock, CheckCircle, Send, AlertCircle, Users, Phone, User, ArrowRight, CreditCard, Smartphone, Languages, Globe, Loader2, Mail } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { trackBookingFormOpened, trackBookingSubmitted, trackWhatsAppClick } from "@/lib/analytics";
-import { trackGadsBookingConversion, trackGadsWhatsAppClick } from "@/lib/gadsTracking";
+import { trackGadsBookingConversion, trackGadsWhatsAppClick, trackGadsThankYouConversion } from "@/lib/gadsTracking";
 import TherapistRecommendationCard from "./TherapistRecommendationCard";
 import { supabase } from "@/integrations/supabase/client";
 import PesaPalMethodSelector from "@/components/booking/PesaPalMethodSelector";
@@ -158,6 +159,7 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const { assessmentResult, clearAssessment, setPendingAction, selectedSpecialist } = useAssessment();
+  const navigate = useNavigate();
 
   // Track form opened and manage view state
   useEffect(() => {
@@ -312,10 +314,8 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
     window.open(whatsappUrl, "_blank");
     
     if (!paymentRef) {
-      toast({
-        title: "Request sent!",
-        description: "We'll contact you shortly to confirm your booking.",
-      });
+      // Fire booking conversion (covers free consultation + fallback path)
+      trackGadsThankYouConversion("booking", { form_type: formType });
       clearAssessment();
       onClose();
       if (formType === "book") {
@@ -323,6 +323,7 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
       } else {
         groupForm.reset();
       }
+      navigate("/thank-you-booking");
     }
   };
 

@@ -14,10 +14,12 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { Building2, Users, Plus, Upload, BarChart3, FileText, Trash2, UserPlus, ClipboardList, AlertTriangle, Phone, MessageCircle, Download, TrendingUp, Activity, Search, ChevronLeft, ChevronRight, ArrowLeft, ArrowUpDown, ArrowUp, ArrowDown, ChevronDown, ChevronUp as ChevronUpIcon, History } from 'lucide-react';
+import { Building2, Users, Plus, Upload, BarChart3, FileText, Trash2, UserPlus, ClipboardList, AlertTriangle, Phone, MessageCircle, Download, TrendingUp, Activity, Search, ChevronLeft, ChevronRight, ArrowLeft, ArrowUpDown, ArrowUp, ArrowDown, ChevronDown, ChevronUp as ChevronUpIcon, History, Mail } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { generateCompanyReportPdf } from '@/lib/companyReportPdf';
+import { Loader2 } from 'lucide-react';
 
 interface Company {
   id: string;
@@ -83,6 +85,8 @@ const CorporateAdmin = () => {
   const [employeePage, setEmployeePage] = useState(1);
   const [companySearch, setCompanySearch] = useState('');
   const [employeeSearch, setEmployeeSearch] = useState('');
+  const [sendingReport, setSendingReport] = useState(false);
+  const [downloadingPdf, setDownloadingPdf] = useState(false);
 
   // Sorting
   const [companySortKey, setCompanySortKey] = useState<string>('');
@@ -167,15 +171,33 @@ const CorporateAdmin = () => {
       toast.error('Name and email are required');
       return;
     }
-    const { error } = await supabase.from('corporate_employees').insert({
+    const { data: inserted, error } = await supabase.from('corporate_employees').insert({
       company_id: selectedCompany.id,
       name: employeeForm.name,
       email: employeeForm.email,
       phone: employeeForm.phone || null,
       gender: employeeForm.gender || null,
-    });
+    }).select('id, name, email, access_code, secure_token').single();
     if (error) { toast.error('Failed to add employee'); return; }
-    toast.success('Employee added');
+
+    // Send branded invitation email with access code + secure URL (non-blocking)
+    if (inserted) {
+      const secureUrl = `${baseUrl}/corporate-wellbeing-check?token=${(inserted as any).secure_token}`;
+      supabase.functions.invoke('send-transactional-email', {
+        body: {
+          templateName: 'b2b-employee-confirmation',
+          recipientEmail: (inserted as any).email,
+          idempotencyKey: `b2b-invite-${(inserted as any).id}`,
+          templateData: {
+            employee_name: (inserted as any).name,
+            company_name: selectedCompany.name,
+            access_code: (inserted as any).access_code,
+            secure_url: secureUrl,
+          },
+        },
+      }).catch(e => console.error('b2b-employee invitation email failed', e));
+    }
+    toast.success('Employee added — invitation email sent');
     setShowAddEmployee(false);
     setEmployeeForm({ name: '', email: '', phone: '', gender: '' });
     fetchEmployees(selectedCompany.id);
@@ -423,6 +445,11 @@ const CorporateAdmin = () => {
                   <Download className="w-4 h-4 mr-1" /> Export All
                 </Button>
               )}
+              {selectedCompany ? (
+                <Button onClick={() => setShowAddEmployee(true)}>
+                  <UserPlus className="w-4 h-4 mr-2" /> Add Employee
+                </Button>
+              ) : (
               <Dialog open={showCreateCompany} onOpenChange={setShowCreateCompany}>
                 <DialogTrigger asChild>
                   <Button><Plus className="w-4 h-4 mr-2" /> Create Company</Button>
@@ -440,6 +467,7 @@ const CorporateAdmin = () => {
                   </div>
                 </DialogContent>
               </Dialog>
+              )}
             </div>
           </div>
 
@@ -869,6 +897,40 @@ const CorporateAdmin = () => {
                                     <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => { navigator.clipboard.writeText(`${baseUrl}/corporate-wellbeing-check?token=${emp.secure_token}`); toast.success('Link copied!'); }} title="Copy link">
                                       <ClipboardList className="w-3 h-3" />
                                     </Button>
+                                    {emp.screening_completed && screening && emp.email && (
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="h-6 w-6 p-0 text-blue-600"
+                                        title={`Email results to ${emp.email}`}
+                                        onClick={async () => {
+                                          const totalPct = Math.round((screening.total_score / (8 * 5)) * 100);
+                                          const tId = toast.loading(`Sending results to ${emp.email}...`);
+                                          try {
+                                            const { error } = await supabase.functions.invoke('send-transactional-email', {
+                                              body: {
+                                                templateName: 'b2b-employee-results',
+                                                recipientEmail: emp.email,
+                                                idempotencyKey: `b2b-emp-results-resend-${screening.id}-${Date.now()}`,
+                                                templateData: {
+                                                  employee_name: emp.name,
+                                                  company_name: selectedCompany?.name,
+                                                  who5_percentage: screening.who5_percentage,
+                                                  total_percentage: totalPct,
+                                                  wellbeing_category: screening.wellbeing_category,
+                                                },
+                                              },
+                                            });
+                                            if (error) throw error;
+                                            toast.success(`Results emailed to ${emp.email}`, { id: tId });
+                                          } catch (e: any) {
+                                            toast.error(`Failed to send: ${e?.message || 'unknown error'}`, { id: tId });
+                                          }
+                                        }}
+                                      >
+                                        <Mail className="w-3 h-3" />
+                                      </Button>
+                                    )}
                                     {needsSupport && emp.phone && (
                                       <>
                                         <Button variant="ghost" size="sm" className="h-6 w-6 p-0 text-green-600" onClick={() => { const msg = encodeURIComponent(`Hi ${emp.name}, this is InnerSpark Africa. We noticed from our wellbeing check that you might benefit from some support. We're here for you — would you like to chat with one of our counselors?`); window.open(`https://wa.me/${emp.phone?.replace(/\D/g, '')}?text=${msg}`, '_blank'); }} title="WhatsApp">
@@ -972,18 +1034,99 @@ const CorporateAdmin = () => {
                             <li>• Partner with InnerSpark Africa for ongoing corporate wellness support</li>
                           </ul>
                         </div>
-                        <Button variant="outline" onClick={() => {
-                          const report = `COMPANY MENTAL HEALTH REPORT\n${selectedCompany.name}\nGenerated: ${new Date().toLocaleDateString()}\n\nSUMMARY\n- Employees: ${totalEmployees}\n- Completed: ${completedScreenings} (${participationRate}%)\n- Avg Score: ${avgScore}%\n\nRISK DISTRIBUTION\n- Healthy: ${greenCount}\n- At Risk: ${yellowCount}\n- Critical: ${redCount}\n`;
-                          const blob = new Blob([report], { type: 'text/plain' });
-                          const url = URL.createObjectURL(blob);
-                          const a = document.createElement('a');
-                          a.href = url;
-                          a.download = `${selectedCompany.name.replace(/\s+/g, '_')}_wellbeing_report.txt`;
-                          a.click();
-                          URL.revokeObjectURL(url);
+                        <div className="flex flex-wrap gap-2">
+                        <Button variant="outline" disabled={downloadingPdf} onClick={async () => {
+                          setDownloadingPdf(true);
+                          try {
+                            const period = new Date().toLocaleDateString('en-UG', { year: 'numeric', month: 'long' });
+                            const blob = await generateCompanyReportPdf({
+                              contact_name: selectedCompany.contact_person,
+                              company_name: selectedCompany.name,
+                              reporting_period: period,
+                              total_employees: totalEmployees,
+                              total_completed: completedScreenings,
+                              completion_rate: participationRate,
+                              avg_who5: avgScore,
+                              high_count: greenCount,
+                              moderate_count: yellowCount,
+                              low_count: redCount,
+                              high_wellbeing_pct: completedScreenings > 0 ? Math.round((greenCount / completedScreenings) * 100) : 0,
+                              moderate_wellbeing_pct: completedScreenings > 0 ? Math.round((yellowCount / completedScreenings) * 100) : 0,
+                              low_wellbeing_pct: completedScreenings > 0 ? Math.round((redCount / completedScreenings) * 100) : 0,
+                              needs_support_count: needsSupportCount,
+                            });
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = `${selectedCompany.name.replace(/\s+/g, '_')}_wellbeing_report.pdf`;
+                            a.click();
+                            URL.revokeObjectURL(url);
+                            toast.success('PDF report downloaded');
+                          } catch (e: any) {
+                            console.error('PDF generation failed', e);
+                            toast.error('Could not generate PDF: ' + (e?.message || 'unknown'));
+                          } finally {
+                            setDownloadingPdf(false);
+                          }
                         }}>
-                          <FileText className="w-4 h-4 mr-2" /> Download Report
+                          {downloadingPdf ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <FileText className="w-4 h-4 mr-2" />}
+                          {downloadingPdf ? 'Generating PDF…' : 'Download PDF Report'}
                         </Button>
+                        <Button disabled={sendingReport} onClick={async () => {
+                          if (!selectedCompany?.contact_email) {
+                            toast.error('Add a contact email to this company first (Manage tab → edit company)');
+                            return;
+                          }
+                          setSendingReport(true);
+                          try {
+                            const recs: string[] = [];
+                            if (redCount > 0) recs.push('URGENT: Activate the InnerSpark Employee Mental Health Package — critical cases need immediate access to therapy.');
+                            if (yellowCount > 0) recs.push('Roll out manager training on supportive conversations and stress management.');
+                            recs.push('Schedule the next quarterly Mind-Check & WHO-5 in 90 days.');
+                            recs.push('Give every employee anytime access to chat, therapy and support groups via the InnerSpark App.');
+                            const period = new Date().toLocaleDateString('en-UG', { year: 'numeric', month: 'long' });
+                            const { data, error: emailErr } = await supabase.functions.invoke('send-transactional-email', {
+                              body: {
+                                templateName: 'b2b-company-report',
+                                recipientEmail: selectedCompany.contact_email,
+                                idempotencyKey: `b2b-report-${selectedCompany.id}-${Date.now()}`,
+                                templateData: {
+                                  contact_name: selectedCompany.contact_person || undefined,
+                                  company_name: selectedCompany.name,
+                                  reporting_period: period,
+                                  total_employees: totalEmployees,
+                                  total_completed: completedScreenings,
+                                  completion_rate: participationRate,
+                                  avg_who5: avgScore,
+                                  high_count: greenCount,
+                                  moderate_count: yellowCount,
+                                  low_count: redCount,
+                                  high_wellbeing_pct: completedScreenings > 0 ? Math.round((greenCount / completedScreenings) * 100) : 0,
+                                  moderate_wellbeing_pct: completedScreenings > 0 ? Math.round((yellowCount / completedScreenings) * 100) : 0,
+                                  low_wellbeing_pct: completedScreenings > 0 ? Math.round((redCount / completedScreenings) * 100) : 0,
+                                  needs_support_count: needsSupportCount,
+                                  recommendations: recs,
+                                },
+                              },
+                            });
+                            if (emailErr) {
+                              console.error('Send report error:', emailErr);
+                              toast.error('Could not send report: ' + emailErr.message);
+                            } else {
+                              console.log('Report sent:', data);
+                              toast.success(`Report sent to ${selectedCompany.contact_email}`);
+                            }
+                          } catch (e: any) {
+                            console.error('Send report exception:', e);
+                            toast.error('Could not send report: ' + (e?.message || 'unknown'));
+                          } finally {
+                            setSendingReport(false);
+                          }
+                        }}>
+                          {sendingReport ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Mail className="w-4 h-4 mr-2" />}
+                          {sendingReport ? 'Sending…' : 'Send Report to Company'}
+                        </Button>
+                        </div>
                       </>
                     )}
                   </CardContent>

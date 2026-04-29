@@ -15,6 +15,7 @@ import { Plus, Search, Trash2, Download, FileSpreadsheet, TrendingUp, Pencil, Fi
 import { SERVICE_LABELS, exportCSV, exportXLSX, formatUGX } from '@/lib/financeExports';
 import { useTaxCodes } from '@/hooks/useTaxCodes';
 import ColumnFilter from './ColumnFilter';
+import TablePagination from './TablePagination';
 
 interface Income {
   id: string;
@@ -49,6 +50,8 @@ const IncomeTab = () => {
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<Income | null>(null);
   const [colFilters, setColFilters] = useState(emptyColFilters);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const fetchIncome = useCallback(async () => {
     setLoading(true);
@@ -94,6 +97,8 @@ const IncomeTab = () => {
   const totalNet = filtered.reduce((sum, e) => sum + Number(e.net_amount || e.amount), 0);
 
   const hasColFilters = Object.values(colFilters).some(v => v);
+  const paged = filtered.slice((page - 1) * pageSize, page * pageSize);
+  useEffect(() => { setPage(1); }, [search, serviceFilter, colFilters, pageSize]);
 
   const handleSave = async (data: any, id?: string) => {
     const payload = {
@@ -243,9 +248,9 @@ const IncomeTab = () => {
             <TableBody>
               {filtered.length === 0 ? (
                 <TableRow><TableCell colSpan={10} className="text-center text-muted-foreground py-8">No income records found</TableCell></TableRow>
-              ) : filtered.map((e, i) => (
+              ) : paged.map((e, i) => (
                 <TableRow key={e.id}>
-                  <TableCell>{i + 1}</TableCell>
+                  <TableCell>{(page - 1) * pageSize + i + 1}</TableCell>
                   <TableCell className="text-xs">{new Date(e.income_date).toLocaleDateString()}</TableCell>
                   <TableCell>
                     <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-700">
@@ -274,6 +279,7 @@ const IncomeTab = () => {
               ))}
             </TableBody>
           </Table>
+          <TablePagination page={page} pageSize={pageSize} total={filtered.length} onPageChange={setPage} onPageSizeChange={setPageSize} />
         </Card>
       )}
 

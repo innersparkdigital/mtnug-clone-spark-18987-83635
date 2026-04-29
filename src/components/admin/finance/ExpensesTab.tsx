@@ -15,6 +15,7 @@ import { Plus, Search, Trash2, Download, FileSpreadsheet, Link2, Pencil, FilterX
 import { exportCSV, exportXLSX, formatUGX } from '@/lib/financeExports';
 import { useTaxCodes } from '@/hooks/useTaxCodes';
 import ColumnFilter from './ColumnFilter';
+import TablePagination from './TablePagination';
 
 interface Expense {
   id: string;
@@ -70,6 +71,8 @@ const ExpensesTab = () => {
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<Expense | null>(null);
   const [colFilters, setColFilters] = useState(emptyColFilters);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const fetchAll = useCallback(async () => {
     setLoading(true);
@@ -122,6 +125,8 @@ const ExpensesTab = () => {
 
   const totalAmount = filtered.reduce((sum, e) => sum + Number(e.amount), 0);
   const hasColFilters = Object.values(colFilters).some(v => v);
+  const paged = filtered.slice((page - 1) * pageSize, page * pageSize);
+  useEffect(() => { setPage(1); }, [search, colFilters, pageSize]);
 
   const handleSave = async (data: any, id?: string) => {
     const payload = {
@@ -245,12 +250,12 @@ const ExpensesTab = () => {
             <TableBody>
               {filtered.length === 0 ? (
                 <TableRow><TableCell colSpan={8} className="text-center text-muted-foreground py-8">No expenses found</TableCell></TableRow>
-              ) : filtered.map((e, i) => {
+              ) : paged.map((e, i) => {
                 const linked = e.linked_income_id ? incomeMap.get(e.linked_income_id) : null;
                 const tax = e.tax_code_id ? taxCodes.find(t => t.id === e.tax_code_id) : null;
                 return (
                   <TableRow key={e.id}>
-                    <TableCell>{i + 1}</TableCell>
+                    <TableCell>{(page - 1) * pageSize + i + 1}</TableCell>
                     <TableCell className="text-xs">{new Date(e.expense_date).toLocaleDateString()}</TableCell>
                     <TableCell>
                       <span className="text-xs px-2 py-0.5 rounded-full bg-muted">
@@ -285,6 +290,7 @@ const ExpensesTab = () => {
               })}
             </TableBody>
           </Table>
+          <TablePagination page={page} pageSize={pageSize} total={filtered.length} onPageChange={setPage} onPageSizeChange={setPageSize} />
         </Card>
       )}
 

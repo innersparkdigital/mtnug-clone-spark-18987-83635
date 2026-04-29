@@ -130,6 +130,9 @@ import StudentTherapyUgandaPost from "./pages/blog/StudentTherapyUgandaPost";
 import WhatIsTherapyPost from "./pages/blog/WhatIsTherapyPost";
 import BenefitsOfTherapyPost from "./pages/blog/BenefitsOfTherapyPost";
 import TypesOfTherapyPost from "./pages/blog/TypesOfTherapyPost";
+import CmsBlogPost from "./pages/CmsBlogPost";
+import CmsEventPost from "./pages/CmsEventPost";
+import ThankYou from "./pages/ThankYou";
 
 const queryClient = new QueryClient();
 

@@ -5,15 +5,15 @@ import { TEMPLATES } from '../_shared/transactional-email-templates/registry.ts'
 
 // Configuration baked in at scaffold time — do NOT change these manually.
 // To update, re-run the email domain setup flow.
-const SITE_NAME = "mtnug-clone-spark-18987-83635"
-// SENDER_DOMAIN is the verified sender subdomain FQDN (e.g., "notify.example.com").
-// It MUST match the subdomain delegated to Lovable's nameservers — never the root domain.
-// The email API looks up this exact domain; a mismatch causes "No email domain record found".
-const SENDER_DOMAIN = "notify.innersparkafrica.com"
-// FROM_DOMAIN is the domain shown in the From: header (e.g., "example.com").
-// When display_from_root is enabled, this can be the root domain for cleaner branding,
-// even though actual sending uses the subdomain above.
-const FROM_DOMAIN = "notify.innersparkafrica.com"
+const SITE_NAME = "InnerSpark Africa"
+// We send via Resend directly through the Lovable connector gateway because
+// Lovable Emails domain (notify.innersparkafrica.com) failed DNS verification
+// and rejects sends with "Emails disabled for this project". The Resend
+// connector authenticates the verified innersparkafrica.com sender domain.
+const FROM_ADDRESS = `${SITE_NAME} <noreply@innersparkafrica.com>`
+const REPLY_TO = "info@innersparkafrica.com"
+const ADMIN_NOTIFICATION_EMAIL = "info@innersparkafrica.com"
+const RESEND_GATEWAY_URL = "https://connector-gateway.lovable.dev/resend"
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -297,10 +297,8 @@ Deno.serve(async (req) => {
       ? template.subject(templateData)
       : template.subject
 
-  // 5. Enqueue the pre-rendered email for async processing by the dispatcher.
-  // The dispatcher (process-email-queue) handles sending, retries, and rate-limit backoff.
-
-  // Log pending BEFORE enqueue so we have a record even if enqueue crashes
+  // 5. Send directly via Resend (through Lovable connector gateway).
+  // Log pending first so we always have a record.
   await supabase.from('email_send_log').insert({
     message_id: messageId,
     template_name: templateName,
@@ -308,49 +306,111 @@ Deno.serve(async (req) => {
     status: 'pending',
   })
 
-  const { error: enqueueError } = await supabase.rpc('enqueue_email', {
-    queue_name: 'transactional_emails',
-    payload: {
-      message_id: messageId,
-      to: effectiveRecipient,
-      from: `${SITE_NAME} <noreply@${FROM_DOMAIN}>`,
-      sender_domain: SENDER_DOMAIN,
-      subject: resolvedSubject,
-      html,
-      text: plainText,
-      purpose: 'transactional',
-      label: templateName,
-      idempotency_key: idempotencyKey,
-      unsubscribe_token: unsubscribeToken,
-      queued_at: new Date().toISOString(),
-    },
-  })
+  const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY')
+  const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY')
 
-  if (enqueueError) {
-    console.error('Failed to enqueue email', {
-      error: enqueueError,
-      templateName,
-      effectiveRecipient,
-    })
-
+  if (!LOVABLE_API_KEY || !RESEND_API_KEY) {
+    const err = 'Missing LOVABLE_API_KEY or RESEND_API_KEY'
+    console.error(err)
     await supabase.from('email_send_log').insert({
       message_id: messageId,
       template_name: templateName,
       recipient_email: effectiveRecipient,
       status: 'failed',
-      error_message: 'Failed to enqueue email',
+      error_message: err,
     })
-
-    return new Response(JSON.stringify({ error: 'Failed to enqueue email' }), {
+    return new Response(JSON.stringify({ error: err }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
   }
 
-  console.log('Transactional email enqueued', { templateName, effectiveRecipient })
+  // Append unsubscribe footer (Lovable Emails normally appends this — we replicate it)
+  const unsubUrl = `${supabaseUrl}/functions/v1/handle-email-unsubscribe?token=${unsubscribeToken}`
+  const footerHtml = `<div style="font-family:Arial,sans-serif;font-size:11px;color:#999;text-align:center;padding:20px 0;border-top:1px solid #eee;margin-top:24px">You're receiving this because you interacted with ${SITE_NAME}. <a href="${unsubUrl}" style="color:#999;text-decoration:underline">Unsubscribe</a>.</div>`
+  const finalHtml = html.includes('</body>')
+    ? html.replace('</body>', `${footerHtml}</body>`)
+    : html + footerHtml
+  const finalText = `${plainText}\n\n---\nUnsubscribe: ${unsubUrl}`
+
+  // Build recipient list — for some critical templates also BCC the admin so
+  // the team has a copy in case the primary recipient never reports back.
+  const adminCcTemplates = new Set([
+    'contact-confirmation',
+    'training-confirmation',
+    'account-credentials',
+  ])
+  const bcc = adminCcTemplates.has(templateName) ? [ADMIN_NOTIFICATION_EMAIL] : undefined
+
+  // Retry up to 3x for transient failures
+  let lastError: string | null = null
+  let providerMessageId: string | null = null
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      const resp = await fetch(`${RESEND_GATEWAY_URL}/emails`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+          'X-Connection-Api-Key': RESEND_API_KEY,
+          'Idempotency-Key': idempotencyKey,
+        },
+        body: JSON.stringify({
+          from: FROM_ADDRESS,
+          to: [effectiveRecipient],
+          bcc,
+          reply_to: REPLY_TO,
+          subject: resolvedSubject,
+          html: finalHtml,
+          text: finalText,
+          headers: {
+            'List-Unsubscribe': `<${unsubUrl}>`,
+            'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+          },
+          tags: [{ name: 'template', value: templateName.replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 50) }],
+        }),
+      })
+      const data = await resp.json().catch(() => ({}))
+      if (resp.ok && data?.id) {
+        providerMessageId = data.id
+        break
+      }
+      lastError = `Resend ${resp.status}: ${JSON.stringify(data).slice(0, 500)}`
+      // Don't retry on 4xx (other than 429)
+      if (resp.status >= 400 && resp.status < 500 && resp.status !== 429) break
+    } catch (e) {
+      lastError = e instanceof Error ? e.message : String(e)
+    }
+    if (attempt < 3) await new Promise(r => setTimeout(r, 500 * attempt))
+  }
+
+  if (!providerMessageId) {
+    console.error('Resend send failed', { templateName, effectiveRecipient, lastError })
+    await supabase.from('email_send_log').insert({
+      message_id: messageId,
+      template_name: templateName,
+      recipient_email: effectiveRecipient,
+      status: 'failed',
+      error_message: lastError || 'Unknown send failure',
+    })
+    return new Response(JSON.stringify({ error: 'Failed to send email', detail: lastError }), {
+      status: 502,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    })
+  }
+
+  await supabase.from('email_send_log').insert({
+    message_id: messageId,
+    template_name: templateName,
+    recipient_email: effectiveRecipient,
+    status: 'sent',
+    metadata: { provider: 'resend', provider_message_id: providerMessageId, bcc_admin: !!bcc },
+  })
+
+  console.log('Transactional email sent via Resend', { templateName, effectiveRecipient, providerMessageId })
 
   return new Response(
-    JSON.stringify({ success: true, queued: true }),
+    JSON.stringify({ success: true, provider: 'resend', id: providerMessageId }),
     {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

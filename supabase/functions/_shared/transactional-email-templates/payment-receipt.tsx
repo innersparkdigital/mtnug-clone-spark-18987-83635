@@ -3,11 +3,11 @@ import {
   Body, Container, Head, Heading, Html, Preview, Text, Hr, Section, Img, Button, Row, Column,
 } from 'npm:@react-email/components@0.0.22'
 import type { TemplateEntry } from './registry.ts'
+import { EmailFooterBanner } from './_brand-footer.tsx'
 
 const SITE_NAME = "InnerSpark Africa"
 const PRIMARY_COLOR = "#5B6ABF"
 const LOGO_URL = 'https://hnjpsvpudwwyzrrwzbpa.supabase.co/storage/v1/object/public/email-assets/logo.png'
-const FOOTER_BANNER_URL = 'https://hnjpsvpudwwyzrrwzbpa.supabase.co/storage/v1/object/public/email-assets/footer-banner.png'
 
 interface PaymentReceiptProps {
   name?: string
@@ -127,10 +127,7 @@ const PaymentReceiptEmail = ({
             The {SITE_NAME} Team
           </Text>
 
-          {/* Footer Banner */}
-          <Section style={bannerSection}>
-            <Img src={FOOTER_BANNER_URL} alt={`${SITE_NAME} — Your Mental Health Matters`} width="100%" style={bannerImg} />
-          </Section>
+          <EmailFooterBanner />
         </Container>
       </Body>
     </Html>
@@ -179,5 +176,3 @@ const thankYou = { fontSize: '15px', color: '#333333', lineHeight: '1.6', margin
 const text = { fontSize: '14px', color: '#555555', lineHeight: '1.6', margin: '0 25px 20px' }
 const hr = { borderColor: '#e5e5e5', margin: '16px 25px' }
 const footer = { fontSize: '13px', color: '#999999', margin: '0 25px 16px', lineHeight: '1.5' }
-const bannerSection = { margin: '0', padding: '0' }
-const bannerImg = { display: 'block' as const, width: '100%' }

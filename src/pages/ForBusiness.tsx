@@ -1,4 +1,5 @@
 import { Helmet } from "react-helmet";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { autoSubscribeNewsletter } from "@/lib/autoSubscribe";
 import Header from "@/components/Header";
@@ -10,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Brain, Cog, Users, Calendar, Video, BookOpen, GraduationCap, BarChart3, UserCheck, MessageSquare, TrendingDown, TrendingUp, ArrowRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
+import B2BScreeningBookingSection from "@/components/business/B2BScreeningBookingSection";
 import { useLanguage } from "@/contexts/LanguageContext";
 import corporateWellnessImage from "@/assets/for-business-hero-new.png";
 import markhLogo from "@/assets/partners/markh.png";
@@ -78,6 +80,7 @@ const defaultTexts = {
 
 const ForBusiness = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const { language, translateBatch } = useLanguage();
   const [t, setT] = useState(defaultTexts);
   const [formData, setFormData] = useState({
@@ -140,14 +143,14 @@ const ForBusiness = () => {
     // Auto-subscribe to newsletter
     autoSubscribeNewsletter(formData.email);
 
+    // Open WhatsApp in a new tab so the redirect still happens
     const whatsappMessage = encodeURIComponent(
       `Hi, I'm ${formData.name} from ${formData.company}. I'm interested in Innerspark for Business. ${formData.message}`
     );
     window.open(`https://wa.me/256792085773?text=${whatsappMessage}`, "_blank");
-    toast({
-      title: "Inquiry Submitted!",
-      description: "We've sent you a confirmation email and will connect with you shortly.",
-    });
+
+    setFormData({ name: "", email: "", company: "", message: "" });
+    navigate("/thank-you-corporate");
   };
 
   const stats = [
@@ -183,9 +186,9 @@ const ForBusiness = () => {
   return (
     <>
       <Helmet>
-        <title>Innerspark for Business | Corporate Mental Health Solutions in Africa</title>
-        <meta name="description" content="Transform your workplace with Innerspark's corporate mental health programs. Reduce absenteeism, improve productivity, and support employee wellbeing across Africa." />
-        <meta name="keywords" content="corporate wellness, employee mental health, workplace wellbeing, corporate therapy, business mental health Africa, EAP programs Uganda" />
+        <title>Corporate Mental Health & Employee Wellness Programs | Workplace Wellbeing Screening | Innerspark Africa</title>
+        <meta name="description" content="Corporate mental health services & employee wellness programs across Uganda, Kenya, Tanzania & Africa. Workplace wellbeing screening, employee mental health audits, EAP and corporate therapy that reduce absenteeism and boost productivity." />
+        <meta name="keywords" content="employee mental health screening, workplace wellbeing assessment, staff mental health check, corporate mental health screening, employee wellbeing survey, workplace mental health audit, corporate wellness program, employee wellness program, workplace mental health program, corporate mental health services, employee assistance program, workplace wellbeing program, EAP programs Uganda, corporate therapy, business mental health Africa, workplace mental health Kenya, employee wellbeing Tanzania" />
         <link rel="canonical" href="https://www.innersparkafrica.com/for-business" />
         <meta property="og:url" content="https://www.innersparkafrica.com/for-business" />
         <meta property="og:title" content="Innerspark for Business | Corporate Mental Health Solutions" />
@@ -438,6 +441,9 @@ const ForBusiness = () => {
             </div>
           </div>
         </section>
+
+        {/* B2B Mental Health Screening Booking */}
+        <B2BScreeningBookingSection />
 
         {/* Contact Form Section */}
         <section id="contact-form" className="py-20 bg-slate-900 text-white">

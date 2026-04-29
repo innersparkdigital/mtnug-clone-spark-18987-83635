@@ -116,6 +116,30 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_page_permissions: {
+        Row: {
+          granted_at: string
+          granted_by: string | null
+          id: string
+          page_key: string
+          user_id: string
+        }
+        Insert: {
+          granted_at?: string
+          granted_by?: string | null
+          id?: string
+          page_key: string
+          user_id: string
+        }
+        Update: {
+          granted_at?: string
+          granted_by?: string | null
+          id?: string
+          page_key?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       assessment_emails: {
         Row: {
           consent_given: boolean
@@ -209,6 +233,60 @@ export type Database = {
           test_type?: string
           total_questions?: number
           user_agent?: string | null
+        }
+        Relationships: []
+      }
+      blog_posts: {
+        Row: {
+          author: string | null
+          category: string | null
+          content: string
+          created_at: string
+          created_by: string | null
+          excerpt: string | null
+          hero_image_url: string | null
+          id: string
+          published_at: string | null
+          read_time: string | null
+          scheduled_for: string | null
+          slug: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author?: string | null
+          category?: string | null
+          content?: string
+          created_at?: string
+          created_by?: string | null
+          excerpt?: string | null
+          hero_image_url?: string | null
+          id?: string
+          published_at?: string | null
+          read_time?: string | null
+          scheduled_for?: string | null
+          slug: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author?: string | null
+          category?: string | null
+          content?: string
+          created_at?: string
+          created_by?: string | null
+          excerpt?: string | null
+          hero_image_url?: string | null
+          id?: string
+          published_at?: string | null
+          read_time?: string | null
+          scheduled_for?: string | null
+          slug?: string
+          status?: string
+          title?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -513,6 +591,51 @@ export type Database = {
           },
         ]
       }
+      corporate_screening_bookings: {
+        Row: {
+          company_name: string
+          contact_email: string
+          contact_name: string
+          contact_phone: string | null
+          created_at: string
+          employee_count: number | null
+          id: string
+          notes: string | null
+          preferred_date: string | null
+          preferred_format: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          company_name: string
+          contact_email: string
+          contact_name: string
+          contact_phone?: string | null
+          created_at?: string
+          employee_count?: number | null
+          id?: string
+          notes?: string | null
+          preferred_date?: string | null
+          preferred_format?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          company_name?: string
+          contact_email?: string
+          contact_name?: string
+          contact_phone?: string | null
+          created_at?: string
+          employee_count?: number | null
+          id?: string
+          notes?: string | null
+          preferred_date?: string | null
+          preferred_format?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       corporate_screenings: {
         Row: {
           company_id: string
@@ -668,30 +791,51 @@ export type Database = {
       doctors: {
         Row: {
           created_at: string
+          credentials_email_error: string | null
+          credentials_email_sent_at: string | null
+          credentials_email_status: string
+          deactivated_at: string | null
+          deactivated_reason: string | null
           email: string
           facility: string | null
           full_name: string
           id: string
+          is_active: boolean
+          location: string | null
           phone: string
           updated_at: string
           user_id: string
         }
         Insert: {
           created_at?: string
+          credentials_email_error?: string | null
+          credentials_email_sent_at?: string | null
+          credentials_email_status?: string
+          deactivated_at?: string | null
+          deactivated_reason?: string | null
           email: string
           facility?: string | null
           full_name: string
           id?: string
+          is_active?: boolean
+          location?: string | null
           phone: string
           updated_at?: string
           user_id: string
         }
         Update: {
           created_at?: string
+          credentials_email_error?: string | null
+          credentials_email_sent_at?: string | null
+          credentials_email_status?: string
+          deactivated_at?: string | null
+          deactivated_reason?: string | null
           email?: string
           facility?: string | null
           full_name?: string
           id?: string
+          is_active?: boolean
+          location?: string | null
           phone?: string
           updated_at?: string
           user_id?: string
@@ -782,6 +926,54 @@ export type Database = {
           id?: string
           token?: string
           used_at?: string | null
+        }
+        Relationships: []
+      }
+      events: {
+        Row: {
+          body: string | null
+          created_at: string
+          created_by: string | null
+          event_date: string | null
+          gallery: string[] | null
+          hero_image_url: string | null
+          id: string
+          published_at: string | null
+          slug: string
+          status: string
+          summary: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          created_by?: string | null
+          event_date?: string | null
+          gallery?: string[] | null
+          hero_image_url?: string | null
+          id?: string
+          published_at?: string | null
+          slug: string
+          status?: string
+          summary?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          created_by?: string | null
+          event_date?: string | null
+          gallery?: string[] | null
+          hero_image_url?: string | null
+          id?: string
+          published_at?: string | null
+          slug?: string
+          status?: string
+          summary?: string | null
+          title?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -1731,6 +1923,10 @@ export type Database = {
         Returns: number
       }
       get_doctor_email_by_phone: { Args: { _phone: string }; Returns: string }
+      has_page_access: {
+        Args: { _page_key: string; _user_id: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -1757,6 +1953,10 @@ export type Database = {
           read_ct: number
         }[]
       }
+      recalc_doctor_monthly_commissions: {
+        Args: { _doctor_id: string; _month_start: string }
+        Returns: undefined
+      }
       sync_form_emails_to_subscribers: { Args: never; Returns: Json }
     }
     Enums: {
@@ -1766,6 +1966,7 @@ export type Database = {
         | "user"
         | "finance_admin"
         | "operations_admin"
+        | "content_admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1899,6 +2100,7 @@ export const Constants = {
         "user",
         "finance_admin",
         "operations_admin",
+        "content_admin",
       ],
     },
   },

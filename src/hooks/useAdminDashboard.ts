@@ -48,12 +48,23 @@ export const useAdminDashboard = () => {
     }
 
     try {
-      // Fetch all profiles (admin can see all)
-      const { data: profiles, error: profilesError } = await supabase
+      // Fetch doctor user_ids first so we can exclude them from the
+      // Learning Hub learners list (doctors and learners are separate systems).
+      const { data: doctorRows } = await supabase
+        .from('doctors')
+        .select('user_id');
+      const doctorUserIds = new Set(
+        (doctorRows || []).map((d: { user_id: string }) => d.user_id).filter(Boolean)
+      );
+
+      // Fetch all profiles (admin can see all), excluding doctor accounts
+      const { data: allProfiles, error: profilesError } = await supabase
         .from('profiles')
         .select('*');
 
       if (profilesError) throw profilesError;
+
+      const profiles = (allProfiles || []).filter((p) => !doctorUserIds.has(p.id));
 
       // Fetch all enrollments
       const { data: enrollments, error: enrollmentsError } = await supabase
