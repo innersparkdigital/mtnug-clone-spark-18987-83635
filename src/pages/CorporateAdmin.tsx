@@ -18,6 +18,8 @@ import { Building2, Users, Plus, Upload, BarChart3, FileText, Trash2, UserPlus, 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { generateCompanyReportPdf } from '@/lib/companyReportPdf';
+import { Loader2 } from 'lucide-react';
 
 interface Company {
   id: string;
