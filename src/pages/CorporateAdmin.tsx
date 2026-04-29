@@ -1035,54 +1035,96 @@ const CorporateAdmin = () => {
                           </ul>
                         </div>
                         <div className="flex flex-wrap gap-2">
-                        <Button variant="outline" onClick={() => {
-                          const report = `COMPANY MENTAL HEALTH REPORT\n${selectedCompany.name}\nGenerated: ${new Date().toLocaleDateString()}\n\nSUMMARY\n- Employees: ${totalEmployees}\n- Completed: ${completedScreenings} (${participationRate}%)\n- Avg Score: ${avgScore}%\n\nRISK DISTRIBUTION\n- Healthy: ${greenCount}\n- At Risk: ${yellowCount}\n- Critical: ${redCount}\n`;
-                          const blob = new Blob([report], { type: 'text/plain' });
-                          const url = URL.createObjectURL(blob);
-                          const a = document.createElement('a');
-                          a.href = url;
-                          a.download = `${selectedCompany.name.replace(/\s+/g, '_')}_wellbeing_report.txt`;
-                          a.click();
-                          URL.revokeObjectURL(url);
+                        <Button variant="outline" disabled={downloadingPdf} onClick={async () => {
+                          setDownloadingPdf(true);
+                          try {
+                            const period = new Date().toLocaleDateString('en-UG', { year: 'numeric', month: 'long' });
+                            const blob = await generateCompanyReportPdf({
+                              contact_name: selectedCompany.contact_person,
+                              company_name: selectedCompany.name,
+                              reporting_period: period,
+                              total_employees: totalEmployees,
+                              total_completed: completedScreenings,
+                              completion_rate: participationRate,
+                              avg_who5: avgScore,
+                              high_count: greenCount,
+                              moderate_count: yellowCount,
+                              low_count: redCount,
+                              high_wellbeing_pct: completedScreenings > 0 ? Math.round((greenCount / completedScreenings) * 100) : 0,
+                              moderate_wellbeing_pct: completedScreenings > 0 ? Math.round((yellowCount / completedScreenings) * 100) : 0,
+                              low_wellbeing_pct: completedScreenings > 0 ? Math.round((redCount / completedScreenings) * 100) : 0,
+                              needs_support_count: needsSupportCount,
+                            });
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = `${selectedCompany.name.replace(/\s+/g, '_')}_wellbeing_report.pdf`;
+                            a.click();
+                            URL.revokeObjectURL(url);
+                            toast.success('PDF report downloaded');
+                          } catch (e: any) {
+                            console.error('PDF generation failed', e);
+                            toast.error('Could not generate PDF: ' + (e?.message || 'unknown'));
+                          } finally {
+                            setDownloadingPdf(false);
+                          }
                         }}>
-                          <FileText className="w-4 h-4 mr-2" /> Download Report
+                          {downloadingPdf ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <FileText className="w-4 h-4 mr-2" />}
+                          {downloadingPdf ? 'Generating PDF…' : 'Download PDF Report'}
                         </Button>
-                        <Button onClick={async () => {
+                        <Button disabled={sendingReport} onClick={async () => {
                           if (!selectedCompany?.contact_email) {
-                            toast.error('Add a contact email to this company first');
+                            toast.error('Add a contact email to this company first (Manage tab → edit company)');
                             return;
                           }
-                          const recs: string[] = [];
-                          if (redCount > 0) recs.push('Provide EAP access for staff needing immediate support.');
-                          if (yellowCount > 0) recs.push('Organize wellness workshops or stress management sessions.');
-                          recs.push('Encourage regular wellbeing check-ins every 30–90 days.');
-                          recs.push('Partner with InnerSpark Africa for ongoing corporate wellness support.');
-                          const period = new Date().toLocaleDateString('en-UG', { year: 'numeric', month: 'long' });
-                          const { error: emailErr } = await supabase.functions.invoke('send-transactional-email', {
-                            body: {
-                              templateName: 'b2b-company-report',
-                              recipientEmail: selectedCompany.contact_email,
-                              idempotencyKey: `b2b-report-${selectedCompany.id}-${new Date().toISOString().slice(0, 10)}`,
-                              templateData: {
-                                contact_name: selectedCompany.contact_person || undefined,
-                                company_name: selectedCompany.name,
-                                reporting_period: period,
-                                total_employees: totalEmployees,
-                                total_completed: completedScreenings,
-                                completion_rate: participationRate,
-                                avg_who5: avgScore,
-                                high_wellbeing_pct: completedScreenings > 0 ? Math.round((greenCount / completedScreenings) * 100) : 0,
-                                moderate_wellbeing_pct: completedScreenings > 0 ? Math.round((yellowCount / completedScreenings) * 100) : 0,
-                                low_wellbeing_pct: completedScreenings > 0 ? Math.round((redCount / completedScreenings) * 100) : 0,
-                                needs_support_count: needsSupportCount,
-                                recommendations: recs,
+                          setSendingReport(true);
+                          try {
+                            const recs: string[] = [];
+                            if (redCount > 0) recs.push('URGENT: Activate the InnerSpark Employee Mental Health Package — critical cases need immediate access to therapy.');
+                            if (yellowCount > 0) recs.push('Roll out manager training on supportive conversations and stress management.');
+                            recs.push('Schedule the next quarterly Mind-Check & WHO-5 in 90 days.');
+                            recs.push('Give every employee anytime access to chat, therapy and support groups via the InnerSpark App.');
+                            const period = new Date().toLocaleDateString('en-UG', { year: 'numeric', month: 'long' });
+                            const { data, error: emailErr } = await supabase.functions.invoke('send-transactional-email', {
+                              body: {
+                                templateName: 'b2b-company-report',
+                                recipientEmail: selectedCompany.contact_email,
+                                idempotencyKey: `b2b-report-${selectedCompany.id}-${Date.now()}`,
+                                templateData: {
+                                  contact_name: selectedCompany.contact_person || undefined,
+                                  company_name: selectedCompany.name,
+                                  reporting_period: period,
+                                  total_employees: totalEmployees,
+                                  total_completed: completedScreenings,
+                                  completion_rate: participationRate,
+                                  avg_who5: avgScore,
+                                  high_count: greenCount,
+                                  moderate_count: yellowCount,
+                                  low_count: redCount,
+                                  high_wellbeing_pct: completedScreenings > 0 ? Math.round((greenCount / completedScreenings) * 100) : 0,
+                                  moderate_wellbeing_pct: completedScreenings > 0 ? Math.round((yellowCount / completedScreenings) * 100) : 0,
+                                  low_wellbeing_pct: completedScreenings > 0 ? Math.round((redCount / completedScreenings) * 100) : 0,
+                                  needs_support_count: needsSupportCount,
+                                  recommendations: recs,
+                                },
                               },
-                            },
-                          });
-                          if (emailErr) toast.error('Could not send report');
-                          else toast.success(`Report sent to ${selectedCompany.contact_email}`);
+                            });
+                            if (emailErr) {
+                              console.error('Send report error:', emailErr);
+                              toast.error('Could not send report: ' + emailErr.message);
+                            } else {
+                              console.log('Report sent:', data);
+                              toast.success(`Report sent to ${selectedCompany.contact_email}`);
+                            }
+                          } catch (e: any) {
+                            console.error('Send report exception:', e);
+                            toast.error('Could not send report: ' + (e?.message || 'unknown'));
+                          } finally {
+                            setSendingReport(false);
+                          }
                         }}>
-                          <Mail className="w-4 h-4 mr-2" /> Send Report to Company
+                          {sendingReport ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Mail className="w-4 h-4 mr-2" />}
+                          {sendingReport ? 'Sending…' : 'Send Report to Company'}
                         </Button>
                         </div>
                       </>
