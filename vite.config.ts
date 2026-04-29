@@ -25,14 +25,17 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  optimizeDeps: {
+    include: ["xlsx"],
+  },
   build: {
     rollupOptions: {
       output: {
         assetFileNames: (assetInfo) => {
           if (assetInfo.names?.[0]?.match(/\.(png|jpe?g|gif|svg|webp|ico)$/)) {
-            return 'assets/images/[name]-[hash][extname]';
+            return "assets/images/[name]-[hash][extname]";
           }
-          return 'assets/[name]-[hash][extname]';
+          return "assets/[name]-[hash][extname]";
         },
       },
     },
