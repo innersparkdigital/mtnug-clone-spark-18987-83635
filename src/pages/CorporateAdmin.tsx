@@ -441,6 +441,11 @@ const CorporateAdmin = () => {
                   <Download className="w-4 h-4 mr-1" /> Export All
                 </Button>
               )}
+              {selectedCompany ? (
+                <Button onClick={() => setShowAddEmployee(true)}>
+                  <UserPlus className="w-4 h-4 mr-2" /> Add Employee
+                </Button>
+              ) : (
               <Dialog open={showCreateCompany} onOpenChange={setShowCreateCompany}>
                 <DialogTrigger asChild>
                   <Button><Plus className="w-4 h-4 mr-2" /> Create Company</Button>
@@ -458,6 +463,7 @@ const CorporateAdmin = () => {
                   </div>
                 </DialogContent>
               </Dialog>
+              )}
             </div>
           </div>
 
