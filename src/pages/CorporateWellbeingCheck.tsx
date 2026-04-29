@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
-import { Lock, ArrowRight, ArrowLeft, CheckCircle, Heart, Brain, Users, RotateCcw, Download, MessageCircle, Share2, Copy, ExternalLink } from 'lucide-react';
+import { Lock, ArrowRight, ArrowLeft, CheckCircle, Heart, Brain, Users, RotateCcw, Download, MessageCircle, Share2, Copy, ExternalLink, Mail } from 'lucide-react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -79,6 +79,10 @@ const CorporateWellbeingCheck = () => {
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [selectedGender, setSelectedGender] = useState<string>('');
+  // Results email state
+  const [resultsEmail, setResultsEmail] = useState<string>('');
+  const [sendingResultsEmail, setSendingResultsEmail] = useState(false);
+  const [resultsEmailSent, setResultsEmailSent] = useState(false);
 
   // Check for token in URL
   useEffect(() => {
@@ -222,6 +226,9 @@ const CorporateWellbeingCheck = () => {
       }
 
       setPhase('results');
+      // Pre-fill the results-email input with the address on file
+      setResultsEmail(employee.email || '');
+      setResultsEmailSent(true); // auto-send already fired above
     } catch {
       toast.error('Failed to submit. Please try again.');
     }
