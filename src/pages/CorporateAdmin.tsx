@@ -893,6 +893,40 @@ const CorporateAdmin = () => {
                                     <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => { navigator.clipboard.writeText(`${baseUrl}/corporate-wellbeing-check?token=${emp.secure_token}`); toast.success('Link copied!'); }} title="Copy link">
                                       <ClipboardList className="w-3 h-3" />
                                     </Button>
+                                    {emp.screening_completed && screening && emp.email && (
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="h-6 w-6 p-0 text-blue-600"
+                                        title={`Email results to ${emp.email}`}
+                                        onClick={async () => {
+                                          const totalPct = Math.round((screening.total_score / (8 * 5)) * 100);
+                                          const tId = toast.loading(`Sending results to ${emp.email}...`);
+                                          try {
+                                            const { error } = await supabase.functions.invoke('send-transactional-email', {
+                                              body: {
+                                                templateName: 'b2b-employee-results',
+                                                recipientEmail: emp.email,
+                                                idempotencyKey: `b2b-emp-results-resend-${screening.id}-${Date.now()}`,
+                                                templateData: {
+                                                  employee_name: emp.name,
+                                                  company_name: selectedCompany?.name,
+                                                  who5_percentage: screening.who5_percentage,
+                                                  total_percentage: totalPct,
+                                                  wellbeing_category: screening.wellbeing_category,
+                                                },
+                                              },
+                                            });
+                                            if (error) throw error;
+                                            toast.success(`Results emailed to ${emp.email}`, { id: tId });
+                                          } catch (e: any) {
+                                            toast.error(`Failed to send: ${e?.message || 'unknown error'}`, { id: tId });
+                                          }
+                                        }}
+                                      >
+                                        <Mail className="w-3 h-3" />
+                                      </Button>
+                                    )}
                                     {needsSupport && emp.phone && (
                                       <>
                                         <Button variant="ghost" size="sm" className="h-6 w-6 p-0 text-green-600" onClick={() => { const msg = encodeURIComponent(`Hi ${emp.name}, this is InnerSpark Africa. We noticed from our wellbeing check that you might benefit from some support. We're here for you — would you like to chat with one of our counselors?`); window.open(`https://wa.me/${emp.phone?.replace(/\D/g, '')}?text=${msg}`, '_blank'); }} title="WhatsApp">
