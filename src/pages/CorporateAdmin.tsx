@@ -85,6 +85,8 @@ const CorporateAdmin = () => {
   const [employeePage, setEmployeePage] = useState(1);
   const [companySearch, setCompanySearch] = useState('');
   const [employeeSearch, setEmployeeSearch] = useState('');
+  const [sendingReport, setSendingReport] = useState(false);
+  const [downloadingPdf, setDownloadingPdf] = useState(false);
 
   // Sorting
   const [companySortKey, setCompanySortKey] = useState<string>('');
