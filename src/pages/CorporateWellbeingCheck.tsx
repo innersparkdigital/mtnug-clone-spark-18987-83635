@@ -544,6 +544,66 @@ const CorporateWellbeingCheck = () => {
                   </div>
                 </div>
 
+                {/* Email My Results */}
+                <div className="bg-blue-50/50 rounded-2xl border border-blue-100 p-5 mb-6 text-left">
+                  <h3 className="font-semibold text-foreground text-sm mb-1 flex items-center gap-2">
+                    <Mail className="w-4 h-4 text-primary" /> Get a private copy by email
+                  </h3>
+                  <p className="text-xs text-muted-foreground mb-3">
+                    {resultsEmailSent
+                      ? `We've already sent a copy to ${employee?.email}. Want it sent somewhere else? Edit below and send again.`
+                      : 'Enter the email where you would like to receive your private results.'}
+                  </p>
+                  <div className="flex gap-2">
+                    <Input
+                      type="email"
+                      placeholder="you@example.com"
+                      value={resultsEmail}
+                      onChange={(e) => setResultsEmail(e.target.value)}
+                      className="flex-1 h-10 text-sm"
+                    />
+                    <Button
+                      size="sm"
+                      className="rounded-md px-4"
+                      disabled={sendingResultsEmail || !resultsEmail.trim()}
+                      onClick={async () => {
+                        const email = resultsEmail.trim();
+                        // Simple email validation
+                        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                          toast.error('Please enter a valid email address.');
+                          return;
+                        }
+                        if (!employee) return;
+                        setSendingResultsEmail(true);
+                        try {
+                          const { error } = await supabase.functions.invoke('send-transactional-email', {
+                            body: {
+                              templateName: 'b2b-employee-results',
+                              recipientEmail: email,
+                              idempotencyKey: `b2b-emp-results-self-${employee.id}-${email}-${Date.now()}`,
+                              templateData: {
+                                employee_name: employee.name,
+                                company_name: employee.company_name,
+                                who5_percentage: who5Percentage,
+                                total_percentage: totalPercentage,
+                                wellbeing_category: category.key,
+                              },
+                            },
+                          });
+                          if (error) throw error;
+                          toast.success(`Results sent to ${email}. Check your inbox (and spam folder).`);
+                          setResultsEmailSent(true);
+                        } catch (e: any) {
+                          toast.error(`Failed to send: ${e?.message || 'please try again'}`);
+                        }
+                        setSendingResultsEmail(false);
+                      }}
+                    >
+                      {sendingResultsEmail ? 'Sending...' : 'Send'}
+                    </Button>
+                  </div>
+                </div>
+
                 {/* Talk to someone prompt - for low/moderate */}
                 {category.key !== 'green' && (
                   <div className="bg-yellow-50 rounded-2xl border border-yellow-200 p-5 mb-6 text-left">
