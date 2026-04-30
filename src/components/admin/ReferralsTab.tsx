@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Loader2, Trash2, FileText, Users, Phone, MapPin, UserPlus, Stethoscope, Copy, Mail, Ban, CheckCircle2, Calendar, Pencil, AlertTriangle, Send, ChevronLeft, ChevronRight } from "lucide-react";
+import { Loader2, Trash2, FileText, Users, Phone, MapPin, UserPlus, Stethoscope, Copy, Mail, Ban, CheckCircle2, Calendar, Pencil, AlertTriangle, Send, ChevronLeft, ChevronRight, Download, Activity } from "lucide-react";
 import {
   buildMonthlyBreakdown,
   tierForCount,
@@ -503,6 +503,73 @@ const ReferralsTab = () => {
     return c;
   }, [referrals]);
 
+  // Doctor activity (active = at least 1 referral in last 7 days)
+  const doctorActivity = useMemo(() => {
+    const sevenDaysAgo = Date.now() - 7 * 86400000;
+    const activeIds = new Set<string>();
+    referrals.forEach((r) => {
+      if (new Date(r.created_at).getTime() >= sevenDaysAgo) activeIds.add(r.doctor_id);
+    });
+    const total = doctors.length;
+    const active = doctors.filter((d) => activeIds.has(d.id) && d.is_active !== false).length;
+    const inactive = total - active;
+    return { total, active, inactive };
+  }, [doctors, referrals]);
+
+  // Referral status / payment counts
+  const referralStatusCounts = useMemo(() => {
+    const c = { total: referrals.length, pending: 0, approved: 0, paid: 0, rejected: 0 };
+    referrals.forEach((r) => {
+      // "pending" = new or contacted (awaiting action)
+      if (r.status === "new" || r.status === "contacted") c.pending += 1;
+      // "approved" = booked or completed but not yet paid
+      if ((r.status === "booked" || r.status === "completed") && r.payment_status !== "paid") c.approved += 1;
+      // "paid" = payment received
+      if (r.payment_status === "paid") c.paid += 1;
+      // "rejected" = no_response
+      if (r.status === "no_response") c.rejected += 1;
+    });
+    return c;
+  }, [referrals]);
+
+  const exportDoctorsCsv = () => {
+    const rows = filteredDoctors.length > 0 ? filteredDoctors : doctors;
+    if (rows.length === 0) {
+      toast({ title: "No doctors to export", variant: "destructive" });
+      return;
+    }
+    const header = ["#", "Full Name", "Phone", "Email", "Facility", "Location", "Status", "Onboarded", "Credentials Email", "Email Sent At"];
+    const escape = (v: any) => {
+      const s = v === null || v === undefined ? "" : String(v);
+      return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+    };
+    const lines = [header.join(",")];
+    rows.forEach((d, i) => {
+      lines.push([
+        i + 1,
+        `Dr. ${d.full_name}`,
+        d.phone,
+        d.email,
+        d.facility || "",
+        d.location || "",
+        d.is_active === false ? "Inactive" : "Active",
+        new Date(d.created_at).toLocaleDateString(),
+        d.credentials_email_status || "pending",
+        d.credentials_email_sent_at ? new Date(d.credentials_email_sent_at).toLocaleString() : "",
+      ].map(escape).join(","));
+    });
+    const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `onboarded-doctors-${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast({ title: "Export started", description: `${rows.length} doctors exported.` });
+  };
+
   return (
     <div className="space-y-6">
       {/* Header with Onboard button */}
@@ -529,6 +596,59 @@ const ReferralsTab = () => {
           </Card>
         ))}
       </div>
+
+      {/* Doctor & Referral Overview */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Activity className="w-4 h-4 text-primary" /> Doctors & Referrals Overview
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div>
+            <p className="text-xs uppercase tracking-wide text-muted-foreground mb-2">Doctors</p>
+            <div className="grid grid-cols-3 gap-3">
+              <div className="rounded-lg border bg-card p-3">
+                <p className="text-xs text-muted-foreground">Total Doctors</p>
+                <p className="text-2xl font-bold">{doctorActivity.total}</p>
+              </div>
+              <div className="rounded-lg border bg-green-500/5 p-3">
+                <p className="text-xs text-muted-foreground">Active <span className="text-[10px]">(≥1 referral / 7 days)</span></p>
+                <p className="text-2xl font-bold text-green-600">{doctorActivity.active}</p>
+              </div>
+              <div className="rounded-lg border bg-muted/40 p-3">
+                <p className="text-xs text-muted-foreground">Inactive</p>
+                <p className="text-2xl font-bold text-muted-foreground">{doctorActivity.inactive}</p>
+              </div>
+            </div>
+          </div>
+          <div>
+            <p className="text-xs uppercase tracking-wide text-muted-foreground mb-2">Clients Referred</p>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+              <div className="rounded-lg border bg-card p-3">
+                <p className="text-xs text-muted-foreground">Total</p>
+                <p className="text-2xl font-bold">{referralStatusCounts.total}</p>
+              </div>
+              <div className="rounded-lg border bg-amber-500/5 p-3">
+                <p className="text-xs text-muted-foreground">Pending</p>
+                <p className="text-2xl font-bold text-amber-600">{referralStatusCounts.pending}</p>
+              </div>
+              <div className="rounded-lg border bg-blue-500/5 p-3">
+                <p className="text-xs text-muted-foreground">Approved</p>
+                <p className="text-2xl font-bold text-blue-600">{referralStatusCounts.approved}</p>
+              </div>
+              <div className="rounded-lg border bg-green-500/5 p-3">
+                <p className="text-xs text-muted-foreground">Paid</p>
+                <p className="text-2xl font-bold text-green-600">{referralStatusCounts.paid}</p>
+              </div>
+              <div className="rounded-lg border bg-red-500/5 p-3">
+                <p className="text-xs text-muted-foreground">Rejected</p>
+                <p className="text-2xl font-bold text-red-600">{referralStatusCounts.rejected}</p>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Doctor tracking */}
       <Card>
