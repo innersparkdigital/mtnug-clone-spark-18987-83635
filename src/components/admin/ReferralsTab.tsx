@@ -740,10 +740,13 @@ const ReferralsTab = () => {
 
       {/* Onboarded doctors */}
       <Card>
-        <CardHeader>
+        <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0">
           <CardTitle className="flex items-center gap-2 text-base">
             <Stethoscope className="w-4 h-4" /> Onboarded Doctors ({filteredDoctors.length} of {doctors.length})
           </CardTitle>
+          <Button size="sm" variant="outline" onClick={exportDoctorsCsv}>
+            <Download className="w-4 h-4 mr-1" /> Export CSV
+          </Button>
         </CardHeader>
         <CardContent>
           {/* Filters */}
