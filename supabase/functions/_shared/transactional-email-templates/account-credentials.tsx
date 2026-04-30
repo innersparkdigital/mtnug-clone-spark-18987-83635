@@ -11,6 +11,7 @@ const LOGO_URL = "https://hnjpsvpudwwyzrrwzbpa.supabase.co/storage/v1/object/pub
 const SITE_URL = "https://www.innersparkafrica.com"
 const CONTACT_EMAIL = "info@innersparkafrica.com"
 const TAGLINE = "Accessible Mental Health for Africa"
+const COMMUNITY_URL = "https://chat.whatsapp.com/DP5Wu72xjaRGkbzxRSqXKI?mode=gi_t"
 
 interface AccountCredentialsProps {
   full_name?: string
@@ -128,6 +129,21 @@ const AccountCredentialsEmail = ({
               </Text>
 
               <Text style={text}>We are excited to have you as part of this partnership.</Text>
+
+              <Hr style={hr} />
+              <Heading as="h2" style={h2}>Join Our Doctor Community</Heading>
+              <Text style={text}>
+                Connect with fellow referring doctors on WhatsApp to share feedback, get product updates,
+                and engage directly with the {SITE_NAME} team.
+              </Text>
+              <Section style={{ textAlign: 'center' as const, margin: '16px 0 8px' }}>
+                <Button style={communityButton} href={COMMUNITY_URL}>
+                  💬 Join Our Doctor Community
+                </Button>
+              </Section>
+              <Text style={textMuted}>
+                Share Feedback & Stay Updated — invitation link opens in WhatsApp.
+              </Text>
             </>
           ) : (
             <>
@@ -202,6 +218,7 @@ const detailLabel = { fontSize: '12px', color: '#888888', margin: '0 0 4px', tex
 const detailValue = { fontSize: '14px', color: '#333333', margin: '0 0 12px', lineHeight: '1.5', wordBreak: 'break-all' as const }
 const link = { color: PRIMARY_COLOR, textDecoration: 'none' }
 const button = { backgroundColor: PRIMARY_COLOR, color: '#ffffff', padding: '12px 24px', borderRadius: '8px', fontSize: '15px', textDecoration: 'none', fontWeight: '600' as const }
+const communityButton = { backgroundColor: '#25D366', color: '#ffffff', padding: '12px 24px', borderRadius: '8px', fontSize: '15px', textDecoration: 'none', fontWeight: '600' as const }
 const hr = { borderColor: '#e5e5e5', margin: '24px 0' }
 const footer = { fontSize: '13px', color: '#999999', margin: '0', lineHeight: '1.5' }
 const footerBanner = { backgroundColor: PRIMARY_COLOR, borderRadius: '8px', padding: '20px 24px', margin: '24px -25px 0', textAlign: 'center' as const }
