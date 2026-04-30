@@ -15,7 +15,7 @@ import { z } from "zod";
 const phoneSchema = z.string().trim().min(7, "Enter a valid phone number").max(20);
 const nameSchema = z.string().trim().min(2, "Name is required").max(100);
 
-type Doctor = { id: string; full_name: string; phone: string };
+type Doctor = { id: string; full_name: string; phone: string; email?: string };
 
 interface Props {
   doctor: Doctor;
@@ -54,6 +54,7 @@ const DoctorReferralForm = ({ doctor, onBack, onSubmitted }: Props) => {
         doctor_id: doctor.id,
         doctor_name: doctor.full_name,
         doctor_phone: doctor.phone,
+        doctor_email: doctor.email || null,
         patient_name: patientName.trim(),
         patient_phone: patientPhone.trim(),
         location: location.trim() || null,
@@ -63,7 +64,9 @@ const DoctorReferralForm = ({ doctor, onBack, onSubmitted }: Props) => {
       };
       const { error } = await supabase.from("doctor_referrals").insert(payload);
       if (error) throw error;
-      supabase.functions.invoke("notify-doctor-referral", { body: payload }).catch(() => null);
+      supabase.functions.invoke("notify-doctor-referral", {
+        body: { ...payload, submitted_at: new Date().toISOString() },
+      }).catch(() => null);
       onSubmitted();
       navigate("/thank-you-referral");
       return;
