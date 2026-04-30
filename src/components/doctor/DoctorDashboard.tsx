@@ -560,6 +560,29 @@ const DoctorDashboard = ({ doctor, onNewReferral }: Props) => {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Change password dialog */}
+      <Dialog open={pwdOpen} onOpenChange={(o) => { setPwdOpen(o); if (!o) { setNewPwd(""); setConfirmPwd(""); } }}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2"><KeyRound className="w-4 h-4" /> Change Password</DialogTitle>
+            <DialogDescription>Set a new password for your doctor account. You'll use it next time you log in with your phone number.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div>
+              <Label htmlFor="new-pwd">New Password</Label>
+              <Input id="new-pwd" type="password" value={newPwd} onChange={(e) => setNewPwd(e.target.value)} placeholder="At least 8 characters" autoComplete="new-password" />
+            </div>
+            <div>
+              <Label htmlFor="confirm-pwd">Confirm New Password</Label>
+              <Input id="confirm-pwd" type="password" value={confirmPwd} onChange={(e) => setConfirmPwd(e.target.value)} autoComplete="new-password" />
+            </div>
+            <Button onClick={handleChangePassword} className="w-full" disabled={pwdSubmitting}>
+              {pwdSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Update Password"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
