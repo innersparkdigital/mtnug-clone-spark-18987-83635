@@ -20,10 +20,20 @@ Deno.serve(async (req) => {
       });
     }
 
+    const submittedAt = payload.submitted_at
+      ? new Date(payload.submitted_at)
+      : new Date();
+    const formattedTimestamp = submittedAt.toLocaleString("en-GB", {
+      timeZone: "Africa/Nairobi",
+      dateStyle: "full",
+      timeStyle: "short",
+    }) + " (EAT)";
+
     const html = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #1a1a1a;">
         <div style="background: #1B4D89; padding: 24px; text-align: center;">
           <h1 style="color: white; margin: 0; font-size: 22px;">New Doctor Referral</h1>
+          <p style="color: #cfe0f5; margin: 6px 0 0; font-size: 13px;">${formattedTimestamp}</p>
         </div>
         <div style="padding: 24px; background: #f9fafb;">
           <p style="font-size: 16px;">A doctor has just submitted a new patient referral via InnerSpark Africa.</p>
@@ -41,6 +51,8 @@ Deno.serve(async (req) => {
           <table style="width: 100%; font-size: 14px;">
             <tr><td style="padding: 4px 0; color: #6b7280;">Name:</td><td><strong>Dr. ${payload.doctor_name}</strong></td></tr>
             <tr><td style="padding: 4px 0; color: #6b7280;">Phone:</td><td><a href="tel:${payload.doctor_phone}" style="color: #1B4D89;">${payload.doctor_phone}</a></td></tr>
+            <tr><td style="padding: 4px 0; color: #6b7280;">Email:</td><td>${payload.doctor_email ? `<a href="mailto:${payload.doctor_email}" style="color: #1B4D89;">${payload.doctor_email}</a>` : "—"}</td></tr>
+            <tr><td style="padding: 4px 0; color: #6b7280;">Submitted:</td><td>${formattedTimestamp}</td></tr>
           </table>
 
           <div style="margin-top: 24px; padding: 16px; background: white; border-left: 4px solid #1B4D89; border-radius: 4px;">
