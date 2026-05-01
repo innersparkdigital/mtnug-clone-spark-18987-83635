@@ -723,6 +723,7 @@ export type Database = {
           concern: string | null
           consent_confirmed: boolean
           created_at: string
+          doctor_email: string | null
           doctor_id: string
           doctor_name: string
           doctor_phone: string
@@ -744,6 +745,7 @@ export type Database = {
           concern?: string | null
           consent_confirmed?: boolean
           created_at?: string
+          doctor_email?: string | null
           doctor_id: string
           doctor_name: string
           doctor_phone: string
@@ -765,6 +767,7 @@ export type Database = {
           concern?: string | null
           consent_confirmed?: boolean
           created_at?: string
+          doctor_email?: string | null
           doctor_id?: string
           doctor_name?: string
           doctor_phone?: string
