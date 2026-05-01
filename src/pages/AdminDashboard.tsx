@@ -20,12 +20,13 @@ import ReferralsTab from '@/components/admin/ReferralsTab';
 import AdminUsersTab from '@/components/admin/AdminUsersTab';
 import ContentTab from '@/components/admin/ContentTab';
 import EmailLogTab from '@/components/admin/EmailLogTab';
+import CorporateBookingsTab from '@/components/admin/CorporateBookingsTab';
+import EmailSegmentsTab from '@/components/admin/EmailSegmentsTab';
 import { 
   BookOpen, 
   GraduationCap, 
   Users, 
   TrendingUp,
-  CheckCircle2,
   BarChart3,
   Loader2,
   Calendar,
@@ -38,7 +39,9 @@ import {
   Mail,
   Stethoscope,
   Shield,
-  FileText
+  FileText,
+  Building2,
+  UserCheck
 } from 'lucide-react';
 import {
   ChartContainer,
@@ -216,6 +219,18 @@ const AdminDashboard = () => {
               <TabsTrigger value="emails" className="gap-2">
                 <Mail className="h-4 w-4" />
                 Emails
+              </TabsTrigger>
+            )}
+            {isAdmin && (
+              <TabsTrigger value="corporate-bookings" className="gap-2">
+                <Building2 className="h-4 w-4" />
+                Corporate Bookings
+              </TabsTrigger>
+            )}
+            {isAdmin && (
+              <TabsTrigger value="email-segments" className="gap-2">
+                <UserCheck className="h-4 w-4" />
+                Email Segments
               </TabsTrigger>
             )}
           </TabsList>
@@ -569,6 +584,16 @@ const AdminDashboard = () => {
           {isAdmin && (
             <TabsContent value="emails">
               <EmailLogTab />
+            </TabsContent>
+          )}
+          {isAdmin && (
+            <TabsContent value="corporate-bookings">
+              <CorporateBookingsTab />
+            </TabsContent>
+          )}
+          {isAdmin && (
+            <TabsContent value="email-segments">
+              <EmailSegmentsTab />
             </TabsContent>
           )}
         </Tabs>
