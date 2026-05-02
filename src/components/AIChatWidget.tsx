@@ -49,7 +49,7 @@ const AIChatWidget = () => {
 
   const logEvent = async (event_type: string, metadata?: Record<string, unknown>) => {
     try {
-      await supabase.from("chat_events").insert({ session_id: sessionId, event_type, metadata: metadata || null });
+      await supabase.from("chat_events").insert([{ session_id: sessionId, event_type, metadata: (metadata || null) as never }]);
     } catch (e) { console.warn("event log failed", e); }
   };
 
