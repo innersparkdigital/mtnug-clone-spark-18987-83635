@@ -449,6 +449,10 @@ export type Database = {
           high_risk_triggered: boolean
           id: string
           message_count: number
+          review_notes: string | null
+          review_status: string
+          reviewed_at: string | null
+          reviewed_by: string | null
           source_path: string | null
           updated_at: string
           user_agent: string | null
@@ -460,6 +464,10 @@ export type Database = {
           high_risk_triggered?: boolean
           id?: string
           message_count?: number
+          review_notes?: string | null
+          review_status?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           source_path?: string | null
           updated_at?: string
           user_agent?: string | null
@@ -471,6 +479,10 @@ export type Database = {
           high_risk_triggered?: boolean
           id?: string
           message_count?: number
+          review_notes?: string | null
+          review_status?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           source_path?: string | null
           updated_at?: string
           user_agent?: string | null
