@@ -257,6 +257,36 @@ function detectRisk(text: string): "high" | "distress" | "none" {
   return "none";
 }
 
+// Lightweight topic tagger. Runs on every user message and merges into session.tags.
+const TOPIC_PATTERNS: Array<{ tag: string; patterns: RegExp[] }> = [
+  { tag: "anxiety", patterns: [/\banxi/i, /\bworry/i, /\bworried\b/i, /\bpanic\b/i, /\bnervous\b/i, /\boverthink/i, /\bstress(ed)?\b/i, /\bafraid\b/i, /\bfear/i] },
+  { tag: "depression", patterns: [/\bdepress/i, /\bsad\b/i, /\blow mood\b/i, /\bhopeless\b/i, /\bempty\b/i, /\bnothing matters\b/i, /\bcrying\b/i, /\bunmotivated\b/i, /\btired of life\b/i] },
+  { tag: "trauma", patterns: [/\btrauma/i, /\bptsd\b/i, /\babuse/i, /\bflashback/i, /\bnightmare/i, /\bassault/i] },
+  { tag: "relationships", patterns: [/\brelationship/i, /\bcouple/i, /\bmarriage\b/i, /\bbreakup\b/i, /\bdivorce\b/i, /\bpartner\b/i, /\bboyfriend\b/i, /\bgirlfriend\b/i, /\bhusband\b/i, /\bwife\b/i] },
+  { tag: "addiction", patterns: [/\baddict/i, /\balcohol/i, /\bdrinking\b/i, /\bdrugs?\b/i, /\bsubstance\b/i, /\bweed\b/i, /\bgambling\b/i] },
+  { tag: "sleep", patterns: [/\bsleep/i, /\binsomnia/i, /\bcan'?t sleep\b/i, /\bnightmare/i] },
+  { tag: "work_stress", patterns: [/\bwork\b/i, /\bjob\b/i, /\bboss\b/i, /\bcareer\b/i, /\bburn[\s-]?out\b/i, /\bworkplace\b/i] },
+  { tag: "booking", patterns: [/\bbook/i, /\bappointment\b/i, /\bschedule\b/i, /\bsession\b/i, /\bavailab/i, /\btherapist\b/i, /\bcounsel(l)?or\b/i, /\bspecialist\b/i] },
+  { tag: "pricing", patterns: [/\bprice\b/i, /\bcost\b/i, /\bfee\b/i, /\bhow much\b/i, /\bugx\b/i, /\busd\b/i, /\bpay/i, /\baffford/i, /\bcheap/i, /\bdiscount/i] },
+  { tag: "groups", patterns: [/\bsupport group/i, /\bgroup session\b/i, /\bgroups?\b/i] },
+  { tag: "corporate", patterns: [/\bcorporate\b/i, /\bcompany\b/i, /\bemployer\b/i, /\bemployee/i, /\bworkplace wellness\b/i, /\bb2b\b/i] },
+  { tag: "assessment", patterns: [/\bassess/i, /\bscreen/i, /\btest\b/i, /\bquiz\b/i, /\bwho-?5\b/i, /\bmind[\s-]?check\b/i, /\bwellbeing check\b/i] },
+  { tag: "complaint", patterns: [/\bcomplain/i, /\brefund\b/i, /\bnot happy\b/i, /\bbad experience\b/i, /\bdisappoint/i] },
+];
+
+function detectTopics(text: string): string[] {
+  const found = new Set<string>();
+  for (const { tag, patterns } of TOPIC_PATTERNS) {
+    if (patterns.some((p) => p.test(text))) found.add(tag);
+  }
+  return Array.from(found);
+}
+
+function mergeTags(existing: string[] | null | undefined, incoming: string[]): string[] {
+  const set = new Set<string>([...(existing || []), ...incoming]);
+  return Array.from(set).slice(0, 12);
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
@@ -315,12 +345,23 @@ Deno.serve(async (req) => {
     const lastUser = messages[messages.length - 1];
     const userText: string = lastUser?.content || "";
     const risk = detectRisk(userText);
+    const topics = detectTopics(userText);
 
     // Persist user message
     if (sid) {
       await supabase.from("chat_messages").insert({
         session_id: sid, role: "user", content: userText, flagged: risk !== "none",
       });
+      // Merge auto-tags onto the session (best-effort, non-blocking semantics).
+      if (topics.length > 0) {
+        const { data: sessRow } = await supabase
+          .from("chat_sessions")
+          .select("tags")
+          .eq("id", sid)
+          .maybeSingle();
+        const merged = mergeTags(sessRow?.tags as string[] | null, topics);
+        await supabase.from("chat_sessions").update({ tags: merged }).eq("id", sid);
+      }
       if (risk === "high") {
         await supabase.from("chat_sessions").update({
           high_risk_triggered: true, escalated: true,
