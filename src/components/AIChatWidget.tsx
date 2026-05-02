@@ -273,6 +273,20 @@ const AIChatWidget = () => {
       setShowLeadForm(false);
       trackEvent("ai_chat_lead_captured", { intent: leadIntent });
       logEvent("lead_captured", { intent: leadIntent });
+      // Notify admin via email (fire-and-forget; don't block UX on email).
+      supabase.functions.invoke("notify-chat-event", {
+        body: {
+          kind: "new_lead",
+          session_id: sessionId,
+          anonymous_id: getAnonId(),
+          source_path: window.location.pathname,
+          name: leadName.trim() || undefined,
+          phone: leadPhone.trim() || undefined,
+          email: leadEmail.trim() || undefined,
+          intent: leadIntent,
+          message: leadMsg.trim() || undefined,
+        },
+      }).catch((e) => console.warn("notify-chat-event failed:", e));
       setMessages(prev => [...prev, {
         role: "assistant",
         content: "Thanks! 💙 We've got your details and someone from InnerSpark will reach out soon. In the meantime, feel free to keep chatting or [book a session](/book-therapist).",
