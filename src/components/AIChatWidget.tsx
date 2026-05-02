@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, X, Send, Loader2, Phone, Calendar, Heart, AlertTriangle, LifeBuoy, PhoneCall } from "lucide-react";
+import { MessageCircle, X, Send, Loader2, Phone, Calendar, Heart, AlertTriangle, LifeBuoy, PhoneCall, UserPlus, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
@@ -64,6 +64,17 @@ const AIChatWidget = () => {
   const [highRisk, setHighRisk] = useState(false);
   const [crisisDismissed, setCrisisDismissed] = useState(false);
   const [distress, setDistress] = useState(false);
+  const [leadPromptShown, setLeadPromptShown] = useState(false);
+  const [leadPromptDismissed, setLeadPromptDismissed] = useState(false);
+  const [showLeadForm, setShowLeadForm] = useState(false);
+  const [leadSubmitted, setLeadSubmitted] = useState(false);
+  const [leadIntent, setLeadIntent] = useState<string>("general");
+  const [leadName, setLeadName] = useState("");
+  const [leadPhone, setLeadPhone] = useState("");
+  const [leadEmail, setLeadEmail] = useState("");
+  const [leadMsg, setLeadMsg] = useState("");
+  const [leadSubmitting, setLeadSubmitting] = useState(false);
+  const [leadError, setLeadError] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -207,6 +218,70 @@ const AIChatWidget = () => {
   const handleCTA = (cta: string, path?: string) => {
     trackEvent("ai_chat_cta_click", { cta });
     logEvent("cta_click", { cta, path });
+  };
+
+  // Detect lead intent from the latest user message and (once per session) prompt for contact details.
+  const LEAD_PATTERNS: Record<string, RegExp[]> = {
+    booking: [/\bbook\b/i, /\bappointment\b/i, /\bschedule\b/i, /\bsession\b/i, /\bavailab/i, /\btherapist\b/i],
+    pricing: [/\bprice\b/i, /\bcost\b/i, /\bhow much\b/i, /\bfee\b/i, /\bafford/i],
+    callback: [/\bcall me\b/i, /\bcontact me\b/i, /\bcall back\b/i, /\bring me\b/i],
+  };
+  const detectIntent = (text: string): string | null => {
+    for (const [intent, pats] of Object.entries(LEAD_PATTERNS)) {
+      if (pats.some(p => p.test(text))) return intent;
+    }
+    return null;
+  };
+
+  useEffect(() => {
+    if (leadPromptShown || leadPromptDismissed || leadSubmitted || highRisk) return;
+    const lastUser = [...messages].reverse().find(m => m.role === "user");
+    if (!lastUser) return;
+    const intent = detectIntent(lastUser.content);
+    if (intent || (distress && messages.filter(m => m.role === "user").length >= 2)) {
+      setLeadIntent(intent || "support");
+      setLeadPromptShown(true);
+      logEvent("lead_prompt_shown", { intent: intent || "support" });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messages, distress, highRisk]);
+
+  const submitLead = async () => {
+    setLeadError(null);
+    if (!leadPhone.trim() && !leadEmail.trim()) {
+      setLeadError("Please share a phone number or email so we can reach you.");
+      return;
+    }
+    if (leadEmail.trim() && !/^\S+@\S+\.\S+$/.test(leadEmail.trim())) {
+      setLeadError("That email doesn't look right.");
+      return;
+    }
+    setLeadSubmitting(true);
+    try {
+      const { error } = await supabase.from("chat_leads").insert({
+        session_id: sessionId,
+        anonymous_id: getAnonId(),
+        name: leadName.trim() || null,
+        phone: leadPhone.trim() || null,
+        email: leadEmail.trim() || null,
+        intent: leadIntent,
+        message: leadMsg.trim() || null,
+        source_path: window.location.pathname,
+      });
+      if (error) throw error;
+      setLeadSubmitted(true);
+      setShowLeadForm(false);
+      trackEvent("ai_chat_lead_captured", { intent: leadIntent });
+      logEvent("lead_captured", { intent: leadIntent });
+      setMessages(prev => [...prev, {
+        role: "assistant",
+        content: "Thanks! 💙 We've got your details and someone from InnerSpark will reach out soon. In the meantime, feel free to keep chatting or [book a session](/book-therapist).",
+      }]);
+    } catch (e) {
+      setLeadError(e instanceof Error ? e.message : "Couldn't send. Please try again.");
+    } finally {
+      setLeadSubmitting(false);
+    }
   };
 
   return (
