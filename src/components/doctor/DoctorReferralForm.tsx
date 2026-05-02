@@ -64,9 +64,16 @@ const DoctorReferralForm = ({ doctor, onBack, onSubmitted }: Props) => {
       };
       const { error } = await supabase.from("doctor_referrals").insert(payload);
       if (error) throw error;
-      supabase.functions.invoke("notify-doctor-referral", {
+      const { error: notificationError } = await supabase.functions.invoke("notify-doctor-referral", {
         body: { ...payload, submitted_at: new Date().toISOString() },
-      }).catch(() => null);
+      });
+      if (notificationError) {
+        console.error("Referral notification failed:", notificationError);
+        toast({
+          title: "Referral saved",
+          description: "The referral was saved, but the admin email notification could not be confirmed.",
+        });
+      }
       onSubmitted();
       navigate("/thank-you-referral");
       return;
