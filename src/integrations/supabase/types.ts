@@ -406,6 +406,68 @@ export type Database = {
           },
         ]
       }
+      chat_leads: {
+        Row: {
+          anonymous_id: string | null
+          created_at: string
+          email: string | null
+          handled_at: string | null
+          handled_by: string | null
+          id: string
+          intent: string | null
+          message: string | null
+          name: string | null
+          notes: string | null
+          phone: string | null
+          session_id: string | null
+          source_path: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          anonymous_id?: string | null
+          created_at?: string
+          email?: string | null
+          handled_at?: string | null
+          handled_by?: string | null
+          id?: string
+          intent?: string | null
+          message?: string | null
+          name?: string | null
+          notes?: string | null
+          phone?: string | null
+          session_id?: string | null
+          source_path?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          anonymous_id?: string | null
+          created_at?: string
+          email?: string | null
+          handled_at?: string | null
+          handled_by?: string | null
+          id?: string
+          intent?: string | null
+          message?: string | null
+          name?: string | null
+          notes?: string | null
+          phone?: string | null
+          session_id?: string | null
+          source_path?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_leads_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "chat_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       chat_messages: {
         Row: {
           content: string
