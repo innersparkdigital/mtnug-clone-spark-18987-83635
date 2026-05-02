@@ -28,6 +28,7 @@ interface Session {
   reviewed_at: string | null;
   created_at: string;
   updated_at: string;
+  tags: string[] | null;
 }
 
 interface Message {
@@ -200,6 +201,7 @@ const CrisisReviewQueueTab = () => {
                     <th className="text-left py-2 px-2">When</th>
                     <th className="text-left py-2 px-2">Anon ID</th>
                     <th className="text-left py-2 px-2">Source</th>
+                    <th className="text-left py-2 px-2">Topics</th>
                     <th className="text-center py-2 px-2">Msgs</th>
                     <th className="text-left py-2 px-2">Status</th>
                     <th className="text-right py-2 px-2">Actions</th>
@@ -218,6 +220,14 @@ const CrisisReviewQueueTab = () => {
                         <td className="py-2 px-2 font-mono text-xs">{s.anonymous_id?.slice(0, 8)}…</td>
                         <td className="py-2 px-2 text-xs text-muted-foreground truncate max-w-[200px]">
                           {s.source_path || "—"}
+                        </td>
+                        <td className="py-2 px-2">
+                          <div className="flex flex-wrap gap-1 max-w-[180px]">
+                            {(s.tags || []).slice(0, 4).map(t => (
+                              <Badge key={t} variant="secondary" className="text-[10px] px-1.5 py-0">{t.replace(/_/g, " ")}</Badge>
+                            ))}
+                            {(!s.tags || s.tags.length === 0) && <span className="text-xs text-muted-foreground">—</span>}
+                          </div>
                         </td>
                         <td className="py-2 px-2 text-center">{s.message_count}</td>
                         <td className="py-2 px-2">
