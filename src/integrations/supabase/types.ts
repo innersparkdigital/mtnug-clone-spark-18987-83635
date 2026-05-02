@@ -374,6 +374,109 @@ export type Database = {
         }
         Relationships: []
       }
+      chat_events: {
+        Row: {
+          created_at: string
+          event_type: string
+          id: string
+          metadata: Json | null
+          session_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_type: string
+          id?: string
+          metadata?: Json | null
+          session_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_type?: string
+          id?: string
+          metadata?: Json | null
+          session_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_events_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "chat_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chat_messages: {
+        Row: {
+          content: string
+          created_at: string
+          flagged: boolean
+          id: string
+          role: string
+          session_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          flagged?: boolean
+          id?: string
+          role: string
+          session_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          flagged?: boolean
+          id?: string
+          role?: string
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_messages_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "chat_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chat_sessions: {
+        Row: {
+          anonymous_id: string
+          created_at: string
+          escalated: boolean
+          high_risk_triggered: boolean
+          id: string
+          message_count: number
+          source_path: string | null
+          updated_at: string
+          user_agent: string | null
+        }
+        Insert: {
+          anonymous_id: string
+          created_at?: string
+          escalated?: boolean
+          high_risk_triggered?: boolean
+          id?: string
+          message_count?: number
+          source_path?: string | null
+          updated_at?: string
+          user_agent?: string | null
+        }
+        Update: {
+          anonymous_id?: string
+          created_at?: string
+          escalated?: boolean
+          high_risk_triggered?: boolean
+          id?: string
+          message_count?: number
+          source_path?: string | null
+          updated_at?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       commission_claim_items: {
         Row: {
           amount: number
