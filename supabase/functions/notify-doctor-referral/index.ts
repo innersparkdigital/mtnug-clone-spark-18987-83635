@@ -81,6 +81,13 @@ Deno.serve(async (req) => {
     });
 
     const result = await response.json();
+    if (!response.ok) {
+      console.error("Resend notification failed", response.status, result);
+      return new Response(JSON.stringify({ ok: false, error: result }), {
+        status: 502,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
     return new Response(JSON.stringify({ ok: true, result }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
