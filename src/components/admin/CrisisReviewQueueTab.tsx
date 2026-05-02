@@ -29,6 +29,8 @@ interface Session {
   created_at: string;
   updated_at: string;
   tags: string[] | null;
+  summary: string | null;
+  summary_updated_at: string | null;
 }
 
 interface Message {
@@ -55,6 +57,7 @@ const CrisisReviewQueueTab = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [draftNotes, setDraftNotes] = useState("");
   const [savingId, setSavingId] = useState<string | null>(null);
+  const [summarizingId, setSummarizingId] = useState<string | null>(null);
 
   const fetchSessions = async () => {
     setLoading(true);
@@ -101,6 +104,31 @@ const CrisisReviewQueueTab = () => {
       .eq("session_id", s.id)
       .order("created_at", { ascending: true });
     setMessages((data || []) as Message[]);
+  };
+
+  const generateSummary = async (sessionId: string) => {
+    setSummarizingId(sessionId);
+    try {
+      const { data, error } = await supabase.functions.invoke("summarize-chat-session", {
+        body: { session_id: sessionId },
+      });
+      if (error) throw error;
+      const newSummary = (data as { summary?: string })?.summary || "";
+      if (!newSummary) {
+        toast.error("No summary returned");
+        return;
+      }
+      const stamp = new Date().toISOString();
+      setSessions(prev => prev.map(s => s.id === sessionId ? { ...s, summary: newSummary, summary_updated_at: stamp } : s));
+      if (openSession?.id === sessionId) {
+        setOpenSession(prev => prev ? { ...prev, summary: newSummary, summary_updated_at: stamp } : null);
+      }
+      toast.success("Summary updated");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed to summarize");
+    } finally {
+      setSummarizingId(null);
+    }
   };
 
   const updateStatus = async (sessionId: string, newStatus: ReviewStatus, notes?: string) => {
@@ -199,8 +227,7 @@ const CrisisReviewQueueTab = () => {
                   <tr>
                     <th className="text-left py-2 px-2">#</th>
                     <th className="text-left py-2 px-2">When</th>
-                    <th className="text-left py-2 px-2">Anon ID</th>
-                    <th className="text-left py-2 px-2">Source</th>
+                    <th className="text-left py-2 px-2">Summary</th>
                     <th className="text-left py-2 px-2">Topics</th>
                     <th className="text-center py-2 px-2">Msgs</th>
                     <th className="text-left py-2 px-2">Status</th>
@@ -217,9 +244,14 @@ const CrisisReviewQueueTab = () => {
                         <td className="py-2 px-2 whitespace-nowrap">
                           {new Date(s.created_at).toLocaleString()}
                         </td>
-                        <td className="py-2 px-2 font-mono text-xs">{s.anonymous_id?.slice(0, 8)}…</td>
-                        <td className="py-2 px-2 text-xs text-muted-foreground truncate max-w-[200px]">
-                          {s.source_path || "—"}
+                        <td className="py-2 px-2 text-xs max-w-[320px]">
+                          {s.summary ? (
+                            <span className={s.summary.startsWith("[CRISIS]") ? "text-red-700 font-medium" : ""}>
+                              {s.summary}
+                            </span>
+                          ) : (
+                            <span className="text-muted-foreground italic">No summary yet</span>
+                          )}
                         </td>
                         <td className="py-2 px-2">
                           <div className="flex flex-wrap gap-1 max-w-[180px]">
@@ -236,6 +268,17 @@ const CrisisReviewQueueTab = () => {
                           </Badge>
                         </td>
                         <td className="py-2 px-2 text-right">
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            disabled={summarizingId === s.id}
+                            onClick={() => generateSummary(s.id)}
+                            title="Generate AI summary"
+                          >
+                            {summarizingId === s.id
+                              ? <Loader2 className="w-4 h-4 animate-spin" />
+                              : <Sparkles className="w-4 h-4" />}
+                          </Button>
                           <Button size="sm" variant="ghost" onClick={() => openTranscript(s)}>
                             <MessageSquare className="w-4 h-4 mr-1" /> View
                           </Button>
@@ -282,6 +325,28 @@ const CrisisReviewQueueTab = () => {
                     ))}
                   </div>
                 )}
+                <div className="pt-2 border-t mt-2 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-medium flex items-center gap-1">
+                      <Sparkles className="w-3 h-3" /> AI Summary
+                    </span>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      disabled={summarizingId === openSession.id}
+                      onClick={() => generateSummary(openSession.id)}
+                    >
+                      {summarizingId === openSession.id ? (
+                        <><Loader2 className="w-3 h-3 mr-1 animate-spin" /> Summarizing…</>
+                      ) : (
+                        <>{openSession.summary ? "Regenerate" : "Generate"}</>
+                      )}
+                    </Button>
+                  </div>
+                  <div className={`text-xs leading-relaxed ${openSession.summary?.startsWith("[CRISIS]") ? "text-red-700 font-medium" : "text-foreground"}`}>
+                    {openSession.summary || <span className="italic text-muted-foreground">No summary yet — click Generate.</span>}
+                  </div>
+                </div>
               </div>
 
               <ScrollArea className="flex-1 pr-3 my-2 max-h-[40vh]">
