@@ -369,6 +369,23 @@ Deno.serve(async (req) => {
         await supabase.from("chat_events").insert({
           session_id: sid, event_type: "high_risk_detected",
         });
+        // Fire-and-forget admin email alert (don't block the safety reply on email failure).
+        try {
+          fetch(`${Deno.env.get("SUPABASE_URL")}/functions/v1/notify-chat-event`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`,
+            },
+            body: JSON.stringify({
+              kind: "high_risk",
+              session_id: sid,
+              anonymous_id: anonymous_id,
+              source_path: source_path,
+              trigger_message: userText,
+            }),
+          }).catch((e) => console.warn("notify-chat-event failed:", e));
+        } catch (e) { console.warn("notify dispatch failed", e); }
       } else if (risk === "distress") {
         await supabase.from("chat_events").insert({
           session_id: sid, event_type: "distress_detected",
