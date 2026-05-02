@@ -38,6 +38,24 @@ TONE: Warm, hopeful, never preachy. Acknowledge feelings before guiding. Use emo
 
 Always end longer answers with a gentle CTA like: "Would you like to book a session or take the free wellbeing check?"`;
 
+const CHIPS_INSTRUCTION = `
+
+QUICK-REPLY CHIPS (IMPORTANT):
+At the END of every reply (except high-risk safety replies), append ONE line in this exact format with 2–4 contextual next-step chips:
+[chips: Label1|target1, Label2|target2, Label3|target3]
+
+- "target" is either a site path starting with / (e.g. /book-therapist) OR a follow-up user message in plain text.
+- Choose chips relevant to the user's last message. Common useful ones:
+  • Book a session|/book-therapist
+  • Free wellbeing check|/wellbeing-check
+  • Take a mind-check test|/mind-check
+  • Support groups|/support-groups
+  • For business|/for-business
+  • Pricing details|Tell me about pricing
+  • Talk on WhatsApp|https://wa.me/256792085773
+- Keep labels SHORT (max 3 words). Do NOT wrap the line in quotes or markdown.
+- Put the [chips: ...] line on its OWN line at the very end of your reply. Nothing after it.`;
+
 const HIGH_RISK_PATTERNS = [
   /\bkill\s+myself\b/i, /\bsuicid/i, /\bend\s+(my|it\s+all|my\s+life)\b/i,
   /\bhurt\s+myself\b/i, /\bself[\s-]?harm/i, /\bcut(ting)?\s+myself\b/i,
@@ -154,7 +172,7 @@ Deno.serve(async (req) => {
       body: JSON.stringify({
         model: "google/gemini-2.5-flash",
         messages: [
-          { role: "system", content: SYSTEM_PROMPT },
+          { role: "system", content: SYSTEM_PROMPT + CHIPS_INSTRUCTION },
           ...messages.slice(-12),
         ],
         stream: true,

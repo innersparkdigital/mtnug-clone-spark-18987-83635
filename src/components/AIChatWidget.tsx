@@ -8,6 +8,28 @@ import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/analytics";
 
 type Msg = { role: "user" | "assistant"; content: string; flagged?: boolean };
+type Chip = { label: string; target: string };
+
+const CHIPS_REGEX = /\[chips:\s*([^\]]+)\]\s*$/i;
+
+function parseChips(content: string): { text: string; chips: Chip[] } {
+  const match = content.match(CHIPS_REGEX);
+  if (!match) return { text: content, chips: [] };
+  const raw = match[1];
+  const chips: Chip[] = raw
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .map((piece) => {
+      const [label, target] = piece.split("|").map((p) => p?.trim());
+      if (!label || !target) return null;
+      return { label, target };
+    })
+    .filter((c): c is Chip => !!c)
+    .slice(0, 4);
+  const text = content.replace(CHIPS_REGEX, "").trim();
+  return { text, chips };
+}
 
 const QUICK_REPLIES = [
   { label: "📅 Book a session", text: "I'd like to book a therapy session" },
@@ -216,23 +238,73 @@ const AIChatWidget = () => {
 
             {/* Messages */}
             <div ref={scrollRef} className="flex-1 overflow-y-auto px-3 py-3 space-y-3 bg-muted/30">
-              {messages.map((m, i) => (
-                <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
-                  <div
-                    className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm ${
-                      m.role === "user"
-                        ? "bg-primary text-primary-foreground rounded-br-sm"
-                        : m.flagged
-                          ? "bg-red-50 border border-red-200 text-red-900 rounded-bl-sm"
-                          : "bg-background border border-border rounded-bl-sm"
-                    }`}
-                  >
-                    <div className="prose prose-sm max-w-none prose-p:my-1 prose-a:text-primary">
-                      <ReactMarkdown>{m.content}</ReactMarkdown>
+              {messages.map((m, i) => {
+                const isLast = i === messages.length - 1;
+                const { text, chips } = m.role === "assistant"
+                  ? parseChips(m.content)
+                  : { text: m.content, chips: [] as Chip[] };
+                const showChips = m.role === "assistant" && isLast && !loading && chips.length > 0;
+                return (
+                  <div key={i} className={`flex flex-col ${m.role === "user" ? "items-end" : "items-start"}`}>
+                    <div
+                      className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm ${
+                        m.role === "user"
+                          ? "bg-primary text-primary-foreground rounded-br-sm"
+                          : m.flagged
+                            ? "bg-red-50 border border-red-200 text-red-900 rounded-bl-sm"
+                            : "bg-background border border-border rounded-bl-sm"
+                      }`}
+                    >
+                      <div className="prose prose-sm max-w-none prose-p:my-1 prose-a:text-primary">
+                        <ReactMarkdown>{text}</ReactMarkdown>
+                      </div>
                     </div>
+                    {showChips && (
+                      <div className="mt-2 flex flex-wrap gap-1.5 max-w-[85%]">
+                        {chips.map((c, idx) => {
+                          const isUrl = c.target.startsWith("http");
+                          const isPath = c.target.startsWith("/");
+                          if (isUrl) {
+                            return (
+                              <a
+                                key={idx}
+                                href={c.target}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={() => handleCTA("inline_chip_url", c.target)}
+                                className="text-xs px-2.5 py-1.5 bg-primary/10 hover:bg-primary hover:text-primary-foreground text-primary border border-primary/30 rounded-full transition-colors"
+                              >
+                                {c.label}
+                              </a>
+                            );
+                          }
+                          if (isPath) {
+                            return (
+                              <Link
+                                key={idx}
+                                to={c.target}
+                                onClick={() => { handleCTA("inline_chip_path", c.target); setOpen(false); }}
+                                className="text-xs px-2.5 py-1.5 bg-primary/10 hover:bg-primary hover:text-primary-foreground text-primary border border-primary/30 rounded-full transition-colors"
+                              >
+                                {c.label}
+                              </Link>
+                            );
+                          }
+                          return (
+                            <button
+                              key={idx}
+                              onClick={() => { handleCTA("inline_chip_followup", c.label); sendMessage(c.target); }}
+                              className="text-xs px-2.5 py-1.5 bg-primary/10 hover:bg-primary hover:text-primary-foreground text-primary border border-primary/30 rounded-full transition-colors"
+                            >
+                              {c.label}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
                   </div>
-                </div>
-              ))}
+                );
+              })}
               {loading && messages[messages.length - 1]?.role !== "assistant" && (
                 <div className="flex justify-start">
                   <div className="bg-background border border-border rounded-2xl rounded-bl-sm px-3 py-2">
