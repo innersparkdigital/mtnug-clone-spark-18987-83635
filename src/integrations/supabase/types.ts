@@ -454,6 +454,8 @@ export type Database = {
           reviewed_at: string | null
           reviewed_by: string | null
           source_path: string | null
+          summary: string | null
+          summary_updated_at: string | null
           tags: string[] | null
           updated_at: string
           user_agent: string | null
@@ -470,6 +472,8 @@ export type Database = {
           reviewed_at?: string | null
           reviewed_by?: string | null
           source_path?: string | null
+          summary?: string | null
+          summary_updated_at?: string | null
           tags?: string[] | null
           updated_at?: string
           user_agent?: string | null
@@ -486,6 +490,8 @@ export type Database = {
           reviewed_at?: string | null
           reviewed_by?: string | null
           source_path?: string | null
+          summary?: string | null
+          summary_updated_at?: string | null
           tags?: string[] | null
           updated_at?: string
           user_agent?: string | null
