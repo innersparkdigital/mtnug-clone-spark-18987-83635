@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, X, Send, Loader2, Phone, Calendar, Heart, AlertTriangle } from "lucide-react";
+import { MessageCircle, X, Send, Loader2, Phone, Calendar, Heart, AlertTriangle, LifeBuoy, PhoneCall } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
@@ -62,6 +62,7 @@ const AIChatWidget = () => {
   const [loading, setLoading] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [highRisk, setHighRisk] = useState(false);
+  const [crisisDismissed, setCrisisDismissed] = useState(false);
   const [distress, setDistress] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -237,6 +238,80 @@ const AIChatWidget = () => {
             transition={{ duration: 0.2 }}
             className="fixed bottom-4 right-4 left-4 sm:left-auto sm:bottom-6 sm:right-6 z-50 sm:w-[380px] h-[80vh] sm:h-[600px] max-h-[calc(100vh-2rem)] bg-background border border-border rounded-2xl shadow-2xl flex flex-col overflow-hidden"
           >
+            {/* CRISIS OVERLAY — full takeover when high-risk detected */}
+            {highRisk && !crisisDismissed ? (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="flex-1 flex flex-col bg-gradient-to-b from-red-50 to-background"
+              >
+                <div className="flex items-center justify-between px-4 py-3 bg-red-600 text-white">
+                  <div className="flex items-center gap-2">
+                    <LifeBuoy className="w-5 h-5" />
+                    <div className="font-bold text-sm">You're not alone</div>
+                  </div>
+                  <button onClick={() => setOpen(false)} aria-label="Close" className="p-1 hover:bg-white/10 rounded">
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+
+                <div className="flex-1 overflow-y-auto px-5 py-5 space-y-4">
+                  <div className="text-center">
+                    <div className="w-14 h-14 mx-auto rounded-full bg-red-100 flex items-center justify-center mb-2">
+                      <Heart className="w-7 h-7 text-red-600" />
+                    </div>
+                    <h3 className="text-lg font-bold text-red-900">We hear you. Please reach out now.</h3>
+                    <p className="text-sm text-red-900/80 mt-1">
+                      What you're feeling is real, and help is just one tap away. Talk to a real person — right now.
+                    </p>
+                  </div>
+
+                  <a
+                    href="https://wa.me/256792085773?text=Hi%2C%20I%20need%20to%20talk%20to%20someone%20at%20InnerSpark%20urgently"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => handleCTA("crisis_whatsapp")}
+                    className="flex items-center justify-center gap-2 w-full bg-[#25D366] hover:bg-[#1fb558] text-white font-bold py-4 rounded-xl shadow-lg text-base"
+                  >
+                    <Phone className="w-5 h-5" /> WhatsApp InnerSpark Now
+                  </a>
+
+                  <a
+                    href="tel:0800212121"
+                    onClick={() => handleCTA("crisis_helpline")}
+                    className="flex items-center justify-center gap-2 w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 rounded-xl shadow-lg text-base"
+                  >
+                    <PhoneCall className="w-5 h-5" /> Call Butabika Helpline
+                    <span className="text-xs font-normal opacity-90">(0800-21-21-21)</span>
+                  </a>
+
+                  <Link
+                    to="/book-therapist"
+                    onClick={() => { handleCTA("crisis_book"); setOpen(false); }}
+                    className="flex items-center justify-center gap-2 w-full bg-primary hover:opacity-90 text-primary-foreground font-bold py-4 rounded-xl shadow-lg text-base"
+                  >
+                    <Calendar className="w-5 h-5" /> Book a Therapist Today
+                  </Link>
+
+                  <div className="bg-white/70 border border-red-200 rounded-xl p-3 text-xs text-red-900 leading-relaxed">
+                    <div className="font-semibold mb-1">While you wait — try this 60-second breath:</div>
+                    Breathe in slowly through your nose for 4 seconds. Hold for 4. Breathe out through your mouth for 6. Repeat 4 times. You are safe in this moment. 💙
+                  </div>
+
+                  <p className="text-[11px] text-center text-red-900/70">
+                    If you are in immediate danger, please call your local emergency services right away.
+                  </p>
+
+                  <button
+                    onClick={() => setCrisisDismissed(true)}
+                    className="block mx-auto text-xs text-muted-foreground underline hover:text-foreground pt-2"
+                  >
+                    Continue chatting instead
+                  </button>
+                </div>
+              </motion.div>
+            ) : (
+              <>
             {/* Header */}
             <div className="flex items-center justify-between px-4 py-3 bg-primary text-primary-foreground">
               <div className="flex items-center gap-2">
