@@ -56,6 +56,145 @@ At the END of every reply (except high-risk safety replies), append ONE line in 
 - Keep labels SHORT (max 3 words). Do NOT wrap the line in quotes or markdown.
 - Put the [chips: ...] line on its OWN line at the very end of your reply. Nothing after it.`;
 
+const TOOLS_INSTRUCTION = `
+
+TOOLS YOU CAN CALL:
+You have access to live tools. Use them when they help answer the user accurately. Do NOT make up therapist names, prices, or availability — call a tool instead.
+
+- list_specialists(specialty?, language?): Returns up to 5 active therapists. Use when the user asks "who are your therapists", asks for someone with a specific focus (anxiety, trauma, couples, etc.) or language (Luganda, Swahili, English).
+- check_availability(specialist_name?): Returns the weekly availability for a therapist (or the next available therapists if no name given). Use when the user asks "when is X available" or "do you have anyone today".
+- get_pricing(): Returns current prices for therapy, groups, and wellbeing checks. Use if pricing is uncertain or the user asks for the latest prices.
+
+After a tool returns, briefly summarize the result to the user in plain language (do not dump JSON), and ALWAYS end with the [chips: ...] line.`;
+
+const TOOLS = [
+  {
+    type: "function",
+    function: {
+      name: "list_specialists",
+      description: "List active InnerSpark therapists, optionally filtered by specialty or language.",
+      parameters: {
+        type: "object",
+        properties: {
+          specialty: { type: "string", description: "Optional: e.g. anxiety, depression, trauma, couples, addiction" },
+          language: { type: "string", description: "Optional: e.g. English, Luganda, Swahili" },
+        },
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "check_availability",
+      description: "Get weekly availability for a named therapist, or the soonest available therapists.",
+      parameters: {
+        type: "object",
+        properties: {
+          specialist_name: { type: "string", description: "Optional therapist name (partial match allowed)." },
+        },
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "get_pricing",
+      description: "Return InnerSpark current pricing for therapy, support groups, and wellbeing checks.",
+      parameters: { type: "object", properties: {} },
+    },
+  },
+];
+
+const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+async function executeTool(
+  supabase: ReturnType<typeof createClient>,
+  name: string,
+  args: Record<string, unknown>,
+): Promise<unknown> {
+  try {
+    if (name === "get_pricing") {
+      return {
+        therapy_session: { ugx: 75000, usd: 22, duration_minutes: 60, includes: "video / chat / phone" },
+        support_group: { ugx: 25000, usd: 7 },
+        wellbeing_check: { price: "Free", duration_minutes: 2, url: "/wellbeing-check" },
+        mind_check_tests: { price: "Free", count: 37, url: "/mind-check" },
+        currency_note: "USD shown is approximate at 3,400 UGX/USD.",
+      };
+    }
+
+    if (name === "list_specialists") {
+      const specialty = (args.specialty as string | undefined)?.toLowerCase().trim();
+      const language = (args.language as string | undefined)?.toLowerCase().trim();
+      let q = supabase.from("specialists").select("name, type, experience_years, specialties, languages, price_per_hour, available_options, bio").eq("is_active", true).limit(5);
+      const { data, error } = await q;
+      if (error) return { error: error.message };
+      let rows = (data || []) as Array<Record<string, unknown>>;
+      if (specialty) rows = rows.filter(r => (r.specialties as string[] | null)?.some(s => s.toLowerCase().includes(specialty)));
+      if (language) rows = rows.filter(r => (r.languages as string[] | null)?.some(l => l.toLowerCase().includes(language)));
+      return {
+        count: rows.length,
+        specialists: rows.slice(0, 5).map(r => ({
+          name: r.name,
+          title: r.type,
+          experience_years: r.experience_years,
+          specialties: r.specialties,
+          languages: r.languages,
+          modes: r.available_options,
+          price_ugx: r.price_per_hour,
+          short_bio: typeof r.bio === "string" ? (r.bio as string).slice(0, 160) : null,
+        })),
+      };
+    }
+
+    if (name === "check_availability") {
+      const nameQ = (args.specialist_name as string | undefined)?.trim();
+      let specialistsQ = supabase.from("specialists").select("id, name, type").eq("is_active", true);
+      if (nameQ) specialistsQ = specialistsQ.ilike("name", `%${nameQ}%`);
+      const { data: specs, error: e1 } = await specialistsQ.limit(5);
+      if (e1) return { error: e1.message };
+      if (!specs || specs.length === 0) return { found: false, message: "No matching therapist found." };
+
+      const ids = specs.map((s: { id: string }) => s.id);
+      const { data: avail } = await supabase
+        .from("specialist_availability")
+        .select("specialist_id, day_of_week, start_time, end_time")
+        .in("specialist_id", ids)
+        .eq("is_available", true);
+
+      const byId: Record<string, Array<{ day: string; start: string; end: string }>> = {};
+      for (const a of (avail || []) as Array<{ specialist_id: string; day_of_week: number; start_time: string; end_time: string }>) {
+        if (!byId[a.specialist_id]) byId[a.specialist_id] = [];
+        byId[a.specialist_id].push({
+          day: DAY_NAMES[a.day_of_week] || `Day ${a.day_of_week}`,
+          start: a.start_time?.slice(0, 5),
+          end: a.end_time?.slice(0, 5),
+        });
+      }
+      return {
+        results: (specs as Array<{ id: string; name: string; type: string }>).map(s => ({
+          name: s.name,
+          title: s.type,
+          weekly_availability: byId[s.id] || [],
+        })),
+        booking_url: "/book-therapist",
+      };
+    }
+
+    return { error: `Unknown tool: ${name}` };
+  } catch (e) {
+    return { error: e instanceof Error ? e.message : "Tool execution failed" };
+  }
+}
+
+async function callGateway(apiKey: string, body: unknown) {
+  return await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+}
+
 const HIGH_RISK_PATTERNS = [
   /\bkill\s+myself\b/i, /\bsuicid/i, /\bend\s+(my|it\s+all|my\s+life)\b/i,
   /\bhurt\s+myself\b/i, /\bself[\s-]?harm/i, /\bcut(ting)?\s+myself\b/i,
@@ -162,21 +301,75 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Call Lovable AI Gateway (non-streaming for simplicity + reliability)
-    const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
-        messages: [
-          { role: "system", content: SYSTEM_PROMPT + CHIPS_INSTRUCTION },
-          ...messages.slice(-12),
-        ],
-        stream: true,
-      }),
+    // Build conversation. We may run a non-streaming tool round first if the model decides to call tools.
+    const baseMessages: Array<Record<string, unknown>> = [
+      { role: "system", content: SYSTEM_PROMPT + CHIPS_INSTRUCTION + TOOLS_INSTRUCTION },
+      ...messages.slice(-12),
+    ];
+
+    // Step 1: ask model (non-streaming) whether it wants to call a tool.
+    const toolDecisionResp = await callGateway(LOVABLE_API_KEY, {
+      model: "google/gemini-2.5-flash",
+      messages: baseMessages,
+      tools: TOOLS,
+      tool_choice: "auto",
+    });
+
+    if (!toolDecisionResp.ok) {
+      const txt = await toolDecisionResp.text();
+      console.error("AI gateway tool-decision error", toolDecisionResp.status, txt);
+      if (toolDecisionResp.status === 429) {
+        return new Response(JSON.stringify({ error: "Too many requests. Please try again in a moment." }), {
+          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      if (toolDecisionResp.status === 402) {
+        return new Response(JSON.stringify({ error: "AI credits exhausted. Please contact support." }), {
+          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      throw new Error(`AI gateway ${toolDecisionResp.status}`);
+    }
+
+    const decisionJson = await toolDecisionResp.json();
+    const choiceMsg = decisionJson?.choices?.[0]?.message;
+    const toolCalls = choiceMsg?.tool_calls as Array<{ id: string; function: { name: string; arguments: string } }> | undefined;
+
+    let conversation = baseMessages;
+    let usedTools: string[] = [];
+
+    if (toolCalls && toolCalls.length > 0) {
+      // Execute every tool call
+      const toolResults: Array<Record<string, unknown>> = [];
+      for (const tc of toolCalls) {
+        let parsedArgs: Record<string, unknown> = {};
+        try { parsedArgs = JSON.parse(tc.function.arguments || "{}"); } catch (_e) { /* ignore */ }
+        const result = await executeTool(supabase, tc.function.name, parsedArgs);
+        usedTools.push(tc.function.name);
+        toolResults.push({
+          role: "tool",
+          tool_call_id: tc.id,
+          name: tc.function.name,
+          content: JSON.stringify(result),
+        });
+        if (sid) {
+          await supabase.from("chat_events").insert({
+            session_id: sid, event_type: "tool_called", metadata: { name: tc.function.name, args: parsedArgs } as never,
+          });
+        }
+      }
+      conversation = [
+        ...baseMessages,
+        { role: "assistant", content: choiceMsg.content || "", tool_calls: toolCalls },
+        ...toolResults,
+      ];
+    }
+
+    // Step 2: stream the final reply (with tool results in context if applicable).
+    const aiResp = await callGateway(LOVABLE_API_KEY, {
+      model: "google/gemini-2.5-flash",
+      messages: conversation,
+      stream: true,
     });
 
     if (!aiResp.ok) {
@@ -204,7 +397,7 @@ Deno.serve(async (req) => {
       async start(controller) {
         // Send session metadata first
         controller.enqueue(encoder.encode(
-          `data: ${JSON.stringify({ type: "meta", session_id: sid, distress: risk === "distress" })}\n\n`
+          `data: ${JSON.stringify({ type: "meta", session_id: sid, distress: risk === "distress", tools_used: usedTools })}\n\n`
         ));
 
         const reader = aiResp.body!.getReader();
