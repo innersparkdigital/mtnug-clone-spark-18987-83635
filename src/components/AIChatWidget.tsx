@@ -62,27 +62,91 @@ const AIChatWidget = () => {
     setInput("");
     setLoading(true);
 
+    // Add placeholder assistant message we'll stream into
+    setMessages(prev => [...prev, { role: "assistant", content: "" }]);
+
     try {
-      const { data, error } = await supabase.functions.invoke("ai-chat", {
-        body: {
-          messages: newMessages.filter(m => m.role !== "assistant" || m !== WELCOME).map(m => ({ role: m.role, content: m.content })),
+      const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-chat`;
+      const resp = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        },
+        body: JSON.stringify({
+          messages: newMessages
+            .filter(m => !(m.role === "assistant" && m === WELCOME))
+            .map(m => ({ role: m.role, content: m.content })),
           session_id: sessionId,
           anonymous_id: getAnonId(),
           source_path: window.location.pathname,
-        },
+        }),
       });
-      if (error) throw error;
-      if (data?.session_id && !sessionId) setSessionId(data.session_id);
-      if (data?.high_risk) {
-        setHighRisk(true);
-        setMessages(prev => [...prev, { role: "assistant", content: data.reply, flagged: true }]);
-      } else {
-        if (data?.distress) setDistress(true);
-        setMessages(prev => [...prev, { role: "assistant", content: data?.reply || "Sorry, please try again." }]);
+
+      if (!resp.ok || !resp.body) {
+        const errText = await resp.text().catch(() => "");
+        throw new Error(errText || `HTTP ${resp.status}`);
+      }
+
+      const reader = resp.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      let isHighRisk = false;
+      let accumulated = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n\n");
+        buffer = lines.pop() || "";
+        for (const line of lines) {
+          const trimmedLine = line.trim();
+          if (!trimmedLine.startsWith("data:")) continue;
+          const payload = trimmedLine.slice(5).trim();
+          if (!payload) continue;
+          try {
+            const evt = JSON.parse(payload);
+            if (evt.type === "meta") {
+              if (evt.session_id && !sessionId) setSessionId(evt.session_id);
+              if (evt.high_risk) { isHighRisk = true; setHighRisk(true); }
+              if (evt.distress) setDistress(true);
+            } else if (evt.type === "delta" && evt.content) {
+              accumulated += evt.content;
+              setMessages(prev => {
+                const copy = [...prev];
+                const last = copy[copy.length - 1];
+                if (last && last.role === "assistant") {
+                  copy[copy.length - 1] = { ...last, content: accumulated, flagged: isHighRisk };
+                }
+                return copy;
+              });
+            }
+          } catch (_e) { /* ignore */ }
+        }
+      }
+
+      if (!accumulated) {
+        setMessages(prev => {
+          const copy = [...prev];
+          copy[copy.length - 1] = { role: "assistant", content: "Sorry, please try again." };
+          return copy;
+        });
       }
     } catch (e) {
       console.error(e);
-      setMessages(prev => [...prev, { role: "assistant", content: "I'm having trouble right now. Please try WhatsApp +256 792 085 773 or [book a session](/book-therapist)." }]);
+      setMessages(prev => {
+        const copy = [...prev];
+        const last = copy[copy.length - 1];
+        const fallback = "I'm having trouble right now. Please try WhatsApp +256 792 085 773 or [book a session](/book-therapist).";
+        if (last && last.role === "assistant" && !last.content) {
+          copy[copy.length - 1] = { role: "assistant", content: fallback };
+        } else {
+          copy.push({ role: "assistant", content: fallback });
+        }
+        return copy;
+      });
     } finally {
       setLoading(false);
     }
