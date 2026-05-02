@@ -139,6 +139,7 @@ Deno.serve(async (req) => {
           { role: "system", content: SYSTEM_PROMPT },
           ...messages.slice(-12),
         ],
+        stream: true,
       }),
     });
 
@@ -158,23 +159,77 @@ Deno.serve(async (req) => {
       throw new Error(`AI gateway ${aiResp.status}`);
     }
 
-    const data = await aiResp.json();
-    const reply: string = data?.choices?.[0]?.message?.content || "I'm sorry, I couldn't generate a response. Please try again.";
+    // Stream tokens back to the client as SSE
+    const encoder = new TextEncoder();
+    const decoder = new TextDecoder();
+    let fullReply = "";
 
-    if (sid) {
-      await supabase.from("chat_messages").insert({
-        session_id: sid, role: "assistant", content: reply,
-      });
-      await supabase.rpc; // no-op
-      // bump message_count
-      await supabase.from("chat_sessions").update({
-        message_count: (messages.length + 1),
-      }).eq("id", sid);
-    }
+    const stream = new ReadableStream({
+      async start(controller) {
+        // Send session metadata first
+        controller.enqueue(encoder.encode(
+          `data: ${JSON.stringify({ type: "meta", session_id: sid, distress: risk === "distress" })}\n\n`
+        ));
 
-    return new Response(JSON.stringify({
-      session_id: sid, reply, distress: risk === "distress",
-    }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        const reader = aiResp.body!.getReader();
+        let buffer = "";
+        try {
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split("\n");
+            buffer = lines.pop() || "";
+            for (const line of lines) {
+              const trimmed = line.trim();
+              if (!trimmed.startsWith("data:")) continue;
+              const payload = trimmed.slice(5).trim();
+              if (payload === "[DONE]") continue;
+              try {
+                const json = JSON.parse(payload);
+                const delta: string = json?.choices?.[0]?.delta?.content || "";
+                if (delta) {
+                  fullReply += delta;
+                  controller.enqueue(encoder.encode(
+                    `data: ${JSON.stringify({ type: "delta", content: delta })}\n\n`
+                  ));
+                }
+              } catch (_e) {
+                // ignore malformed chunk
+              }
+            }
+          }
+        } catch (e) {
+          console.error("stream error", e);
+        }
+
+        // Persist assistant reply + bump session count
+        if (sid && fullReply) {
+          try {
+            await supabase.from("chat_messages").insert({
+              session_id: sid, role: "assistant", content: fullReply,
+            });
+            await supabase.from("chat_sessions").update({
+              message_count: messages.length + 1, updated_at: new Date().toISOString(),
+            }).eq("id", sid);
+          } catch (e) {
+            console.error("persist reply failed", e);
+          }
+        }
+
+        controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: "done" })}\n\n`));
+        controller.close();
+      },
+    });
+
+    return new Response(stream, {
+      headers: {
+        ...corsHeaders,
+        "Content-Type": "text/event-stream",
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
+      },
+    });
 
   } catch (e) {
     console.error("ai-chat error", e);
