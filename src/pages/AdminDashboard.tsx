@@ -24,6 +24,7 @@ import CorporateBookingsTab from '@/components/admin/CorporateBookingsTab';
 import EmailSegmentsTab from '@/components/admin/EmailSegmentsTab';
 import ChatAnalyticsTab from '@/components/admin/ChatAnalyticsTab';
 import CrisisReviewQueueTab from '@/components/admin/CrisisReviewQueueTab';
+import ChatLeadsTab from '@/components/admin/ChatLeadsTab';
 import { 
   BookOpen, 
   GraduationCap, 
