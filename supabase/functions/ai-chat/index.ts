@@ -121,9 +121,27 @@ Deno.serve(async (req) => {
           session_id: sid, role: "assistant", content: safetyReply, flagged: true,
         });
       }
-      return new Response(JSON.stringify({
-        session_id: sid, reply: safetyReply, high_risk: true,
-      }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      const enc = new TextEncoder();
+      const safetyStream = new ReadableStream({
+        start(controller) {
+          controller.enqueue(enc.encode(
+            `data: ${JSON.stringify({ type: "meta", session_id: sid, high_risk: true })}\n\n`
+          ));
+          controller.enqueue(enc.encode(
+            `data: ${JSON.stringify({ type: "delta", content: safetyReply })}\n\n`
+          ));
+          controller.enqueue(enc.encode(`data: ${JSON.stringify({ type: "done" })}\n\n`));
+          controller.close();
+        },
+      });
+      return new Response(safetyStream, {
+        headers: {
+          ...corsHeaders,
+          "Content-Type": "text/event-stream",
+          "Cache-Control": "no-cache",
+          "Connection": "keep-alive",
+        },
+      });
     }
 
     // Call Lovable AI Gateway (non-streaming for simplicity + reliability)
