@@ -91,6 +91,7 @@ import Specialists from "./pages/Specialists";
 import SpecialistProfile from "./pages/SpecialistProfile";
 import ScrollToTop from "./components/ScrollToTop";
 import FloatingWhatsApp from "./components/FloatingWhatsApp";
+import AIChatWidget from "./components/AIChatWidget";
 import Learning from "./pages/Learning";
 import CourseDetail from "./pages/CourseDetail";
 import LessonViewer from "./pages/LessonViewer";
