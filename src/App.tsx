@@ -149,7 +149,7 @@ const App = () => (
             <Sonner />
             <BrowserRouter>
               <ScrollToTop />
-              <FloatingWhatsApp />
+              <AIChatWidget />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
