@@ -62,12 +62,31 @@ const DoctorReferralForm = ({ doctor, onBack, onSubmitted }: Props) => {
         preferred_mode: preferredMode,
         consent_confirmed: consent,
       };
-      const { error } = await supabase.from("doctor_referrals").insert(payload);
+      const { data: insertedReferral, error } = await supabase
+        .from("doctor_referrals")
+        .insert(payload)
+        .select("id")
+        .single();
       if (error) throw error;
-      const { error: notificationError } = await supabase.functions.invoke("notify-doctor-referral", {
-        body: { ...payload, submitted_at: new Date().toISOString() },
-      });
-      if (notificationError) {
+
+      try {
+        const { data: sessionData } = await supabase.auth.getSession();
+        const accessToken = sessionData.session?.access_token || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+        const notificationResponse = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/notify-doctor-referral`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+            apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+          },
+          body: JSON.stringify({ ...payload, referral_id: insertedReferral?.id, submitted_at: new Date().toISOString() }),
+        });
+
+        if (!notificationResponse.ok) {
+          const details = await notificationResponse.json().catch(() => ({}));
+          throw new Error(details?.error ? JSON.stringify(details.error) : `Notification failed (${notificationResponse.status})`);
+        }
+      } catch (notificationError) {
         console.error("Referral notification failed:", notificationError);
         toast({
           title: "Referral saved",
