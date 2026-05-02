@@ -118,6 +118,39 @@ const TOOLS = [
 
 const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
+// In-memory rate limiter (per edge instance). Caps per anon-id and per IP.
+const RATE_LIMITS = {
+  perMinute: 10,   // max messages per minute per identifier
+  perHour: 60,     // max messages per hour per identifier
+};
+const rateBuckets = new Map<string, number[]>(); // key -> array of timestamps (ms)
+
+function checkRate(key: string): { allowed: boolean; retryAfterSec: number; reason?: string } {
+  const now = Date.now();
+  const minuteAgo = now - 60_000;
+  const hourAgo = now - 3_600_000;
+  const arr = (rateBuckets.get(key) || []).filter(t => t > hourAgo);
+  const lastMinute = arr.filter(t => t > minuteAgo).length;
+  if (lastMinute >= RATE_LIMITS.perMinute) {
+    return { allowed: false, retryAfterSec: 60, reason: "minute" };
+  }
+  if (arr.length >= RATE_LIMITS.perHour) {
+    const oldest = arr[0];
+    return { allowed: false, retryAfterSec: Math.ceil((oldest + 3_600_000 - now) / 1000), reason: "hour" };
+  }
+  arr.push(now);
+  rateBuckets.set(key, arr);
+  // Opportunistic cleanup
+  if (rateBuckets.size > 5000) {
+    for (const [k, v] of rateBuckets) {
+      const fresh = v.filter(t => t > hourAgo);
+      if (fresh.length === 0) rateBuckets.delete(k);
+      else rateBuckets.set(k, fresh);
+    }
+  }
+  return { allowed: true, retryAfterSec: 0 };
+}
+
 async function executeTool(
   supabase: ReturnType<typeof createClient>,
   name: string,
@@ -235,6 +268,27 @@ Deno.serve(async (req) => {
     if (!Array.isArray(messages) || messages.length === 0) {
       return new Response(JSON.stringify({ error: "messages required" }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Rate limiting: check anon-id AND IP independently. Either tripping blocks the request.
+    const ip = (req.headers.get("x-forwarded-for") || "").split(",")[0].trim() || "unknown";
+    const anonKey = `anon:${anonymous_id || "none"}`;
+    const ipKey = `ip:${ip}`;
+    const anonCheck = checkRate(anonKey);
+    const ipCheck = checkRate(ipKey);
+    if (!anonCheck.allowed || !ipCheck.allowed) {
+      const worst = !anonCheck.allowed ? anonCheck : ipCheck;
+      const friendly = worst.reason === "minute"
+        ? "You're sending messages a bit too fast. Please wait a minute and try again."
+        : "You've reached the hourly chat limit. Please try again later, or tap WhatsApp to talk to a real person.";
+      return new Response(JSON.stringify({ error: friendly, retry_after: worst.retryAfterSec }), {
+        status: 429,
+        headers: {
+          ...corsHeaders,
+          "Content-Type": "application/json",
+          "Retry-After": String(worst.retryAfterSec),
+        },
       });
     }
 

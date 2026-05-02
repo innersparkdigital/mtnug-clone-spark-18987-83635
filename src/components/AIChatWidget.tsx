@@ -108,6 +108,17 @@ const AIChatWidget = () => {
 
       if (!resp.ok || !resp.body) {
         const errText = await resp.text().catch(() => "");
+        if (resp.status === 429) {
+          let friendly = "You're sending messages a bit too fast. Please wait a moment.";
+          try { const j = JSON.parse(errText); if (j?.error) friendly = j.error; } catch { /* ignore */ }
+          setMessages(prev => {
+            const copy = [...prev];
+            copy[copy.length - 1] = { role: "assistant", content: `⏱️ ${friendly}` };
+            return copy;
+          });
+          setLoading(false);
+          return;
+        }
         throw new Error(errText || `HTTP ${resp.status}`);
       }
 
