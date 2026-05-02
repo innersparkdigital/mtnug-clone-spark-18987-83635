@@ -283,7 +283,7 @@ Deno.serve(async (req) => {
 
     // High-risk: bypass model with fixed safety reply
     if (risk === "high") {
-      const safetyReply = "I'm really concerned about what you're sharing, and I want you to be safe. Please reach out to someone right now — you don't have to go through this alone. Tap the WhatsApp button below to talk to a real person at InnerSpark immediately, or call the Uganda Mental Health helpline at **0800-21-21-21** (Butabika). If you are in immediate danger, please contact emergency services.";
+      const safetyReply = "I'm really concerned about what you're sharing, and I want you to be safe. Please reach out to someone right now — you don't have to go through this alone. Tap the WhatsApp button below to talk to a real person at InnerSpark immediately, or call the Uganda Mental Health helpline at **0800-21-21-21** (Butabika). If you are in immediate danger, please contact emergency services.\n\n*Luganda:* Nkweraliikiriddeko nnyo. Nkusaba okoze ku WhatsApp wammanga oba okukubira essimu ku **0800-21-21-21**.\n\n*Swahili:* Nina wasiwasi sana kuhusu unachoshiriki. Tafadhali bonyeza WhatsApp hapa chini au piga simu **0800-21-21-21**.";
       if (sid) {
         await supabase.from("chat_messages").insert({
           session_id: sid, role: "assistant", content: safetyReply, flagged: true,
