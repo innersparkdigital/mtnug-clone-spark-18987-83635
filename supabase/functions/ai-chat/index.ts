@@ -56,6 +56,17 @@ At the END of every reply (except high-risk safety replies), append ONE line in 
 - Keep labels SHORT (max 3 words). Do NOT wrap the line in quotes or markdown.
 - Put the [chips: ...] line on its OWN line at the very end of your reply. Nothing after it.`;
 
+const LANGUAGE_INSTRUCTION = `
+
+LANGUAGE MATCHING (IMPORTANT):
+- Auto-detect the language of the user's most recent message.
+- If they write in Luganda, reply in Luganda. If Swahili, reply in Swahili. If Pidgin/Sheng, reply in that style. Default to English.
+- Translate the chip LABELS into the same language too (keep targets/paths in English, e.g. /book-therapist).
+- Common Luganda cues: "oli otya", "nina", "njagala", "weebale", "nkwagala", "sirina", "nfuna", "obulamu", "okuwulira", "omutwe".
+- Common Swahili cues: "habari", "asante", "nataka", "ninahitaji", "msaada", "afya ya akili", "pole", "ndugu", "sijisikii".
+- Keep clinical safety wording accurate. If unsure of a clinical term, keep it in English in parentheses.
+- Always keep the [chips: ...] format on the last line.`;
+
 const TOOLS_INSTRUCTION = `
 
 TOOLS YOU CAN CALL:
@@ -303,7 +314,7 @@ Deno.serve(async (req) => {
 
     // Build conversation. We may run a non-streaming tool round first if the model decides to call tools.
     const baseMessages: Array<Record<string, unknown>> = [
-      { role: "system", content: SYSTEM_PROMPT + CHIPS_INSTRUCTION + TOOLS_INSTRUCTION },
+      { role: "system", content: SYSTEM_PROMPT + CHIPS_INSTRUCTION + TOOLS_INSTRUCTION + LANGUAGE_INSTRUCTION },
       ...messages.slice(-12),
     ];
 
