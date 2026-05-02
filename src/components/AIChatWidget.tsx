@@ -552,6 +552,101 @@ const AIChatWidget = () => {
               </Link>
             </div>
 
+            {/* Lead capture prompt / form */}
+            {leadPromptShown && !leadPromptDismissed && !leadSubmitted && !showLeadForm && (
+              <div className="px-3 py-2 border-t border-border bg-primary/5 flex items-center gap-2">
+                <UserPlus className="w-4 h-4 text-primary flex-shrink-0" />
+                <div className="text-xs flex-1 leading-snug">
+                  Want a real person from InnerSpark to follow up with you?
+                </div>
+                <button
+                  onClick={() => { setShowLeadForm(true); logEvent("lead_form_opened"); }}
+                  className="text-xs font-bold px-2.5 py-1 bg-primary text-primary-foreground rounded-full hover:opacity-90"
+                >
+                  Yes
+                </button>
+                <button
+                  onClick={() => { setLeadPromptDismissed(true); logEvent("lead_prompt_dismissed"); }}
+                  className="text-xs px-2 py-1 text-muted-foreground hover:text-foreground"
+                  aria-label="Dismiss"
+                >
+                  ✕
+                </button>
+              </div>
+            )}
+
+            {showLeadForm && !leadSubmitted && (
+              <div className="px-3 py-3 border-t border-border bg-primary/5 space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                    <UserPlus className="w-3.5 h-3.5 text-primary" /> Leave your details
+                  </div>
+                  <button
+                    onClick={() => setShowLeadForm(false)}
+                    className="text-muted-foreground hover:text-foreground"
+                    aria-label="Close form"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+                <input
+                  type="text"
+                  placeholder="Your name (optional)"
+                  value={leadName}
+                  onChange={(e) => setLeadName(e.target.value)}
+                  maxLength={120}
+                  className="w-full px-2.5 py-1.5 text-xs bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+                <div className="flex gap-2">
+                  <input
+                    type="tel"
+                    placeholder="Phone (e.g. 0792 085 773)"
+                    value={leadPhone}
+                    onChange={(e) => setLeadPhone(e.target.value)}
+                    maxLength={30}
+                    className="flex-1 px-2.5 py-1.5 text-xs bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                  <input
+                    type="email"
+                    placeholder="Email"
+                    value={leadEmail}
+                    onChange={(e) => setLeadEmail(e.target.value)}
+                    maxLength={120}
+                    className="flex-1 px-2.5 py-1.5 text-xs bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                </div>
+                <textarea
+                  placeholder="What's on your mind? (optional)"
+                  value={leadMsg}
+                  onChange={(e) => setLeadMsg(e.target.value)}
+                  rows={2}
+                  maxLength={500}
+                  className="w-full px-2.5 py-1.5 text-xs bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+                />
+                {leadError && (
+                  <div className="text-[11px] text-red-600">{leadError}</div>
+                )}
+                <Button
+                  onClick={submitLead}
+                  disabled={leadSubmitting}
+                  size="sm"
+                  className="w-full text-xs h-8"
+                >
+                  {leadSubmitting ? <Loader2 className="w-3.5 h-3.5 animate-spin mr-1" /> : <Check className="w-3.5 h-3.5 mr-1" />}
+                  Send my details
+                </Button>
+                <p className="text-[10px] text-muted-foreground text-center">
+                  Private. Used only by InnerSpark to follow up with you.
+                </p>
+              </div>
+            )}
+
+            {leadSubmitted && (
+              <div className="px-3 py-2 border-t border-border bg-emerald-50 text-xs text-emerald-900 flex items-center gap-2">
+                <Check className="w-4 h-4" /> Got it — we'll be in touch soon. 💙
+              </div>
+            )}
+
             {/* Input */}
             <form
               onSubmit={(e) => { e.preventDefault(); sendMessage(input); }}
