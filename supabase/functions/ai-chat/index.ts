@@ -345,12 +345,23 @@ Deno.serve(async (req) => {
     const lastUser = messages[messages.length - 1];
     const userText: string = lastUser?.content || "";
     const risk = detectRisk(userText);
+    const topics = detectTopics(userText);
 
     // Persist user message
     if (sid) {
       await supabase.from("chat_messages").insert({
         session_id: sid, role: "user", content: userText, flagged: risk !== "none",
       });
+      // Merge auto-tags onto the session (best-effort, non-blocking semantics).
+      if (topics.length > 0) {
+        const { data: sessRow } = await supabase
+          .from("chat_sessions")
+          .select("tags")
+          .eq("id", sid)
+          .maybeSingle();
+        const merged = mergeTags(sessRow?.tags as string[] | null, topics);
+        await supabase.from("chat_sessions").update({ tags: merged }).eq("id", sid);
+      }
       if (risk === "high") {
         await supabase.from("chat_sessions").update({
           high_risk_triggered: true, escalated: true,
