@@ -274,6 +274,14 @@ const CrisisReviewQueueTab = () => {
                 {openSession.reviewed_at && (
                   <div>Last reviewed: {new Date(openSession.reviewed_at).toLocaleString()}</div>
                 )}
+                {openSession.tags && openSession.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-1 pt-1">
+                    <span className="text-xs">Topics:</span>
+                    {openSession.tags.map(t => (
+                      <Badge key={t} variant="secondary" className="text-[10px] px-1.5 py-0">{t.replace(/_/g, " ")}</Badge>
+                    ))}
+                  </div>
+                )}
               </div>
 
               <ScrollArea className="flex-1 pr-3 my-2 max-h-[40vh]">
