@@ -56,6 +56,17 @@ At the END of every reply (except high-risk safety replies), append ONE line in 
 - Keep labels SHORT (max 3 words). Do NOT wrap the line in quotes or markdown.
 - Put the [chips: ...] line on its OWN line at the very end of your reply. Nothing after it.`;
 
+const LANGUAGE_INSTRUCTION = `
+
+LANGUAGE MATCHING (IMPORTANT):
+- Auto-detect the language of the user's most recent message.
+- If they write in Luganda, reply in Luganda. If Swahili, reply in Swahili. If Pidgin/Sheng, reply in that style. Default to English.
+- Translate the chip LABELS into the same language too (keep targets/paths in English, e.g. /book-therapist).
+- Common Luganda cues: "oli otya", "nina", "njagala", "weebale", "nkwagala", "sirina", "nfuna", "obulamu", "okuwulira", "omutwe".
+- Common Swahili cues: "habari", "asante", "nataka", "ninahitaji", "msaada", "afya ya akili", "pole", "ndugu", "sijisikii".
+- Keep clinical safety wording accurate. If unsure of a clinical term, keep it in English in parentheses.
+- Always keep the [chips: ...] format on the last line.`;
+
 const TOOLS_INSTRUCTION = `
 
 TOOLS YOU CAN CALL:
@@ -272,7 +283,7 @@ Deno.serve(async (req) => {
 
     // High-risk: bypass model with fixed safety reply
     if (risk === "high") {
-      const safetyReply = "I'm really concerned about what you're sharing, and I want you to be safe. Please reach out to someone right now — you don't have to go through this alone. Tap the WhatsApp button below to talk to a real person at InnerSpark immediately, or call the Uganda Mental Health helpline at **0800-21-21-21** (Butabika). If you are in immediate danger, please contact emergency services.";
+      const safetyReply = "I'm really concerned about what you're sharing, and I want you to be safe. Please reach out to someone right now — you don't have to go through this alone. Tap the WhatsApp button below to talk to a real person at InnerSpark immediately, or call the Uganda Mental Health helpline at **0800-21-21-21** (Butabika). If you are in immediate danger, please contact emergency services.\n\n*Luganda:* Nkweraliikiriddeko nnyo. Nkusaba okoze ku WhatsApp wammanga oba okukubira essimu ku **0800-21-21-21**.\n\n*Swahili:* Nina wasiwasi sana kuhusu unachoshiriki. Tafadhali bonyeza WhatsApp hapa chini au piga simu **0800-21-21-21**.";
       if (sid) {
         await supabase.from("chat_messages").insert({
           session_id: sid, role: "assistant", content: safetyReply, flagged: true,
@@ -303,7 +314,7 @@ Deno.serve(async (req) => {
 
     // Build conversation. We may run a non-streaming tool round first if the model decides to call tools.
     const baseMessages: Array<Record<string, unknown>> = [
-      { role: "system", content: SYSTEM_PROMPT + CHIPS_INSTRUCTION + TOOLS_INSTRUCTION },
+      { role: "system", content: SYSTEM_PROMPT + CHIPS_INSTRUCTION + TOOLS_INSTRUCTION + LANGUAGE_INSTRUCTION },
       ...messages.slice(-12),
     ];
 
