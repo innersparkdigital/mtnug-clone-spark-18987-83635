@@ -46,7 +46,8 @@ import {
   Building2,
   UserCheck,
   MessageSquare,
-  AlertOctagon
+  AlertOctagon,
+  UserPlus
 } from 'lucide-react';
 import {
   ChartContainer,
@@ -248,6 +249,12 @@ const AdminDashboard = () => {
               <TabsTrigger value="crisis-queue" className="gap-2">
                 <AlertOctagon className="h-4 w-4" />
                 Crisis Queue
+              </TabsTrigger>
+            )}
+            {isAdmin && (
+              <TabsTrigger value="chat-leads" className="gap-2">
+                <UserPlus className="h-4 w-4" />
+                Chat Leads
               </TabsTrigger>
             )}
           </TabsList>
@@ -621,6 +628,11 @@ const AdminDashboard = () => {
           {isAdmin && (
             <TabsContent value="crisis-queue">
               <CrisisReviewQueueTab />
+            </TabsContent>
+          )}
+          {isAdmin && (
+            <TabsContent value="chat-leads">
+              <ChatLeadsTab />
             </TabsContent>
           )}
         </Tabs>
