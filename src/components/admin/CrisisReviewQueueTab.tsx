@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, AlertOctagon, MessageSquare, Phone, Clock, CheckCircle2, ExternalLink } from "lucide-react";
+import { Loader2, AlertOctagon, MessageSquare, Phone, Clock, CheckCircle2, ExternalLink, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 
