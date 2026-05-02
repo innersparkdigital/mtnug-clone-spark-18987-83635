@@ -7,7 +7,7 @@ import ReactMarkdown from "react-markdown";
 import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/analytics";
 
-type Msg = { role: "user" | "assistant"; content: string; flagged?: boolean };
+type Msg = { role: "user" | "assistant"; content: string; flagged?: boolean; tools?: string[] };
 type Chip = { label: string; target: string };
 
 const CHIPS_REGEX = /\[chips:\s*([^\]]+)\]\s*$/i;
@@ -116,6 +116,7 @@ const AIChatWidget = () => {
       let buffer = "";
       let isHighRisk = false;
       let accumulated = "";
+      let toolsUsed: string[] = [];
 
       while (true) {
         const { done, value } = await reader.read();
@@ -134,13 +135,24 @@ const AIChatWidget = () => {
               if (evt.session_id && !sessionId) setSessionId(evt.session_id);
               if (evt.high_risk) { isHighRisk = true; setHighRisk(true); }
               if (evt.distress) setDistress(true);
+              if (Array.isArray(evt.tools_used) && evt.tools_used.length > 0) {
+                toolsUsed = evt.tools_used as string[];
+                setMessages(prev => {
+                  const copy = [...prev];
+                  const last = copy[copy.length - 1];
+                  if (last && last.role === "assistant") {
+                    copy[copy.length - 1] = { ...last, tools: toolsUsed };
+                  }
+                  return copy;
+                });
+              }
             } else if (evt.type === "delta" && evt.content) {
               accumulated += evt.content;
               setMessages(prev => {
                 const copy = [...prev];
                 const last = copy[copy.length - 1];
                 if (last && last.role === "assistant") {
-                  copy[copy.length - 1] = { ...last, content: accumulated, flagged: isHighRisk };
+                  copy[copy.length - 1] = { ...last, content: accumulated, flagged: isHighRisk, tools: toolsUsed };
                 }
                 return copy;
               });
@@ -258,6 +270,11 @@ const AIChatWidget = () => {
                       <div className="prose prose-sm max-w-none prose-p:my-1 prose-a:text-primary">
                         <ReactMarkdown>{text}</ReactMarkdown>
                       </div>
+                    {m.role === "assistant" && m.tools && m.tools.length > 0 && (
+                      <div className="mt-1 text-[10px] text-muted-foreground italic">
+                        🔧 Used live data: {m.tools.join(", ")}
+                      </div>
+                    )}
                     </div>
                     {showChips && (
                       <div className="mt-2 flex flex-wrap gap-1.5 max-w-[85%]">
