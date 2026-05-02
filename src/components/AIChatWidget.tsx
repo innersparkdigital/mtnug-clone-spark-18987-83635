@@ -495,6 +495,8 @@ const AIChatWidget = () => {
                 <Send className="w-4 h-4" />
               </Button>
             </form>
+              </>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
