@@ -22,6 +22,7 @@ import ContentTab from '@/components/admin/ContentTab';
 import EmailLogTab from '@/components/admin/EmailLogTab';
 import CorporateBookingsTab from '@/components/admin/CorporateBookingsTab';
 import EmailSegmentsTab from '@/components/admin/EmailSegmentsTab';
+import ChatAnalyticsTab from '@/components/admin/ChatAnalyticsTab';
 import { 
   BookOpen, 
   GraduationCap, 
@@ -41,7 +42,8 @@ import {
   Shield,
   FileText,
   Building2,
-  UserCheck
+  UserCheck,
+  MessageSquare
 } from 'lucide-react';
 import {
   ChartContainer,
@@ -231,6 +233,12 @@ const AdminDashboard = () => {
               <TabsTrigger value="email-segments" className="gap-2">
                 <UserCheck className="h-4 w-4" />
                 Email Segments
+              </TabsTrigger>
+            )}
+            {isAdmin && (
+              <TabsTrigger value="chat-analytics" className="gap-2">
+                <MessageSquare className="h-4 w-4" />
+                AI Chat Analytics
               </TabsTrigger>
             )}
           </TabsList>
@@ -594,6 +602,11 @@ const AdminDashboard = () => {
           {isAdmin && (
             <TabsContent value="email-segments">
               <EmailSegmentsTab />
+            </TabsContent>
+          )}
+          {isAdmin && (
+            <TabsContent value="chat-analytics">
+              <ChatAnalyticsTab />
             </TabsContent>
           )}
         </Tabs>
