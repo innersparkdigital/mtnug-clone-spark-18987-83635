@@ -616,6 +616,8 @@ const AdminDashboard = () => {
             <TabsContent value="chat-analytics">
               <ChatAnalyticsTab />
             </TabsContent>
+          )}
+          {isAdmin && (
             <TabsContent value="crisis-queue">
               <CrisisReviewQueueTab />
             </TabsContent>
