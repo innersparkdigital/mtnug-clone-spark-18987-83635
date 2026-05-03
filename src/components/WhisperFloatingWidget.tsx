@@ -8,7 +8,7 @@ const WhisperFloatingWidget = () => {
       initial={{ scale: 0, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       transition={{ delay: 1.0, type: "spring", stiffness: 200 }}
-      className="fixed bottom-28 right-6 z-50 flex flex-col items-end gap-2 sm:bottom-28"
+      className="fixed bottom-44 right-6 z-50 flex flex-col items-end gap-2 sm:bottom-44"
     >
       {/* Teaser bubble */}
       <motion.div
@@ -19,12 +19,12 @@ const WhisperFloatingWidget = () => {
       >
         <Link
           to="/whisper"
-          className="flex items-center gap-2 bg-background border border-border rounded-2xl rounded-br-sm pl-3 pr-4 py-2 shadow-lg hover:shadow-xl text-left max-w-[240px]"
+          className="flex items-center gap-2 bg-background border border-border rounded-2xl rounded-br-sm pl-3 pr-4 py-2 shadow-lg hover:shadow-xl text-left max-w-[260px]"
           aria-label="Send an anonymous Whisper"
         >
           <span className="text-xs leading-snug">
-            <span className="font-semibold text-foreground">Send a Whisper 🤍</span>
-            <span className="block text-muted-foreground">Anonymous voice note. Reply in 24h.</span>
+            <span className="font-semibold text-foreground">Too heavy to type? 🤍</span>
+            <span className="block text-muted-foreground">Whisper it. A real therapist replies in 24h — free & anonymous.</span>
           </span>
         </Link>
       </motion.div>
