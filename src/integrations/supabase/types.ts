@@ -2009,6 +2009,63 @@ export type Database = {
         }
         Relationships: []
       }
+      whispers: {
+        Row: {
+          audio_path: string
+          created_at: string
+          duration_seconds: number | null
+          email: string
+          id: string
+          language: string | null
+          public_token: string
+          replied_by: string | null
+          reply_audio_path: string | null
+          reply_sent_at: string | null
+          reply_text: string | null
+          source: string | null
+          status: string
+          topic_hint: string | null
+          updated_at: string
+          user_agent: string | null
+        }
+        Insert: {
+          audio_path: string
+          created_at?: string
+          duration_seconds?: number | null
+          email: string
+          id?: string
+          language?: string | null
+          public_token?: string
+          replied_by?: string | null
+          reply_audio_path?: string | null
+          reply_sent_at?: string | null
+          reply_text?: string | null
+          source?: string | null
+          status?: string
+          topic_hint?: string | null
+          updated_at?: string
+          user_agent?: string | null
+        }
+        Update: {
+          audio_path?: string
+          created_at?: string
+          duration_seconds?: number | null
+          email?: string
+          id?: string
+          language?: string | null
+          public_token?: string
+          replied_by?: string | null
+          reply_audio_path?: string | null
+          reply_sent_at?: string | null
+          reply_text?: string | null
+          source?: string | null
+          status?: string
+          topic_hint?: string | null
+          updated_at?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       who5_cta_clicks: {
         Row: {
           clicked_at: string
@@ -2112,6 +2169,7 @@ export type Database = {
         Returns: number
       }
       get_doctor_email_by_phone: { Args: { _phone: string }; Returns: string }
+      get_whisper_by_token: { Args: { _token: string }; Returns: Json }
       has_page_access: {
         Args: { _page_key: string; _user_id: string }
         Returns: boolean
