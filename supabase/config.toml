@@ -26,3 +26,12 @@ verify_jwt = false
 
 [functions.get-whisper-reply]
 verify_jwt = false
+
+[functions.track-whisper-event]
+verify_jwt = false
+
+[functions.whisper-cta]
+verify_jwt = false
+
+[functions.analyze-whisper]
+verify_jwt = true
