@@ -91,6 +91,7 @@ import Specialists from "./pages/Specialists";
 import SpecialistProfile from "./pages/SpecialistProfile";
 import ScrollToTop from "./components/ScrollToTop";
 import AIChatWidget from "./components/AIChatWidget";
+import WhisperFloatingWidget from "./components/WhisperFloatingWidget";
 import Learning from "./pages/Learning";
 import CourseDetail from "./pages/CourseDetail";
 import LessonViewer from "./pages/LessonViewer";
@@ -150,6 +151,7 @@ const App = () => (
             <BrowserRouter>
               <ScrollToTop />
               <AIChatWidget />
+              <WhisperFloatingWidget />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
