@@ -9,6 +9,9 @@ const corsHeaders = {
 const FROM_EMAIL = 'InnerSpark Whisper <info@innersparkafrica.com>'
 const ADMIN_EMAIL = 'info@innersparkafrica.com'
 const GATEWAY_URL = 'https://connector-gateway.lovable.dev/resend'
+const LOGO_URL = 'https://hnjpsvpudwwyzrrwzbpa.supabase.co/storage/v1/object/public/email-assets/logo.png'
+const FOOTER_BANNER_URL = 'https://hnjpsvpudwwyzrrwzbpa.supabase.co/storage/v1/object/public/email-assets/footer-banner.png'
+const SITE_URL = 'https://www.innersparkafrica.com'
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders })
@@ -138,30 +141,59 @@ async function sendEmail({ to, subject, html }: { to: string; subject: string; h
 
 function userEmailHtml(replyUrl: string) {
   return `
-    <div style="font-family:system-ui,Segoe UI,Arial,sans-serif;max-width:560px;margin:0 auto;padding:24px;color:#1f2937">
-      <div style="background:#0a4a8a;color:#fff;padding:20px;border-radius:12px;text-align:center">
-        <h1 style="margin:0;font-size:22px">We hear you. 🤍</h1>
-      </div>
-      <p style="margin-top:24px;font-size:16px;line-height:1.6">
-        Your Whisper has been safely received. A licensed therapist from InnerSpark Africa will listen
-        carefully and reply with a personal voice note within <strong>24 hours</strong>.
-      </p>
-      <p style="font-size:16px;line-height:1.6">
-        You'll be notified by email the moment your reply is ready. You can also check anytime here:
-      </p>
-      <p style="text-align:center;margin:24px 0">
-        <a href="${replyUrl}" style="background:#0a4a8a;color:#fff;text-decoration:none;padding:12px 24px;border-radius:999px;font-weight:600">
-          View my Whisper
+    <div style="background:#f3f4f6;padding:24px 0;font-family:system-ui,Segoe UI,Arial,sans-serif;color:#1f2937">
+      <div style="max-width:600px;margin:0 auto;background:#ffffff;border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.04)">
+        <div style="background:#0a4a8a;padding:20px;text-align:center">
+          <div style="display:inline-block;background:#ffffff;padding:10px 16px;border-radius:12px">
+            <img src="${LOGO_URL}" alt="InnerSpark Africa" style="height:40px;display:block" />
+          </div>
+          <h1 style="margin:16px 0 0;font-size:22px;color:#ffffff;font-weight:600">We hear you. 🤍</h1>
+        </div>
+        <div style="padding:28px">
+          <p style="margin:0 0 16px;font-size:16px;line-height:1.6">
+            Your Whisper has been safely received. A licensed therapist from InnerSpark Africa will listen
+            carefully and reply with a personal voice note within <strong>24 hours</strong>.
+          </p>
+          <p style="margin:0 0 16px;font-size:16px;line-height:1.6">
+            You'll be notified by email the moment your reply is ready. You can also check anytime:
+          </p>
+          <p style="text-align:center;margin:24px 0">
+            <a href="${replyUrl}" style="background:#0a4a8a;color:#fff;text-decoration:none;padding:12px 24px;border-radius:999px;font-weight:600;display:inline-block">
+              View my Whisper
+            </a>
+          </p>
+          <div style="margin:28px 0 8px;padding:20px;background:#f3f6fb;border-radius:12px;text-align:center">
+            <p style="margin:0 0 12px;font-size:15px;color:#1f2937;font-weight:600">
+              Don't want to wait? Talk to a therapist now.
+            </p>
+            <p style="margin:0 0 16px;font-size:14px;color:#4b5563;line-height:1.5">
+              Book a private session or chat one-on-one with a licensed therapist today.
+            </p>
+            <a href="${SITE_URL}/specialists" style="background:#0a4a8a;color:#fff;text-decoration:none;padding:12px 26px;border-radius:999px;font-weight:600;display:inline-block;margin:0 4px 8px">
+              Book a Therapist
+            </a>
+            <a href="${SITE_URL}/contact" style="background:#ffffff;color:#0a4a8a;text-decoration:none;padding:11px 24px;border-radius:999px;font-weight:600;display:inline-block;border:1.5px solid #0a4a8a;margin:0 4px 8px">
+              Talk to a Therapist
+            </a>
+          </div>
+          <p style="font-size:13px;color:#6b7280;margin:20px 0 0">
+            Your Whisper is anonymous to the public — no name, no profile. Only our small team of licensed
+            therapists can listen, and only for the purpose of replying to you.
+          </p>
+          <p style="font-size:13px;color:#6b7280;margin:14px 0 0">
+            If you are in immediate crisis, please call your local emergency line or reach us on WhatsApp:
+            <a href="https://wa.me/256792085773" style="color:#0a4a8a">+256 792 085 773</a>.
+          </p>
+        </div>
+        <a href="${SITE_URL}" style="display:block">
+          <img src="${FOOTER_BANNER_URL}" alt="InnerSpark Africa" style="width:100%;display:block" />
         </a>
-      </p>
-      <p style="font-size:13px;color:#6b7280">
-        Your Whisper is anonymous to the public — no name, no profile. Only our small team of licensed
-        therapists can listen, and only for the purpose of replying to you.
-      </p>
-      <p style="font-size:13px;color:#6b7280;margin-top:24px">
-        If you are in immediate crisis, please call your local emergency line or reach us on WhatsApp:
-        <a href="https://wa.me/256792085773">+256 792 085 773</a>.
-      </p>
+        <div style="padding:16px 28px;text-align:center;background:#fafafa">
+          <p style="font-size:12px;color:#9ca3af;margin:0">
+            Sent with care by InnerSpark Africa.
+          </p>
+        </div>
+      </div>
     </div>
   `
 }
