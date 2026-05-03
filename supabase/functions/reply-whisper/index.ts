@@ -1,0 +1,152 @@
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0'
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+}
+
+const FROM_EMAIL = 'InnerSpark Whisper <info@innersparkafrica.com>'
+const GATEWAY_URL = 'https://connector-gateway.lovable.dev/resend'
+
+Deno.serve(async (req) => {
+  if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders })
+  if (req.method !== 'POST') return new Response('Method not allowed', { status: 405, headers: corsHeaders })
+
+  try {
+    const authHeader = req.headers.get('Authorization')
+    if (!authHeader) return jsonError('Unauthorized', 401)
+
+    // Verify caller is admin via their JWT
+    const userClient = createClient(
+      Deno.env.get('SUPABASE_URL')!,
+      Deno.env.get('SUPABASE_ANON_KEY')!,
+      { global: { headers: { Authorization: authHeader } } }
+    )
+    const { data: userData, error: userErr } = await userClient.auth.getUser()
+    if (userErr || !userData.user) return jsonError('Unauthorized', 401)
+
+    const { data: roleRow } = await userClient
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', userData.user.id)
+      .eq('role', 'admin')
+      .maybeSingle()
+    if (!roleRow) return jsonError('Admin role required', 403)
+
+    const admin = createClient(
+      Deno.env.get('SUPABASE_URL')!,
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+    )
+
+    const form = await req.formData()
+    const whisperId = String(form.get('whisper_id') || '')
+    const replyText = String(form.get('reply_text') || '').slice(0, 4000)
+    const audio = form.get('audio') as File | null
+
+    if (!whisperId) return jsonError('whisper_id required', 400)
+    if (!audio && !replyText.trim()) return jsonError('Provide a voice reply or text', 400)
+
+    const { data: whisper, error: wErr } = await admin
+      .from('whispers')
+      .select('id, email, public_token, reply_audio_path')
+      .eq('id', whisperId)
+      .maybeSingle()
+    if (wErr || !whisper) return jsonError('Whisper not found', 404)
+
+    let replyAudioPath = whisper.reply_audio_path
+    if (audio && audio instanceof File) {
+      if (audio.size > 20 * 1024 * 1024) return jsonError('Reply audio too large', 400)
+      const mime = audio.type || 'audio/webm'
+      const ext = mime.includes('mp4') ? 'mp4'
+        : mime.includes('mpeg') ? 'mp3'
+        : mime.includes('ogg') ? 'ogg'
+        : mime.includes('wav') ? 'wav'
+        : 'webm'
+      const fileName = `replies/${whisperId}-${crypto.randomUUID()}.${ext}`
+      const bytes = new Uint8Array(await audio.arrayBuffer())
+      const { error: upErr } = await admin.storage
+        .from('whispers')
+        .upload(fileName, bytes, { contentType: mime, upsert: false })
+      if (upErr) {
+        console.error('Reply upload failed', upErr)
+        return jsonError('Could not save reply audio', 500)
+      }
+      replyAudioPath = fileName
+    }
+
+    const { error: updErr } = await admin
+      .from('whispers')
+      .update({
+        status: 'replied',
+        reply_text: replyText.trim() || null,
+        reply_audio_path: replyAudioPath,
+        reply_sent_at: new Date().toISOString(),
+        replied_by: userData.user.id,
+      })
+      .eq('id', whisperId)
+
+    if (updErr) {
+      console.error('Update whisper failed', updErr)
+      return jsonError('Could not save reply', 500)
+    }
+
+    // Notify user
+    const replyUrl = `https://www.innersparkafrica.com/whisper/${whisper.public_token}`
+    sendEmail({
+      to: whisper.email,
+      subject: 'Your Whisper reply is ready 🤍',
+      html: replyEmailHtml(replyUrl),
+    }).catch((e) => console.error('reply email failed', e))
+
+    return new Response(JSON.stringify({ success: true }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    })
+  } catch (e) {
+    console.error('reply-whisper error', e)
+    return jsonError('Unexpected error', 500)
+  }
+})
+
+function jsonError(message: string, status: number) {
+  return new Response(JSON.stringify({ error: message }), {
+    status,
+    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+  })
+}
+
+async function sendEmail({ to, subject, html }: { to: string; subject: string; html: string }) {
+  const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY')
+  const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY')
+  if (!LOVABLE_API_KEY || !RESEND_API_KEY) return
+  await fetch(`${GATEWAY_URL}/emails`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+      'X-Connection-Api-Key': RESEND_API_KEY,
+    },
+    body: JSON.stringify({ from: FROM_EMAIL, to: [to], subject, html }),
+  })
+}
+
+function replyEmailHtml(replyUrl: string) {
+  return `
+    <div style="font-family:system-ui,Segoe UI,Arial,sans-serif;max-width:560px;margin:0 auto;padding:24px;color:#1f2937">
+      <div style="background:#0a4a8a;color:#fff;padding:20px;border-radius:12px;text-align:center">
+        <h1 style="margin:0;font-size:22px">A therapist has replied to your Whisper 🤍</h1>
+      </div>
+      <p style="margin-top:24px;font-size:16px;line-height:1.6">
+        Your reply is waiting for you. Find a quiet moment, put on headphones, and listen when you're ready.
+      </p>
+      <p style="text-align:center;margin:24px 0">
+        <a href="${replyUrl}" style="background:#0a4a8a;color:#fff;text-decoration:none;padding:12px 24px;border-radius:999px;font-weight:600">
+          Listen to your reply
+        </a>
+      </p>
+      <p style="font-size:13px;color:#6b7280">
+        If this resonates with you, you can book a private session with one of our therapists from the same page.
+      </p>
+    </div>
+  `
+}
