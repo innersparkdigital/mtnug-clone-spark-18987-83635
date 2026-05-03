@@ -133,6 +133,7 @@ import TypesOfTherapyPost from "./pages/blog/TypesOfTherapyPost";
 import CmsBlogPost from "./pages/CmsBlogPost";
 import CmsEventPost from "./pages/CmsEventPost";
 import ThankYou from "./pages/ThankYou";
+import Whisper from "./pages/Whisper";
 
 const queryClient = new QueryClient();
 
@@ -200,6 +201,8 @@ const App = () => (
             <Route path="/learning/:courseId/module/:moduleId/lesson/:lessonId" element={<LessonViewer />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/wellbeing-check" element={<WellbeingCheck />} />
+            <Route path="/whisper" element={<Whisper />} />
+            <Route path="/whisper/:token" element={<Whisper />} />
             <Route path="/mind-check" element={<MindCheck />} />
             <Route path="/mind-check/analytics" element={<MindCheckAnalytics />} />
             <Route path="/mind-check/depression" element={<DepressionTest />} />
