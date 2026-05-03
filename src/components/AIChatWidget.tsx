@@ -365,7 +365,7 @@ const AIChatWidget = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-x-3 bottom-3 sm:inset-x-auto sm:right-6 sm:bottom-6 sm:left-auto z-[60] sm:w-[380px] w-auto h-[min(80dvh,600px)] sm:h-[min(620px,calc(100dvh-6rem))] max-h-[calc(100dvh-5rem)] bg-background border border-border rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+            className="fixed inset-x-3 bottom-3 sm:inset-x-auto sm:right-6 sm:bottom-6 sm:left-auto z-[60] sm:w-[380px] w-auto h-[min(70dvh,560px)] sm:h-[min(600px,calc(100dvh-9rem))] max-h-[calc(100dvh-8rem)] bg-background border border-border rounded-2xl shadow-2xl flex flex-col overflow-hidden"
           >
             {/* CRISIS OVERLAY — full takeover when high-risk detected */}
             {highRisk && !crisisDismissed ? (
