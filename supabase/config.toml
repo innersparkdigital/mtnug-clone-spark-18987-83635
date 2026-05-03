@@ -17,3 +17,6 @@ verify_jwt = false
 
 [functions.notify-doctor-referral]
 verify_jwt = false
+
+[functions.chat-daily-digest]
+verify_jwt = false
