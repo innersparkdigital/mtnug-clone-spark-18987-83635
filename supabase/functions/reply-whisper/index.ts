@@ -91,12 +91,21 @@ Deno.serve(async (req) => {
       return jsonError('Could not save reply', 500)
     }
 
+    // Build a signed URL to the audio so the recipient can listen straight from the email
+    let audioUrl: string | null = null
+    if (replyAudioPath) {
+      const { data: signed } = await admin.storage
+        .from('whispers')
+        .createSignedUrl(replyAudioPath, 60 * 60 * 24 * 7) // 7 days
+      audioUrl = signed?.signedUrl || null
+    }
+
     // Notify user
     const replyUrl = `https://www.innersparkafrica.com/whisper/${whisper.public_token}`
     sendEmail({
       to: whisper.email,
       subject: 'Your Whisper reply is ready 🤍',
-      html: replyEmailHtml(replyUrl),
+      html: replyEmailHtml({ replyUrl, audioUrl, replyText: replyText.trim() || null }),
     }).catch((e) => console.error('reply email failed', e))
 
     return new Response(JSON.stringify({ success: true }), {
@@ -130,23 +139,50 @@ async function sendEmail({ to, subject, html }: { to: string; subject: string; h
   })
 }
 
-function replyEmailHtml(replyUrl: string) {
+function replyEmailHtml({ replyUrl, audioUrl, replyText }: { replyUrl: string; audioUrl: string | null; replyText: string | null }) {
+  const audioBlock = audioUrl ? `
+        <p style="text-align:center;margin:24px 0">
+          <a href="${audioUrl}" style="background:#0a4a8a;color:#fff;text-decoration:none;padding:14px 28px;border-radius:999px;font-weight:600;display:inline-block">
+            ▶ Play / download voice reply
+          </a>
+        </p>
+        <p style="font-size:12px;color:#6b7280;text-align:center;margin:-8px 0 16px">
+          Tap the button above to listen on your phone. Link valid for 7 days.
+        </p>
+      ` : ''
+
+  const textBlock = replyText ? `
+        <div style="background:#f3f6fb;border-left:4px solid #0a4a8a;padding:16px 18px;border-radius:8px;margin:20px 0;font-size:15px;line-height:1.6;color:#1f2937;white-space:pre-wrap">
+          ${escapeHtml(replyText)}
+        </div>
+      ` : ''
+
   return `
     <div style="font-family:system-ui,Segoe UI,Arial,sans-serif;max-width:560px;margin:0 auto;padding:24px;color:#1f2937">
       <div style="background:#0a4a8a;color:#fff;padding:20px;border-radius:12px;text-align:center">
         <h1 style="margin:0;font-size:22px">A therapist has replied to your Whisper 🤍</h1>
       </div>
       <p style="margin-top:24px;font-size:16px;line-height:1.6">
-        Your reply is waiting for you. Find a quiet moment, put on headphones, and listen when you're ready.
+        Your reply is ready. Find a quiet moment, put on headphones, and listen when you're ready.
       </p>
-      <p style="text-align:center;margin:24px 0">
-        <a href="${replyUrl}" style="background:#0a4a8a;color:#fff;text-decoration:none;padding:12px 24px;border-radius:999px;font-weight:600">
-          Listen to your reply
-        </a>
+      ${audioBlock}
+      ${textBlock}
+      <p style="font-size:13px;color:#6b7280;margin-top:24px">
+        Prefer the web? <a href="${replyUrl}" style="color:#0a4a8a">Open your private Whisper page</a> — you can also book a private session there.
       </p>
-      <p style="font-size:13px;color:#6b7280">
-        If this resonates with you, you can book a private session with one of our therapists from the same page.
+      <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0" />
+      <p style="font-size:12px;color:#9ca3af">
+        This message was sent by InnerSpark Africa. Your identity remains anonymous to your therapist.
       </p>
     </div>
   `
+}
+
+function escapeHtml(s: string) {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
 }
