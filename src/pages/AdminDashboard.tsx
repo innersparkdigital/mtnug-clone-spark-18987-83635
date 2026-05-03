@@ -25,6 +25,7 @@ import EmailSegmentsTab from '@/components/admin/EmailSegmentsTab';
 import ChatAnalyticsTab from '@/components/admin/ChatAnalyticsTab';
 import CrisisReviewQueueTab from '@/components/admin/CrisisReviewQueueTab';
 import ChatLeadsTab from '@/components/admin/ChatLeadsTab';
+import WhispersTab from '@/components/admin/WhispersTab';
 import { 
   BookOpen, 
   GraduationCap, 
@@ -47,7 +48,8 @@ import {
   UserCheck,
   MessageSquare,
   AlertOctagon,
-  UserPlus
+  UserPlus,
+  Mic
 } from 'lucide-react';
 import {
   ChartContainer,
@@ -255,6 +257,12 @@ const AdminDashboard = () => {
               <TabsTrigger value="chat-leads" className="gap-2">
                 <UserPlus className="h-4 w-4" />
                 Chat Leads
+              </TabsTrigger>
+            )}
+            {isAdmin && (
+              <TabsTrigger value="whispers" className="gap-2">
+                <Mic className="h-4 w-4" />
+                Whispers
               </TabsTrigger>
             )}
           </TabsList>
