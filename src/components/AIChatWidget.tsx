@@ -365,7 +365,7 @@ const AIChatWidget = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="fixed bottom-4 right-4 left-4 sm:left-auto sm:bottom-6 sm:right-6 z-50 sm:w-[380px] h-[80vh] sm:h-[600px] max-h-[calc(100vh-2rem)] bg-background border border-border rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+            className="fixed inset-x-3 bottom-3 sm:inset-x-auto sm:right-6 sm:bottom-6 sm:left-auto z-50 sm:w-[380px] w-auto h-[calc(100dvh-1.5rem)] sm:h-[min(620px,calc(100dvh-3rem))] max-h-[calc(100dvh-1.5rem)] bg-background border border-border rounded-2xl shadow-2xl flex flex-col overflow-hidden"
           >
             {/* CRISIS OVERLAY — full takeover when high-risk detected */}
             {highRisk && !crisisDismissed ? (
@@ -442,32 +442,32 @@ const AIChatWidget = () => {
             ) : (
               <>
             {/* Header */}
-            <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-br from-primary to-primary/80 text-primary-foreground">
-              <div className="flex items-center gap-3">
-                <div className="relative">
-                  <div className="w-11 h-11 rounded-full overflow-hidden ring-2 ring-white/40 bg-white/10">
+            <div className="flex items-center justify-between gap-2 px-3 py-2.5 bg-gradient-to-br from-primary to-primary/80 text-primary-foreground flex-shrink-0">
+              <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                <div className="relative flex-shrink-0">
+                  <div className="w-10 h-10 rounded-full overflow-hidden ring-2 ring-white/40 bg-white/10">
                     <img
                       src={amaniAvatar}
                       alt={`${ASSISTANT_NAME} avatar`}
-                      width={44}
-                      height={44}
+                      width={40}
+                      height={40}
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-green-400 ring-2 ring-primary" />
+                  <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-green-400 ring-2 ring-primary" />
                 </div>
-                <div>
-                  <div className="font-bold text-sm leading-tight flex items-center gap-1.5">
+                <div className="min-w-0 flex-1">
+                  <div className="font-bold text-sm leading-tight flex items-center gap-1.5 truncate">
                     {ASSISTANT_NAME}
-                    <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                    <Sparkles className="w-3.5 h-3.5 text-amber-300 flex-shrink-0" />
                   </div>
-                  <div className="text-[11px] opacity-90 flex items-center gap-1">
-                    <span className="inline-block w-1.5 h-1.5 rounded-full bg-green-400" />
+                  <div className="text-[11px] opacity-90 flex items-center gap-1 truncate">
+                    <span className="inline-block w-1.5 h-1.5 rounded-full bg-green-400 flex-shrink-0" />
                     InnerSpark • {ASSISTANT_ROLE}
                   </div>
                 </div>
               </div>
-              <button onClick={() => setOpen(false)} aria-label="Close chat" className="p-1 hover:bg-white/10 rounded">
+              <button onClick={() => setOpen(false)} aria-label="Close chat" className="p-1 hover:bg-white/10 rounded flex-shrink-0">
                 <X className="w-5 h-5" />
               </button>
             </div>
