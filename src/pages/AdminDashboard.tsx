@@ -643,6 +643,11 @@ const AdminDashboard = () => {
               <ChatLeadsTab />
             </TabsContent>
           )}
+          {isAdmin && (
+            <TabsContent value="whispers">
+              <WhispersTab />
+            </TabsContent>
+          )}
         </Tabs>
       </main>
 
