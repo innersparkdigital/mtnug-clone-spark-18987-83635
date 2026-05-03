@@ -1,6 +1,6 @@
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
-import { Heart, Mic } from "lucide-react";
+import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
@@ -31,29 +31,6 @@ const Index = () => {
         <HeroSection />
         <TrustStatsBar />
         <ConcernsSection />
-        {/* Whisper - Anonymous voice-to-therapist */}
-        <section className="py-10 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 border-y border-primary/20">
-          <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center gap-4 sm:gap-6 text-center sm:text-left">
-              <div className="flex-shrink-0 w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
-                <Mic className="w-7 h-7 text-primary" />
-              </div>
-              <div className="flex-1">
-                <h2 className="text-lg sm:text-xl font-bold text-foreground mb-1">
-                  Not ready to book? Send a Whisper.
-                </h2>
-                <p className="text-sm text-muted-foreground">
-                  Record an anonymous 3-minute voice note. A licensed therapist replies with a personal voice note within 24 hours. No name. No profile. Just a human who hears you.
-                </p>
-              </div>
-              <Link to="/whisper">
-                <Button className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full px-6">
-                  Whisper Now — Free
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </section>
         {/* WHO-5 Wellbeing Check Banner */}
         <section className="py-8 bg-gradient-to-r from-green-50 to-emerald-50 border-y border-green-200">
           <div className="container mx-auto px-4">
