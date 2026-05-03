@@ -36,6 +36,9 @@ const TherapyInUganda = () => {
             }
           })}
         </script>
+        <script type="application/ld+json">
+          {JSON.stringify({"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How much does therapy cost in Uganda?","acceptedAnswer":{"@type":"Answer","text":"Online therapy at Innerspark Africa starts at UGX 30,000 for group sessions and UGX 75,000 (about $22) for a one-on-one session with a licensed Ugandan therapist. We also offer free wellbeing assessments and a free initial consultation."}},{"@type":"Question","name":"Are Innerspark Africa therapists licensed in Uganda?","acceptedAnswer":{"@type":"Answer","text":"Yes. All our therapists are licensed counsellors, clinical psychologists, or psychiatric professionals registered with relevant Ugandan professional bodies, including the Uganda Counselling Association where applicable."}},{"@type":"Question","name":"Can I have therapy in Luganda or other local languages?","acceptedAnswer":{"@type":"Answer","text":"Yes. We offer sessions in English, Luganda, Runyankole, Swahili and other Ugandan languages. You can filter therapists by language when booking."}},{"@type":"Question","name":"How quickly can I see a therapist in Uganda?","acceptedAnswer":{"@type":"Answer","text":"Most clients are matched and have their first session within 24–48 hours of booking. Urgent cases are prioritised through our emergency support line."}},{"@type":"Question","name":"Is online therapy in Uganda confidential and safe?","acceptedAnswer":{"@type":"Answer","text":"Absolutely. All sessions are encrypted, your data is protected under our privacy policy, and our therapists follow strict professional confidentiality standards."}}]})}
+        </script>
       </Helmet>
 
       <div className="min-h-screen bg-background">

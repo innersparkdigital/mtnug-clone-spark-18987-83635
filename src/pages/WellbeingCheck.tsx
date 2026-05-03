@@ -89,6 +89,9 @@ const WellbeingCheck = () => {
         <title>Mental Wellbeing Check — Free WHO-5 Test | InnerSpark Africa</title>
         <meta name="description" content="Take a free 2-minute WHO-5 mental wellbeing check. Understand your mental health score and get connected to support in Africa." />
         <link rel="canonical" href="https://www.innersparkafrica.com/wellbeing-check" />
+        <script type="application/ld+json">
+          {JSON.stringify({"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is the WHO-5 Wellbeing Index?","acceptedAnswer":{"@type":"Answer","text":"The WHO-5 is a short, validated 5-question wellbeing tool developed by the World Health Organization. It gives a quick snapshot of your mental wellbeing in under 2 minutes."}},{"@type":"Question","name":"Is the wellbeing check free?","acceptedAnswer":{"@type":"Answer","text":"Yes — completely free, anonymous, and takes about 1–2 minutes. You'll get an instant score and personalised recommendations."}},{"@type":"Question","name":"What does my wellbeing score mean?","acceptedAnswer":{"@type":"Answer","text":"Scores 0–50% suggest low wellbeing — we recommend speaking to a therapist. 51–75% is moderate, and 76–100% is good wellbeing. We provide guidance for each tier."}}]})}
+        </script>
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-b from-orange-50/50 via-white to-orange-50/50">

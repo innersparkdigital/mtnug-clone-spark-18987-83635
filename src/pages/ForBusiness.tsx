@@ -208,6 +208,9 @@ const ForBusiness = () => {
             "serviceType": "Corporate Mental Health Services"
           })}
         </script>
+        <script type="application/ld+json">
+          {JSON.stringify({"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is a corporate Employee Assistance Programme (EAP)?","acceptedAnswer":{"@type":"Answer","text":"An EAP gives your employees confidential access to licensed therapists, wellbeing assessments, and mental health resources — improving productivity, reducing absenteeism, and supporting retention."}},{"@type":"Question","name":"How much does Innerspark for Business cost?","acceptedAnswer":{"@type":"Answer","text":"We offer flexible per-employee pricing based on company size. Contact us for a tailored quote and a free workplace wellbeing assessment."}},{"@type":"Question","name":"Will employee data stay confidential?","acceptedAnswer":{"@type":"Answer","text":"Yes. Individual therapy sessions and personal data are strictly confidential. Employers only see anonymised, aggregated wellbeing reports."}},{"@type":"Question","name":"Can you run on-site workshops in Uganda?","acceptedAnswer":{"@type":"Answer","text":"Yes. We deliver workplace mental health training, manager workshops, and on-site wellness days across Uganda and East Africa."}}]})}
+        </script>
       </Helmet>
 
       <Header />

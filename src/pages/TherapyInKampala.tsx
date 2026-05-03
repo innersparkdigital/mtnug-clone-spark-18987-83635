@@ -36,6 +36,9 @@ const TherapyInKampala = () => {
             "serviceType": "Online Therapy"
           })}
         </script>
+        <script type="application/ld+json">
+          {JSON.stringify({"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Where are Innerspark therapists in Kampala based?","acceptedAnswer":{"@type":"Answer","text":"Our headquarters is at the National ICT Innovation Hub in Nakawa, Kampala. However, all therapy is delivered online via video, voice, or chat — so you can book from anywhere in Kampala or upcountry."}},{"@type":"Question","name":"How do I find a good therapist in Kampala?","acceptedAnswer":{"@type":"Answer","text":"Take our free 2-minute mental health assessment and we'll match you with a licensed Kampala-based therapist who specialises in your concern (anxiety, depression, trauma, relationships, etc.)."}},{"@type":"Question","name":"What is the cost of therapy in Kampala?","acceptedAnswer":{"@type":"Answer","text":"One-on-one online therapy in Kampala starts at UGX 75,000 per session. Group sessions are UGX 25,000–30,000. Free initial consultations are available."}},{"@type":"Question","name":"Do you offer same-day appointments in Kampala?","acceptedAnswer":{"@type":"Answer","text":"Yes, subject to therapist availability. Book through our platform or WhatsApp +256 740 616 404 and we'll do our best to schedule you the same day."}}]})}
+        </script>
       </Helmet>
 
       <div className="min-h-screen bg-background">
