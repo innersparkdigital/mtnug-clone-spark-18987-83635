@@ -108,7 +108,7 @@ Deno.serve(async (req) => {
     sendEmail({
       to: whisper.email,
       subject: 'Your Whisper reply is ready 🤍',
-      html: replyEmailHtml({ replyUrl, audioUrl, replyText: replyText.trim() || null }),
+      html: replyEmailHtml({ replyUrl, audioUrl, replyText: replyText.trim() || null, token: whisper.public_token }),
     }).catch((e) => console.error('reply email failed', e))
 
     return new Response(JSON.stringify({ success: true }), {
@@ -142,7 +142,10 @@ async function sendEmail({ to, subject, html }: { to: string; subject: string; h
   })
 }
 
-function replyEmailHtml({ replyUrl, audioUrl, replyText }: { replyUrl: string; audioUrl: string | null; replyText: string | null }) {
+function replyEmailHtml({ replyUrl, audioUrl, replyText, token }: { replyUrl: string; audioUrl: string | null; replyText: string | null; token: string }) {
+  const fnBase = `${Deno.env.get('SUPABASE_URL')}/functions/v1/whisper-cta`
+  const bookUrl = `${fnBase}?t=${encodeURIComponent(token)}&a=cta_book`
+  const talkUrl = `${fnBase}?t=${encodeURIComponent(token)}&a=cta_talk`
   const audioBlock = audioUrl ? `
         <p style="text-align:center;margin:24px 0">
           <a href="${audioUrl}" style="background:#0a4a8a;color:#fff;text-decoration:none;padding:14px 28px;border-radius:999px;font-weight:600;display:inline-block">
@@ -182,10 +185,10 @@ function replyEmailHtml({ replyUrl, audioUrl, replyText }: { replyUrl: string; a
             <p style="margin:0 0 16px;font-size:14px;color:#4b5563;line-height:1.5">
               Book a private session or talk one-on-one with a licensed therapist.
             </p>
-            <a href="${SITE_URL}/specialists" style="background:#0a4a8a;color:#fff;text-decoration:none;padding:12px 26px;border-radius:999px;font-weight:600;display:inline-block;margin:0 4px 8px">
+            <a href="${bookUrl}" style="background:#0a4a8a;color:#fff;text-decoration:none;padding:12px 26px;border-radius:999px;font-weight:600;display:inline-block;margin:0 4px 8px">
               Book a Therapist
             </a>
-            <a href="${SITE_URL}/contact" style="background:#ffffff;color:#0a4a8a;text-decoration:none;padding:11px 24px;border-radius:999px;font-weight:600;display:inline-block;border:1.5px solid #0a4a8a;margin:0 4px 8px">
+            <a href="${talkUrl}" style="background:#ffffff;color:#0a4a8a;text-decoration:none;padding:11px 24px;border-radius:999px;font-weight:600;display:inline-block;border:1.5px solid #0a4a8a;margin:0 4px 8px">
               Talk to a Therapist
             </a>
           </div>

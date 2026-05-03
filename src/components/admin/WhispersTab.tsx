@@ -7,6 +7,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Mic, Square, Headphones, Send, RefreshCw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import WhisperAnalyticsTab from "./WhisperAnalyticsTab";
 
 type Whisper = {
   id: string;
@@ -25,6 +27,19 @@ type Whisper = {
 const STATUSES = ["new", "in_review", "replied", "archived"];
 
 export default function WhispersTab() {
+  return (
+    <Tabs defaultValue="inbox" className="space-y-4">
+      <TabsList>
+        <TabsTrigger value="inbox">Inbox</TabsTrigger>
+        <TabsTrigger value="analytics">Analytics</TabsTrigger>
+      </TabsList>
+      <TabsContent value="inbox"><WhispersInbox /></TabsContent>
+      <TabsContent value="analytics"><WhisperAnalyticsTab /></TabsContent>
+    </Tabs>
+  );
+}
+
+function WhispersInbox() {
   const { toast } = useToast();
   const [items, setItems] = useState<Whisper[]>([]);
   const [loading, setLoading] = useState(true);

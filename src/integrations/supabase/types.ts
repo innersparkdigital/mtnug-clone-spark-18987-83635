@@ -2009,9 +2009,58 @@ export type Database = {
         }
         Relationships: []
       }
+      whisper_events: {
+        Row: {
+          country: string | null
+          created_at: string
+          event_type: string
+          id: string
+          metadata: Json | null
+          referrer: string | null
+          user_agent: string | null
+          whisper_id: string
+        }
+        Insert: {
+          country?: string | null
+          created_at?: string
+          event_type: string
+          id?: string
+          metadata?: Json | null
+          referrer?: string | null
+          user_agent?: string | null
+          whisper_id: string
+        }
+        Update: {
+          country?: string | null
+          created_at?: string
+          event_type?: string
+          id?: string
+          metadata?: Json | null
+          referrer?: string | null
+          user_agent?: string | null
+          whisper_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "whisper_events_whisper_id_fkey"
+            columns: ["whisper_id"]
+            isOneToOne: false
+            referencedRelation: "whispers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       whispers: {
         Row: {
+          ai_analyzed_at: string | null
+          ai_crisis: boolean | null
+          ai_language_detected: string | null
+          ai_sentiment: string | null
+          ai_summary: string | null
+          ai_theme: string | null
+          ai_urgency: string | null
           audio_path: string
+          country: string | null
           created_at: string
           duration_seconds: number | null
           email: string
@@ -2029,7 +2078,15 @@ export type Database = {
           user_agent: string | null
         }
         Insert: {
+          ai_analyzed_at?: string | null
+          ai_crisis?: boolean | null
+          ai_language_detected?: string | null
+          ai_sentiment?: string | null
+          ai_summary?: string | null
+          ai_theme?: string | null
+          ai_urgency?: string | null
           audio_path: string
+          country?: string | null
           created_at?: string
           duration_seconds?: number | null
           email: string
@@ -2047,7 +2104,15 @@ export type Database = {
           user_agent?: string | null
         }
         Update: {
+          ai_analyzed_at?: string | null
+          ai_crisis?: boolean | null
+          ai_language_detected?: string | null
+          ai_sentiment?: string | null
+          ai_summary?: string | null
+          ai_theme?: string | null
+          ai_urgency?: string | null
           audio_path?: string
+          country?: string | null
           created_at?: string
           duration_seconds?: number | null
           email?: string
