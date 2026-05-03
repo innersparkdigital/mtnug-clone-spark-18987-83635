@@ -161,6 +161,9 @@ const Services = () => {
         {/* Schema.org */}
         <script type="application/ld+json">{JSON.stringify(servicesSchema)}</script>
         <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
+        <script type="application/ld+json">
+          {JSON.stringify({"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What therapy services does Innerspark Africa offer?","acceptedAnswer":{"@type":"Answer","text":"We offer one-on-one video, voice, and chat therapy; group support sessions; couples and marriage counselling; corporate EAPs; and workplace mental health training."}},{"@type":"Question","name":"Do you treat anxiety and depression?","acceptedAnswer":{"@type":"Answer","text":"Yes. Anxiety and depression are our most common areas of treatment. We use evidence-based approaches including CBT, ACT, and trauma-focused therapy."}},{"@type":"Question","name":"Can I get couples or marriage counselling online?","acceptedAnswer":{"@type":"Answer","text":"Yes. Couples can join the same session from one or different locations. Both video and chat options are available."}}]})}
+        </script>
       </Helmet>
 
       {/* Pre-Assessment Modal */}
