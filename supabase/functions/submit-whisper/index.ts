@@ -98,7 +98,7 @@ Deno.serve(async (req) => {
     sendEmail({
       to: email,
       subject: 'Your Whisper has been received 🤍',
-      html: userEmailHtml(replyUrl),
+      html: userEmailHtml(replyUrl, row.public_token),
     }).catch((e) => console.error('user email failed', e))
 
     sendEmail({
@@ -139,7 +139,10 @@ async function sendEmail({ to, subject, html }: { to: string; subject: string; h
   })
 }
 
-function userEmailHtml(replyUrl: string) {
+function userEmailHtml(replyUrl: string, token: string) {
+  const fnBase = `${Deno.env.get('SUPABASE_URL')}/functions/v1/whisper-cta`
+  const bookUrl = `${fnBase}?t=${encodeURIComponent(token)}&a=cta_book`
+  const talkUrl = `${fnBase}?t=${encodeURIComponent(token)}&a=cta_talk`
   return `
     <div style="background:#f3f4f6;padding:24px 0;font-family:system-ui,Segoe UI,Arial,sans-serif;color:#1f2937">
       <div style="max-width:600px;margin:0 auto;background:#ffffff;border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.04)">
@@ -169,10 +172,10 @@ function userEmailHtml(replyUrl: string) {
             <p style="margin:0 0 16px;font-size:14px;color:#4b5563;line-height:1.5">
               Book a private session or chat one-on-one with a licensed therapist today.
             </p>
-            <a href="${SITE_URL}/specialists" style="background:#0a4a8a;color:#fff;text-decoration:none;padding:12px 26px;border-radius:999px;font-weight:600;display:inline-block;margin:0 4px 8px">
+            <a href="${bookUrl}" style="background:#0a4a8a;color:#fff;text-decoration:none;padding:12px 26px;border-radius:999px;font-weight:600;display:inline-block;margin:0 4px 8px">
               Book a Therapist
             </a>
-            <a href="${SITE_URL}/contact" style="background:#ffffff;color:#0a4a8a;text-decoration:none;padding:11px 24px;border-radius:999px;font-weight:600;display:inline-block;border:1.5px solid #0a4a8a;margin:0 4px 8px">
+            <a href="${talkUrl}" style="background:#ffffff;color:#0a4a8a;text-decoration:none;padding:11px 24px;border-radius:999px;font-weight:600;display:inline-block;border:1.5px solid #0a4a8a;margin:0 4px 8px">
               Talk to a Therapist
             </a>
           </div>
