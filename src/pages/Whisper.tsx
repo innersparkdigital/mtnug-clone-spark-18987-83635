@@ -262,6 +262,20 @@ function WhisperReplyView({ token }: { token: string }) {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const playedRef = useRef(false);
+
+  const track = (event_type: string) => {
+    fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/track-whisper-event`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+      },
+      body: JSON.stringify({ token, event_type }),
+      keepalive: true,
+    }).catch(() => {});
+  };
 
   useEffect(() => {
     const load = async () => {
@@ -271,6 +285,7 @@ function WhisperReplyView({ token }: { token: string }) {
         const j = await res.json();
         if (!res.ok) throw new Error(j.error || "Could not load");
         setData(j);
+        if (j?.status === 'replied') track('reply_opened');
       } catch (e: any) {
         setError(e.message);
       } finally {
@@ -326,7 +341,13 @@ function WhisperReplyView({ token }: { token: string }) {
                       <Heart className="w-4 h-4" /> A reply for you
                     </p>
                     {data.reply_audio_url && (
-                      <audio controls src={data.reply_audio_url} className="w-full mb-3" />
+                      <audio
+                        ref={audioRef}
+                        controls
+                        src={data.reply_audio_url}
+                        className="w-full mb-3"
+                        onPlay={() => { if (!playedRef.current) { playedRef.current = true; track('audio_played'); } }}
+                      />
                     )}
                     {data.reply_text && (
                       <p className="text-sm leading-relaxed whitespace-pre-wrap">{data.reply_text}</p>
@@ -336,7 +357,7 @@ function WhisperReplyView({ token }: { token: string }) {
                     <p className="text-sm text-muted-foreground mb-3">
                       If this resonates, you can continue the conversation in a private session.
                     </p>
-                    <Link to="/specialists">
+                    <Link to="/specialists" onClick={() => track('cta_book')}>
                       <Button className="w-full rounded-full" size="lg">
                         Book a private session
                       </Button>
