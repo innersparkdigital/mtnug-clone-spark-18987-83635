@@ -1,11 +1,15 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, X, Send, Loader2, Phone, Calendar, Heart, AlertTriangle, LifeBuoy, PhoneCall, UserPlus, Check } from "lucide-react";
+import { MessageCircle, X, Send, Loader2, Phone, Calendar, Heart, AlertTriangle, LifeBuoy, PhoneCall, UserPlus, Check, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/analytics";
+import amaniAvatar from "@/assets/amani-avatar.jpg";
+
+const ASSISTANT_NAME = "Amani";
+const ASSISTANT_ROLE = "Care Assistant";
 
 type Msg = { role: "user" | "assistant"; content: string; flagged?: boolean; tools?: string[] };
 type Chip = { label: string; target: string };
@@ -52,7 +56,7 @@ function getAnonId(): string {
 const WELCOME: Msg = {
   role: "assistant",
   content:
-    "Hi 💙 I'm your InnerSpark Support Assistant. I can help you understand our services, book a therapist, or take a free wellbeing check.\n\n*This is a support assistant, not a licensed therapist. For professional help, please book a session.*",
+    "Hey there 👋 I'm **Amani**, your wellness buddy from InnerSpark ✨\n\nWhat's on your mind today? I can help you book a therapist, take a free wellbeing check, or just chat through how you're feeling 💙",
 };
 
 const AIChatWidget = () => {
@@ -302,19 +306,55 @@ const AIChatWidget = () => {
     <>
       {/* Floating button */}
       {!open && (
-        <motion.button
-          onClick={handleOpen}
-          className="fixed bottom-6 right-6 z-50 flex items-center gap-2 bg-primary text-primary-foreground px-4 py-3 rounded-full shadow-lg hover:shadow-xl"
+        <motion.div
           initial={{ scale: 0, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.8, type: "spring", stiffness: 200 }}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          aria-label="Open support chat"
+          className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2"
         >
-          <MessageCircle className="w-5 h-5" />
-          <span className="hidden sm:inline font-medium text-sm">Chat with us</span>
-        </motion.button>
+          {/* Teaser bubble */}
+          <motion.button
+            onClick={handleOpen}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.6, duration: 0.4 }}
+            className="hidden sm:flex items-center gap-2 bg-background border border-border rounded-2xl rounded-br-sm pl-3 pr-4 py-2 shadow-lg hover:shadow-xl text-left max-w-[240px]"
+            aria-label="Open chat with Amani"
+          >
+            <span className="text-xs leading-snug">
+              <span className="font-semibold text-foreground">Hi, I'm Amani 👋</span>
+              <span className="block text-muted-foreground">Need a hand? Let's chat!</span>
+            </span>
+          </motion.button>
+
+          {/* Avatar button */}
+          <motion.button
+            onClick={handleOpen}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="relative group"
+            aria-label="Open support chat"
+          >
+            {/* Pulsing ring */}
+            <span className="absolute inset-0 rounded-full bg-primary/40 animate-ping" />
+            <span className="relative flex items-center justify-center w-16 h-16 rounded-full bg-primary shadow-xl ring-4 ring-background overflow-hidden">
+              <img
+                src={amaniAvatar}
+                alt="Amani, your InnerSpark care assistant"
+                width={64}
+                height={64}
+                className="w-full h-full object-cover"
+                loading="lazy"
+              />
+            </span>
+            {/* Online dot */}
+            <span className="absolute bottom-1 right-1 w-3.5 h-3.5 rounded-full bg-green-500 ring-2 ring-background" />
+            {/* Sparkle badge */}
+            <span className="absolute -top-1 -left-1 flex items-center justify-center w-6 h-6 rounded-full bg-amber-400 text-amber-900 shadow-md">
+              <Sparkles className="w-3.5 h-3.5" />
+            </span>
+          </motion.button>
+        </motion.div>
       )}
 
       {/* Chat panel */}
@@ -402,14 +442,29 @@ const AIChatWidget = () => {
             ) : (
               <>
             {/* Header */}
-            <div className="flex items-center justify-between px-4 py-3 bg-primary text-primary-foreground">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                  <Heart className="w-4 h-4" />
+            <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-br from-primary to-primary/80 text-primary-foreground">
+              <div className="flex items-center gap-3">
+                <div className="relative">
+                  <div className="w-11 h-11 rounded-full overflow-hidden ring-2 ring-white/40 bg-white/10">
+                    <img
+                      src={amaniAvatar}
+                      alt={`${ASSISTANT_NAME} avatar`}
+                      width={44}
+                      height={44}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-green-400 ring-2 ring-primary" />
                 </div>
                 <div>
-                  <div className="font-bold text-sm leading-tight">InnerSpark Assistant</div>
-                  <div className="text-[10px] opacity-90">Support guide • Not a therapist</div>
+                  <div className="font-bold text-sm leading-tight flex items-center gap-1.5">
+                    {ASSISTANT_NAME}
+                    <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                  </div>
+                  <div className="text-[11px] opacity-90 flex items-center gap-1">
+                    <span className="inline-block w-1.5 h-1.5 rounded-full bg-green-400" />
+                    InnerSpark • {ASSISTANT_ROLE}
+                  </div>
                 </div>
               </div>
               <button onClick={() => setOpen(false)} aria-label="Close chat" className="p-1 hover:bg-white/10 rounded">
@@ -670,7 +725,7 @@ const AIChatWidget = () => {
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Type your message..."
+                placeholder="Ask me anything..."
                 disabled={loading}
                 className="flex-1 px-3 py-2 text-sm bg-muted rounded-full focus:outline-none focus:ring-2 focus:ring-primary"
                 maxLength={1000}
