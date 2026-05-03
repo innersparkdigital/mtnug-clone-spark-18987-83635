@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -161,9 +161,9 @@ function ReplyDialog({ whisper, onClose, onDone, onSign }: {
   const [blobUrl, setBlobUrl] = useState<string | null>(null);
   const [origUrl, setOrigUrl] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
-  const mr = { current: null as MediaRecorder | null };
-  const chunksRef = { current: [] as Blob[] };
-  const timer = { current: null as number | null };
+  const mr = useRef<MediaRecorder | null>(null);
+  const chunksRef = useRef<Blob[]>([]);
+  const timer = useRef<number | null>(null);
 
   useEffect(() => { onSign(whisper.audio_path).then(setOrigUrl); }, []);
 
