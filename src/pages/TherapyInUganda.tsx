@@ -209,6 +209,31 @@ const TherapyInUganda = () => {
           </div>
         </section>
 
+        {/* Helpful Reading */}
+        <section className="py-16 bg-muted/30">
+          <div className="container mx-auto px-4 max-w-4xl">
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-8 text-center">
+              <T>Popular Mental Health Guides for Uganda</T>
+            </h2>
+            <div className="grid md:grid-cols-2 gap-4">
+              {[
+                { slug: "affordable-online-counselling-uganda", title: "Affordable Online Counselling in Uganda" },
+                { slug: "best-therapist-for-anxiety-in-uganda", title: "Best Therapist for Anxiety in Uganda" },
+                { slug: "online-vs-in-person-therapy-uganda", title: "Online vs In-Person Therapy in Uganda" },
+                { slug: "cost-of-therapy-in-kampala-2026", title: "Cost of Therapy in Kampala (2026)" },
+                { slug: "mental-health-support-students-uganda", title: "Mental Health Support for Students in Uganda" },
+                { slug: "workplace-burnout-uganda", title: "Workplace Burnout in Uganda" },
+                { slug: "talk-to-boss-mental-health-uganda", title: "How to Talk to Your Boss About Mental Health" },
+                { slug: "how-to-find-psychologist-in-kampala", title: "How to Find a Psychologist in Kampala" },
+              ].map((p) => (
+                <Link key={p.slug} to={`/blog/${p.slug}`} className="block p-4 bg-background rounded-lg border border-border hover:border-primary/50 transition-colors">
+                  <span className="text-sm font-medium text-foreground hover:text-primary"><T>{p.title}</T></span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+
         <Footer />
       </div>
     </>
