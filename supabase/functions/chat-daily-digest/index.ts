@@ -141,27 +141,14 @@ Deno.serve(async (req) => {
         </div>
       </div>`;
 
-    const resp = await fetch(RESEND_GATEWAY_URL + "/emails", {
+    const resp = await fetch(RESEND_GATEWAY_URL, {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY || RESEND_API_KEY}`,
-        "X-Connection-Api-Key": RESEND_API_KEY,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ from: FROM, to: [ADMIN_EMAIL], subject, html }),
+      headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ from: FROM, to: [ADMIN_EMAIL], reply_to: ADMIN_EMAIL, subject, html }),
     });
-
-    // Fallback to direct Resend API if gateway not used
     if (!resp.ok) {
-      const direct = await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ from: FROM, to: [ADMIN_EMAIL], subject, html }),
-      });
-      if (!direct.ok) {
-        const txt = await direct.text();
-        throw new Error(`Resend send failed: ${direct.status} ${txt}`);
-      }
+      const txt = await resp.text();
+      throw new Error(`Resend send failed: ${resp.status} ${txt}`);
     }
 
     return new Response(JSON.stringify({ ok: true, sessions: sessions.length, leads: leads.length, crises: crises.length }), {
