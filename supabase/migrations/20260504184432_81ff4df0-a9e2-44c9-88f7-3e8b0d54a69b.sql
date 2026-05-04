@@ -1,0 +1,1 @@
+ALTER TABLE public.corporate_companies ADD COLUMN IF NOT EXISTS location text;

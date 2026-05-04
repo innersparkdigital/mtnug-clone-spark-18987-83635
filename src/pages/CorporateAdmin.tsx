@@ -29,6 +29,7 @@ interface Company {
   contact_person: string | null;
   contact_email: string | null;
   contact_phone: string | null;
+  location: string | null;
   created_at: string;
 }
 
@@ -73,7 +74,7 @@ const CorporateAdmin = () => {
 
   const [showCreateCompany, setShowCreateCompany] = useState(false);
   const [showAddEmployee, setShowAddEmployee] = useState(false);
-  const [companyForm, setCompanyForm] = useState({ name: '', industry: '', employee_count: '', contact_person: '', contact_email: '', contact_phone: '' });
+  const [companyForm, setCompanyForm] = useState({ name: '', industry: '', employee_count: '', contact_person: '', contact_email: '', contact_phone: '', location: '' });
   const [employeeForm, setEmployeeForm] = useState({ name: '', email: '', phone: '', gender: '' });
   const [csvFile, setCsvFile] = useState<File | null>(null);
   const [allEmployees, setAllEmployees] = useState<Employee[]>([]);
@@ -157,12 +158,13 @@ const CorporateAdmin = () => {
       contact_person: companyForm.contact_person || null,
       contact_email: companyForm.contact_email || null,
       contact_phone: companyForm.contact_phone || null,
+      location: companyForm.location || null,
       created_by: user?.id,
     });
     if (error) { toast.error('Failed to create company'); return; }
     toast.success('Company created');
     setShowCreateCompany(false);
-    setCompanyForm({ name: '', industry: '', employee_count: '', contact_person: '', contact_email: '', contact_phone: '' });
+    setCompanyForm({ name: '', industry: '', employee_count: '', contact_person: '', contact_email: '', contact_phone: '', location: '' });
     fetchCompanies();
   };
 
@@ -463,6 +465,7 @@ const CorporateAdmin = () => {
                     <div><Label>Contact Person</Label><Input value={companyForm.contact_person} onChange={e => setCompanyForm(p => ({ ...p, contact_person: e.target.value }))} /></div>
                     <div><Label>Contact Email</Label><Input type="email" value={companyForm.contact_email} onChange={e => setCompanyForm(p => ({ ...p, contact_email: e.target.value }))} /></div>
                     <div><Label>Contact Phone</Label><Input type="tel" value={companyForm.contact_phone} onChange={e => setCompanyForm(p => ({ ...p, contact_phone: e.target.value }))} /></div>
+                    <div><Label>Location</Label><Input value={companyForm.location} onChange={e => setCompanyForm(p => ({ ...p, location: e.target.value }))} placeholder="e.g. Kampala, Uganda" /></div>
                     <Button onClick={createCompany} className="w-full">Create Company</Button>
                   </div>
                 </DialogContent>

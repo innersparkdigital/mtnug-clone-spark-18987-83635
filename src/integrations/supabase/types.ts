@@ -692,6 +692,7 @@ export type Database = {
           employee_count: number | null
           id: string
           industry: string | null
+          location: string | null
           name: string
           updated_at: string
         }
@@ -704,6 +705,7 @@ export type Database = {
           employee_count?: number | null
           id?: string
           industry?: string | null
+          location?: string | null
           name: string
           updated_at?: string
         }
@@ -716,6 +718,7 @@ export type Database = {
           employee_count?: number | null
           id?: string
           industry?: string | null
+          location?: string | null
           name?: string
           updated_at?: string
         }
