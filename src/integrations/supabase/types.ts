@@ -791,6 +791,7 @@ export type Database = {
           recommended_service_ids: string[]
           sent_at: string | null
           sent_to_email: string | null
+          service_notes: Json
           updated_at: string
         }
         Insert: {
@@ -803,6 +804,7 @@ export type Database = {
           recommended_service_ids?: string[]
           sent_at?: string | null
           sent_to_email?: string | null
+          service_notes?: Json
           updated_at?: string
         }
         Update: {
@@ -815,6 +817,7 @@ export type Database = {
           recommended_service_ids?: string[]
           sent_at?: string | null
           sent_to_email?: string | null
+          service_notes?: Json
           updated_at?: string
         }
         Relationships: []
@@ -964,31 +967,49 @@ export type Database = {
         Row: {
           clicked_at: string
           company_id: string | null
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
           id: string
           ip_address: string | null
+          message: string | null
+          preferred_mode: string | null
           report_id: string | null
           service_id: string | null
           service_name_snapshot: string | null
+          submitted: boolean
           user_agent: string | null
         }
         Insert: {
           clicked_at?: string
           company_id?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
           id?: string
           ip_address?: string | null
+          message?: string | null
+          preferred_mode?: string | null
           report_id?: string | null
           service_id?: string | null
           service_name_snapshot?: string | null
+          submitted?: boolean
           user_agent?: string | null
         }
         Update: {
           clicked_at?: string
           company_id?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
           id?: string
           ip_address?: string | null
+          message?: string | null
+          preferred_mode?: string | null
           report_id?: string | null
           service_id?: string | null
           service_name_snapshot?: string | null
+          submitted?: boolean
           user_agent?: string | null
         }
         Relationships: []
@@ -2351,6 +2372,10 @@ export type Database = {
         Returns: number
       }
       get_doctor_email_by_phone: { Args: { _phone: string }; Returns: string }
+      get_service_recommendation_details: {
+        Args: { _report_id: string; _service_id: string }
+        Returns: Json
+      }
       get_whisper_by_token: { Args: { _token: string }; Returns: Json }
       has_page_access: {
         Args: { _page_key: string; _user_id: string }
