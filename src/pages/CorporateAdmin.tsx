@@ -1254,6 +1254,35 @@ const CorporateAdmin = () => {
                   </CardContent>
                 </Card>
               </TabsContent>
+
+              {/* SERVICE INTERESTS TAB — logs HR clicks on recommended services */}
+              <TabsContent value="interests">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Service Interests</CardTitle>
+                    <CardDescription>HR clicks on recommended services from {selectedCompany.name} reports.</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    {serviceInterests.filter(i => i.company_id === selectedCompany.id).length === 0 ? (
+                      <p className="text-sm text-muted-foreground">No service interest clicks yet.</p>
+                    ) : (
+                      <div className="space-y-2">
+                        {serviceInterests.filter(i => i.company_id === selectedCompany.id).map((i) => (
+                          <div key={i.id} className="flex items-center justify-between p-3 border rounded-md">
+                            <div>
+                              <div className="font-medium text-sm">{i.service_name_snapshot}</div>
+                              <div className="text-xs text-muted-foreground">
+                                {new Date(i.clicked_at).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' })}
+                              </div>
+                            </div>
+                            <Badge>Interested</Badge>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </TabsContent>
             </Tabs>
           )}
         </div>
