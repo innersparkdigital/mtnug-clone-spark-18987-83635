@@ -26,6 +26,28 @@ interface Props {
   low_count?: number
   recommendations?: string[]
   dashboard_url?: string
+  // Manual / human report layer (additive, optional)
+  consultant_observations?: string
+  recommended_services?: Array<{
+    id: string
+    name: string
+    description?: string
+    physical_price?: number | null
+    virtual_price?: number | null
+    per_employee_price?: number | null
+    unit_label?: string
+    track_url?: string
+  }>
+  alternative_services?: Array<{
+    id: string
+    name: string
+    description?: string
+    physical_price?: number | null
+    virtual_price?: number | null
+    per_employee_price?: number | null
+    unit_label?: string
+    track_url?: string
+  }>
 }
 
 const Email = ({
@@ -45,6 +67,9 @@ const Email = ({
   low_count = 0,
   recommendations,
   dashboard_url = 'https://www.innersparkafrica.com/corporate-admin',
+  consultant_observations,
+  recommended_services,
+  alternative_services,
 }: Props) => {
   const period = reporting_period || new Date().toLocaleDateString('en-UG', { year: 'numeric', month: 'long' })
 
@@ -213,6 +238,51 @@ const Email = ({
           <Section style={{ textAlign: 'center' as const, margin: '20px 0' }}>
             <Button style={ctaSecondary} href={dashboard_url}>Open the corporate dashboard</Button>
           </Section>
+
+          {(consultant_observations || (recommended_services && recommended_services.length > 0)) && (
+            <Section style={manualBox}>
+              <Text style={packageEyebrow}>FROM YOUR INNERSPARK CONSULTANT</Text>
+              <Heading as="h2" style={packageH2}>Consultant's Observations & Recommended Services</Heading>
+              <Text style={packageSub}>A human review of your team's results from our wellness team.</Text>
+
+              {consultant_observations && (
+                <>
+                  <Text style={packageSection}>📝 Observations</Text>
+                  <Text style={observationsText}>{consultant_observations}</Text>
+                </>
+              )}
+
+              {recommended_services && recommended_services.length > 0 && (
+                <>
+                  <Text style={packageSection}>🎯 Services we recommend for your team</Text>
+                  {recommended_services.map((s) => (
+                    <Section key={s.id} style={serviceCard}>
+                      <Text style={serviceName}>{s.name}</Text>
+                      {s.description && <Text style={serviceDesc}>{s.description}</Text>}
+                      <Text style={servicePricing}>{formatPricing(s)}</Text>
+                      {s.track_url && (
+                        <Section style={{ textAlign: 'left' as const, margin: '10px 0 0' }}>
+                          <Button style={cta} href={s.track_url}>Choose this service →</Button>
+                        </Section>
+                      )}
+                    </Section>
+                  ))}
+                </>
+              )}
+
+              {alternative_services && alternative_services.length > 0 && (
+                <>
+                  <Text style={packageSection}>➕ Other services available</Text>
+                  {alternative_services.map((s) => (
+                    <Text key={s.id} style={altItem}>
+                      • <strong>{s.name}</strong> — {formatPricing(s)}
+                      {s.track_url && <> &nbsp;<a href={s.track_url} style={{ color: PRIMARY_COLOR, textDecoration: 'underline' }}>I'm interested →</a></>}
+                    </Text>
+                  ))}
+                </>
+              )}
+            </Section>
+          )}
 
           <Text style={disclaimer}>
             <strong>Confidentiality:</strong> Individual employee responses are private and never
