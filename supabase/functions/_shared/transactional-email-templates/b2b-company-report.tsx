@@ -26,6 +26,28 @@ interface Props {
   low_count?: number
   recommendations?: string[]
   dashboard_url?: string
+  // Manual / human report layer (additive, optional)
+  consultant_observations?: string
+  recommended_services?: Array<{
+    id: string
+    name: string
+    description?: string
+    physical_price?: number | null
+    virtual_price?: number | null
+    per_employee_price?: number | null
+    unit_label?: string
+    track_url?: string
+  }>
+  alternative_services?: Array<{
+    id: string
+    name: string
+    description?: string
+    physical_price?: number | null
+    virtual_price?: number | null
+    per_employee_price?: number | null
+    unit_label?: string
+    track_url?: string
+  }>
 }
 
 const Email = ({
@@ -45,6 +67,9 @@ const Email = ({
   low_count = 0,
   recommendations,
   dashboard_url = 'https://www.innersparkafrica.com/corporate-admin',
+  consultant_observations,
+  recommended_services,
+  alternative_services,
 }: Props) => {
   const period = reporting_period || new Date().toLocaleDateString('en-UG', { year: 'numeric', month: 'long' })
 
@@ -214,6 +239,51 @@ const Email = ({
             <Button style={ctaSecondary} href={dashboard_url}>Open the corporate dashboard</Button>
           </Section>
 
+          {(consultant_observations || (recommended_services && recommended_services.length > 0)) && (
+            <Section style={manualBox}>
+              <Text style={packageEyebrow}>FROM YOUR INNERSPARK CONSULTANT</Text>
+              <Heading as="h2" style={packageH2}>Consultant's Observations & Recommended Services</Heading>
+              <Text style={packageSub}>A human review of your team's results from our wellness team.</Text>
+
+              {consultant_observations && (
+                <>
+                  <Text style={packageSection}>📝 Observations</Text>
+                  <Text style={observationsText}>{consultant_observations}</Text>
+                </>
+              )}
+
+              {recommended_services && recommended_services.length > 0 && (
+                <>
+                  <Text style={packageSection}>🎯 Services we recommend for your team</Text>
+                  {recommended_services.map((s) => (
+                    <Section key={s.id} style={serviceCard}>
+                      <Text style={serviceName}>{s.name}</Text>
+                      {s.description && <Text style={serviceDesc}>{s.description}</Text>}
+                      <Text style={servicePricing}>{formatPricing(s)}</Text>
+                      {s.track_url && (
+                        <Section style={{ textAlign: 'left' as const, margin: '10px 0 0' }}>
+                          <Button style={cta} href={s.track_url}>Choose this service →</Button>
+                        </Section>
+                      )}
+                    </Section>
+                  ))}
+                </>
+              )}
+
+              {alternative_services && alternative_services.length > 0 && (
+                <>
+                  <Text style={packageSection}>➕ Other services available</Text>
+                  {alternative_services.map((s) => (
+                    <Text key={s.id} style={altItem}>
+                      • <strong>{s.name}</strong> — {formatPricing(s)}
+                      {s.track_url && <> &nbsp;<a href={s.track_url} style={{ color: PRIMARY_COLOR, textDecoration: 'underline' }}>I'm interested →</a></>}
+                    </Text>
+                  ))}
+                </>
+              )}
+            </Section>
+          )}
+
           <Text style={disclaimer}>
             <strong>Confidentiality:</strong> Individual employee responses are private and never
             shared. Reports are based on group-level aggregates only.
@@ -306,3 +376,20 @@ const ctaSecondary = { backgroundColor: '#ffffff', color: PRIMARY_COLOR, padding
 const disclaimer = { fontSize: '12px', color: '#065f46', backgroundColor: '#ecfdf5', borderLeft: '3px solid #10b981', padding: '10px 14px', borderRadius: '4px', lineHeight: '1.5', margin: '16px 0' }
 const hr = { borderColor: '#e5e5e5', margin: '24px 0' }
 const footer = { fontSize: '13px', color: '#999', margin: '0', lineHeight: '1.5' }
+
+const manualBox = { backgroundColor: '#fff7ed', border: `2px dashed #f59e0b`, borderRadius: '12px', padding: '20px', margin: '20px 0' }
+const observationsText = { fontSize: '14px', color: '#1a1a1a', lineHeight: '1.65', margin: '0 0 14px', whiteSpace: 'pre-wrap' as const, backgroundColor: '#ffffff', borderRadius: '8px', padding: '12px 14px', border: '1px solid #fde68a' }
+const serviceCard = { backgroundColor: '#ffffff', border: `1px solid ${PRIMARY_COLOR}`, borderRadius: '10px', padding: '14px 16px', margin: '0 0 10px' }
+const serviceName = { fontSize: '15px', fontWeight: '700' as const, color: '#1a1a1a', margin: '0 0 4px' }
+const serviceDesc = { fontSize: '13px', color: '#555', margin: '0 0 6px', lineHeight: '1.5' }
+const servicePricing = { fontSize: '13px', fontWeight: '600' as const, color: PRIMARY_COLOR, margin: '0' }
+const altItem = { fontSize: '13px', color: '#333', margin: '0 0 6px', lineHeight: '1.55' }
+
+function formatPricing(s: { physical_price?: number | null; virtual_price?: number | null; per_employee_price?: number | null; unit_label?: string }) {
+  const fmt = (n: number) => `UGX ${n.toLocaleString('en-UG')}`
+  const parts: string[] = []
+  if (s.physical_price) parts.push(`Physical: ${fmt(s.physical_price)}`)
+  if (s.virtual_price) parts.push(`Virtual: ${fmt(s.virtual_price)}`)
+  if (s.per_employee_price) parts.push(`${fmt(s.per_employee_price)} / ${s.unit_label || 'unit'}`)
+  return parts.length > 0 ? parts.join('  •  ') : 'Pricing on request'
+}

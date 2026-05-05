@@ -18,6 +18,8 @@ import { Building2, Users, Plus, Upload, BarChart3, FileText, Trash2, UserPlus, 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
 import { generateCompanyReportPdf } from '@/lib/companyReportPdf';
 import { Loader2 } from 'lucide-react';
 
@@ -89,6 +91,12 @@ const CorporateAdmin = () => {
   const [sendingReport, setSendingReport] = useState(false);
   const [downloadingPdf, setDownloadingPdf] = useState(false);
 
+  // Manual report builder
+  const [serviceCatalog, setServiceCatalog] = useState<any[]>([]);
+  const [observations, setObservations] = useState('');
+  const [selectedServiceIds, setSelectedServiceIds] = useState<Set<string>>(new Set());
+  const [serviceInterests, setServiceInterests] = useState<any[]>([]);
+
   // Sorting
   const [companySortKey, setCompanySortKey] = useState<string>('');
   const [companySortDir, setCompanySortDir] = useState<'asc' | 'desc'>('asc');
@@ -112,6 +120,8 @@ const CorporateAdmin = () => {
     if (isAdmin) {
       fetchCompanies();
       fetchAllGlobalData();
+      fetchServiceCatalog();
+      fetchServiceInterests();
     }
   }, [isAdmin]);
 
@@ -128,6 +138,16 @@ const CorporateAdmin = () => {
     const { data } = await supabase.from('corporate_companies').select('*').order('created_at', { ascending: false });
     setCompanies((data as any[]) || []);
     setLoading(false);
+  };
+
+  const fetchServiceCatalog = async () => {
+    const { data } = await supabase.from('corporate_service_catalog').select('*').eq('is_active', true).order('sort_order');
+    setServiceCatalog((data as any[]) || []);
+  };
+
+  const fetchServiceInterests = async () => {
+    const { data } = await supabase.from('corporate_service_interests').select('*').order('clicked_at', { ascending: false }).limit(100);
+    setServiceInterests((data as any[]) || []);
   };
 
   const fetchAllGlobalData = async () => {
@@ -700,6 +720,7 @@ const CorporateAdmin = () => {
                 <TabsTrigger value="analytics"><BarChart3 className="w-4 h-4 mr-1" /> Analytics</TabsTrigger>
                 <TabsTrigger value="employees"><Users className="w-4 h-4 mr-1" /> Employees ({totalEmployees})</TabsTrigger>
                 <TabsTrigger value="report"><FileText className="w-4 h-4 mr-1" /> Report</TabsTrigger>
+                <TabsTrigger value="interests"><Activity className="w-4 h-4 mr-1" /> Service Interests ({serviceInterests.filter(i => i.company_id === selectedCompany.id).length})</TabsTrigger>
               </TabsList>
 
               {/* ANALYTICS TAB */}
@@ -1037,6 +1058,56 @@ const CorporateAdmin = () => {
                             <li>• Partner with InnerSpark Africa for ongoing corporate wellness support</li>
                           </ul>
                         </div>
+
+                        {/* Manual Report Builder — adds human-written observations + service recommendations */}
+                        <div className="border-t pt-6 mt-2">
+                          <h3 className="font-semibold mb-1 flex items-center gap-2">✍️ Manual Report Builder <Badge variant="secondary" className="text-[10px]">Human layer</Badge></h3>
+                          <p className="text-xs text-muted-foreground mb-4">Add your own observations and pick services to recommend. These appear inside the email sent to the company HR alongside the automated report. When HR clicks a service, you'll be alerted by email.</p>
+
+                          <div className="space-y-2 mb-4">
+                            <Label htmlFor="observations">Consultant's Observations</Label>
+                            <Textarea
+                              id="observations"
+                              placeholder="e.g. The team shows high stress around Q3 deadlines. Several employees flagged anxiety and sleep issues. We recommend immediate manager training and a 1:1 therapy access window for critical cases…"
+                              value={observations}
+                              onChange={(e) => setObservations(e.target.value)}
+                              rows={5}
+                            />
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label>Recommended Services</Label>
+                            <div className="grid sm:grid-cols-2 gap-2">
+                              {serviceCatalog.map((s) => {
+                                const checked = selectedServiceIds.has(s.id);
+                                return (
+                                  <label key={s.id} className={`flex items-start gap-2 p-3 rounded-md border cursor-pointer transition ${checked ? 'border-primary bg-primary/5' : 'border-input hover:bg-muted/50'}`}>
+                                    <Checkbox
+                                      checked={checked}
+                                      onCheckedChange={(v) => {
+                                        const next = new Set(selectedServiceIds);
+                                        if (v) next.add(s.id); else next.delete(s.id);
+                                        setSelectedServiceIds(next);
+                                      }}
+                                    />
+                                    <div className="flex-1 min-w-0">
+                                      <div className="text-sm font-medium">{s.name}</div>
+                                      {s.description && <div className="text-[11px] text-muted-foreground mt-0.5">{s.description}</div>}
+                                      <div className="text-[11px] mt-1 font-medium text-primary">
+                                        {s.physical_price ? `Physical: UGX ${Number(s.physical_price).toLocaleString()}` : ''}
+                                        {s.physical_price && s.virtual_price ? ' • ' : ''}
+                                        {s.virtual_price ? `Virtual: UGX ${Number(s.virtual_price).toLocaleString()}` : ''}
+                                        {s.per_employee_price ? `UGX ${Number(s.per_employee_price).toLocaleString()} / ${s.unit_label || 'unit'}` : ''}
+                                      </div>
+                                    </div>
+                                  </label>
+                                );
+                              })}
+                            </div>
+                            {serviceCatalog.length === 0 && <p className="text-xs text-muted-foreground">No services in catalog yet.</p>}
+                          </div>
+                        </div>
+
                         <div className="flex flex-wrap gap-2">
                         <Button variant="outline" disabled={downloadingPdf} onClick={async () => {
                           setDownloadingPdf(true);
@@ -1088,6 +1159,48 @@ const CorporateAdmin = () => {
                             recs.push('Schedule the next quarterly Mind-Check & WHO-5 in 90 days.');
                             recs.push('Give every employee anytime access to chat, therapy and support groups via the InnerSpark App.');
                             const period = new Date().toLocaleDateString('en-UG', { year: 'numeric', month: 'long' });
+
+                            // Build manual layer (additive). Create report row first to get a stable id for tracked links.
+                            const recommendedIds = Array.from(selectedServiceIds);
+                            let reportId: string | null = null;
+                            if (observations.trim() || recommendedIds.length > 0) {
+                              const { data: reportRow, error: reportErr } = await supabase
+                                .from('corporate_reports')
+                                .insert({
+                                  company_id: selectedCompany.id,
+                                  period_label: period,
+                                  observations: observations.trim() || null,
+                                  recommended_service_ids: recommendedIds,
+                                  sent_to_email: selectedCompany.contact_email,
+                                  created_by: user?.id,
+                                })
+                                .select('id')
+                                .single();
+                              if (reportErr) console.error('Report row insert failed', reportErr);
+                              reportId = (reportRow as any)?.id || null;
+                            }
+
+                            const projectRef = (import.meta as any).env.VITE_SUPABASE_PROJECT_ID;
+                            const trackBase = `https://${projectRef}.supabase.co/functions/v1/track-service-interest`;
+                            const buildTrackUrl = (sid: string) => reportId ? `${trackBase}?report_id=${reportId}&service_id=${sid}` : '';
+
+                            const recommended_services = serviceCatalog
+                              .filter(s => selectedServiceIds.has(s.id))
+                              .map(s => ({
+                                id: s.id, name: s.name, description: s.description,
+                                physical_price: s.physical_price, virtual_price: s.virtual_price,
+                                per_employee_price: s.per_employee_price, unit_label: s.unit_label,
+                                track_url: buildTrackUrl(s.id),
+                              }));
+                            const alternative_services = recommendedIds.length > 0 ? serviceCatalog
+                              .filter(s => !selectedServiceIds.has(s.id))
+                              .map(s => ({
+                                id: s.id, name: s.name, description: s.description,
+                                physical_price: s.physical_price, virtual_price: s.virtual_price,
+                                per_employee_price: s.per_employee_price, unit_label: s.unit_label,
+                                track_url: buildTrackUrl(s.id),
+                              })) : [];
+
                             const { data, error: emailErr } = await supabase.functions.invoke('send-transactional-email', {
                               body: {
                                 templateName: 'b2b-company-report',
@@ -1109,6 +1222,9 @@ const CorporateAdmin = () => {
                                   low_wellbeing_pct: completedScreenings > 0 ? Math.round((redCount / completedScreenings) * 100) : 0,
                                   needs_support_count: needsSupportCount,
                                   recommendations: recs,
+                                  consultant_observations: observations.trim() || undefined,
+                                  recommended_services: recommended_services.length > 0 ? recommended_services : undefined,
+                                  alternative_services: alternative_services.length > 0 ? alternative_services : undefined,
                                 },
                               },
                             });
@@ -1118,6 +1234,9 @@ const CorporateAdmin = () => {
                             } else {
                               console.log('Report sent:', data);
                               toast.success(`Report sent to ${selectedCompany.contact_email}`);
+                              if (reportId) {
+                                await supabase.from('corporate_reports').update({ sent_at: new Date().toISOString() }).eq('id', reportId);
+                              }
                             }
                           } catch (e: any) {
                             console.error('Send report exception:', e);
@@ -1131,6 +1250,35 @@ const CorporateAdmin = () => {
                         </Button>
                         </div>
                       </>
+                    )}
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              {/* SERVICE INTERESTS TAB — logs HR clicks on recommended services */}
+              <TabsContent value="interests">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Service Interests</CardTitle>
+                    <CardDescription>HR clicks on recommended services from {selectedCompany.name} reports.</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    {serviceInterests.filter(i => i.company_id === selectedCompany.id).length === 0 ? (
+                      <p className="text-sm text-muted-foreground">No service interest clicks yet.</p>
+                    ) : (
+                      <div className="space-y-2">
+                        {serviceInterests.filter(i => i.company_id === selectedCompany.id).map((i) => (
+                          <div key={i.id} className="flex items-center justify-between p-3 border rounded-md">
+                            <div>
+                              <div className="font-medium text-sm">{i.service_name_snapshot}</div>
+                              <div className="text-xs text-muted-foreground">
+                                {new Date(i.clicked_at).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' })}
+                              </div>
+                            </div>
+                            <Badge>Interested</Badge>
+                          </div>
+                        ))}
+                      </div>
                     )}
                   </CardContent>
                 </Card>
