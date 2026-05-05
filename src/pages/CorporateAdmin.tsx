@@ -1057,6 +1057,56 @@ const CorporateAdmin = () => {
                             <li>• Partner with InnerSpark Africa for ongoing corporate wellness support</li>
                           </ul>
                         </div>
+
+                        {/* Manual Report Builder — adds human-written observations + service recommendations */}
+                        <div className="border-t pt-6 mt-2">
+                          <h3 className="font-semibold mb-1 flex items-center gap-2">✍️ Manual Report Builder <Badge variant="secondary" className="text-[10px]">Human layer</Badge></h3>
+                          <p className="text-xs text-muted-foreground mb-4">Add your own observations and pick services to recommend. These appear inside the email sent to the company HR alongside the automated report. When HR clicks a service, you'll be alerted by email.</p>
+
+                          <div className="space-y-2 mb-4">
+                            <Label htmlFor="observations">Consultant's Observations</Label>
+                            <Textarea
+                              id="observations"
+                              placeholder="e.g. The team shows high stress around Q3 deadlines. Several employees flagged anxiety and sleep issues. We recommend immediate manager training and a 1:1 therapy access window for critical cases…"
+                              value={observations}
+                              onChange={(e) => setObservations(e.target.value)}
+                              rows={5}
+                            />
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label>Recommended Services</Label>
+                            <div className="grid sm:grid-cols-2 gap-2">
+                              {serviceCatalog.map((s) => {
+                                const checked = selectedServiceIds.has(s.id);
+                                return (
+                                  <label key={s.id} className={`flex items-start gap-2 p-3 rounded-md border cursor-pointer transition ${checked ? 'border-primary bg-primary/5' : 'border-input hover:bg-muted/50'}`}>
+                                    <Checkbox
+                                      checked={checked}
+                                      onCheckedChange={(v) => {
+                                        const next = new Set(selectedServiceIds);
+                                        if (v) next.add(s.id); else next.delete(s.id);
+                                        setSelectedServiceIds(next);
+                                      }}
+                                    />
+                                    <div className="flex-1 min-w-0">
+                                      <div className="text-sm font-medium">{s.name}</div>
+                                      {s.description && <div className="text-[11px] text-muted-foreground mt-0.5">{s.description}</div>}
+                                      <div className="text-[11px] mt-1 font-medium text-primary">
+                                        {s.physical_price ? `Physical: UGX ${Number(s.physical_price).toLocaleString()}` : ''}
+                                        {s.physical_price && s.virtual_price ? ' • ' : ''}
+                                        {s.virtual_price ? `Virtual: UGX ${Number(s.virtual_price).toLocaleString()}` : ''}
+                                        {s.per_employee_price ? `UGX ${Number(s.per_employee_price).toLocaleString()} / ${s.unit_label || 'unit'}` : ''}
+                                      </div>
+                                    </div>
+                                  </label>
+                                );
+                              })}
+                            </div>
+                            {serviceCatalog.length === 0 && <p className="text-xs text-muted-foreground">No services in catalog yet.</p>}
+                          </div>
+                        </div>
+
                         <div className="flex flex-wrap gap-2">
                         <Button variant="outline" disabled={downloadingPdf} onClick={async () => {
                           setDownloadingPdf(true);
