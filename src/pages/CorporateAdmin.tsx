@@ -1082,26 +1082,37 @@ const CorporateAdmin = () => {
                               {serviceCatalog.map((s) => {
                                 const checked = selectedServiceIds.has(s.id);
                                 return (
-                                  <label key={s.id} className={`flex items-start gap-2 p-3 rounded-md border cursor-pointer transition ${checked ? 'border-primary bg-primary/5' : 'border-input hover:bg-muted/50'}`}>
-                                    <Checkbox
-                                      checked={checked}
-                                      onCheckedChange={(v) => {
-                                        const next = new Set(selectedServiceIds);
-                                        if (v) next.add(s.id); else next.delete(s.id);
-                                        setSelectedServiceIds(next);
-                                      }}
-                                    />
-                                    <div className="flex-1 min-w-0">
-                                      <div className="text-sm font-medium">{s.name}</div>
-                                      {s.description && <div className="text-[11px] text-muted-foreground mt-0.5">{s.description}</div>}
-                                      <div className="text-[11px] mt-1 font-medium text-primary">
-                                        {s.physical_price ? `Physical: UGX ${Number(s.physical_price).toLocaleString()}` : ''}
-                                        {s.physical_price && s.virtual_price ? ' • ' : ''}
-                                        {s.virtual_price ? `Virtual: UGX ${Number(s.virtual_price).toLocaleString()}` : ''}
-                                        {s.per_employee_price ? `UGX ${Number(s.per_employee_price).toLocaleString()} / ${s.unit_label || 'unit'}` : ''}
+                                  <div key={s.id} className={`p-3 rounded-md border transition ${checked ? 'border-primary bg-primary/5' : 'border-input'}`}>
+                                    <label className="flex items-start gap-2 cursor-pointer">
+                                      <Checkbox
+                                        checked={checked}
+                                        onCheckedChange={(v) => {
+                                          const next = new Set(selectedServiceIds);
+                                          if (v) next.add(s.id); else next.delete(s.id);
+                                          setSelectedServiceIds(next);
+                                        }}
+                                      />
+                                      <div className="flex-1 min-w-0">
+                                        <div className="text-sm font-medium">{s.name}</div>
+                                        {s.description && <div className="text-[11px] text-muted-foreground mt-0.5">{s.description}</div>}
+                                        <div className="text-[11px] mt-1 font-medium text-primary">
+                                          {s.physical_price ? `Physical: UGX ${Number(s.physical_price).toLocaleString()}` : ''}
+                                          {s.physical_price && s.virtual_price ? ' • ' : ''}
+                                          {s.virtual_price ? `Virtual: UGX ${Number(s.virtual_price).toLocaleString()}` : ''}
+                                          {s.per_employee_price ? `UGX ${Number(s.per_employee_price).toLocaleString()} / ${s.unit_label || 'unit'}` : ''}
+                                        </div>
                                       </div>
-                                    </div>
-                                  </label>
+                                    </label>
+                                    {checked && (
+                                      <Textarea
+                                        className="mt-2 text-xs"
+                                        rows={2}
+                                        placeholder="Why we recommend this for the team (shown to HR in the email)…"
+                                        value={serviceReasons[s.id] || ''}
+                                        onChange={(e) => setServiceReasons({ ...serviceReasons, [s.id]: e.target.value })}
+                                      />
+                                    )}
+                                  </div>
                                 );
                               })}
                             </div>
@@ -1154,17 +1165,14 @@ const CorporateAdmin = () => {
                           }
                           setSendingReport(true);
                           try {
-                            const recs: string[] = [];
-                            if (redCount > 0) recs.push('URGENT: Activate the InnerSpark Employee Mental Health Package — critical cases need immediate access to therapy.');
-                            if (yellowCount > 0) recs.push('Roll out manager training on supportive conversations and stress management.');
-                            recs.push('Schedule the next quarterly Mind-Check & WHO-5 in 90 days.');
-                            recs.push('Give every employee anytime access to chat, therapy and support groups via the InnerSpark App.');
                             const period = new Date().toLocaleDateString('en-UG', { year: 'numeric', month: 'long' });
 
                             // Build manual layer (additive). Create report row first to get a stable id for tracked links.
                             const recommendedIds = Array.from(selectedServiceIds);
                             let reportId: string | null = null;
                             if (observations.trim() || recommendedIds.length > 0) {
+                              const notesObj: Record<string, string> = {};
+                              recommendedIds.forEach(id => { if (serviceReasons[id]?.trim()) notesObj[id] = serviceReasons[id].trim(); });
                               const { data: reportRow, error: reportErr } = await supabase
                                 .from('corporate_reports')
                                 .insert({
@@ -1172,6 +1180,7 @@ const CorporateAdmin = () => {
                                   period_label: period,
                                   observations: observations.trim() || null,
                                   recommended_service_ids: recommendedIds,
+                                  service_notes: notesObj,
                                   sent_to_email: selectedCompany.contact_email,
                                   created_by: user?.id,
                                 })
@@ -1192,6 +1201,7 @@ const CorporateAdmin = () => {
                                 physical_price: s.physical_price, virtual_price: s.virtual_price,
                                 per_employee_price: s.per_employee_price, unit_label: s.unit_label,
                                 track_url: buildTrackUrl(s.id),
+                                reason: serviceReasons[s.id]?.trim() || undefined,
                               }));
                             const alternative_services = recommendedIds.length > 0 ? serviceCatalog
                               .filter(s => !selectedServiceIds.has(s.id))
@@ -1222,7 +1232,6 @@ const CorporateAdmin = () => {
                                   moderate_wellbeing_pct: completedScreenings > 0 ? Math.round((yellowCount / completedScreenings) * 100) : 0,
                                   low_wellbeing_pct: completedScreenings > 0 ? Math.round((redCount / completedScreenings) * 100) : 0,
                                   needs_support_count: needsSupportCount,
-                                  recommendations: recs,
                                   consultant_observations: observations.trim() || undefined,
                                   recommended_services: recommended_services.length > 0 ? recommended_services : undefined,
                                   alternative_services: alternative_services.length > 0 ? alternative_services : undefined,
