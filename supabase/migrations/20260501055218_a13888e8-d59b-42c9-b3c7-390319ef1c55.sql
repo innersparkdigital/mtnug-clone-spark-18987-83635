@@ -1,0 +1,1 @@
+ALTER TABLE public.doctor_referrals ADD COLUMN doctor_email text;

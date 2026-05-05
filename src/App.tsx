@@ -90,7 +90,8 @@ import DoctorRefer from "./pages/professionals/DoctorRefer";
 import Specialists from "./pages/Specialists";
 import SpecialistProfile from "./pages/SpecialistProfile";
 import ScrollToTop from "./components/ScrollToTop";
-import FloatingWhatsApp from "./components/FloatingWhatsApp";
+import AIChatWidget from "./components/AIChatWidget";
+import WhisperFloatingWidget from "./components/WhisperFloatingWidget";
 import Learning from "./pages/Learning";
 import CourseDetail from "./pages/CourseDetail";
 import LessonViewer from "./pages/LessonViewer";
@@ -133,6 +134,8 @@ import TypesOfTherapyPost from "./pages/blog/TypesOfTherapyPost";
 import CmsBlogPost from "./pages/CmsBlogPost";
 import CmsEventPost from "./pages/CmsEventPost";
 import ThankYou from "./pages/ThankYou";
+import CorporateServiceRequest from "./pages/CorporateServiceRequest";
+import Whisper from "./pages/Whisper";
 
 const queryClient = new QueryClient();
 
@@ -470,7 +473,38 @@ const App = () => (
                   path="/blog/types-of-therapy"
                   element={<TypesOfTherapyPost />}
                 />
+                {/* CMS-driven dynamic posts (fallback after hardcoded routes) */}
+                <Route path="/blog/:slug" element={<CmsBlogPost />} />
+                <Route
+                  path="/events-training/:slug"
+                  element={<CmsEventPost />}
+                />
                 <Route path="/unsubscribe" element={<Unsubscribe />} />
+                {/* Thank You / Conversion Tracking pages */}
+                <Route
+                  path="/thank-you-booking"
+                  element={<ThankYou type="booking" />}
+                />
+                <Route
+                  path="/thank-you-contact"
+                  element={<ThankYou type="contact" />}
+                />
+                <Route
+                  path="/thank-you-corporate"
+                  element={<ThankYou type="corporate" />}
+                />
+                <Route
+                  path="/thank-you-referral"
+                  element={<ThankYou type="referral" />}
+                />
+                <Route
+                  path="/thank-you-newsletter"
+                  element={<ThankYou type="newsletter" />}
+                />
+                <Route
+                  path="/thank-you-download"
+                  element={<ThankYou type="download" />}
+                />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>

@@ -374,6 +374,192 @@ export type Database = {
         }
         Relationships: []
       }
+      chat_events: {
+        Row: {
+          created_at: string
+          event_type: string
+          id: string
+          metadata: Json | null
+          session_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_type: string
+          id?: string
+          metadata?: Json | null
+          session_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_type?: string
+          id?: string
+          metadata?: Json | null
+          session_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_events_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "chat_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chat_leads: {
+        Row: {
+          anonymous_id: string | null
+          created_at: string
+          email: string | null
+          handled_at: string | null
+          handled_by: string | null
+          id: string
+          intent: string | null
+          message: string | null
+          name: string | null
+          notes: string | null
+          phone: string | null
+          session_id: string | null
+          source_path: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          anonymous_id?: string | null
+          created_at?: string
+          email?: string | null
+          handled_at?: string | null
+          handled_by?: string | null
+          id?: string
+          intent?: string | null
+          message?: string | null
+          name?: string | null
+          notes?: string | null
+          phone?: string | null
+          session_id?: string | null
+          source_path?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          anonymous_id?: string | null
+          created_at?: string
+          email?: string | null
+          handled_at?: string | null
+          handled_by?: string | null
+          id?: string
+          intent?: string | null
+          message?: string | null
+          name?: string | null
+          notes?: string | null
+          phone?: string | null
+          session_id?: string | null
+          source_path?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_leads_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "chat_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chat_messages: {
+        Row: {
+          content: string
+          created_at: string
+          flagged: boolean
+          id: string
+          role: string
+          session_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          flagged?: boolean
+          id?: string
+          role: string
+          session_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          flagged?: boolean
+          id?: string
+          role?: string
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_messages_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "chat_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chat_sessions: {
+        Row: {
+          anonymous_id: string
+          created_at: string
+          escalated: boolean
+          high_risk_triggered: boolean
+          id: string
+          message_count: number
+          review_notes: string | null
+          review_status: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          source_path: string | null
+          summary: string | null
+          summary_updated_at: string | null
+          tags: string[] | null
+          updated_at: string
+          user_agent: string | null
+        }
+        Insert: {
+          anonymous_id: string
+          created_at?: string
+          escalated?: boolean
+          high_risk_triggered?: boolean
+          id?: string
+          message_count?: number
+          review_notes?: string | null
+          review_status?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          source_path?: string | null
+          summary?: string | null
+          summary_updated_at?: string | null
+          tags?: string[] | null
+          updated_at?: string
+          user_agent?: string | null
+        }
+        Update: {
+          anonymous_id?: string
+          created_at?: string
+          escalated?: boolean
+          high_risk_triggered?: boolean
+          id?: string
+          message_count?: number
+          review_notes?: string | null
+          review_status?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          source_path?: string | null
+          summary?: string | null
+          summary_updated_at?: string | null
+          tags?: string[] | null
+          updated_at?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       commission_claim_items: {
         Row: {
           amount: number
@@ -506,6 +692,7 @@ export type Database = {
           employee_count: number | null
           id: string
           industry: string | null
+          location: string | null
           name: string
           updated_at: string
         }
@@ -518,6 +705,7 @@ export type Database = {
           employee_count?: number | null
           id?: string
           industry?: string | null
+          location?: string | null
           name: string
           updated_at?: string
         }
@@ -530,6 +718,7 @@ export type Database = {
           employee_count?: number | null
           id?: string
           industry?: string | null
+          location?: string | null
           name?: string
           updated_at?: string
         }
@@ -590,6 +779,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      corporate_reports: {
+        Row: {
+          company_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          observations: string | null
+          period_label: string | null
+          recommended_service_ids: string[]
+          sent_at: string | null
+          sent_to_email: string | null
+          service_notes: Json
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          observations?: string | null
+          period_label?: string | null
+          recommended_service_ids?: string[]
+          sent_at?: string | null
+          sent_to_email?: string | null
+          service_notes?: Json
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          observations?: string | null
+          period_label?: string | null
+          recommended_service_ids?: string[]
+          sent_at?: string | null
+          sent_to_email?: string | null
+          service_notes?: Json
+          updated_at?: string
+        }
+        Relationships: []
       }
       corporate_screening_bookings: {
         Row: {
@@ -690,6 +921,99 @@ export type Database = {
           },
         ]
       }
+      corporate_service_catalog: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          per_employee_price: number | null
+          physical_price: number | null
+          sort_order: number
+          unit_label: string | null
+          updated_at: string
+          virtual_price: number | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          per_employee_price?: number | null
+          physical_price?: number | null
+          sort_order?: number
+          unit_label?: string | null
+          updated_at?: string
+          virtual_price?: number | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          per_employee_price?: number | null
+          physical_price?: number | null
+          sort_order?: number
+          unit_label?: string | null
+          updated_at?: string
+          virtual_price?: number | null
+        }
+        Relationships: []
+      }
+      corporate_service_interests: {
+        Row: {
+          clicked_at: string
+          company_id: string | null
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
+          id: string
+          ip_address: string | null
+          message: string | null
+          preferred_mode: string | null
+          report_id: string | null
+          service_id: string | null
+          service_name_snapshot: string | null
+          submitted: boolean
+          user_agent: string | null
+        }
+        Insert: {
+          clicked_at?: string
+          company_id?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          id?: string
+          ip_address?: string | null
+          message?: string | null
+          preferred_mode?: string | null
+          report_id?: string | null
+          service_id?: string | null
+          service_name_snapshot?: string | null
+          submitted?: boolean
+          user_agent?: string | null
+        }
+        Update: {
+          clicked_at?: string
+          company_id?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          id?: string
+          ip_address?: string | null
+          message?: string | null
+          preferred_mode?: string | null
+          report_id?: string | null
+          service_id?: string | null
+          service_name_snapshot?: string | null
+          submitted?: boolean
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       course_enrollments: {
         Row: {
           completed_at: string | null
@@ -723,6 +1047,7 @@ export type Database = {
           concern: string | null
           consent_confirmed: boolean
           created_at: string
+          doctor_email: string | null
           doctor_id: string
           doctor_name: string
           doctor_phone: string
@@ -744,6 +1069,7 @@ export type Database = {
           concern?: string | null
           consent_confirmed?: boolean
           created_at?: string
+          doctor_email?: string | null
           doctor_id: string
           doctor_name: string
           doctor_phone: string
@@ -765,6 +1091,7 @@ export type Database = {
           concern?: string | null
           consent_confirmed?: boolean
           created_at?: string
+          doctor_email?: string | null
           doctor_id?: string
           doctor_name?: string
           doctor_phone?: string
@@ -1820,6 +2147,128 @@ export type Database = {
         }
         Relationships: []
       }
+      whisper_events: {
+        Row: {
+          country: string | null
+          created_at: string
+          event_type: string
+          id: string
+          metadata: Json | null
+          referrer: string | null
+          user_agent: string | null
+          whisper_id: string
+        }
+        Insert: {
+          country?: string | null
+          created_at?: string
+          event_type: string
+          id?: string
+          metadata?: Json | null
+          referrer?: string | null
+          user_agent?: string | null
+          whisper_id: string
+        }
+        Update: {
+          country?: string | null
+          created_at?: string
+          event_type?: string
+          id?: string
+          metadata?: Json | null
+          referrer?: string | null
+          user_agent?: string | null
+          whisper_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "whisper_events_whisper_id_fkey"
+            columns: ["whisper_id"]
+            isOneToOne: false
+            referencedRelation: "whispers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      whispers: {
+        Row: {
+          ai_analyzed_at: string | null
+          ai_crisis: boolean | null
+          ai_language_detected: string | null
+          ai_sentiment: string | null
+          ai_summary: string | null
+          ai_theme: string | null
+          ai_urgency: string | null
+          audio_path: string
+          country: string | null
+          created_at: string
+          duration_seconds: number | null
+          email: string
+          id: string
+          language: string | null
+          public_token: string
+          replied_by: string | null
+          reply_audio_path: string | null
+          reply_sent_at: string | null
+          reply_text: string | null
+          source: string | null
+          status: string
+          topic_hint: string | null
+          updated_at: string
+          user_agent: string | null
+        }
+        Insert: {
+          ai_analyzed_at?: string | null
+          ai_crisis?: boolean | null
+          ai_language_detected?: string | null
+          ai_sentiment?: string | null
+          ai_summary?: string | null
+          ai_theme?: string | null
+          ai_urgency?: string | null
+          audio_path: string
+          country?: string | null
+          created_at?: string
+          duration_seconds?: number | null
+          email: string
+          id?: string
+          language?: string | null
+          public_token?: string
+          replied_by?: string | null
+          reply_audio_path?: string | null
+          reply_sent_at?: string | null
+          reply_text?: string | null
+          source?: string | null
+          status?: string
+          topic_hint?: string | null
+          updated_at?: string
+          user_agent?: string | null
+        }
+        Update: {
+          ai_analyzed_at?: string | null
+          ai_crisis?: boolean | null
+          ai_language_detected?: string | null
+          ai_sentiment?: string | null
+          ai_summary?: string | null
+          ai_theme?: string | null
+          ai_urgency?: string | null
+          audio_path?: string
+          country?: string | null
+          created_at?: string
+          duration_seconds?: number | null
+          email?: string
+          id?: string
+          language?: string | null
+          public_token?: string
+          replied_by?: string | null
+          reply_audio_path?: string | null
+          reply_sent_at?: string | null
+          reply_text?: string | null
+          source?: string | null
+          status?: string
+          topic_hint?: string | null
+          updated_at?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       who5_cta_clicks: {
         Row: {
           clicked_at: string
@@ -1923,6 +2372,11 @@ export type Database = {
         Returns: number
       }
       get_doctor_email_by_phone: { Args: { _phone: string }; Returns: string }
+      get_service_recommendation_details: {
+        Args: { _report_id: string; _service_id: string }
+        Returns: Json
+      }
+      get_whisper_by_token: { Args: { _token: string }; Returns: Json }
       has_page_access: {
         Args: { _page_key: string; _user_id: string }
         Returns: boolean

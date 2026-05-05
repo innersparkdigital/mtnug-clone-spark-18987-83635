@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, Plus, Wallet, TrendingUp, CheckCircle2, Clock, Users, Eye } from "lucide-react";
+import { Loader2, Plus, Wallet, TrendingUp, CheckCircle2, Clock, Users, Eye, KeyRound } from "lucide-react";
 import {
   TIERS,
   tierForCount,
@@ -76,6 +76,36 @@ const DoctorDashboard = ({ doctor, onNewReferral }: Props) => {
   const [submittingClaim, setSubmittingClaim] = useState(false);
   const [payoutMethod, setPayoutMethod] = useState("Mobile Money");
   const [payoutDetails, setPayoutDetails] = useState("");
+
+  // Change password
+  const [pwdOpen, setPwdOpen] = useState(false);
+  const [newPwd, setNewPwd] = useState("");
+  const [confirmPwd, setConfirmPwd] = useState("");
+  const [pwdSubmitting, setPwdSubmitting] = useState(false);
+
+  const handleChangePassword = async () => {
+    if (newPwd.length < 8) {
+      toast({ title: "Password too short", description: "Use at least 8 characters.", variant: "destructive" });
+      return;
+    }
+    if (newPwd !== confirmPwd) {
+      toast({ title: "Passwords don't match", variant: "destructive" });
+      return;
+    }
+    setPwdSubmitting(true);
+    try {
+      const { error } = await supabase.auth.updateUser({ password: newPwd });
+      if (error) throw error;
+      toast({ title: "Password updated", description: "Use your new password next time you log in." });
+      setPwdOpen(false);
+      setNewPwd("");
+      setConfirmPwd("");
+    } catch (err: any) {
+      toast({ title: "Update failed", description: err.message, variant: "destructive" });
+    } finally {
+      setPwdSubmitting(false);
+    }
+  };
 
   const fetchData = async () => {
     const [refRes, claimRes] = await Promise.all([
@@ -196,9 +226,14 @@ const DoctorDashboard = ({ doctor, onNewReferral }: Props) => {
           <h2 className="text-xl sm:text-2xl font-bold">Welcome, Dr. {doctor.full_name}</h2>
           <p className="text-sm text-muted-foreground">{doctor.phone}</p>
         </div>
-        <Button onClick={onNewReferral} className="w-full sm:w-auto">
-          <Plus className="w-4 h-4 mr-2" /> New Referral
-        </Button>
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+          <Button variant="outline" onClick={() => setPwdOpen(true)} className="w-full sm:w-auto">
+            <KeyRound className="w-4 h-4 mr-2" /> Change Password
+          </Button>
+          <Button onClick={onNewReferral} className="w-full sm:w-auto">
+            <Plus className="w-4 h-4 mr-2" /> New Referral
+          </Button>
+        </div>
       </div>
 
       {/* Summary cards */}
@@ -521,6 +556,29 @@ const DoctorDashboard = ({ doctor, onNewReferral }: Props) => {
             </div>
             <Button onClick={handleClaimSubmit} className="w-full" disabled={submittingClaim}>
               {submittingClaim ? <Loader2 className="w-4 h-4 animate-spin" /> : "Submit Claim"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Change password dialog */}
+      <Dialog open={pwdOpen} onOpenChange={(o) => { setPwdOpen(o); if (!o) { setNewPwd(""); setConfirmPwd(""); } }}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2"><KeyRound className="w-4 h-4" /> Change Password</DialogTitle>
+            <DialogDescription>Set a new password for your doctor account. You'll use it next time you log in with your phone number.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div>
+              <Label htmlFor="new-pwd">New Password</Label>
+              <Input id="new-pwd" type="password" value={newPwd} onChange={(e) => setNewPwd(e.target.value)} placeholder="At least 8 characters" autoComplete="new-password" />
+            </div>
+            <div>
+              <Label htmlFor="confirm-pwd">Confirm New Password</Label>
+              <Input id="confirm-pwd" type="password" value={confirmPwd} onChange={(e) => setConfirmPwd(e.target.value)} autoComplete="new-password" />
+            </div>
+            <Button onClick={handleChangePassword} className="w-full" disabled={pwdSubmitting}>
+              {pwdSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Update Password"}
             </Button>
           </div>
         </DialogContent>

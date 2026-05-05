@@ -20,12 +20,17 @@ import ReferralsTab from '@/components/admin/ReferralsTab';
 import AdminUsersTab from '@/components/admin/AdminUsersTab';
 import ContentTab from '@/components/admin/ContentTab';
 import EmailLogTab from '@/components/admin/EmailLogTab';
+import CorporateBookingsTab from '@/components/admin/CorporateBookingsTab';
+import EmailSegmentsTab from '@/components/admin/EmailSegmentsTab';
+import ChatAnalyticsTab from '@/components/admin/ChatAnalyticsTab';
+import CrisisReviewQueueTab from '@/components/admin/CrisisReviewQueueTab';
+import ChatLeadsTab from '@/components/admin/ChatLeadsTab';
+import WhispersTab from '@/components/admin/WhispersTab';
 import { 
   BookOpen, 
   GraduationCap, 
   Users, 
   TrendingUp,
-  CheckCircle2,
   BarChart3,
   Loader2,
   Calendar,
@@ -38,7 +43,13 @@ import {
   Mail,
   Stethoscope,
   Shield,
-  FileText
+  FileText,
+  Building2,
+  UserCheck,
+  MessageSquare,
+  AlertOctagon,
+  UserPlus,
+  Mic
 } from 'lucide-react';
 import {
   ChartContainer,
@@ -216,6 +227,42 @@ const AdminDashboard = () => {
               <TabsTrigger value="emails" className="gap-2">
                 <Mail className="h-4 w-4" />
                 Emails
+              </TabsTrigger>
+            )}
+            {isAdmin && (
+              <TabsTrigger value="corporate-bookings" className="gap-2">
+                <Building2 className="h-4 w-4" />
+                Corporate Bookings
+              </TabsTrigger>
+            )}
+            {isAdmin && (
+              <TabsTrigger value="email-segments" className="gap-2">
+                <UserCheck className="h-4 w-4" />
+                Email Segments
+              </TabsTrigger>
+            )}
+            {isAdmin && (
+              <TabsTrigger value="chat-analytics" className="gap-2">
+                <MessageSquare className="h-4 w-4" />
+                AI Chat Analytics
+              </TabsTrigger>
+            )}
+            {isAdmin && (
+              <TabsTrigger value="crisis-queue" className="gap-2">
+                <AlertOctagon className="h-4 w-4" />
+                Crisis Queue
+              </TabsTrigger>
+            )}
+            {isAdmin && (
+              <TabsTrigger value="chat-leads" className="gap-2">
+                <UserPlus className="h-4 w-4" />
+                Chat Leads
+              </TabsTrigger>
+            )}
+            {isAdmin && (
+              <TabsTrigger value="whispers" className="gap-2">
+                <Mic className="h-4 w-4" />
+                Whispers
               </TabsTrigger>
             )}
           </TabsList>
@@ -569,6 +616,36 @@ const AdminDashboard = () => {
           {isAdmin && (
             <TabsContent value="emails">
               <EmailLogTab />
+            </TabsContent>
+          )}
+          {isAdmin && (
+            <TabsContent value="corporate-bookings">
+              <CorporateBookingsTab />
+            </TabsContent>
+          )}
+          {isAdmin && (
+            <TabsContent value="email-segments">
+              <EmailSegmentsTab />
+            </TabsContent>
+          )}
+          {isAdmin && (
+            <TabsContent value="chat-analytics">
+              <ChatAnalyticsTab />
+            </TabsContent>
+          )}
+          {isAdmin && (
+            <TabsContent value="crisis-queue">
+              <CrisisReviewQueueTab />
+            </TabsContent>
+          )}
+          {isAdmin && (
+            <TabsContent value="chat-leads">
+              <ChatLeadsTab />
+            </TabsContent>
+          )}
+          {isAdmin && (
+            <TabsContent value="whispers">
+              <WhispersTab />
             </TabsContent>
           )}
         </Tabs>

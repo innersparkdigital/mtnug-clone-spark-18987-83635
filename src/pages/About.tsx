@@ -100,6 +100,9 @@ const About = () => {
         {/* Schema.org */}
         <script type="application/ld+json">{JSON.stringify(organizationSchema)}</script>
         <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
+        <script type="application/ld+json">
+          {JSON.stringify({"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Who founded Innerspark Africa?","acceptedAnswer":{"@type":"Answer","text":"Innerspark Recovery Ltd (trading as Innerspark Africa) is a Ugandan-founded mental health company based at the National ICT Innovation Hub, Nakawa, Kampala."}},{"@type":"Question","name":"Where does Innerspark Africa operate?","acceptedAnswer":{"@type":"Answer","text":"We are headquartered in Uganda and serve clients across Uganda, the East African region, and the African diaspora through our online platform."}},{"@type":"Question","name":"What makes Innerspark different from other therapy services?","acceptedAnswer":{"@type":"Answer","text":"We are Uganda-first, locally licensed, multilingual (English, Luganda, Runyankole, Swahili), affordable from UGX 30,000, and built mobile-first for low-bandwidth environments."}}]})}
+        </script>
       </Helmet>
     <div className="min-h-screen bg-background">
       <Header />

@@ -15,7 +15,7 @@ import { z } from "zod";
 const phoneSchema = z.string().trim().min(7, "Enter a valid phone number").max(20);
 const nameSchema = z.string().trim().min(2, "Name is required").max(100);
 
-type Doctor = { id: string; full_name: string; phone: string };
+type Doctor = { id: string; full_name: string; phone: string; email?: string };
 
 interface Props {
   doctor: Doctor;
@@ -54,6 +54,7 @@ const DoctorReferralForm = ({ doctor, onBack, onSubmitted }: Props) => {
         doctor_id: doctor.id,
         doctor_name: doctor.full_name,
         doctor_phone: doctor.phone,
+        doctor_email: doctor.email || null,
         patient_name: patientName.trim(),
         patient_phone: patientPhone.trim(),
         location: location.trim() || null,
@@ -61,9 +62,37 @@ const DoctorReferralForm = ({ doctor, onBack, onSubmitted }: Props) => {
         preferred_mode: preferredMode,
         consent_confirmed: consent,
       };
-      const { error } = await supabase.from("doctor_referrals").insert(payload);
+      const { data: insertedReferral, error } = await supabase
+        .from("doctor_referrals")
+        .insert(payload)
+        .select("id")
+        .single();
       if (error) throw error;
-      supabase.functions.invoke("notify-doctor-referral", { body: payload }).catch(() => null);
+
+      try {
+        const { data: sessionData } = await supabase.auth.getSession();
+        const accessToken = sessionData.session?.access_token || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+        const notificationResponse = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/notify-doctor-referral`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+            apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+          },
+          body: JSON.stringify({ ...payload, referral_id: insertedReferral?.id, submitted_at: new Date().toISOString() }),
+        });
+
+        if (!notificationResponse.ok) {
+          const details = await notificationResponse.json().catch(() => ({}));
+          throw new Error(details?.error ? JSON.stringify(details.error) : `Notification failed (${notificationResponse.status})`);
+        }
+      } catch (notificationError) {
+        console.error("Referral notification failed:", notificationError);
+        toast({
+          title: "Referral saved",
+          description: "The referral was saved, but the admin email notification could not be confirmed.",
+        });
+      }
       onSubmitted();
       navigate("/thank-you-referral");
       return;

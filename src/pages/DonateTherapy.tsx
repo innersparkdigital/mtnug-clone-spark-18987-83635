@@ -128,6 +128,9 @@ const DonateTherapy = () => {
         <meta property="og:title" content="Donate Therapy | Innerspark Africa" />
         <meta property="og:description" content="Help someone access mental health care through our community therapy fund." />
         <meta property="og:type" content="website" />
+        <script type="application/ld+json">
+          {JSON.stringify({"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How does Donate Therapy work?","acceptedAnswer":{"@type":"Answer","text":"Your donation funds free therapy sessions for Ugandans who cannot afford it — students, refugees, and low-income families. UGX 75,000 covers one full session."}},{"@type":"Question","name":"Is my donation tax-deductible?","acceptedAnswer":{"@type":"Answer","text":"Currently donations are not tax-deductible. We provide a receipt for your records, and we publish quarterly impact reports."}},{"@type":"Question","name":"Can I sponsor a specific person?","acceptedAnswer":{"@type":"Answer","text":"Yes. We can match your donation with a specific cause area (e.g., student therapy, trauma survivors). Contact info@innersparkafrica.com to set this up."}}]})}
+        </script>
       </Helmet>
       <Header />
       <section className="pt-32 pb-16 bg-gradient-to-br from-primary/10 to-background">

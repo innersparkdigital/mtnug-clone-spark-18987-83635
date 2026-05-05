@@ -14,3 +14,27 @@ verify_jwt = false
 
 [functions.handle-email-suppression]
 verify_jwt = false
+
+[functions.notify-doctor-referral]
+verify_jwt = false
+
+[functions.chat-daily-digest]
+verify_jwt = false
+
+[functions.submit-whisper]
+verify_jwt = false
+
+[functions.get-whisper-reply]
+verify_jwt = false
+
+[functions.track-whisper-event]
+verify_jwt = false
+
+[functions.whisper-cta]
+verify_jwt = false
+
+[functions.analyze-whisper]
+verify_jwt = true
+
+[functions.track-service-interest]
+verify_jwt = false

@@ -36,6 +36,9 @@ const TherapyInKampala = () => {
             "serviceType": "Online Therapy"
           })}
         </script>
+        <script type="application/ld+json">
+          {JSON.stringify({"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Where are Innerspark therapists in Kampala based?","acceptedAnswer":{"@type":"Answer","text":"Our headquarters is at the National ICT Innovation Hub in Nakawa, Kampala. However, all therapy is delivered online via video, voice, or chat — so you can book from anywhere in Kampala or upcountry."}},{"@type":"Question","name":"How do I find a good therapist in Kampala?","acceptedAnswer":{"@type":"Answer","text":"Take our free 2-minute mental health assessment and we'll match you with a licensed Kampala-based therapist who specialises in your concern (anxiety, depression, trauma, relationships, etc.)."}},{"@type":"Question","name":"What is the cost of therapy in Kampala?","acceptedAnswer":{"@type":"Answer","text":"One-on-one online therapy in Kampala starts at UGX 75,000 per session. Group sessions are UGX 25,000–30,000. Free initial consultations are available."}},{"@type":"Question","name":"Do you offer same-day appointments in Kampala?","acceptedAnswer":{"@type":"Answer","text":"Yes, subject to therapist availability. Book through our platform or WhatsApp +256 740 616 404 and we'll do our best to schedule you the same day."}}]})}
+        </script>
       </Helmet>
 
       <div className="min-h-screen bg-background">
@@ -182,6 +185,29 @@ const TherapyInKampala = () => {
                   <h3 className="font-semibold text-foreground mb-2">{faq.q}</h3>
                   <p className="text-muted-foreground text-sm">{faq.a}</p>
                 </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Helpful Reading */}
+        <section className="py-16 bg-muted/30">
+          <div className="container mx-auto px-4 max-w-4xl">
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-8 text-center">
+              <T>Helpful Reading for Kampala Clients</T>
+            </h2>
+            <div className="grid md:grid-cols-2 gap-4">
+              {[
+                { slug: "cost-of-therapy-in-kampala-2026", title: "Cost of Therapy in Kampala (2026 Guide)" },
+                { slug: "how-to-find-psychologist-in-kampala", title: "How to Find a Psychologist in Kampala" },
+                { slug: "best-therapist-for-anxiety-in-uganda", title: "Best Therapist for Anxiety in Uganda" },
+                { slug: "online-vs-in-person-therapy-uganda", title: "Online vs In-Person Therapy in Uganda" },
+                { slug: "affordable-online-counselling-uganda", title: "Affordable Online Counselling in Uganda" },
+                { slug: "workplace-burnout-uganda", title: "Workplace Burnout in Uganda: Signs & Recovery" },
+              ].map((p) => (
+                <Link key={p.slug} to={`/blog/${p.slug}`} className="block p-4 bg-background rounded-lg border border-border hover:border-primary/50 transition-colors">
+                  <span className="text-sm font-medium text-foreground hover:text-primary"><T>{p.title}</T></span>
+                </Link>
               ))}
             </div>
           </div>

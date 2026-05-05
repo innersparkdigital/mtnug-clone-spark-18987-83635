@@ -548,6 +548,9 @@ const Specialists = () => {
             ]
           })}
         </script>
+        <script type="application/ld+json">
+          {JSON.stringify({"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How are Innerspark therapists vetted?","acceptedAnswer":{"@type":"Answer","text":"Every therapist undergoes credential verification, background checks, and an interview process. We confirm licences and qualifications before they can take clients."}},{"@type":"Question","name":"Can I choose my own therapist?","acceptedAnswer":{"@type":"Answer","text":"Yes. You can browse all our specialists, filter by specialty, language, and price, then request a specific therapist. We can also recommend the best match based on a free assessment."}},{"@type":"Question","name":"What if I want to switch therapists?","acceptedAnswer":{"@type":"Answer","text":"You can switch therapists at any time at no extra cost. Just message support and we'll help you transition smoothly."}},{"@type":"Question","name":"Do you have male and female therapists?","acceptedAnswer":{"@type":"Answer","text":"Yes. You can filter by gender and pick a therapist you feel most comfortable with."}}]})}
+        </script>
       </Helmet>
 
       <Header />

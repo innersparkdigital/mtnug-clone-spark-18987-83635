@@ -17,6 +17,9 @@ const EmergencySupport = () => {
         <meta property="og:title" content="Emergency Mental Health Support | Innerspark Africa" />
         <meta property="og:description" content="Get immediate mental health crisis support and 24/7 emergency counseling." />
         <meta property="og:type" content="website" />
+        <script type="application/ld+json">
+          {JSON.stringify({"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What should I do if I'm having suicidal thoughts in Uganda?","acceptedAnswer":{"@type":"Answer","text":"Please reach out immediately. You can WhatsApp our urgent line on +256 792 085 773 or call Butabika National Referral Mental Hospital. If you are in immediate danger, please go to the nearest hospital."}},{"@type":"Question","name":"Is the emergency mental health line free?","acceptedAnswer":{"@type":"Answer","text":"Yes — first contact via WhatsApp or call is free. We will triage you and connect you to the right professional or crisis resource at no cost."}},{"@type":"Question","name":"What counts as a mental health emergency?","acceptedAnswer":{"@type":"Answer","text":"Suicidal thoughts, self-harm, severe panic attacks, psychosis, or feeling unable to keep yourself safe. If unsure, contact us — we'd rather help early than wait."}}]})}
+        </script>
       </Helmet>
       <Header />
       

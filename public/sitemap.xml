@@ -456,4 +456,54 @@
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
+
+  <!-- New Long-tail Uganda Blog Posts (2026-05) -->
+  <url>
+    <loc>https://www.innersparkafrica.com/blog/cost-of-therapy-in-kampala-2026</loc>
+    <lastmod>2026-05-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.innersparkafrica.com/blog/best-therapist-for-anxiety-in-uganda</loc>
+    <lastmod>2026-05-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.innersparkafrica.com/blog/online-vs-in-person-therapy-uganda</loc>
+    <lastmod>2026-05-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.innersparkafrica.com/blog/affordable-online-counselling-uganda</loc>
+    <lastmod>2026-05-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.innersparkafrica.com/blog/how-to-find-psychologist-in-kampala</loc>
+    <lastmod>2026-05-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.innersparkafrica.com/blog/mental-health-support-students-uganda</loc>
+    <lastmod>2026-05-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.innersparkafrica.com/blog/workplace-burnout-uganda</loc>
+    <lastmod>2026-05-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.innersparkafrica.com/blog/talk-to-boss-mental-health-uganda</loc>
+    <lastmod>2026-05-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>

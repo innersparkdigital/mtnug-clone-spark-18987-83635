@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import logo from '@/assets/innerspark-logo.png';
+import { Checkbox } from '@/components/ui/checkbox';
 
 const WHO5_QUESTIONS = [
   "I have felt cheerful and in good spirits",
@@ -44,7 +45,7 @@ const WORKPLACE_OPTIONS = [
   { value: 5, label: "Always" },
 ];
 
-type Phase = 'entry' | 'welcome' | 'test' | 'results';
+type Phase = 'entry' | 'welcome' | 'consent' | 'test' | 'results';
 
 interface ScreeningHistory {
   id: string;
@@ -79,6 +80,7 @@ const CorporateWellbeingCheck = () => {
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [selectedGender, setSelectedGender] = useState<string>('');
+  const [consentChecked, setConsentChecked] = useState(false);
   // Results email state
   const [resultsEmail, setResultsEmail] = useState<string>('');
   const [sendingResultsEmail, setSendingResultsEmail] = useState(false);
@@ -393,9 +395,107 @@ const CorporateWellbeingCheck = () => {
                   </div>
                 </div>
 
-                <Button onClick={() => setPhase('test')} className="rounded-full px-8" size="lg" disabled={!selectedGender}>
+                <Button onClick={() => setPhase('consent')} className="rounded-full px-8" size="lg" disabled={!selectedGender}>
                   {employee.screening_history.length > 0 ? 'Take Another Check' : 'Begin Check'} <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
+              </motion.div>
+            )}
+
+            {/* CONSENT PHASE */}
+            {phase === 'consent' && (
+              <motion.div key="consent" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="pt-8">
+                <div className="bg-card rounded-2xl border p-6 text-left space-y-5">
+                  <div className="text-center mb-2">
+                    <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-3">
+                      <Lock className="w-6 h-6 text-primary" />
+                    </div>
+                    <h2 className="text-xl font-bold text-foreground">Employee Consent Form</h2>
+                    <p className="text-xs text-muted-foreground mt-1">InnerSpark Corporate Mental Health Screening Program</p>
+                  </div>
+
+                  <p className="text-sm text-muted-foreground">By proceeding with this assessment, you confirm that you have read and understood the following:</p>
+
+                  <div className="space-y-4 text-sm">
+                    <div>
+                      <h3 className="font-semibold text-foreground">1. Voluntary Participation</h3>
+                      <p className="text-muted-foreground">Your participation in this mental health screening is <strong>completely voluntary</strong>. You may choose not to participate or to stop at any time.</p>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-foreground">2. Purpose of the Screening</h3>
+                      <p className="text-muted-foreground">This screening is designed to:</p>
+                      <ul className="list-disc list-inside text-muted-foreground ml-2 mt-1 space-y-0.5">
+                        <li>Assess general wellbeing</li>
+                        <li>Identify potential stress or burnout risks</li>
+                        <li>Provide personal insights and recommendations</li>
+                      </ul>
+                      <p className="text-muted-foreground mt-1">It is <strong>not a medical diagnosis</strong>.</p>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-foreground">3. Data Collection</h3>
+                      <p className="text-muted-foreground">The assessment will collect:</p>
+                      <ul className="list-disc list-inside text-muted-foreground ml-2 mt-1 space-y-0.5">
+                        <li>Your responses to wellbeing-related questions</li>
+                        <li>Basic, non-sensitive identification (if required for access)</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-foreground">4. Confidentiality &amp; Privacy</h3>
+                      <ul className="list-disc list-inside text-muted-foreground ml-2 space-y-0.5">
+                        <li>Your individual responses will remain <strong>strictly confidential</strong></li>
+                        <li>Your employer will <strong>NOT</strong> have access to your personal results</li>
+                        <li>Only <strong>aggregated and anonymized data</strong> will be shared with your organization</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-foreground">5. Use of Data</h3>
+                      <p className="text-muted-foreground">Your data will be used to:</p>
+                      <ul className="list-disc list-inside text-muted-foreground ml-2 mt-1 space-y-0.5">
+                        <li>Generate your personal wellbeing feedback</li>
+                        <li>Produce anonymized organizational reports</li>
+                        <li>Improve mental health support services</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-foreground">6. No Individual Disclosure</h3>
+                      <p className="text-muted-foreground">Under no circumstances will your <strong>personal identity or individual results</strong> be disclosed to your employer without your explicit consent.</p>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-foreground">7. Right to Withdraw</h3>
+                      <p className="text-muted-foreground">You may stop the assessment at any time without any consequence.</p>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-foreground">8. Consent</h3>
+                      <p className="text-muted-foreground">By clicking <strong>&quot;I Agree&quot;</strong> or proceeding with this assessment, you confirm that:</p>
+                      <ul className="list-disc list-inside text-muted-foreground ml-2 mt-1 space-y-0.5">
+                        <li>You understand the purpose of this screening</li>
+                        <li>You voluntarily consent to participate</li>
+                        <li>You agree to the collection and use of your data as described above</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div className="border-t pt-4 mt-4">
+                    <label className="flex items-start gap-3 cursor-pointer">
+                      <Checkbox
+                        checked={consentChecked}
+                        onCheckedChange={(checked) => setConsentChecked(checked === true)}
+                        className="mt-0.5"
+                      />
+                      <span className="text-sm text-foreground font-medium leading-snug">
+                        I Agree and Consent to Participate
+                      </span>
+                    </label>
+                  </div>
+                </div>
+
+                <div className="flex gap-3 mt-6">
+                  <Button variant="outline" onClick={() => { setConsentChecked(false); setPhase('welcome'); }} className="rounded-full flex-1">
+                    <ArrowLeft className="w-4 h-4 mr-2" /> Back
+                  </Button>
+                  <Button onClick={() => setPhase('test')} className="rounded-full flex-1" disabled={!consentChecked}>
+                    Start Assessment <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </div>
               </motion.div>
             )}
 

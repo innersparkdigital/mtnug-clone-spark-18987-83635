@@ -36,6 +36,9 @@ const TherapyInUganda = () => {
             }
           })}
         </script>
+        <script type="application/ld+json">
+          {JSON.stringify({"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How much does therapy cost in Uganda?","acceptedAnswer":{"@type":"Answer","text":"Online therapy at Innerspark Africa starts at UGX 30,000 for group sessions and UGX 75,000 (about $22) for a one-on-one session with a licensed Ugandan therapist. We also offer free wellbeing assessments and a free initial consultation."}},{"@type":"Question","name":"Are Innerspark Africa therapists licensed in Uganda?","acceptedAnswer":{"@type":"Answer","text":"Yes. All our therapists are licensed counsellors, clinical psychologists, or psychiatric professionals registered with relevant Ugandan professional bodies, including the Uganda Counselling Association where applicable."}},{"@type":"Question","name":"Can I have therapy in Luganda or other local languages?","acceptedAnswer":{"@type":"Answer","text":"Yes. We offer sessions in English, Luganda, Runyankole, Swahili and other Ugandan languages. You can filter therapists by language when booking."}},{"@type":"Question","name":"How quickly can I see a therapist in Uganda?","acceptedAnswer":{"@type":"Answer","text":"Most clients are matched and have their first session within 24–48 hours of booking. Urgent cases are prioritised through our emergency support line."}},{"@type":"Question","name":"Is online therapy in Uganda confidential and safe?","acceptedAnswer":{"@type":"Answer","text":"Absolutely. All sessions are encrypted, your data is protected under our privacy policy, and our therapists follow strict professional confidentiality standards."}}]})}
+        </script>
       </Helmet>
 
       <div className="min-h-screen bg-background">
@@ -201,6 +204,31 @@ const TherapyInUganda = () => {
                   <h3 className="font-semibold text-foreground mb-2">{faq.q}</h3>
                   <p className="text-muted-foreground text-sm">{faq.a}</p>
                 </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Helpful Reading */}
+        <section className="py-16 bg-muted/30">
+          <div className="container mx-auto px-4 max-w-4xl">
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-8 text-center">
+              <T>Popular Mental Health Guides for Uganda</T>
+            </h2>
+            <div className="grid md:grid-cols-2 gap-4">
+              {[
+                { slug: "affordable-online-counselling-uganda", title: "Affordable Online Counselling in Uganda" },
+                { slug: "best-therapist-for-anxiety-in-uganda", title: "Best Therapist for Anxiety in Uganda" },
+                { slug: "online-vs-in-person-therapy-uganda", title: "Online vs In-Person Therapy in Uganda" },
+                { slug: "cost-of-therapy-in-kampala-2026", title: "Cost of Therapy in Kampala (2026)" },
+                { slug: "mental-health-support-students-uganda", title: "Mental Health Support for Students in Uganda" },
+                { slug: "workplace-burnout-uganda", title: "Workplace Burnout in Uganda" },
+                { slug: "talk-to-boss-mental-health-uganda", title: "How to Talk to Your Boss About Mental Health" },
+                { slug: "how-to-find-psychologist-in-kampala", title: "How to Find a Psychologist in Kampala" },
+              ].map((p) => (
+                <Link key={p.slug} to={`/blog/${p.slug}`} className="block p-4 bg-background rounded-lg border border-border hover:border-primary/50 transition-colors">
+                  <span className="text-sm font-medium text-foreground hover:text-primary"><T>{p.title}</T></span>
+                </Link>
               ))}
             </div>
           </div>

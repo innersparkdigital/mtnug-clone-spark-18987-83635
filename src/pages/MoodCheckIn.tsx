@@ -17,6 +17,9 @@ const MoodCheckIn = () => {
         <meta property="og:title" content="Mood Check-In & Journaling | Innerspark Africa" />
         <meta property="og:description" content="Track your daily mood and build emotional awareness with journaling tools." />
         <meta property="og:type" content="website" />
+        <script type="application/ld+json">
+          {JSON.stringify({"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is a mood check-in?","acceptedAnswer":{"@type":"Answer","text":"A daily 30-second tool to track how you're feeling. Over time it shows mood patterns and helps you and your therapist spot trends."}},{"@type":"Question","name":"Is the mood check-in free?","acceptedAnswer":{"@type":"Answer","text":"Yes — free and unlimited. You can use it daily without an account."}},{"@type":"Question","name":"Will my mood data be private?","acceptedAnswer":{"@type":"Answer","text":"Yes. Your mood entries are private and only shared with a therapist if you explicitly choose to."}}]})}
+        </script>
       </Helmet>
       <Header />
       
