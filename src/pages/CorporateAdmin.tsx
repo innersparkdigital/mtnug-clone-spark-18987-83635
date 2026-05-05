@@ -18,6 +18,8 @@ import { Building2, Users, Plus, Upload, BarChart3, FileText, Trash2, UserPlus, 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
 import { generateCompanyReportPdf } from '@/lib/companyReportPdf';
 import { Loader2 } from 'lucide-react';
 
@@ -89,6 +91,12 @@ const CorporateAdmin = () => {
   const [sendingReport, setSendingReport] = useState(false);
   const [downloadingPdf, setDownloadingPdf] = useState(false);
 
+  // Manual report builder
+  const [serviceCatalog, setServiceCatalog] = useState<any[]>([]);
+  const [observations, setObservations] = useState('');
+  const [selectedServiceIds, setSelectedServiceIds] = useState<Set<string>>(new Set());
+  const [serviceInterests, setServiceInterests] = useState<any[]>([]);
+
   // Sorting
   const [companySortKey, setCompanySortKey] = useState<string>('');
   const [companySortDir, setCompanySortDir] = useState<'asc' | 'desc'>('asc');
@@ -112,6 +120,8 @@ const CorporateAdmin = () => {
     if (isAdmin) {
       fetchCompanies();
       fetchAllGlobalData();
+      fetchServiceCatalog();
+      fetchServiceInterests();
     }
   }, [isAdmin]);
 
@@ -128,6 +138,16 @@ const CorporateAdmin = () => {
     const { data } = await supabase.from('corporate_companies').select('*').order('created_at', { ascending: false });
     setCompanies((data as any[]) || []);
     setLoading(false);
+  };
+
+  const fetchServiceCatalog = async () => {
+    const { data } = await supabase.from('corporate_service_catalog').select('*').eq('is_active', true).order('sort_order');
+    setServiceCatalog((data as any[]) || []);
+  };
+
+  const fetchServiceInterests = async () => {
+    const { data } = await supabase.from('corporate_service_interests').select('*').order('clicked_at', { ascending: false }).limit(100);
+    setServiceInterests((data as any[]) || []);
   };
 
   const fetchAllGlobalData = async () => {
