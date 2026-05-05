@@ -376,3 +376,20 @@ const ctaSecondary = { backgroundColor: '#ffffff', color: PRIMARY_COLOR, padding
 const disclaimer = { fontSize: '12px', color: '#065f46', backgroundColor: '#ecfdf5', borderLeft: '3px solid #10b981', padding: '10px 14px', borderRadius: '4px', lineHeight: '1.5', margin: '16px 0' }
 const hr = { borderColor: '#e5e5e5', margin: '24px 0' }
 const footer = { fontSize: '13px', color: '#999', margin: '0', lineHeight: '1.5' }
+
+const manualBox = { backgroundColor: '#fff7ed', border: `2px dashed #f59e0b`, borderRadius: '12px', padding: '20px', margin: '20px 0' }
+const observationsText = { fontSize: '14px', color: '#1a1a1a', lineHeight: '1.65', margin: '0 0 14px', whiteSpace: 'pre-wrap' as const, backgroundColor: '#ffffff', borderRadius: '8px', padding: '12px 14px', border: '1px solid #fde68a' }
+const serviceCard = { backgroundColor: '#ffffff', border: `1px solid ${PRIMARY_COLOR}`, borderRadius: '10px', padding: '14px 16px', margin: '0 0 10px' }
+const serviceName = { fontSize: '15px', fontWeight: '700' as const, color: '#1a1a1a', margin: '0 0 4px' }
+const serviceDesc = { fontSize: '13px', color: '#555', margin: '0 0 6px', lineHeight: '1.5' }
+const servicePricing = { fontSize: '13px', fontWeight: '600' as const, color: PRIMARY_COLOR, margin: '0' }
+const altItem = { fontSize: '13px', color: '#333', margin: '0 0 6px', lineHeight: '1.55' }
+
+function formatPricing(s: { physical_price?: number | null; virtual_price?: number | null; per_employee_price?: number | null; unit_label?: string }) {
+  const fmt = (n: number) => `UGX ${n.toLocaleString('en-UG')}`
+  const parts: string[] = []
+  if (s.physical_price) parts.push(`Physical: ${fmt(s.physical_price)}`)
+  if (s.virtual_price) parts.push(`Virtual: ${fmt(s.virtual_price)}`)
+  if (s.per_employee_price) parts.push(`${fmt(s.per_employee_price)} / ${s.unit_label || 'unit'}`)
+  return parts.length > 0 ? parts.join('  •  ') : 'Pricing on request'
+}
