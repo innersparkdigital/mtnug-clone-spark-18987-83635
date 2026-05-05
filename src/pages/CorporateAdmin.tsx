@@ -1158,6 +1158,48 @@ const CorporateAdmin = () => {
                             recs.push('Schedule the next quarterly Mind-Check & WHO-5 in 90 days.');
                             recs.push('Give every employee anytime access to chat, therapy and support groups via the InnerSpark App.');
                             const period = new Date().toLocaleDateString('en-UG', { year: 'numeric', month: 'long' });
+
+                            // Build manual layer (additive). Create report row first to get a stable id for tracked links.
+                            const recommendedIds = Array.from(selectedServiceIds);
+                            let reportId: string | null = null;
+                            if (observations.trim() || recommendedIds.length > 0) {
+                              const { data: reportRow, error: reportErr } = await supabase
+                                .from('corporate_reports')
+                                .insert({
+                                  company_id: selectedCompany.id,
+                                  period_label: period,
+                                  observations: observations.trim() || null,
+                                  recommended_service_ids: recommendedIds,
+                                  sent_to_email: selectedCompany.contact_email,
+                                  created_by: user?.id,
+                                })
+                                .select('id')
+                                .single();
+                              if (reportErr) console.error('Report row insert failed', reportErr);
+                              reportId = (reportRow as any)?.id || null;
+                            }
+
+                            const projectRef = (import.meta as any).env.VITE_SUPABASE_PROJECT_ID;
+                            const trackBase = `https://${projectRef}.supabase.co/functions/v1/track-service-interest`;
+                            const buildTrackUrl = (sid: string) => reportId ? `${trackBase}?report_id=${reportId}&service_id=${sid}` : '';
+
+                            const recommended_services = serviceCatalog
+                              .filter(s => selectedServiceIds.has(s.id))
+                              .map(s => ({
+                                id: s.id, name: s.name, description: s.description,
+                                physical_price: s.physical_price, virtual_price: s.virtual_price,
+                                per_employee_price: s.per_employee_price, unit_label: s.unit_label,
+                                track_url: buildTrackUrl(s.id),
+                              }));
+                            const alternative_services = recommendedIds.length > 0 ? serviceCatalog
+                              .filter(s => !selectedServiceIds.has(s.id))
+                              .map(s => ({
+                                id: s.id, name: s.name, description: s.description,
+                                physical_price: s.physical_price, virtual_price: s.virtual_price,
+                                per_employee_price: s.per_employee_price, unit_label: s.unit_label,
+                                track_url: buildTrackUrl(s.id),
+                              })) : [];
+
                             const { data, error: emailErr } = await supabase.functions.invoke('send-transactional-email', {
                               body: {
                                 templateName: 'b2b-company-report',
@@ -1179,6 +1221,9 @@ const CorporateAdmin = () => {
                                   low_wellbeing_pct: completedScreenings > 0 ? Math.round((redCount / completedScreenings) * 100) : 0,
                                   needs_support_count: needsSupportCount,
                                   recommendations: recs,
+                                  consultant_observations: observations.trim() || undefined,
+                                  recommended_services: recommended_services.length > 0 ? recommended_services : undefined,
+                                  alternative_services: alternative_services.length > 0 ? alternative_services : undefined,
                                 },
                               },
                             });
@@ -1188,6 +1233,9 @@ const CorporateAdmin = () => {
                             } else {
                               console.log('Report sent:', data);
                               toast.success(`Report sent to ${selectedCompany.contact_email}`);
+                              if (reportId) {
+                                await supabase.from('corporate_reports').update({ sent_at: new Date().toISOString() }).eq('id', reportId);
+                              }
                             }
                           } catch (e: any) {
                             console.error('Send report exception:', e);
