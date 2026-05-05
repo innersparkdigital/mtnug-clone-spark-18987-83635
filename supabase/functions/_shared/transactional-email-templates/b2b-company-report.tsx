@@ -37,6 +37,7 @@ interface Props {
     per_employee_price?: number | null
     unit_label?: string
     track_url?: string
+    reason?: string
   }>
   alternative_services?: Array<{
     id: string
@@ -47,6 +48,7 @@ interface Props {
     per_employee_price?: number | null
     unit_label?: string
     track_url?: string
+    reason?: string
   }>
 }
 
@@ -86,13 +88,6 @@ const Email = ({
   // WHO/Deloitte: untreated mental health issues reduce productivity ~25–35% per affected employee.
   const productivityLoss = Math.round((low_count * 0.30 + moderate_count * 0.12) * 100) / 100
   const lostDaysPerYear = Math.round(low_count * 22 + moderate_count * 9) // avg lost productive days
-
-  const recs = recommendations && recommendations.length > 0 ? recommendations : [
-    'Activate the InnerSpark Employee Digital Mental Health Package for full coverage.',
-    'Run manager training on supportive conversations and burnout prevention.',
-    'Offer confidential 1:1 sessions for employees flagged as needing support.',
-    'Schedule the next quarterly Mind-Check & WHO-5 in 90 days.',
-  ]
 
   return (
     <Html lang="en" dir="ltr">
@@ -171,70 +166,6 @@ const Email = ({
             </Text>
           </Section>
 
-          {/* RECOMMENDATIONS */}
-          <Heading as="h3" style={h3}>💡 Recommendations</Heading>
-          <Section style={listBox}>
-            {recs.map((r, i) => <Text key={i} style={listItem}>• {r}</Text>)}
-          </Section>
-
-          {/* SOLUTION — Digital Mental Health Package */}
-          <Section style={packageBox}>
-            <Text style={packageEyebrow}>RECOMMENDED SOLUTION</Text>
-            <Heading as="h2" style={packageH2}>Employee Digital Mental Health Package</Heading>
-            <Text style={packageSub}>An insurance-style yearly subscription per employee — predictable, budget-friendly, fully virtual.</Text>
-
-            <Text style={packageSection}>✅ Coverage includes</Text>
-            <Text style={packageItem}>• <strong>Video Teletherapy</strong> — 12 1:1 sessions / year with licensed therapists</Text>
-            <Text style={packageItem}>• <strong>Support Group</strong> — 48 weekly structured online group sessions</Text>
-            <Text style={packageItem}>• <strong>Chat Consultation</strong> — Quick virtual mental health guidance (≈12/month)</Text>
-            <Text style={packageItem}>• <strong>Quarterly Screening</strong> — Mind-Check & WHO-5 assessments</Text>
-
-            <Text style={packageSection}>❌ Excluded</Text>
-            <Text style={packageItem}>• Any in-person intervention beyond the virtual scope</Text>
-            <Text style={packageItem}>• Medication, hospitalization or specialised therapy outside the platform</Text>
-
-            <Text style={packageSection}>💵 Fee breakdown (per employee / year)</Text>
-            <Section style={feeTable}>
-              <Row style={feeHeadRow}>
-                <Column style={feeColService}><Text style={feeHead}>Service</Text></Column>
-                <Column style={feeColUnits}><Text style={feeHead}>Units</Text></Column>
-                <Column style={feeColTotal}><Text style={feeHead}>Total (UGX)</Text></Column>
-              </Row>
-              <Row style={feeRow}>
-                <Column style={feeColService}><Text style={feeCell}>Video Teletherapy</Text></Column>
-                <Column style={feeColUnits}><Text style={feeCell}>12 / yr</Text></Column>
-                <Column style={feeColTotal}><Text style={feeCell}>900,000</Text></Column>
-              </Row>
-              <Row style={feeRow}>
-                <Column style={feeColService}><Text style={feeCell}>Support Group</Text></Column>
-                <Column style={feeColUnits}><Text style={feeCell}>48 / yr</Text></Column>
-                <Column style={feeColTotal}><Text style={feeCell}>1,200,000</Text></Column>
-              </Row>
-              <Row style={feeRow}>
-                <Column style={feeColService}><Text style={feeCell}>Chat Consultation</Text></Column>
-                <Column style={feeColUnits}><Text style={feeCell}>~12 / mo</Text></Column>
-                <Column style={feeColTotal}><Text style={feeCell}>360,000</Text></Column>
-              </Row>
-              <Row style={feeTotalRow}>
-                <Column style={feeColService}><Text style={feeTotalCell}>Discounted bundled fee</Text></Column>
-                <Column style={feeColUnits}><Text style={feeTotalCell}>—</Text></Column>
-                <Column style={feeColTotal}><Text style={feeTotalCell}>UGX 1,000,000</Text></Column>
-              </Row>
-            </Section>
-
-            <Text style={packageNote}>
-              For <strong>{total_employees || 'your'}</strong> employees, full-year coverage = approx
-              <strong> UGX {(total_employees * 1_000_000).toLocaleString('en-UG')}</strong>. Employees access
-              every service anytime through the InnerSpark App.
-            </Text>
-
-            <Section style={{ textAlign: 'center' as const, margin: '20px 0 6px' }}>
-              <Button style={cta} href="mailto:info@innersparkafrica.com?subject=Activate%20Employee%20Mental%20Health%20Package">
-                Activate the package →
-              </Button>
-            </Section>
-          </Section>
-
           <Section style={{ textAlign: 'center' as const, margin: '20px 0' }}>
             <Button style={ctaSecondary} href={dashboard_url}>Open the corporate dashboard</Button>
           </Section>
@@ -259,10 +190,13 @@ const Email = ({
                     <Section key={s.id} style={serviceCard}>
                       <Text style={serviceName}>{s.name}</Text>
                       {s.description && <Text style={serviceDesc}>{s.description}</Text>}
+                      {s.reason && (
+                        <Text style={reasonBox}><strong>Why we recommend this:</strong> {s.reason}</Text>
+                      )}
                       <Text style={servicePricing}>{formatPricing(s)}</Text>
                       {s.track_url && (
                         <Section style={{ textAlign: 'left' as const, margin: '10px 0 0' }}>
-                          <Button style={cta} href={s.track_url}>Choose this service →</Button>
+                          <Button style={cta} href={s.track_url}>Request this service →</Button>
                         </Section>
                       )}
                     </Section>
@@ -384,6 +318,7 @@ const serviceName = { fontSize: '15px', fontWeight: '700' as const, color: '#1a1
 const serviceDesc = { fontSize: '13px', color: '#555', margin: '0 0 6px', lineHeight: '1.5' }
 const servicePricing = { fontSize: '13px', fontWeight: '600' as const, color: PRIMARY_COLOR, margin: '0' }
 const altItem = { fontSize: '13px', color: '#333', margin: '0 0 6px', lineHeight: '1.55' }
+const reasonBox = { fontSize: '13px', color: '#1a1a1a', backgroundColor: '#fef9c3', borderRadius: '6px', padding: '8px 10px', margin: '6px 0 8px', lineHeight: '1.5' }
 
 function formatPricing(s: { physical_price?: number | null; virtual_price?: number | null; per_employee_price?: number | null; unit_label?: string }) {
   const fmt = (n: number) => `UGX ${n.toLocaleString('en-UG')}`
