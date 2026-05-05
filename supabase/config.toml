@@ -35,3 +35,6 @@ verify_jwt = false
 
 [functions.analyze-whisper]
 verify_jwt = true
+
+[functions.track-service-interest]
+verify_jwt = false
