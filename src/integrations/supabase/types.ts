@@ -780,6 +780,45 @@ export type Database = {
           },
         ]
       }
+      corporate_reports: {
+        Row: {
+          company_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          observations: string | null
+          period_label: string | null
+          recommended_service_ids: string[]
+          sent_at: string | null
+          sent_to_email: string | null
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          observations?: string | null
+          period_label?: string | null
+          recommended_service_ids?: string[]
+          sent_at?: string | null
+          sent_to_email?: string | null
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          observations?: string | null
+          period_label?: string | null
+          recommended_service_ids?: string[]
+          sent_at?: string | null
+          sent_to_email?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       corporate_screening_bookings: {
         Row: {
           company_name: string
@@ -878,6 +917,81 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      corporate_service_catalog: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          per_employee_price: number | null
+          physical_price: number | null
+          sort_order: number
+          unit_label: string | null
+          updated_at: string
+          virtual_price: number | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          per_employee_price?: number | null
+          physical_price?: number | null
+          sort_order?: number
+          unit_label?: string | null
+          updated_at?: string
+          virtual_price?: number | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          per_employee_price?: number | null
+          physical_price?: number | null
+          sort_order?: number
+          unit_label?: string | null
+          updated_at?: string
+          virtual_price?: number | null
+        }
+        Relationships: []
+      }
+      corporate_service_interests: {
+        Row: {
+          clicked_at: string
+          company_id: string | null
+          id: string
+          ip_address: string | null
+          report_id: string | null
+          service_id: string | null
+          service_name_snapshot: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          clicked_at?: string
+          company_id?: string | null
+          id?: string
+          ip_address?: string | null
+          report_id?: string | null
+          service_id?: string | null
+          service_name_snapshot?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          clicked_at?: string
+          company_id?: string | null
+          id?: string
+          ip_address?: string | null
+          report_id?: string | null
+          service_id?: string | null
+          service_name_snapshot?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
       }
       course_enrollments: {
         Row: {
