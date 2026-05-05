@@ -134,6 +134,7 @@ import TypesOfTherapyPost from "./pages/blog/TypesOfTherapyPost";
 import CmsBlogPost from "./pages/CmsBlogPost";
 import CmsEventPost from "./pages/CmsEventPost";
 import ThankYou from "./pages/ThankYou";
+import CorporateServiceRequest from "./pages/CorporateServiceRequest";
 import Whisper from "./pages/Whisper";
 
 const queryClient = new QueryClient();
@@ -282,6 +283,7 @@ const App = () => (
             <Route path="/thank-you-booking" element={<ThankYou type="booking" />} />
             <Route path="/thank-you-contact" element={<ThankYou type="contact" />} />
             <Route path="/thank-you-corporate" element={<ThankYou type="corporate" />} />
+            <Route path="/corporate/service-request" element={<CorporateServiceRequest />} />
             <Route path="/thank-you-referral" element={<ThankYou type="referral" />} />
             <Route path="/thank-you-newsletter" element={<ThankYou type="newsletter" />} />
             <Route path="/thank-you-download" element={<ThankYou type="download" />} />
