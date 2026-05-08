@@ -40,7 +40,7 @@ const HeroSection = () => {
             className="inline-flex items-center gap-2 bg-primary/20 backdrop-blur-sm border border-primary/30 rounded-full px-4 py-1.5 mb-6"
           >
             <Shield className="w-4 h-4 text-primary-foreground" />
-            <span className="text-sm font-medium text-primary-foreground">Uganda's #1 Online Therapy Platform</span>
+            <span className="text-sm font-medium text-primary-foreground">Africa's Most Accessible Mental Wellness Platform</span>
           </motion.div>
 
           {/* Main Headline */}

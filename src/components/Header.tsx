@@ -119,6 +119,15 @@ const Header = () => {
       {/* Top Bar - Hidden on mobile */}
       <div className="hidden md:block bg-gradient-to-r from-primary/90 via-primary to-primary/90 text-primary-foreground py-1 px-4 text-xs">
         <div className="container mx-auto flex justify-end items-center gap-4">
+          <a
+            href="https://wa.me/256792085773?text=I%20need%20urgent%20mental%20health%20support"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mr-auto flex items-center gap-1 font-semibold hover:text-primary-foreground/80 transition-colors"
+          >
+            <MessageCircle className="w-3 h-3" />
+            <span>Need urgent help? WhatsApp +256 792 085 773</span>
+          </a>
           <a href="tel:+256740616404" className="flex items-center gap-1 hover:text-primary-foreground/80 transition-colors">
             <Phone className="w-3 h-3" />
             <span>Call 0740 616 404</span>

@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* InnerSpark brand typography — Plus Jakarta Sans (display) + Inter (body) */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
 /* Google Translate Widget Styles */
 .google-translate-container {
   display: inline-block;
@@ -54,51 +57,54 @@ All colors MUST be HSL.
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 0 0% 0%;
+    /* InnerSpark dark text #1A1A2E */
+    --foreground: 240 28% 14%;
 
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 0%;
+    --card-foreground: 240 28% 14%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 0%;
+    --popover-foreground: 240 28% 14%;
 
-    /* Innerspark Blue - Primary Brand Color */
-    --primary: 234 62% 62%;
+    /* InnerSpark Blue #3B4FD4 — primary brand */
+    --primary: 232 65% 53%;
     --primary-foreground: 0 0% 100%;
 
-    /* Light secondary for contrast */
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222 47% 11%;
+    /* Soft surface #F5F6FF */
+    --secondary: 234 100% 98%;
+    --secondary-foreground: 240 28% 14%;
 
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 234 100% 98%;
+    --muted-foreground: 0 0% 33%;
 
-    --accent: 234 62% 92%;
-    --accent-foreground: 222 47% 11%;
+    /* Light blue accent #EEF0FD */
+    --accent: 234 80% 96%;
+    --accent-foreground: 240 28% 14%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 234 62% 62%;
+    --border: 234 30% 90%;
+    --input: 234 30% 90%;
+    --ring: 232 65% 53%;
 
     --radius: 0.5rem;
 
     /* Custom design tokens for wellness theme */
-    --blue-primary: 234 62% 62%;
-    --blue-light: 234 62% 82%;
+    --blue-primary: 232 65% 53%;
+    --blue-light: 234 80% 96%;
     --teal-calm: 173 58% 39%;
-    --green-wellness: 142 76% 36%;
+    /* Success / wellness green #2E7D5E */
+    --green-wellness: 152 46% 33%;
     --purple-deep: 260 60% 65%;
     
     /* Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(234 62% 62%) 0%, hsl(260 60% 65%) 100%);
-    --gradient-calm: linear-gradient(135deg, hsl(173 58% 39%) 0%, hsl(234 62% 62%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(232 65% 53%) 0%, hsl(260 60% 65%) 100%);
+    --gradient-calm: linear-gradient(135deg, hsl(173 58% 39%) 0%, hsl(232 65% 53%) 100%);
     
     /* Shadows */
-    --shadow-primary: 0 8px 32px hsla(234 62% 62% / 0.2);
-    --shadow-card: 0 4px 16px hsla(234 62% 62% / 0.08);
+    --shadow-primary: 0 8px 32px hsla(232 65% 53% / 0.2);
+    --shadow-card: 0 4px 16px hsla(232 65% 53% / 0.08);
     
     /* Transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -114,7 +120,7 @@ All colors MUST be HSL.
     --popover: 222 47% 11%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 234 62% 62%;
+    --primary: 232 65% 53%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 217 33% 17%;
@@ -123,7 +129,7 @@ All colors MUST be HSL.
     --muted: 217 33% 17%;
     --muted-foreground: 215 20% 65%;
 
-    --accent: 217 33% 17%;
+    --accent: 232 40% 22%;
     --accent-foreground: 210 40% 98%;
 
     --destructive: 0 62% 50%;
@@ -131,7 +137,7 @@ All colors MUST be HSL.
 
     --border: 217 33% 17%;
     --input: 217 33% 17%;
-    --ring: 234 62% 62%;
+    --ring: 232 65% 53%;
   }
 }
 
@@ -142,11 +148,21 @@ All colors MUST be HSL.
 
   html {
     scroll-behavior: smooth;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
   }
 
   body {
     @apply bg-background text-foreground;
     overflow-x: hidden;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-feature-settings: 'cv11', 'ss01';
+  }
+
+  /* Display / hero typography uses Plus Jakarta Sans */
+  .font-display,
+  h1, h2, h3 {
+    font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+    letter-spacing: -0.01em;
   }
 }
 
