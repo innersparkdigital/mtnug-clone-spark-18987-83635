@@ -1,11 +1,11 @@
-import { Shield, Users, Clock, MapPin } from "lucide-react";
+import { Globe, Languages, Clock, Shield } from "lucide-react";
 import { motion } from "framer-motion";
 
 const stats = [
-  { icon: Users, value: "5,000+", label: "Sessions Delivered" },
-  { icon: Shield, value: "20+", label: "Licensed Therapists" },
-  { icon: Shield, value: "100%", label: "Secure & Private" },
-  { icon: Clock, value: "24/7", label: "Support Available" },
+  { icon: Globe, value: "5+", label: "Countries served" },
+  { icon: Languages, value: "8+", label: "African languages" },
+  { icon: Clock, value: "24/7", label: "Always available" },
+  { icon: Shield, value: "100%", label: "Confidential" },
 ];
 
 const TrustStatsBar = () => {
