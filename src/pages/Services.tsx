@@ -232,6 +232,7 @@ const Services = () => {
               <div>
                 <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">{t.virtualTherapy}</h2>
                 <p className="text-xl text-primary mb-4">{t.virtualSubtitle}</p>
+                <div className="inline-block bg-primary/10 text-primary text-sm font-semibold rounded-full px-3 py-1 mb-4">From UGX 30,000 / ~$8 per session</div>
                 <p className="text-muted-foreground mb-6 leading-relaxed">{t.virtualDesc}</p>
                 <StaggerContainer className="space-y-3 mb-8">
                   <StaggerItem>
@@ -268,6 +269,10 @@ const Services = () => {
               <div>
                 <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">{t.supportGroups}</h2>
                 <p className="text-xl text-primary mb-4">{t.supportSubtitle}</p>
+                <div className="inline-flex items-center gap-2 mb-4">
+                  <span className="bg-primary/10 text-primary text-sm font-semibold rounded-full px-3 py-1">From UGX 15,000 / ~$4 per session</span>
+                  <span className="bg-green-wellness/10 text-green-wellness text-[11px] font-bold tracking-[0.06em] uppercase rounded-full px-2.5 py-1">Most Popular</span>
+                </div>
                 <p className="text-muted-foreground mb-6 leading-relaxed">{t.supportDesc}</p>
                 <StaggerContainer className="space-y-3 mb-8">
                   <StaggerItem>
@@ -314,6 +319,7 @@ const Services = () => {
               <div>
                 <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">{t.wellnessResources}</h2>
                 <p className="text-xl text-primary mb-4">{t.wellnessSubtitle}</p>
+                <div className="inline-block bg-green-wellness/10 text-green-wellness text-sm font-semibold rounded-full px-3 py-1 mb-4">Free — included with all plans</div>
                 <p className="text-muted-foreground mb-6 leading-relaxed">{t.wellnessDesc}</p>
                 <StaggerContainer className="space-y-3 mb-8">
                   <StaggerItem>
@@ -352,6 +358,7 @@ const Services = () => {
               <div>
                 <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">{t.corporateWellness}</h2>
                 <p className="text-xl text-primary mb-4">{t.corporateSubtitle}</p>
+                <div className="inline-block bg-primary/10 text-primary text-sm font-semibold rounded-full px-3 py-1 mb-4">From UGX 150,000 / ~$40 per employee per year</div>
                 <p className="text-muted-foreground mb-6 leading-relaxed">{t.corporateDesc}</p>
                 <StaggerContainer className="space-y-3 mb-8">
                   <StaggerItem>
