@@ -1,26 +1,12 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-// Note: yellow-400 used for star ratings is intentional (universal rating color)
 import { Link } from "react-router-dom";
-import { Shield, Clock, Star, Users, CheckCircle } from "lucide-react";
+import { Shield, Star, Users, CheckCircle } from "lucide-react";
 import { motion } from "framer-motion";
-import PreAssessmentModal from "./PreAssessmentModal";
-import BookingFormModal from "./BookingFormModal";
-import { useBookingFlow } from "@/hooks/useBookingFlow";
 import heroImage from "@/assets/hero-slide-1.jpg";
 
 const HeroSection = () => {
   const [heroLoaded, setHeroLoaded] = useState(false);
-  const {
-    startBooking,
-    startConsultation,
-    closeFlow,
-    goToForm,
-    resetFlow,
-    isAssessmentModalOpen,
-    isBookingFormOpen,
-    actionType
-  } = useBookingFlow();
 
   return (
     <section className="relative min-h-[85vh] md:min-h-[90vh] flex items-center overflow-hidden">
@@ -48,23 +34,22 @@ const HeroSection = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-primary-foreground leading-[1.08] tracking-tight mb-5 font-serif"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-primary-foreground leading-[1.08] tracking-tight mb-5 font-display"
           >
-            Talk to a Licensed{' '}
-            <span className="text-primary">Therapist</span>{' '}
-            Today
+            Africa's Most{' '}
+            <span className="text-primary">Accessible</span>{' '}
+            Mental Wellness Platform
           </motion.h1>
 
-          {/* Sub-headline with pricing */}
+          {/* Sub-headline */}
           <motion.p
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-lg md:text-xl text-primary-foreground/85 mb-4 leading-relaxed max-w-xl"
           >
-            Affordable, confidential therapy from certified professionals — 
-            via video, voice, or chat. Sessions start at{' '}
-            <span className="font-bold text-primary-foreground">UGX 30,000</span>.
+            Connect with licensed African therapists via video, voice, or chat. Starting from{' '}
+            <span className="font-bold text-primary-foreground">UGX 30,000 / ~$8</span> per session. Available in Uganda, Kenya, Tanzania and beyond.
           </motion.p>
 
           {/* Trust points */}
@@ -97,18 +82,18 @@ const HeroSection = () => {
           >
             <Button
               size="lg"
+              asChild
               className="bg-primary hover:bg-primary/90 text-primary-foreground px-10 py-7 text-lg font-bold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-              onClick={startBooking}
             >
-              Book a Therapist Now
+              <Link to="/mind-check">Start with a Free Wellbeing Check</Link>
             </Button>
             <Button
               size="lg"
               variant="outline"
+              asChild
               className="px-8 py-7 text-lg font-semibold rounded-full border-2 border-primary-foreground/40 text-primary-foreground hover:bg-primary-foreground/10 transition-all duration-300"
-              onClick={startConsultation}
             >
-              Free Consultation
+              <Link to="/specialists">Browse Therapists</Link>
             </Button>
           </motion.div>
 
@@ -137,21 +122,6 @@ const HeroSection = () => {
           </motion.div>
         </div>
       </div>
-
-      {/* Pre-Assessment Modal */}
-      <PreAssessmentModal
-        isOpen={isAssessmentModalOpen}
-        onClose={closeFlow}
-        onSkipToForm={goToForm}
-        actionType={actionType}
-      />
-
-      {/* Booking Form Modal */}
-      <BookingFormModal
-        isOpen={isBookingFormOpen}
-        onClose={resetFlow}
-        formType={actionType}
-      />
     </section>
   );
 };

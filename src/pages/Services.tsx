@@ -141,8 +141,8 @@ const Services = () => {
   return (
     <>
       <Helmet>
-        <title>Mental Health Services in Africa | Therapy, Counseling, Support Groups | Innerspark</title>
-        <meta name="description" content="Explore Innerspark Africa's mental health services: online therapy, virtual counseling, support groups, wellness resources, and corporate wellness programs. Affordable, accessible mental health care across Africa." />
+        <title>Our Services — Online Therapy, Support Groups & Corporate Wellness | InnerSpark Africa</title>
+        <meta name="description" content="Explore InnerSpark Africa's full range of mental health services — virtual therapy from UGX 30,000, support groups, WHO-5 screening, and corporate EAP solutions." />
         <meta name="keywords" content="mental health services Africa, therapy services Uganda, online counseling services, support groups mental health, corporate wellness programs, employee assistance program, virtual therapy services, affordable mental health care, teletherapy services, wellness resources, mental health support, professional counseling" />
         <link rel="canonical" href="https://www.innersparkafrica.com/services" />
         
@@ -232,6 +232,7 @@ const Services = () => {
               <div>
                 <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">{t.virtualTherapy}</h2>
                 <p className="text-xl text-primary mb-4">{t.virtualSubtitle}</p>
+                <div className="inline-block bg-primary/10 text-primary text-sm font-semibold rounded-full px-3 py-1 mb-4">From UGX 30,000 / ~$8 per session</div>
                 <p className="text-muted-foreground mb-6 leading-relaxed">{t.virtualDesc}</p>
                 <StaggerContainer className="space-y-3 mb-8">
                   <StaggerItem>
@@ -268,6 +269,10 @@ const Services = () => {
               <div>
                 <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">{t.supportGroups}</h2>
                 <p className="text-xl text-primary mb-4">{t.supportSubtitle}</p>
+                <div className="inline-flex items-center gap-2 mb-4">
+                  <span className="bg-primary/10 text-primary text-sm font-semibold rounded-full px-3 py-1">From UGX 15,000 / ~$4 per session</span>
+                  <span className="bg-green-wellness/10 text-green-wellness text-[11px] font-bold tracking-[0.06em] uppercase rounded-full px-2.5 py-1">Most Popular</span>
+                </div>
                 <p className="text-muted-foreground mb-6 leading-relaxed">{t.supportDesc}</p>
                 <StaggerContainer className="space-y-3 mb-8">
                   <StaggerItem>
@@ -314,6 +319,7 @@ const Services = () => {
               <div>
                 <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">{t.wellnessResources}</h2>
                 <p className="text-xl text-primary mb-4">{t.wellnessSubtitle}</p>
+                <div className="inline-block bg-green-wellness/10 text-green-wellness text-sm font-semibold rounded-full px-3 py-1 mb-4">Free — included with all plans</div>
                 <p className="text-muted-foreground mb-6 leading-relaxed">{t.wellnessDesc}</p>
                 <StaggerContainer className="space-y-3 mb-8">
                   <StaggerItem>
@@ -335,7 +341,7 @@ const Services = () => {
                     </div>
                   </StaggerItem>
                 </StaggerContainer>
-                <Link to="/mood-check-in">
+                <Link to="/mind-check">
                   <Button size="lg">{t.startCheckIn}</Button>
                 </Link>
               </div>
@@ -352,6 +358,7 @@ const Services = () => {
               <div>
                 <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">{t.corporateWellness}</h2>
                 <p className="text-xl text-primary mb-4">{t.corporateSubtitle}</p>
+                <div className="inline-block bg-primary/10 text-primary text-sm font-semibold rounded-full px-3 py-1 mb-4">From UGX 150,000 / ~$40 per employee per year</div>
                 <p className="text-muted-foreground mb-6 leading-relaxed">{t.corporateDesc}</p>
                 <StaggerContainer className="space-y-3 mb-8">
                   <StaggerItem>
@@ -379,7 +386,7 @@ const Services = () => {
                     </div>
                   </StaggerItem>
                 </StaggerContainer>
-                <Link to="/contact">
+                <Link to="/for-business">
                   <Button size="lg" variant="secondary">{t.partnerWithUs}</Button>
                 </Link>
               </div>
@@ -393,6 +400,88 @@ const Services = () => {
         </div>
       </section>
 
+
+      {/* Plan comparison */}
+      <section className="py-20 bg-muted">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <ScrollReveal>
+            <h2 className="text-3xl md:text-4xl font-bold text-center text-foreground mb-3">Compare our plans</h2>
+            <p className="text-center text-muted-foreground mb-10 max-w-2xl mx-auto">Choose the plan that fits where you are right now. You can switch any time.</p>
+          </ScrollReveal>
+          <div className="overflow-x-auto rounded-2xl border border-border bg-background">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-muted/50">
+                  <th className="text-left p-4 font-semibold text-foreground">Feature</th>
+                  <th className="p-4 font-semibold text-foreground">Basic</th>
+                  <th className="p-4 font-semibold text-primary relative">
+                    Standard
+                    <span className="absolute top-1 right-2 text-[10px] bg-green-wellness text-primary-foreground px-2 py-0.5 rounded-full">Most Popular</span>
+                  </th>
+                  <th className="p-4 font-semibold text-foreground">Premium</th>
+                </tr>
+              </thead>
+              <tbody className="text-center">
+                {[
+                  ["Licensed therapist", "✓", "✓", "✓"],
+                  ["Sessions / month", "1", "4", "8"],
+                  ["Chat support", "—", "✓", "✓"],
+                  ["Group sessions", "—", "✓", "✓"],
+                  ["WHO-5 screening", "✓", "✓", "✓"],
+                  ["Priority matching", "—", "—", "✓"],
+                  ["Family / couples", "—", "—", "✓"],
+                  ["Starting price", "UGX 30,000", "UGX 100,000", "UGX 220,000"],
+                ].map((row) => (
+                  <tr key={row[0]} className="border-t border-border">
+                    <td className="text-left p-4 font-medium text-foreground">{row[0]}</td>
+                    <td className="p-4 text-muted-foreground">{row[1]}</td>
+                    <td className="p-4 text-foreground bg-primary/5 font-medium">{row[2]}</td>
+                    <td className="p-4 text-muted-foreground">{row[3]}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Payment methods */}
+          <div className="mt-12 text-center">
+            <p className="text-xs font-semibold tracking-[0.06em] uppercase text-muted-foreground mb-4">Payment methods accepted</p>
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              {["MTN Mobile Money", "Airtel Money", "Visa", "Mastercard", "Bank Transfer"].map((p) => (
+                <span key={p} className="px-4 py-2 rounded-full bg-background border border-border text-sm font-medium text-foreground">{p}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="py-20 bg-background">
+        <div className="container mx-auto px-4 max-w-3xl">
+          <ScrollReveal>
+            <h2 className="text-3xl md:text-4xl font-bold text-center text-foreground mb-10">Frequently asked questions</h2>
+          </ScrollReveal>
+          <div className="space-y-3">
+            {[
+              { q: "Is online therapy as effective as in-person?", a: "Research shows online therapy is just as effective as in-person sessions for most concerns including anxiety, depression and stress — with the added benefits of comfort, privacy and accessibility." },
+              { q: "Are sessions confidential?", a: "Absolutely. All sessions are encrypted, private and bound by professional confidentiality. Your therapist will never share what you discuss without your explicit consent." },
+              { q: "How do I pay?", a: "We accept MTN Mobile Money, Airtel Money, Visa/Mastercard and bank transfer. Pay session-by-session or via a monthly plan." },
+              { q: "Can I switch therapists?", a: "Yes — at any time, no questions asked. Finding the right fit matters and we make switching simple." },
+              { q: "What if I need urgent help?", a: "If you're in crisis, please WhatsApp us on +256 792 085 773 right away or call a local emergency number. We can connect you to immediate support." },
+              { q: "Do you offer free trials?", a: "Yes — start with a free WHO-5 wellbeing check and a free 15-minute consultation to see if InnerSpark is right for you." },
+              { q: "How quickly can I get a session?", a: "Most clients are matched and booked within 24 hours. Same-day sessions are often available." },
+            ].map((f) => (
+              <details key={f.q} className="group rounded-xl border border-border bg-background p-5 open:bg-muted/40">
+                <summary className="flex justify-between items-center cursor-pointer font-semibold text-foreground list-none">
+                  {f.q}
+                  <span className="text-primary text-xl transition-transform group-open:rotate-45">+</span>
+                </summary>
+                <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{f.a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* CTA Footer */}
       <section className="py-20 bg-gradient-to-r from-primary via-purple-deep to-primary text-white">

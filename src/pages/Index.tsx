@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
 import TrustStatsBar from "@/components/TrustStatsBar";
-import AppFeaturesShowcase from "@/components/AppFeaturesShowcase";
 import HowItWorks from "@/components/HowItWorks";
 import TherapistShowcase from "@/components/TherapistShowcase";
 import TestimonialsSection from "@/components/TestimonialsSection";
@@ -15,14 +14,19 @@ import Footer from "@/components/Footer";
 import CookieConsent from "@/components/CookieConsent";
 import StickyMobileCTA from "@/components/StickyMobileCTA";
 import ConcernsSection from "@/components/ConcernsSection";
-import CounselingComparison from "@/components/CounselingComparison";
+import WhyInnerSpark from "@/components/home/WhyInnerSpark";
+import HowItWorksSimple from "@/components/home/HowItWorksSimple";
+import BuiltForAfrica from "@/components/home/BuiltForAfrica";
+import ImpactCounter from "@/components/home/ImpactCounter";
+import SDGAlignment from "@/components/home/SDGAlignment";
+import WhisperTeaser from "@/components/home/WhisperTeaser";
 
 const Index = () => {
   return (
     <>
       <Helmet>
-        <title>Online Therapy & Virtual Counselling | Talk to a Therapist Now – Uganda, Kenya, Tanzania | Innerspark Africa</title>
-        <meta name="description" content="Affordable online therapy with licensed therapists. Get anxiety help, depression support, stress management & relationship counseling online. Same-day video, chat & phone therapy across Uganda, Kenya, Tanzania & Africa." />
+        <title>InnerSpark Africa — Online Therapy & Mental Wellness | Africa's #1 Digital Mental Health Platform</title>
+        <meta name="description" content="Connect with licensed African therapists via video, chat or voice. Starting from UGX 30,000. Available 24/7 in Uganda, Kenya, Tanzania and beyond." />
         <meta name="keywords" content="online therapy, virtual counselling, talk to therapist online, talk to therapist now, therapy app, teletherapy, anxiety help online, depression support online, stress management therapy, relationship counseling online, mental health help now, emotional support online, therapist available now, instant therapy session, same day therapy, affordable therapy online, low cost counseling, cheap therapy online, chat therapy, video therapy session, phone therapy, messaging therapy, licensed therapist online, certified counselor online, best online therapy, therapist in Uganda online, counseling services Kenya online, therapy services Tanzania, African online therapy" />
         <link rel="canonical" href="https://www.innersparkafrica.com/" />
       </Helmet>
@@ -30,7 +34,10 @@ const Index = () => {
         <Header />
         <HeroSection />
         <TrustStatsBar />
+        <HowItWorksSimple />
         <ConcernsSection />
+        <WhyInnerSpark />
+        <BuiltForAfrica />
         {/* WHO-5 Wellbeing Check Banner */}
         <section className="py-8 bg-gradient-to-r from-green-50 to-emerald-50 border-y border-green-200">
           <div className="container mx-auto px-4">
@@ -50,11 +57,12 @@ const Index = () => {
             </div>
           </div>
         </section>
+        <ImpactCounter />
         <TherapistShowcase />
         <TestimonialsSection />
-        {/* <AppFeaturesShowcase /> */}
         <HowItWorks />
-        <CounselingComparison />
+        <WhisperTeaser />
+        <SDGAlignment />
         <Partners />
         <EventsSection />
         <Footer />

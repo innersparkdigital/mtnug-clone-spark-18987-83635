@@ -105,7 +105,7 @@ const Header = () => {
   return (
     <div className="sticky top-0 z-50">
       {/* Crisis support strip */}
-      <div className="hidden md:block bg-foreground text-background py-1.5 px-4 text-xs">
+      <div className="hidden md:block bg-green-wellness text-primary-foreground py-1.5 px-4 text-xs">
         <div className="container mx-auto flex justify-between items-center gap-4">
           <a
             href="https://wa.me/256792085773?text=I%20need%20urgent%20mental%20health%20support"
@@ -135,7 +135,7 @@ const Header = () => {
       </div>
 
       {/* Mobile crisis strip */}
-      <div className="md:hidden bg-foreground text-background py-1.5 px-3">
+      <div className="md:hidden bg-green-wellness text-primary-foreground py-1.5 px-3">
         <a
           href="https://wa.me/256792085773?text=I%20need%20urgent%20mental%20health%20support"
           target="_blank"
