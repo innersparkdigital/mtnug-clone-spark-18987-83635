@@ -19,7 +19,7 @@ const SDGAlignment = () => (
       </ScrollReveal>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto">
         {sdgs.map((s) => (
-          <div key={s.num} className="text-center p-5 rounded-2xl border border-border bg-surface">
+          <div key={s.num} className="text-center p-5 rounded-2xl border border-border bg-muted">
             <div className="w-12 h-12 mx-auto rounded-full bg-green-wellness/10 flex items-center justify-center mb-3">
               <s.icon className="w-5 h-5 text-green-wellness" />
             </div>

@@ -21,7 +21,7 @@ const BuiltForAfrica = () => (
       </ScrollReveal>
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4 max-w-5xl mx-auto">
         {features.map((f) => (
-          <div key={f.title} className="text-center p-5 rounded-2xl bg-surface border border-border">
+          <div key={f.title} className="text-center p-5 rounded-2xl bg-muted border border-border">
             <div className="w-12 h-12 mx-auto rounded-full bg-green-wellness/10 flex items-center justify-center mb-3">
               <f.icon className="w-5 h-5 text-green-wellness" />
             </div>

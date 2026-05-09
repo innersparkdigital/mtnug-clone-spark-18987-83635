@@ -10,7 +10,7 @@ const steps = [
 ];
 
 const HowItWorksSimple = () => (
-  <section className="py-20 bg-surface">
+  <section className="py-20 bg-muted">
     <div className="container mx-auto px-4">
       <ScrollReveal>
         <div className="max-w-2xl mx-auto text-center mb-12">
