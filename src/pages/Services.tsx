@@ -141,8 +141,8 @@ const Services = () => {
   return (
     <>
       <Helmet>
-        <title>Mental Health Services in Africa | Therapy, Counseling, Support Groups | Innerspark</title>
-        <meta name="description" content="Explore Innerspark Africa's mental health services: online therapy, virtual counseling, support groups, wellness resources, and corporate wellness programs. Affordable, accessible mental health care across Africa." />
+        <title>Our Services — Online Therapy, Support Groups & Corporate Wellness | InnerSpark Africa</title>
+        <meta name="description" content="Explore InnerSpark Africa's full range of mental health services — virtual therapy from UGX 30,000, support groups, WHO-5 screening, and corporate EAP solutions." />
         <meta name="keywords" content="mental health services Africa, therapy services Uganda, online counseling services, support groups mental health, corporate wellness programs, employee assistance program, virtual therapy services, affordable mental health care, teletherapy services, wellness resources, mental health support, professional counseling" />
         <link rel="canonical" href="https://www.innersparkafrica.com/services" />
         
@@ -335,7 +335,7 @@ const Services = () => {
                     </div>
                   </StaggerItem>
                 </StaggerContainer>
-                <Link to="/mood-check-in">
+                <Link to="/mind-check">
                   <Button size="lg">{t.startCheckIn}</Button>
                 </Link>
               </div>
@@ -379,7 +379,7 @@ const Services = () => {
                     </div>
                   </StaggerItem>
                 </StaggerContainer>
-                <Link to="/contact">
+                <Link to="/for-business">
                   <Button size="lg" variant="secondary">{t.partnerWithUs}</Button>
                 </Link>
               </div>
