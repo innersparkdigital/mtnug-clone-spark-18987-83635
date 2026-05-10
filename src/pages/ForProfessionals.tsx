@@ -304,8 +304,6 @@ const ForProfessionals = () => {
         </section>
 
         {/* FAQs Section */}
-        <section className="py-20 bg-muted/30">
-
         {/* Accepted Registration Bodies */}
         <section className="py-16 bg-background">
           <div className="container mx-auto px-4 max-w-5xl">
