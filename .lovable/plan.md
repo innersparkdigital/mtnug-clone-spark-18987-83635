@@ -1,59 +1,109 @@
-This is a major rebuild covering 17 pages, brand identity, navigation, global rules, and content. Before writing any code I want to confirm scope and sequencing so we don't break the live production site that's already serving customers.
+## Phase 3 Rebuild — Pages 7-11
 
-## What I understand you want
+This phase covers Blog, For Business, For Professionals, Donate Therapy, and Corporate Wellbeing Check. The Corporate Wellbeing security fix is **first priority** — it ships before any cosmetic work.
 
-A full visual + structural rebuild of innersparkafrica.com to a "world-class" standard (BetterHelp / Lyra / Spring Health quality), but authentically African — keeping the existing backend (Lovable Cloud, PesaPal, Resend, RBAC, assessments, corporate admin, learning hub, Whisper, etc.) intact.
+---
 
-## Key brand + global changes (apply everywhere first)
+### PRIORITY 0 — Security fix: Corporate Wellbeing Check (`/corporate-wellbeing-check`)
 
-- **Color system update** in `index.css` + `tailwind.config.ts`:
-  - Primary `#3B4FD4`, accent `#EEF0FD`, success `#2E7D5E`, text `#1A1A2E`, muted `#555`, surface `#F5F6FF` (all converted to HSL tokens).
-- **Typography**: load Plus Jakarta Sans (display) + Inter (body) from Google Fonts; restrict to defined sizes/weights (display, H1 22/500, H2 18/500, body 15/400/1.7, caption 12, label 11 uppercase).
-- **Global header rebuild**: 3 mega-menus (Individuals / Business / Professionals), language selector, persistent "Book a Session" CTA, crisis-help strip ("Need urgent help? WhatsApp +256 792 085 773").
-- **Global footer rebuild**: 4 columns as specified, with Google Play + App Store badges (iOS still routes to AppComingSoon per existing memory), socials, address.
-- **Global rules enforcement**: unique title/meta/canonical per page, dual-currency display helper (`UGX X / ~$Y`), citation labels on stats, hide "0 enrolled" counts, headline changed to "Africa's Most Accessible Mental Wellness Platform" (drop "Uganda's #1").
-- **Admin route guards**: confirm `/corporate-admin`, `/mind-check/analytics`, `/learning/admin-dashboard` all require admin role (RBAC already exists — audit + lock down any gaps).
+Before anything else:
+- Strip the public page down to: hero + access-code input + reassurance copy + "no access code?" / "for HR managers" sections.
+- Move all dashboard rendering (company data, employee names, scores, analytics) behind a successful access-code lookup or admin auth. No company/employee data should render until a valid code is submitted.
+- Verify `/corporate-admin` route is gated by `isAdmin` (already enforced via RBAC) — confirm no analytics leak via the public URL.
+- Audit RLS on `corporate_employees`, `corporate_screenings`, `corporate_companies` — they already require admin role for SELECT (verified in schema). Confirm no edge function or RPC is leaking the data.
+- Update SEO: title + meta + `noindex` on the public access-code page.
 
-## 17-page rebuild — needs your input
+---
 
-You said "17 pages in total" with per-page instructions ("what to keep / replace / add"), but the brief you pasted stops at the brand identity / typography section. **The page-by-page details didn't come through.**
+### Page 7 — Blog (`/blog`)
 
-Before I touch any page I need either:
-1. The full per-page section pasted in a follow-up message, **or**
-2. Permission to start with the global foundation (tokens, typography, header, footer, CTA, crisis bar, dual-currency helper) and tackle pages in a second pass once you send the page details.
+**Data layer**
+- Add a small `BLOG_AUTHORS` map in `src/lib/blogAuthors.ts` mapping each existing slug → `{ name, credentials, photo, specialistSlug, experience }`. Pull names/photos from the `/specialists` directory.
+- Add a `BLOG_DATES_OVERRIDE` map to retro-stagger the 11 same-day posts across Dec 2025 → May 2026.
 
-## Recommended sequencing (to avoid breaking the live site)
+**UI**
+- Featured article hero (largest card, monthly rotation by `new Date().getMonth() % posts.length`).
+- Geographic tabs: All | Uganda | Kenya | Tanzania | Pan-Africa (filter by a `region` field added to the post map; default existing posts to "Uganda").
+- Author byline on each card and at top of each post page (`src/pages/blog/*`).
+- Author bio card component `BlogAuthorCard.tsx` rendered at bottom of every post with "Book a session with [name]" CTA.
+- Related articles (3) using simple category match.
+- WhatsApp + LinkedIn share buttons (extend `SocialShareButtons.tsx` if needed).
+- "Write for us" pitch form on `/blog` index → posts to `contact_submissions` with subject `"Blog Pitch"`.
 
-```text
-Phase 1 — Foundation (safe, non-destructive)
-  1. Brand tokens (colors, fonts) in index.css + tailwind.config.ts
-  2. Global Header rebuild (mega-menus + crisis bar + lang + CTA)
-  3. Global Footer rebuild (4 columns)
-  4. Dual-currency utility + "Africa's Most Accessible..." headline swap
-  5. Admin route guard audit
+**New posts** (added to `blogPosts` map + corresponding stub pages with full SEO):
+1. Mental Health ROI: What East African HR Directors Need to Know
+2. Burnout in Uganda's Telecom and Banking Sectors — 2025 Data
+3. How to Choose an EAP Provider in Uganda — A Practical Guide for HR
+4. Mental Health Support for Kenyan Professionals
+5. 5 Signs Your Team Needs a Mental Health Intervention
 
-Phase 2 — Page rebuilds (needs your per-page brief)
-  Home → For Business → For Professionals → Services →
-  Find a Therapist → Mind-Check → Support Groups → Learning Hub →
-  Whisper → Donate Therapy → Blog → Events → About → Contact →
-  Corporate Admin → Mind-Check Analytics → Learning Admin
+**SEO**: New title + meta on `/blog`.
 
-Phase 3 — Polish
-  SEO audit, citation labels, "0 enrolled" cleanup, image audit
-```
+---
 
-## What stays untouched
+### Page 8 — For Business (`/for-business`)
 
-- Lovable Cloud backend, all edge functions, RLS, RBAC
-- PesaPal payment flow, pricing logic (75k UGX therapy, 25k groups), currency divisor 3400
-- Resend email infrastructure + branded auth templates we just shipped
-- Corporate admin manual recommendation system + service-request flow
-- WHO-5, assessment-first flow, therapist matching algorithm
-- Existing memories (Nairobi timezone, image hierarchy, scroll standards, etc.)
+- Inline citations on every stat (WHO 2022, Deloitte 2023, ILO 2022, "InnerSpark client programme data 2024–2025").
+- Replace empty "Companies Who Benefited" with 2–3 anonymized case study cards.
+- Replace generic CTAs with: "Book a Free Discovery Call" / "Get a Free Team Screening" / "See Pricing for My Team Size".
+- New **Pricing table** (Screening, S.P.A.R.K, Basic, Standard, Premium, Custom) with UGX + USD.
+- New **ROI Calculator** component (input: employee count → output: estimated savings, transparent formula based on ILO 31 days/year × avg daily wage assumption).
+- New **S.P.A.R.K™ Framework** visual section.
+- New **Onboarding timeline** (5 steps, "<2 weeks").
+- Trust badges row (encryption, aggregate-only, UDPA 2019, no individual sharing).
+- New **Request a Proposal** form (separate from screening request) → posts to `contact_submissions` with subject `"Proposal Request"`.
 
-## Two questions before I start
+---
 
-1. **Send the per-page brief** (the part after "UI Label / Badge…") so I have the keep/replace/add details for all 17 pages — or confirm I should start with **Phase 1 foundation only** and you'll send page details after.
-2. **"Plus Jakarta Sans" or Inter for display?** You wrote "Plus Jakarta Sans or Inter" — I'll default to **Plus Jakarta Sans** for display + **Inter** for body unless you say otherwise.
+### Page 9 — For Professionals (`/for-professionals`)
 
-Approve this plan (and answer the two questions) and I'll start with Phase 1 immediately.
+- Replace opaque compensation copy with transparent earnings range (65–75%, ~UGX 6M–10M / mo at 20 sessions/wk).
+- Promote "No monthly fees" to hero benefit.
+- Add approval timeline (10 min / 5 days / 2 weeks).
+- Accepted registration bodies by country (Uganda/Kenya/Tanzania/Rwanda + international fallback email).
+- "Actively recruiting" specialties strip.
+- 2–3 therapist testimonial quotes.
+- Referral program section (UGX 50,000 after 10 sessions).
+- Tech requirements section.
+- New SEO title + meta.
+
+---
+
+### Page 10 — Donate Therapy (`/donate-therapy`)
+
+- Add USD alongside UGX on every tier.
+- Live impact counter at top (read aggregated count from existing `income_entries` where `source='donation'`, fallback static).
+- Donor stories section (3 anonymized).
+- Recurring donation toggle (monthly).
+- "Gift a therapy" share link (generates WhatsApp/email shareable URL).
+- Corporate CSR section linking to `/for-business`.
+- Tax receipt request line.
+- Transparency section on how donations are managed.
+- *Note*: Stripe/Flutterwave international card processing requires backend wiring — defer activation; add UI placeholder + "Coming soon: international card payments" to keep scope sane unless you want me to enable Stripe in this phase.
+
+---
+
+### Page 11 — Corporate Wellbeing Check
+
+Covered in Priority 0 above. Authenticated dashboard keeps existing analytics; add:
+- PDF/CSV export buttons (already partially built — verify and surface).
+- Trend-over-time block (round 1 vs round 2 comparison using `corporate_screenings.created_at`).
+- Service recommendation hints based on aggregate risk (uses existing `corporate_service_catalog`).
+
+---
+
+### Out of scope / clarifications needed
+- **Stripe/Flutterwave** for donations: enabling international payments is a backend integration. I'll ship UI stubs unless you confirm to wire Stripe now.
+- **admin.innersparkafrica.com** subdomain split: this is DNS/hosting work outside the codebase — current `/corporate-admin` route is already RBAC-gated; I'll keep it on the main domain unless you want me to add a redirect.
+- **Therapist photos for blog authors**: I'll reuse existing `src/assets/specialists/*` images. If a specific therapist isn't in `/specialists`, I'll fall back to a generic InnerSpark byline.
+- **Past-30-day access audit** for the wellbeing URL: requires log review I can't perform from code — flagging for your team.
+
+---
+
+### Execution order
+1. Security lockdown of `/corporate-wellbeing-check` (Priority 0).
+2. For Business rebuild (highest commercial impact).
+3. Blog rebuild + 5 new posts.
+4. For Professionals rebuild.
+5. Donate Therapy rebuild.
+6. Corporate dashboard polish (exports, trends, recommendations).
