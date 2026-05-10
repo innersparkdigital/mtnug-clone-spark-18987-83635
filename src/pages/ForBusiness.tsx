@@ -12,6 +12,7 @@ import { Brain, Cog, Users, Calendar, Video, BookOpen, GraduationCap, BarChart3,
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import B2BScreeningBookingSection from "@/components/business/B2BScreeningBookingSection";
+import { PricingTable, ROICalculator, SparkFramework, OnboardingTimeline, CaseStudies, TrustBadges, ProposalRequestForm } from "@/components/business/BusinessSections";
 import { useLanguage } from "@/contexts/LanguageContext";
 import corporateWellnessImage from "@/assets/for-business-hero-new.png";
 import markhLogo from "@/assets/partners/markh.png";
@@ -25,8 +26,8 @@ const defaultTexts = {
   heroTitle1: "Good for the employee, even better for",
   heroTitle2: "your company",
   heroDesc: "For your employees, quality emotional care. Innerspark can help your company achieve more productivity and fewer leaves, with a focus on ROI and positive clinical outcomes.",
-  ctaButton: "I Want to Care for My Business",
-  clientsTitle: "Companies Who Benefited",
+  ctaButton: "Book a Free Discovery Call",
+  clientsTitle: "Trusted by leading East African organisations",
   whyTitle1: "Why does your company need",
   whyTitle2: "emotional health care?",
   stat1: "of employees exhibit physical or psychological illness due to mental health issues.",
@@ -54,9 +55,9 @@ const defaultTexts = {
   consultingDesc: "Periodic meetings with our emotional health managers help you define action plans for your teams.",
   transformTitle: "Transform your company climate and culture",
   resultsTitle: "Measurable Results",
-  result1: "clinical improvement of employees after the program",
-  result2: "reduction in levels of mental disorders",
-  result3: "increase in productivity",
+  result1: "clinical improvement (InnerSpark client data 2024–2025)",
+  result2: "reduction in mental disorder symptoms (InnerSpark client data 2024–2025)",
+  result3: "increase in productivity (InnerSpark client data 2024–2025)",
   decrease: "Decrease",
   decreaseItem1: "Annual cost with health plan (loss ratio)",
   decreaseItem2: "Cost of replacement, recruitment and training (turnover)",
@@ -154,10 +155,10 @@ const ForBusiness = () => {
   };
 
   const stats = [
-    { value: "84%", label: t.stat1, icon: Brain },
-    { value: "61%", label: t.stat2, icon: Cog },
-    { value: "38%", label: t.stat3, icon: Users },
-    { value: "31 days", label: t.stat4, icon: Calendar },
+    { value: "84%", label: t.stat1, icon: Brain, source: "Source: WHO World Mental Health Report 2022" },
+    { value: "61%", label: t.stat2, icon: Cog, source: "Source: Deloitte Mental Health & Employers Report 2023" },
+    { value: "38%", label: t.stat3, icon: Users, source: "Source: ILO World Mental Health at Work Report 2022" },
+    { value: "31 days", label: t.stat4, icon: Calendar, source: "Source: ILO 2022" },
   ];
 
   const employeeFeatures = [
@@ -186,8 +187,8 @@ const ForBusiness = () => {
   return (
     <>
       <Helmet>
-        <title>Corporate Mental Health & Employee Wellness Programs | Workplace Wellbeing Screening | Innerspark Africa</title>
-        <meta name="description" content="Corporate mental health services & employee wellness programs across Uganda, Kenya, Tanzania & Africa. Workplace wellbeing screening, employee mental health audits, EAP and corporate therapy that reduce absenteeism and boost productivity." />
+        <title>Corporate Mental Health & EAP Solutions for East African Businesses | InnerSpark Africa</title>
+        <meta name="description" content="Protect your team's mental health with InnerSpark's corporate EAP. Screening, S.P.A.R.K training, and 24/7 digital support from UGX 150,000 per employee per year." />
         <meta name="keywords" content="employee mental health screening, workplace wellbeing assessment, staff mental health check, corporate mental health screening, employee wellbeing survey, workplace mental health audit, corporate wellness program, employee wellness program, workplace mental health program, corporate mental health services, employee assistance program, workplace wellbeing program, EAP programs Uganda, corporate therapy, business mental health Africa, workplace mental health Kenya, employee wellbeing Tanzania" />
         <link rel="canonical" href="https://www.innersparkafrica.com/for-business" />
         <meta property="og:url" content="https://www.innersparkafrica.com/for-business" />
@@ -291,6 +292,7 @@ const ForBusiness = () => {
                     <stat.icon className="h-12 w-12 mx-auto text-primary" />
                     <p className="text-4xl md:text-5xl font-bold text-primary">{stat.value}</p>
                     <p className="text-slate-300 text-sm">{stat.label}</p>
+                    <p className="text-slate-400 text-xs italic">{stat.source}</p>
                   </CardContent>
                 </Card>
               ))}
@@ -447,6 +449,14 @@ const ForBusiness = () => {
 
         {/* B2B Mental Health Screening Booking */}
         <B2BScreeningBookingSection />
+
+        <CaseStudies />
+        <PricingTable />
+        <ROICalculator />
+        <SparkFramework />
+        <OnboardingTimeline />
+        <TrustBadges />
+        <ProposalRequestForm />
 
         {/* Contact Form Section */}
         <section id="contact-form" className="py-20 bg-slate-900 text-white">

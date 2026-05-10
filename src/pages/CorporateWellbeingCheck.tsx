@@ -246,8 +246,9 @@ const CorporateWellbeingCheck = () => {
   return (
     <>
       <Helmet>
-        <title>Corporate Wellbeing Check | InnerSpark Africa</title>
-        <meta name="description" content="Confidential employee wellbeing screening by InnerSpark Africa." />
+        <title>Corporate Wellbeing Screening — Enter Your Access Code | InnerSpark Africa</title>
+        <meta name="description" content="InnerSpark's corporate mental health screening tool. Enter your access code to complete your confidential wellbeing check." />
+        <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-b from-blue-50/60 via-white to-blue-50/40">
@@ -274,7 +275,10 @@ const CorporateWellbeingCheck = () => {
                   <Brain className="w-8 h-8 text-primary" />
                 </div>
                 <h1 className="text-2xl font-bold text-foreground mb-2">Corporate Wellbeing Check</h1>
-                <p className="text-muted-foreground mb-8">Enter your access code or use the link from your email to begin.</p>
+                <p className="text-muted-foreground mb-6">Enter your access code to begin.</p>
+                <p className="text-sm text-muted-foreground mb-8 max-w-sm mx-auto">
+                  Your individual responses are completely private. Your employer will only see anonymized company-wide results — no names, no personal data.
+                </p>
 
                 <div className="space-y-4 max-w-xs mx-auto">
                   <Input
@@ -295,6 +299,24 @@ const CorporateWellbeingCheck = () => {
                   <Lock className="w-3 h-3 inline mr-1" />
                   Your responses are private and confidential
                 </p>
+
+                <div className="mt-10 grid gap-4 text-left">
+                  <div className="bg-card border border-border rounded-2xl p-5">
+                    <p className="text-sm font-semibold text-foreground mb-1">No access code?</p>
+                    <p className="text-xs text-muted-foreground">
+                      If you are an employee who hasn't received a code, ask your HR manager. Or take our free public wellbeing check at{' '}
+                      <Link to="/mind-check" className="text-primary underline">/mind-check</Link>.
+                    </p>
+                  </div>
+                  <div className="bg-primary/5 border border-primary/20 rounded-2xl p-5">
+                    <p className="text-sm font-semibold text-foreground mb-1">For HR managers</p>
+                    <p className="text-xs text-muted-foreground">
+                      Want to run a confidential wellbeing screening for your team? Request your company's access code and dashboard —{' '}
+                      <Link to="/for-business" className="text-primary underline">visit /for-business</Link> or email{' '}
+                      <a href="mailto:info@innersparkafrica.com" className="text-primary underline">info@innersparkafrica.com</a>.
+                    </p>
+                  </div>
+                </div>
               </motion.div>
             )}
 
