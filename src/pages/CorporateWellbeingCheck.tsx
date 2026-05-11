@@ -10,6 +10,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import logo from '@/assets/innerspark-logo.png';
 import { Checkbox } from '@/components/ui/checkbox';
+import EmployeeResultsBreakdown from '@/components/wellbeing/EmployeeResultsBreakdown';
+import { computeAnswers, computeAggregate, AnswerMap } from '@/lib/wellbeingIntelligence';
 
 const WHO5_QUESTIONS = [
   "I have felt cheerful and in good spirits",
@@ -85,6 +87,7 @@ const CorporateWellbeingCheck = () => {
   const [resultsEmail, setResultsEmail] = useState<string>('');
   const [sendingResultsEmail, setSendingResultsEmail] = useState(false);
   const [resultsEmailSent, setResultsEmailSent] = useState(false);
+  const [intelligenceAnswers, setIntelligenceAnswers] = useState<AnswerMap | null>(null);
 
   // Check for token in URL
   useEffect(() => {
@@ -188,7 +191,12 @@ const CorporateWellbeingCheck = () => {
     try {
       const attemptNumber = employee.screening_history.length + 1;
 
-      await supabase.from('corporate_screenings').insert({
+      // Per-question intelligence
+      const intelligence = computeAnswers(answers as number[]);
+      const aggregate = computeAggregate(intelligence);
+      setIntelligenceAnswers(intelligence);
+
+      const { data: screeningRow } = await supabase.from('corporate_screenings').insert({
         employee_id: employee.id,
         company_id: employee.company_id,
         who5_score: who5Score,
@@ -200,7 +208,30 @@ const CorporateWellbeingCheck = () => {
         },
         total_score: totalScore,
         wellbeing_category: category.key,
-      });
+        per_question: intelligence as any,
+        triggered_flags: aggregate.triggeredFlags,
+        triggered_clusters: aggregate.triggeredClusters,
+        crisis_alert_level: aggregate.crisisAlertLevel,
+        risk_category: aggregate.riskCategory,
+      } as any).select('id').single();
+
+      // Crisis alert (independent — must fire even if email/report fails)
+      if (aggregate.crisisAlertRequired && aggregate.crisisAlertLevel) {
+        const triggers = [
+          ...aggregate.triggeredFlags,
+          ...(intelligence.q5.criticalFlag ? ['Q5_ZERO_ANHEDONIA'] : []),
+          ...(aggregate.overallScore.percentage < 20 ? ['OVERALL_BELOW_20'] : []),
+        ];
+        supabase.from('corporate_crisis_alerts').insert({
+          company_id: employee.company_id,
+          employee_id: employee.id,
+          screening_id: screeningRow?.id ?? null,
+          level: aggregate.crisisAlertLevel,
+          triggers,
+        } as any).then(({ error }) => {
+          if (error) console.error('crisis alert insert failed', error);
+        });
+      }
 
       // Update employee record (gender + mark screening done)
       await supabase
@@ -652,6 +683,13 @@ const CorporateWellbeingCheck = () => {
                 <div className="text-center text-sm text-muted-foreground mb-6">
                   Raw score: {totalScore}/{ALL_QUESTIONS.length * 5} • WHO-5 + Workplace Index
                 </div>
+
+                {/* Per-question intelligence breakdown */}
+                {intelligenceAnswers && (
+                  <div className="mb-6">
+                    <EmployeeResultsBreakdown answers={intelligenceAnswers} />
+                  </div>
+                )}
 
                 {/* Score Breakdown */}
                 <div className="bg-card rounded-2xl border p-5 mb-6 text-left space-y-3">

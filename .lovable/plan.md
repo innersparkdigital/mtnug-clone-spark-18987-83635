@@ -1,109 +1,88 @@
-## Phase 3 Rebuild — Pages 7-11
+# Per-Question Intelligence Layer — Corporate Wellbeing Screening
 
-This phase covers Blog, For Business, For Professionals, Donate Therapy, and Corporate Wellbeing Check. The Corporate Wellbeing security fix is **first priority** — it ships before any cosmetic work.
+The existing 8-question flow stays intact. We add a single source-of-truth intelligence module, store richer per-question data, and rebuild the results / HR / internal admin views to read from it. Nothing is removed.
 
----
+## 1. Single source of truth: `QUESTION_INTELLIGENCE`
 
-### PRIORITY 0 — Security fix: Corporate Wellbeing Check (`/corporate-wellbeing-check`)
+New file `src/lib/wellbeingIntelligence.ts`:
+- Object keyed `q1..q8`: `text`, `domain` (`who5` | `workplace`), `reverseScored` (true for q8), `flagName`, criticality (q5 special), per-band interpretation (4 bands), individual recommendation, company recommendation, recommended InnerSpark service slug.
+- Helpers:
+  - `computeAnswers(rawAnswers: number[])` → per-q `{ rawAnswer, effectiveScore, percentageScore, flagged, criticalFlag }` (applies q8 reversal, q5 criticality).
+  - `computeAggregate(answers)` → `who5Score`, `workplaceScore`, `overallScore`, `riskCategory` (`healthy ≥70`, `at_risk 40–69`, `critical <40`), `triggeredFlags`, `triggeredClusters` (BURNOUT / ANXIETY / DEPRESSION_RISK), `crisisAlertRequired`, `crisisAlertLevel` (1 severe, 2 urgent, 3 monitor).
+  - `priorityAreas(answers)` → 2–3 lowest %.
+  - `nextSteps(flags)` → service routing (Q1/Q5→therapy, Q2/Q8→stress/group, Q3/Q4→meditation/burnout, Q6/Q7→workplace+therapy).
+  - `companyAggregate(records)` → per-q averages, flag counts, clusters (≥3 employees), risk distribution, recommended service package, 30-day plan template.
 
-Before anything else:
-- Strip the public page down to: hero + access-code input + reassurance copy + "no access code?" / "for HR managers" sections.
-- Move all dashboard rendering (company data, employee names, scores, analytics) behind a successful access-code lookup or admin auth. No company/employee data should render until a valid code is submitted.
-- Verify `/corporate-admin` route is gated by `isAdmin` (already enforced via RBAC) — confirm no analytics leak via the public URL.
-- Audit RLS on `corporate_employees`, `corporate_screenings`, `corporate_companies` — they already require admin role for SELECT (verified in schema). Confirm no edge function or RPC is leaking the data.
-- Update SEO: title + meta + `noindex` on the public access-code page.
+## 2. Database (additive, non-breaking)
 
----
+New migration:
+- Add columns to `corporate_screenings`: `per_question jsonb` (the 8-entry detail), `triggered_flags text[]`, `triggered_clusters text[]`, `crisis_alert_level int`, `risk_category text` (parallel to existing `wellbeing_category`).
+- New table `corporate_crisis_alerts`: `id`, `company_id`, `employee_id`, `screening_id`, `level int`, `triggers text[]`, `status text default 'pending'` (pending|contacted|resolved), `notes`, `created_at`, `updated_at`. Admin-only RLS (insert allowed for anon to fire from screening submit; select/update admin only).
 
-### Page 7 — Blog (`/blog`)
+Existing `total_score`, `who5_*`, `workplace_responses`, `wellbeing_category` continue to be written as today.
 
-**Data layer**
-- Add a small `BLOG_AUTHORS` map in `src/lib/blogAuthors.ts` mapping each existing slug → `{ name, credentials, photo, specialistSlug, experience }`. Pull names/photos from the `/specialists` directory.
-- Add a `BLOG_DATES_OVERRIDE` map to retro-stagger the 11 same-day posts across Dec 2025 → May 2026.
+## 3. Submission flow update (`CorporateWellbeingCheck.tsx`)
 
-**UI**
-- Featured article hero (largest card, monthly rotation by `new Date().getMonth() % posts.length`).
-- Geographic tabs: All | Uganda | Kenya | Tanzania | Pan-Africa (filter by a `region` field added to the post map; default existing posts to "Uganda").
-- Author byline on each card and at top of each post page (`src/pages/blog/*`).
-- Author bio card component `BlogAuthorCard.tsx` rendered at bottom of every post with "Book a session with [name]" CTA.
-- Related articles (3) using simple category match.
-- WhatsApp + LinkedIn share buttons (extend `SocialShareButtons.tsx` if needed).
-- "Write for us" pitch form on `/blog` index → posts to `contact_submissions` with subject `"Blog Pitch"`.
+- After collecting raw answers, run `computeAnswers` + `computeAggregate`.
+- Insert into `corporate_screenings` with the new fields plus existing fields.
+- If `crisisAlertRequired`, also insert into `corporate_crisis_alerts` (independent try/catch so it fires even if the report email fails).
+- Pass the rich result object into the results view.
 
-**New posts** (added to `blogPosts` map + corresponding stub pages with full SEO):
-1. Mental Health ROI: What East African HR Directors Need to Know
-2. Burnout in Uganda's Telecom and Banking Sectors — 2025 Data
-3. How to Choose an EAP Provider in Uganda — A Practical Guide for HR
-4. Mental Health Support for Kenyan Professionals
-5. 5 Signs Your Team Needs a Mental Health Intervention
+## 4. Employee results page (same route, redesigned)
 
-**SEO**: New title + meta on `/blog`.
+Sections in order:
+- 2.5s "Analysing your responses…" loader.
+- Big overall % + risk label + trend vs previous (already partly built).
+- **Priority areas** card: 2–3 lowest questions with question text + recommendation excerpt.
+- **Per-question breakdown**: 8 cards each showing question, plain-English answer label, score `x/5 (y%)`, mini bar, clinical meaning, personalised recommendation, soft amber/red highlight when flagged. Never shows internal flag names.
+- **Recommended next steps**: 1–3 service buttons (deep-link to therapy / support groups / meditations / etc.).
+- Existing "Get a copy by email" + "Talk to someone" CTA preserved.
 
----
+## 5. HR admin (`CorporateAdmin.tsx`) — new view per company
 
-### Page 8 — For Business (`/for-business`)
+Add a "Triggers & Insights" tab/section at the top of the company detail:
+- Triggers dashboard: ranked flags with count, plain language, recommended service, productivity-cost estimate (`affectedEmployees * 1.25 days/month` placeholder constant).
+- Per-question company averages with GREEN/AMBER/RED badge + company recommendation for AMBER/RED.
+- Cluster analysis card (BURNOUT / ANXIETY / DEPRESSION_RISK) when ≥3 employees match.
+- Recommended service package + "Request this service" button (writes to existing `corporate_service_interests`).
+- Auto-generated 30-day action plan (week 1–4) from template, editable consultant notes preserved.
+- Employee list keeps overall score only (no per-question breakdown for HR).
 
-- Inline citations on every stat (WHO 2022, Deloitte 2023, ILO 2022, "InnerSpark client programme data 2024–2025").
-- Replace empty "Companies Who Benefited" with 2–3 anonymized case study cards.
-- Replace generic CTAs with: "Book a Free Discovery Call" / "Get a Free Team Screening" / "See Pricing for My Team Size".
-- New **Pricing table** (Screening, S.P.A.R.K, Basic, Standard, Premium, Custom) with UGX + USD.
-- New **ROI Calculator** component (input: employee count → output: estimated savings, transparent formula based on ILO 31 days/year × avg daily wage assumption).
-- New **S.P.A.R.K™ Framework** visual section.
-- New **Onboarding timeline** (5 steps, "<2 weeks").
-- Trust badges row (encryption, aggregate-only, UDPA 2019, no individual sharing).
-- New **Request a Proposal** form (separate from screening request) → posts to `contact_submissions` with subject `"Proposal Request"`.
+## 6. InnerSpark internal admin
 
----
+In existing admin dashboard add a "Crisis Alerts" tab (`src/components/admin/` new `CorporateCrisisAlertsTab.tsx`):
+- Queue of `corporate_crisis_alerts` ordered by level then created_at.
+- Shows employee anonymous code (last 6 of employee id), company name, triggers, age, status.
+- Status update buttons (pending → contacted → resolved) with note field.
+- Internal-only per-employee per-question detail viewer (admin role required).
 
-### Page 9 — For Professionals (`/for-professionals`)
+## 7. UI / behavioural rules
 
-- Replace opaque compensation copy with transparent earnings range (65–75%, ~UGX 6M–10M / mo at 20 sessions/wk).
-- Promote "No monthly fees" to hero benefit.
-- Add approval timeline (10 min / 5 days / 2 weeks).
-- Accepted registration bodies by country (Uganda/Kenya/Tanzania/Rwanda + international fallback email).
-- "Actively recruiting" specialties strip.
-- 2–3 therapist testimonial quotes.
-- Referral program section (UGX 50,000 after 10 sessions).
-- Tech requirements section.
-- New SEO title + meta.
+- All copy lives in `wellbeingIntelligence.ts`. Components import and render — no hardcoded interpretations.
+- Q8 reversal happens once inside `computeAnswers`; downstream code never sees raw Q8.
+- Crisis alert insert is wrapped in its own promise; report failures cannot block it.
+- Employee UI never renders `FLAG_*` strings; HR/internal UIs do.
 
----
+## 8. Files
 
-### Page 10 — Donate Therapy (`/donate-therapy`)
+Created:
+- `src/lib/wellbeingIntelligence.ts`
+- `src/components/wellbeing/EmployeeResultsBreakdown.tsx`
+- `src/components/business/CompanyTriggersDashboard.tsx`
+- `src/components/business/CompanyClusterAnalysis.tsx`
+- `src/components/business/CompanyActionPlan.tsx`
+- `src/components/admin/CorporateCrisisAlertsTab.tsx`
+- One Supabase migration for the new columns + `corporate_crisis_alerts` table + RLS.
 
-- Add USD alongside UGX on every tier.
-- Live impact counter at top (read aggregated count from existing `income_entries` where `source='donation'`, fallback static).
-- Donor stories section (3 anonymized).
-- Recurring donation toggle (monthly).
-- "Gift a therapy" share link (generates WhatsApp/email shareable URL).
-- Corporate CSR section linking to `/for-business`.
-- Tax receipt request line.
-- Transparency section on how donations are managed.
-- *Note*: Stripe/Flutterwave international card processing requires backend wiring — defer activation; add UI placeholder + "Coming soon: international card payments" to keep scope sane unless you want me to enable Stripe in this phase.
+Edited:
+- `src/pages/CorporateWellbeingCheck.tsx` (submit + results section).
+- `src/pages/CorporateAdmin.tsx` (insert new sections at top of company detail; pull `per_question`).
+- `src/pages/AdminDashboard.tsx` (register Crisis Alerts tab).
 
----
+## 9. Out of scope (explicit)
 
-### Page 11 — Corporate Wellbeing Check
+- Email template redesign — current `b2b-employee-results` keeps working; we pass the new fields as additional `templateData` for a later template update.
+- No removal of existing `wellbeing_category` / `total_score` / consultant notes flow.
+- Productivity-cost number is a transparent placeholder constant; no payroll integration.
 
-Covered in Priority 0 above. Authenticated dashboard keeps existing analytics; add:
-- PDF/CSV export buttons (already partially built — verify and surface).
-- Trend-over-time block (round 1 vs round 2 comparison using `corporate_screenings.created_at`).
-- Service recommendation hints based on aggregate risk (uses existing `corporate_service_catalog`).
-
----
-
-### Out of scope / clarifications needed
-- **Stripe/Flutterwave** for donations: enabling international payments is a backend integration. I'll ship UI stubs unless you confirm to wire Stripe now.
-- **admin.innersparkafrica.com** subdomain split: this is DNS/hosting work outside the codebase — current `/corporate-admin` route is already RBAC-gated; I'll keep it on the main domain unless you want me to add a redirect.
-- **Therapist photos for blog authors**: I'll reuse existing `src/assets/specialists/*` images. If a specific therapist isn't in `/specialists`, I'll fall back to a generic InnerSpark byline.
-- **Past-30-day access audit** for the wellbeing URL: requires log review I can't perform from code — flagging for your team.
-
----
-
-### Execution order
-1. Security lockdown of `/corporate-wellbeing-check` (Priority 0).
-2. For Business rebuild (highest commercial impact).
-3. Blog rebuild + 5 new posts.
-4. For Professionals rebuild.
-5. Donate Therapy rebuild.
-6. Corporate dashboard polish (exports, trends, recommendations).
+Once approved I will run the migration and ship the code in one pass.

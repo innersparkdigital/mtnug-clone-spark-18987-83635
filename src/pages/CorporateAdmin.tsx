@@ -22,6 +22,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { generateCompanyReportPdf } from '@/lib/companyReportPdf';
 import { Loader2 } from 'lucide-react';
+import { answerMapFromStored, aggregateCompany } from '@/lib/wellbeingIntelligence';
+import { CompanyTriggersDashboard, CompanyActionPlan } from '@/components/business/CompanyInsights';
 
 interface Company {
   id: string;
@@ -719,10 +721,27 @@ const CorporateAdmin = () => {
             <Tabs defaultValue="analytics">
               <TabsList className="mb-4">
                 <TabsTrigger value="analytics"><BarChart3 className="w-4 h-4 mr-1" /> Analytics</TabsTrigger>
+                <TabsTrigger value="insights"><Activity className="w-4 h-4 mr-1" /> Insights</TabsTrigger>
                 <TabsTrigger value="employees"><Users className="w-4 h-4 mr-1" /> Employees ({totalEmployees})</TabsTrigger>
                 <TabsTrigger value="report"><FileText className="w-4 h-4 mr-1" /> Report</TabsTrigger>
                 <TabsTrigger value="interests"><Activity className="w-4 h-4 mr-1" /> Service Interests ({serviceInterests.filter(i => i.company_id === selectedCompany.id).length})</TabsTrigger>
               </TabsList>
+
+              {/* INSIGHTS TAB — per-question intelligence */}
+              <TabsContent value="insights">
+                {(() => {
+                  const records = screenings
+                    .map((s: any) => answerMapFromStored(s.per_question))
+                    .filter(Boolean) as any[];
+                  const result = aggregateCompany(records);
+                  return (
+                    <div className="space-y-6">
+                      <CompanyTriggersDashboard result={result} />
+                      <CompanyActionPlan result={result} />
+                    </div>
+                  );
+                })()}
+              </TabsContent>
 
               {/* ANALYTICS TAB */}
               <TabsContent value="analytics">
