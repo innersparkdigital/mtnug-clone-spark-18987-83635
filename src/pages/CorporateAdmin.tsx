@@ -22,6 +22,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { generateCompanyReportPdf } from '@/lib/companyReportPdf';
 import { Loader2 } from 'lucide-react';
+import { answerMapFromStored, aggregateCompany } from '@/lib/wellbeingIntelligence';
+import { CompanyTriggersDashboard, CompanyActionPlan } from '@/components/business/CompanyInsights';
 
 interface Company {
   id: string;
