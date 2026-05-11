@@ -724,6 +724,51 @@ export type Database = {
         }
         Relationships: []
       }
+      corporate_crisis_alerts: {
+        Row: {
+          company_id: string
+          created_at: string
+          employee_id: string
+          id: string
+          level: number
+          notes: string | null
+          resolved_at: string | null
+          resolved_by: string | null
+          screening_id: string | null
+          status: string
+          triggers: string[]
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          employee_id: string
+          id?: string
+          level: number
+          notes?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          screening_id?: string | null
+          status?: string
+          triggers?: string[]
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          employee_id?: string
+          id?: string
+          level?: number
+          notes?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          screening_id?: string | null
+          status?: string
+          triggers?: string[]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       corporate_employees: {
         Row: {
           access_code: string
@@ -872,9 +917,14 @@ export type Database = {
           company_id: string
           completed_at: string
           created_at: string
+          crisis_alert_level: number | null
           employee_id: string
           id: string
+          per_question: Json
+          risk_category: string | null
           total_score: number
+          triggered_clusters: string[]
+          triggered_flags: string[]
           wellbeing_category: string
           who5_percentage: number
           who5_score: number
@@ -884,9 +934,14 @@ export type Database = {
           company_id: string
           completed_at?: string
           created_at?: string
+          crisis_alert_level?: number | null
           employee_id: string
           id?: string
+          per_question?: Json
+          risk_category?: string | null
           total_score?: number
+          triggered_clusters?: string[]
+          triggered_flags?: string[]
           wellbeing_category?: string
           who5_percentage?: number
           who5_score?: number
@@ -896,9 +951,14 @@ export type Database = {
           company_id?: string
           completed_at?: string
           created_at?: string
+          crisis_alert_level?: number | null
           employee_id?: string
           id?: string
+          per_question?: Json
+          risk_category?: string | null
           total_score?: number
+          triggered_clusters?: string[]
+          triggered_flags?: string[]
           wellbeing_category?: string
           who5_percentage?: number
           who5_score?: number
