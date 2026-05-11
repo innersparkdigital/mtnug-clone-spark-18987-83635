@@ -87,7 +87,6 @@ const CorporateWellbeingCheck = () => {
   const [resultsEmail, setResultsEmail] = useState<string>('');
   const [sendingResultsEmail, setSendingResultsEmail] = useState(false);
   const [resultsEmailSent, setResultsEmailSent] = useState(false);
-  const [analysing, setAnalysing] = useState(false);
   const [intelligenceAnswers, setIntelligenceAnswers] = useState<AnswerMap | null>(null);
 
   // Check for token in URL
@@ -189,7 +188,6 @@ const CorporateWellbeingCheck = () => {
   const handleSubmit = async () => {
     if (!employee) return;
     setSubmitting(true);
-    setAnalysing(true);
     try {
       const attemptNumber = employee.screening_history.length + 1;
 
@@ -268,8 +266,6 @@ const CorporateWellbeingCheck = () => {
       toast.error('Failed to submit. Please try again.');
     }
     setSubmitting(false);
-    // Keep analysing screen visible briefly for clinical feel
-    setTimeout(() => setAnalysing(false), 2200);
   };
 
   const isLastQuestion = currentQuestion === ALL_QUESTIONS.length - 1;
