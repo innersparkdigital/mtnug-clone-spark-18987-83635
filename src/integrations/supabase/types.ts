@@ -726,43 +726,55 @@ export type Database = {
       }
       corporate_crisis_alerts: {
         Row: {
+          alert_code: string | null
+          assigned_to: string | null
           company_id: string
           created_at: string
           employee_id: string
           id: string
           level: number
           notes: string | null
+          outreach_attempts: Json
           resolved_at: string | null
           resolved_by: string | null
           screening_id: string | null
+          sla_deadline: string | null
           status: string
           triggers: string[]
           updated_at: string
         }
         Insert: {
+          alert_code?: string | null
+          assigned_to?: string | null
           company_id: string
           created_at?: string
           employee_id: string
           id?: string
           level: number
           notes?: string | null
+          outreach_attempts?: Json
           resolved_at?: string | null
           resolved_by?: string | null
           screening_id?: string | null
+          sla_deadline?: string | null
           status?: string
           triggers?: string[]
           updated_at?: string
         }
         Update: {
+          alert_code?: string | null
+          assigned_to?: string | null
           company_id?: string
           created_at?: string
           employee_id?: string
           id?: string
           level?: number
           notes?: string | null
+          outreach_attempts?: Json
           resolved_at?: string | null
           resolved_by?: string | null
           screening_id?: string | null
+          sla_deadline?: string | null
           status?: string
           triggers?: string[]
           updated_at?: string
@@ -827,6 +839,7 @@ export type Database = {
       }
       corporate_reports: {
         Row: {
+          business_impact: Json | null
           company_id: string
           created_at: string
           created_by: string | null
@@ -834,12 +847,15 @@ export type Database = {
           observations: string | null
           period_label: string | null
           recommended_service_ids: string[]
+          sections: Json
           sent_at: string | null
           sent_to_email: string | null
           service_notes: Json
+          status: string
           updated_at: string
         }
         Insert: {
+          business_impact?: Json | null
           company_id: string
           created_at?: string
           created_by?: string | null
@@ -847,12 +863,15 @@ export type Database = {
           observations?: string | null
           period_label?: string | null
           recommended_service_ids?: string[]
+          sections?: Json
           sent_at?: string | null
           sent_to_email?: string | null
           service_notes?: Json
+          status?: string
           updated_at?: string
         }
         Update: {
+          business_impact?: Json | null
           company_id?: string
           created_at?: string
           created_by?: string | null
@@ -860,9 +879,11 @@ export type Database = {
           observations?: string | null
           period_label?: string | null
           recommended_service_ids?: string[]
+          sections?: Json
           sent_at?: string | null
           sent_to_email?: string | null
           service_notes?: Json
+          status?: string
           updated_at?: string
         }
         Relationships: []
