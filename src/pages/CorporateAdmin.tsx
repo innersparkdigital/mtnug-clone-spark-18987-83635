@@ -24,6 +24,9 @@ import { generateCompanyReportPdf } from '@/lib/companyReportPdf';
 import { Loader2 } from 'lucide-react';
 import { answerMapFromStored, aggregateCompany } from '@/lib/wellbeingIntelligence';
 import { CompanyTriggersDashboard, CompanyActionPlan } from '@/components/business/CompanyInsights';
+import PerQuestionEmployeeBreakdown from '@/components/business/PerQuestionEmployeeBreakdown';
+import BusinessImpactSummary from '@/components/business/BusinessImpactSummary';
+import { calculateBusinessImpact } from '@/lib/businessImpact';
 
 interface Company {
   id: string;
