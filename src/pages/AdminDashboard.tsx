@@ -26,6 +26,7 @@ import ChatAnalyticsTab from '@/components/admin/ChatAnalyticsTab';
 import CrisisReviewQueueTab from '@/components/admin/CrisisReviewQueueTab';
 import ChatLeadsTab from '@/components/admin/ChatLeadsTab';
 import WhispersTab from '@/components/admin/WhispersTab';
+import CrisisAlertsTab from '@/components/admin/CrisisAlertsTab';
 import { 
   BookOpen, 
   GraduationCap, 
@@ -263,6 +264,12 @@ const AdminDashboard = () => {
               <TabsTrigger value="whispers" className="gap-2">
                 <Mic className="h-4 w-4" />
                 Whispers
+              </TabsTrigger>
+            )}
+            {isAdmin && (
+              <TabsTrigger value="crisis-alerts" className="gap-2">
+                <AlertOctagon className="h-4 w-4" />
+                Crisis Alerts
               </TabsTrigger>
             )}
           </TabsList>
@@ -646,6 +653,11 @@ const AdminDashboard = () => {
           {isAdmin && (
             <TabsContent value="whispers">
               <WhispersTab />
+            </TabsContent>
+          )}
+          {isAdmin && (
+            <TabsContent value="crisis-alerts">
+              <CrisisAlertsTab />
             </TabsContent>
           )}
         </Tabs>
