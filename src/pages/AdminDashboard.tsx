@@ -266,6 +266,12 @@ const AdminDashboard = () => {
                 Whispers
               </TabsTrigger>
             )}
+            {isAdmin && (
+              <TabsTrigger value="crisis-alerts" className="gap-2">
+                <AlertOctagon className="h-4 w-4" />
+                Crisis Alerts
+              </TabsTrigger>
+            )}
           </TabsList>
 
           <TabsContent value="learning">
