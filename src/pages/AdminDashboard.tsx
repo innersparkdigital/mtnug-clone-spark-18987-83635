@@ -26,6 +26,7 @@ import ChatAnalyticsTab from '@/components/admin/ChatAnalyticsTab';
 import CrisisReviewQueueTab from '@/components/admin/CrisisReviewQueueTab';
 import ChatLeadsTab from '@/components/admin/ChatLeadsTab';
 import WhispersTab from '@/components/admin/WhispersTab';
+import CrisisAlertsTab from '@/components/admin/CrisisAlertsTab';
 import { 
   BookOpen, 
   GraduationCap, 
