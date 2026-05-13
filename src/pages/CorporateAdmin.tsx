@@ -103,6 +103,25 @@ const CorporateAdmin = () => {
   const [serviceReasons, setServiceReasons] = useState<Record<string, string>>({});
   const [serviceInterests, setServiceInterests] = useState<any[]>([]);
 
+  // 10-section report builder
+  const REPORT_SECTIONS: { key: string; title: string; description: string }[] = [
+    { key: 'cover', title: '1. Cover & Summary', description: 'Company name, period, total participants, headline wellbeing score' },
+    { key: 'participation', title: '2. Participation & Demographics', description: 'Invited vs completed, gender breakdown, completion rate' },
+    { key: 'overall_wellbeing', title: '3. Overall Wellbeing Score', description: 'WHO-5 average, severity bands, traffic-light distribution' },
+    { key: 'per_question', title: '4. Per-Question Averages', description: 'Q1–Q8 averages with green/amber/red flags' },
+    { key: 'triggered_clusters', title: '5. Triggered Clusters', description: 'Burnout / Anxiety / Depression-risk cluster detection' },
+    { key: 'priority_areas', title: '6. Priority Focus Areas', description: 'Top 3 lowest-scoring questions company-wide' },
+    { key: 'business_impact', title: '7. Business Impact', description: 'Productivity loss, days lost, ROI on EAP investment' },
+    { key: 'recommended_services', title: '8. Recommended Services', description: 'InnerSpark services tailored to triggered patterns' },
+    { key: 'action_plan', title: '9. 30-Day Action Plan', description: 'Concrete next steps for HR over the next month' },
+    { key: 'consultant_notes', title: '10. Consultant Observations', description: 'Free-text notes from the InnerSpark consultant' },
+  ];
+  const [reportSections, setReportSections] = useState<Record<string, boolean>>(
+    () => Object.fromEntries(REPORT_SECTIONS.map(s => [s.key, true]))
+  );
+  const [includeBusinessImpact, setIncludeBusinessImpact] = useState(true);
+  const [baselineSalary, setBaselineSalary] = useState<number>(1_200_000);
+
   // Sorting
   const [companySortKey, setCompanySortKey] = useState<string>('');
   const [companySortDir, setCompanySortDir] = useState<'asc' | 'desc'>('asc');
