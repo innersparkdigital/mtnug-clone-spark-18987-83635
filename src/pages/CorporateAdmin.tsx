@@ -996,6 +996,25 @@ const CorporateAdmin = () => {
                                 <tr key={`${emp.id}-history`} className="bg-muted/30">
                                   <td colSpan={10} className="p-0">
                                     <div className="px-6 py-3">
+                                      {/* Per-question breakdown for latest screening */}
+                                      {(() => {
+                                        const latest = employeeScreeningMap.get(emp.id);
+                                        const ans = latest ? answerMapFromStored((latest as any).per_question) : null;
+                                        if (!ans || !latest) return null;
+                                        const history = employeeScreeningHistory.get(emp.id) || [];
+                                        const prev = history[1];
+                                        return (
+                                          <div className="mb-4">
+                                            <PerQuestionEmployeeBreakdown
+                                              answers={ans}
+                                              completedAt={latest.completed_at}
+                                              attemptNumber={history.length}
+                                              previousOverallPct={prev ? prev.who5_percentage : null}
+                                              employeeLabel={`${emp.name} — Latest screening breakdown`}
+                                            />
+                                          </div>
+                                        );
+                                      })()}
                                       <div className="text-[11px] font-semibold text-muted-foreground mb-2 flex items-center gap-1.5">
                                         <History className="w-3 h-3" />
                                         Screening History for {emp.name}
