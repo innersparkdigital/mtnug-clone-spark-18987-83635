@@ -103,6 +103,25 @@ const CorporateAdmin = () => {
   const [serviceReasons, setServiceReasons] = useState<Record<string, string>>({});
   const [serviceInterests, setServiceInterests] = useState<any[]>([]);
 
+  // 10-section report builder
+  const REPORT_SECTIONS: { key: string; title: string; description: string }[] = [
+    { key: 'cover', title: '1. Cover & Summary', description: 'Company name, period, total participants, headline wellbeing score' },
+    { key: 'participation', title: '2. Participation & Demographics', description: 'Invited vs completed, gender breakdown, completion rate' },
+    { key: 'overall_wellbeing', title: '3. Overall Wellbeing Score', description: 'WHO-5 average, severity bands, traffic-light distribution' },
+    { key: 'per_question', title: '4. Per-Question Averages', description: 'Q1–Q8 averages with green/amber/red flags' },
+    { key: 'triggered_clusters', title: '5. Triggered Clusters', description: 'Burnout / Anxiety / Depression-risk cluster detection' },
+    { key: 'priority_areas', title: '6. Priority Focus Areas', description: 'Top 3 lowest-scoring questions company-wide' },
+    { key: 'business_impact', title: '7. Business Impact', description: 'Productivity loss, days lost, ROI on EAP investment' },
+    { key: 'recommended_services', title: '8. Recommended Services', description: 'InnerSpark services tailored to triggered patterns' },
+    { key: 'action_plan', title: '9. 30-Day Action Plan', description: 'Concrete next steps for HR over the next month' },
+    { key: 'consultant_notes', title: '10. Consultant Observations', description: 'Free-text notes from the InnerSpark consultant' },
+  ];
+  const [reportSections, setReportSections] = useState<Record<string, boolean>>(
+    () => Object.fromEntries(REPORT_SECTIONS.map(s => [s.key, true]))
+  );
+  const [includeBusinessImpact, setIncludeBusinessImpact] = useState(true);
+  const [baselineSalary, setBaselineSalary] = useState<number>(1_200_000);
+
   // Sorting
   const [companySortKey, setCompanySortKey] = useState<string>('');
   const [companySortDir, setCompanySortDir] = useState<'asc' | 'desc'>('asc');
@@ -778,6 +797,30 @@ const CorporateAdmin = () => {
                     )}
                   </CardContent>
                 </Card>
+
+                {/* Business Impact */}
+                {completedScreenings > 0 && (
+                  <div className="mb-6">
+                    <BusinessImpactSummary
+                      result={calculateBusinessImpact(
+                        { healthy: greenCount, at_risk: yellowCount, critical: redCount },
+                        baselineSalary,
+                      )}
+                      companyName={selectedCompany.name}
+                      defaultInclude={includeBusinessImpact}
+                      onIncludeChange={setIncludeBusinessImpact}
+                    />
+                    <div className="mt-3 flex items-center gap-2 text-xs">
+                      <Label className="text-xs">Baseline avg monthly salary (UGX):</Label>
+                      <Input
+                        type="number"
+                        value={baselineSalary}
+                        onChange={e => setBaselineSalary(Math.max(0, parseInt(e.target.value) || 0))}
+                        className="h-7 w-32 text-xs"
+                      />
+                    </div>
+                  </div>
+                )}
               </TabsContent>
 
               {/* EMPLOYEES TAB */}
@@ -911,14 +954,14 @@ const CorporateAdmin = () => {
                                   {emp.screening_completed ? (
                                     <div className="flex items-center gap-1">
                                       <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-green-100 text-green-700">Done</span>
-                                      {(employeeScreeningCount.get(emp.id) || 0) > 1 && (
+                                      {(employeeScreeningCount.get(emp.id) || 0) >= 1 && (
                                         <button
                                           onClick={() => toggleEmployeeExpand(emp.id)}
                                           className="inline-flex items-center gap-0.5 text-[10px] px-1.5 py-0.5 rounded-full bg-primary/10 text-primary font-medium hover:bg-primary/20 transition-colors cursor-pointer"
-                                          title="View screening history"
+                                          title="View per-question breakdown & history"
                                         >
                                           <History className="w-2.5 h-2.5" />
-                                          {employeeScreeningCount.get(emp.id)} check-ins
+                                          {employeeScreeningCount.get(emp.id)} check-in{(employeeScreeningCount.get(emp.id) || 0) > 1 ? 's' : ''}
                                           {expandedEmployees.has(emp.id) ? <ChevronUpIcon className="w-2.5 h-2.5" /> : <ChevronDown className="w-2.5 h-2.5" />}
                                         </button>
                                       )}
@@ -996,6 +1039,25 @@ const CorporateAdmin = () => {
                                 <tr key={`${emp.id}-history`} className="bg-muted/30">
                                   <td colSpan={10} className="p-0">
                                     <div className="px-6 py-3">
+                                      {/* Per-question breakdown for latest screening */}
+                                      {(() => {
+                                        const latest = employeeScreeningMap.get(emp.id);
+                                        const ans = latest ? answerMapFromStored((latest as any).per_question) : null;
+                                        if (!ans || !latest) return null;
+                                        const history = employeeScreeningHistory.get(emp.id) || [];
+                                        const prev = history[1];
+                                        return (
+                                          <div className="mb-4">
+                                            <PerQuestionEmployeeBreakdown
+                                              answers={ans}
+                                              completedAt={latest.completed_at}
+                                              attemptNumber={history.length}
+                                              previousOverallPct={prev ? prev.who5_percentage : null}
+                                              employeeLabel={`${emp.name} — Latest screening breakdown`}
+                                            />
+                                          </div>
+                                        );
+                                      })()}
                                       <div className="text-[11px] font-semibold text-muted-foreground mb-2 flex items-center gap-1.5">
                                         <History className="w-3 h-3" />
                                         Screening History for {emp.name}
@@ -1080,6 +1142,40 @@ const CorporateAdmin = () => {
                             <li>• Encourage regular wellbeing check-ins every 30–90 days</li>
                             <li>• Partner with InnerSpark Africa for ongoing corporate wellness support</li>
                           </ul>
+                        </div>
+
+                        {/* 10-Section Report Builder */}
+                        <div className="border-t pt-6 mt-2">
+                          <h3 className="font-semibold mb-1 flex items-center gap-2">
+                            🧱 10-Section Report Builder
+                            <Badge variant="secondary" className="text-[10px]">Choose what HR sees</Badge>
+                          </h3>
+                          <p className="text-xs text-muted-foreground mb-4">
+                            Toggle each section on or off. The selected sections (and their data) are saved with the report and embedded in the email sent to HR.
+                          </p>
+                          <div className="grid sm:grid-cols-2 gap-2">
+                            {REPORT_SECTIONS.map((s) => {
+                              const on = !!reportSections[s.key];
+                              return (
+                                <label
+                                  key={s.key}
+                                  className={`flex items-start gap-2 p-3 rounded-md border cursor-pointer transition ${on ? 'border-primary bg-primary/5' : 'border-input bg-background'}`}
+                                >
+                                  <Checkbox
+                                    checked={on}
+                                    onCheckedChange={(v) => setReportSections(prev => ({ ...prev, [s.key]: !!v }))}
+                                  />
+                                  <div className="min-w-0">
+                                    <div className="text-xs font-semibold">{s.title}</div>
+                                    <div className="text-[11px] text-muted-foreground mt-0.5">{s.description}</div>
+                                  </div>
+                                </label>
+                              );
+                            })}
+                          </div>
+                          <p className="text-[11px] text-muted-foreground mt-3">
+                            {Object.values(reportSections).filter(Boolean).length} of {REPORT_SECTIONS.length} sections will be included.
+                          </p>
                         </div>
 
                         {/* Manual Report Builder — adds human-written observations + service recommendations */}
@@ -1192,7 +1288,13 @@ const CorporateAdmin = () => {
                             // Build manual layer (additive). Create report row first to get a stable id for tracked links.
                             const recommendedIds = Array.from(selectedServiceIds);
                             let reportId: string | null = null;
-                            if (observations.trim() || recommendedIds.length > 0) {
+                            const businessImpact = includeBusinessImpact && completedScreenings > 0
+                              ? calculateBusinessImpact(
+                                  { healthy: greenCount, at_risk: yellowCount, critical: redCount },
+                                  baselineSalary,
+                                )
+                              : null;
+                            if (observations.trim() || recommendedIds.length > 0 || businessImpact) {
                               const notesObj: Record<string, string> = {};
                               recommendedIds.forEach(id => { if (serviceReasons[id]?.trim()) notesObj[id] = serviceReasons[id].trim(); });
                               const { data: reportRow, error: reportErr } = await supabase
@@ -1203,6 +1305,9 @@ const CorporateAdmin = () => {
                                   observations: observations.trim() || null,
                                   recommended_service_ids: recommendedIds,
                                   service_notes: notesObj,
+                                  sections: reportSections,
+                                  business_impact: businessImpact as any,
+                                  status: 'sent',
                                   sent_to_email: selectedCompany.contact_email,
                                   created_by: user?.id,
                                 })
