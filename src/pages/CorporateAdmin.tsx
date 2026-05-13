@@ -1144,6 +1144,40 @@ const CorporateAdmin = () => {
                           </ul>
                         </div>
 
+                        {/* 10-Section Report Builder */}
+                        <div className="border-t pt-6 mt-2">
+                          <h3 className="font-semibold mb-1 flex items-center gap-2">
+                            🧱 10-Section Report Builder
+                            <Badge variant="secondary" className="text-[10px]">Choose what HR sees</Badge>
+                          </h3>
+                          <p className="text-xs text-muted-foreground mb-4">
+                            Toggle each section on or off. The selected sections (and their data) are saved with the report and embedded in the email sent to HR.
+                          </p>
+                          <div className="grid sm:grid-cols-2 gap-2">
+                            {REPORT_SECTIONS.map((s) => {
+                              const on = !!reportSections[s.key];
+                              return (
+                                <label
+                                  key={s.key}
+                                  className={`flex items-start gap-2 p-3 rounded-md border cursor-pointer transition ${on ? 'border-primary bg-primary/5' : 'border-input bg-background'}`}
+                                >
+                                  <Checkbox
+                                    checked={on}
+                                    onCheckedChange={(v) => setReportSections(prev => ({ ...prev, [s.key]: !!v }))}
+                                  />
+                                  <div className="min-w-0">
+                                    <div className="text-xs font-semibold">{s.title}</div>
+                                    <div className="text-[11px] text-muted-foreground mt-0.5">{s.description}</div>
+                                  </div>
+                                </label>
+                              );
+                            })}
+                          </div>
+                          <p className="text-[11px] text-muted-foreground mt-3">
+                            {Object.values(reportSections).filter(Boolean).length} of {REPORT_SECTIONS.length} sections will be included.
+                          </p>
+                        </div>
+
                         {/* Manual Report Builder — adds human-written observations + service recommendations */}
                         <div className="border-t pt-6 mt-2">
                           <h3 className="font-semibold mb-1 flex items-center gap-2">✍️ Manual Report Builder <Badge variant="secondary" className="text-[10px]">Human layer</Badge></h3>
