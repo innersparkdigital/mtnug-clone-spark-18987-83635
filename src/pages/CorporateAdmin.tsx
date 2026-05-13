@@ -1288,7 +1288,13 @@ const CorporateAdmin = () => {
                             // Build manual layer (additive). Create report row first to get a stable id for tracked links.
                             const recommendedIds = Array.from(selectedServiceIds);
                             let reportId: string | null = null;
-                            if (observations.trim() || recommendedIds.length > 0) {
+                            const businessImpact = includeBusinessImpact && completedScreenings > 0
+                              ? calculateBusinessImpact(
+                                  { healthy: greenCount, at_risk: yellowCount, critical: redCount },
+                                  baselineSalary,
+                                )
+                              : null;
+                            if (observations.trim() || recommendedIds.length > 0 || businessImpact) {
                               const notesObj: Record<string, string> = {};
                               recommendedIds.forEach(id => { if (serviceReasons[id]?.trim()) notesObj[id] = serviceReasons[id].trim(); });
                               const { data: reportRow, error: reportErr } = await supabase
@@ -1299,6 +1305,9 @@ const CorporateAdmin = () => {
                                   observations: observations.trim() || null,
                                   recommended_service_ids: recommendedIds,
                                   service_notes: notesObj,
+                                  sections: reportSections,
+                                  business_impact: businessImpact as any,
+                                  status: 'sent',
                                   sent_to_email: selectedCompany.contact_email,
                                   created_by: user?.id,
                                 })
