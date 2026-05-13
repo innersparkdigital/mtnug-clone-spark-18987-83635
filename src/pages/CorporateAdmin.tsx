@@ -797,6 +797,30 @@ const CorporateAdmin = () => {
                     )}
                   </CardContent>
                 </Card>
+
+                {/* Business Impact */}
+                {completedScreenings > 0 && (
+                  <div className="mb-6">
+                    <BusinessImpactSummary
+                      result={calculateBusinessImpact(
+                        { healthy: greenCount, at_risk: yellowCount, critical: redCount },
+                        baselineSalary,
+                      )}
+                      companyName={selectedCompany.name}
+                      defaultInclude={includeBusinessImpact}
+                      onIncludeChange={setIncludeBusinessImpact}
+                    />
+                    <div className="mt-3 flex items-center gap-2 text-xs">
+                      <Label className="text-xs">Baseline avg monthly salary (UGX):</Label>
+                      <Input
+                        type="number"
+                        value={baselineSalary}
+                        onChange={e => setBaselineSalary(Math.max(0, parseInt(e.target.value) || 0))}
+                        className="h-7 w-32 text-xs"
+                      />
+                    </div>
+                  </div>
+                )}
               </TabsContent>
 
               {/* EMPLOYEES TAB */}
