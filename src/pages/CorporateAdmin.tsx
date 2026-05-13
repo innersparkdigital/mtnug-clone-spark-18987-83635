@@ -911,14 +911,14 @@ const CorporateAdmin = () => {
                                   {emp.screening_completed ? (
                                     <div className="flex items-center gap-1">
                                       <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-green-100 text-green-700">Done</span>
-                                      {(employeeScreeningCount.get(emp.id) || 0) > 1 && (
+                                      {(employeeScreeningCount.get(emp.id) || 0) >= 1 && (
                                         <button
                                           onClick={() => toggleEmployeeExpand(emp.id)}
                                           className="inline-flex items-center gap-0.5 text-[10px] px-1.5 py-0.5 rounded-full bg-primary/10 text-primary font-medium hover:bg-primary/20 transition-colors cursor-pointer"
-                                          title="View screening history"
+                                          title="View per-question breakdown & history"
                                         >
                                           <History className="w-2.5 h-2.5" />
-                                          {employeeScreeningCount.get(emp.id)} check-ins
+                                          {employeeScreeningCount.get(emp.id)} check-in{(employeeScreeningCount.get(emp.id) || 0) > 1 ? 's' : ''}
                                           {expandedEmployees.has(emp.id) ? <ChevronUpIcon className="w-2.5 h-2.5" /> : <ChevronDown className="w-2.5 h-2.5" />}
                                         </button>
                                       )}
