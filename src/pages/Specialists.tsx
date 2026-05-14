@@ -580,6 +580,37 @@ const Specialists = () => {
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-8">
               <T>Browse our network of qualified professionals including psychologists, counselors, psychiatrists, and specialized therapists. Find the right expert for your unique needs.</T>
             </p>
+
+            {/* How we vet trust banner */}
+            <div className="max-w-4xl mx-auto bg-card border border-border rounded-2xl p-5 md:p-6 shadow-sm">
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <ShieldCheck className="w-5 h-5 text-primary" />
+                <h2 className="font-semibold text-foreground">How we vet every therapist</h2>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left">
+                <div className="flex items-start gap-3">
+                  <FileCheck className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-medium text-foreground text-sm">Licence verified</p>
+                    <p className="text-xs text-muted-foreground">Council registration confirmed before joining.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <GraduationCap className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-medium text-foreground text-sm">Credentials checked</p>
+                    <p className="text-xs text-muted-foreground">Degrees & certifications independently reviewed.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <UserSearch className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-medium text-foreground text-sm">Interviewed in-person</p>
+                    <p className="text-xs text-muted-foreground">Clinical interview & ongoing client feedback monitoring.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
