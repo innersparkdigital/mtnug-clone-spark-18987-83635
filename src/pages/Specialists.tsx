@@ -488,8 +488,20 @@ const Specialists = () => {
     const matchesCountry =
       selectedCountry === "" ||
       specialist.country === selectedCountry;
-    return matchesCategory && matchesSearch && matchesCountry;
+    const matchesLanguage =
+      selectedLanguage === "" ||
+      specialist.languages.some((l) => l.toLowerCase() === selectedLanguage.toLowerCase());
+    const matchesPrice =
+      selectedPrice === "" ||
+      (selectedPrice === "under75" && specialist.price_per_hour < 75000) ||
+      (selectedPrice === "75to100" && specialist.price_per_hour >= 75000 && specialist.price_per_hour <= 100000) ||
+      (selectedPrice === "over100" && specialist.price_per_hour > 100000);
+    return matchesCategory && matchesSearch && matchesCountry && matchesLanguage && matchesPrice;
   });
+
+  const allLanguages = Array.from(
+    new Set(specialists.flatMap((s) => s.languages))
+  ).sort();
 
   return (
     <>
