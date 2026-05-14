@@ -11,7 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 import { 
   Search, Video, Phone, ExternalLink, CheckCircle,
-  Pill, Baby, Brain, Users, AlertTriangle, CloudRain, Heart, Handshake, Sparkles, Briefcase, LayoutGrid
+  Pill, Baby, Brain, Users, AlertTriangle, CloudRain, Heart, Handshake, Sparkles, Briefcase, LayoutGrid,
+  ShieldCheck, GraduationCap, FileCheck, UserSearch, HelpCircle
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getSpecialistImage } from "@/lib/specialistImages";
