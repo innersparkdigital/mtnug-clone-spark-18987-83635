@@ -421,6 +421,8 @@ const Specialists = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedCountry, setSelectedCountry] = useState("");
+  const [selectedLanguage, setSelectedLanguage] = useState("");
+  const [selectedPrice, setSelectedPrice] = useState("");
   const [specialists, setSpecialists] = useState<Specialist[]>([]);
   const [verifiedSpecialists, setVerifiedSpecialists] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
