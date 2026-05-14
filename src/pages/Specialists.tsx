@@ -816,7 +816,7 @@ const Specialists = () => {
                 {filteredSpecialists.length === 0 && (
                   <div className="text-center py-12">
                     <p className="text-muted-foreground mb-4">No specialists found matching your criteria.</p>
-                <Button variant="outline" onClick={() => { setSelectedCategory("all"); setSearchQuery(""); setSelectedCountry(""); }}>
+                <Button variant="outline" onClick={() => { setSelectedCategory("all"); setSearchQuery(""); setSelectedCountry(""); setSelectedLanguage(""); setSelectedPrice(""); }}>
                       Clear Filters
                     </Button>
                   </div>
