@@ -23,7 +23,6 @@ import {
   Briefcase,
   UserCog,
   LayoutDashboard,
-  BarChart3,
   LogIn
 } from "lucide-react";
 import { useState } from "react";
