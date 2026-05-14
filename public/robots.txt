@@ -51,6 +51,9 @@ Disallow: /admin-dashboard
 Disallow: /student-dashboard
 Disallow: /learning/admin-dashboard
 Disallow: /learning/student-dashboard
+Disallow: /corporate-admin
+Disallow: /mind-check/analytics
+Disallow: /admin-finance
 
 # Disallow auth pages (not useful for search)
 Disallow: /auth

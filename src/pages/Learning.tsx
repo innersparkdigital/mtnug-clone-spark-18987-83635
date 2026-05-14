@@ -23,7 +23,6 @@ import {
   Briefcase,
   UserCog,
   LayoutDashboard,
-  BarChart3,
   LogIn
 } from "lucide-react";
 import { useState } from "react";
@@ -187,14 +186,7 @@ const Learning = () => {
                         </Button>
                       </Link>
                     )}
-                    {isAdmin && (
-                      <Link to="/learning/admin-dashboard">
-                        <Button size="lg" variant="outline" className="gap-2">
-                          <BarChart3 className="w-5 h-5" />
-                          Admin Dashboard
-                        </Button>
-                      </Link>
-                    )}
+                    {/* Admin dashboard intentionally not linked from public pages. Admins access via /admin-dashboard. */}
                   </>
                 ) : (
                   <Link to="/auth">

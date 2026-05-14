@@ -6,7 +6,7 @@ import { useUserRole } from "@/hooks/useUserRole";
 import Footer from "@/components/Footer";
 import { Helmet } from "react-helmet";
 import { Button } from "@/components/ui/button";
-import { Brain, Heart, AlertTriangle, Users, Zap, Shield, Clock, CheckCircle, BarChart3 } from "lucide-react";
+import { Brain, Heart, AlertTriangle, Users, Zap, Shield, Clock, CheckCircle } from "lucide-react";
 
 interface MentalHealthTest {
   id: string;
@@ -367,15 +367,7 @@ const MindCheck = () => {
             </div>
           </div>
         </div>
-        {/* Admin link - only visible to admins */}
-        {isAdmin && (
-          <div className="text-center mt-4">
-            <Link to="/mind-check/analytics" className="inline-flex items-center gap-1 text-xs text-muted-foreground/50 hover:text-muted-foreground transition-colors">
-              <BarChart3 className="h-3 w-3" />
-              Admin Dashboard
-            </Link>
-          </div>
-        )}
+        {/* Admin dashboard intentionally not linked from public pages. Admins access via /admin-dashboard. */}
       </section>
 
       {/* Benefits Section */}
