@@ -11,7 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 import { 
   Search, Video, Phone, ExternalLink, CheckCircle,
-  Pill, Baby, Brain, Users, AlertTriangle, CloudRain, Heart, Handshake, Sparkles, Briefcase, LayoutGrid
+  Pill, Baby, Brain, Users, AlertTriangle, CloudRain, Heart, Handshake, Sparkles, Briefcase, LayoutGrid,
+  ShieldCheck, GraduationCap, FileCheck, UserSearch, HelpCircle
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getSpecialistImage } from "@/lib/specialistImages";
@@ -420,6 +421,8 @@ const Specialists = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedCountry, setSelectedCountry] = useState("");
+  const [selectedLanguage, setSelectedLanguage] = useState("");
+  const [selectedPrice, setSelectedPrice] = useState("");
   const [specialists, setSpecialists] = useState<Specialist[]>([]);
   const [verifiedSpecialists, setVerifiedSpecialists] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
@@ -485,8 +488,20 @@ const Specialists = () => {
     const matchesCountry =
       selectedCountry === "" ||
       specialist.country === selectedCountry;
-    return matchesCategory && matchesSearch && matchesCountry;
+    const matchesLanguage =
+      selectedLanguage === "" ||
+      specialist.languages.some((l) => l.toLowerCase() === selectedLanguage.toLowerCase());
+    const matchesPrice =
+      selectedPrice === "" ||
+      (selectedPrice === "under75" && specialist.price_per_hour < 75000) ||
+      (selectedPrice === "75to100" && specialist.price_per_hour >= 75000 && specialist.price_per_hour <= 100000) ||
+      (selectedPrice === "over100" && specialist.price_per_hour > 100000);
+    return matchesCategory && matchesSearch && matchesCountry && matchesLanguage && matchesPrice;
   });
+
+  const allLanguages = Array.from(
+    new Set(specialists.flatMap((s) => s.languages))
+  ).sort();
 
   return (
     <>
@@ -565,6 +580,37 @@ const Specialists = () => {
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-8">
               <T>Browse our network of qualified professionals including psychologists, counselors, psychiatrists, and specialized therapists. Find the right expert for your unique needs.</T>
             </p>
+
+            {/* How we vet trust banner */}
+            <div className="max-w-4xl mx-auto bg-card border border-border rounded-2xl p-5 md:p-6 shadow-sm">
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <ShieldCheck className="w-5 h-5 text-primary" />
+                <h2 className="font-semibold text-foreground">How we vet every therapist</h2>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left">
+                <div className="flex items-start gap-3">
+                  <FileCheck className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-medium text-foreground text-sm">Licence verified</p>
+                    <p className="text-xs text-muted-foreground">Council registration confirmed before joining.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <GraduationCap className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-medium text-foreground text-sm">Credentials checked</p>
+                    <p className="text-xs text-muted-foreground">Degrees & certifications independently reviewed.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <UserSearch className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-medium text-foreground text-sm">Interviewed in-person</p>
+                    <p className="text-xs text-muted-foreground">Clinical interview & ongoing client feedback monitoring.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -607,6 +653,30 @@ const Specialists = () => {
                       Botswana
                     </span>
                   </SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select value={selectedLanguage || "all"} onValueChange={(val) => setSelectedLanguage(val === "all" ? "" : val)}>
+                <SelectTrigger className="w-[160px] bg-background">
+                  <SelectValue placeholder="All Languages" />
+                </SelectTrigger>
+                <SelectContent className="bg-background border border-border z-50 max-h-72">
+                  <SelectItem value="all">All Languages</SelectItem>
+                  {allLanguages.map((lang) => (
+                    <SelectItem key={lang} value={lang}>{lang}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Select value={selectedPrice || "all"} onValueChange={(val) => setSelectedPrice(val === "all" ? "" : val)}>
+                <SelectTrigger className="w-[180px] bg-background">
+                  <SelectValue placeholder="Any Price" />
+                </SelectTrigger>
+                <SelectContent className="bg-background border border-border z-50">
+                  <SelectItem value="all">Any Price</SelectItem>
+                  <SelectItem value="under75">Under UGX 75,000</SelectItem>
+                  <SelectItem value="75to100">UGX 75,000 – 100,000</SelectItem>
+                  <SelectItem value="over100">Over UGX 100,000</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -684,7 +754,22 @@ const Specialists = () => {
               Showing {filteredSpecialists.length} professional{filteredSpecialists.length !== 1 ? 's' : ''}
               {selectedCategory !== "all" && ` in ${currentCategory.name}`}
               {selectedCountry && ` from ${selectedCountry}`}
+              {selectedLanguage && ` speaking ${selectedLanguage}`}
             </p>
+
+            {/* Not sure who to choose CTA */}
+            <div className="bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20 rounded-xl p-5 mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="flex items-start gap-3">
+                <HelpCircle className="w-6 h-6 text-primary shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-semibold text-foreground">Not sure who to choose?</p>
+                  <p className="text-sm text-muted-foreground">Take a free 2-minute assessment and we'll recommend the right therapist for you.</p>
+                </div>
+              </div>
+              <Link to="/wellbeing-check">
+                <Button className="w-full md:w-auto">Get matched <Sparkles className="w-4 h-4" /></Button>
+              </Link>
+            </div>
 
             {/* Loading State with Skeleton Cards */}
             {loading ? (
@@ -731,7 +816,7 @@ const Specialists = () => {
                 {filteredSpecialists.length === 0 && (
                   <div className="text-center py-12">
                     <p className="text-muted-foreground mb-4">No specialists found matching your criteria.</p>
-                <Button variant="outline" onClick={() => { setSelectedCategory("all"); setSearchQuery(""); setSelectedCountry(""); }}>
+                <Button variant="outline" onClick={() => { setSelectedCategory("all"); setSearchQuery(""); setSelectedCountry(""); setSelectedLanguage(""); setSelectedPrice(""); }}>
                       Clear Filters
                     </Button>
                   </div>
