@@ -624,6 +624,30 @@ const Specialists = () => {
                   </SelectItem>
                 </SelectContent>
               </Select>
+
+              <Select value={selectedLanguage || "all"} onValueChange={(val) => setSelectedLanguage(val === "all" ? "" : val)}>
+                <SelectTrigger className="w-[160px] bg-background">
+                  <SelectValue placeholder="All Languages" />
+                </SelectTrigger>
+                <SelectContent className="bg-background border border-border z-50 max-h-72">
+                  <SelectItem value="all">All Languages</SelectItem>
+                  {allLanguages.map((lang) => (
+                    <SelectItem key={lang} value={lang}>{lang}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Select value={selectedPrice || "all"} onValueChange={(val) => setSelectedPrice(val === "all" ? "" : val)}>
+                <SelectTrigger className="w-[180px] bg-background">
+                  <SelectValue placeholder="Any Price" />
+                </SelectTrigger>
+                <SelectContent className="bg-background border border-border z-50">
+                  <SelectItem value="all">Any Price</SelectItem>
+                  <SelectItem value="under75">Under UGX 75,000</SelectItem>
+                  <SelectItem value="75to100">UGX 75,000 – 100,000</SelectItem>
+                  <SelectItem value="over100">Over UGX 100,000</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Support Category Cards */}
