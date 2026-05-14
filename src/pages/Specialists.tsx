@@ -754,7 +754,22 @@ const Specialists = () => {
               Showing {filteredSpecialists.length} professional{filteredSpecialists.length !== 1 ? 's' : ''}
               {selectedCategory !== "all" && ` in ${currentCategory.name}`}
               {selectedCountry && ` from ${selectedCountry}`}
+              {selectedLanguage && ` speaking ${selectedLanguage}`}
             </p>
+
+            {/* Not sure who to choose CTA */}
+            <div className="bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20 rounded-xl p-5 mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="flex items-start gap-3">
+                <HelpCircle className="w-6 h-6 text-primary shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-semibold text-foreground">Not sure who to choose?</p>
+                  <p className="text-sm text-muted-foreground">Take a free 2-minute assessment and we'll recommend the right therapist for you.</p>
+                </div>
+              </div>
+              <Link to="/wellbeing-check">
+                <Button className="w-full md:w-auto">Get matched <Sparkles className="w-4 h-4" /></Button>
+              </Link>
+            </div>
 
             {/* Loading State with Skeleton Cards */}
             {loading ? (
