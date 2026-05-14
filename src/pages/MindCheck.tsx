@@ -6,7 +6,7 @@ import { useUserRole } from "@/hooks/useUserRole";
 import Footer from "@/components/Footer";
 import { Helmet } from "react-helmet";
 import { Button } from "@/components/ui/button";
-import { Brain, Heart, AlertTriangle, Users, Zap, Shield, Clock, CheckCircle, BarChart3 } from "lucide-react";
+import { Brain, Heart, AlertTriangle, Users, Zap, Shield, Clock, CheckCircle } from "lucide-react";
 
 interface MentalHealthTest {
   id: string;
