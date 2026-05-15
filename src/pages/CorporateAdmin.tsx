@@ -126,6 +126,10 @@ const CorporateAdmin = () => {
   const [reportSections, setReportSections] = useState<Record<string, boolean>>(
     () => Object.fromEntries(REPORT_SECTIONS.map(s => [s.key, true]))
   );
+  // Per-section consultant overrides — when set, replaces auto content in preview/email/PDF
+  const [sectionOverrides, setSectionOverrides] = useState<Record<string, string>>({});
+  const [editingSection, setEditingSection] = useState<string | null>(null);
+  const [editDraft, setEditDraft] = useState<string>('');
   const [includeBusinessImpact, setIncludeBusinessImpact] = useState(true);
   const [baselineSalary, setBaselineSalary] = useState<number>(1_200_000);
 
@@ -1389,6 +1393,7 @@ const CorporateAdmin = () => {
                               observations: observations.trim() || null,
                               recommended_services: recommended_services_pdf,
                               business_impact: businessImpact as any,
+                              section_overrides: sectionOverrides,
                             });
                             const url = URL.createObjectURL(blob);
                             const a = document.createElement('a');
@@ -1549,7 +1554,6 @@ const CorporateAdmin = () => {
                                   moderate_wellbeing_pct: completedScreenings > 0 ? Math.round((yellowCount / completedScreenings) * 100) : 0,
                                   low_wellbeing_pct: completedScreenings > 0 ? Math.round((redCount / completedScreenings) * 100) : 0,
                                   needs_support_count: needsSupportCount,
-                                  consultant_observations: observations.trim() || undefined,
                                   recommended_services: recommended_services.length > 0 ? recommended_services : undefined,
                                   alternative_services: alternative_services.length > 0 ? alternative_services : undefined,
                                   sections: reportSections,
@@ -1559,6 +1563,13 @@ const CorporateAdmin = () => {
                                   triggered_flags_detailed: completedScreenings > 0 ? triggered_flags_detailed : undefined,
                                   action_plan: completedScreenings > 0 && action_plan.length > 0 ? action_plan : undefined,
                                   business_impact_extended,
+                                  section_overrides: {
+                                    ...sectionOverrides,
+                                    // Email template uses 'priority_focus' key for the same section UI calls 'priority_areas'
+                                    ...(sectionOverrides.priority_areas ? { priority_focus: sectionOverrides.priority_areas } : {}),
+                                  },
+                                  // If consultant_notes was overridden inline, surface it as the observations block too
+                                  consultant_observations: (sectionOverrides.consultant_notes?.trim() || observations.trim() || undefined),
                                 },
                               },
                             });
@@ -1751,10 +1762,61 @@ const CorporateAdmin = () => {
                             }, {});
                             const Section = ({ k, title, children }: { k: string; title: string; children: React.ReactNode }) => {
                               if (!reportSections[k]) return null;
+                              const override = sectionOverrides[k];
+                              const isEditing = editingSection === k;
                               return (
                                 <div className="border rounded-md p-4">
-                                  <div className="font-semibold text-sm mb-2 text-foreground">{title}</div>
-                                  <div className="text-sm text-muted-foreground space-y-2">{children}</div>
+                                  <div className="flex items-center justify-between mb-2 gap-2">
+                                    <div className="font-semibold text-sm text-foreground flex items-center gap-2">
+                                      {title}
+                                      {override && <Badge variant="secondary" className="text-[10px]">Edited</Badge>}
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                      {!isEditing && (
+                                        <Button size="sm" variant="ghost" className="h-7 px-2 text-xs"
+                                          onClick={() => { setEditDraft(override ?? ''); setEditingSection(k); }}>
+                                          ✎ Edit
+                                        </Button>
+                                      )}
+                                      {!isEditing && override && (
+                                        <Button size="sm" variant="ghost" className="h-7 px-2 text-xs text-destructive"
+                                          onClick={() => {
+                                            setSectionOverrides(prev => { const n = { ...prev }; delete n[k]; return n; });
+                                            toast.success('Reverted to auto-generated content');
+                                          }}>
+                                          Reset
+                                        </Button>
+                                      )}
+                                    </div>
+                                  </div>
+                                  {isEditing ? (
+                                    <div className="space-y-2">
+                                      <Textarea
+                                        value={editDraft}
+                                        onChange={(e) => setEditDraft(e.target.value)}
+                                        rows={6}
+                                        placeholder="Write the custom text that will replace the auto-generated content for this section…"
+                                      />
+                                      <div className="flex gap-2 justify-end">
+                                        <Button size="sm" variant="outline" onClick={() => { setEditingSection(null); setEditDraft(''); }}>Cancel</Button>
+                                        <Button size="sm" onClick={() => {
+                                          const t = editDraft.trim();
+                                          setSectionOverrides(prev => {
+                                            const n = { ...prev };
+                                            if (t) n[k] = t; else delete n[k];
+                                            return n;
+                                          });
+                                          setEditingSection(null);
+                                          setEditDraft('');
+                                          toast.success(t ? 'Section saved' : 'Override cleared');
+                                        }}>Save</Button>
+                                      </div>
+                                    </div>
+                                  ) : override ? (
+                                    <div className="text-sm whitespace-pre-wrap text-foreground">{override}</div>
+                                  ) : (
+                                    <div className="text-sm text-muted-foreground space-y-2">{children}</div>
+                                  )}
                                 </div>
                               );
                             };
