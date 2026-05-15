@@ -84,10 +84,10 @@ const studentCourses = [
 ];
 
 const stats = [
-  { label: "Active Learners", value: "0", icon: Users },
   { label: "Courses Available", value: "18", icon: BookOpen },
-  { label: "Certificates Issued", value: "0", icon: Award },
-  { label: "Partner Organizations", value: "0", icon: Building2 }
+  { label: "Career Tracks", value: "3", icon: Briefcase },
+  { label: "Avg. Completion", value: "4-8 wks", icon: Clock },
+  { label: "Certified by", value: "InnerSpark", icon: Award }
 ];
 
 const getLevelColor = (level: string) => {
@@ -213,7 +213,7 @@ const Learning = () => {
               {stats.map((stat, index) => (
                 <div key={index} className="bg-background/80 backdrop-blur-sm border border-border rounded-xl p-4 text-center">
                   <stat.icon className="w-8 h-8 text-primary mx-auto mb-2" />
-                  <div className="text-2xl font-bold text-foreground">{stat.value}</div>
+                  <div className="text-xl md:text-2xl font-bold text-foreground">{stat.value}</div>
                   <div className="text-sm text-muted-foreground">{stat.label}</div>
                 </div>
               ))}
@@ -358,10 +358,17 @@ const Learning = () => {
                           {course.description}
                         </CardDescription>
                         <div className="flex items-center justify-between text-sm">
-                          <div className="flex items-center gap-1 text-muted-foreground">
-                            <Users className="w-4 h-4" />
-                            {course.enrolled.toLocaleString()} enrolled
-                          </div>
+                          {course.enrolled > 0 ? (
+                            <div className="flex items-center gap-1 text-muted-foreground">
+                              <Users className="w-4 h-4" />
+                              {course.enrolled.toLocaleString()} enrolled
+                            </div>
+                          ) : (
+                            <Badge className="text-xs bg-yellow-100 text-yellow-800 border-yellow-200">
+                              <Sparkles className="w-3 h-3 mr-1" />
+                              Founding Cohort
+                            </Badge>
+                          )}
                           {isAvailable ? (
                             <Badge className="text-xs bg-green-100 text-green-700 border-green-200">
                               Available Now
