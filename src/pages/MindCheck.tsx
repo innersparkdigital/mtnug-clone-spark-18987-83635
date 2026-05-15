@@ -2,11 +2,10 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Header from "@/components/Header";
 import { usePageVisitTracking } from "@/hooks/useMindCheckTracking";
-import { useUserRole } from "@/hooks/useUserRole";
 import Footer from "@/components/Footer";
 import { Helmet } from "react-helmet";
 import { Button } from "@/components/ui/button";
-import { Brain, Heart, AlertTriangle, Users, Zap, Shield, Clock, CheckCircle } from "lucide-react";
+import { Brain, Heart, AlertTriangle, Users, Zap, Shield, Clock, CheckCircle, Phone } from "lucide-react";
 
 interface MentalHealthTest {
   id: string;
@@ -65,7 +64,6 @@ const MindCheck = () => {
   const [showAllTests, setShowAllTests] = useState(false);
   const [selectedTest, setSelectedTest] = useState<MentalHealthTest | null>(null);
   const navigate = useNavigate();
-  const { isAdmin } = useUserRole();
   
   // Track page visit
   usePageVisitTracking();
@@ -207,6 +205,24 @@ const MindCheck = () => {
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
               Taking an online mental health test is one of the quickest and easiest ways to find out if you are experiencing symptoms of a mental health condition.
             </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Crisis Support Strip */}
+      <section className="bg-red-50 border-y border-red-200">
+        <div className="container mx-auto px-4 py-3">
+          <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-center sm:text-left">
+            <div className="flex items-center gap-2 text-red-700">
+              <AlertTriangle className="w-4 h-4 flex-shrink-0" />
+              <span className="text-sm font-medium">In crisis or having thoughts of self-harm?</span>
+            </div>
+            <Link to="/emergency-support">
+              <Button size="sm" variant="outline" className="border-red-300 text-red-700 hover:bg-red-100 gap-2">
+                <Phone className="w-3.5 h-3.5" />
+                Get Immediate Help
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
