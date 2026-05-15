@@ -132,6 +132,34 @@ const CorporateWellbeingCheck = () => {
   const [submitting, setSubmitting] = useState(false);
   const [selectedGender, setSelectedGender] = useState<string>('');
   const [consentChecked, setConsentChecked] = useState(false);
+
+  // Wave 3: language + community mode + facilitator counter
+  const isCommunityMode = searchParams.get('mode') === 'community';
+  const [lang, setLang] = useState<Lang>(() => {
+    const fromUrl = (searchParams.get('lang') || '').toLowerCase();
+    if (fromUrl === 'lg' || fromUrl === 'sw' || fromUrl === 'en') return fromUrl as Lang;
+    try { return (localStorage.getItem('isa_wb_lang') as Lang) || 'en'; } catch { return 'en'; }
+  });
+  useEffect(() => { try { localStorage.setItem('isa_wb_lang', lang); } catch {} }, [lang]);
+  const t = TRANSLATIONS[lang];
+
+  const COUNTER_KEY = `isa_facilitator_count_${new Date().toISOString().slice(0, 10)}`;
+  const [facilitatorCount, setFacilitatorCount] = useState<number>(() => {
+    if (!isCommunityMode) return 0;
+    try { return parseInt(localStorage.getItem(COUNTER_KEY) || '0', 10) || 0; } catch { return 0; }
+  });
+
+  const speakText = (text: string) => {
+    try {
+      if (!('speechSynthesis' in window)) { toast.info('Audio not supported on this device'); return; }
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(text);
+      // Best-effort voice mapping. Browsers may fall back to default.
+      utter.lang = lang === 'sw' ? 'sw-KE' : lang === 'lg' ? 'en-UG' : 'en-US';
+      utter.rate = 0.9;
+      window.speechSynthesis.speak(utter);
+    } catch (e) { console.warn('TTS failed', e); }
+  };
   // Results email state
   const [resultsEmail, setResultsEmail] = useState<string>('');
   const [sendingResultsEmail, setSendingResultsEmail] = useState(false);
