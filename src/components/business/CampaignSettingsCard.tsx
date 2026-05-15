@@ -9,12 +9,15 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Copy, Download, Upload, QrCode, Save, BarChart3 } from 'lucide-react';
+import { Copy, Download, Upload, QrCode, Save, BarChart3, ExternalLink, Settings as SettingsIcon, Eye, HelpCircle, Workflow } from 'lucide-react';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
 interface Props {
   company: any;
   onUpdated: () => void;
 }
+
+interface CompanyLite { id: string; name: string; slug: string | null; }
 
 const LANGS = [
   { code: 'en', label: 'English' },
@@ -39,6 +42,9 @@ const CampaignSettingsCard = ({ company, onUpdated }: Props) => {
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [faqStats, setFaqStats] = useState<{ opens: number; items: Record<number, number>; sessions: number }>({ opens: 0, items: {}, sessions: 0 });
+  const [allCompanies, setAllCompanies] = useState<CompanyLite[]>([]);
+  const [completion, setCompletion] = useState<{ total: number; completed: number }>({ total: 0, completed: 0 });
+  const [iframeKey, setIframeKey] = useState(0);
 
   const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
   const campaignUrl = useMemo(() => `${baseUrl}/check/${form.slug}`, [baseUrl, form.slug]);
@@ -59,6 +65,25 @@ const CampaignSettingsCard = ({ company, onUpdated }: Props) => {
       setFaqStats({ opens, items, sessions });
     })();
   }, [company.id]);
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase
+        .from('corporate_companies')
+        .select('id,name,slug')
+        .not('slug', 'is', null)
+        .order('created_at', { ascending: false })
+        .limit(20);
+      setAllCompanies((data as CompanyLite[]) || []);
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase.rpc('get_campaign_completion', { _company_id: company.id });
+      if (data) setCompletion(data as any);
+    })();
+  }, [company.id, iframeKey]);
 
   const uploadLogo = async (file: File) => {
     setUploading(true);
@@ -125,10 +150,115 @@ const CampaignSettingsCard = ({ company, onUpdated }: Props) => {
 
   return (
     <div className="space-y-6">
+      {/* Live preview + company switcher */}
+      <Card className="bg-card">
+        <CardContent className="pt-5">
+          <Tabs defaultValue="landing">
+            <div className="flex items-start justify-between flex-wrap gap-3 mb-4">
+              <TabsList>
+                <TabsTrigger value="landing"><Eye className="w-4 h-4 mr-1" /> Campaign landing page</TabsTrigger>
+                <TabsTrigger value="faq"><HelpCircle className="w-4 h-4 mr-1" /> Anxiety FAQ panel</TabsTrigger>
+                <TabsTrigger value="how"><Workflow className="w-4 h-4 mr-1" /> How it connects</TabsTrigger>
+              </TabsList>
+              <div className="flex gap-2">
+                <Button size="sm" variant="outline" onClick={() => setIframeKey(k => k + 1)}>Refresh preview</Button>
+                <Button size="sm" variant="outline" asChild>
+                  <a href={campaignUrl} target="_blank" rel="noopener noreferrer"><ExternalLink className="w-4 h-4 mr-1" />Open</a>
+                </Button>
+              </div>
+            </div>
+
+            <div className="grid lg:grid-cols-3 gap-4">
+              <div className="lg:col-span-2">
+                <div className="text-xs text-muted-foreground mb-2">Live preview — <span className="text-primary font-medium">{company.name}</span></div>
+                <TabsContent value="landing" className="mt-0">
+                  <div className="rounded-lg overflow-hidden border bg-background" style={{ height: 560 }}>
+                    {form.slug ? (
+                      <iframe
+                        key={iframeKey}
+                        src={`/check/${form.slug}`}
+                        title="Campaign landing preview"
+                        className="w-full h-full"
+                      />
+                    ) : (
+                      <div className="h-full flex items-center justify-center text-sm text-muted-foreground">Save a slug to preview the landing page.</div>
+                    )}
+                  </div>
+                </TabsContent>
+                <TabsContent value="faq" className="mt-0">
+                  <div className="rounded-lg overflow-hidden border bg-background" style={{ height: 560 }}>
+                    {form.slug ? (
+                      <iframe
+                        key={`faq-${iframeKey}`}
+                        src={`/check/${form.slug}#anxiety-faq`}
+                        title="Anxiety FAQ preview"
+                        className="w-full h-full"
+                      />
+                    ) : (
+                      <div className="h-full flex items-center justify-center text-sm text-muted-foreground">Save a slug to preview the FAQ panel.</div>
+                    )}
+                  </div>
+                </TabsContent>
+                <TabsContent value="how" className="mt-0">
+                  <div className="rounded-lg border bg-muted/30 p-5 text-sm space-y-3" style={{ minHeight: 560 }}>
+                    <h4 className="font-semibold text-base">How the campaign flows together</h4>
+                    <ol className="list-decimal pl-5 space-y-2">
+                      <li><strong>Share the link or QR</strong> with employees (poster, email, WhatsApp).</li>
+                      <li>Employees land on <code className="bg-background px-1 rounded">/check/{form.slug || 'your-slug'}</code> — they see your branding, the countdown, and the participation bar.</li>
+                      <li>The <strong>Screening Anxiety FAQ</strong> answers privacy, job-security and "is this an HIV test" worries — anonymously logged so HR sees what employees worry about.</li>
+                      <li>"Start" sends them through the <strong>WHO-5 + Workplace</strong> screening with their company's access code prefilled.</li>
+                      <li>Completion increments the participation counter; data flows into <strong>Analytics</strong>, <strong>Insights</strong>, and the <strong>Report</strong> tab.</li>
+                      <li>HR runs <strong>Draft AI Report</strong> to send a branded recap with recommended services.</li>
+                    </ol>
+                  </div>
+                </TabsContent>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <div className="text-xs text-muted-foreground mb-2">Try different companies</div>
+                  <div className="space-y-1.5 max-h-[260px] overflow-y-auto pr-1">
+                    {allCompanies.length === 0 && (
+                      <p className="text-xs text-muted-foreground">No other companies with slugs yet.</p>
+                    )}
+                    {allCompanies.map(c => {
+                      const active = c.id === company.id;
+                      return (
+                        <a
+                          key={c.id}
+                          href={`/check/${c.slug}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`block rounded-md border p-2.5 text-xs transition hover:bg-muted ${active ? 'border-primary bg-primary/5' : 'border-border'}`}
+                        >
+                          <div className="font-medium text-foreground">{c.name}{active && <span className="ml-2 text-[10px] text-primary">current</span>}</div>
+                          <div className="text-muted-foreground truncate">innersparkafrica.com/check/{c.slug}</div>
+                        </a>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div className="rounded-md border bg-muted/30 p-3">
+                  <div className="text-xs text-muted-foreground mb-2">Participation counter <span className="text-[10px]">(live, HR-visible only)</span></div>
+                  <div className="h-2 bg-background rounded-full overflow-hidden mb-1.5">
+                    <div
+                      className="h-full bg-emerald-500 transition-all"
+                      style={{ width: completion.total ? `${Math.min(100, (completion.completed / completion.total) * 100)}%` : '0%' }}
+                    />
+                  </div>
+                  <div className="text-xs font-medium text-foreground">{completion.completed} of {completion.total} completed</div>
+                </div>
+              </div>
+            </div>
+          </Tabs>
+        </CardContent>
+      </Card>
+
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Campaign Landing Page</CardTitle>
-          <CardDescription>Branded URL employees visit to take the screening. Share via QR or link.</CardDescription>
+          <CardTitle className="text-lg flex items-center gap-2"><SettingsIcon className="w-4 h-4" /> Campaign Settings</CardTitle>
+          <CardDescription>Edit branding, slug, languages and incentive. Share via QR or link.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex flex-col md:flex-row gap-3 items-start md:items-center justify-between bg-muted/40 rounded-md p-3">
