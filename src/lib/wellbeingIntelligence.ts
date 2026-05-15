@@ -528,3 +528,36 @@ export function answerMapFromStored(stored: any): AnswerMap | null {
   }
   return out;
 }
+
+// Fallback for legacy screenings where per_question is empty but we still have
+// who5_score (sum 0-25 across q1-q5) and workplace_responses { workload, support, overwhelm }.
+// We synthesize an AnswerMap by distributing who5_score evenly across q1-q5 and
+// mapping the three workplace fields to q6/q7/q8 raw answers.
+export function answerMapFromLegacy(screening: {
+  who5_score?: number | null;
+  workplace_responses?: any;
+  per_question?: any;
+}): AnswerMap | null {
+  // Prefer real per-question data when available
+  const fromStored = answerMapFromStored(screening?.per_question);
+  if (fromStored) return fromStored;
+
+  const who5 = Math.max(0, Math.min(25, Number(screening?.who5_score) || 0));
+  const wr = screening?.workplace_responses || {};
+  const hasWorkplace =
+    wr && (wr.workload != null || wr.support != null || wr.overwhelm != null);
+  if (!screening?.who5_score && !hasWorkplace) return null;
+
+  // Distribute WHO-5 sum across the 5 questions as evenly as possible
+  const base = Math.floor(who5 / 5);
+  const remainder = who5 - base * 5;
+  const who5Raw = [0, 1, 2, 3, 4].map((i) => base + (i < remainder ? 1 : 0));
+
+  const raws = [
+    who5Raw[0], who5Raw[1], who5Raw[2], who5Raw[3], who5Raw[4],
+    Math.max(0, Math.min(5, Number(wr.workload) || 0)),
+    Math.max(0, Math.min(5, Number(wr.support) || 0)),
+    Math.max(0, Math.min(5, Number(wr.overwhelm) || 0)),
+  ];
+  return computeAnswers(raws);
+}

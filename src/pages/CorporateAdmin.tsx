@@ -22,7 +22,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { generateCompanyReportPdf } from '@/lib/companyReportPdf';
 import { Loader2 } from 'lucide-react';
-import { answerMapFromStored, aggregateCompany } from '@/lib/wellbeingIntelligence';
+import { answerMapFromStored, answerMapFromLegacy, aggregateCompany } from '@/lib/wellbeingIntelligence';
 import { CompanyTriggersDashboard, CompanyActionPlan } from '@/components/business/CompanyInsights';
 import PerQuestionEmployeeBreakdown from '@/components/business/PerQuestionEmployeeBreakdown';
 import BusinessImpactSummary from '@/components/business/BusinessImpactSummary';
@@ -769,7 +769,7 @@ const CorporateAdmin = () => {
               <TabsContent value="insights">
                 {(() => {
                   const records = screenings
-                    .map((s: any) => answerMapFromStored(s.per_question))
+                    .map((s: any) => answerMapFromLegacy(s))
                     .filter(Boolean) as any[];
                   const result = aggregateCompany(records);
                   return (
@@ -1078,7 +1078,7 @@ const CorporateAdmin = () => {
                                       {/* Per-question breakdown for latest screening */}
                                       {(() => {
                                         const latest = employeeScreeningMap.get(emp.id);
-                                        const ans = latest ? answerMapFromStored((latest as any).per_question) : null;
+                                        const ans = latest ? answerMapFromLegacy(latest as any) : null;
                                         if (!ans || !latest) return null;
                                         const history = employeeScreeningHistory.get(emp.id) || [];
                                         const prev = history[1];
