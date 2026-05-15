@@ -1554,7 +1554,6 @@ const CorporateAdmin = () => {
                                   moderate_wellbeing_pct: completedScreenings > 0 ? Math.round((yellowCount / completedScreenings) * 100) : 0,
                                   low_wellbeing_pct: completedScreenings > 0 ? Math.round((redCount / completedScreenings) * 100) : 0,
                                   needs_support_count: needsSupportCount,
-                                  consultant_observations: observations.trim() || undefined,
                                   recommended_services: recommended_services.length > 0 ? recommended_services : undefined,
                                   alternative_services: alternative_services.length > 0 ? alternative_services : undefined,
                                   sections: reportSections,
