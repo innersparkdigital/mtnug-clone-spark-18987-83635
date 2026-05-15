@@ -3,7 +3,6 @@ import { Menu, X, User, LogOut, Phone, MessageCircle, Shield, ChevronDown, Chevr
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import logo from "@/assets/innerspark-logo.png";
-import { LanguageSelector } from "@/components/LanguageSelector";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import {
