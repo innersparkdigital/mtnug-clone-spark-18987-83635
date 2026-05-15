@@ -96,15 +96,15 @@ export const CampaignBrandingHeader = ({ slug, language, onLanguageChange, showP
   const pct = Math.min(100, Math.round((completion.completed / totalEmployees) * 100));
 
   return (
-    <div className="mb-6">
+    <div className="mb-6 w-full">
       {/* Hero */}
-      <div style={{ backgroundColor: SPARK_BLUE }} className="px-5 py-5">
+      <div style={{ backgroundColor: SPARK_BLUE }} className="px-4 py-4 sm:px-5 sm:py-5">
         <div className="max-w-md mx-auto">
-          <div className="flex items-center gap-3 mb-4">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
             {campaign.logo_url ? (
               <>
-                <div className="bg-white rounded-full px-2 py-1 inline-flex items-center" style={{ height: 40, maxWidth: 140 }}>
-                  <img src={campaign.logo_url} alt={campaign.name} className="object-contain" style={{ maxHeight: 28, maxWidth: 120 }} />
+                <div className="bg-white rounded-full px-2 py-1 inline-flex items-center" style={{ height: 36, maxWidth: 130 }}>
+                  <img src={campaign.logo_url} alt={campaign.name} className="object-contain" style={{ maxHeight: 24, maxWidth: 110 }} />
                 </div>
                 <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: 18 }}>×</span>
               </>
@@ -114,18 +114,18 @@ export const CampaignBrandingHeader = ({ slug, language, onLanguageChange, showP
             <img
               src="https://hnjpsvpudwwyzrrwzbpa.supabase.co/storage/v1/object/public/email-assets/innerspark-logo.png"
               alt="InnerSpark Africa"
-              style={{ height: 28, filter: 'brightness(0) invert(1)' }}
+              style={{ height: 24, filter: 'brightness(0) invert(1)' }}
             />
           </div>
-          <h1 className="text-white" style={{ fontSize: 17, fontWeight: 500, lineHeight: 1.4 }}>{headline}</h1>
-          <p style={{ color: '#C5CAF5', fontSize: 12, lineHeight: 1.6, marginTop: 8 }}>{subtext}</p>
+          <h1 className="text-white text-[15px] sm:text-[17px] font-medium leading-snug">{headline}</h1>
+          <p className="text-[11px] sm:text-xs leading-relaxed mt-2" style={{ color: '#C5CAF5' }}>{subtext}</p>
         </div>
       </div>
 
       {/* Warmth stripe */}
       <div style={{ height: 4, backgroundColor: ACCENT_ORANGE }} />
 
-      <div className="max-w-md mx-auto px-5 pt-4 space-y-4">
+      <div className="max-w-md mx-auto px-4 sm:px-5 pt-4 space-y-4">
         {/* Language switcher */}
         {campaign.languages_enabled?.length > 1 && onLanguageChange && (
           <div className="flex gap-2">
