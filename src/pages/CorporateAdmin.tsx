@@ -1836,7 +1836,7 @@ const CorporateAdmin = () => {
                                     <div className="flex items-center gap-1">
                                       {!isEditing && (
                                         <Button size="sm" variant="ghost" className="h-7 px-2 text-xs"
-                                          onClick={() => { setEditDraft(override ?? ''); setEditingSection(k); }}>
+                                          onClick={() => { setEditDraft(override ?? sectionDefaultText(k)); setEditingSection(k); }}>
                                           ✎ Edit
                                         </Button>
                                       )}
