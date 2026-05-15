@@ -192,14 +192,40 @@ const Header = () => {
                       <span className="max-w-20 truncate text-xs">{user.email?.split('@')[0]}</span>
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
+                  <DropdownMenuContent align="end" className="w-72">
                     <DropdownMenuItem asChild>
                       <Link to="/learning/student-dashboard" className="cursor-pointer">My Learning</Link>
                     </DropdownMenuItem>
                     {isAdmin && (
-                      <DropdownMenuItem asChild>
-                        <Link to="/corporate-admin" className="cursor-pointer">Corporate Admin</Link>
-                      </DropdownMenuItem>
+                      <>
+                        <div className="px-2 pt-2 pb-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1">
+                          <Shield className="w-3 h-3" /> Admin Dashboards
+                        </div>
+                        <DropdownMenuItem asChild>
+                          <Link to="/learning/admin-dashboard" className="cursor-pointer flex flex-col items-start gap-0.5 py-2">
+                            <span className="text-sm font-medium">Platform Management</span>
+                            <span className="text-[11px] text-muted-foreground">Learners, training, newsletter, crisis & more</span>
+                          </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                          <Link to="/mind-check/analytics" className="cursor-pointer flex flex-col items-start gap-0.5 py-2">
+                            <span className="text-sm font-medium">Mind-Check Analytics</span>
+                            <span className="text-[11px] text-muted-foreground">Engagement, WHO-5 & assessment trends</span>
+                          </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                          <Link to="/corporate-admin" className="cursor-pointer flex flex-col items-start gap-0.5 py-2">
+                            <span className="text-sm font-medium">Corporate Wellbeing Admin</span>
+                            <span className="text-[11px] text-muted-foreground">Companies, employees & screening analytics</span>
+                          </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                          <Link to="/admin/finance" className="cursor-pointer flex flex-col items-start gap-0.5 py-2">
+                            <span className="text-sm font-medium">Finance & Accounts</span>
+                            <span className="text-[11px] text-muted-foreground">Invoices, income, expenses & reports</span>
+                          </Link>
+                        </DropdownMenuItem>
+                      </>
                     )}
                     <DropdownMenuItem onClick={() => signOut()} className="cursor-pointer text-destructive">
                       <LogOut className="w-4 h-4 mr-2" /> Sign Out
@@ -242,9 +268,15 @@ const Header = () => {
                 <div className="py-3 space-y-2">
                   <Link to="/learning/student-dashboard" onClick={closeMobile} className="block text-sm font-medium">My Learning</Link>
                   {isAdmin && (
-                    <Link to="/corporate-admin" onClick={closeMobile} className="flex items-center gap-2 text-sm font-semibold text-primary">
-                      <Shield className="w-4 h-4" /> Corporate Admin
-                    </Link>
+                    <div className="pt-2 mt-2 border-t border-border space-y-2">
+                      <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1">
+                        <Shield className="w-3 h-3" /> Admin Dashboards
+                      </div>
+                      <Link to="/learning/admin-dashboard" onClick={closeMobile} className="block text-sm font-medium text-primary">Platform Management</Link>
+                      <Link to="/mind-check/analytics" onClick={closeMobile} className="block text-sm font-medium text-primary">Mind-Check Analytics</Link>
+                      <Link to="/corporate-admin" onClick={closeMobile} className="block text-sm font-medium text-primary">Corporate Wellbeing Admin</Link>
+                      <Link to="/admin/finance" onClick={closeMobile} className="block text-sm font-medium text-primary">Finance & Accounts</Link>
+                    </div>
                   )}
                   <Button variant="outline" className="w-full" onClick={() => { signOut(); closeMobile(); }}>
                     <LogOut className="w-4 h-4 mr-2" /> Sign Out
