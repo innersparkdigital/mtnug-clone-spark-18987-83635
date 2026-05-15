@@ -329,6 +329,36 @@ export type Database = {
         }
         Relationships: []
       }
+      campaign_faq_events: {
+        Row: {
+          company_id: string | null
+          created_at: string
+          event_type: string
+          id: string
+          item_index: number | null
+          language: string | null
+          session_id: string
+        }
+        Insert: {
+          company_id?: string | null
+          created_at?: string
+          event_type: string
+          id?: string
+          item_index?: number | null
+          language?: string | null
+          session_id: string
+        }
+        Update: {
+          company_id?: string | null
+          created_at?: string
+          event_type?: string
+          id?: string
+          item_index?: number | null
+          language?: string | null
+          session_id?: string
+        }
+        Relationships: []
+      }
       career_applications: {
         Row: {
           country: string
@@ -684,6 +714,9 @@ export type Database = {
       }
       corporate_companies: {
         Row: {
+          campaign_close_date: string | null
+          campaign_headline: string | null
+          campaign_subtext: string | null
           contact_email: string | null
           contact_person: string | null
           contact_phone: string | null
@@ -692,12 +725,21 @@ export type Database = {
           created_by: string | null
           employee_count: number | null
           id: string
+          incentive_amount_ugx: number
           industry: string | null
+          languages_enabled: string[]
           location: string | null
+          logo_url: string | null
+          mode: string
           name: string
+          slug: string | null
+          slug_locked: boolean
           updated_at: string
         }
         Insert: {
+          campaign_close_date?: string | null
+          campaign_headline?: string | null
+          campaign_subtext?: string | null
           contact_email?: string | null
           contact_person?: string | null
           contact_phone?: string | null
@@ -706,12 +748,21 @@ export type Database = {
           created_by?: string | null
           employee_count?: number | null
           id?: string
+          incentive_amount_ugx?: number
           industry?: string | null
+          languages_enabled?: string[]
           location?: string | null
+          logo_url?: string | null
+          mode?: string
           name: string
+          slug?: string | null
+          slug_locked?: boolean
           updated_at?: string
         }
         Update: {
+          campaign_close_date?: string | null
+          campaign_headline?: string | null
+          campaign_subtext?: string | null
           contact_email?: string | null
           contact_person?: string | null
           contact_phone?: string | null
@@ -720,9 +771,15 @@ export type Database = {
           created_by?: string | null
           employee_count?: number | null
           id?: string
+          incentive_amount_ugx?: number
           industry?: string | null
+          languages_enabled?: string[]
           location?: string | null
+          logo_url?: string | null
+          mode?: string
           name?: string
+          slug?: string | null
+          slug_locked?: boolean
           updated_at?: string
         }
         Relationships: []
@@ -2536,6 +2593,8 @@ export type Database = {
         Args: { payload: Json; queue_name: string }
         Returns: number
       }
+      get_campaign_by_slug: { Args: { _slug: string }; Returns: Json }
+      get_campaign_completion: { Args: { _company_id: string }; Returns: Json }
       get_doctor_email_by_phone: { Args: { _phone: string }; Returns: string }
       get_service_recommendation_details: {
         Args: { _report_id: string; _service_id: string }
@@ -2553,6 +2612,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      lock_campaign_slug: { Args: { _slug: string }; Returns: undefined }
       lookup_employee_by_code: { Args: { _code: string }; Returns: Json }
       lookup_employee_by_token: { Args: { _token: string }; Returns: Json }
       move_to_dlq: {
@@ -2576,6 +2636,7 @@ export type Database = {
         Args: { _doctor_id: string; _month_start: string }
         Returns: undefined
       }
+      slugify_company_name: { Args: { _name: string }; Returns: string }
       sync_form_emails_to_subscribers: { Args: never; Returns: Json }
     }
     Enums: {
