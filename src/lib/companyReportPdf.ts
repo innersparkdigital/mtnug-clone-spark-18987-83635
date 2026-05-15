@@ -15,6 +15,12 @@ export interface CompanyReportData {
   moderate_wellbeing_pct: number;
   low_wellbeing_pct: number;
   needs_support_count: number;
+  // Optional: 10-section toggle map (key -> on). When omitted, all sections render.
+  sections?: Record<string, boolean>;
+  // Optional manual layer
+  observations?: string | null;
+  recommended_services?: Array<{ name: string; description?: string | null; physical_price?: number | null; virtual_price?: number | null; per_employee_price?: number | null; unit_label?: string | null; reason?: string | null }>;
+  business_impact?: { productivity_loss_fte?: number; lost_days_per_year?: number; estimated_annual_cost_ugx?: number; estimated_roi_ugx?: number } | null;
 }
 
 const PRIMARY: [number, number, number] = [91, 106, 191]; // #5B6ABF
@@ -106,6 +112,8 @@ export async function generateCompanyReportPdf(d: CompanyReportData): Promise<Bl
 
   await drawHeader();
 
+  const sec = (key: string) => !d.sections || d.sections[key] !== false;
+
   // Title block
   pdf.setFont('helvetica', 'bold');
   pdf.setFontSize(18);
@@ -118,12 +126,15 @@ export async function generateCompanyReportPdf(d: CompanyReportData): Promise<Bl
   y += 8;
   pdf.setTextColor(...TEXT);
 
-  if (d.contact_name) {
+  if (sec('cover') && d.contact_name) {
     await para(`Hello ${d.contact_name},`, { bold: true, size: 11 });
   }
-  await para(`Below is the confidential aggregated wellbeing snapshot for ${d.company_name}. All figures are anonymised — no individual employee can be identified.`);
+  if (sec('cover')) {
+    await para(`Below is the confidential aggregated wellbeing snapshot for ${d.company_name}. All figures are anonymised — no individual employee can be identified.`);
+  }
 
-  // Risk banner
+  // Risk banner (part of cover)
+  if (sec('cover')) {
   const isCritical = d.low_wellbeing_pct >= 30 || d.avg_who5 < 50;
   const isElevated = !isCritical && (d.low_wellbeing_pct >= 10 || d.moderate_wellbeing_pct >= 40 || d.avg_who5 < 65);
   const banner = isCritical
@@ -145,8 +156,10 @@ export async function generateCompanyReportPdf(d: CompanyReportData): Promise<Bl
   const bLines = pdf.splitTextToSize(banner.text, pageW - margin * 2 - 8);
   pdf.text(bLines, margin + 4, y + 12);
   y += 28;
+  }
 
-  // Summary stats
+  // Summary stats — Participation
+  if (sec('participation')) {
   await h2('At a Glance');
   const statBox = (label: string, value: string, x: number, w: number) => {
     pdf.setFillColor(244, 245, 251);
@@ -168,8 +181,10 @@ export async function generateCompanyReportPdf(d: CompanyReportData): Promise<Bl
   statBox('Avg WHO-5', `${d.avg_who5}%`, margin + (colW + 3) * 2, colW);
   statBox('Need Support', `${d.needs_support_count}`, margin + (colW + 3) * 3, colW);
   y += 22;
+  }
 
-  // Distribution
+  // Distribution — Overall Wellbeing
+  if (sec('overall_wellbeing')) {
   await h2('Wellbeing Distribution');
   const distBox = (label: string, count: number, pct: number, color: [number,number,number], x: number, w: number) => {
     pdf.setFillColor(249, 250, 252);
@@ -190,10 +205,12 @@ export async function generateCompanyReportPdf(d: CompanyReportData): Promise<Bl
   distBox('At Risk', d.moderate_count, d.moderate_wellbeing_pct, [234, 179, 8], margin + dW + 3, dW);
   distBox('Critical', d.low_count, d.low_wellbeing_pct, [239, 68, 68], margin + (dW + 3) * 2, dW);
   y += 26;
+  }
 
-  // Productivity impact
-  const productivityLoss = Math.round((d.low_count * 0.30 + d.moderate_count * 0.12) * 100) / 100;
-  const lostDays = Math.round(d.low_count * 22 + d.moderate_count * 9);
+  // Productivity impact — Business Impact
+  if (sec('business_impact')) {
+  const productivityLoss = d.business_impact?.productivity_loss_fte ?? Math.round((d.low_count * 0.30 + d.moderate_count * 0.12) * 100) / 100;
+  const lostDays = d.business_impact?.lost_days_per_year ?? Math.round(d.low_count * 22 + d.moderate_count * 9);
   await h2('Productivity & Business Impact');
   await para('Research from WHO and Deloitte shows that untreated mental health challenges reduce individual productivity by 25-35% and drive absenteeism, presenteeism, and turnover.');
   await ensureSpace(20);
@@ -212,9 +229,17 @@ export async function generateCompanyReportPdf(d: CompanyReportData): Promise<Bl
   pdf.setTextColor(...TEXT);
   y += 20;
   await para('Every UGX 1 invested in employee mental health returns an estimated UGX 4 in productivity, retention and reduced sick leave (WHO ROI study).', { size: 9, color: MUTED });
+  if (d.business_impact?.estimated_annual_cost_ugx) {
+    await para(`Estimated annual cost of untreated stress at this company: UGX ${Math.round(d.business_impact.estimated_annual_cost_ugx).toLocaleString('en-UG')}.`, { size: 9, color: MUTED });
+  }
+  if (d.business_impact?.estimated_roi_ugx) {
+    await para(`Projected ROI if EAP activated: UGX ${Math.round(d.business_impact.estimated_roi_ugx).toLocaleString('en-UG')} / year.`, { size: 9, color: MUTED });
+  }
+  }
 
-  // Recommendations
-  await h2('Recommendations');
+  // Recommendations — generic
+  if (sec('action_plan')) {
+  await h2('30-Day Action Plan');
   const recs = [
     'Activate the InnerSpark Employee Digital Mental Health Package for full coverage.',
     'Run manager training on supportive conversations and burnout prevention.',
@@ -222,6 +247,28 @@ export async function generateCompanyReportPdf(d: CompanyReportData): Promise<Bl
     'Schedule the next quarterly Mind-Check & WHO-5 in 90 days.',
   ];
   for (const r of recs) await para(`•  ${r}`);
+  }
+
+  // Consultant observations
+  if (sec('consultant_notes') && d.observations && d.observations.trim()) {
+    await h2('Consultant Observations');
+    await para(d.observations.trim());
+  }
+
+  // Recommended services (manual layer)
+  if (sec('recommended_services') && d.recommended_services && d.recommended_services.length > 0) {
+    await h2('Recommended Services');
+    for (const s of d.recommended_services) {
+      await para(`•  ${s.name}`, { bold: true });
+      if (s.description) await para(`   ${s.description}`, { size: 9, color: MUTED });
+      const priceBits: string[] = [];
+      if (s.physical_price) priceBits.push(`Physical: UGX ${Number(s.physical_price).toLocaleString('en-UG')}`);
+      if (s.virtual_price) priceBits.push(`Virtual: UGX ${Number(s.virtual_price).toLocaleString('en-UG')}`);
+      if (s.per_employee_price) priceBits.push(`UGX ${Number(s.per_employee_price).toLocaleString('en-UG')} / ${s.unit_label || 'unit'}`);
+      if (priceBits.length) await para(`   ${priceBits.join('  •  ')}`, { size: 9 });
+      if (s.reason) await para(`   Why: ${s.reason}`, { size: 9, color: MUTED });
+    }
+  }
 
   // Solution package — new page for clarity
   await drawFooterBanner();
