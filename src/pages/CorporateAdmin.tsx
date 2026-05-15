@@ -1232,7 +1232,62 @@ const CorporateAdmin = () => {
                           <p className="text-xs text-muted-foreground mb-4">Add your own observations and pick services to recommend. These appear inside the email sent to the company HR alongside the automated report. When HR clicks a service, you'll be alerted by email.</p>
 
                           <div className="space-y-2 mb-4">
+                          <div className="flex items-center justify-between gap-2 flex-wrap">
                             <Label htmlFor="observations">Consultant's Observations</Label>
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="outline"
+                              disabled={draftingObs}
+                              onClick={async () => {
+                                if (!selectedCompany) return;
+                                if (!selectedCompany.context_notes?.trim()) {
+                                  const proceed = window.confirm("This company has no Company Context saved (added at company creation). The AI draft will be generic without it. Continue anyway?");
+                                  if (!proceed) return;
+                                }
+                                setDraftingObs(true);
+                                try {
+                                  const records = screenings.map((s: any) => answerMapFromLegacy(s)).filter(Boolean) as any[];
+                                  const insight = aggregateCompany(records);
+                                  const summary = {
+                                    totalEmployees,
+                                    completed: completedScreenings,
+                                    completionRate: participationRate,
+                                    avgWho5: avgScore,
+                                    high: insight.distribution?.green ?? 0,
+                                    moderate: insight.distribution?.amber ?? 0,
+                                    low: insight.distribution?.red ?? 0,
+                                    needsSupport: needsSupportCount,
+                                  };
+                                  const { data, error } = await supabase.functions.invoke('draft-company-report', {
+                                    body: {
+                                      companyName: selectedCompany.name,
+                                      industry: selectedCompany.industry,
+                                      employeeCount: selectedCompany.employee_count,
+                                      contextNotes: selectedCompany.context_notes,
+                                      summary,
+                                      triggeredFlags: insight.triggeredFlags,
+                                      questionAverages: insight.questionAverages,
+                                      triggeredClusters: insight.triggeredClusters,
+                                    },
+                                  });
+                                  if (error) throw error;
+                                  if ((data as any)?.error) throw new Error((data as any).error);
+                                  const draft = (data as any)?.observations || '';
+                                  if (!draft) { toast.error('AI returned an empty draft'); return; }
+                                  if (observations.trim() && !window.confirm('Replace your current observations with the AI draft?')) return;
+                                  setObservations(draft);
+                                  toast.success('AI draft inserted — review and edit before sending');
+                                } catch (e: any) {
+                                  toast.error(e?.message || 'Failed to draft observations');
+                                } finally {
+                                  setDraftingObs(false);
+                                }
+                              }}
+                            >
+                              {draftingObs ? 'Drafting…' : '✨ AI Draft from company context'}
+                            </Button>
+                          </div>
                             <Textarea
                               id="observations"
                               placeholder="e.g. The team shows high stress around Q3 deadlines. Several employees flagged anxiety and sleep issues. We recommend immediate manager training and a 1:1 therapy access window for critical cases…"
