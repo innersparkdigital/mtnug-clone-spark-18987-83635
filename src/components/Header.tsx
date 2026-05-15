@@ -36,6 +36,7 @@ const businessItems: MegaItem[] = [
   { label: "Employee Screening", description: "Confidential corporate wellbeing checks", to: "/corporate-wellbeing-check", icon: ClipboardCheck },
   { label: "Learning Hub", description: "Self-paced workplace mental health courses", to: "/learning", icon: BookOpen },
   { label: "Request Proposal", description: "Custom plan for your organisation", to: "/contact?type=corporate", icon: FileText },
+  { label: "Donate Therapy", description: "Sponsor sessions for those in need", to: "/donate-therapy", icon: HandHeart },
 ];
 
 const professionalsItems: MegaItem[] = [
