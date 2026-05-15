@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
-import { Lock, ArrowRight, ArrowLeft, CheckCircle, Heart, Brain, Users, RotateCcw, Download, MessageCircle, Share2, Copy, ExternalLink, Mail } from 'lucide-react';
+import { Lock, ArrowRight, ArrowLeft, CheckCircle, Heart, Brain, Users, RotateCcw, Download, MessageCircle, Share2, Copy, ExternalLink, Mail, Volume2, Globe, RefreshCw } from 'lucide-react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -47,6 +47,55 @@ const WORKPLACE_OPTIONS = [
   { value: 5, label: "Always" },
 ];
 
+// === Wave 3: Multilingual + emoji-scale fallbacks ===
+const SCALE_EMOJI = ['😞', '😕', '😐', '🙂', '😊', '🤩'];
+
+type Lang = 'en' | 'lg' | 'sw';
+const LANGS: { code: Lang; label: string; native: string }[] = [
+  { code: 'en', label: 'English', native: 'English' },
+  { code: 'lg', label: 'Luganda', native: 'Luganda' },
+  { code: 'sw', label: 'Kiswahili', native: 'Kiswahili' },
+];
+
+const TRANSLATIONS: Record<Lang, { questions: string[]; who5Options: string[]; workplaceOptions: string[]; ui: Record<string, string> }> = {
+  en: {
+    questions: [...WHO5_QUESTIONS, ...WORKPLACE_QUESTIONS],
+    who5Options: WHO5_OPTIONS.map(o => o.label),
+    workplaceOptions: WORKPLACE_OPTIONS.map(o => o.label),
+    ui: { over_two_weeks: 'Over the past 2 weeks...', listen: 'Listen', question_label: 'Question', of: 'of', back: 'Back', next: 'Next', see_results: 'See My Results', community_mode: 'Community Wellbeing Check', community_subtitle: 'A facilitator-supported check-in. Your responses stay private.', completed_today: 'people have completed this check on this device today', reset_counter: 'Reset counter' },
+  },
+  lg: {
+    questions: [
+      "Nzizeemu essanyu n'okusanyuka",
+      "Nzizeemu emirembe n'okuwummula",
+      "Mbadde nnamaanyi era nga nkola",
+      "Nzuukuse nga mpummudde era nga muggya",
+      "Obulamu bwange obwa buli lunaku bujjuziddwa ebintu ebinsanyusa",
+      "Emirimu gyo musobola gukwatibwa otya?",
+      "Owulira ng'oyambibwa ku mulimu?",
+      "Emirundi emeka gy'owulira ng'omulimu gukuyitiridde?",
+    ],
+    who5Options: ["Tewali kiseera", "Ebiseera ebimu", "Wansi w'ekitundu", "Waggulu w'ekitundu", "Ebiseera ebisinga", "Ebiseera byonna"],
+    workplaceOptions: ["Tekiri kyonna", "Mu butono", "Oluusi", "Emirundi mingi", "Emirundi mingi nnyo", "Bulijjo"],
+    ui: { over_two_weeks: 'Mu wiiki bbiri eziyise...', listen: 'Wuliriza', question_label: 'Ekibuuzo', of: 'ku', back: 'Ddayo', next: 'Mu maaso', see_results: 'Laba ebivudemu', community_mode: 'Okukebera Obulamu obw\u2019Omutima mu Kitundu', community_subtitle: 'Ekikebera ekiyambibwa omuyigiriza. Eby\'oddamu byonna bya kyama.', completed_today: 'abantu bamaze okukola okukebera ku kyuma kino leero', reset_counter: 'Sazaamu omuwendo' },
+  },
+  sw: {
+    questions: [
+      "Nimejisikia mchangamfu na mwenye furaha",
+      "Nimejisikia mtulivu na nimepumzika",
+      "Nimejisikia mwenye nguvu na shughuli",
+      "Niliamka nikijisikia mpya na nimepumzika",
+      "Maisha yangu ya kila siku yamejaa mambo yanayonivutia",
+      "Mzigo wako wa kazi unawezekana kushughulikiwa kiasi gani?",
+      "Je, unahisi unapata msaada kazini?",
+      "Mara ngapi unahisi umelemewa kazini?",
+    ],
+    who5Options: ["Kamwe", "Mara chache", "Chini ya nusu ya wakati", "Zaidi ya nusu ya wakati", "Mara nyingi", "Wakati wote"],
+    workplaceOptions: ["Hapana kabisa", "Mara chache sana", "Mara nyingine", "Mara nyingi", "Mara nyingi sana", "Daima"],
+    ui: { over_two_weeks: 'Katika wiki 2 zilizopita...', listen: 'Sikiliza', question_label: 'Swali', of: 'kati ya', back: 'Rudi', next: 'Endelea', see_results: 'Ona Matokeo Yangu', community_mode: 'Ukaguzi wa Ustawi wa Jamii', community_subtitle: 'Ukaguzi unaosaidiwa na mwezeshaji. Majibu yako ni ya siri.', completed_today: 'watu wamekamilisha ukaguzi huu kwenye kifaa hiki leo', reset_counter: 'Anzisha upya hesabu' },
+  },
+};
+
 type Phase = 'entry' | 'welcome' | 'consent' | 'test' | 'results';
 
 interface ScreeningHistory {
@@ -83,6 +132,34 @@ const CorporateWellbeingCheck = () => {
   const [submitting, setSubmitting] = useState(false);
   const [selectedGender, setSelectedGender] = useState<string>('');
   const [consentChecked, setConsentChecked] = useState(false);
+
+  // Wave 3: language + community mode + facilitator counter
+  const isCommunityMode = searchParams.get('mode') === 'community';
+  const [lang, setLang] = useState<Lang>(() => {
+    const fromUrl = (searchParams.get('lang') || '').toLowerCase();
+    if (fromUrl === 'lg' || fromUrl === 'sw' || fromUrl === 'en') return fromUrl as Lang;
+    try { return (localStorage.getItem('isa_wb_lang') as Lang) || 'en'; } catch { return 'en'; }
+  });
+  useEffect(() => { try { localStorage.setItem('isa_wb_lang', lang); } catch {} }, [lang]);
+  const t = TRANSLATIONS[lang];
+
+  const COUNTER_KEY = `isa_facilitator_count_${new Date().toISOString().slice(0, 10)}`;
+  const [facilitatorCount, setFacilitatorCount] = useState<number>(() => {
+    if (!isCommunityMode) return 0;
+    try { return parseInt(localStorage.getItem(COUNTER_KEY) || '0', 10) || 0; } catch { return 0; }
+  });
+
+  const speakText = (text: string) => {
+    try {
+      if (!('speechSynthesis' in window)) { toast.info('Audio not supported on this device'); return; }
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(text);
+      // Best-effort voice mapping. Browsers may fall back to default.
+      utter.lang = lang === 'sw' ? 'sw-KE' : lang === 'lg' ? 'en-UG' : 'en-US';
+      utter.rate = 0.9;
+      window.speechSynthesis.speak(utter);
+    } catch (e) { console.warn('TTS failed', e); }
+  };
   // Results email state
   const [resultsEmail, setResultsEmail] = useState<string>('');
   const [sendingResultsEmail, setSendingResultsEmail] = useState(false);
@@ -259,6 +336,15 @@ const CorporateWellbeingCheck = () => {
       }
 
       setPhase('results');
+
+      // Wave 3: bump facilitator counter (community mode only)
+      if (isCommunityMode) {
+        try {
+          const next = facilitatorCount + 1;
+          localStorage.setItem(COUNTER_KEY, String(next));
+          setFacilitatorCount(next);
+        } catch {}
+      }
       // Pre-fill the results-email input with the address on file
       setResultsEmail(employee.email || '');
       setResultsEmailSent(true); // auto-send already fired above
@@ -305,8 +391,13 @@ const CorporateWellbeingCheck = () => {
                 <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
                   <Brain className="w-8 h-8 text-primary" />
                 </div>
-                <h1 className="text-2xl font-bold text-foreground mb-2">Corporate Wellbeing Check</h1>
-                <p className="text-muted-foreground mb-6">Enter your access code to begin.</p>
+                <h1 className="text-2xl font-bold text-foreground mb-2">{isCommunityMode ? t.ui.community_mode : 'Corporate Wellbeing Check'}</h1>
+                <p className="text-muted-foreground mb-6">{isCommunityMode ? t.ui.community_subtitle : 'Enter your access code to begin.'}</p>
+                {isCommunityMode && (
+                  <div className="mb-4 inline-flex items-center gap-2 bg-primary/10 text-primary text-xs px-3 py-1.5 rounded-full">
+                    <Users className="w-3.5 h-3.5" /> Facilitator mode • {facilitatorCount} completed today
+                  </div>
+                )}
                 <p className="text-sm text-muted-foreground mb-8 max-w-sm mx-auto">
                   Your individual responses are completely private. Your employer will only see anonymized company-wide results — no names, no personal data.
                 </p>
@@ -555,9 +646,30 @@ const CorporateWellbeingCheck = () => {
             {/* TEST PHASE */}
             {phase === 'test' && (
               <motion.div key="test" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="pt-8">
+                {/* Language selector + audio + community banner */}
+                <div className="mb-4 flex flex-wrap items-center gap-2 justify-between">
+                  <div className="inline-flex items-center gap-1 bg-muted/50 rounded-full p-1">
+                    <Globe className="w-3.5 h-3.5 text-muted-foreground ml-2" />
+                    {LANGS.map(l => (
+                      <button
+                        key={l.code}
+                        onClick={() => setLang(l.code)}
+                        className={`px-3 py-1 rounded-full text-xs font-medium transition ${lang === l.code ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-muted'}`}
+                      >
+                        {l.native}
+                      </button>
+                    ))}
+                  </div>
+                  {isCommunityMode && (
+                    <div className="text-xs text-primary inline-flex items-center gap-1.5 bg-primary/10 px-3 py-1 rounded-full">
+                      <Users className="w-3 h-3" /> {facilitatorCount} {t.ui.completed_today}
+                    </div>
+                  )}
+                </div>
+
                 <div className="mb-6">
                   <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
-                    <span>Question {currentQuestion + 1} of {ALL_QUESTIONS.length}</span>
+                    <span>{t.ui.question_label} {currentQuestion + 1} {t.ui.of} {ALL_QUESTIONS.length}</span>
                     <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-medium">{sectionLabel}</span>
                   </div>
                   <Progress value={progress} className="h-2 [&>div]:bg-primary" />
@@ -572,47 +684,74 @@ const CorporateWellbeingCheck = () => {
                     transition={{ duration: 0.25 }}
                   >
                     {currentQuestion < 5 && (
-                      <p className="text-xs text-muted-foreground mb-2">Over the past 2 weeks...</p>
+                      <p className="text-xs text-muted-foreground mb-2">{t.ui.over_two_weeks}</p>
                     )}
-                    <h2 className="text-xl sm:text-2xl font-bold text-foreground mb-8 leading-snug">
-                      "{ALL_QUESTIONS[currentQuestion]}"
-                    </h2>
+                    <div className="flex items-start justify-between gap-3 mb-6">
+                      <h2 className="text-xl sm:text-2xl font-bold text-foreground leading-snug flex-1">
+                        "{t.questions[currentQuestion]}"
+                      </h2>
+                      <button
+                        type="button"
+                        onClick={() => speakText(t.questions[currentQuestion])}
+                        className="shrink-0 p-2 rounded-full bg-primary/10 hover:bg-primary/20 text-primary transition"
+                        aria-label={t.ui.listen}
+                        title={t.ui.listen}
+                      >
+                        <Volume2 className="w-5 h-5" />
+                      </button>
+                    </div>
 
                     <div className="space-y-3">
-                      {currentOptions.map((option) => (
+                      {currentOptions.map((option, idx) => {
+                        const translatedLabel = currentQuestion < 5 ? t.who5Options[idx] : t.workplaceOptions[idx];
+                        return (
                         <button
                           key={option.value}
                           onClick={() => handleAnswer(option.value)}
-                          className={`w-full text-left p-4 rounded-xl border-2 transition-all duration-200 text-base font-medium
+                          className={`w-full flex items-center gap-3 text-left p-4 rounded-xl border-2 transition-all duration-200 text-base font-medium
                             ${answers[currentQuestion] === option.value
                               ? 'border-primary bg-primary/10 text-primary'
                               : 'border-border bg-card hover:border-muted-foreground/30 text-foreground hover:bg-muted'
                             }`}
                         >
-                          {option.label}
+                          <span className="text-2xl leading-none" aria-hidden>{SCALE_EMOJI[idx]}</span>
+                          <span className="flex-1">{translatedLabel}</span>
                         </button>
-                      ))}
+                        );
+                      })}
                     </div>
                   </motion.div>
                 </AnimatePresence>
 
                 <div className="flex items-center justify-between mt-8">
                   <Button variant="ghost" onClick={() => setCurrentQuestion(prev => Math.max(0, prev - 1))} disabled={currentQuestion === 0} className="text-muted-foreground">
-                    <ArrowLeft className="w-4 h-4 mr-1" /> Back
+                    <ArrowLeft className="w-4 h-4 mr-1" /> {t.ui.back}
                   </Button>
 
                   {isLastQuestion && allAnswered && (
                     <Button onClick={handleSubmit} disabled={submitting} className="rounded-full px-8">
-                      {submitting ? 'Submitting...' : 'See My Results'} <ArrowRight className="w-4 h-4 ml-1" />
+                      {submitting ? 'Submitting...' : t.ui.see_results} <ArrowRight className="w-4 h-4 ml-1" />
                     </Button>
                   )}
 
                   {!isLastQuestion && answers[currentQuestion] !== null && (
                     <Button variant="ghost" onClick={() => setCurrentQuestion(prev => prev + 1)} className="text-primary">
-                      Next <ArrowRight className="w-4 h-4 ml-1" />
+                      {t.ui.next} <ArrowRight className="w-4 h-4 ml-1" />
                     </Button>
                   )}
                 </div>
+
+                {isCommunityMode && (
+                  <div className="mt-4 text-center">
+                    <button
+                      type="button"
+                      onClick={() => { try { localStorage.setItem(COUNTER_KEY, '0'); } catch {} setFacilitatorCount(0); toast.success('Counter reset'); }}
+                      className="text-[11px] text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+                    >
+                      <RefreshCw className="w-3 h-3" /> {t.ui.reset_counter}
+                    </button>
+                  </div>
+                )}
               </motion.div>
             )}
 
