@@ -115,6 +115,13 @@ export async function generateCompanyReportPdf(d: CompanyReportData): Promise<Bl
   await drawHeader();
 
   const sec = (key: string) => !d.sections || d.sections[key] !== false;
+  const ov = (key: string) => {
+    const t = d.section_overrides?.[key];
+    return t && t.trim() ? t.trim() : null;
+  };
+  const renderOverride = async (text: string) => {
+    await para(text);
+  };
 
   // Title block
   pdf.setFont('helvetica', 'bold');
