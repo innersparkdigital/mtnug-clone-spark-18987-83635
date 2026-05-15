@@ -21,6 +21,8 @@ export interface CompanyReportData {
   observations?: string | null;
   recommended_services?: Array<{ name: string; description?: string | null; physical_price?: number | null; virtual_price?: number | null; per_employee_price?: number | null; unit_label?: string | null; reason?: string | null }>;
   business_impact?: { productivity_loss_fte?: number; lost_days_per_year?: number; estimated_annual_cost_ugx?: number; estimated_roi_ugx?: number } | null;
+  // Per-section consultant overrides — when set, replaces auto content for that section
+  section_overrides?: Record<string, string>;
 }
 
 const PRIMARY: [number, number, number] = [91, 106, 191]; // #5B6ABF
