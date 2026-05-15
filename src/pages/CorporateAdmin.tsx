@@ -1760,6 +1760,68 @@ const CorporateAdmin = () => {
                               const g = (e.gender || 'Unspecified').toString();
                               acc[g] = (acc[g] || 0) + 1; return acc;
                             }, {});
+                            const sectionDefaultText = (k: string): string => {
+                              switch (k) {
+                                case 'cover':
+                                  return `${selectedCompany.name} — Wellbeing Report (${period})\n` +
+                                    `Prepared by InnerSpark Africa${selectedCompany.contact_person ? ` for ${selectedCompany.contact_person}` : ''}.\n\n` +
+                                    `${completedScreenings} of ${totalEmployees} employees completed the WHO-5 + Workplace screening (${participationRate}% participation). Average wellbeing score: ${avgScore}%.`;
+                                case 'participation':
+                                  if (totalEmployees === 0) return '';
+                                  return `Total enrolled: ${totalEmployees} · Completed: ${completedScreenings} · Pending: ${totalEmployees - completedScreenings} · Rate: ${participationRate}%\n\n` +
+                                    `Gender breakdown (enrolled / completed):\n` +
+                                    Object.keys(genderCounts).map(g => `• ${g}: ${genderCounts[g]} enrolled / ${completedByGender[g] || 0} completed`).join('\n');
+                                case 'overall_wellbeing':
+                                  if (completedScreenings === 0) return '';
+                                  return `Company average wellbeing: ${avgScore}% (${avgScore >= 76 ? 'Healthy' : avgScore >= 51 ? 'At Risk' : 'Critical'})\n` +
+                                    `🟢 Healthy (76–100%): ${greenCount} (${Math.round((greenCount/completedScreenings)*100)}%)\n` +
+                                    `🟡 At Risk (51–75%): ${yellowCount} (${Math.round((yellowCount/completedScreenings)*100)}%)\n` +
+                                    `🔴 Critical (0–50%): ${redCount} (${Math.round((redCount/completedScreenings)*100)}%)\n` +
+                                    `🆘 Needs immediate support: ${needsSupportCount}`;
+                                case 'per_question':
+                                  if (completedScreenings === 0) return '';
+                                  return QUESTION_ORDER.map(q => {
+                                    const meta = QUESTION_INTELLIGENCE[q];
+                                    const avg = insight.questionAverages[q];
+                                    const status = insight.questionFlagStatus[q];
+                                    const dot = status === 'green' ? '🟢' : status === 'amber' ? '🟡' : '🔴';
+                                    return `${dot} ${meta.shortLabel} — ${avg}% (${meta.flagName})`;
+                                  }).join('\n');
+                                case 'triggered_clusters':
+                                  if (completedScreenings === 0) return '';
+                                  if (insight.triggeredClusters.length === 0) return '✅ No clinical clusters triggered. The team is not showing combined burnout, anxiety, or depression-risk patterns.';
+                                  return insight.triggeredClusters.map(cid => `${CLUSTER_INFO[cid].label}\n${CLUSTER_INFO[cid].interpretation}`).join('\n\n');
+                                case 'priority_areas':
+                                  if (completedScreenings === 0) return '';
+                                  if (insight.triggeredFlags.length === 0) return '✅ No priority concerns flagged. Sustain with quarterly check-ins.';
+                                  return insight.triggeredFlags.slice(0, 5).map((f, i) =>
+                                    `#${i+1} ${f.flagName} — ${f.affectedEmployees} employees affected (avg ${f.averagePct}%)\n${f.recommendation}\n→ Suggested: ${f.serviceLabel} · ~${f.productivityCostDaysPerMonth} productivity days/month at risk`
+                                  ).join('\n\n');
+                                case 'business_impact':
+                                  if (!businessImpact) return '';
+                                  return `Estimated annual cost of inaction: ${formatUGX(businessImpact.estimatedAnnualCostMin)}–${formatUGX(businessImpact.estimatedAnnualCostMax)} (mid: ${formatUGX(businessImpact.estimatedAnnualCostMidpoint)})\n` +
+                                    `Estimated productivity days lost / year: ${businessImpact.estimatedDaysLostMin}–${businessImpact.estimatedDaysLostMax}\n` +
+                                    `Estimated EAP investment: ${formatUGX(businessImpact.estimatedEAPCost)} · Projected ROI: ${businessImpact.estimatedROI}x\n` +
+                                    `Cost of inaction per month: ${formatUGX(businessImpact.costOfInactionPerMonth)}`;
+                                case 'recommended_services':
+                                  if (selectedServiceIds.size === 0) return '';
+                                  return serviceCatalog.filter(s => selectedServiceIds.has(s.id)).map(s => {
+                                    const price = [
+                                      s.physical_price ? `Physical: UGX ${Number(s.physical_price).toLocaleString()}` : '',
+                                      s.virtual_price ? `Virtual: UGX ${Number(s.virtual_price).toLocaleString()}` : '',
+                                      s.per_employee_price ? `UGX ${Number(s.per_employee_price).toLocaleString()} / ${s.unit_label || 'unit'}` : '',
+                                    ].filter(Boolean).join(' · ');
+                                    return `${s.name}${s.description ? `\n${s.description}` : ''}${price ? `\n${price}` : ''}${serviceReasons[s.id]?.trim() ? `\nWhy: ${serviceReasons[s.id]}` : ''}`;
+                                  }).join('\n\n');
+                                case 'action_plan':
+                                  if (insight.actionPlan.length === 0) return '';
+                                  return insight.actionPlan.map(w => `Week ${w.week} — ${w.title}\n${w.items.map(it => `• ${it}`).join('\n')}`).join('\n\n');
+                                case 'consultant_notes':
+                                  return observations || '';
+                                default:
+                                  return '';
+                              }
+                            };
                             const Section = ({ k, title, children }: { k: string; title: string; children: React.ReactNode }) => {
                               if (!reportSections[k]) return null;
                               const override = sectionOverrides[k];
@@ -1774,7 +1836,7 @@ const CorporateAdmin = () => {
                                     <div className="flex items-center gap-1">
                                       {!isEditing && (
                                         <Button size="sm" variant="ghost" className="h-7 px-2 text-xs"
-                                          onClick={() => { setEditDraft(override ?? ''); setEditingSection(k); }}>
+                                          onClick={() => { setEditDraft(override ?? sectionDefaultText(k)); setEditingSection(k); }}>
                                           ✎ Edit
                                         </Button>
                                       )}
