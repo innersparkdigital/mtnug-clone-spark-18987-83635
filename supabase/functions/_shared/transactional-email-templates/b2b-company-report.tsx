@@ -59,6 +59,8 @@ interface Props {
   triggered_flags_detailed?: Array<{ flag_name: string; question_text: string; affected_employees: number; average_pct: number; recommendation: string; service_label: string; productivity_cost_days_per_month: number }>
   action_plan?: Array<{ week: number; title: string; items: string[] }>
   business_impact_extended?: { annual_cost_min?: number; annual_cost_mid?: number; annual_cost_max?: number; lost_days_min?: number; lost_days_max?: number; eap_investment?: number; projected_roi_x?: number; monthly_cost?: number }
+  // Per-section consultant overrides — when set, replaces auto content for that section
+  section_overrides?: Record<string, string>
 }
 
 const Email = ({
@@ -88,9 +90,19 @@ const Email = ({
   triggered_flags_detailed,
   action_plan,
   business_impact_extended,
+  section_overrides,
 }: Props) => {
   const period = reporting_period || new Date().toLocaleDateString('en-UG', { year: 'numeric', month: 'long' })
   const sec = (key: string) => !sections || sections[key] !== false
+  const ov = (key: string) => {
+    const t = section_overrides?.[key]
+    return t && t.trim() ? t.trim() : null
+  }
+  const OverrideBlock = ({ text }: { text: string }) => (
+    <Section style={listBox}>
+      <Text style={{ ...listItem, whiteSpace: 'pre-wrap' as const }}>{text}</Text>
+    </Section>
+  )
   const fmtUgx = (n?: number) => `UGX ${Math.round(n || 0).toLocaleString('en-UG')}`
   const dotFor = (s: string) => s === 'green' ? '🟢' : s === 'amber' ? '🟡' : '🔴'
 
