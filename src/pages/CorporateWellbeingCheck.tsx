@@ -12,6 +12,7 @@ import logo from '@/assets/innerspark-logo.png';
 import { Checkbox } from '@/components/ui/checkbox';
 import EmployeeResultsBreakdown from '@/components/wellbeing/EmployeeResultsBreakdown';
 import { computeAnswers, computeAggregate, AnswerMap } from '@/lib/wellbeingIntelligence';
+import { CampaignBrandingHeader } from '@/components/wellbeing/CampaignBrandingHeader';
 
 const WHO5_QUESTIONS = [
   "I have felt cheerful and in good spirits",
@@ -135,6 +136,7 @@ const CorporateWellbeingCheck = () => {
 
   // Wave 3: language + community mode + facilitator counter
   const isCommunityMode = searchParams.get('mode') === 'community';
+  const campaignSlug = searchParams.get('slug') || '';
   const [lang, setLang] = useState<Lang>(() => {
     const fromUrl = (searchParams.get('lang') || '').toLowerCase();
     if (fromUrl === 'lg' || fromUrl === 'sw' || fromUrl === 'en') return fromUrl as Lang;
