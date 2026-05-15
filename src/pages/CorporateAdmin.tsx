@@ -1338,6 +1338,19 @@ const CorporateAdmin = () => {
                             toast.error('Add a contact email to this company first (Manage tab → edit company)');
                             return;
                           }
+                          // Section-completion checks: warn if a toggled-on section has no underlying data
+                          const missingMsgs: string[] = [];
+                          if (reportSections.participation && totalEmployees === 0) missingMsgs.push('Participation (no employees enrolled)');
+                          if (reportSections.overall_wellbeing && completedScreenings === 0) missingMsgs.push('Overall Wellbeing (no completed screenings)');
+                          if (reportSections.per_question && completedScreenings === 0) missingMsgs.push('Per-Question Averages (no screenings)');
+                          if (reportSections.recommended_services && selectedServiceIds.size === 0) missingMsgs.push('Recommended Services (none selected)');
+                          if (reportSections.consultant_notes && !observations.trim()) missingMsgs.push('Consultant Observations (empty)');
+                          if (missingMsgs.length > 0) {
+                            const ok = window.confirm(
+                              `These selected sections have no data and will appear empty in the email:\n\n• ${missingMsgs.join('\n• ')}\n\nSend anyway?`
+                            );
+                            if (!ok) return;
+                          }
                           setSendingReport(true);
                           try {
                             const period = new Date().toLocaleDateString('en-UG', { year: 'numeric', month: 'long' });
@@ -1431,6 +1444,7 @@ const CorporateAdmin = () => {
                               if (reportId) {
                                 await supabase.from('corporate_reports').update({ sent_at: new Date().toISOString() }).eq('id', reportId);
                               }
+                              fetchPastReports(selectedCompany.id);
                             }
                           } catch (e: any) {
                             console.error('Send report exception:', e);
