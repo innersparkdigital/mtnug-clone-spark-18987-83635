@@ -115,6 +115,7 @@ import WellbeingCheck from "./pages/WellbeingCheck";
 import Trainings from "./pages/Trainings";
 import CorporateWellbeingCheck from "./pages/CorporateWellbeingCheck";
 import CorporateAdmin from "./pages/CorporateAdmin";
+import CampaignLanding from "./pages/CampaignLanding";
 import Unsubscribe from "./pages/Unsubscribe";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentCanceled from "./pages/PaymentCanceled";
