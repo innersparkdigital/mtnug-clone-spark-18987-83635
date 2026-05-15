@@ -529,6 +529,16 @@ const CorporateAdmin = () => {
                     <div><Label>Contact Email</Label><Input type="email" value={companyForm.contact_email} onChange={e => setCompanyForm(p => ({ ...p, contact_email: e.target.value }))} /></div>
                     <div><Label>Contact Phone</Label><Input type="tel" value={companyForm.contact_phone} onChange={e => setCompanyForm(p => ({ ...p, contact_phone: e.target.value }))} /></div>
                     <div><Label>Location</Label><Input value={companyForm.location} onChange={e => setCompanyForm(p => ({ ...p, location: e.target.value }))} placeholder="e.g. Kampala, Uganda" /></div>
+                    <div className="space-y-1">
+                      <Label>Company Context (optional but recommended)</Label>
+                      <Textarea
+                        rows={5}
+                        value={companyForm.context_notes}
+                        onChange={e => setCompanyForm(p => ({ ...p, context_notes: e.target.value }))}
+                        placeholder="What does the company do? Workforce profile (e.g. 70% factory operators on 3 shifts, 20% drivers, 10% admin). Known pain points HR has flagged (e.g. night-shift fatigue, recent layoffs, low pay grievances). Existing wellbeing efforts. Goals (reduce turnover, absenteeism, burnout). Cultural / language notes. Used by AI to tailor the report — the more specific, the less generic the recommendations."
+                      />
+                      <p className="text-[11px] text-muted-foreground">This is shown to consultants and fed into AI when drafting observations &amp; the action plan.</p>
+                    </div>
                     <Button onClick={createCompany} className="w-full">Create Company</Button>
                   </div>
                 </DialogContent>
