@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
 import { supabase } from '@/integrations/supabase/client';
 import { CAMPAIGN_COPY, type CampaignLang } from '@/lib/campaignTranslations';
 import { ScreeningAnxietyFAQ } from '@/components/wellbeing/ScreeningAnxietyFAQ';
@@ -137,12 +136,6 @@ export default function CampaignLanding() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Helmet>
-        <title>{`${campaign.name} — Wellbeing Check`}</title>
-        <meta name="description" content={subtext.slice(0, 160)} />
-        <meta name="robots" content="noindex,nofollow" />
-      </Helmet>
-
       {/* ZONE 1 — Hero */}
       <header style={{ backgroundColor: SPARK_BLUE }} className="px-5 py-5">
         <div className="max-w-md mx-auto">
@@ -274,7 +267,6 @@ export default function CampaignLanding() {
 function BrandedPanel({ title, body, accentColor }: { title: string; body: string; accentColor: string }) {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-6">
-      <Helmet><meta name="robots" content="noindex" /></Helmet>
       <div className="max-w-md w-full">
         <header style={{ backgroundColor: SPARK_BLUE }} className="px-5 py-5 rounded-t-lg">
           <img
