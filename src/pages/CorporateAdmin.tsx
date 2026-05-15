@@ -71,6 +71,12 @@ interface Screening {
 const COMPANIES_PER_PAGE = 10;
 const EMPLOYEES_PER_PAGE = 15;
 
+// Overall wellbeing % across all 8 questions (WHO-5 + 3 workplace items).
+// Max raw score = 8 questions × 5 = 40. This is the same number that drives
+// the wellbeing_category badge, so the displayed % and the badge always match.
+const overallPct = (s: { total_score?: number | null } | null | undefined): number =>
+  s && typeof s.total_score === 'number' ? Math.round((s.total_score / 40) * 100) : 0;
+
 const CorporateAdmin = () => {
   const { user } = useAuth();
   const { isAdmin, loading: roleLoading } = useUserRole();
