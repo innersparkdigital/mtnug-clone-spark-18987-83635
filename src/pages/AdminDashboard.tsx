@@ -27,6 +27,7 @@ import CrisisReviewQueueTab from '@/components/admin/CrisisReviewQueueTab';
 import ChatLeadsTab from '@/components/admin/ChatLeadsTab';
 import WhispersTab from '@/components/admin/WhispersTab';
 import CrisisAlertsTab from '@/components/admin/CrisisAlertsTab';
+import TherapistsTab from '@/components/admin/TherapistsTab';
 import { 
   BookOpen, 
   GraduationCap, 
@@ -50,7 +51,8 @@ import {
   MessageSquare,
   AlertOctagon,
   UserPlus,
-  Mic
+  Mic,
+  Stethoscope as StethoscopeIcon
 } from 'lucide-react';
 import {
   ChartContainer,
@@ -270,6 +272,12 @@ const AdminDashboard = () => {
               <TabsTrigger value="crisis-alerts" className="gap-2">
                 <AlertOctagon className="h-4 w-4" />
                 Crisis Alerts
+              </TabsTrigger>
+            )}
+            {isAdmin && (
+              <TabsTrigger value="therapists" className="gap-2">
+                <StethoscopeIcon className="h-4 w-4" />
+                Therapists
               </TabsTrigger>
             )}
           </TabsList>
@@ -658,6 +666,11 @@ const AdminDashboard = () => {
           {isAdmin && (
             <TabsContent value="crisis-alerts">
               <CrisisAlertsTab />
+            </TabsContent>
+          )}
+          {isAdmin && (
+            <TabsContent value="therapists">
+              <TherapistsTab />
             </TabsContent>
           )}
         </Tabs>
