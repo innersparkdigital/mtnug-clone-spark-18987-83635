@@ -1255,9 +1255,9 @@ const CorporateAdmin = () => {
                                     completed: completedScreenings,
                                     completionRate: participationRate,
                                     avgWho5: avgScore,
-                                    high: insight.distribution?.green ?? 0,
-                                    moderate: insight.distribution?.amber ?? 0,
-                                    low: insight.distribution?.red ?? 0,
+                                    high: insight.riskDistribution?.green ?? 0,
+                                    moderate: insight.riskDistribution?.amber ?? 0,
+                                    low: insight.riskDistribution?.red ?? 0,
                                     needsSupport: needsSupportCount,
                                   };
                                   const { data, error } = await supabase.functions.invoke('draft-company-report', {
