@@ -1393,6 +1393,7 @@ const CorporateAdmin = () => {
                               observations: observations.trim() || null,
                               recommended_services: recommended_services_pdf,
                               business_impact: businessImpact as any,
+                              section_overrides: sectionOverrides,
                             });
                             const url = URL.createObjectURL(blob);
                             const a = document.createElement('a');
