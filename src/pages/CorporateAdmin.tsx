@@ -37,6 +37,7 @@ interface Company {
   contact_email: string | null;
   contact_phone: string | null;
   location: string | null;
+  context_notes: string | null;
   created_at: string;
 }
 
@@ -81,7 +82,7 @@ const CorporateAdmin = () => {
 
   const [showCreateCompany, setShowCreateCompany] = useState(false);
   const [showAddEmployee, setShowAddEmployee] = useState(false);
-  const [companyForm, setCompanyForm] = useState({ name: '', industry: '', employee_count: '', contact_person: '', contact_email: '', contact_phone: '', location: '' });
+  const [companyForm, setCompanyForm] = useState({ name: '', industry: '', employee_count: '', contact_person: '', contact_email: '', contact_phone: '', location: '', context_notes: '' });
   const [employeeForm, setEmployeeForm] = useState({ name: '', email: '', phone: '', gender: '' });
   const [csvFile, setCsvFile] = useState<File | null>(null);
   const [allEmployees, setAllEmployees] = useState<Employee[]>([]);
@@ -220,12 +221,13 @@ const CorporateAdmin = () => {
       contact_email: companyForm.contact_email || null,
       contact_phone: companyForm.contact_phone || null,
       location: companyForm.location || null,
+      context_notes: companyForm.context_notes.trim() || null,
       created_by: user?.id,
     });
     if (error) { toast.error('Failed to create company'); return; }
     toast.success('Company created');
     setShowCreateCompany(false);
-    setCompanyForm({ name: '', industry: '', employee_count: '', contact_person: '', contact_email: '', contact_phone: '', location: '' });
+    setCompanyForm({ name: '', industry: '', employee_count: '', contact_person: '', contact_email: '', contact_phone: '', location: '', context_notes: '' });
     fetchCompanies();
   };
 
