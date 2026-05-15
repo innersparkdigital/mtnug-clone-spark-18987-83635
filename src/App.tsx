@@ -115,6 +115,7 @@ import WellbeingCheck from "./pages/WellbeingCheck";
 import Trainings from "./pages/Trainings";
 import CorporateWellbeingCheck from "./pages/CorporateWellbeingCheck";
 import CorporateAdmin from "./pages/CorporateAdmin";
+import CampaignLanding from "./pages/CampaignLanding";
 import Unsubscribe from "./pages/Unsubscribe";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentCanceled from "./pages/PaymentCanceled";
@@ -176,6 +177,7 @@ const App = () => (
             <Route path="/events-training/trainings" element={<Trainings />} />
             <Route path="/corporate-wellbeing-check" element={<CorporateWellbeingCheck />} />
             <Route path="/corporate-admin" element={<CorporateAdmin />} />
+            <Route path="/check/:slug" element={<CampaignLanding />} />
             <Route path="/donate-therapy" element={<DonateTherapy />} />
             <Route path="/wellness-reports" element={<WellnessReports />} />
             <Route path="/meditations" element={<Meditations />} />
