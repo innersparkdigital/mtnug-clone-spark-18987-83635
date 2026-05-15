@@ -103,6 +103,11 @@ const CorporateAdmin = () => {
   const [serviceReasons, setServiceReasons] = useState<Record<string, string>>({});
   const [serviceInterests, setServiceInterests] = useState<any[]>([]);
 
+  // Report history (sent / drafts) for the selected company
+  const [pastReports, setPastReports] = useState<any[]>([]);
+  const [resendingId, setResendingId] = useState<string | null>(null);
+  const [previewOpen, setPreviewOpen] = useState(false);
+
   // 10-section report builder
   const REPORT_SECTIONS: { key: string; title: string; description: string }[] = [
     { key: 'cover', title: '1. Cover & Summary', description: 'Company name, period, total participants, headline wellbeing score' },
@@ -154,6 +159,7 @@ const CorporateAdmin = () => {
     if (selectedCompany) {
       fetchEmployees(selectedCompany.id);
       fetchScreenings(selectedCompany.id);
+      fetchPastReports(selectedCompany.id);
       setEmployeePage(1);
       setEmployeeSearch('');
     }
@@ -192,6 +198,16 @@ const CorporateAdmin = () => {
   const fetchScreenings = async (companyId: string) => {
     const { data } = await supabase.from('corporate_screenings').select('*').eq('company_id', companyId).order('completed_at', { ascending: false });
     setScreenings((data as any[]) || []);
+  };
+
+  const fetchPastReports = async (companyId: string) => {
+    const { data } = await supabase
+      .from('corporate_reports')
+      .select('*')
+      .eq('company_id', companyId)
+      .order('created_at', { ascending: false })
+      .limit(20);
+    setPastReports((data as any[]) || []);
   };
 
   const createCompany = async () => {
@@ -1259,10 +1275,27 @@ const CorporateAdmin = () => {
                         </div>
 
                         <div className="flex flex-wrap gap-2">
+                        <Button variant="secondary" onClick={() => setPreviewOpen(true)}>
+                          <FileText className="w-4 h-4 mr-2" /> Preview Report
+                        </Button>
                         <Button variant="outline" disabled={downloadingPdf} onClick={async () => {
                           setDownloadingPdf(true);
                           try {
                             const period = new Date().toLocaleDateString('en-UG', { year: 'numeric', month: 'long' });
+                            const businessImpact = includeBusinessImpact && completedScreenings > 0
+                              ? calculateBusinessImpact(
+                                  { healthy: greenCount, at_risk: yellowCount, critical: redCount },
+                                  baselineSalary,
+                                )
+                              : null;
+                            const recommended_services_pdf = serviceCatalog
+                              .filter(s => selectedServiceIds.has(s.id))
+                              .map(s => ({
+                                name: s.name, description: s.description,
+                                physical_price: s.physical_price, virtual_price: s.virtual_price,
+                                per_employee_price: s.per_employee_price, unit_label: s.unit_label,
+                                reason: serviceReasons[s.id]?.trim() || undefined,
+                              }));
                             const blob = await generateCompanyReportPdf({
                               contact_name: selectedCompany.contact_person,
                               company_name: selectedCompany.name,
@@ -1278,6 +1311,10 @@ const CorporateAdmin = () => {
                               moderate_wellbeing_pct: completedScreenings > 0 ? Math.round((yellowCount / completedScreenings) * 100) : 0,
                               low_wellbeing_pct: completedScreenings > 0 ? Math.round((redCount / completedScreenings) * 100) : 0,
                               needs_support_count: needsSupportCount,
+                              sections: reportSections,
+                              observations: observations.trim() || null,
+                              recommended_services: recommended_services_pdf,
+                              business_impact: businessImpact as any,
                             });
                             const url = URL.createObjectURL(blob);
                             const a = document.createElement('a');
@@ -1300,6 +1337,19 @@ const CorporateAdmin = () => {
                           if (!selectedCompany?.contact_email) {
                             toast.error('Add a contact email to this company first (Manage tab → edit company)');
                             return;
+                          }
+                          // Section-completion checks: warn if a toggled-on section has no underlying data
+                          const missingMsgs: string[] = [];
+                          if (reportSections.participation && totalEmployees === 0) missingMsgs.push('Participation (no employees enrolled)');
+                          if (reportSections.overall_wellbeing && completedScreenings === 0) missingMsgs.push('Overall Wellbeing (no completed screenings)');
+                          if (reportSections.per_question && completedScreenings === 0) missingMsgs.push('Per-Question Averages (no screenings)');
+                          if (reportSections.recommended_services && selectedServiceIds.size === 0) missingMsgs.push('Recommended Services (none selected)');
+                          if (reportSections.consultant_notes && !observations.trim()) missingMsgs.push('Consultant Observations (empty)');
+                          if (missingMsgs.length > 0) {
+                            const ok = window.confirm(
+                              `These selected sections have no data and will appear empty in the email:\n\n• ${missingMsgs.join('\n• ')}\n\nSend anyway?`
+                            );
+                            if (!ok) return;
                           }
                           setSendingReport(true);
                           try {
@@ -1394,6 +1444,7 @@ const CorporateAdmin = () => {
                               if (reportId) {
                                 await supabase.from('corporate_reports').update({ sent_at: new Date().toISOString() }).eq('id', reportId);
                               }
+                              fetchPastReports(selectedCompany.id);
                             }
                           } catch (e: any) {
                             console.error('Send report exception:', e);
@@ -1406,6 +1457,154 @@ const CorporateAdmin = () => {
                           {sendingReport ? 'Sending…' : 'Send Report to Company'}
                         </Button>
                         </div>
+
+                      {/* Report History — Sent / Resend */}
+                      <div className="border-t pt-6 mt-2">
+                        <h3 className="font-semibold mb-2 flex items-center gap-2">
+                          <History className="w-4 h-4" /> Report History
+                          <Badge variant="secondary" className="text-[10px]">{pastReports.length}</Badge>
+                        </h3>
+                        {pastReports.length === 0 ? (
+                          <p className="text-xs text-muted-foreground">No reports generated for this company yet.</p>
+                        ) : (
+                          <div className="space-y-2">
+                            {pastReports.map((r) => (
+                              <div key={r.id} className="flex items-center justify-between p-3 border rounded-md text-sm">
+                                <div className="min-w-0">
+                                  <div className="font-medium">{r.period_label || 'Untitled period'}</div>
+                                  <div className="text-xs text-muted-foreground">
+                                    {r.sent_at
+                                      ? `Sent ${new Date(r.sent_at).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' })} → ${r.sent_to_email || '—'}`
+                                      : `Draft created ${new Date(r.created_at).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' })}`}
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <Badge variant={r.sent_at ? 'default' : 'secondary'}>{r.sent_at ? 'Sent' : 'Draft'}</Badge>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    disabled={resendingId === r.id || !selectedCompany?.contact_email}
+                                    onClick={async () => {
+                                      if (!selectedCompany?.contact_email) { toast.error('Company has no contact email'); return; }
+                                      setResendingId(r.id);
+                                      try {
+                                        const recIds: string[] = r.recommended_service_ids || [];
+                                        const notes: Record<string, string> = r.service_notes || {};
+                                        const recommended_services = serviceCatalog.filter(s => recIds.includes(s.id)).map(s => ({
+                                          id: s.id, name: s.name, description: s.description,
+                                          physical_price: s.physical_price, virtual_price: s.virtual_price,
+                                          per_employee_price: s.per_employee_price, unit_label: s.unit_label,
+                                          reason: notes[s.id] || undefined,
+                                        }));
+                                        const { error: emailErr } = await supabase.functions.invoke('send-transactional-email', {
+                                          body: {
+                                            templateName: 'b2b-company-report',
+                                            recipientEmail: selectedCompany.contact_email,
+                                            idempotencyKey: `b2b-report-${selectedCompany.id}-resend-${r.id}-${Date.now()}`,
+                                            templateData: {
+                                              contact_name: selectedCompany.contact_person || undefined,
+                                              company_name: selectedCompany.name,
+                                              reporting_period: r.period_label || '',
+                                              total_employees: totalEmployees,
+                                              total_completed: completedScreenings,
+                                              completion_rate: participationRate,
+                                              avg_who5: avgScore,
+                                              high_count: greenCount,
+                                              moderate_count: yellowCount,
+                                              low_count: redCount,
+                                              high_wellbeing_pct: completedScreenings > 0 ? Math.round((greenCount / completedScreenings) * 100) : 0,
+                                              moderate_wellbeing_pct: completedScreenings > 0 ? Math.round((yellowCount / completedScreenings) * 100) : 0,
+                                              low_wellbeing_pct: completedScreenings > 0 ? Math.round((redCount / completedScreenings) * 100) : 0,
+                                              needs_support_count: needsSupportCount,
+                                              consultant_observations: r.observations || undefined,
+                                              recommended_services: recommended_services.length > 0 ? recommended_services : undefined,
+                                            },
+                                          },
+                                        });
+                                        if (emailErr) { toast.error('Resend failed: ' + emailErr.message); }
+                                        else {
+                                          await supabase.from('corporate_reports').update({ sent_at: new Date().toISOString(), status: 'sent', sent_to_email: selectedCompany.contact_email }).eq('id', r.id);
+                                          toast.success('Report resent');
+                                          fetchPastReports(selectedCompany.id);
+                                        }
+                                      } catch (e: any) {
+                                        toast.error('Resend error: ' + (e?.message || 'unknown'));
+                                      } finally {
+                                        setResendingId(null);
+                                      }
+                                    }}
+                                  >
+                                    {resendingId === r.id ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Mail className="w-3 h-3 mr-1" />}
+                                    {r.sent_at ? 'Resend' : 'Send'}
+                                  </Button>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Preview Dialog */}
+                      <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+                        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+                          <DialogHeader>
+                            <DialogTitle>Report Preview — {selectedCompany.name}</DialogTitle>
+                          </DialogHeader>
+                          <div className="space-y-4 text-sm">
+                            <div className="p-3 bg-muted/50 rounded-md">
+                              <div className="font-medium mb-1">Recipient</div>
+                              <div className="text-muted-foreground">{selectedCompany.contact_email || <span className="text-destructive">No contact email set</span>}</div>
+                            </div>
+                            <div>
+                              <div className="font-medium mb-2">Sections that will be included</div>
+                              <ul className="space-y-1">
+                                {REPORT_SECTIONS.map(s => {
+                                  const on = !!reportSections[s.key];
+                                  let warn = '';
+                                  if (on) {
+                                    if (s.key === 'participation' && totalEmployees === 0) warn = 'no employees';
+                                    else if ((s.key === 'overall_wellbeing' || s.key === 'per_question' || s.key === 'triggered_clusters' || s.key === 'priority_areas') && completedScreenings === 0) warn = 'no screenings yet';
+                                    else if (s.key === 'recommended_services' && selectedServiceIds.size === 0) warn = 'no services selected';
+                                    else if (s.key === 'consultant_notes' && !observations.trim()) warn = 'observations empty';
+                                  }
+                                  return (
+                                    <li key={s.key} className={`flex items-center justify-between p-2 rounded ${on ? 'bg-primary/5' : 'bg-muted/30 opacity-60'}`}>
+                                      <span>{on ? '✓' : '○'} {s.title}</span>
+                                      {warn && <Badge variant="destructive" className="text-[10px]">{warn}</Badge>}
+                                    </li>
+                                  );
+                                })}
+                              </ul>
+                            </div>
+                            <div className="grid grid-cols-2 gap-3">
+                              <div className="p-3 border rounded">
+                                <div className="text-xs text-muted-foreground">Participation</div>
+                                <div className="font-semibold">{completedScreenings}/{totalEmployees} ({participationRate}%)</div>
+                              </div>
+                              <div className="p-3 border rounded">
+                                <div className="text-xs text-muted-foreground">Avg WHO-5</div>
+                                <div className="font-semibold">{avgScore}%</div>
+                              </div>
+                            </div>
+                            {observations.trim() && (
+                              <div>
+                                <div className="font-medium mb-1">Consultant Observations</div>
+                                <p className="text-muted-foreground whitespace-pre-wrap p-3 bg-muted/30 rounded">{observations}</p>
+                              </div>
+                            )}
+                            {selectedServiceIds.size > 0 && (
+                              <div>
+                                <div className="font-medium mb-1">Recommended Services ({selectedServiceIds.size})</div>
+                                <ul className="text-muted-foreground space-y-1">
+                                  {serviceCatalog.filter(s => selectedServiceIds.has(s.id)).map(s => (
+                                    <li key={s.id}>• {s.name}{serviceReasons[s.id] ? ` — ${serviceReasons[s.id]}` : ''}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+                          </div>
+                        </DialogContent>
+                      </Dialog>
                       </>
                     )}
                   </CardContent>
