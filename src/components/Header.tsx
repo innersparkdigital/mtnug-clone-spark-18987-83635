@@ -185,10 +185,6 @@ const Header = () => {
 
             {/* Right cluster */}
             <div className="flex items-center gap-2 md:gap-3">
-              <div className="hidden md:block">
-                <LanguageSelector />
-              </div>
-
               {user && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -242,11 +238,6 @@ const Header = () => {
               <MobileMegaSection title="For Individuals" items={individualsItems} onNavigate={closeMobile} />
               <MobileMegaSection title="For Business" items={businessItems} onNavigate={closeMobile} />
               <MobileMegaSection title="For Professionals" items={professionalsItems} onNavigate={closeMobile} />
-
-              <div className="py-3 flex items-center justify-between border-b border-border">
-                <span className="text-sm font-medium text-muted-foreground">Language</span>
-                <LanguageSelector />
-              </div>
 
               {user ? (
                 <div className="py-3 space-y-2">
