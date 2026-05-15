@@ -100,6 +100,7 @@ const CorporateAdmin = () => {
   // Manual report builder
   const [serviceCatalog, setServiceCatalog] = useState<any[]>([]);
   const [observations, setObservations] = useState('');
+  const [draftingObs, setDraftingObs] = useState(false);
   const [selectedServiceIds, setSelectedServiceIds] = useState<Set<string>>(new Set());
   const [serviceReasons, setServiceReasons] = useState<Record<string, string>>({});
   const [serviceInterests, setServiceInterests] = useState<any[]>([]);
