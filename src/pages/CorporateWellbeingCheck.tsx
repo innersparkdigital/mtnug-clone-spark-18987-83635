@@ -391,8 +391,13 @@ const CorporateWellbeingCheck = () => {
                 <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
                   <Brain className="w-8 h-8 text-primary" />
                 </div>
-                <h1 className="text-2xl font-bold text-foreground mb-2">Corporate Wellbeing Check</h1>
-                <p className="text-muted-foreground mb-6">Enter your access code to begin.</p>
+                <h1 className="text-2xl font-bold text-foreground mb-2">{isCommunityMode ? t.ui.community_mode : 'Corporate Wellbeing Check'}</h1>
+                <p className="text-muted-foreground mb-6">{isCommunityMode ? t.ui.community_subtitle : 'Enter your access code to begin.'}</p>
+                {isCommunityMode && (
+                  <div className="mb-4 inline-flex items-center gap-2 bg-primary/10 text-primary text-xs px-3 py-1.5 rounded-full">
+                    <Users className="w-3.5 h-3.5" /> Facilitator mode • {facilitatorCount} completed today
+                  </div>
+                )}
                 <p className="text-sm text-muted-foreground mb-8 max-w-sm mx-auto">
                   Your individual responses are completely private. Your employer will only see anonymized company-wide results — no names, no personal data.
                 </p>
