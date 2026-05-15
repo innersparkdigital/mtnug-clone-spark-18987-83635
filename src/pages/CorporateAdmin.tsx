@@ -32,6 +32,7 @@ import { calculateBusinessImpact, formatUGX } from '@/lib/businessImpact';
 interface Company {
   id: string;
   name: string;
+  slug?: string | null;
   industry: string | null;
   employee_count: number | null;
   contact_person: string | null;
@@ -253,7 +254,8 @@ const CorporateAdmin = () => {
 
     // Send branded invitation email with access code + secure URL (non-blocking)
     if (inserted) {
-      const secureUrl = `${baseUrl}/corporate-wellbeing-check?token=${(inserted as any).secure_token}`;
+      const slugParam = selectedCompany.slug ? `&slug=${encodeURIComponent(selectedCompany.slug)}` : '';
+      const secureUrl = `${baseUrl}/corporate-wellbeing-check?token=${(inserted as any).secure_token}${slugParam}`;
       supabase.functions.invoke('send-transactional-email', {
         body: {
           templateName: 'b2b-employee-confirmation',
@@ -448,6 +450,10 @@ const CorporateAdmin = () => {
   };
 
   const baseUrl = window.location.origin;
+  const employeeCheckUrl = (token: string) => {
+    const slugParam = selectedCompany?.slug ? `&slug=${encodeURIComponent(selectedCompany.slug)}` : '';
+    return `${baseUrl}/corporate-wellbeing-check?token=${token}${slugParam}`;
+  };
 
   if (roleLoading || loading) {
     return <div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" /></div>;
@@ -1056,7 +1062,7 @@ const CorporateAdmin = () => {
                                 </td>
                                 <td className="p-3">
                                   <div className="flex items-center gap-0.5">
-                                    <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => { navigator.clipboard.writeText(`${baseUrl}/corporate-wellbeing-check?token=${emp.secure_token}`); toast.success('Link copied!'); }} title="Copy link">
+                                    <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => { navigator.clipboard.writeText(employeeCheckUrl(emp.secure_token)); toast.success('Link copied!'); }} title="Copy link">
                                       <ClipboardList className="w-3 h-3" />
                                     </Button>
                                     {emp.screening_completed && screening && emp.email && (

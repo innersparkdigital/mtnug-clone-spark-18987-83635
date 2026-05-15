@@ -137,6 +137,8 @@ const CorporateWellbeingCheck = () => {
   // Wave 3: language + community mode + facilitator counter
   const isCommunityMode = searchParams.get('mode') === 'community';
   const campaignSlug = searchParams.get('slug') || '';
+  const [employeeCampaignSlug, setEmployeeCampaignSlug] = useState('');
+  const activeCampaignSlug = campaignSlug || employeeCampaignSlug;
   const [lang, setLang] = useState<Lang>(() => {
     const fromUrl = (searchParams.get('lang') || '').toLowerCase();
     if (fromUrl === 'lg' || fromUrl === 'sw' || fromUrl === 'en') return fromUrl as Lang;
@@ -190,9 +192,11 @@ const CorporateWellbeingCheck = () => {
 
       // Fetch company name and screening history in parallel
       const [companyRes, historyRes] = await Promise.all([
-        supabase.from('corporate_companies').select('name').eq('id', data.company_id).single(),
+        supabase.from('corporate_companies').select('name, slug').eq('id', data.company_id).single(),
         supabase.from('corporate_screenings').select('id, completed_at, total_score, who5_percentage, wellbeing_category').eq('employee_id', data.id).order('completed_at', { ascending: false }),
       ]);
+
+      setEmployeeCampaignSlug(companyRes.data?.slug || '');
 
       setEmployee({
         id: data.id,
@@ -240,9 +244,11 @@ const CorporateWellbeingCheck = () => {
       setAccessCode(cleaned);
 
       const [companyRes, historyRes] = await Promise.all([
-        supabase.from('corporate_companies').select('name').eq('id', data.company_id).single(),
+        supabase.from('corporate_companies').select('name, slug').eq('id', data.company_id).single(),
         supabase.from('corporate_screenings').select('id, completed_at, total_score, who5_percentage, wellbeing_category').eq('employee_id', data.id).order('completed_at', { ascending: false }),
       ]);
+
+      setEmployeeCampaignSlug(companyRes.data?.slug || '');
 
       setEmployee({
         id: data.id,
@@ -386,7 +392,7 @@ const CorporateWellbeingCheck = () => {
 
       <div className="min-h-screen bg-gradient-to-b from-blue-50/60 via-white to-blue-50/40">
         {/* Standard header (hidden when arriving via a branded campaign link — the campaign hero takes over) */}
-        {!campaignSlug && (
+        {!activeCampaignSlug && (
           <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-blue-100">
             <div className="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
               <Link to="/" className="flex items-center gap-2">
@@ -401,14 +407,15 @@ const CorporateWellbeingCheck = () => {
           </header>
         )}
 
-        <main className={`max-w-lg mx-auto px-4 pb-16 ${campaignSlug ? 'pt-0' : 'pt-20'}`}>
-          {campaignSlug && (phase === 'entry' || phase === 'welcome') && (
+        <main className={`pb-16 ${activeCampaignSlug ? 'pt-0' : 'max-w-lg mx-auto px-4 pt-20'}`}>
+          {activeCampaignSlug && (phase === 'entry' || phase === 'welcome') && (
             <CampaignBrandingHeader
-              slug={campaignSlug}
+              slug={activeCampaignSlug}
               language={lang as 'en' | 'lg' | 'sw'}
               onLanguageChange={(lng) => setLang(lng)}
             />
           )}
+          <div className="max-w-lg mx-auto px-4">
           <AnimatePresence mode="wait">
             {/* ENTRY PHASE */}
             {phase === 'entry' && (
@@ -1088,6 +1095,7 @@ const CorporateWellbeingCheck = () => {
               </motion.div>
             )}
           </AnimatePresence>
+          </div>
         </main>
       </div>
     </>
