@@ -2112,6 +2112,87 @@ export type Database = {
         }
         Relationships: []
       }
+      therapists: {
+        Row: {
+          availability: string[]
+          bio: string | null
+          created_at: string
+          created_by: string | null
+          email: string
+          full_name: string
+          id: string
+          languages: string[]
+          license_number: string | null
+          license_status: Database["public"]["Enums"]["therapist_license_status"]
+          licensing_body: string | null
+          phone: string
+          photo_url: string | null
+          platform_status: Database["public"]["Enums"]["therapist_platform_status"]
+          qualification: string | null
+          rating: number
+          removed_at: string | null
+          session_count: number
+          session_types: string[]
+          specialisations: string[]
+          suspension_reason: string | null
+          suspension_review_date: string | null
+          updated_at: string
+          years_experience: number | null
+        }
+        Insert: {
+          availability?: string[]
+          bio?: string | null
+          created_at?: string
+          created_by?: string | null
+          email: string
+          full_name: string
+          id?: string
+          languages?: string[]
+          license_number?: string | null
+          license_status?: Database["public"]["Enums"]["therapist_license_status"]
+          licensing_body?: string | null
+          phone: string
+          photo_url?: string | null
+          platform_status?: Database["public"]["Enums"]["therapist_platform_status"]
+          qualification?: string | null
+          rating?: number
+          removed_at?: string | null
+          session_count?: number
+          session_types?: string[]
+          specialisations?: string[]
+          suspension_reason?: string | null
+          suspension_review_date?: string | null
+          updated_at?: string
+          years_experience?: number | null
+        }
+        Update: {
+          availability?: string[]
+          bio?: string | null
+          created_at?: string
+          created_by?: string | null
+          email?: string
+          full_name?: string
+          id?: string
+          languages?: string[]
+          license_number?: string | null
+          license_status?: Database["public"]["Enums"]["therapist_license_status"]
+          licensing_body?: string | null
+          phone?: string
+          photo_url?: string | null
+          platform_status?: Database["public"]["Enums"]["therapist_platform_status"]
+          qualification?: string | null
+          rating?: number
+          removed_at?: string | null
+          session_count?: number
+          session_types?: string[]
+          specialisations?: string[]
+          suspension_reason?: string | null
+          suspension_review_date?: string | null
+          updated_at?: string
+          years_experience?: number | null
+        }
+        Relationships: []
+      }
       training_registrations: {
         Row: {
           created_at: string
@@ -2502,6 +2583,8 @@ export type Database = {
         | "finance_admin"
         | "operations_admin"
         | "content_admin"
+      therapist_license_status: "verified" | "pending" | "suspended"
+      therapist_platform_status: "active" | "inactive" | "suspended" | "removed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -2637,6 +2720,8 @@ export const Constants = {
         "operations_admin",
         "content_admin",
       ],
+      therapist_license_status: ["verified", "pending", "suspended"],
+      therapist_platform_status: ["active", "inactive", "suspended", "removed"],
     },
   },
 } as const
