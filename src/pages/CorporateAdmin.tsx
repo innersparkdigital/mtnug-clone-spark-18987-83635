@@ -335,7 +335,7 @@ const CorporateAdmin = () => {
   const uniqueScreenedEmployees = new Set(screenings.map(s => s.employee_id)).size;
   const completedScreenings = screenings.length;
   const participationRate = totalEmployees > 0 ? Math.round((uniqueScreenedEmployees / totalEmployees) * 100) : 0;
-  const avgScore = completedScreenings > 0 ? Math.round(screenings.reduce((s, x) => s + x.who5_percentage, 0) / completedScreenings) : 0;
+  const avgScore = completedScreenings > 0 ? Math.round(screenings.reduce((s, x) => s + overallPct(x), 0) / completedScreenings) : 0;
   // Count by latest screening per employee only
   const latestScreenings = Array.from(employeeScreeningMap.values());
   const greenCount = latestScreenings.filter(s => s.wellbeing_category === 'green').length;
@@ -419,13 +419,13 @@ const CorporateAdmin = () => {
 
   const exportToCSV = () => {
     if (!selectedCompany) return;
-    const headers = ['Name', 'Email', 'Phone', 'Gender', 'Access Code', 'Screening Status', 'Date Taken', 'WHO-5 Score', 'WHO-5 %', 'Wellbeing Category'];
+    const headers = ['Name', 'Email', 'Phone', 'Gender', 'Access Code', 'Screening Status', 'Date Taken', 'Total Score', 'Overall %', 'Wellbeing Category'];
     const rows = sortedEmployees.map(emp => {
       const screening = employeeScreeningMap.get(emp.id);
       return [emp.name, emp.email, emp.phone || '', emp.gender || '', emp.access_code,
         emp.screening_completed ? 'Completed' : emp.invitation_sent ? 'Invited' : 'Pending',
         screening ? new Date(screening.completed_at).toLocaleDateString('en-GB') : '',
-        screening ? screening.who5_score : '', screening ? screening.who5_percentage + '%' : '',
+        screening ? screening.total_score : '', screening ? overallPct(screening) + '%' : '',
         screening ? screening.wellbeing_category : '',
       ].map(v => `"${v}"`).join(',');
     });
@@ -623,7 +623,7 @@ const CorporateAdmin = () => {
                       const gGreen = allScreenings.filter(s => s.wellbeing_category === 'green').length;
                       const gYellow = allScreenings.filter(s => s.wellbeing_category === 'yellow').length;
                       const gRed = allScreenings.filter(s => s.wellbeing_category === 'red').length;
-                      const avgWellbeing = Math.round(allScreenings.reduce((s, x) => s + x.who5_percentage, 0) / total);
+                      const avgWellbeing = Math.round(allScreenings.reduce((s, x) => s + overallPct(x), 0) / total);
                       return (
                         <div className="space-y-3">
                           <div className="text-center mb-2">
@@ -660,7 +660,7 @@ const CorporateAdmin = () => {
                       const g = emp?.gender ? emp.gender.charAt(0).toUpperCase() + emp.gender.slice(1).toLowerCase() : 'Not Specified';
                       if (!genderMap[g]) genderMap[g] = { total: 0, score: 0, red: 0, yellow: 0, green: 0 };
                       genderMap[g].total++;
-                      genderMap[g].score += s.who5_percentage;
+                      genderMap[g].score += overallPct(s);
                       if (s.wellbeing_category === 'red') genderMap[g].red++;
                       else if (s.wellbeing_category === 'yellow') genderMap[g].yellow++;
                       else genderMap[g].green++;
@@ -741,7 +741,7 @@ const CorporateAdmin = () => {
                         ) : paginatedCompanies.map((c, idx) => {
                           const compEmps = allEmployees.filter(e => e.company_id === c.id);
                           const compScrs = allScreenings.filter(s => s.company_id === c.id);
-                          const avg = compScrs.length > 0 ? Math.round(compScrs.reduce((s, x) => s + x.who5_percentage, 0) / compScrs.length) : 0;
+                          const avg = compScrs.length > 0 ? Math.round(compScrs.reduce((s, x) => s + overallPct(x), 0) / compScrs.length) : 0;
                           const rowNum = (companyPage - 1) * COMPANIES_PER_PAGE + idx + 1;
                           return (
                             <tr key={c.id} className="border-b hover:bg-muted/30 cursor-pointer transition-colors" onClick={() => { setSelectedCompany(c); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
@@ -1062,7 +1062,7 @@ const CorporateAdmin = () => {
                                 <td className="p-3">
                                   {screening ? (
                                     <span className={`text-xs font-bold ${isRed ? 'text-red-600' : isYellow ? 'text-yellow-600' : 'text-green-600'}`}>
-                                      {screening.who5_percentage}% {isRed ? '🔴' : isYellow ? '🟡' : '🟢'}
+                                      {overallPct(screening)}% {isRed ? '🔴' : isYellow ? '🟡' : '🟢'}
                                     </span>
                                   ) : <span className="text-xs text-muted-foreground">—</span>}
                                 </td>
@@ -1136,7 +1136,7 @@ const CorporateAdmin = () => {
                                               answers={ans}
                                               completedAt={latest.completed_at}
                                               attemptNumber={history.length}
-                                              previousOverallPct={prev ? prev.who5_percentage : null}
+                                              previousOverallPct={prev ? overallPct(prev) : null}
                                               employeeLabel={`${emp.name} — Latest screening breakdown`}
                                             />
                                           </div>
@@ -1150,7 +1150,7 @@ const CorporateAdmin = () => {
                                         {(employeeScreeningHistory.get(emp.id) || []).map((s, i) => {
                                           const cat = s.wellbeing_category;
                                           const prevScreening = (employeeScreeningHistory.get(emp.id) || [])[i + 1];
-                                          const trend = prevScreening ? s.who5_percentage - prevScreening.who5_percentage : null;
+                                          const trend = prevScreening ? overallPct(s) - overallPct(prevScreening) : null;
                                           return (
                                             <div key={s.id} className="flex items-center gap-3 text-xs py-1.5 px-3 rounded-md bg-background border">
                                               <span className="font-medium text-muted-foreground w-6">#{(employeeScreeningHistory.get(emp.id) || []).length - i}</span>
@@ -1161,7 +1161,7 @@ const CorporateAdmin = () => {
                                                 {new Date(s.completed_at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
                                               </span>
                                               <span className={`font-bold min-w-[50px] ${cat === 'red' ? 'text-red-600' : cat === 'yellow' ? 'text-yellow-600' : 'text-green-600'}`}>
-                                                {s.who5_percentage}%
+                                                {overallPct(s)}%
                                               </span>
                                               <Badge variant={cat === 'red' ? 'destructive' : cat === 'yellow' ? 'secondary' : 'default'} className="text-[9px] px-1.5 py-0">
                                                 {cat === 'red' ? 'Critical' : cat === 'yellow' ? 'At Risk' : 'Good'}
