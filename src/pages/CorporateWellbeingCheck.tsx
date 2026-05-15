@@ -385,21 +385,23 @@ const CorporateWellbeingCheck = () => {
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-b from-blue-50/60 via-white to-blue-50/40">
-        {/* Header */}
-        <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-blue-100">
-          <div className="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
-            <Link to="/" className="flex items-center gap-2">
-              <img src={logo} alt="InnerSpark Africa" className="h-8" />
-              <span className="font-bold text-lg text-foreground">InnerSpark</span>
-            </Link>
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <Lock className="w-3 h-3" />
-              Confidential
+        {/* Standard header (hidden when arriving via a branded campaign link — the campaign hero takes over) */}
+        {!campaignSlug && (
+          <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-blue-100">
+            <div className="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
+              <Link to="/" className="flex items-center gap-2">
+                <img src={logo} alt="InnerSpark Africa" className="h-8" />
+                <span className="font-bold text-lg text-foreground">InnerSpark</span>
+              </Link>
+              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <Lock className="w-3 h-3" />
+                Confidential
+              </div>
             </div>
-          </div>
-        </header>
+          </header>
+        )}
 
-        <main className="max-w-lg mx-auto px-4 pt-20 pb-16">
+        <main className={`max-w-lg mx-auto px-4 pb-16 ${campaignSlug ? 'pt-0' : 'pt-20'}`}>
           {campaignSlug && (phase === 'entry' || phase === 'welcome') && (
             <CampaignBrandingHeader
               slug={campaignSlug}
