@@ -50,6 +50,15 @@ interface Props {
     track_url?: string
     reason?: string
   }>
+  // Section toggles — sections are rendered only when set to true (default true if omitted)
+  sections?: Record<string, boolean>
+  // Rich data layer — mirrors the Report Preview shown to consultants
+  gender_breakdown?: Array<{ label: string; enrolled: number; completed: number }>
+  question_averages?: Array<{ short_label: string; domain: string; avg: number; status: 'green' | 'amber' | 'red'; flag_name: string }>
+  triggered_clusters_detailed?: Array<{ label: string; interpretation: string }>
+  triggered_flags_detailed?: Array<{ flag_name: string; question_text: string; affected_employees: number; average_pct: number; recommendation: string; service_label: string; productivity_cost_days_per_month: number }>
+  action_plan?: Array<{ week: number; title: string; items: string[] }>
+  business_impact_extended?: { annual_cost_min?: number; annual_cost_mid?: number; annual_cost_max?: number; lost_days_min?: number; lost_days_max?: number; eap_investment?: number; projected_roi_x?: number; monthly_cost?: number }
 }
 
 const Email = ({
@@ -72,8 +81,18 @@ const Email = ({
   consultant_observations,
   recommended_services,
   alternative_services,
+  sections,
+  gender_breakdown,
+  question_averages,
+  triggered_clusters_detailed,
+  triggered_flags_detailed,
+  action_plan,
+  business_impact_extended,
 }: Props) => {
   const period = reporting_period || new Date().toLocaleDateString('en-UG', { year: 'numeric', month: 'long' })
+  const sec = (key: string) => !sections || sections[key] !== false
+  const fmtUgx = (n?: number) => `UGX ${Math.round(n || 0).toLocaleString('en-UG')}`
+  const dotFor = (s: string) => s === 'green' ? '🟢' : s === 'amber' ? '🟡' : '🔴'
 
   // Risk-driven narrative
   const isCritical = low_wellbeing_pct >= 30 || avg_who5 < 50
@@ -144,6 +163,8 @@ const Email = ({
           </Section>
 
           {/* PRODUCTIVITY IMPACT */}
+          {sec('business_impact') && (
+          <>
           <Heading as="h3" style={h3}>📉 Productivity & business impact</Heading>
           <Section style={impactBox}>
             <Text style={impactText}>
@@ -160,11 +181,99 @@ const Email = ({
                 <Text style={impactLabel}>Estimated lost productive days / year</Text>
               </Column>
             </Row>
+            {business_impact_extended && (
+              <>
+                <Hr style={{ borderColor: '#fed7aa', margin: '12px 0' }} />
+                <Text style={impactText}>
+                  <strong>Estimated annual cost of inaction:</strong> {fmtUgx(business_impact_extended.annual_cost_min)} – {fmtUgx(business_impact_extended.annual_cost_max)} (mid: {fmtUgx(business_impact_extended.annual_cost_mid)})<br />
+                  <strong>Estimated productivity days lost / year:</strong> {business_impact_extended.lost_days_min ?? 0} – {business_impact_extended.lost_days_max ?? 0}<br />
+                  <strong>Estimated EAP investment:</strong> {fmtUgx(business_impact_extended.eap_investment)} · <strong>Projected ROI:</strong> {(business_impact_extended.projected_roi_x ?? 0).toFixed(1)}x<br />
+                  <strong>Cost of inaction per month:</strong> {fmtUgx(business_impact_extended.monthly_cost)}
+                </Text>
+              </>
+            )}
             <Text style={impactNote}>
               Every UGX 1 invested in employee mental health returns an estimated UGX 4 in
               productivity, retention and reduced sick leave (WHO ROI study).
             </Text>
           </Section>
+          </>
+          )}
+
+          {/* 2. PARTICIPATION & DEMOGRAPHICS */}
+          {sec('participation') && gender_breakdown && gender_breakdown.length > 0 && (
+            <>
+              <Heading as="h3" style={h3}>👥 Participation & demographics</Heading>
+              <Section style={listBox}>
+                <Text style={listItem}>Total enrolled: <strong>{total_employees}</strong> · Completed: <strong>{total_completed}</strong> · Pending: <strong>{Math.max(0, (total_employees || 0) - (total_completed || 0))}</strong> · Rate: <strong>{completion_rate}%</strong></Text>
+                <Text style={{ ...listItem, fontWeight: 700 as const, marginTop: '8px' }}>Gender breakdown (enrolled / completed)</Text>
+                {gender_breakdown.map((g) => (
+                  <Text key={g.label} style={listItem}>• {g.label}: {g.enrolled} enrolled / {g.completed} completed</Text>
+                ))}
+              </Section>
+            </>
+          )}
+
+          {/* 4. PER-QUESTION AVERAGES */}
+          {sec('per_question') && question_averages && question_averages.length > 0 && (
+            <>
+              <Heading as="h3" style={h3}>📋 Per-question averages</Heading>
+              <Section style={listBox}>
+                {question_averages.map((q) => (
+                  <Text key={q.short_label} style={listItem}>
+                    {dotFor(q.status)} <strong>{q.short_label}</strong> — {q.avg}% <span style={{ fontSize: '11px', color: '#888' }}>({q.flag_name})</span>
+                  </Text>
+                ))}
+              </Section>
+            </>
+          )}
+
+          {/* 5. TRIGGERED CLUSTERS */}
+          {sec('triggered_clusters') && triggered_clusters_detailed && (
+            <>
+              <Heading as="h3" style={h3}>🧩 Triggered clusters</Heading>
+              {triggered_clusters_detailed.length === 0 ? (
+                <Section style={{ ...listBox, backgroundColor: '#ecfdf5' }}>
+                  <Text style={{ ...listItem, color: '#065f46' }}>✅ No clinical clusters triggered. The team is not showing combined burnout, anxiety, or depression-risk patterns.</Text>
+                </Section>
+              ) : (
+                triggered_clusters_detailed.map((c) => (
+                  <Section key={c.label} style={{ ...listBox, backgroundColor: '#fffbeb', border: '1px solid #fde68a' }}>
+                    <Text style={{ ...listItem, fontWeight: 700 as const, color: '#92400e' }}>{c.label}</Text>
+                    <Text style={{ ...listItem, fontSize: '13px' }}>{c.interpretation}</Text>
+                  </Section>
+                ))
+              )}
+            </>
+          )}
+
+          {/* 6. PRIORITY FOCUS AREAS */}
+          {sec('priority_focus') && triggered_flags_detailed && triggered_flags_detailed.length > 0 && (
+            <>
+              <Heading as="h3" style={h3}>🎯 Priority focus areas</Heading>
+              {triggered_flags_detailed.map((f, i) => (
+                <Section key={f.flag_name} style={{ ...listBox, marginBottom: '10px' }}>
+                  <Text style={{ ...listItem, fontWeight: 700 as const }}>#{i + 1} {f.flag_name} — {f.affected_employees} employees affected (avg {f.average_pct}%)</Text>
+                  {f.question_text && <Text style={{ ...listItem, fontSize: '12px', color: '#666' }}>{f.question_text}</Text>}
+                  <Text style={{ ...listItem, fontSize: '13px' }}>{f.recommendation}</Text>
+                  <Text style={{ ...listItem, fontSize: '12px', color: PRIMARY_COLOR }}>→ Suggested: {f.service_label} · ~{f.productivity_cost_days_per_month} productivity days/month at risk</Text>
+                </Section>
+              ))}
+            </>
+          )}
+
+          {/* 9. 30-DAY ACTION PLAN */}
+          {sec('action_plan') && action_plan && action_plan.length > 0 && (
+            <>
+              <Heading as="h3" style={h3}>🗓️ 30-day action plan</Heading>
+              {action_plan.map((wk) => (
+                <Section key={wk.week} style={{ ...listBox, marginBottom: '8px' }}>
+                  <Text style={{ ...listItem, fontWeight: 700 as const }}>Week {wk.week} — {wk.title}</Text>
+                  {wk.items.map((it, i) => <Text key={i} style={{ ...listItem, fontSize: '13px' }}>• {it}</Text>)}
+                </Section>
+              ))}
+            </>
+          )}
 
           <Section style={{ textAlign: 'center' as const, margin: '20px 0' }}>
             <Button style={ctaSecondary} href={dashboard_url}>Open the corporate dashboard</Button>
