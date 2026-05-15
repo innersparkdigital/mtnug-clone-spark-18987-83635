@@ -103,6 +103,11 @@ const CorporateAdmin = () => {
   const [serviceReasons, setServiceReasons] = useState<Record<string, string>>({});
   const [serviceInterests, setServiceInterests] = useState<any[]>([]);
 
+  // Report history (sent / drafts) for the selected company
+  const [pastReports, setPastReports] = useState<any[]>([]);
+  const [resendingId, setResendingId] = useState<string | null>(null);
+  const [previewOpen, setPreviewOpen] = useState(false);
+
   // 10-section report builder
   const REPORT_SECTIONS: { key: string; title: string; description: string }[] = [
     { key: 'cover', title: '1. Cover & Summary', description: 'Company name, period, total participants, headline wellbeing score' },
@@ -154,6 +159,7 @@ const CorporateAdmin = () => {
     if (selectedCompany) {
       fetchEmployees(selectedCompany.id);
       fetchScreenings(selectedCompany.id);
+      fetchPastReports(selectedCompany.id);
       setEmployeePage(1);
       setEmployeeSearch('');
     }
@@ -192,6 +198,16 @@ const CorporateAdmin = () => {
   const fetchScreenings = async (companyId: string) => {
     const { data } = await supabase.from('corporate_screenings').select('*').eq('company_id', companyId).order('completed_at', { ascending: false });
     setScreenings((data as any[]) || []);
+  };
+
+  const fetchPastReports = async (companyId: string) => {
+    const { data } = await supabase
+      .from('corporate_reports')
+      .select('*')
+      .eq('company_id', companyId)
+      .order('created_at', { ascending: false })
+      .limit(20);
+    setPastReports((data as any[]) || []);
   };
 
   const createCompany = async () => {
