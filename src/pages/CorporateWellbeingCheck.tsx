@@ -400,6 +400,13 @@ const CorporateWellbeingCheck = () => {
         </header>
 
         <main className="max-w-lg mx-auto px-4 pt-20 pb-16">
+          {campaignSlug && (phase === 'entry' || phase === 'welcome') && (
+            <CampaignBrandingHeader
+              slug={campaignSlug}
+              language={lang as 'en' | 'lg' | 'sw'}
+              onLanguageChange={(lng) => setLang(lng)}
+            />
+          )}
           <AnimatePresence mode="wait">
             {/* ENTRY PHASE */}
             {phase === 'entry' && (
