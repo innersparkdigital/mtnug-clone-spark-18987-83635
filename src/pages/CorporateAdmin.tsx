@@ -37,6 +37,7 @@ interface Company {
   contact_email: string | null;
   contact_phone: string | null;
   location: string | null;
+  context_notes: string | null;
   created_at: string;
 }
 
@@ -81,7 +82,7 @@ const CorporateAdmin = () => {
 
   const [showCreateCompany, setShowCreateCompany] = useState(false);
   const [showAddEmployee, setShowAddEmployee] = useState(false);
-  const [companyForm, setCompanyForm] = useState({ name: '', industry: '', employee_count: '', contact_person: '', contact_email: '', contact_phone: '', location: '' });
+  const [companyForm, setCompanyForm] = useState({ name: '', industry: '', employee_count: '', contact_person: '', contact_email: '', contact_phone: '', location: '', context_notes: '' });
   const [employeeForm, setEmployeeForm] = useState({ name: '', email: '', phone: '', gender: '' });
   const [csvFile, setCsvFile] = useState<File | null>(null);
   const [allEmployees, setAllEmployees] = useState<Employee[]>([]);
@@ -99,6 +100,7 @@ const CorporateAdmin = () => {
   // Manual report builder
   const [serviceCatalog, setServiceCatalog] = useState<any[]>([]);
   const [observations, setObservations] = useState('');
+  const [draftingObs, setDraftingObs] = useState(false);
   const [selectedServiceIds, setSelectedServiceIds] = useState<Set<string>>(new Set());
   const [serviceReasons, setServiceReasons] = useState<Record<string, string>>({});
   const [serviceInterests, setServiceInterests] = useState<any[]>([]);
@@ -220,12 +222,13 @@ const CorporateAdmin = () => {
       contact_email: companyForm.contact_email || null,
       contact_phone: companyForm.contact_phone || null,
       location: companyForm.location || null,
+      context_notes: companyForm.context_notes.trim() || null,
       created_by: user?.id,
     });
     if (error) { toast.error('Failed to create company'); return; }
     toast.success('Company created');
     setShowCreateCompany(false);
-    setCompanyForm({ name: '', industry: '', employee_count: '', contact_person: '', contact_email: '', contact_phone: '', location: '' });
+    setCompanyForm({ name: '', industry: '', employee_count: '', contact_person: '', contact_email: '', contact_phone: '', location: '', context_notes: '' });
     fetchCompanies();
   };
 
@@ -500,6 +503,12 @@ const CorporateAdmin = () => {
                 <p className="text-sm text-muted-foreground">
                   {selectedCompany ? `${selectedCompany.industry || 'Company'} • ${totalEmployees} employees` : 'Manage companies, employees, and screening analytics'}
                 </p>
+                {selectedCompany?.context_notes && (
+                  <details className="mt-2 max-w-3xl">
+                    <summary className="text-xs text-primary cursor-pointer select-none">📋 Company context (used by AI to tailor reports)</summary>
+                    <p className="text-xs text-foreground/80 whitespace-pre-wrap bg-muted/40 rounded-md p-3 mt-1 leading-relaxed">{selectedCompany.context_notes}</p>
+                  </details>
+                )}
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -527,6 +536,16 @@ const CorporateAdmin = () => {
                     <div><Label>Contact Email</Label><Input type="email" value={companyForm.contact_email} onChange={e => setCompanyForm(p => ({ ...p, contact_email: e.target.value }))} /></div>
                     <div><Label>Contact Phone</Label><Input type="tel" value={companyForm.contact_phone} onChange={e => setCompanyForm(p => ({ ...p, contact_phone: e.target.value }))} /></div>
                     <div><Label>Location</Label><Input value={companyForm.location} onChange={e => setCompanyForm(p => ({ ...p, location: e.target.value }))} placeholder="e.g. Kampala, Uganda" /></div>
+                    <div className="space-y-1">
+                      <Label>Company Context (optional but recommended)</Label>
+                      <Textarea
+                        rows={5}
+                        value={companyForm.context_notes}
+                        onChange={e => setCompanyForm(p => ({ ...p, context_notes: e.target.value }))}
+                        placeholder="What does the company do? Workforce profile (e.g. 70% factory operators on 3 shifts, 20% drivers, 10% admin). Known pain points HR has flagged (e.g. night-shift fatigue, recent layoffs, low pay grievances). Existing wellbeing efforts. Goals (reduce turnover, absenteeism, burnout). Cultural / language notes. Used by AI to tailor the report — the more specific, the less generic the recommendations."
+                      />
+                      <p className="text-[11px] text-muted-foreground">This is shown to consultants and fed into AI when drafting observations &amp; the action plan.</p>
+                    </div>
                     <Button onClick={createCompany} className="w-full">Create Company</Button>
                   </div>
                 </DialogContent>
@@ -1220,7 +1239,62 @@ const CorporateAdmin = () => {
                           <p className="text-xs text-muted-foreground mb-4">Add your own observations and pick services to recommend. These appear inside the email sent to the company HR alongside the automated report. When HR clicks a service, you'll be alerted by email.</p>
 
                           <div className="space-y-2 mb-4">
+                          <div className="flex items-center justify-between gap-2 flex-wrap">
                             <Label htmlFor="observations">Consultant's Observations</Label>
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="outline"
+                              disabled={draftingObs}
+                              onClick={async () => {
+                                if (!selectedCompany) return;
+                                if (!selectedCompany.context_notes?.trim()) {
+                                  const proceed = window.confirm("This company has no Company Context saved (added at company creation). The AI draft will be generic without it. Continue anyway?");
+                                  if (!proceed) return;
+                                }
+                                setDraftingObs(true);
+                                try {
+                                  const records = screenings.map((s: any) => answerMapFromLegacy(s)).filter(Boolean) as any[];
+                                  const insight = aggregateCompany(records);
+                                  const summary = {
+                                    totalEmployees,
+                                    completed: completedScreenings,
+                                    completionRate: participationRate,
+                                    avgWho5: avgScore,
+                                    high: insight.riskDistribution?.healthy ?? 0,
+                                    moderate: insight.riskDistribution?.at_risk ?? 0,
+                                    low: insight.riskDistribution?.critical ?? 0,
+                                    needsSupport: needsSupportCount,
+                                  };
+                                  const { data, error } = await supabase.functions.invoke('draft-company-report', {
+                                    body: {
+                                      companyName: selectedCompany.name,
+                                      industry: selectedCompany.industry,
+                                      employeeCount: selectedCompany.employee_count,
+                                      contextNotes: selectedCompany.context_notes,
+                                      summary,
+                                      triggeredFlags: insight.triggeredFlags,
+                                      questionAverages: insight.questionAverages,
+                                      triggeredClusters: insight.triggeredClusters,
+                                    },
+                                  });
+                                  if (error) throw error;
+                                  if ((data as any)?.error) throw new Error((data as any).error);
+                                  const draft = (data as any)?.observations || '';
+                                  if (!draft) { toast.error('AI returned an empty draft'); return; }
+                                  if (observations.trim() && !window.confirm('Replace your current observations with the AI draft?')) return;
+                                  setObservations(draft);
+                                  toast.success('AI draft inserted — review and edit before sending');
+                                } catch (e: any) {
+                                  toast.error(e?.message || 'Failed to draft observations');
+                                } finally {
+                                  setDraftingObs(false);
+                                }
+                              }}
+                            >
+                              {draftingObs ? 'Drafting…' : '✨ AI Draft from company context'}
+                            </Button>
+                          </div>
                             <Textarea
                               id="observations"
                               placeholder="e.g. The team shows high stress around Q3 deadlines. Several employees flagged anxiety and sleep issues. We recommend immediate manager training and a 1:1 therapy access window for critical cases…"
