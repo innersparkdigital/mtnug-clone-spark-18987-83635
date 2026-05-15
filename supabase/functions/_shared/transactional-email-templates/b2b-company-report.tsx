@@ -133,18 +133,24 @@ const Email = ({
           </Section>
 
           <Heading style={h1}>{contact_name ? `Hello ${contact_name},` : 'Hello,'}</Heading>
-          <Text style={text}>
-            Below is the confidential aggregated wellbeing snapshot for <strong>{company_name}</strong> ({period}).
-            All figures are anonymised — no individual employee can be identified.
-          </Text>
-
-          {/* RISK BANNER */}
-          <Section style={{ ...riskBox, backgroundColor: riskBanner.bg, borderLeft: `4px solid ${riskBanner.color}` }}>
-            <Text style={{ ...riskTitle, color: riskBanner.color }}>{riskBanner.label}</Text>
-            <Text style={riskText}>{riskBanner.text}</Text>
-          </Section>
+          {ov('cover') ? (
+            <OverrideBlock text={ov('cover')!} />
+          ) : (
+            <>
+              <Text style={text}>
+                Below is the confidential aggregated wellbeing snapshot for <strong>{company_name}</strong> ({period}).
+                All figures are anonymised — no individual employee can be identified.
+              </Text>
+              <Section style={{ ...riskBox, backgroundColor: riskBanner.bg, borderLeft: `4px solid ${riskBanner.color}` }}>
+                <Text style={{ ...riskTitle, color: riskBanner.color }}>{riskBanner.label}</Text>
+                <Text style={riskText}>{riskBanner.text}</Text>
+              </Section>
+            </>
+          )}
 
           <Heading as="h3" style={h3}>📊 At a glance</Heading>
+          {ov('overall_wellbeing') ? <OverrideBlock text={ov('overall_wellbeing')!} /> : (
+          <>
           <Section style={statsGrid}>
             <Row>
               <Column style={statCol}><Text style={statValue}>{total_completed}/{total_employees}</Text><Text style={statLabel}>Completed</Text></Column>
@@ -173,11 +179,14 @@ const Email = ({
               </Column>
             </Row>
           </Section>
+          </>
+          )}
 
           {/* PRODUCTIVITY IMPACT */}
           {sec('business_impact') && (
           <>
           <Heading as="h3" style={h3}>📉 Productivity & business impact</Heading>
+          {ov('business_impact') ? <OverrideBlock text={ov('business_impact')!} /> : (
           <Section style={impactBox}>
             <Text style={impactText}>
               Research from WHO and Deloitte shows that untreated mental health challenges reduce
@@ -209,13 +218,15 @@ const Email = ({
               productivity, retention and reduced sick leave (WHO ROI study).
             </Text>
           </Section>
+          )}
           </>
           )}
 
           {/* 2. PARTICIPATION & DEMOGRAPHICS */}
-          {sec('participation') && gender_breakdown && gender_breakdown.length > 0 && (
+          {sec('participation') && (ov('participation') || (gender_breakdown && gender_breakdown.length > 0)) && (
             <>
               <Heading as="h3" style={h3}>👥 Participation & demographics</Heading>
+              {ov('participation') ? <OverrideBlock text={ov('participation')!} /> : (
               <Section style={listBox}>
                 <Text style={listItem}>Total enrolled: <strong>{total_employees}</strong> · Completed: <strong>{total_completed}</strong> · Pending: <strong>{Math.max(0, (total_employees || 0) - (total_completed || 0))}</strong> · Rate: <strong>{completion_rate}%</strong></Text>
                 <Text style={{ ...listItem, fontWeight: 700 as const, marginTop: '8px' }}>Gender breakdown (enrolled / completed)</Text>
@@ -223,13 +234,15 @@ const Email = ({
                   <Text key={g.label} style={listItem}>• {g.label}: {g.enrolled} enrolled / {g.completed} completed</Text>
                 ))}
               </Section>
+              )}
             </>
           )}
 
           {/* 4. PER-QUESTION AVERAGES */}
-          {sec('per_question') && question_averages && question_averages.length > 0 && (
+          {sec('per_question') && (ov('per_question') || (question_averages && question_averages.length > 0)) && (
             <>
               <Heading as="h3" style={h3}>📋 Per-question averages</Heading>
+              {ov('per_question') ? <OverrideBlock text={ov('per_question')!} /> : (
               <Section style={listBox}>
                 {question_averages.map((q) => (
                   <Text key={q.short_label} style={listItem}>
@@ -237,19 +250,20 @@ const Email = ({
                   </Text>
                 ))}
               </Section>
+              )}
             </>
           )}
 
           {/* 5. TRIGGERED CLUSTERS */}
-          {sec('triggered_clusters') && triggered_clusters_detailed && (
+          {sec('triggered_clusters') && (ov('triggered_clusters') || triggered_clusters_detailed) && (
             <>
               <Heading as="h3" style={h3}>🧩 Triggered clusters</Heading>
-              {triggered_clusters_detailed.length === 0 ? (
+              {ov('triggered_clusters') ? <OverrideBlock text={ov('triggered_clusters')!} /> : triggered_clusters_detailed!.length === 0 ? (
                 <Section style={{ ...listBox, backgroundColor: '#ecfdf5' }}>
                   <Text style={{ ...listItem, color: '#065f46' }}>✅ No clinical clusters triggered. The team is not showing combined burnout, anxiety, or depression-risk patterns.</Text>
                 </Section>
               ) : (
-                triggered_clusters_detailed.map((c) => (
+                triggered_clusters_detailed!.map((c) => (
                   <Section key={c.label} style={{ ...listBox, backgroundColor: '#fffbeb', border: '1px solid #fde68a' }}>
                     <Text style={{ ...listItem, fontWeight: 700 as const, color: '#92400e' }}>{c.label}</Text>
                     <Text style={{ ...listItem, fontSize: '13px' }}>{c.interpretation}</Text>
@@ -260,10 +274,12 @@ const Email = ({
           )}
 
           {/* 6. PRIORITY FOCUS AREAS */}
-          {sec('priority_focus') && triggered_flags_detailed && triggered_flags_detailed.length > 0 && (
+          {sec('priority_focus') && (ov('priority_focus') || ov('priority_areas') || (triggered_flags_detailed && triggered_flags_detailed.length > 0)) && (
             <>
               <Heading as="h3" style={h3}>🎯 Priority focus areas</Heading>
-              {triggered_flags_detailed.map((f, i) => (
+              {(ov('priority_focus') || ov('priority_areas')) ? (
+                <OverrideBlock text={(ov('priority_focus') || ov('priority_areas'))!} />
+              ) : triggered_flags_detailed!.map((f, i) => (
                 <Section key={f.flag_name} style={{ ...listBox, marginBottom: '10px' }}>
                   <Text style={{ ...listItem, fontWeight: 700 as const }}>#{i + 1} {f.flag_name} — {f.affected_employees} employees affected (avg {f.average_pct}%)</Text>
                   {f.question_text && <Text style={{ ...listItem, fontSize: '12px', color: '#666' }}>{f.question_text}</Text>}
@@ -275,10 +291,10 @@ const Email = ({
           )}
 
           {/* 9. 30-DAY ACTION PLAN */}
-          {sec('action_plan') && action_plan && action_plan.length > 0 && (
+          {sec('action_plan') && (ov('action_plan') || (action_plan && action_plan.length > 0)) && (
             <>
               <Heading as="h3" style={h3}>🗓️ 30-day action plan</Heading>
-              {action_plan.map((wk) => (
+              {ov('action_plan') ? <OverrideBlock text={ov('action_plan')!} /> : action_plan!.map((wk) => (
                 <Section key={wk.week} style={{ ...listBox, marginBottom: '8px' }}>
                   <Text style={{ ...listItem, fontWeight: 700 as const }}>Week {wk.week} — {wk.title}</Text>
                   {wk.items.map((it, i) => <Text key={i} style={{ ...listItem, fontSize: '13px' }}>• {it}</Text>)}
