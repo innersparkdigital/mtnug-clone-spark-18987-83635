@@ -208,20 +208,34 @@ const CorporateWellbeingCheck = () => {
   };
 
   const lookupByCode = async () => {
-    if (!accessCode.trim()) {
-      toast.error('Please enter your access code.');
+    // Sanitize: strip whitespace and any non-alphanumeric characters, uppercase
+    const cleaned = accessCode.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+    if (!cleaned) {
+      toast.error('Please enter your 8-character access code.');
+      return;
+    }
+    if (cleaned.length !== 8) {
+      toast.error(`Access code must be 8 characters. You entered ${cleaned.length}.`);
       return;
     }
     setLoading(true);
     try {
       const { data, error } = await supabase
-        .rpc('lookup_employee_by_code', { _code: accessCode.trim().toUpperCase() }) as { data: any; error: any };
+        .rpc('lookup_employee_by_code', { _code: cleaned }) as { data: any; error: any };
 
-      if (error || !data) {
-        toast.error('Invalid access code. Please check and try again.');
+      if (error) {
+        console.error('lookup_employee_by_code error', error);
+        toast.error('Network issue verifying code. Please try again.');
         setLoading(false);
         return;
       }
+      if (!data) {
+        toast.error('That code was not found. Double-check the code from your employer (letters O/0 and I/1 are easy to mix up).');
+        setLoading(false);
+        return;
+      }
+      // Normalize stored value to the cleaned version
+      setAccessCode(cleaned);
 
       const [companyRes, historyRes] = await Promise.all([
         supabase.from('corporate_companies').select('name').eq('id', data.company_id).single(),
@@ -406,11 +420,14 @@ const CorporateWellbeingCheck = () => {
                   <Input
                     placeholder="Enter Access Code"
                     value={accessCode}
-                    onChange={(e) => setAccessCode(e.target.value.toUpperCase())}
+                    onChange={(e) => setAccessCode(e.target.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase())}
                     className="text-center text-lg tracking-widest font-mono uppercase"
                     maxLength={8}
                     onKeyDown={(e) => e.key === 'Enter' && lookupByCode()}
                   />
+                  <p className="text-xs text-muted-foreground -mt-2">
+                    8 characters · letters &amp; numbers only (e.g. <span className="font-mono">1CF0846B</span>)
+                  </p>
                   <Button onClick={lookupByCode} disabled={loading} className="w-full rounded-full">
                     {loading ? 'Verifying...' : 'Start Screening'}
                     <ArrowRight className="w-4 h-4 ml-2" />
