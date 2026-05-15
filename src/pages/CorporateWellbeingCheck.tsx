@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
-import { Lock, ArrowRight, ArrowLeft, CheckCircle, Heart, Brain, Users, RotateCcw, Download, MessageCircle, Share2, Copy, ExternalLink, Mail } from 'lucide-react';
+import { Lock, ArrowRight, ArrowLeft, CheckCircle, Heart, Brain, Users, RotateCcw, Download, MessageCircle, Share2, Copy, ExternalLink, Mail, Volume2, Globe, RefreshCw } from 'lucide-react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -46,6 +46,55 @@ const WORKPLACE_OPTIONS = [
   { value: 4, label: "Very often" },
   { value: 5, label: "Always" },
 ];
+
+// === Wave 3: Multilingual + emoji-scale fallbacks ===
+const SCALE_EMOJI = ['😞', '😕', '😐', '🙂', '😊', '🤩'];
+
+type Lang = 'en' | 'lg' | 'sw';
+const LANGS: { code: Lang; label: string; native: string }[] = [
+  { code: 'en', label: 'English', native: 'English' },
+  { code: 'lg', label: 'Luganda', native: 'Luganda' },
+  { code: 'sw', label: 'Kiswahili', native: 'Kiswahili' },
+];
+
+const TRANSLATIONS: Record<Lang, { questions: string[]; who5Options: string[]; workplaceOptions: string[]; ui: Record<string, string> }> = {
+  en: {
+    questions: [...WHO5_QUESTIONS, ...WORKPLACE_QUESTIONS],
+    who5Options: WHO5_OPTIONS.map(o => o.label),
+    workplaceOptions: WORKPLACE_OPTIONS.map(o => o.label),
+    ui: { over_two_weeks: 'Over the past 2 weeks...', listen: 'Listen', question_label: 'Question', of: 'of', back: 'Back', next: 'Next', see_results: 'See My Results', community_mode: 'Community Wellbeing Check', community_subtitle: 'A facilitator-supported check-in. Your responses stay private.', completed_today: 'people have completed this check on this device today', reset_counter: 'Reset counter' },
+  },
+  lg: {
+    questions: [
+      "Nzizeemu essanyu n'okusanyuka",
+      "Nzizeemu emirembe n'okuwummula",
+      "Mbadde nnamaanyi era nga nkola",
+      "Nzuukuse nga mpummudde era nga muggya",
+      "Obulamu bwange obwa buli lunaku bujjuziddwa ebintu ebinsanyusa",
+      "Emirimu gyo musobola gukwatibwa otya?",
+      "Owulira ng'oyambibwa ku mulimu?",
+      "Emirundi emeka gy'owulira ng'omulimu gukuyitiridde?",
+    ],
+    who5Options: ["Tewali kiseera", "Ebiseera ebimu", "Wansi w'ekitundu", "Waggulu w'ekitundu", "Ebiseera ebisinga", "Ebiseera byonna"],
+    workplaceOptions: ["Tekiri kyonna", "Mu butono", "Oluusi", "Emirundi mingi", "Emirundi mingi nnyo", "Bulijjo"],
+    ui: { over_two_weeks: 'Mu wiiki bbiri eziyise...', listen: 'Wuliriza', question_label: 'Ekibuuzo', of: 'ku', back: 'Ddayo', next: 'Mu maaso', see_results: 'Laba ebivudemu', community_mode: 'Okukebera Obulamu obw\u2019Omutima mu Kitundu', community_subtitle: 'Ekikebera ekiyambibwa omuyigiriza. Eby\'oddamu byonna bya kyama.', completed_today: 'abantu bamaze okukola okukebera ku kyuma kino leero', reset_counter: 'Sazaamu omuwendo' },
+  },
+  sw: {
+    questions: [
+      "Nimejisikia mchangamfu na mwenye furaha",
+      "Nimejisikia mtulivu na nimepumzika",
+      "Nimejisikia mwenye nguvu na shughuli",
+      "Niliamka nikijisikia mpya na nimepumzika",
+      "Maisha yangu ya kila siku yamejaa mambo yanayonivutia",
+      "Mzigo wako wa kazi unawezekana kushughulikiwa kiasi gani?",
+      "Je, unahisi unapata msaada kazini?",
+      "Mara ngapi unahisi umelemewa kazini?",
+    ],
+    who5Options: ["Kamwe", "Mara chache", "Chini ya nusu ya wakati", "Zaidi ya nusu ya wakati", "Mara nyingi", "Wakati wote"],
+    workplaceOptions: ["Hapana kabisa", "Mara chache sana", "Mara nyingine", "Mara nyingi", "Mara nyingi sana", "Daima"],
+    ui: { over_two_weeks: 'Katika wiki 2 zilizopita...', listen: 'Sikiliza', question_label: 'Swali', of: 'kati ya', back: 'Rudi', next: 'Endelea', see_results: 'Ona Matokeo Yangu', community_mode: 'Ukaguzi wa Ustawi wa Jamii', community_subtitle: 'Ukaguzi unaosaidiwa na mwezeshaji. Majibu yako ni ya siri.', completed_today: 'watu wamekamilisha ukaguzi huu kwenye kifaa hiki leo', reset_counter: 'Anzisha upya hesabu' },
+  },
+};
 
 type Phase = 'entry' | 'welcome' | 'consent' | 'test' | 'results';
 
