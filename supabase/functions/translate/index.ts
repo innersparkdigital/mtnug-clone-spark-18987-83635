@@ -9,6 +9,7 @@ const languageNames: Record<string, string> = {
   en: "English",
   fr: "French",
   sw: "Kiswahili (Swahili)",
+  lg: "Luganda (Ganda)",
   pt: "Portuguese",
 };
 
