@@ -1755,10 +1755,61 @@ const CorporateAdmin = () => {
                             }, {});
                             const Section = ({ k, title, children }: { k: string; title: string; children: React.ReactNode }) => {
                               if (!reportSections[k]) return null;
+                              const override = sectionOverrides[k];
+                              const isEditing = editingSection === k;
                               return (
                                 <div className="border rounded-md p-4">
-                                  <div className="font-semibold text-sm mb-2 text-foreground">{title}</div>
-                                  <div className="text-sm text-muted-foreground space-y-2">{children}</div>
+                                  <div className="flex items-center justify-between mb-2 gap-2">
+                                    <div className="font-semibold text-sm text-foreground flex items-center gap-2">
+                                      {title}
+                                      {override && <Badge variant="secondary" className="text-[10px]">Edited</Badge>}
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                      {!isEditing && (
+                                        <Button size="sm" variant="ghost" className="h-7 px-2 text-xs"
+                                          onClick={() => { setEditDraft(override ?? ''); setEditingSection(k); }}>
+                                          ✎ Edit
+                                        </Button>
+                                      )}
+                                      {!isEditing && override && (
+                                        <Button size="sm" variant="ghost" className="h-7 px-2 text-xs text-destructive"
+                                          onClick={() => {
+                                            setSectionOverrides(prev => { const n = { ...prev }; delete n[k]; return n; });
+                                            toast.success('Reverted to auto-generated content');
+                                          }}>
+                                          Reset
+                                        </Button>
+                                      )}
+                                    </div>
+                                  </div>
+                                  {isEditing ? (
+                                    <div className="space-y-2">
+                                      <Textarea
+                                        value={editDraft}
+                                        onChange={(e) => setEditDraft(e.target.value)}
+                                        rows={6}
+                                        placeholder="Write the custom text that will replace the auto-generated content for this section…"
+                                      />
+                                      <div className="flex gap-2 justify-end">
+                                        <Button size="sm" variant="outline" onClick={() => { setEditingSection(null); setEditDraft(''); }}>Cancel</Button>
+                                        <Button size="sm" onClick={() => {
+                                          const t = editDraft.trim();
+                                          setSectionOverrides(prev => {
+                                            const n = { ...prev };
+                                            if (t) n[k] = t; else delete n[k];
+                                            return n;
+                                          });
+                                          setEditingSection(null);
+                                          setEditDraft('');
+                                          toast.success(t ? 'Section saved' : 'Override cleared');
+                                        }}>Save</Button>
+                                      </div>
+                                    </div>
+                                  ) : override ? (
+                                    <div className="text-sm whitespace-pre-wrap text-foreground">{override}</div>
+                                  ) : (
+                                    <div className="text-sm text-muted-foreground space-y-2">{children}</div>
+                                  )}
                                 </div>
                               );
                             };
