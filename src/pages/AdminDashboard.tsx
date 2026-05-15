@@ -51,8 +51,7 @@ import {
   MessageSquare,
   AlertOctagon,
   UserPlus,
-  Mic,
-  Stethoscope as StethoscopeIcon
+  Mic
 } from 'lucide-react';
 import {
   ChartContainer,
@@ -276,7 +275,7 @@ const AdminDashboard = () => {
             )}
             {isAdmin && (
               <TabsTrigger value="therapists" className="gap-2">
-                <StethoscopeIcon className="h-4 w-4" />
+                <Stethoscope className="h-4 w-4" />
                 Therapists
               </TabsTrigger>
             )}
