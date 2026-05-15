@@ -336,6 +336,15 @@ const CorporateWellbeingCheck = () => {
       }
 
       setPhase('results');
+
+      // Wave 3: bump facilitator counter (community mode only)
+      if (isCommunityMode) {
+        try {
+          const next = facilitatorCount + 1;
+          localStorage.setItem(COUNTER_KEY, String(next));
+          setFacilitatorCount(next);
+        } catch {}
+      }
       // Pre-fill the results-email input with the address on file
       setResultsEmail(employee.email || '');
       setResultsEmailSent(true); // auto-send already fired above
