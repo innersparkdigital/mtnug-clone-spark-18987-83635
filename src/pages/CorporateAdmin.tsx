@@ -1564,6 +1564,13 @@ const CorporateAdmin = () => {
                                   triggered_flags_detailed: completedScreenings > 0 ? triggered_flags_detailed : undefined,
                                   action_plan: completedScreenings > 0 && action_plan.length > 0 ? action_plan : undefined,
                                   business_impact_extended,
+                                  section_overrides: {
+                                    ...sectionOverrides,
+                                    // Email template uses 'priority_focus' key for the same section UI calls 'priority_areas'
+                                    ...(sectionOverrides.priority_areas ? { priority_focus: sectionOverrides.priority_areas } : {}),
+                                  },
+                                  // If consultant_notes was overridden inline, surface it as the observations block too
+                                  consultant_observations: (sectionOverrides.consultant_notes?.trim() || observations.trim() || undefined),
                                 },
                               },
                             });
