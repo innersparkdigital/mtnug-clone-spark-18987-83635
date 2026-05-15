@@ -420,11 +420,14 @@ const CorporateWellbeingCheck = () => {
                   <Input
                     placeholder="Enter Access Code"
                     value={accessCode}
-                    onChange={(e) => setAccessCode(e.target.value.toUpperCase())}
+                    onChange={(e) => setAccessCode(e.target.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase())}
                     className="text-center text-lg tracking-widest font-mono uppercase"
                     maxLength={8}
                     onKeyDown={(e) => e.key === 'Enter' && lookupByCode()}
                   />
+                  <p className="text-xs text-muted-foreground -mt-2">
+                    8 characters · letters &amp; numbers only (e.g. <span className="font-mono">1CF0846B</span>)
+                  </p>
                   <Button onClick={lookupByCode} disabled={loading} className="w-full rounded-full">
                     {loading ? 'Verifying...' : 'Start Screening'}
                     <ArrowRight className="w-4 h-4 ml-2" />
