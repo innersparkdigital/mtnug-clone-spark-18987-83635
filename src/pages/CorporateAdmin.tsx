@@ -22,11 +22,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { generateCompanyReportPdf } from '@/lib/companyReportPdf';
 import { Loader2 } from 'lucide-react';
-import { answerMapFromStored, answerMapFromLegacy, aggregateCompany } from '@/lib/wellbeingIntelligence';
+import { answerMapFromStored, answerMapFromLegacy, aggregateCompany, QUESTION_INTELLIGENCE, QUESTION_ORDER, CLUSTER_INFO } from '@/lib/wellbeingIntelligence';
 import { CompanyTriggersDashboard, CompanyActionPlan } from '@/components/business/CompanyInsights';
 import PerQuestionEmployeeBreakdown from '@/components/business/PerQuestionEmployeeBreakdown';
 import BusinessImpactSummary from '@/components/business/BusinessImpactSummary';
-import { calculateBusinessImpact } from '@/lib/businessImpact';
+import { calculateBusinessImpact, formatUGX } from '@/lib/businessImpact';
 
 interface Company {
   id: string;
