@@ -503,6 +503,12 @@ const CorporateAdmin = () => {
                 <p className="text-sm text-muted-foreground">
                   {selectedCompany ? `${selectedCompany.industry || 'Company'} • ${totalEmployees} employees` : 'Manage companies, employees, and screening analytics'}
                 </p>
+                {selectedCompany?.context_notes && (
+                  <details className="mt-2 max-w-3xl">
+                    <summary className="text-xs text-primary cursor-pointer select-none">📋 Company context (used by AI to tailor reports)</summary>
+                    <p className="text-xs text-foreground/80 whitespace-pre-wrap bg-muted/40 rounded-md p-3 mt-1 leading-relaxed">{selectedCompany.context_notes}</p>
+                  </details>
+                )}
               </div>
             </div>
             <div className="flex items-center gap-2">
