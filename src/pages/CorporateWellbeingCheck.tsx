@@ -13,6 +13,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import EmployeeResultsBreakdown from '@/components/wellbeing/EmployeeResultsBreakdown';
 import { computeAnswers, computeAggregate, AnswerMap } from '@/lib/wellbeingIntelligence';
 import { CampaignBrandingHeader } from '@/components/wellbeing/CampaignBrandingHeader';
+import { ScreeningAnxietyFAQ } from '@/components/wellbeing/ScreeningAnxietyFAQ';
 
 const WHO5_QUESTIONS = [
   "I have felt cheerful and in good spirits",
@@ -555,7 +556,12 @@ const CorporateWellbeingCheck = () => {
                 </div>
 
                 {/* Gender Selection */}
-                <div className="mb-8 max-w-xs mx-auto">
+                <ScreeningAnxietyFAQ
+                  language={lang as 'en' | 'lg' | 'sw'}
+                  companyId={employee.company_id}
+                />
+
+                <div className="mt-8 mb-8 max-w-xs mx-auto">
                   <p className="text-sm font-medium text-foreground mb-3">Please select your gender</p>
                   <div className="flex gap-3 justify-center">
                     {['Male', 'Female'].map(g => (
