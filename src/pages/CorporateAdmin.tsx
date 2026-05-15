@@ -126,6 +126,10 @@ const CorporateAdmin = () => {
   const [reportSections, setReportSections] = useState<Record<string, boolean>>(
     () => Object.fromEntries(REPORT_SECTIONS.map(s => [s.key, true]))
   );
+  // Per-section consultant overrides — when set, replaces auto content in preview/email/PDF
+  const [sectionOverrides, setSectionOverrides] = useState<Record<string, string>>({});
+  const [editingSection, setEditingSection] = useState<string | null>(null);
+  const [editDraft, setEditDraft] = useState<string>('');
   const [includeBusinessImpact, setIncludeBusinessImpact] = useState(true);
   const [baselineSalary, setBaselineSalary] = useState<number>(1_200_000);
 
