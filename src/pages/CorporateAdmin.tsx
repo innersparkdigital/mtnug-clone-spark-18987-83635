@@ -1546,63 +1546,187 @@ const CorporateAdmin = () => {
 
                       {/* Preview Dialog */}
                       <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
-                        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+                        <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto">
                           <DialogHeader>
                             <DialogTitle>Report Preview — {selectedCompany.name}</DialogTitle>
+                            <DialogDescription>
+                              This is exactly what HR will receive in the email and what is rendered into the downloaded PDF.
+                            </DialogDescription>
                           </DialogHeader>
-                          <div className="space-y-4 text-sm">
-                            <div className="p-3 bg-muted/50 rounded-md">
-                              <div className="font-medium mb-1">Recipient</div>
-                              <div className="text-muted-foreground">{selectedCompany.contact_email || <span className="text-destructive">No contact email set</span>}</div>
-                            </div>
-                            <div>
-                              <div className="font-medium mb-2">Sections that will be included</div>
-                              <ul className="space-y-1">
-                                {REPORT_SECTIONS.map(s => {
-                                  const on = !!reportSections[s.key];
-                                  let warn = '';
-                                  if (on) {
-                                    if (s.key === 'participation' && totalEmployees === 0) warn = 'no employees';
-                                    else if ((s.key === 'overall_wellbeing' || s.key === 'per_question' || s.key === 'triggered_clusters' || s.key === 'priority_areas') && completedScreenings === 0) warn = 'no screenings yet';
-                                    else if (s.key === 'recommended_services' && selectedServiceIds.size === 0) warn = 'no services selected';
-                                    else if (s.key === 'consultant_notes' && !observations.trim()) warn = 'observations empty';
-                                  }
-                                  return (
-                                    <li key={s.key} className={`flex items-center justify-between p-2 rounded ${on ? 'bg-primary/5' : 'bg-muted/30 opacity-60'}`}>
-                                      <span>{on ? '✓' : '○'} {s.title}</span>
-                                      {warn && <Badge variant="destructive" className="text-[10px]">{warn}</Badge>}
-                                    </li>
-                                  );
-                                })}
-                              </ul>
-                            </div>
-                            <div className="grid grid-cols-2 gap-3">
-                              <div className="p-3 border rounded">
-                                <div className="text-xs text-muted-foreground">Participation</div>
-                                <div className="font-semibold">{completedScreenings}/{totalEmployees} ({participationRate}%)</div>
+                          {(() => {
+                            const period = new Date().toLocaleDateString('en-UG', { year: 'numeric', month: 'long' });
+                            const records = screenings.map((s: any) => answerMapFromLegacy(s)).filter(Boolean) as any[];
+                            const insight = aggregateCompany(records);
+                            const businessImpact = includeBusinessImpact && completedScreenings > 0
+                              ? calculateBusinessImpact({ healthy: greenCount, at_risk: yellowCount, critical: redCount }, baselineSalary)
+                              : null;
+                            const genderCounts = employees.reduce((acc: Record<string, number>, e) => {
+                              const g = (e.gender || 'Unspecified').toString();
+                              acc[g] = (acc[g] || 0) + 1; return acc;
+                            }, {});
+                            const completedByGender = employees.reduce((acc: Record<string, number>, e) => {
+                              if (!e.screening_completed) return acc;
+                              const g = (e.gender || 'Unspecified').toString();
+                              acc[g] = (acc[g] || 0) + 1; return acc;
+                            }, {});
+                            const Section = ({ k, title, children }: { k: string; title: string; children: React.ReactNode }) => {
+                              if (!reportSections[k]) return null;
+                              return (
+                                <div className="border rounded-md p-4">
+                                  <div className="font-semibold text-sm mb-2 text-foreground">{title}</div>
+                                  <div className="text-sm text-muted-foreground space-y-2">{children}</div>
+                                </div>
+                              );
+                            };
+                            const empty = <p className="italic text-xs">No data yet — section will appear empty in the email/PDF.</p>;
+                            return (
+                              <div className="space-y-3 text-sm">
+                                <div className="p-3 bg-muted/50 rounded-md flex items-center justify-between">
+                                  <div>
+                                    <div className="text-xs text-muted-foreground">Recipient</div>
+                                    <div className="font-medium">{selectedCompany.contact_email || <span className="text-destructive">No contact email set</span>}</div>
+                                  </div>
+                                  <div className="text-right">
+                                    <div className="text-xs text-muted-foreground">Reporting Period</div>
+                                    <div className="font-medium">{period}</div>
+                                  </div>
+                                </div>
+
+                                <Section k="cover" title="1. Cover & Summary">
+                                  <p><strong>{selectedCompany.name}</strong> — Wellbeing Report ({period})</p>
+                                  <p>Prepared by InnerSpark Africa{selectedCompany.contact_person ? ` for ${selectedCompany.contact_person}` : ''}.</p>
+                                  <p>{completedScreenings} of {totalEmployees} employees completed the WHO-5 + Workplace screening ({participationRate}% participation). Average wellbeing score: <strong>{avgScore}%</strong>.</p>
+                                </Section>
+
+                                <Section k="participation" title="2. Participation & Demographics">
+                                  {totalEmployees === 0 ? empty : (
+                                    <>
+                                      <p>Total enrolled: <strong>{totalEmployees}</strong> · Completed: <strong>{completedScreenings}</strong> · Pending: <strong>{totalEmployees - completedScreenings}</strong> · Rate: <strong>{participationRate}%</strong></p>
+                                      <div>
+                                        <div className="text-xs font-medium mt-2 mb-1">Gender breakdown (enrolled / completed)</div>
+                                        <ul className="space-y-0.5">
+                                          {Object.keys(genderCounts).map(g => (
+                                            <li key={g}>• {g}: {genderCounts[g]} enrolled / {completedByGender[g] || 0} completed</li>
+                                          ))}
+                                        </ul>
+                                      </div>
+                                    </>
+                                  )}
+                                </Section>
+
+                                <Section k="overall_wellbeing" title="3. Overall Wellbeing Score">
+                                  {completedScreenings === 0 ? empty : (
+                                    <>
+                                      <p>Company average wellbeing: <strong>{avgScore}%</strong> ({avgScore >= 76 ? 'Healthy' : avgScore >= 51 ? 'At Risk' : 'Critical'})</p>
+                                      <ul className="space-y-0.5">
+                                        <li>🟢 Healthy (76–100%): {greenCount} ({Math.round((greenCount/completedScreenings)*100)}%)</li>
+                                        <li>🟡 At Risk (51–75%): {yellowCount} ({Math.round((yellowCount/completedScreenings)*100)}%)</li>
+                                        <li>🔴 Critical (0–50%): {redCount} ({Math.round((redCount/completedScreenings)*100)}%)</li>
+                                        <li>🆘 Needs immediate support: {needsSupportCount}</li>
+                                      </ul>
+                                    </>
+                                  )}
+                                </Section>
+
+                                <Section k="per_question" title="4. Per-Question Averages">
+                                  {completedScreenings === 0 ? empty : (
+                                    <ul className="space-y-1">
+                                      {QUESTION_ORDER.map(q => {
+                                        const meta = QUESTION_INTELLIGENCE[q];
+                                        const avg = insight.questionAverages[q];
+                                        const status = insight.questionFlagStatus[q];
+                                        const dot = status === 'green' ? '🟢' : status === 'amber' ? '🟡' : '🔴';
+                                        return <li key={q}>{dot} <strong>{meta.shortLabel}</strong> — {avg}% <span className="text-xs">({meta.flagName})</span></li>;
+                                      })}
+                                    </ul>
+                                  )}
+                                </Section>
+
+                                <Section k="triggered_clusters" title="5. Triggered Clusters">
+                                  {completedScreenings === 0 ? empty : insight.triggeredClusters.length === 0 ? (
+                                    <p>✅ No clinical clusters triggered. The team is not showing combined burnout, anxiety, or depression-risk patterns.</p>
+                                  ) : (
+                                    <ul className="space-y-2">
+                                      {insight.triggeredClusters.map(cid => (
+                                        <li key={cid}>
+                                          <strong>{CLUSTER_INFO[cid].label}</strong>
+                                          <div className="text-xs">{CLUSTER_INFO[cid].interpretation}</div>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  )}
+                                </Section>
+
+                                <Section k="priority_areas" title="6. Priority Focus Areas">
+                                  {completedScreenings === 0 ? empty : insight.triggeredFlags.length === 0 ? (
+                                    <p>✅ No priority concerns flagged. Sustain with quarterly check-ins.</p>
+                                  ) : (
+                                    <ul className="space-y-2">
+                                      {insight.triggeredFlags.slice(0, 5).map((f, i) => (
+                                        <li key={f.qid}>
+                                          <strong>#{i+1} {f.flagName}</strong> — {f.affectedEmployees} employees affected (avg {f.averagePct}%)
+                                          <div className="text-xs">{f.recommendation}</div>
+                                          <div className="text-xs">→ Suggested: {f.serviceLabel} · ~{f.productivityCostDaysPerMonth} productivity days/month at risk</div>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  )}
+                                </Section>
+
+                                <Section k="business_impact" title="7. Business Impact">
+                                  {!businessImpact ? <p className="italic text-xs">Business Impact toggle is off, or no screenings yet. Enable it on the Analytics tab.</p> : (
+                                    <>
+                                      <p>Estimated annual cost of inaction: <strong>{formatUGX(businessImpact.estimatedAnnualCostMin)}–{formatUGX(businessImpact.estimatedAnnualCostMax)}</strong> (mid: {formatUGX(businessImpact.estimatedAnnualCostMidpoint)})</p>
+                                      <p>Estimated productivity days lost / year: <strong>{businessImpact.estimatedDaysLostMin}–{businessImpact.estimatedDaysLostMax}</strong></p>
+                                      <p>Estimated EAP investment: <strong>{formatUGX(businessImpact.estimatedEAPCost)}</strong> · Projected ROI: <strong>{businessImpact.estimatedROI}x</strong></p>
+                                      <p>Cost of inaction per month: <strong>{formatUGX(businessImpact.costOfInactionPerMonth)}</strong></p>
+                                    </>
+                                  )}
+                                </Section>
+
+                                <Section k="recommended_services" title="8. Recommended Services">
+                                  {selectedServiceIds.size === 0 ? <p className="italic text-xs">No services selected. Pick one or more services in the builder above.</p> : (
+                                    <ul className="space-y-2">
+                                      {serviceCatalog.filter(s => selectedServiceIds.has(s.id)).map(s => (
+                                        <li key={s.id}>
+                                          <strong>{s.name}</strong>
+                                          {s.description && <div className="text-xs">{s.description}</div>}
+                                          <div className="text-xs text-primary">
+                                            {s.physical_price ? `Physical: UGX ${Number(s.physical_price).toLocaleString()}` : ''}
+                                            {s.physical_price && s.virtual_price ? ' • ' : ''}
+                                            {s.virtual_price ? `Virtual: UGX ${Number(s.virtual_price).toLocaleString()}` : ''}
+                                            {s.per_employee_price ? ` · UGX ${Number(s.per_employee_price).toLocaleString()} / ${s.unit_label || 'unit'}` : ''}
+                                          </div>
+                                          {serviceReasons[s.id]?.trim() && <div className="text-xs italic">Why: {serviceReasons[s.id]}</div>}
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  )}
+                                </Section>
+
+                                <Section k="action_plan" title="9. 30-Day Action Plan">
+                                  {insight.actionPlan.length === 0 ? empty : (
+                                    <ul className="space-y-2">
+                                      {insight.actionPlan.map(w => (
+                                        <li key={w.week}>
+                                          <strong>Week {w.week} — {w.title}</strong>
+                                          <ul className="list-disc ml-5 text-xs">
+                                            {w.items.map((it, i) => <li key={i}>{it}</li>)}
+                                          </ul>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  )}
+                                </Section>
+
+                                <Section k="consultant_notes" title="10. Consultant Observations">
+                                  {!observations.trim() ? <p className="italic text-xs">No observations entered yet.</p> : (
+                                    <p className="whitespace-pre-wrap">{observations}</p>
+                                  )}
+                                </Section>
                               </div>
-                              <div className="p-3 border rounded">
-                                <div className="text-xs text-muted-foreground">Avg WHO-5</div>
-                                <div className="font-semibold">{avgScore}%</div>
-                              </div>
-                            </div>
-                            {observations.trim() && (
-                              <div>
-                                <div className="font-medium mb-1">Consultant Observations</div>
-                                <p className="text-muted-foreground whitespace-pre-wrap p-3 bg-muted/30 rounded">{observations}</p>
-                              </div>
-                            )}
-                            {selectedServiceIds.size > 0 && (
-                              <div>
-                                <div className="font-medium mb-1">Recommended Services ({selectedServiceIds.size})</div>
-                                <ul className="text-muted-foreground space-y-1">
-                                  {serviceCatalog.filter(s => selectedServiceIds.has(s.id)).map(s => (
-                                    <li key={s.id}>• {s.name}{serviceReasons[s.id] ? ` — ${serviceReasons[s.id]}` : ''}</li>
-                                  ))}
-                                </ul>
-                              </div>
-                            )}
-                          </div>
+                            );
+                          })()}
                         </DialogContent>
                       </Dialog>
                       </>
