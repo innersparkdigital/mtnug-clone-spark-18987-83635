@@ -21,6 +21,7 @@ import { Progress } from '@/components/ui/progress';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { generateCompanyReportPdf } from '@/lib/companyReportPdf';
+import CampaignSettingsCard from '@/components/business/CampaignSettingsCard';
 import { Loader2 } from 'lucide-react';
 import { answerMapFromStored, answerMapFromLegacy, aggregateCompany, QUESTION_INTELLIGENCE, QUESTION_ORDER, CLUSTER_INFO } from '@/lib/wellbeingIntelligence';
 import { CompanyTriggersDashboard, CompanyActionPlan } from '@/components/business/CompanyInsights';
@@ -786,7 +787,19 @@ const CorporateAdmin = () => {
                 <TabsTrigger value="employees"><Users className="w-4 h-4 mr-1" /> Employees ({totalEmployees})</TabsTrigger>
                 <TabsTrigger value="report"><FileText className="w-4 h-4 mr-1" /> Report</TabsTrigger>
                 <TabsTrigger value="interests"><Activity className="w-4 h-4 mr-1" /> Service Interests ({serviceInterests.filter(i => i.company_id === selectedCompany.id).length})</TabsTrigger>
+                <TabsTrigger value="campaign"><Mail className="w-4 h-4 mr-1" /> Campaign</TabsTrigger>
               </TabsList>
+
+              <TabsContent value="campaign">
+                <CampaignSettingsCard
+                  company={selectedCompany}
+                  onUpdated={async () => {
+                    await fetchCompanies();
+                    const { data } = await supabase.from('corporate_companies').select('*').eq('id', selectedCompany.id).single();
+                    if (data) setSelectedCompany(data as any);
+                  }}
+                />
+              </TabsContent>
 
               {/* INSIGHTS TAB — per-question intelligence */}
               <TabsContent value="insights">
