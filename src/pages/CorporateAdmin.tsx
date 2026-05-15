@@ -1078,7 +1078,7 @@ const CorporateAdmin = () => {
                                       {/* Per-question breakdown for latest screening */}
                                       {(() => {
                                         const latest = employeeScreeningMap.get(emp.id);
-                                        const ans = latest ? answerMapFromStored((latest as any).per_question) : null;
+                                        const ans = latest ? answerMapFromLegacy(latest as any) : null;
                                         if (!ans || !latest) return null;
                                         const history = employeeScreeningHistory.get(emp.id) || [];
                                         const prev = history[1];
