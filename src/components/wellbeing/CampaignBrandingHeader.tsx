@@ -96,7 +96,7 @@ export const CampaignBrandingHeader = ({ slug, language, onLanguageChange, showP
   const pct = Math.min(100, Math.round((completion.completed / totalEmployees) * 100));
 
   return (
-    <div className="-mx-4 mb-6">
+    <div className="mb-6">
       {/* Hero */}
       <div style={{ backgroundColor: SPARK_BLUE }} className="px-5 py-5">
         <div className="max-w-md mx-auto">
