@@ -1483,6 +1483,52 @@ const CorporateAdmin = () => {
                                 track_url: buildTrackUrl(s.id),
                               })) : [];
 
+                            // Build rich data layer (mirrors the Report Preview shown to consultants)
+                            const richRecords = screenings.map((s: any) => answerMapFromLegacy(s)).filter(Boolean) as any[];
+                            const insight = aggregateCompany(richRecords);
+                            const genderMap: Record<string, { enrolled: number; completed: number }> = {};
+                            employees.forEach((e) => {
+                              const g = e.gender ? e.gender.charAt(0).toUpperCase() + e.gender.slice(1).toLowerCase() : 'Not Specified';
+                              if (!genderMap[g]) genderMap[g] = { enrolled: 0, completed: 0 };
+                              genderMap[g].enrolled += 1;
+                              if (e.screening_completed) genderMap[g].completed += 1;
+                            });
+                            const gender_breakdown = Object.entries(genderMap).map(([label, v]) => ({ label, enrolled: v.enrolled, completed: v.completed }));
+                            const question_averages = QUESTION_ORDER.map((q) => ({
+                              short_label: QUESTION_INTELLIGENCE[q].shortLabel,
+                              domain: QUESTION_INTELLIGENCE[q].domain,
+                              avg: insight.questionAverages[q],
+                              status: insight.questionFlagStatus[q],
+                              flag_name: QUESTION_INTELLIGENCE[q].flagName,
+                            }));
+                            const triggered_clusters_detailed = insight.triggeredClusters.map((cid) => ({
+                              label: CLUSTER_INFO[cid].label,
+                              interpretation: CLUSTER_INFO[cid].interpretation,
+                            }));
+                            const triggered_flags_detailed = insight.triggeredFlags.map((f) => {
+                              const meta = QUESTION_INTELLIGENCE[(f as any).qid as keyof typeof QUESTION_INTELLIGENCE];
+                              return {
+                                flag_name: f.flagName,
+                                question_text: meta?.text || '',
+                                affected_employees: f.affectedEmployees,
+                                average_pct: f.averagePct,
+                                recommendation: f.recommendation,
+                                service_label: f.serviceLabel,
+                                productivity_cost_days_per_month: f.productivityCostDaysPerMonth,
+                              };
+                            });
+                            const action_plan = insight.actionPlan;
+                            const business_impact_extended = businessImpact ? {
+                              annual_cost_min: (businessImpact as any).annualCostMin,
+                              annual_cost_mid: (businessImpact as any).annualCostMid,
+                              annual_cost_max: (businessImpact as any).annualCostMax,
+                              lost_days_min: (businessImpact as any).lostDaysMin,
+                              lost_days_max: (businessImpact as any).lostDaysMax,
+                              eap_investment: (businessImpact as any).eapInvestment,
+                              projected_roi_x: (businessImpact as any).projectedRoiX ?? (businessImpact as any).roiX,
+                              monthly_cost: (businessImpact as any).monthlyCost ?? Math.round(((businessImpact as any).annualCostMid || 0) / 12),
+                            } : undefined;
+
                             const { data, error: emailErr } = await supabase.functions.invoke('send-transactional-email', {
                               body: {
                                 templateName: 'b2b-company-report',
@@ -1506,6 +1552,13 @@ const CorporateAdmin = () => {
                                   consultant_observations: observations.trim() || undefined,
                                   recommended_services: recommended_services.length > 0 ? recommended_services : undefined,
                                   alternative_services: alternative_services.length > 0 ? alternative_services : undefined,
+                                  sections: reportSections,
+                                  gender_breakdown: gender_breakdown.length > 0 ? gender_breakdown : undefined,
+                                  question_averages: completedScreenings > 0 ? question_averages : undefined,
+                                  triggered_clusters_detailed: completedScreenings > 0 ? triggered_clusters_detailed : undefined,
+                                  triggered_flags_detailed: completedScreenings > 0 ? triggered_flags_detailed : undefined,
+                                  action_plan: completedScreenings > 0 && action_plan.length > 0 ? action_plan : undefined,
+                                  business_impact_extended,
                                 },
                               },
                             });
