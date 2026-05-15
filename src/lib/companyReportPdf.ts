@@ -136,14 +136,18 @@ export async function generateCompanyReportPdf(d: CompanyReportData): Promise<Bl
   pdf.setTextColor(...TEXT);
 
   if (sec('cover') && d.contact_name) {
-    await para(`Hello ${d.contact_name},`, { bold: true, size: 11 });
+    if (ov('cover')) {
+      await renderOverride(ov('cover')!);
+    } else {
+      await para(`Hello ${d.contact_name},`, { bold: true, size: 11 });
+    }
   }
-  if (sec('cover')) {
+  if (sec('cover') && !ov('cover')) {
     await para(`Below is the confidential aggregated wellbeing snapshot for ${d.company_name}. All figures are anonymised — no individual employee can be identified.`);
   }
 
   // Risk banner (part of cover)
-  if (sec('cover')) {
+  if (sec('cover') && !ov('cover')) {
   const isCritical = d.low_wellbeing_pct >= 30 || d.avg_who5 < 50;
   const isElevated = !isCritical && (d.low_wellbeing_pct >= 10 || d.moderate_wellbeing_pct >= 40 || d.avg_who5 < 65);
   const banner = isCritical
