@@ -873,6 +873,26 @@ const CorporateAdmin = () => {
 
                 <p className="text-xs text-muted-foreground mb-3">CSV format: Name, Email, Phone, Gender (one per row, skip header)</p>
 
+                <Card className="mb-4 border-blue-200 bg-blue-50/40">
+                  <CardContent className="pt-4 pb-3">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-blue-900 mb-2">Understanding Your Results</p>
+                    <div className="grid md:grid-cols-3 gap-3 text-xs">
+                      <div className="rounded-md bg-white border border-green-200 p-2">
+                        <p className="font-bold text-green-700">🟢 HEALTHY (76–100%)</p>
+                        <p className="text-muted-foreground mt-1">Above WHO clinical threshold. Sustain with regular check-ins and wellness resources.</p>
+                      </div>
+                      <div className="rounded-md bg-white border border-amber-200 p-2">
+                        <p className="font-bold text-amber-700">🟡 AT RISK (36–75%)</p>
+                        <p className="text-muted-foreground mt-1">Meaningful challenges present. Recommend counselling, EAP tools, and S.P.A.R.K™ programme.</p>
+                      </div>
+                      <div className="rounded-md bg-white border border-red-200 p-2">
+                        <p className="font-bold text-red-700">🔴 CRITICAL (0–35%)</p>
+                        <p className="text-muted-foreground mt-1">Below clinical concern threshold. InnerSpark initiates proactive outreach within 2 hours.</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
                 {needsSupportCount > 0 && (
                   <Card className="mb-4 border-destructive/30 bg-destructive/5">
                     <CardContent className="pt-4 pb-3 flex items-center gap-3">
