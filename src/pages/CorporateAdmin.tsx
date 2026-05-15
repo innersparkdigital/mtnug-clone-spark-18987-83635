@@ -1623,6 +1623,52 @@ const CorporateAdmin = () => {
                                           per_employee_price: s.per_employee_price, unit_label: s.unit_label,
                                           reason: notes[s.id] || undefined,
                                         }));
+                                        // Rebuild rich data layer for resend (same as initial send)
+                                        const richRecords = screenings.map((s: any) => answerMapFromLegacy(s)).filter(Boolean) as any[];
+                                        const insight = aggregateCompany(richRecords);
+                                        const genderMap: Record<string, { enrolled: number; completed: number }> = {};
+                                        employees.forEach((e) => {
+                                          const g = e.gender ? e.gender.charAt(0).toUpperCase() + e.gender.slice(1).toLowerCase() : 'Not Specified';
+                                          if (!genderMap[g]) genderMap[g] = { enrolled: 0, completed: 0 };
+                                          genderMap[g].enrolled += 1;
+                                          if (e.screening_completed) genderMap[g].completed += 1;
+                                        });
+                                        const gender_breakdown = Object.entries(genderMap).map(([label, v]) => ({ label, enrolled: v.enrolled, completed: v.completed }));
+                                        const question_averages = QUESTION_ORDER.map((q) => ({
+                                          short_label: QUESTION_INTELLIGENCE[q].shortLabel,
+                                          domain: QUESTION_INTELLIGENCE[q].domain,
+                                          avg: insight.questionAverages[q],
+                                          status: insight.questionFlagStatus[q],
+                                          flag_name: QUESTION_INTELLIGENCE[q].flagName,
+                                        }));
+                                        const triggered_clusters_detailed = insight.triggeredClusters.map((cid) => ({
+                                          label: CLUSTER_INFO[cid].label,
+                                          interpretation: CLUSTER_INFO[cid].interpretation,
+                                        }));
+                                        const triggered_flags_detailed = insight.triggeredFlags.map((f) => {
+                                          const meta = QUESTION_INTELLIGENCE[(f as any).qid as keyof typeof QUESTION_INTELLIGENCE];
+                                          return {
+                                            flag_name: f.flagName,
+                                            question_text: meta?.text || '',
+                                            affected_employees: f.affectedEmployees,
+                                            average_pct: f.averagePct,
+                                            recommendation: f.recommendation,
+                                            service_label: f.serviceLabel,
+                                            productivity_cost_days_per_month: f.productivityCostDaysPerMonth,
+                                          };
+                                        });
+                                        const action_plan = insight.actionPlan;
+                                        const bi: any = (r as any).business_impact;
+                                        const business_impact_extended = bi ? {
+                                          annual_cost_min: bi.annualCostMin,
+                                          annual_cost_mid: bi.annualCostMid,
+                                          annual_cost_max: bi.annualCostMax,
+                                          lost_days_min: bi.lostDaysMin,
+                                          lost_days_max: bi.lostDaysMax,
+                                          eap_investment: bi.eapInvestment,
+                                          projected_roi_x: bi.projectedRoiX ?? bi.roiX,
+                                          monthly_cost: bi.monthlyCost ?? Math.round((bi.annualCostMid || 0) / 12),
+                                        } : undefined;
                                         const { error: emailErr } = await supabase.functions.invoke('send-transactional-email', {
                                           body: {
                                             templateName: 'b2b-company-report',
@@ -1645,6 +1691,13 @@ const CorporateAdmin = () => {
                                               needs_support_count: needsSupportCount,
                                               consultant_observations: r.observations || undefined,
                                               recommended_services: recommended_services.length > 0 ? recommended_services : undefined,
+                                              sections: r.sections || undefined,
+                                              gender_breakdown: gender_breakdown.length > 0 ? gender_breakdown : undefined,
+                                              question_averages: completedScreenings > 0 ? question_averages : undefined,
+                                              triggered_clusters_detailed: completedScreenings > 0 ? triggered_clusters_detailed : undefined,
+                                              triggered_flags_detailed: completedScreenings > 0 ? triggered_flags_detailed : undefined,
+                                              action_plan: completedScreenings > 0 && action_plan.length > 0 ? action_plan : undefined,
+                                              business_impact_extended,
                                             },
                                           },
                                         });
