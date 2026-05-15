@@ -632,9 +632,30 @@ const CorporateWellbeingCheck = () => {
             {/* TEST PHASE */}
             {phase === 'test' && (
               <motion.div key="test" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="pt-8">
+                {/* Language selector + audio + community banner */}
+                <div className="mb-4 flex flex-wrap items-center gap-2 justify-between">
+                  <div className="inline-flex items-center gap-1 bg-muted/50 rounded-full p-1">
+                    <Globe className="w-3.5 h-3.5 text-muted-foreground ml-2" />
+                    {LANGS.map(l => (
+                      <button
+                        key={l.code}
+                        onClick={() => setLang(l.code)}
+                        className={`px-3 py-1 rounded-full text-xs font-medium transition ${lang === l.code ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-muted'}`}
+                      >
+                        {l.native}
+                      </button>
+                    ))}
+                  </div>
+                  {isCommunityMode && (
+                    <div className="text-xs text-primary inline-flex items-center gap-1.5 bg-primary/10 px-3 py-1 rounded-full">
+                      <Users className="w-3 h-3" /> {facilitatorCount} {t.ui.completed_today}
+                    </div>
+                  )}
+                </div>
+
                 <div className="mb-6">
                   <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
-                    <span>Question {currentQuestion + 1} of {ALL_QUESTIONS.length}</span>
+                    <span>{t.ui.question_label} {currentQuestion + 1} {t.ui.of} {ALL_QUESTIONS.length}</span>
                     <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-medium">{sectionLabel}</span>
                   </div>
                   <Progress value={progress} className="h-2 [&>div]:bg-primary" />
@@ -649,47 +670,74 @@ const CorporateWellbeingCheck = () => {
                     transition={{ duration: 0.25 }}
                   >
                     {currentQuestion < 5 && (
-                      <p className="text-xs text-muted-foreground mb-2">Over the past 2 weeks...</p>
+                      <p className="text-xs text-muted-foreground mb-2">{t.ui.over_two_weeks}</p>
                     )}
-                    <h2 className="text-xl sm:text-2xl font-bold text-foreground mb-8 leading-snug">
-                      "{ALL_QUESTIONS[currentQuestion]}"
-                    </h2>
+                    <div className="flex items-start justify-between gap-3 mb-6">
+                      <h2 className="text-xl sm:text-2xl font-bold text-foreground leading-snug flex-1">
+                        "{t.questions[currentQuestion]}"
+                      </h2>
+                      <button
+                        type="button"
+                        onClick={() => speakText(t.questions[currentQuestion])}
+                        className="shrink-0 p-2 rounded-full bg-primary/10 hover:bg-primary/20 text-primary transition"
+                        aria-label={t.ui.listen}
+                        title={t.ui.listen}
+                      >
+                        <Volume2 className="w-5 h-5" />
+                      </button>
+                    </div>
 
                     <div className="space-y-3">
-                      {currentOptions.map((option) => (
+                      {currentOptions.map((option, idx) => {
+                        const translatedLabel = currentQuestion < 5 ? t.who5Options[idx] : t.workplaceOptions[idx];
+                        return (
                         <button
                           key={option.value}
                           onClick={() => handleAnswer(option.value)}
-                          className={`w-full text-left p-4 rounded-xl border-2 transition-all duration-200 text-base font-medium
+                          className={`w-full flex items-center gap-3 text-left p-4 rounded-xl border-2 transition-all duration-200 text-base font-medium
                             ${answers[currentQuestion] === option.value
                               ? 'border-primary bg-primary/10 text-primary'
                               : 'border-border bg-card hover:border-muted-foreground/30 text-foreground hover:bg-muted'
                             }`}
                         >
-                          {option.label}
+                          <span className="text-2xl leading-none" aria-hidden>{SCALE_EMOJI[idx]}</span>
+                          <span className="flex-1">{translatedLabel}</span>
                         </button>
-                      ))}
+                        );
+                      })}
                     </div>
                   </motion.div>
                 </AnimatePresence>
 
                 <div className="flex items-center justify-between mt-8">
                   <Button variant="ghost" onClick={() => setCurrentQuestion(prev => Math.max(0, prev - 1))} disabled={currentQuestion === 0} className="text-muted-foreground">
-                    <ArrowLeft className="w-4 h-4 mr-1" /> Back
+                    <ArrowLeft className="w-4 h-4 mr-1" /> {t.ui.back}
                   </Button>
 
                   {isLastQuestion && allAnswered && (
                     <Button onClick={handleSubmit} disabled={submitting} className="rounded-full px-8">
-                      {submitting ? 'Submitting...' : 'See My Results'} <ArrowRight className="w-4 h-4 ml-1" />
+                      {submitting ? 'Submitting...' : t.ui.see_results} <ArrowRight className="w-4 h-4 ml-1" />
                     </Button>
                   )}
 
                   {!isLastQuestion && answers[currentQuestion] !== null && (
                     <Button variant="ghost" onClick={() => setCurrentQuestion(prev => prev + 1)} className="text-primary">
-                      Next <ArrowRight className="w-4 h-4 ml-1" />
+                      {t.ui.next} <ArrowRight className="w-4 h-4 ml-1" />
                     </Button>
                   )}
                 </div>
+
+                {isCommunityMode && (
+                  <div className="mt-4 text-center">
+                    <button
+                      type="button"
+                      onClick={() => { try { localStorage.setItem(COUNTER_KEY, '0'); } catch {} setFacilitatorCount(0); toast.success('Counter reset'); }}
+                      className="text-[11px] text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+                    >
+                      <RefreshCw className="w-3 h-3" /> {t.ui.reset_counter}
+                    </button>
+                  </div>
+                )}
               </motion.div>
             )}
 
