@@ -20,8 +20,24 @@ import BuiltForAfrica from "@/components/home/BuiltForAfrica";
 import ImpactCounter from "@/components/home/ImpactCounter";
 import SDGAlignment from "@/components/home/SDGAlignment";
 import WhisperTeaser from "@/components/home/WhisperTeaser";
+import { useSectionVisibility } from "@/hooks/useSectionVisibility";
 
 const Index = () => {
+  const v = {
+    hero: useSectionVisibility("hero_section"),
+    how1: useSectionVisibility("how_it_works_simple"),
+    concerns: useSectionVisibility("concerns_section"),
+    why: useSectionVisibility("why_innerspark"),
+    africa: useSectionVisibility("built_for_africa"),
+    who5: useSectionVisibility("who5_banner"),
+    therapists: useSectionVisibility("therapist_showcase"),
+    testimonials: useSectionVisibility("testimonials"),
+    how2: useSectionVisibility("how_it_works_detailed"),
+    whisper: useSectionVisibility("whisper_teaser"),
+    sdg: useSectionVisibility("sdg_alignment"),
+    partners: useSectionVisibility("partners"),
+    events: useSectionVisibility("events_section"),
+  };
   return (
     <>
       <Helmet>
@@ -32,13 +48,13 @@ const Index = () => {
       </Helmet>
       <div className="min-h-screen bg-background">
         <Header />
-        <HeroSection />
+        {v.hero && <HeroSection />}
         <TrustStatsBar />
-        <HowItWorksSimple />
-        <ConcernsSection />
-        <WhyInnerSpark />
-        <BuiltForAfrica />
-        {/* WHO-5 Wellbeing Check Banner */}
+        {v.how1 && <HowItWorksSimple />}
+        {v.concerns && <ConcernsSection />}
+        {v.why && <WhyInnerSpark />}
+        {v.africa && <BuiltForAfrica />}
+        {v.who5 && (
         <section className="py-8 bg-gradient-to-r from-green-50 to-emerald-50 border-y border-green-200">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center gap-4 sm:gap-6 text-center sm:text-left">
@@ -57,14 +73,15 @@ const Index = () => {
             </div>
           </div>
         </section>
+        )}
         <ImpactCounter />
-        <TherapistShowcase />
-        <TestimonialsSection />
-        <HowItWorks />
-        <WhisperTeaser />
-        <SDGAlignment />
-        <Partners />
-        <EventsSection />
+        {v.therapists && <TherapistShowcase />}
+        {v.testimonials && <TestimonialsSection />}
+        {v.how2 && <HowItWorks />}
+        {v.whisper && <WhisperTeaser />}
+        {v.sdg && <SDGAlignment />}
+        {v.partners && <Partners />}
+        {v.events && <EventsSection />}
         <Footer />
         <CookieConsent />
         <StickyMobileCTA />
