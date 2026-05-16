@@ -31,6 +31,22 @@ const SECTIONS: { key: string; title: string; description: string; hasHeader: bo
 
 const ICON_OPTIONS = ["Globe", "Languages", "Clock", "Shield", "Users", "Heart", "Star", "Award", "TrendingUp", "CheckCircle"];
 
+const VISIBILITY_ONLY: { key: string; title: string; description: string }[] = [
+  { key: "hero_section", title: "Hero Section", description: "Main banner at the top of the homepage." },
+  { key: "how_it_works_simple", title: "How It Works (Simple)", description: "3-step quick explainer near the top of the homepage." },
+  { key: "concerns_section", title: "Clinical Concerns", description: "Grid of conditions we support." },
+  { key: "why_innerspark", title: "Why InnerSpark", description: "Value props and differentiators." },
+  { key: "built_for_africa", title: "Built for Africa", description: "WhatsApp & low-bandwidth highlight." },
+  { key: "who5_banner", title: "WHO-5 Wellbeing Banner", description: "Green strip linking to wellbeing check." },
+  { key: "therapist_showcase", title: "Therapist Showcase", description: "Featured therapists carousel." },
+  { key: "testimonials", title: "Testimonials", description: "Client testimonials section." },
+  { key: "how_it_works_detailed", title: "How It Works (Detailed)", description: "Long-form explainer with mockups." },
+  { key: "whisper_teaser", title: "Whisper Teaser", description: "Anonymous voice message feature promo." },
+  { key: "sdg_alignment", title: "SDG Alignment", description: "UN Sustainable Development Goals strip." },
+  { key: "partners", title: "Partners", description: "Partner logos section." },
+  { key: "events_section", title: "Events & Trainings", description: "Upcoming events and trainings." },
+];
+
 const SiteSectionsTab = () => {
   const [sections, setSections] = useState<Record<string, Section>>({});
   const [loading, setLoading] = useState(true);
@@ -92,6 +108,41 @@ const SiteSectionsTab = () => {
 
   return (
     <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Homepage Section Visibility</CardTitle>
+          <CardDescription>Toggle to show or hide entire sections on the homepage. Changes are live immediately.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {VISIBILITY_ONLY.map(meta => {
+            const s = sections[meta.key];
+            if (!s) return null;
+            return (
+              <div key={meta.key} className="flex items-center justify-between gap-4 border border-border rounded-lg p-3">
+                <div className="min-w-0">
+                  <div className="font-medium text-sm">{meta.title}</div>
+                  <div className="text-xs text-muted-foreground">{meta.description}</div>
+                </div>
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <Switch
+                    checked={s.is_visible}
+                    onCheckedChange={async (v) => {
+                      updateSection(meta.key, { is_visible: v });
+                      const { error } = await (supabase as any)
+                        .from("site_sections")
+                        .update({ is_visible: v })
+                        .eq("id", s.id);
+                      if (error) toast.error("Save failed: " + error.message);
+                      else toast.success(`${meta.title} ${v ? "shown" : "hidden"}`);
+                    }}
+                  />
+                </div>
+              </div>
+            );
+          })}
+        </CardContent>
+      </Card>
+
       {SECTIONS.map(meta => {
         const s = sections[meta.key];
         if (!s) return null;
