@@ -23,6 +23,17 @@ export interface CompanyReportData {
   business_impact?: { productivity_loss_fte?: number; lost_days_per_year?: number; estimated_annual_cost_ugx?: number; estimated_roi_ugx?: number } | null;
   // Per-section consultant overrides — when set, replaces auto content for that section
   section_overrides?: Record<string, string>;
+  // Rich data layer — mirrors the on-screen Report Preview
+  gender_breakdown?: Array<{ label: string; enrolled: number; completed: number }>;
+  question_averages?: Array<{ short_label: string; avg: number; status: 'green' | 'amber' | 'red'; flag_name: string }>;
+  triggered_clusters_detailed?: Array<{ label: string; interpretation: string }>;
+  triggered_flags_detailed?: Array<{ flag_name: string; affected_employees: number; average_pct: number; recommendation: string; service_label: string; productivity_cost_days_per_month: number }>;
+  action_plan?: Array<{ week: number; title: string; items: string[] }>;
+  business_impact_extended?: {
+    annual_cost_min?: number; annual_cost_mid?: number; annual_cost_max?: number;
+    lost_days_min?: number; lost_days_max?: number;
+    eap_investment?: number; projected_roi_x?: number; monthly_cost?: number;
+  } | null;
 }
 
 const PRIMARY: [number, number, number] = [91, 106, 191]; // #5B6ABF
