@@ -67,24 +67,18 @@ export async function generateCompanyReportPdf(d: CompanyReportData): Promise<Bl
   };
 
   const drawFooterBanner = async () => {
-    try {
-      const banner = await loadImage(FOOTER_BANNER);
-      const ratio = banner.height / banner.width;
-      const bw = pageW;
-      const bh = bw * ratio;
-      pdf.addImage(banner, 'PNG', 0, pageH - bh, bw, bh);
-    } catch {
-      pdf.setFillColor(...PRIMARY);
-      pdf.rect(0, pageH - 12, pageW, 12, 'F');
-      pdf.setTextColor(255, 255, 255);
-      pdf.setFontSize(9);
-      pdf.text('InnerSpark Africa  •  www.innersparkafrica.com  •  info@innersparkafrica.com', pageW / 2, pageH - 5, { align: 'center' });
-      pdf.setTextColor(...TEXT);
-    }
+    // Footer banner intentionally removed to maximise content space per page.
+    // Keep a thin brand strip with contact info instead.
+    pdf.setFillColor(...PRIMARY);
+    pdf.rect(0, pageH - 8, pageW, 8, 'F');
+    pdf.setTextColor(255, 255, 255);
+    pdf.setFontSize(8);
+    pdf.text('InnerSpark Africa  •  www.innersparkafrica.com  •  info@innersparkafrica.com', pageW / 2, pageH - 3, { align: 'center' });
+    pdf.setTextColor(...TEXT);
   };
 
   const ensureSpace = async (h: number) => {
-    if (y + h > pageH - 30) {
+    if (y + h > pageH - 14) {
       await drawFooterBanner();
       pdf.addPage();
       await drawHeader();
