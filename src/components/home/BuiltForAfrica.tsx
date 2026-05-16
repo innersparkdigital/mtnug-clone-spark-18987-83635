@@ -3,7 +3,7 @@ import ScrollReveal from "@/components/ScrollReveal";
 
 const features = [
   { icon: Smartphone, title: "Mobile Money", desc: "Pay seamlessly with MTN MoMo & Airtel Money." },
-  { icon: MessageCircle, title: "WhatsApp booking", desc: "Book or get help over WhatsApp — no app required." },
+  { icon: MessageCircle, title: "WhatsApp booking", desc: "Book or get help over WhatsApp." },
   { icon: Wifi, title: "Low-bandwidth ready", desc: "Optimised app that works on slow, mobile networks." },
   { icon: Languages, title: "Multilingual therapists", desc: "Sessions in Luganda, Swahili, English, French and more." },
   { icon: Users, title: "Culturally trained pros", desc: "Therapists who understand African families & faith." },
