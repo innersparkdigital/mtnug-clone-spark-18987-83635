@@ -401,56 +401,23 @@ const Services = () => {
       </section>
 
 
-      {/* Plan comparison */}
-      <section className="py-20 bg-muted">
-        <div className="container mx-auto px-4 max-w-5xl">
-          <ScrollReveal>
-            <h2 className="text-3xl md:text-4xl font-bold text-center text-foreground mb-3">Compare our plans</h2>
-            <p className="text-center text-muted-foreground mb-10 max-w-2xl mx-auto">Choose the plan that fits where you are right now. You can switch any time.</p>
-          </ScrollReveal>
-          <div className="overflow-x-auto rounded-2xl border border-border bg-background">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-muted/50">
-                  <th className="text-left p-4 font-semibold text-foreground">Feature</th>
-                  <th className="p-4 font-semibold text-foreground">Basic</th>
-                  <th className="p-4 font-semibold text-primary relative">
-                    Standard
-                    <span className="absolute top-1 right-2 text-[10px] bg-green-wellness text-primary-foreground px-2 py-0.5 rounded-full">Most Popular</span>
-                  </th>
-                  <th className="p-4 font-semibold text-foreground">Premium</th>
-                </tr>
-              </thead>
-              <tbody className="text-center">
-                {[
-                  ["Licensed therapist", "✓", "✓", "✓"],
-                  ["Sessions / month", "1", "4", "8"],
-                  ["Chat support", "—", "✓", "✓"],
-                  ["Group sessions", "—", "✓", "✓"],
-                  ["WHO-5 screening", "✓", "✓", "✓"],
-                  ["Priority matching", "—", "—", "✓"],
-                  ["Family / couples", "—", "—", "✓"],
-                  ["Starting price", "UGX 30,000", "UGX 100,000", "UGX 220,000"],
-                ].map((row) => (
-                  <tr key={row[0]} className="border-t border-border">
-                    <td className="text-left p-4 font-medium text-foreground">{row[0]}</td>
-                    <td className="p-4 text-muted-foreground">{row[1]}</td>
-                    <td className="p-4 text-foreground bg-primary/5 font-medium">{row[2]}</td>
-                    <td className="p-4 text-muted-foreground">{row[3]}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Payment methods */}
-          <div className="mt-12 text-center">
-            <p className="text-xs font-semibold tracking-[0.06em] uppercase text-muted-foreground mb-4">Payment methods accepted</p>
-            <div className="flex flex-wrap items-center justify-center gap-3">
-              {["MTN Mobile Money", "Airtel Money", "Visa", "Mastercard", "Bank Transfer"].map((p) => (
-                <span key={p} className="px-4 py-2 rounded-full bg-background border border-border text-sm font-medium text-foreground">{p}</span>
-              ))}
-            </div>
+      {/* Payment methods */}
+      <section className="py-16 bg-muted">
+        <div className="container mx-auto px-4 max-w-5xl text-center">
+          <p className="text-xs font-semibold tracking-[0.06em] uppercase text-muted-foreground mb-6">Payment methods accepted</p>
+          <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6">
+            {[
+              { src: mtnMomoLogo, alt: "MTN Mobile Money" },
+              { src: airtelMoneyLogo, alt: "Airtel Money" },
+              { src: mpesaLogo, alt: "M-Pesa" },
+              { src: pesapalLogo, alt: "PesaPal" },
+              { src: visaLogo, alt: "Visa" },
+              { src: mastercardLogo, alt: "Mastercard" },
+            ].map((p) => (
+              <div key={p.alt} className="bg-background border border-border rounded-xl px-4 py-3 flex items-center justify-center h-16 w-28 md:h-20 md:w-32">
+                <img src={p.src} alt={p.alt} loading="lazy" className="max-h-10 md:max-h-12 w-auto object-contain" />
+              </div>
+            ))}
           </div>
         </div>
       </section>
