@@ -20,11 +20,12 @@ const TrustStatsBar = () => {
   const { is_visible, data } = useSiteSection("trust_stats_bar", FALLBACK);
   if (!is_visible) return null;
   const items = data.items || [];
+  const colsClass = items.length >= 4 ? "md:grid-cols-4" : items.length === 3 ? "md:grid-cols-3" : items.length === 2 ? "md:grid-cols-2" : "md:grid-cols-1";
 
   return (
     <section className="bg-primary text-primary-foreground py-6">
       <div className="container mx-auto px-4">
-        <div className={`grid grid-cols-2 ${items.length >= 4 ? "md:grid-cols-4" : "md:grid-cols-" + items.length} gap-6 md:gap-8`}>
+        <div className={`grid grid-cols-2 ${colsClass} gap-6 md:gap-8`}>
           {items.map((stat, index) => {
             const Icon = ICONS[stat.icon || "Star"] || Star;
             return (
