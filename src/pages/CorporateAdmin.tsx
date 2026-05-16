@@ -1377,13 +1377,17 @@ const CorporateAdmin = () => {
                           </div>
                         </div>
 
-                        <div className="flex flex-wrap gap-2">
-                        <Button variant="secondary" onClick={() => setPreviewOpen(true)}>
-                          <FileText className="w-4 h-4 mr-2" /> Preview Report
-                        </Button>
-                        <Button variant="outline" disabled={downloadingPdf} onClick={async () => {
-                          setDownloadingPdf(true);
-                          try {
+                         <div className="flex flex-wrap gap-2">
+                         <Button variant="outline" disabled={downloadingPdf} onClick={async () => {
+                           // Open preview first; download happens from inside the dialog.
+                           setPreviewOpen(true);
+                         }}>
+                           <FileText className="w-4 h-4 mr-2" />
+                           Preview & Download PDF Report
+                         </Button>
+                         {false && <Button onClick={async () => {
+                           setDownloadingPdf(true);
+                           try {
                             const period = new Date().toLocaleDateString('en-UG', { year: 'numeric', month: 'long' });
                             const businessImpact = includeBusinessImpact && completedScreenings > 0
                               ? calculateBusinessImpact(
@@ -1430,13 +1434,10 @@ const CorporateAdmin = () => {
                           } catch (e: any) {
                             console.error('PDF generation failed', e);
                             toast.error('Could not generate PDF: ' + (e?.message || 'unknown'));
-                          } finally {
-                            setDownloadingPdf(false);
-                          }
-                        }}>
-                          {downloadingPdf ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <FileText className="w-4 h-4 mr-2" />}
-                          {downloadingPdf ? 'Generating PDF…' : 'Download PDF Report'}
-                        </Button>
+                           } finally {
+                             setDownloadingPdf(false);
+                           }
+                         }}>placeholder</Button>}
                         <Button disabled={sendingReport} onClick={async () => {
                           if (!selectedCompany?.contact_email) {
                             toast.error('Add a contact email to this company first (Manage tab → edit company)');
