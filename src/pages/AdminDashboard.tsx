@@ -679,6 +679,11 @@ const AdminDashboard = () => {
               <TherapistsTab />
             </TabsContent>
           )}
+          {isAdmin && (
+            <TabsContent value="site-sections">
+              <SiteSectionsTab />
+            </TabsContent>
+          )}
         </Tabs>
       </main>
 
