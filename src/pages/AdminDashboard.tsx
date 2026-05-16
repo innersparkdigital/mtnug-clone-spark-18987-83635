@@ -28,6 +28,7 @@ import ChatLeadsTab from '@/components/admin/ChatLeadsTab';
 import WhispersTab from '@/components/admin/WhispersTab';
 import CrisisAlertsTab from '@/components/admin/CrisisAlertsTab';
 import TherapistsTab from '@/components/admin/TherapistsTab';
+import SiteSectionsTab from '@/components/admin/SiteSectionsTab';
 import { 
   BookOpen, 
   GraduationCap, 
@@ -277,6 +278,12 @@ const AdminDashboard = () => {
               <TabsTrigger value="therapists" className="gap-2">
                 <Stethoscope className="h-4 w-4" />
                 Therapists
+              </TabsTrigger>
+            )}
+            {isAdmin && (
+              <TabsTrigger value="site-sections" className="gap-2">
+                <FileText className="h-4 w-4" />
+                Site Sections
               </TabsTrigger>
             )}
           </TabsList>
