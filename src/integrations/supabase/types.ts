@@ -1950,6 +1950,33 @@ export type Database = {
         }
         Relationships: []
       }
+      site_sections: {
+        Row: {
+          data: Json
+          id: string
+          is_visible: boolean
+          section_key: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          data?: Json
+          id?: string
+          is_visible?: boolean
+          section_key: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          data?: Json
+          id?: string
+          is_visible?: boolean
+          section_key?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       specialist_availability: {
         Row: {
           day_of_week: number
