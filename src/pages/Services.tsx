@@ -14,6 +14,12 @@ import virtualTherapy from "@/assets/virtual-therapy-service-new.png";
 import supportGroups from "@/assets/support-groups-service-new.png";
 import wellnessResources from "@/assets/wellness-resources-service-new.png";
 import corporateWellness from "@/assets/corporate-wellness-service-new.png";
+import mtnMomoLogo from "@/assets/payments/mtn-momo.png";
+import airtelMoneyLogo from "@/assets/payments/airtel-money.png";
+import mpesaLogo from "@/assets/payments/mpesa.png";
+import pesapalLogo from "@/assets/payments/pesapal.png";
+import visaLogo from "@/assets/payments/visa.png";
+import mastercardLogo from "@/assets/payments/mastercard.png";
 
 
 const servicesSchema = {
