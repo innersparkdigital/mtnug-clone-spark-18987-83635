@@ -18,6 +18,7 @@ const ImpactCounter = () => {
   const { is_visible, data } = useSiteSection("impact_counter", FALLBACK);
   if (!is_visible) return null;
   const items = data.items || [];
+  const colsClass = items.length >= 4 ? "md:grid-cols-4" : items.length === 3 ? "md:grid-cols-3" : items.length === 2 ? "md:grid-cols-2" : "md:grid-cols-1";
 
   return (
     <section className="py-16 bg-primary text-primary-foreground">
@@ -30,7 +31,7 @@ const ImpactCounter = () => {
             <h2 className="text-2xl md:text-3xl font-display font-bold text-center mb-10">{data.title}</h2>
           )}
         </ScrollReveal>
-        <div className={`grid grid-cols-1 md:grid-cols-${Math.min(items.length, 4) || 3} gap-8 max-w-4xl mx-auto text-center`}>
+        <div className={`grid grid-cols-1 ${colsClass} gap-8 max-w-4xl mx-auto text-center`}>
           {items.map((s, i) => (
             <div key={s.label + i}>
               <div className="text-4xl md:text-5xl font-display font-bold mb-2">{s.value}</div>
