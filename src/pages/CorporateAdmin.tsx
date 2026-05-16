@@ -1385,59 +1385,6 @@ const CorporateAdmin = () => {
                            <FileText className="w-4 h-4 mr-2" />
                            Preview & Download PDF Report
                          </Button>
-                         {false && <Button onClick={async () => {
-                           setDownloadingPdf(true);
-                           try {
-                            const period = new Date().toLocaleDateString('en-UG', { year: 'numeric', month: 'long' });
-                            const businessImpact = includeBusinessImpact && completedScreenings > 0
-                              ? calculateBusinessImpact(
-                                  { healthy: greenCount, at_risk: yellowCount, critical: redCount },
-                                  baselineSalary,
-                                )
-                              : null;
-                            const recommended_services_pdf = serviceCatalog
-                              .filter(s => selectedServiceIds.has(s.id))
-                              .map(s => ({
-                                name: s.name, description: s.description,
-                                physical_price: s.physical_price, virtual_price: s.virtual_price,
-                                per_employee_price: s.per_employee_price, unit_label: s.unit_label,
-                                reason: serviceReasons[s.id]?.trim() || undefined,
-                              }));
-                            const blob = await generateCompanyReportPdf({
-                              contact_name: selectedCompany.contact_person,
-                              company_name: selectedCompany.name,
-                              reporting_period: period,
-                              total_employees: totalEmployees,
-                              total_completed: completedScreenings,
-                              completion_rate: participationRate,
-                              avg_who5: avgScore,
-                              high_count: greenCount,
-                              moderate_count: yellowCount,
-                              low_count: redCount,
-                              high_wellbeing_pct: completedScreenings > 0 ? Math.round((greenCount / completedScreenings) * 100) : 0,
-                              moderate_wellbeing_pct: completedScreenings > 0 ? Math.round((yellowCount / completedScreenings) * 100) : 0,
-                              low_wellbeing_pct: completedScreenings > 0 ? Math.round((redCount / completedScreenings) * 100) : 0,
-                              needs_support_count: needsSupportCount,
-                              sections: reportSections,
-                              observations: observations.trim() || null,
-                              recommended_services: recommended_services_pdf,
-                              business_impact: businessImpact as any,
-                              section_overrides: sectionOverrides,
-                            });
-                            const url = URL.createObjectURL(blob);
-                            const a = document.createElement('a');
-                            a.href = url;
-                            a.download = `${selectedCompany.name.replace(/\s+/g, '_')}_wellbeing_report.pdf`;
-                            a.click();
-                            URL.revokeObjectURL(url);
-                            toast.success('PDF report downloaded');
-                          } catch (e: any) {
-                            console.error('PDF generation failed', e);
-                            toast.error('Could not generate PDF: ' + (e?.message || 'unknown'));
-                           } finally {
-                             setDownloadingPdf(false);
-                           }
-                         }}>placeholder</Button>}
                         <Button disabled={sendingReport} onClick={async () => {
                           if (!selectedCompany?.contact_email) {
                             toast.error('Add a contact email to this company first (Manage tab → edit company)');
