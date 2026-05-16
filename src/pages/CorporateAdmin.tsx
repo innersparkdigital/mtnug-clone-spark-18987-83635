@@ -2024,6 +2024,46 @@ const CorporateAdmin = () => {
                                     per_employee_price: s.per_employee_price, unit_label: s.unit_label,
                                     reason: serviceReasons[s.id]?.trim() || undefined,
                                   }));
+                                // Rich data layer — mirrors the on-screen Report Preview exactly
+                                const richRecordsPdf = screenings.map((s: any) => answerMapFromLegacy(s)).filter(Boolean) as any[];
+                                const insightPdf = aggregateCompany(richRecordsPdf);
+                                const genderMapPdf: Record<string, { enrolled: number; completed: number }> = {};
+                                employees.forEach((e) => {
+                                  const g = e.gender ? e.gender.charAt(0).toUpperCase() + e.gender.slice(1).toLowerCase() : 'Unspecified';
+                                  if (!genderMapPdf[g]) genderMapPdf[g] = { enrolled: 0, completed: 0 };
+                                  genderMapPdf[g].enrolled += 1;
+                                  if (e.screening_completed) genderMapPdf[g].completed += 1;
+                                });
+                                const gender_breakdown_pdf = Object.entries(genderMapPdf).map(([label, v]) => ({ label, enrolled: v.enrolled, completed: v.completed }));
+                                const question_averages_pdf = completedScreenings > 0 ? QUESTION_ORDER.map((q) => ({
+                                  short_label: QUESTION_INTELLIGENCE[q].shortLabel,
+                                  avg: insightPdf.questionAverages[q],
+                                  status: insightPdf.questionFlagStatus[q] as 'green' | 'amber' | 'red',
+                                  flag_name: QUESTION_INTELLIGENCE[q].flagName,
+                                })) : undefined;
+                                const triggered_clusters_pdf = completedScreenings > 0 ? insightPdf.triggeredClusters.map((cid) => ({
+                                  label: CLUSTER_INFO[cid].label,
+                                  interpretation: CLUSTER_INFO[cid].interpretation,
+                                })) : undefined;
+                                const triggered_flags_pdf = completedScreenings > 0 ? insightPdf.triggeredFlags.map((f) => ({
+                                  flag_name: f.flagName,
+                                  affected_employees: f.affectedEmployees,
+                                  average_pct: f.averagePct,
+                                  recommendation: f.recommendation,
+                                  service_label: f.serviceLabel,
+                                  productivity_cost_days_per_month: f.productivityCostDaysPerMonth,
+                                })) : undefined;
+                                const action_plan_pdf = completedScreenings > 0 && insightPdf.actionPlan.length > 0 ? insightPdf.actionPlan : undefined;
+                                const business_impact_extended_pdf = businessImpact ? {
+                                  annual_cost_min: businessImpact.estimatedAnnualCostMin,
+                                  annual_cost_mid: businessImpact.estimatedAnnualCostMidpoint,
+                                  annual_cost_max: businessImpact.estimatedAnnualCostMax,
+                                  lost_days_min: businessImpact.estimatedDaysLostMin,
+                                  lost_days_max: businessImpact.estimatedDaysLostMax,
+                                  eap_investment: businessImpact.estimatedEAPCost,
+                                  projected_roi_x: businessImpact.estimatedROI,
+                                  monthly_cost: businessImpact.costOfInactionPerMonth,
+                                } : null;
                                 const blob = await generateCompanyReportPdf({
                                   contact_name: selectedCompany.contact_person,
                                   company_name: selectedCompany.name,
@@ -2044,6 +2084,12 @@ const CorporateAdmin = () => {
                                   recommended_services: recommended_services_pdf,
                                   business_impact: businessImpact as any,
                                   section_overrides: sectionOverrides,
+                                  gender_breakdown: gender_breakdown_pdf,
+                                  question_averages: question_averages_pdf,
+                                  triggered_clusters_detailed: triggered_clusters_pdf,
+                                  triggered_flags_detailed: triggered_flags_pdf,
+                                  action_plan: action_plan_pdf,
+                                  business_impact_extended: business_impact_extended_pdf,
                                 });
                                 const url = URL.createObjectURL(blob);
                                 const a = document.createElement('a');
