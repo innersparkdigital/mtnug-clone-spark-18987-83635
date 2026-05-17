@@ -1950,6 +1950,63 @@ export type Database = {
         }
         Relationships: []
       }
+      session_feedback: {
+        Row: {
+          client_name: string | null
+          created_at: string
+          flagged_for_review: boolean
+          id: string
+          open_comment: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          session_addressed: string
+          session_code: string
+          star_rating: number
+          submitted_at: string
+          therapist_fit: string
+          therapist_name: string
+          therapist_slug: string | null
+          would_rebook: string
+          would_recommend: string
+        }
+        Insert: {
+          client_name?: string | null
+          created_at?: string
+          flagged_for_review?: boolean
+          id?: string
+          open_comment?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          session_addressed: string
+          session_code: string
+          star_rating: number
+          submitted_at?: string
+          therapist_fit: string
+          therapist_name: string
+          therapist_slug?: string | null
+          would_rebook: string
+          would_recommend: string
+        }
+        Update: {
+          client_name?: string | null
+          created_at?: string
+          flagged_for_review?: boolean
+          id?: string
+          open_comment?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          session_addressed?: string
+          session_code?: string
+          star_rating?: number
+          submitted_at?: string
+          therapist_fit?: string
+          therapist_name?: string
+          therapist_slug?: string | null
+          would_rebook?: string
+          would_recommend?: string
+        }
+        Relationships: []
+      }
       site_sections: {
         Row: {
           data: Json
@@ -2642,6 +2699,10 @@ export type Database = {
       lock_campaign_slug: { Args: { _slug: string }; Returns: undefined }
       lookup_employee_by_code: { Args: { _code: string }; Returns: Json }
       lookup_employee_by_token: { Args: { _token: string }; Returns: Json }
+      merge_feedback_therapist_names: {
+        Args: { _from: string; _to: string }
+        Returns: number
+      }
       move_to_dlq: {
         Args: {
           dlq_name: string
