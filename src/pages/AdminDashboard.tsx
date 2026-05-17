@@ -29,6 +29,7 @@ import WhispersTab from '@/components/admin/WhispersTab';
 import CrisisAlertsTab from '@/components/admin/CrisisAlertsTab';
 import TherapistsTab from '@/components/admin/TherapistsTab';
 import SiteSectionsTab from '@/components/admin/SiteSectionsTab';
+import FeedbackTab from '@/components/admin/FeedbackTab';
 import { 
   BookOpen, 
   GraduationCap, 
@@ -284,6 +285,12 @@ const AdminDashboard = () => {
               <TabsTrigger value="site-sections" className="gap-2">
                 <FileText className="h-4 w-4" />
                 Site Sections
+              </TabsTrigger>
+            )}
+            {isAdmin && (
+              <TabsTrigger value="feedback" className="gap-2">
+                <FileText className="h-4 w-4" />
+                Feedback
               </TabsTrigger>
             )}
           </TabsList>
@@ -682,6 +689,11 @@ const AdminDashboard = () => {
           {isAdmin && (
             <TabsContent value="site-sections">
               <SiteSectionsTab />
+            </TabsContent>
+          )}
+          {isAdmin && (
+            <TabsContent value="feedback">
+              <FeedbackTab />
             </TabsContent>
           )}
         </Tabs>
