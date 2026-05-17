@@ -137,6 +137,7 @@ import CmsEventPost from "./pages/CmsEventPost";
 import ThankYou from "./pages/ThankYou";
 import CorporateServiceRequest from "./pages/CorporateServiceRequest";
 import Whisper from "./pages/Whisper";
+import SessionFeedback from "./pages/SessionFeedback";
 
 const queryClient = new QueryClient();
 
@@ -281,6 +282,7 @@ const App = () => (
             <Route path="/blog/:slug" element={<CmsBlogPost />} />
             <Route path="/events-training/:slug" element={<CmsEventPost />} />
             <Route path="/unsubscribe" element={<Unsubscribe />} />
+            <Route path="/feedback" element={<SessionFeedback />} />
             {/* Thank You / Conversion Tracking pages */}
             <Route path="/thank-you-booking" element={<ThankYou type="booking" />} />
             <Route path="/thank-you-contact" element={<ThankYou type="contact" />} />
