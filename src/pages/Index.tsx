@@ -21,6 +21,7 @@ import ImpactCounter from "@/components/home/ImpactCounter";
 import SDGAlignment from "@/components/home/SDGAlignment";
 import WhisperTeaser from "@/components/home/WhisperTeaser";
 import { useSectionVisibility } from "@/hooks/useSectionVisibility";
+import GeoKenyaBanner from "@/components/GeoKenyaBanner";
 
 const Index = () => {
   const v = {
