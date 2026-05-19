@@ -1,108 +1,87 @@
-# Campaign Landing Page + Screening Anxiety FAQ
 
-Two tightly coupled features that become every employee's first touchpoint: a branded `innersparkafrica.com/check/[slug]` landing page and a collapsible 5-question FAQ that addresses participation-blocking fears (employer privacy, job security, HIV-test confusion, WHO credibility, what-happens-next) in English, Luganda and Kiswahili.
+This is a large two-part build. I'll implement it in a single coordinated pass, but flagging scope so you can confirm before I start.
 
----
+## Part 1 — Kenya Homepage (/kenya)
 
-## 1. Database changes (one migration)
+**New route `/kenya`** — a dedicated Kenya-market homepage with KES pricing and M-Pesa instructions. Reuses existing Header/Footer with a "Kenya" badge added beside the logo when on this route.
 
-**Extend `corporate_companies`** (we'll keep "company = campaign" since you currently model 1 active screening cycle per company; no need for a new table yet):
+Sections built (all per spec):
+1. Hero (Spark Blue, two-column, two CTAs → `/book?market=kenya` and `/check/kenya`)
+2. Warmth orange stripe (4px #F2994A)
+3. Trust strip (4 pills)
+4. Problem section (1 in 4 Kenyans stat, Kenya Mental Health Policy source)
+5. How It Works (3 numbered steps, M-Pesa *840# instructions in step 2)
+6. Services (2×2 grid — Individual, Free Check, Support Groups, Corporate)
+7. Therapist preview (pulls 3 therapists tagged `kenya: true`, falls back to top 3)
+8. Pricing (KES 2,600 / KES 9,600 / Free, full M-Pesa payment box)
+9. Testimonials (pulls 5-star session_feedback with `client_consented_to_display=true`, falls back to 3 placeholder Kenya cards)
+10. Final CTA (Deep Night, warmth stripes top/bottom)
+11. Footer additions (Serving East Africa, Kenya WhatsApp line, M-Pesa instructions)
 
-| Column | Type | Notes |
-|---|---|---|
-| `slug` | text, UNIQUE | auto-generated from name; locked once any employee accesses |
-| `slug_locked` | bool default false | flipped on first public hit |
-| `logo_url` | text | Supabase Storage public URL |
-| `campaign_headline` | text | optional; auto-generated when blank |
-| `campaign_subtext` | text | optional |
-| `campaign_close_date` | timestamptz | required for countdown |
-| `languages_enabled` | text[] default `{'en'}` | subset of en/lg/sw |
-| `mode` | text default `'corporate'` | corporate / community / informal |
-| `incentive_amount_ugx` | int default 0 | airtime amount; 0 hides banner |
+**SEO** — page title, meta description, Kenya-targeted keywords (online therapy Kenya, therapist Nairobi, counselling Kenya, M-Pesa therapy, mental health Kenya, depression therapist Kenya, anxiety counsellor Nairobi, online psychologist Mombasa Kisumu, EAP Kenya, Kiswahili therapy), canonical, JSON-LD LocalBusiness + FAQPage.
 
-**New table `campaign_faq_events`** (analytics):
-- `company_id`, `session_id` (anon), `event_type` ('faq_opened'|'faq_item_opened'|'faq_completed'), `item_index` (1-5, nullable), `language`, `created_at`. RLS: anyone INSERT, admins SELECT.
+**Shared page tweaks (minimal):**
+- `/check/kenya` — new public WHO-5 page (no employer context, EN/Kiswahili selector, results CTA → `/book?market=kenya`)
+- `/book` flow — when `?market=kenya` OR phone starts with +254: show "KES 2,600" / "KES 9,600", M-Pesa as first payment method, pre-filter Kenya therapists
+- `/specialists` — new "Kenya" filter chip; therapists with `kenya=true` shown first
+- Index.tsx — geo-detection banner (Kenya timezone or sw-KE / ke locale), dismissable to sessionStorage `ke_banner_dismissed`
 
-**New SECURITY DEFINER RPC `get_campaign_by_slug(_slug text)`** returns only the public-safe fields (no contact email/phone, no context_notes) so the page works without auth.
-
-**New SECURITY DEFINER RPC `get_campaign_completion(_company_id uuid)`** returns `{ completed_count, total_employees }`.
-
-**New storage bucket `company-logos`** (public).
-
----
-
-## 2. Public route `/check/:slug`
-
-New page `src/pages/CampaignLanding.tsx` registered in `App.tsx`. Behaviour:
-
-- Loads campaign via `get_campaign_by_slug` RPC.
-- Slug not found → branded 404 panel.
-- `campaign_close_date` in past → "This wellbeing check has now closed" panel.
-- Otherwise renders Zones 1–9 per spec.
-
-**Zones implemented:**
-1. Hero (Spark Blue `#3B4FD4`) with company logo (white pill) × InnerSpark logo, auto-generated or custom headline/subtext.
-2. 4px `#F2994A` warmth stripe.
-3. Language selector (only when `languages_enabled.length > 1`); writes `is_lang` to sessionStorage.
-4. Live countdown timer (D/H/M/S, `setInterval`, translated labels).
-5. Participation progress bar — polled every 5 min via `get_campaign_completion`.
-6. **`<ScreeningAnxietyFAQ />`** (Feature 2 — see §3).
-7. CTA → navigates to existing corporate screening entry with `?slug=…&lang=…`.
-8. Myths card (only `mode=community|informal`).
-9. Incentive banner (only `incentive_amount_ugx > 0`).
-
-All visible strings live in a local `TRANSLATIONS` object keyed by `en|lg|sw`.
+**DB additions for Part 1:**
+- `specialists.kenya boolean default false`
+- `session_feedback.client_consented_to_display boolean default false`
+- `session_feedback.client_display_name text`
 
 ---
 
-## 3. `ScreeningAnxietyFAQ` component
+## Part 2 — Referral Link System
 
-`src/components/wellbeing/ScreeningAnxietyFAQ.tsx`
+**New tables:**
+- `referral_links` — slug (unique), referrer_name/phone/email, market, link_type, discount_amount_kes, reward_type, reward_value, custom_message, is_active, notes
+- `referral_clicks` — referral_link_id, clicked_at, ip_hash, user_agent, converted, booking_id
+- `referral_conversions` — referral_link_id, booking_id, session_amount_kes, discount_applied, reward_issued
 
-- Props: `language`, `mode`, optional `companyId` (used for analytics).
-- Accordion: one open at a time, `+` rotates 45° to `×`, `max-height` transition (250 ms ease).
-- Green `No.` / `Yes.` lead-word styling at the start of each answer.
-- Confirmation row at bottom: "I understand — show me the check" (informational only, not a button).
-- All 5 Q&A items + section/confirm copy in EN/LG/SW exactly per spec, in fixed order (employer → job → HIV → WHO → next steps).
-- Analytics: insert into `campaign_faq_events` on first open per session (`faq_opened`), every item open (`faq_item_opened`), and once 3+ items have been opened (`faq_completed`). Session id = `crypto.randomUUID()` cached in sessionStorage.
-- Mobile auto-scroll-into-view on open.
+RLS: admin-only for management; public can INSERT clicks via edge function; public SELECT only on active links by slug via SECURITY DEFINER RPC `get_referral_link_by_slug`.
 
-Reusable on the existing screening entry page too (drop in above the consent form).
+**New public route `/kenya/ref/:slug`** — logs click via RPC, sets `innerspark_ref` cookie (30-day), redirects to `/kenya`. If inactive, shows "expired link" page.
 
----
+**Referral banner** on `/kenya` — reads cookie, shows green personalized banner with custom_message or default; dismissable for session only.
 
-## 4. Admin additions in `CorporateAdmin.tsx`
+**Booking integration** — on booking submission, if cookie present, call `record_referral_conversion` RPC to link booking, apply discount, mark click converted, queue reward.
 
-In the existing **company create/edit form**, add a "Campaign settings" section with:
+**Admin "Referral Links" tab** in `AdminDashboard`:
+- 4 metric cards (active links, clicks, conversions, conv. rate)
+- Filters (market, link type, date range)
+- "+ Create referral link" modal (all spec fields, slug auto-gen + uniqueness check)
+- Links table (referrer, market, slug+copy, clicks, bookings, conv%, pending rewards, pause toggle, actions)
+- Detail view (perf metrics, Recharts timeline, clicks table, conversions table, rewards panel with "Mark as issued")
+- Share panel — 4 pre-formatted templates (WhatsApp DM, WhatsApp Group, WhatsApp Status, LinkedIn) with copy buttons
+- Bulk CSV create (template download, preview, batch insert)
 
-- Slug field (auto-filled from name; editable until `slug_locked=true`, then read-only with a hint and a copy-button showing full URL).
-- Logo upload (JPG/PNG/SVG/WebP, ≤2 MB) → uploads to `company-logos` bucket, stores public URL.
-- Headline (max 120, char counter), subtext (max 200), close-date picker.
-- Mode radios (Corporate / Community / Informal sector).
-- Languages multi-checkbox (en/lg/sw).
-- Airtime incentive (UGX number).
-
-In the company detail header:
-
-- "Copy employee link" button (clipboard + toast).
-- "Download QR code" button — uses `qrcode` npm package to generate PNG and download.
-
-In the **Analytics tab**, new "Engagement" sub-section: FAQ opened rate, most-viewed question, FAQ completion rate (computed from `campaign_faq_events` joined on completed screenings).
+**Notifications** — edge function `notify-referral-conversion` sends WhatsApp-formatted message via existing email/notification pipeline to referrer + admin on conversion, and to referrer when reward issued.
 
 ---
 
-## 5. Things deliberately deferred / not in this build
+## Scope notes & assumptions
 
-- Existing assessment question flow, consent form copy, results page, and HR dashboard are untouched (per spec).
-- Sending airtime is out of scope — banner only displays the promise.
-- Translating the existing `CorporateWellbeingCheck` assessment screens into LG/SW is **not** included; only the landing page + FAQ are translated. The selected `lang` is forwarded as `?lang=…` so a future pass can wire the assessment screens.
+- **Pricing inconsistency in your spec**: hero says "From KES 2,600", Final CTA button says "KES 1,700", Banner default says "KES [1700 - discount]". I'll standardize on **KES 2,600 base** with discount math: `displayed = 2600 - discount_amount_kes` (default discount 200 → KES 2,400 referred). The Final CTA button will read "Book my first session — from KES 2,600". Please correct if you want a different base.
+- M-Pesa instructions use the existing Airtel number you provided (0740 616 404 / Innerspark Recovery Ltd) per spec.
+- Therapist `kenya` tag will default to `false`; you'll need to flip the flag on specific therapists from admin (I'll add a checkbox in the specialist edit form). Until tagged, the preview falls back to top 3 specialists.
+- Booking flow KES override is **display-only** on the form. PesaPal still charges in UGX (75,000) since the M-Pesa flow is manual via *840#. I'll add a clear note: "Pay via M-Pesa using *840# — see instructions" and skip auto-PesaPal for Kenya bookings, switching to "Confirm booking → we'll send M-Pesa instructions on WhatsApp".
+- WhatsApp notifications use the existing `send-resend-email` style edge function pattern (no Twilio integration) — referrer gets an email if email provided, otherwise the admin gets the notification to manually WhatsApp them. (Adding outbound WhatsApp would require a new provider; not in scope here.)
+- Geo-banner only on `/` (Index.tsx) — not on every page.
+- I will NOT touch existing booking/payment processing logic, the WHO-5 scoring, admin dashboard structure, or any other existing page beyond what's listed.
 
 ---
 
-## Decisions I need from you
+## Execution order
 
-1. **One campaign per company** — confirm we keep slug/headline/etc. on `corporate_companies` (matches your current model). If you want multi-cycle campaigns later, we'd add a separate `corporate_campaigns` table — bigger refactor, not in this pass.
-2. **Existing companies without close-date or slug** — on migration I'll auto-generate slugs from current names and leave close-date NULL (countdown hidden until you set one). OK?
-3. **CTA destination** — route to your existing `CorporateWellbeingCheck` entry with `?slug=…&lang=…`, or create a new dedicated `/check/:slug/start` consent page?
+1. Migration: add columns to `specialists` + `session_feedback`, create 3 referral tables + RPCs + RLS
+2. Build `/kenya` page + Kenya badge in Header + Footer additions
+3. Build `/check/kenya` page
+4. Build `/kenya/ref/:slug` redirect page + referral banner + cookie helper
+5. Tweak `/book` and `/specialists` for Kenya market
+6. Add geo-banner to Index
+7. Build `FeedbackTab`-style `ReferralLinksTab` + integrate into AdminDashboard
+8. Add notification edge function
 
-Reply with answers (or "go ahead with defaults") and I'll ship the migration + code in the next turn.
+Reply **"go"** to proceed, or send corrections (especially the **KES 2,600 vs 1,700** price question) and I'll adjust before building.
