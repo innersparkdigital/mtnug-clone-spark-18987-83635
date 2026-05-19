@@ -1950,8 +1950,161 @@ export type Database = {
         }
         Relationships: []
       }
+      referral_clicks: {
+        Row: {
+          booking_id: string | null
+          clicked_at: string
+          converted: boolean
+          id: string
+          ip_hash: string | null
+          referral_link_id: string
+          user_agent: string | null
+        }
+        Insert: {
+          booking_id?: string | null
+          clicked_at?: string
+          converted?: boolean
+          id?: string
+          ip_hash?: string | null
+          referral_link_id: string
+          user_agent?: string | null
+        }
+        Update: {
+          booking_id?: string | null
+          clicked_at?: string
+          converted?: boolean
+          id?: string
+          ip_hash?: string | null
+          referral_link_id?: string
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referral_clicks_referral_link_id_fkey"
+            columns: ["referral_link_id"]
+            isOneToOne: false
+            referencedRelation: "referral_links"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      referral_conversions: {
+        Row: {
+          booking_id: string | null
+          booking_reference: string | null
+          client_name: string | null
+          client_phone: string | null
+          converted_at: string
+          discount_applied: number
+          id: string
+          notes: string | null
+          referral_link_id: string
+          reward_issued: boolean
+          reward_issued_at: string | null
+          reward_issued_by: string | null
+          session_amount_kes: number
+        }
+        Insert: {
+          booking_id?: string | null
+          booking_reference?: string | null
+          client_name?: string | null
+          client_phone?: string | null
+          converted_at?: string
+          discount_applied?: number
+          id?: string
+          notes?: string | null
+          referral_link_id: string
+          reward_issued?: boolean
+          reward_issued_at?: string | null
+          reward_issued_by?: string | null
+          session_amount_kes?: number
+        }
+        Update: {
+          booking_id?: string | null
+          booking_reference?: string | null
+          client_name?: string | null
+          client_phone?: string | null
+          converted_at?: string
+          discount_applied?: number
+          id?: string
+          notes?: string | null
+          referral_link_id?: string
+          reward_issued?: boolean
+          reward_issued_at?: string | null
+          reward_issued_by?: string | null
+          session_amount_kes?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referral_conversions_referral_link_id_fkey"
+            columns: ["referral_link_id"]
+            isOneToOne: false
+            referencedRelation: "referral_links"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      referral_links: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          custom_message: string | null
+          discount_amount_kes: number
+          id: string
+          is_active: boolean
+          link_type: string
+          market: string
+          notes: string | null
+          referrer_email: string | null
+          referrer_name: string
+          referrer_phone: string
+          reward_type: string
+          reward_value: number
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          custom_message?: string | null
+          discount_amount_kes?: number
+          id?: string
+          is_active?: boolean
+          link_type?: string
+          market?: string
+          notes?: string | null
+          referrer_email?: string | null
+          referrer_name: string
+          referrer_phone: string
+          reward_type?: string
+          reward_value?: number
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          custom_message?: string | null
+          discount_amount_kes?: number
+          id?: string
+          is_active?: boolean
+          link_type?: string
+          market?: string
+          notes?: string | null
+          referrer_email?: string | null
+          referrer_name?: string
+          referrer_phone?: string
+          reward_type?: string
+          reward_value?: number
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       session_feedback: {
         Row: {
+          client_consented_to_display: boolean
+          client_display_name: string | null
           client_name: string | null
           created_at: string
           flagged_for_review: boolean
@@ -1970,6 +2123,8 @@ export type Database = {
           would_recommend: string
         }
         Insert: {
+          client_consented_to_display?: boolean
+          client_display_name?: string | null
           client_name?: string | null
           created_at?: string
           flagged_for_review?: boolean
@@ -1988,6 +2143,8 @@ export type Database = {
           would_recommend: string
         }
         Update: {
+          client_consented_to_display?: boolean
+          client_display_name?: string | null
           client_name?: string | null
           created_at?: string
           flagged_for_review?: boolean
@@ -2151,6 +2308,7 @@ export type Database = {
           id: string
           image_url: string | null
           is_active: boolean
+          kenya: boolean
           languages: string[]
           name: string
           price_per_hour: number
@@ -2169,6 +2327,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_active?: boolean
+          kenya?: boolean
           languages?: string[]
           name: string
           price_per_hour: number
@@ -2187,6 +2346,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_active?: boolean
+          kenya?: boolean
           languages?: string[]
           name?: string
           price_per_hour?: number
@@ -2680,6 +2840,18 @@ export type Database = {
       get_campaign_by_slug: { Args: { _slug: string }; Returns: Json }
       get_campaign_completion: { Args: { _company_id: string }; Returns: Json }
       get_doctor_email_by_phone: { Args: { _phone: string }; Returns: string }
+      get_public_testimonials: {
+        Args: { _limit?: number; _market?: string }
+        Returns: {
+          client_display_name: string
+          id: string
+          open_comment: string
+          star_rating: number
+          submitted_at: string
+        }[]
+      }
+      get_referral_link_by_slug: { Args: { _slug: string }; Returns: Json }
+      get_referral_link_stats: { Args: { _link_id: string }; Returns: Json }
       get_service_recommendation_details: {
         Args: { _report_id: string; _service_id: string }
         Returns: Json
@@ -2697,6 +2869,10 @@ export type Database = {
         Returns: boolean
       }
       lock_campaign_slug: { Args: { _slug: string }; Returns: undefined }
+      log_referral_click: {
+        Args: { _ip_hash?: string; _slug: string; _user_agent?: string }
+        Returns: string
+      }
       lookup_employee_by_code: { Args: { _code: string }; Returns: Json }
       lookup_employee_by_token: { Args: { _token: string }; Returns: Json }
       merge_feedback_therapist_names: {
@@ -2723,6 +2899,16 @@ export type Database = {
       recalc_doctor_monthly_commissions: {
         Args: { _doctor_id: string; _month_start: string }
         Returns: undefined
+      }
+      record_referral_conversion: {
+        Args: {
+          _booking_reference?: string
+          _client_name?: string
+          _client_phone?: string
+          _session_amount_kes?: number
+          _slug: string
+        }
+        Returns: string
       }
       slugify_company_name: { Args: { _name: string }; Returns: string }
       sync_form_emails_to_subscribers: { Args: never; Returns: Json }

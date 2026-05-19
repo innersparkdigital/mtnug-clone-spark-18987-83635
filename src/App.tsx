@@ -138,6 +138,9 @@ import ThankYou from "./pages/ThankYou";
 import CorporateServiceRequest from "./pages/CorporateServiceRequest";
 import Whisper from "./pages/Whisper";
 import SessionFeedback from "./pages/SessionFeedback";
+import Kenya from "./pages/Kenya";
+import KenyaCheck from "./pages/KenyaCheck";
+import KenyaReferralRedirect from "./pages/KenyaReferralRedirect";
 
 const queryClient = new QueryClient();
 
@@ -283,6 +286,9 @@ const App = () => (
             <Route path="/events-training/:slug" element={<CmsEventPost />} />
             <Route path="/unsubscribe" element={<Unsubscribe />} />
             <Route path="/feedback" element={<SessionFeedback />} />
+            <Route path="/kenya" element={<Kenya />} />
+            <Route path="/kenya/ref/:slug" element={<KenyaReferralRedirect />} />
+            <Route path="/check/kenya" element={<KenyaCheck />} />
             {/* Thank You / Conversion Tracking pages */}
             <Route path="/thank-you-booking" element={<ThankYou type="booking" />} />
             <Route path="/thank-you-contact" element={<ThankYou type="contact" />} />
