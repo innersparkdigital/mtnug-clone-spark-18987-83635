@@ -48,8 +48,8 @@ const Index = () => {
         <link rel="canonical" href="https://www.innersparkafrica.com/" />
       </Helmet>
       <div className="min-h-screen bg-background">
-        <Header />
         <GeoKenyaBanner />
+        <Header />
         {v.hero && <HeroSection />}
         <TrustStatsBar />
         {v.how1 && <HowItWorksSimple />}
