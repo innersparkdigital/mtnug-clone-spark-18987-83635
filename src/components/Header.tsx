@@ -272,6 +272,10 @@ const Header = () => {
               <MobileMegaSection title="For Business" items={businessItems} onNavigate={closeMobile} />
               <MobileMegaSection title="For Professionals" items={professionalsItems} onNavigate={closeMobile} />
 
+              <Link to="/kenya" onClick={closeMobile} className="flex items-center gap-2 py-3 border-b border-border text-sm font-semibold text-primary">
+                <span aria-hidden>🇰🇪</span> Visit Kenya page
+              </Link>
+
               {user ? (
                 <div className="py-3 space-y-2">
                   <Link to="/learning/student-dashboard" onClick={closeMobile} className="block text-sm font-medium">My Learning</Link>
