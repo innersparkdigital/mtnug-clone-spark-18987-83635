@@ -185,6 +185,13 @@ const Header = () => {
 
             {/* Right cluster */}
             <div className="flex items-center gap-2 md:gap-3">
+              <Link
+                to="/kenya"
+                className="hidden md:inline-flex items-center gap-1 rounded-full border border-primary/30 bg-primary/5 px-3 py-1 text-[11px] font-semibold text-primary hover:bg-primary/10 transition-colors"
+                aria-label="Visit InnerSpark Kenya"
+              >
+                <span aria-hidden>🇰🇪</span> Kenya
+              </Link>
               {user && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
