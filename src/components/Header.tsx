@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import logo from "@/assets/innerspark-logo.png";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUserRole } from "@/hooks/useUserRole";
+import { useIsKenyaVisitor } from "@/hooks/useIsKenyaVisitor";
 import {
   NavigationMenu,
   NavigationMenuContent,
