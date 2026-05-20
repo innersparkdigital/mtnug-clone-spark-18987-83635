@@ -1,25 +1,21 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { X } from "lucide-react";
+import { useIsKenyaVisitor } from "@/hooks/useIsKenyaVisitor";
 
 const DISMISS_KEY = "ke_banner_dismissed";
 
 export default function GeoKenyaBanner() {
-  const [show, setShow] = useState(false);
+  const isKE = useIsKenyaVisitor();
+  const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
     try {
-      if (sessionStorage.getItem(DISMISS_KEY) === "true") return;
-    } catch {}
-    try {
-      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      const lang = (navigator.language || "").toLowerCase();
-      const isKE = tz === "Africa/Nairobi" || lang.includes("ke") || lang === "sw" || lang.startsWith("sw-");
-      if (isKE) setShow(true);
+      if (sessionStorage.getItem(DISMISS_KEY) === "true") setDismissed(true);
     } catch {}
   }, []);
 
-  if (!show) return null;
+  if (!isKE || dismissed) return null;
 
   return (
     <div className="flex items-center justify-between gap-3 px-5 py-2" style={{ background: "#EEF0FD", borderBottom: "1px solid #C5CAF5" }}>
