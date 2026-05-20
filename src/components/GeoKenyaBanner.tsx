@@ -30,7 +30,7 @@ export default function GeoKenyaBanner() {
           aria-label="Dismiss"
           onClick={() => {
             try { sessionStorage.setItem(DISMISS_KEY, "true"); } catch {}
-            setShow(false);
+            setDismissed(true);
           }}
           style={{ color: "#0C447C" }}
         >
