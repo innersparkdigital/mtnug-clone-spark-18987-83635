@@ -99,6 +99,7 @@ function MobileMegaSection({ title, items, onNavigate }: { title: string; items:
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const isKenyaVisitor = useIsKenyaVisitor();
   const { user, signOut } = useAuth();
   const { isAdmin } = useUserRole();
   const closeMobile = () => setIsMenuOpen(false);
