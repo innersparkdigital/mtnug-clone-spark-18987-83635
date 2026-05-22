@@ -123,11 +123,11 @@ export default function Kenya() {
     <div className="min-h-screen bg-white">
       <Helmet>
         <title>Online Therapy in Kenya | African Therapists | InnerSpark Africa</title>
-        <meta name="description" content="Licensed African therapists offering online therapy in Kenya. Video sessions from KES 2,600. Pay via M-Pesa. Book in 2 minutes. Completely private." />
+        <meta name="description" content="Online therapy in Kenya with licensed African therapists. WhatsApp video, voice or chat sessions from KES 2,600. Pay via M-Pesa. Book in 2 minutes — completely private." />
         <meta name="keywords" content={seoKeywords} />
         <link rel="canonical" href="https://www.innersparkafrica.com/kenya" />
         <meta property="og:title" content="Online Therapy in Kenya | InnerSpark Africa" />
-        <meta property="og:description" content="Licensed African therapists. Sessions from KES 2,600. Pay via M-Pesa." />
+        <meta property="og:description" content="Licensed African therapists. WhatsApp & video sessions from KES 2,600. Pay via M-Pesa. Built for Nairobi, Mombasa, Kisumu and beyond." />
         <meta property="og:url" content="https://www.innersparkafrica.com/kenya" />
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org",
@@ -143,9 +143,14 @@ export default function Kenya() {
           "@context": "https://schema.org",
           "@type": "FAQPage",
           mainEntity: [
-            { "@type": "Question", name: "How much does therapy cost in Kenya on InnerSpark?", acceptedAnswer: { "@type": "Answer", text: "Individual sessions start from KES 2,600. A monthly package of 4 sessions is KES 9,600. Pay via M-Pesa." } },
-            { "@type": "Question", name: "How do I pay via M-Pesa for therapy?", acceptedAnswer: { "@type": "Answer", text: "Dial *840# → Send Money Abroad → Uganda → 0740 616 404 → Innerspark Recovery Ltd → enter KES amount. M-Pesa converts automatically." } },
-            { "@type": "Question", name: "Are sessions confidential?", acceptedAnswer: { "@type": "Answer", text: "Yes. Sessions are completely private. Your employer will never know." } },
+            { "@type": "Question", name: "How much does therapy cost in Kenya?", acceptedAnswer: { "@type": "Answer", text: "On InnerSpark, individual online therapy sessions in Kenya start from KES 2,600. A monthly package of 4 sessions is KES 9,600 — less than most Nairobi in-clinic consultations. Pay via M-Pesa." } },
+            { "@type": "Question", name: "Can I pay for therapy with M-Pesa?", acceptedAnswer: { "@type": "Answer", text: "Yes. Dial *840# → Send Money Abroad → Uganda → 0740 616 404 → Innerspark Recovery Ltd → enter the KES amount. M-Pesa converts automatically and your session is confirmed by WhatsApp." } },
+            { "@type": "Question", name: "How do I find a therapist in Kenya?", acceptedAnswer: { "@type": "Answer", text: "Take our free WHO-5 wellbeing check, then we recommend a licensed African therapist matched to what you're working through. You can also browse our therapist directory and book directly. The whole booking takes about 2 minutes." } },
+            { "@type": "Question", name: "Is online therapy effective in Kenya?", acceptedAnswer: { "@type": "Answer", text: "Yes. WHO and APA research shows online therapy is as effective as in-person sessions for anxiety, depression, burnout and relationship issues. InnerSpark sessions happen via WhatsApp video, voice or chat — whichever feels safest for you." } },
+            { "@type": "Question", name: "Is therapy private in Kenya — will my employer find out?", acceptedAnswer: { "@type": "Answer", text: "Yes, completely private. Sessions are one-to-one with your therapist, never shared with employers, family or insurers. You can pay with personal M-Pesa and use the InnerSpark app without anyone in your circle knowing." } },
+            { "@type": "Question", name: "Do you offer therapy via WhatsApp in Kenya?", acceptedAnswer: { "@type": "Answer", text: "Yes. Most of our Kenyan clients use WhatsApp video, voice or chat for sessions — the same app you use every day, with no new downloads. Bandwidth-friendly for Nairobi, Mombasa, Kisumu, Nakuru and rural Kenya." } },
+            { "@type": "Question", name: "Do you have African therapists who understand Kenyan culture?", acceptedAnswer: { "@type": "Answer", text: "Yes. Our therapists are East African, licensed, and trained to work with the realities of Nairobi professional life, family expectations, religious context and stigma around mental health in Kenya." } },
+            { "@type": "Question", name: "Do you offer corporate mental health programmes for Kenyan companies?", acceptedAnswer: { "@type": "Answer", text: "Yes. InnerSpark offers Employee Assistance Programmes (EAP), free WHO-5 team screenings and aggregated wellbeing reports for Kenyan organisations. HR managers can request a proposal from the contact page." } },
           ],
         })}</script>
       </Helmet>
