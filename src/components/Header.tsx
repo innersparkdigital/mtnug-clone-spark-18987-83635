@@ -102,7 +102,9 @@ const Header = () => {
   const isKenyaGeo = useIsKenyaVisitor();
   const { user, signOut } = useAuth();
   const { isAdmin } = useUserRole();
-  const isKenyaVisitor = isKenyaGeo || isAdmin;
+  const adminEmails = ["info@innersparkafrica.com"];
+  const isAdminByEmail = !!user?.email && adminEmails.includes(user.email.toLowerCase());
+  const isKenyaVisitor = isKenyaGeo || isAdmin || isAdminByEmail;
   const closeMobile = () => setIsMenuOpen(false);
 
   return (
