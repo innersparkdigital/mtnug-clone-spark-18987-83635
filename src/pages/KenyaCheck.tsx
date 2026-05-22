@@ -49,9 +49,23 @@ export default function KenyaCheck() {
   return (
     <>
       <Helmet>
-        <title>Free Wellbeing Check — Kenya | InnerSpark Africa</title>
-        <meta name="description" content="Your free Kenya wellbeing check. 3 minutes. Private results. No account needed. WHO-5 mental health screening for Kenyan adults." />
+        <title>Free Mental Health Check Kenya | WHO-5 Wellbeing Screening | InnerSpark Africa</title>
+        <meta name="description" content="Take InnerSpark's free 3-minute WHO-5 mental health check for Kenya. Private results, no account needed. Find out if you need to talk to a therapist." />
+        <meta name="keywords" content="mental health check Kenya, wellbeing screening Kenya, free mental health test Kenya, WHO-5 Kenya, free therapy assessment Kenya, how do I know if I need therapy Kenya, mental health screening Nairobi, anxiety test Kenya, depression test Kenya" />
         <link rel="canonical" href="https://www.innersparkafrica.com/check/kenya" />
+        <meta property="og:title" content="Free Mental Health Check Kenya | InnerSpark Africa" />
+        <meta property="og:description" content="3-minute WHO-5 wellbeing screening for Kenyans. Private results. No account needed." />
+        <meta property="og:url" content="https://www.innersparkafrica.com/check/kenya" />
+        <meta property="og:type" content="website" />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: [
+            { "@type": "Question", name: "How do I know if I need therapy in Kenya?", acceptedAnswer: { "@type": "Answer", text: "The WHO-5 wellbeing index is a clinically validated 5-question screen used worldwide. A score below 50% suggests it may help to talk to a licensed therapist. InnerSpark's check is free, takes 3 minutes and gives you private results." } },
+            { "@type": "Question", name: "Is the wellbeing check really free?", acceptedAnswer: { "@type": "Answer", text: "Yes. The Kenya WHO-5 check is completely free, no account needed, no payment information requested. Results are private to you." } },
+            { "@type": "Question", name: "What happens after I take the check?", acceptedAnswer: { "@type": "Answer", text: "You see your wellbeing score and a private summary. If your score suggests you'd benefit from talking to someone, you can optionally book a licensed African therapist from KES 2,600 — paid via M-Pesa." } },
+          ],
+        })}</script>
       </Helmet>
       <div className="min-h-screen bg-gradient-to-b from-orange-50/50 via-white to-orange-50/50">
         <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
