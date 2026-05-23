@@ -26,6 +26,10 @@ import ChatAnalyticsTab from '@/components/admin/ChatAnalyticsTab';
 import CrisisReviewQueueTab from '@/components/admin/CrisisReviewQueueTab';
 import ChatLeadsTab from '@/components/admin/ChatLeadsTab';
 import WhispersTab from '@/components/admin/WhispersTab';
+import CrisisAlertsTab from '@/components/admin/CrisisAlertsTab';
+import TherapistsTab from '@/components/admin/TherapistsTab';
+import SiteSectionsTab from '@/components/admin/SiteSectionsTab';
+import FeedbackTab from '@/components/admin/FeedbackTab';
 import { 
   BookOpen, 
   GraduationCap, 
@@ -263,6 +267,30 @@ const AdminDashboard = () => {
               <TabsTrigger value="whispers" className="gap-2">
                 <Mic className="h-4 w-4" />
                 Whispers
+              </TabsTrigger>
+            )}
+            {isAdmin && (
+              <TabsTrigger value="crisis-alerts" className="gap-2">
+                <AlertOctagon className="h-4 w-4" />
+                Crisis Alerts
+              </TabsTrigger>
+            )}
+            {isAdmin && (
+              <TabsTrigger value="therapists" className="gap-2">
+                <Stethoscope className="h-4 w-4" />
+                Therapists
+              </TabsTrigger>
+            )}
+            {isAdmin && (
+              <TabsTrigger value="site-sections" className="gap-2">
+                <FileText className="h-4 w-4" />
+                Site Sections
+              </TabsTrigger>
+            )}
+            {isAdmin && (
+              <TabsTrigger value="feedback" className="gap-2">
+                <FileText className="h-4 w-4" />
+                Feedback
               </TabsTrigger>
             )}
           </TabsList>
@@ -646,6 +674,26 @@ const AdminDashboard = () => {
           {isAdmin && (
             <TabsContent value="whispers">
               <WhispersTab />
+            </TabsContent>
+          )}
+          {isAdmin && (
+            <TabsContent value="crisis-alerts">
+              <CrisisAlertsTab />
+            </TabsContent>
+          )}
+          {isAdmin && (
+            <TabsContent value="therapists">
+              <TherapistsTab />
+            </TabsContent>
+          )}
+          {isAdmin && (
+            <TabsContent value="site-sections">
+              <SiteSectionsTab />
+            </TabsContent>
+          )}
+          {isAdmin && (
+            <TabsContent value="feedback">
+              <FeedbackTab />
             </TabsContent>
           )}
         </Tabs>

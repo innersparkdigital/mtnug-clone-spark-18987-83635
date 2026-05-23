@@ -23,7 +23,6 @@ import {
   Briefcase,
   UserCog,
   LayoutDashboard,
-  BarChart3,
   LogIn
 } from "lucide-react";
 import { useState } from "react";
@@ -85,10 +84,10 @@ const studentCourses = [
 ];
 
 const stats = [
-  { label: "Active Learners", value: "0", icon: Users },
   { label: "Courses Available", value: "18", icon: BookOpen },
-  { label: "Certificates Issued", value: "0", icon: Award },
-  { label: "Partner Organizations", value: "0", icon: Building2 }
+  { label: "Career Tracks", value: "3", icon: Briefcase },
+  { label: "Avg. Completion", value: "4-8 wks", icon: Clock },
+  { label: "Certified by", value: "InnerSpark", icon: Award }
 ];
 
 const getLevelColor = (level: string) => {
@@ -187,14 +186,7 @@ const Learning = () => {
                         </Button>
                       </Link>
                     )}
-                    {isAdmin && (
-                      <Link to="/learning/admin-dashboard">
-                        <Button size="lg" variant="outline" className="gap-2">
-                          <BarChart3 className="w-5 h-5" />
-                          Admin Dashboard
-                        </Button>
-                      </Link>
-                    )}
+                    {/* Admin dashboard intentionally not linked from public pages. Admins access via /admin-dashboard. */}
                   </>
                 ) : (
                   <Link to="/auth">
@@ -221,7 +213,7 @@ const Learning = () => {
               {stats.map((stat, index) => (
                 <div key={index} className="bg-background/80 backdrop-blur-sm border border-border rounded-xl p-4 text-center">
                   <stat.icon className="w-8 h-8 text-primary mx-auto mb-2" />
-                  <div className="text-2xl font-bold text-foreground">{stat.value}</div>
+                  <div className="text-xl md:text-2xl font-bold text-foreground">{stat.value}</div>
                   <div className="text-sm text-muted-foreground">{stat.label}</div>
                 </div>
               ))}
@@ -366,10 +358,17 @@ const Learning = () => {
                           {course.description}
                         </CardDescription>
                         <div className="flex items-center justify-between text-sm">
-                          <div className="flex items-center gap-1 text-muted-foreground">
-                            <Users className="w-4 h-4" />
-                            {course.enrolled.toLocaleString()} enrolled
-                          </div>
+                          {course.enrolled > 0 ? (
+                            <div className="flex items-center gap-1 text-muted-foreground">
+                              <Users className="w-4 h-4" />
+                              {course.enrolled.toLocaleString()} enrolled
+                            </div>
+                          ) : (
+                            <Badge className="text-xs bg-yellow-100 text-yellow-800 border-yellow-200">
+                              <Sparkles className="w-3 h-3 mr-1" />
+                              Founding Cohort
+                            </Badge>
+                          )}
                           {isAvailable ? (
                             <Badge className="text-xs bg-green-100 text-green-700 border-green-200">
                               Available Now
@@ -466,21 +465,27 @@ const Learning = () => {
               </div>
             </ScrollReveal>
             <ScrollReveal direction="right">
-              <div className="bg-gradient-to-br from-primary/10 via-teal-calm/10 to-purple-deep/10 rounded-2xl p-8 border border-border">
-                <div className="bg-background rounded-xl p-6 shadow-lg">
-                  <div className="flex items-center gap-3 mb-4">
-                    <Award className="w-10 h-10 text-yellow-500" />
-                    <div>
-                      <p className="font-bold text-foreground">Certificate of Completion</p>
-                      <p className="text-sm text-muted-foreground">Workplace Mental Health</p>
+              <div className="relative bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50 rounded-2xl p-6 md:p-10 border-4 border-double border-yellow-600/40 shadow-xl">
+                <div className="absolute top-3 right-3 w-16 h-16 rounded-full bg-gradient-to-br from-yellow-400 to-amber-600 flex items-center justify-center shadow-lg rotate-12">
+                  <Award className="w-8 h-8 text-white" />
+                </div>
+                <div className="text-center pt-2">
+                  <p className="text-xs uppercase tracking-[0.3em] text-yellow-800 font-semibold mb-1">InnerSpark Africa</p>
+                  <div className="w-16 h-0.5 bg-yellow-600/50 mx-auto mb-4" />
+                  <p className="text-sm text-yellow-900/70 mb-2 italic">Certificate of Completion</p>
+                  <p className="text-xs text-muted-foreground mb-3">This is to certify that</p>
+                  <p className="font-serif text-2xl md:text-3xl text-foreground mb-3 italic">Your Name Here</p>
+                  <p className="text-xs text-muted-foreground mb-4 max-w-xs mx-auto">has successfully completed the</p>
+                  <p className="font-bold text-foreground mb-4">Digital Mental Health & Wellness</p>
+                  <div className="flex items-center justify-between border-t border-yellow-600/30 pt-4 mt-4 text-xs text-muted-foreground">
+                    <div className="text-left">
+                      <p className="font-semibold text-foreground">InnerSpark Africa</p>
+                      <p>Issuing Body</p>
                     </div>
-                  </div>
-                  <div className="border-t border-border pt-4">
-                    <p className="text-sm text-muted-foreground mb-2">This certifies that</p>
-                    <p className="font-semibold text-foreground mb-2">[Your Name]</p>
-                    <p className="text-sm text-muted-foreground">
-                      has successfully completed the Workplace Mental Health Fundamentals course
-                    </p>
+                    <div className="text-right">
+                      <p className="font-semibold text-foreground">Verified ✓</p>
+                      <p>Digital Credential</p>
+                    </div>
                   </div>
                 </div>
               </div>

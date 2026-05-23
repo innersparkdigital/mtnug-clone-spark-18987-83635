@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Building2, Users, Plus, Upload, BarChart3, FileText, Trash2, UserPlus, ClipboardList, AlertTriangle, Phone, MessageCircle, Download, TrendingUp, Activity, Search, ChevronLeft, ChevronRight, ArrowLeft, ArrowUpDown, ArrowUp, ArrowDown, ChevronDown, ChevronUp as ChevronUpIcon, History, Mail } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -21,17 +21,25 @@ import { Progress } from '@/components/ui/progress';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { generateCompanyReportPdf } from '@/lib/companyReportPdf';
+import CampaignSettingsCard from '@/components/business/CampaignSettingsCard';
 import { Loader2 } from 'lucide-react';
+import { answerMapFromStored, answerMapFromLegacy, aggregateCompany, QUESTION_INTELLIGENCE, QUESTION_ORDER, CLUSTER_INFO } from '@/lib/wellbeingIntelligence';
+import { CompanyTriggersDashboard, CompanyActionPlan } from '@/components/business/CompanyInsights';
+import PerQuestionEmployeeBreakdown from '@/components/business/PerQuestionEmployeeBreakdown';
+import BusinessImpactSummary from '@/components/business/BusinessImpactSummary';
+import { calculateBusinessImpact, formatUGX } from '@/lib/businessImpact';
 
 interface Company {
   id: string;
   name: string;
+  slug?: string | null;
   industry: string | null;
   employee_count: number | null;
   contact_person: string | null;
   contact_email: string | null;
   contact_phone: string | null;
   location: string | null;
+  context_notes: string | null;
   created_at: string;
 }
 
@@ -63,6 +71,12 @@ interface Screening {
 const COMPANIES_PER_PAGE = 10;
 const EMPLOYEES_PER_PAGE = 15;
 
+// Overall wellbeing % across all 8 questions (WHO-5 + 3 workplace items).
+// Max raw score = 8 questions × 5 = 40. This is the same number that drives
+// the wellbeing_category badge, so the displayed % and the badge always match.
+const overallPct = (s: { total_score?: number | null } | null | undefined): number =>
+  s && typeof s.total_score === 'number' ? Math.round((s.total_score / 40) * 100) : 0;
+
 const CorporateAdmin = () => {
   const { user } = useAuth();
   const { isAdmin, loading: roleLoading } = useUserRole();
@@ -76,7 +90,7 @@ const CorporateAdmin = () => {
 
   const [showCreateCompany, setShowCreateCompany] = useState(false);
   const [showAddEmployee, setShowAddEmployee] = useState(false);
-  const [companyForm, setCompanyForm] = useState({ name: '', industry: '', employee_count: '', contact_person: '', contact_email: '', contact_phone: '', location: '' });
+  const [companyForm, setCompanyForm] = useState({ name: '', industry: '', employee_count: '', contact_person: '', contact_email: '', contact_phone: '', location: '', context_notes: '' });
   const [employeeForm, setEmployeeForm] = useState({ name: '', email: '', phone: '', gender: '' });
   const [csvFile, setCsvFile] = useState<File | null>(null);
   const [allEmployees, setAllEmployees] = useState<Employee[]>([]);
@@ -94,9 +108,38 @@ const CorporateAdmin = () => {
   // Manual report builder
   const [serviceCatalog, setServiceCatalog] = useState<any[]>([]);
   const [observations, setObservations] = useState('');
+  const [draftingObs, setDraftingObs] = useState(false);
   const [selectedServiceIds, setSelectedServiceIds] = useState<Set<string>>(new Set());
   const [serviceReasons, setServiceReasons] = useState<Record<string, string>>({});
   const [serviceInterests, setServiceInterests] = useState<any[]>([]);
+
+  // Report history (sent / drafts) for the selected company
+  const [pastReports, setPastReports] = useState<any[]>([]);
+  const [resendingId, setResendingId] = useState<string | null>(null);
+  const [previewOpen, setPreviewOpen] = useState(false);
+
+  // 10-section report builder
+  const REPORT_SECTIONS: { key: string; title: string; description: string }[] = [
+    { key: 'cover', title: '1. Cover & Summary', description: 'Company name, period, total participants, headline wellbeing score' },
+    { key: 'participation', title: '2. Participation & Demographics', description: 'Invited vs completed, gender breakdown, completion rate' },
+    { key: 'overall_wellbeing', title: '3. Overall Wellbeing Score', description: 'WHO-5 average, severity bands, traffic-light distribution' },
+    { key: 'per_question', title: '4. Per-Question Averages', description: 'Q1–Q8 averages with green/amber/red flags' },
+    { key: 'triggered_clusters', title: '5. Triggered Clusters', description: 'Burnout / Anxiety / Depression-risk cluster detection' },
+    { key: 'priority_areas', title: '6. Priority Focus Areas', description: 'Top 3 lowest-scoring questions company-wide' },
+    { key: 'business_impact', title: '7. Business Impact', description: 'Productivity loss, days lost, ROI on EAP investment' },
+    { key: 'recommended_services', title: '8. Recommended Services', description: 'InnerSpark services tailored to triggered patterns' },
+    { key: 'action_plan', title: '9. 30-Day Action Plan', description: 'Concrete next steps for HR over the next month' },
+    { key: 'consultant_notes', title: '10. Consultant Observations', description: 'Free-text notes from the InnerSpark consultant' },
+  ];
+  const [reportSections, setReportSections] = useState<Record<string, boolean>>(
+    () => Object.fromEntries(REPORT_SECTIONS.map(s => [s.key, true]))
+  );
+  // Per-section consultant overrides — when set, replaces auto content in preview/email/PDF
+  const [sectionOverrides, setSectionOverrides] = useState<Record<string, string>>({});
+  const [editingSection, setEditingSection] = useState<string | null>(null);
+  const [editDraft, setEditDraft] = useState<string>('');
+  const [includeBusinessImpact, setIncludeBusinessImpact] = useState(true);
+  const [baselineSalary, setBaselineSalary] = useState<number>(1_200_000);
 
   // Sorting
   const [companySortKey, setCompanySortKey] = useState<string>('');
@@ -130,6 +173,7 @@ const CorporateAdmin = () => {
     if (selectedCompany) {
       fetchEmployees(selectedCompany.id);
       fetchScreenings(selectedCompany.id);
+      fetchPastReports(selectedCompany.id);
       setEmployeePage(1);
       setEmployeeSearch('');
     }
@@ -170,6 +214,16 @@ const CorporateAdmin = () => {
     setScreenings((data as any[]) || []);
   };
 
+  const fetchPastReports = async (companyId: string) => {
+    const { data } = await supabase
+      .from('corporate_reports')
+      .select('*')
+      .eq('company_id', companyId)
+      .order('created_at', { ascending: false })
+      .limit(20);
+    setPastReports((data as any[]) || []);
+  };
+
   const createCompany = async () => {
     if (!companyForm.name.trim()) { toast.error('Company name is required'); return; }
     const { error } = await supabase.from('corporate_companies').insert({
@@ -180,12 +234,13 @@ const CorporateAdmin = () => {
       contact_email: companyForm.contact_email || null,
       contact_phone: companyForm.contact_phone || null,
       location: companyForm.location || null,
+      context_notes: companyForm.context_notes.trim() || null,
       created_by: user?.id,
     });
     if (error) { toast.error('Failed to create company'); return; }
     toast.success('Company created');
     setShowCreateCompany(false);
-    setCompanyForm({ name: '', industry: '', employee_count: '', contact_person: '', contact_email: '', contact_phone: '', location: '' });
+    setCompanyForm({ name: '', industry: '', employee_count: '', contact_person: '', contact_email: '', contact_phone: '', location: '', context_notes: '' });
     fetchCompanies();
   };
 
@@ -205,7 +260,8 @@ const CorporateAdmin = () => {
 
     // Send branded invitation email with access code + secure URL (non-blocking)
     if (inserted) {
-      const secureUrl = `${baseUrl}/corporate-wellbeing-check?token=${(inserted as any).secure_token}`;
+      const slugParam = selectedCompany.slug ? `&slug=${encodeURIComponent(selectedCompany.slug)}` : '';
+      const secureUrl = `${baseUrl}/corporate-wellbeing-check?token=${(inserted as any).secure_token}${slugParam}`;
       supabase.functions.invoke('send-transactional-email', {
         body: {
           templateName: 'b2b-employee-confirmation',
@@ -279,7 +335,7 @@ const CorporateAdmin = () => {
   const uniqueScreenedEmployees = new Set(screenings.map(s => s.employee_id)).size;
   const completedScreenings = screenings.length;
   const participationRate = totalEmployees > 0 ? Math.round((uniqueScreenedEmployees / totalEmployees) * 100) : 0;
-  const avgScore = completedScreenings > 0 ? Math.round(screenings.reduce((s, x) => s + x.who5_percentage, 0) / completedScreenings) : 0;
+  const avgScore = completedScreenings > 0 ? Math.round(screenings.reduce((s, x) => s + overallPct(x), 0) / completedScreenings) : 0;
   // Count by latest screening per employee only
   const latestScreenings = Array.from(employeeScreeningMap.values());
   const greenCount = latestScreenings.filter(s => s.wellbeing_category === 'green').length;
@@ -363,13 +419,13 @@ const CorporateAdmin = () => {
 
   const exportToCSV = () => {
     if (!selectedCompany) return;
-    const headers = ['Name', 'Email', 'Phone', 'Gender', 'Access Code', 'Screening Status', 'Date Taken', 'WHO-5 Score', 'WHO-5 %', 'Wellbeing Category'];
+    const headers = ['Name', 'Email', 'Phone', 'Gender', 'Access Code', 'Screening Status', 'Date Taken', 'Total Score', 'Overall %', 'Wellbeing Category'];
     const rows = sortedEmployees.map(emp => {
       const screening = employeeScreeningMap.get(emp.id);
       return [emp.name, emp.email, emp.phone || '', emp.gender || '', emp.access_code,
         emp.screening_completed ? 'Completed' : emp.invitation_sent ? 'Invited' : 'Pending',
         screening ? new Date(screening.completed_at).toLocaleDateString('en-GB') : '',
-        screening ? screening.who5_score : '', screening ? screening.who5_percentage + '%' : '',
+        screening ? screening.total_score : '', screening ? overallPct(screening) + '%' : '',
         screening ? screening.wellbeing_category : '',
       ].map(v => `"${v}"`).join(',');
     });
@@ -400,6 +456,10 @@ const CorporateAdmin = () => {
   };
 
   const baseUrl = window.location.origin;
+  const employeeCheckUrl = (token: string) => {
+    const slugParam = selectedCompany?.slug ? `&slug=${encodeURIComponent(selectedCompany.slug)}` : '';
+    return `${baseUrl}/corporate-wellbeing-check?token=${token}${slugParam}`;
+  };
 
   if (roleLoading || loading) {
     return <div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" /></div>;
@@ -460,6 +520,12 @@ const CorporateAdmin = () => {
                 <p className="text-sm text-muted-foreground">
                   {selectedCompany ? `${selectedCompany.industry || 'Company'} • ${totalEmployees} employees` : 'Manage companies, employees, and screening analytics'}
                 </p>
+                {selectedCompany?.context_notes && (
+                  <details className="mt-2 max-w-3xl">
+                    <summary className="text-xs text-primary cursor-pointer select-none">📋 Company context (used by AI to tailor reports)</summary>
+                    <p className="text-xs text-foreground/80 whitespace-pre-wrap bg-muted/40 rounded-md p-3 mt-1 leading-relaxed">{selectedCompany.context_notes}</p>
+                  </details>
+                )}
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -487,6 +553,16 @@ const CorporateAdmin = () => {
                     <div><Label>Contact Email</Label><Input type="email" value={companyForm.contact_email} onChange={e => setCompanyForm(p => ({ ...p, contact_email: e.target.value }))} /></div>
                     <div><Label>Contact Phone</Label><Input type="tel" value={companyForm.contact_phone} onChange={e => setCompanyForm(p => ({ ...p, contact_phone: e.target.value }))} /></div>
                     <div><Label>Location</Label><Input value={companyForm.location} onChange={e => setCompanyForm(p => ({ ...p, location: e.target.value }))} placeholder="e.g. Kampala, Uganda" /></div>
+                    <div className="space-y-1">
+                      <Label>Company Context (optional but recommended)</Label>
+                      <Textarea
+                        rows={5}
+                        value={companyForm.context_notes}
+                        onChange={e => setCompanyForm(p => ({ ...p, context_notes: e.target.value }))}
+                        placeholder="What does the company do? Workforce profile (e.g. 70% factory operators on 3 shifts, 20% drivers, 10% admin). Known pain points HR has flagged (e.g. night-shift fatigue, recent layoffs, low pay grievances). Existing wellbeing efforts. Goals (reduce turnover, absenteeism, burnout). Cultural / language notes. Used by AI to tailor the report — the more specific, the less generic the recommendations."
+                      />
+                      <p className="text-[11px] text-muted-foreground">This is shown to consultants and fed into AI when drafting observations &amp; the action plan.</p>
+                    </div>
                     <Button onClick={createCompany} className="w-full">Create Company</Button>
                   </div>
                 </DialogContent>
@@ -547,7 +623,7 @@ const CorporateAdmin = () => {
                       const gGreen = allScreenings.filter(s => s.wellbeing_category === 'green').length;
                       const gYellow = allScreenings.filter(s => s.wellbeing_category === 'yellow').length;
                       const gRed = allScreenings.filter(s => s.wellbeing_category === 'red').length;
-                      const avgWellbeing = Math.round(allScreenings.reduce((s, x) => s + x.who5_percentage, 0) / total);
+                      const avgWellbeing = Math.round(allScreenings.reduce((s, x) => s + overallPct(x), 0) / total);
                       return (
                         <div className="space-y-3">
                           <div className="text-center mb-2">
@@ -584,7 +660,7 @@ const CorporateAdmin = () => {
                       const g = emp?.gender ? emp.gender.charAt(0).toUpperCase() + emp.gender.slice(1).toLowerCase() : 'Not Specified';
                       if (!genderMap[g]) genderMap[g] = { total: 0, score: 0, red: 0, yellow: 0, green: 0 };
                       genderMap[g].total++;
-                      genderMap[g].score += s.who5_percentage;
+                      genderMap[g].score += overallPct(s);
                       if (s.wellbeing_category === 'red') genderMap[g].red++;
                       else if (s.wellbeing_category === 'yellow') genderMap[g].yellow++;
                       else genderMap[g].green++;
@@ -665,7 +741,7 @@ const CorporateAdmin = () => {
                         ) : paginatedCompanies.map((c, idx) => {
                           const compEmps = allEmployees.filter(e => e.company_id === c.id);
                           const compScrs = allScreenings.filter(s => s.company_id === c.id);
-                          const avg = compScrs.length > 0 ? Math.round(compScrs.reduce((s, x) => s + x.who5_percentage, 0) / compScrs.length) : 0;
+                          const avg = compScrs.length > 0 ? Math.round(compScrs.reduce((s, x) => s + overallPct(x), 0) / compScrs.length) : 0;
                           const rowNum = (companyPage - 1) * COMPANIES_PER_PAGE + idx + 1;
                           return (
                             <tr key={c.id} className="border-b hover:bg-muted/30 cursor-pointer transition-colors" onClick={() => { setSelectedCompany(c); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
@@ -719,10 +795,39 @@ const CorporateAdmin = () => {
             <Tabs defaultValue="analytics">
               <TabsList className="mb-4">
                 <TabsTrigger value="analytics"><BarChart3 className="w-4 h-4 mr-1" /> Analytics</TabsTrigger>
+                <TabsTrigger value="insights"><Activity className="w-4 h-4 mr-1" /> Insights</TabsTrigger>
                 <TabsTrigger value="employees"><Users className="w-4 h-4 mr-1" /> Employees ({totalEmployees})</TabsTrigger>
                 <TabsTrigger value="report"><FileText className="w-4 h-4 mr-1" /> Report</TabsTrigger>
                 <TabsTrigger value="interests"><Activity className="w-4 h-4 mr-1" /> Service Interests ({serviceInterests.filter(i => i.company_id === selectedCompany.id).length})</TabsTrigger>
+                <TabsTrigger value="campaign"><Mail className="w-4 h-4 mr-1" /> Campaign</TabsTrigger>
               </TabsList>
+
+              <TabsContent value="campaign">
+                <CampaignSettingsCard
+                  company={selectedCompany}
+                  onUpdated={async () => {
+                    await fetchCompanies();
+                    const { data } = await supabase.from('corporate_companies').select('*').eq('id', selectedCompany.id).single();
+                    if (data) setSelectedCompany(data as any);
+                  }}
+                />
+              </TabsContent>
+
+              {/* INSIGHTS TAB — per-question intelligence */}
+              <TabsContent value="insights">
+                {(() => {
+                  const records = screenings
+                    .map((s: any) => answerMapFromLegacy(s))
+                    .filter(Boolean) as any[];
+                  const result = aggregateCompany(records);
+                  return (
+                    <div className="space-y-6">
+                      <CompanyTriggersDashboard result={result} />
+                      <CompanyActionPlan result={result} />
+                    </div>
+                  );
+                })()}
+              </TabsContent>
 
               {/* ANALYTICS TAB */}
               <TabsContent value="analytics">
@@ -756,6 +861,30 @@ const CorporateAdmin = () => {
                     )}
                   </CardContent>
                 </Card>
+
+                {/* Business Impact */}
+                {completedScreenings > 0 && (
+                  <div className="mb-6">
+                    <BusinessImpactSummary
+                      result={calculateBusinessImpact(
+                        { healthy: greenCount, at_risk: yellowCount, critical: redCount },
+                        baselineSalary,
+                      )}
+                      companyName={selectedCompany.name}
+                      defaultInclude={includeBusinessImpact}
+                      onIncludeChange={setIncludeBusinessImpact}
+                    />
+                    <div className="mt-3 flex items-center gap-2 text-xs">
+                      <Label className="text-xs">Baseline avg monthly salary (UGX):</Label>
+                      <Input
+                        type="number"
+                        value={baselineSalary}
+                        onChange={e => setBaselineSalary(Math.max(0, parseInt(e.target.value) || 0))}
+                        className="h-7 w-32 text-xs"
+                      />
+                    </div>
+                  </div>
+                )}
               </TabsContent>
 
               {/* EMPLOYEES TAB */}
@@ -807,6 +936,26 @@ const CorporateAdmin = () => {
                 </div>
 
                 <p className="text-xs text-muted-foreground mb-3">CSV format: Name, Email, Phone, Gender (one per row, skip header)</p>
+
+                <Card className="mb-4 border-blue-200 bg-blue-50/40">
+                  <CardContent className="pt-4 pb-3">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-blue-900 mb-2">Understanding Your Results</p>
+                    <div className="grid md:grid-cols-3 gap-3 text-xs">
+                      <div className="rounded-md bg-white border border-green-200 p-2">
+                        <p className="font-bold text-green-700">🟢 HEALTHY (76–100%)</p>
+                        <p className="text-muted-foreground mt-1">Above WHO clinical threshold. Sustain with regular check-ins and wellness resources.</p>
+                      </div>
+                      <div className="rounded-md bg-white border border-amber-200 p-2">
+                        <p className="font-bold text-amber-700">🟡 AT RISK (36–75%)</p>
+                        <p className="text-muted-foreground mt-1">Meaningful challenges present. Recommend counselling, EAP tools, and S.P.A.R.K™ programme.</p>
+                      </div>
+                      <div className="rounded-md bg-white border border-red-200 p-2">
+                        <p className="font-bold text-red-700">🔴 CRITICAL (0–35%)</p>
+                        <p className="text-muted-foreground mt-1">Below clinical concern threshold. InnerSpark initiates proactive outreach within 2 hours.</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
 
                 {needsSupportCount > 0 && (
                   <Card className="mb-4 border-destructive/30 bg-destructive/5">
@@ -889,14 +1038,14 @@ const CorporateAdmin = () => {
                                   {emp.screening_completed ? (
                                     <div className="flex items-center gap-1">
                                       <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-green-100 text-green-700">Done</span>
-                                      {(employeeScreeningCount.get(emp.id) || 0) > 1 && (
+                                      {(employeeScreeningCount.get(emp.id) || 0) >= 1 && (
                                         <button
                                           onClick={() => toggleEmployeeExpand(emp.id)}
                                           className="inline-flex items-center gap-0.5 text-[10px] px-1.5 py-0.5 rounded-full bg-primary/10 text-primary font-medium hover:bg-primary/20 transition-colors cursor-pointer"
-                                          title="View screening history"
+                                          title="View per-question breakdown & history"
                                         >
                                           <History className="w-2.5 h-2.5" />
-                                          {employeeScreeningCount.get(emp.id)} check-ins
+                                          {employeeScreeningCount.get(emp.id)} check-in{(employeeScreeningCount.get(emp.id) || 0) > 1 ? 's' : ''}
                                           {expandedEmployees.has(emp.id) ? <ChevronUpIcon className="w-2.5 h-2.5" /> : <ChevronDown className="w-2.5 h-2.5" />}
                                         </button>
                                       )}
@@ -913,13 +1062,13 @@ const CorporateAdmin = () => {
                                 <td className="p-3">
                                   {screening ? (
                                     <span className={`text-xs font-bold ${isRed ? 'text-red-600' : isYellow ? 'text-yellow-600' : 'text-green-600'}`}>
-                                      {screening.who5_percentage}% {isRed ? '🔴' : isYellow ? '🟡' : '🟢'}
+                                      {overallPct(screening)}% {isRed ? '🔴' : isYellow ? '🟡' : '🟢'}
                                     </span>
                                   ) : <span className="text-xs text-muted-foreground">—</span>}
                                 </td>
                                 <td className="p-3">
                                   <div className="flex items-center gap-0.5">
-                                    <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => { navigator.clipboard.writeText(`${baseUrl}/corporate-wellbeing-check?token=${emp.secure_token}`); toast.success('Link copied!'); }} title="Copy link">
+                                    <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => { navigator.clipboard.writeText(employeeCheckUrl(emp.secure_token)); toast.success('Link copied!'); }} title="Copy link">
                                       <ClipboardList className="w-3 h-3" />
                                     </Button>
                                     {emp.screening_completed && screening && emp.email && (
@@ -974,6 +1123,25 @@ const CorporateAdmin = () => {
                                 <tr key={`${emp.id}-history`} className="bg-muted/30">
                                   <td colSpan={10} className="p-0">
                                     <div className="px-6 py-3">
+                                      {/* Per-question breakdown for latest screening */}
+                                      {(() => {
+                                        const latest = employeeScreeningMap.get(emp.id);
+                                        const ans = latest ? answerMapFromLegacy(latest as any) : null;
+                                        if (!ans || !latest) return null;
+                                        const history = employeeScreeningHistory.get(emp.id) || [];
+                                        const prev = history[1];
+                                        return (
+                                          <div className="mb-4">
+                                            <PerQuestionEmployeeBreakdown
+                                              answers={ans}
+                                              completedAt={latest.completed_at}
+                                              attemptNumber={history.length}
+                                              previousOverallPct={prev ? overallPct(prev) : null}
+                                              employeeLabel={`${emp.name} — Latest screening breakdown`}
+                                            />
+                                          </div>
+                                        );
+                                      })()}
                                       <div className="text-[11px] font-semibold text-muted-foreground mb-2 flex items-center gap-1.5">
                                         <History className="w-3 h-3" />
                                         Screening History for {emp.name}
@@ -982,7 +1150,7 @@ const CorporateAdmin = () => {
                                         {(employeeScreeningHistory.get(emp.id) || []).map((s, i) => {
                                           const cat = s.wellbeing_category;
                                           const prevScreening = (employeeScreeningHistory.get(emp.id) || [])[i + 1];
-                                          const trend = prevScreening ? s.who5_percentage - prevScreening.who5_percentage : null;
+                                          const trend = prevScreening ? overallPct(s) - overallPct(prevScreening) : null;
                                           return (
                                             <div key={s.id} className="flex items-center gap-3 text-xs py-1.5 px-3 rounded-md bg-background border">
                                               <span className="font-medium text-muted-foreground w-6">#{(employeeScreeningHistory.get(emp.id) || []).length - i}</span>
@@ -993,7 +1161,7 @@ const CorporateAdmin = () => {
                                                 {new Date(s.completed_at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
                                               </span>
                                               <span className={`font-bold min-w-[50px] ${cat === 'red' ? 'text-red-600' : cat === 'yellow' ? 'text-yellow-600' : 'text-green-600'}`}>
-                                                {s.who5_percentage}%
+                                                {overallPct(s)}%
                                               </span>
                                               <Badge variant={cat === 'red' ? 'destructive' : cat === 'yellow' ? 'secondary' : 'default'} className="text-[9px] px-1.5 py-0">
                                                 {cat === 'red' ? 'Critical' : cat === 'yellow' ? 'At Risk' : 'Good'}
@@ -1060,13 +1228,102 @@ const CorporateAdmin = () => {
                           </ul>
                         </div>
 
+                        {/* 10-Section Report Builder */}
+                        <div className="border-t pt-6 mt-2">
+                          <h3 className="font-semibold mb-1 flex items-center gap-2">
+                            🧱 10-Section Report Builder
+                            <Badge variant="secondary" className="text-[10px]">Choose what HR sees</Badge>
+                          </h3>
+                          <p className="text-xs text-muted-foreground mb-4">
+                            Toggle each section on or off. The selected sections (and their data) are saved with the report and embedded in the email sent to HR.
+                          </p>
+                          <div className="grid sm:grid-cols-2 gap-2">
+                            {REPORT_SECTIONS.map((s) => {
+                              const on = !!reportSections[s.key];
+                              return (
+                                <label
+                                  key={s.key}
+                                  className={`flex items-start gap-2 p-3 rounded-md border cursor-pointer transition ${on ? 'border-primary bg-primary/5' : 'border-input bg-background'}`}
+                                >
+                                  <Checkbox
+                                    checked={on}
+                                    onCheckedChange={(v) => setReportSections(prev => ({ ...prev, [s.key]: !!v }))}
+                                  />
+                                  <div className="min-w-0">
+                                    <div className="text-xs font-semibold">{s.title}</div>
+                                    <div className="text-[11px] text-muted-foreground mt-0.5">{s.description}</div>
+                                  </div>
+                                </label>
+                              );
+                            })}
+                          </div>
+                          <p className="text-[11px] text-muted-foreground mt-3">
+                            {Object.values(reportSections).filter(Boolean).length} of {REPORT_SECTIONS.length} sections will be included.
+                          </p>
+                        </div>
+
                         {/* Manual Report Builder — adds human-written observations + service recommendations */}
                         <div className="border-t pt-6 mt-2">
                           <h3 className="font-semibold mb-1 flex items-center gap-2">✍️ Manual Report Builder <Badge variant="secondary" className="text-[10px]">Human layer</Badge></h3>
                           <p className="text-xs text-muted-foreground mb-4">Add your own observations and pick services to recommend. These appear inside the email sent to the company HR alongside the automated report. When HR clicks a service, you'll be alerted by email.</p>
 
                           <div className="space-y-2 mb-4">
+                          <div className="flex items-center justify-between gap-2 flex-wrap">
                             <Label htmlFor="observations">Consultant's Observations</Label>
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="outline"
+                              disabled={draftingObs}
+                              onClick={async () => {
+                                if (!selectedCompany) return;
+                                if (!selectedCompany.context_notes?.trim()) {
+                                  const proceed = window.confirm("This company has no Company Context saved (added at company creation). The AI draft will be generic without it. Continue anyway?");
+                                  if (!proceed) return;
+                                }
+                                setDraftingObs(true);
+                                try {
+                                  const records = screenings.map((s: any) => answerMapFromLegacy(s)).filter(Boolean) as any[];
+                                  const insight = aggregateCompany(records);
+                                  const summary = {
+                                    totalEmployees,
+                                    completed: completedScreenings,
+                                    completionRate: participationRate,
+                                    avgWho5: avgScore,
+                                    high: insight.riskDistribution?.healthy ?? 0,
+                                    moderate: insight.riskDistribution?.at_risk ?? 0,
+                                    low: insight.riskDistribution?.critical ?? 0,
+                                    needsSupport: needsSupportCount,
+                                  };
+                                  const { data, error } = await supabase.functions.invoke('draft-company-report', {
+                                    body: {
+                                      companyName: selectedCompany.name,
+                                      industry: selectedCompany.industry,
+                                      employeeCount: selectedCompany.employee_count,
+                                      contextNotes: selectedCompany.context_notes,
+                                      summary,
+                                      triggeredFlags: insight.triggeredFlags,
+                                      questionAverages: insight.questionAverages,
+                                      triggeredClusters: insight.triggeredClusters,
+                                    },
+                                  });
+                                  if (error) throw error;
+                                  if ((data as any)?.error) throw new Error((data as any).error);
+                                  const draft = (data as any)?.observations || '';
+                                  if (!draft) { toast.error('AI returned an empty draft'); return; }
+                                  if (observations.trim() && !window.confirm('Replace your current observations with the AI draft?')) return;
+                                  setObservations(draft);
+                                  toast.success('AI draft inserted — review and edit before sending');
+                                } catch (e: any) {
+                                  toast.error(e?.message || 'Failed to draft observations');
+                                } finally {
+                                  setDraftingObs(false);
+                                }
+                              }}
+                            >
+                              {draftingObs ? 'Drafting…' : '✨ AI Draft from company context'}
+                            </Button>
+                          </div>
                             <Textarea
                               id="observations"
                               placeholder="e.g. The team shows high stress around Q3 deadlines. Several employees flagged anxiety and sleep issues. We recommend immediate manager training and a 1:1 therapy access window for critical cases…"
@@ -1120,48 +1377,31 @@ const CorporateAdmin = () => {
                           </div>
                         </div>
 
-                        <div className="flex flex-wrap gap-2">
-                        <Button variant="outline" disabled={downloadingPdf} onClick={async () => {
-                          setDownloadingPdf(true);
-                          try {
-                            const period = new Date().toLocaleDateString('en-UG', { year: 'numeric', month: 'long' });
-                            const blob = await generateCompanyReportPdf({
-                              contact_name: selectedCompany.contact_person,
-                              company_name: selectedCompany.name,
-                              reporting_period: period,
-                              total_employees: totalEmployees,
-                              total_completed: completedScreenings,
-                              completion_rate: participationRate,
-                              avg_who5: avgScore,
-                              high_count: greenCount,
-                              moderate_count: yellowCount,
-                              low_count: redCount,
-                              high_wellbeing_pct: completedScreenings > 0 ? Math.round((greenCount / completedScreenings) * 100) : 0,
-                              moderate_wellbeing_pct: completedScreenings > 0 ? Math.round((yellowCount / completedScreenings) * 100) : 0,
-                              low_wellbeing_pct: completedScreenings > 0 ? Math.round((redCount / completedScreenings) * 100) : 0,
-                              needs_support_count: needsSupportCount,
-                            });
-                            const url = URL.createObjectURL(blob);
-                            const a = document.createElement('a');
-                            a.href = url;
-                            a.download = `${selectedCompany.name.replace(/\s+/g, '_')}_wellbeing_report.pdf`;
-                            a.click();
-                            URL.revokeObjectURL(url);
-                            toast.success('PDF report downloaded');
-                          } catch (e: any) {
-                            console.error('PDF generation failed', e);
-                            toast.error('Could not generate PDF: ' + (e?.message || 'unknown'));
-                          } finally {
-                            setDownloadingPdf(false);
-                          }
-                        }}>
-                          {downloadingPdf ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <FileText className="w-4 h-4 mr-2" />}
-                          {downloadingPdf ? 'Generating PDF…' : 'Download PDF Report'}
-                        </Button>
+                         <div className="flex flex-wrap gap-2">
+                         <Button variant="outline" disabled={downloadingPdf} onClick={async () => {
+                           // Open preview first; download happens from inside the dialog.
+                           setPreviewOpen(true);
+                         }}>
+                           <FileText className="w-4 h-4 mr-2" />
+                           Preview & Download PDF Report
+                         </Button>
                         <Button disabled={sendingReport} onClick={async () => {
                           if (!selectedCompany?.contact_email) {
                             toast.error('Add a contact email to this company first (Manage tab → edit company)');
                             return;
+                          }
+                          // Section-completion checks: warn if a toggled-on section has no underlying data
+                          const missingMsgs: string[] = [];
+                          if (reportSections.participation && totalEmployees === 0) missingMsgs.push('Participation (no employees enrolled)');
+                          if (reportSections.overall_wellbeing && completedScreenings === 0) missingMsgs.push('Overall Wellbeing (no completed screenings)');
+                          if (reportSections.per_question && completedScreenings === 0) missingMsgs.push('Per-Question Averages (no screenings)');
+                          if (reportSections.recommended_services && selectedServiceIds.size === 0) missingMsgs.push('Recommended Services (none selected)');
+                          if (reportSections.consultant_notes && !observations.trim()) missingMsgs.push('Consultant Observations (empty)');
+                          if (missingMsgs.length > 0) {
+                            const ok = window.confirm(
+                              `These selected sections have no data and will appear empty in the email:\n\n• ${missingMsgs.join('\n• ')}\n\nSend anyway?`
+                            );
+                            if (!ok) return;
                           }
                           setSendingReport(true);
                           try {
@@ -1170,7 +1410,13 @@ const CorporateAdmin = () => {
                             // Build manual layer (additive). Create report row first to get a stable id for tracked links.
                             const recommendedIds = Array.from(selectedServiceIds);
                             let reportId: string | null = null;
-                            if (observations.trim() || recommendedIds.length > 0) {
+                            const businessImpact = includeBusinessImpact && completedScreenings > 0
+                              ? calculateBusinessImpact(
+                                  { healthy: greenCount, at_risk: yellowCount, critical: redCount },
+                                  baselineSalary,
+                                )
+                              : null;
+                            if (observations.trim() || recommendedIds.length > 0 || businessImpact) {
                               const notesObj: Record<string, string> = {};
                               recommendedIds.forEach(id => { if (serviceReasons[id]?.trim()) notesObj[id] = serviceReasons[id].trim(); });
                               const { data: reportRow, error: reportErr } = await supabase
@@ -1181,6 +1427,9 @@ const CorporateAdmin = () => {
                                   observations: observations.trim() || null,
                                   recommended_service_ids: recommendedIds,
                                   service_notes: notesObj,
+                                  sections: reportSections,
+                                  business_impact: businessImpact as any,
+                                  status: 'sent',
                                   sent_to_email: selectedCompany.contact_email,
                                   created_by: user?.id,
                                 })
@@ -1212,6 +1461,52 @@ const CorporateAdmin = () => {
                                 track_url: buildTrackUrl(s.id),
                               })) : [];
 
+                            // Build rich data layer (mirrors the Report Preview shown to consultants)
+                            const richRecords = screenings.map((s: any) => answerMapFromLegacy(s)).filter(Boolean) as any[];
+                            const insight = aggregateCompany(richRecords);
+                            const genderMap: Record<string, { enrolled: number; completed: number }> = {};
+                            employees.forEach((e) => {
+                              const g = e.gender ? e.gender.charAt(0).toUpperCase() + e.gender.slice(1).toLowerCase() : 'Not Specified';
+                              if (!genderMap[g]) genderMap[g] = { enrolled: 0, completed: 0 };
+                              genderMap[g].enrolled += 1;
+                              if (e.screening_completed) genderMap[g].completed += 1;
+                            });
+                            const gender_breakdown = Object.entries(genderMap).map(([label, v]) => ({ label, enrolled: v.enrolled, completed: v.completed }));
+                            const question_averages = QUESTION_ORDER.map((q) => ({
+                              short_label: QUESTION_INTELLIGENCE[q].shortLabel,
+                              domain: QUESTION_INTELLIGENCE[q].domain,
+                              avg: insight.questionAverages[q],
+                              status: insight.questionFlagStatus[q],
+                              flag_name: QUESTION_INTELLIGENCE[q].flagName,
+                            }));
+                            const triggered_clusters_detailed = insight.triggeredClusters.map((cid) => ({
+                              label: CLUSTER_INFO[cid].label,
+                              interpretation: CLUSTER_INFO[cid].interpretation,
+                            }));
+                            const triggered_flags_detailed = insight.triggeredFlags.map((f) => {
+                              const meta = QUESTION_INTELLIGENCE[(f as any).qid as keyof typeof QUESTION_INTELLIGENCE];
+                              return {
+                                flag_name: f.flagName,
+                                question_text: meta?.text || '',
+                                affected_employees: f.affectedEmployees,
+                                average_pct: f.averagePct,
+                                recommendation: f.recommendation,
+                                service_label: f.serviceLabel,
+                                productivity_cost_days_per_month: f.productivityCostDaysPerMonth,
+                              };
+                            });
+                            const action_plan = insight.actionPlan;
+                            const business_impact_extended = businessImpact ? {
+                              annual_cost_min: (businessImpact as any).annualCostMin,
+                              annual_cost_mid: (businessImpact as any).annualCostMid,
+                              annual_cost_max: (businessImpact as any).annualCostMax,
+                              lost_days_min: (businessImpact as any).lostDaysMin,
+                              lost_days_max: (businessImpact as any).lostDaysMax,
+                              eap_investment: (businessImpact as any).eapInvestment,
+                              projected_roi_x: (businessImpact as any).projectedRoiX ?? (businessImpact as any).roiX,
+                              monthly_cost: (businessImpact as any).monthlyCost ?? Math.round(((businessImpact as any).annualCostMid || 0) / 12),
+                            } : undefined;
+
                             const { data, error: emailErr } = await supabase.functions.invoke('send-transactional-email', {
                               body: {
                                 templateName: 'b2b-company-report',
@@ -1232,9 +1527,22 @@ const CorporateAdmin = () => {
                                   moderate_wellbeing_pct: completedScreenings > 0 ? Math.round((yellowCount / completedScreenings) * 100) : 0,
                                   low_wellbeing_pct: completedScreenings > 0 ? Math.round((redCount / completedScreenings) * 100) : 0,
                                   needs_support_count: needsSupportCount,
-                                  consultant_observations: observations.trim() || undefined,
                                   recommended_services: recommended_services.length > 0 ? recommended_services : undefined,
                                   alternative_services: alternative_services.length > 0 ? alternative_services : undefined,
+                                  sections: reportSections,
+                                  gender_breakdown: gender_breakdown.length > 0 ? gender_breakdown : undefined,
+                                  question_averages: completedScreenings > 0 ? question_averages : undefined,
+                                  triggered_clusters_detailed: completedScreenings > 0 ? triggered_clusters_detailed : undefined,
+                                  triggered_flags_detailed: completedScreenings > 0 ? triggered_flags_detailed : undefined,
+                                  action_plan: completedScreenings > 0 && action_plan.length > 0 ? action_plan : undefined,
+                                  business_impact_extended,
+                                  section_overrides: {
+                                    ...sectionOverrides,
+                                    // Email template uses 'priority_focus' key for the same section UI calls 'priority_areas'
+                                    ...(sectionOverrides.priority_areas ? { priority_focus: sectionOverrides.priority_areas } : {}),
+                                  },
+                                  // If consultant_notes was overridden inline, surface it as the observations block too
+                                  consultant_observations: (sectionOverrides.consultant_notes?.trim() || observations.trim() || undefined),
                                 },
                               },
                             });
@@ -1247,6 +1555,7 @@ const CorporateAdmin = () => {
                               if (reportId) {
                                 await supabase.from('corporate_reports').update({ sent_at: new Date().toISOString() }).eq('id', reportId);
                               }
+                              fetchPastReports(selectedCompany.id);
                             }
                           } catch (e: any) {
                             console.error('Send report exception:', e);
@@ -1259,6 +1568,549 @@ const CorporateAdmin = () => {
                           {sendingReport ? 'Sending…' : 'Send Report to Company'}
                         </Button>
                         </div>
+
+                      {/* Report History — Sent / Resend */}
+                      <div className="border-t pt-6 mt-2">
+                        <h3 className="font-semibold mb-2 flex items-center gap-2">
+                          <History className="w-4 h-4" /> Report History
+                          <Badge variant="secondary" className="text-[10px]">{pastReports.length}</Badge>
+                        </h3>
+                        {pastReports.length === 0 ? (
+                          <p className="text-xs text-muted-foreground">No reports generated for this company yet.</p>
+                        ) : (
+                          <div className="space-y-2">
+                            {pastReports.map((r) => (
+                              <div key={r.id} className="flex items-center justify-between p-3 border rounded-md text-sm">
+                                <div className="min-w-0">
+                                  <div className="font-medium">{r.period_label || 'Untitled period'}</div>
+                                  <div className="text-xs text-muted-foreground">
+                                    {r.sent_at
+                                      ? `Sent ${new Date(r.sent_at).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' })} → ${r.sent_to_email || '—'}`
+                                      : `Draft created ${new Date(r.created_at).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' })}`}
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <Badge variant={r.sent_at ? 'default' : 'secondary'}>{r.sent_at ? 'Sent' : 'Draft'}</Badge>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    disabled={resendingId === r.id || !selectedCompany?.contact_email}
+                                    onClick={async () => {
+                                      if (!selectedCompany?.contact_email) { toast.error('Company has no contact email'); return; }
+                                      setResendingId(r.id);
+                                      try {
+                                        const recIds: string[] = r.recommended_service_ids || [];
+                                        const notes: Record<string, string> = r.service_notes || {};
+                                        const recommended_services = serviceCatalog.filter(s => recIds.includes(s.id)).map(s => ({
+                                          id: s.id, name: s.name, description: s.description,
+                                          physical_price: s.physical_price, virtual_price: s.virtual_price,
+                                          per_employee_price: s.per_employee_price, unit_label: s.unit_label,
+                                          reason: notes[s.id] || undefined,
+                                        }));
+                                        // Rebuild rich data layer for resend (same as initial send)
+                                        const richRecords = screenings.map((s: any) => answerMapFromLegacy(s)).filter(Boolean) as any[];
+                                        const insight = aggregateCompany(richRecords);
+                                        const genderMap: Record<string, { enrolled: number; completed: number }> = {};
+                                        employees.forEach((e) => {
+                                          const g = e.gender ? e.gender.charAt(0).toUpperCase() + e.gender.slice(1).toLowerCase() : 'Not Specified';
+                                          if (!genderMap[g]) genderMap[g] = { enrolled: 0, completed: 0 };
+                                          genderMap[g].enrolled += 1;
+                                          if (e.screening_completed) genderMap[g].completed += 1;
+                                        });
+                                        const gender_breakdown = Object.entries(genderMap).map(([label, v]) => ({ label, enrolled: v.enrolled, completed: v.completed }));
+                                        const question_averages = QUESTION_ORDER.map((q) => ({
+                                          short_label: QUESTION_INTELLIGENCE[q].shortLabel,
+                                          domain: QUESTION_INTELLIGENCE[q].domain,
+                                          avg: insight.questionAverages[q],
+                                          status: insight.questionFlagStatus[q],
+                                          flag_name: QUESTION_INTELLIGENCE[q].flagName,
+                                        }));
+                                        const triggered_clusters_detailed = insight.triggeredClusters.map((cid) => ({
+                                          label: CLUSTER_INFO[cid].label,
+                                          interpretation: CLUSTER_INFO[cid].interpretation,
+                                        }));
+                                        const triggered_flags_detailed = insight.triggeredFlags.map((f) => {
+                                          const meta = QUESTION_INTELLIGENCE[(f as any).qid as keyof typeof QUESTION_INTELLIGENCE];
+                                          return {
+                                            flag_name: f.flagName,
+                                            question_text: meta?.text || '',
+                                            affected_employees: f.affectedEmployees,
+                                            average_pct: f.averagePct,
+                                            recommendation: f.recommendation,
+                                            service_label: f.serviceLabel,
+                                            productivity_cost_days_per_month: f.productivityCostDaysPerMonth,
+                                          };
+                                        });
+                                        const action_plan = insight.actionPlan;
+                                        const bi: any = (r as any).business_impact;
+                                        const business_impact_extended = bi ? {
+                                          annual_cost_min: bi.annualCostMin,
+                                          annual_cost_mid: bi.annualCostMid,
+                                          annual_cost_max: bi.annualCostMax,
+                                          lost_days_min: bi.lostDaysMin,
+                                          lost_days_max: bi.lostDaysMax,
+                                          eap_investment: bi.eapInvestment,
+                                          projected_roi_x: bi.projectedRoiX ?? bi.roiX,
+                                          monthly_cost: bi.monthlyCost ?? Math.round((bi.annualCostMid || 0) / 12),
+                                        } : undefined;
+                                        const { error: emailErr } = await supabase.functions.invoke('send-transactional-email', {
+                                          body: {
+                                            templateName: 'b2b-company-report',
+                                            recipientEmail: selectedCompany.contact_email,
+                                            idempotencyKey: `b2b-report-${selectedCompany.id}-resend-${r.id}-${Date.now()}`,
+                                            templateData: {
+                                              contact_name: selectedCompany.contact_person || undefined,
+                                              company_name: selectedCompany.name,
+                                              reporting_period: r.period_label || '',
+                                              total_employees: totalEmployees,
+                                              total_completed: completedScreenings,
+                                              completion_rate: participationRate,
+                                              avg_who5: avgScore,
+                                              high_count: greenCount,
+                                              moderate_count: yellowCount,
+                                              low_count: redCount,
+                                              high_wellbeing_pct: completedScreenings > 0 ? Math.round((greenCount / completedScreenings) * 100) : 0,
+                                              moderate_wellbeing_pct: completedScreenings > 0 ? Math.round((yellowCount / completedScreenings) * 100) : 0,
+                                              low_wellbeing_pct: completedScreenings > 0 ? Math.round((redCount / completedScreenings) * 100) : 0,
+                                              needs_support_count: needsSupportCount,
+                                              consultant_observations: r.observations || undefined,
+                                              recommended_services: recommended_services.length > 0 ? recommended_services : undefined,
+                                              sections: r.sections || undefined,
+                                              gender_breakdown: gender_breakdown.length > 0 ? gender_breakdown : undefined,
+                                              question_averages: completedScreenings > 0 ? question_averages : undefined,
+                                              triggered_clusters_detailed: completedScreenings > 0 ? triggered_clusters_detailed : undefined,
+                                              triggered_flags_detailed: completedScreenings > 0 ? triggered_flags_detailed : undefined,
+                                              action_plan: completedScreenings > 0 && action_plan.length > 0 ? action_plan : undefined,
+                                              business_impact_extended,
+                                            },
+                                          },
+                                        });
+                                        if (emailErr) { toast.error('Resend failed: ' + emailErr.message); }
+                                        else {
+                                          await supabase.from('corporate_reports').update({ sent_at: new Date().toISOString(), status: 'sent', sent_to_email: selectedCompany.contact_email }).eq('id', r.id);
+                                          toast.success('Report resent');
+                                          fetchPastReports(selectedCompany.id);
+                                        }
+                                      } catch (e: any) {
+                                        toast.error('Resend error: ' + (e?.message || 'unknown'));
+                                      } finally {
+                                        setResendingId(null);
+                                      }
+                                    }}
+                                  >
+                                    {resendingId === r.id ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Mail className="w-3 h-3 mr-1" />}
+                                    {r.sent_at ? 'Resend' : 'Send'}
+                                  </Button>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Preview Dialog */}
+                      <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+                        <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto">
+                          <DialogHeader>
+                            <DialogTitle>Report Preview — {selectedCompany.name}</DialogTitle>
+                            <DialogDescription>
+                              This is exactly what HR will receive in the email and what is rendered into the downloaded PDF.
+                            </DialogDescription>
+                          </DialogHeader>
+                          {(() => {
+                            const period = new Date().toLocaleDateString('en-UG', { year: 'numeric', month: 'long' });
+                            const records = screenings.map((s: any) => answerMapFromLegacy(s)).filter(Boolean) as any[];
+                            const insight = aggregateCompany(records);
+                            const businessImpact = includeBusinessImpact && completedScreenings > 0
+                              ? calculateBusinessImpact({ healthy: greenCount, at_risk: yellowCount, critical: redCount }, baselineSalary)
+                              : null;
+                            const genderCounts = employees.reduce((acc: Record<string, number>, e) => {
+                              const g = (e.gender || 'Unspecified').toString();
+                              acc[g] = (acc[g] || 0) + 1; return acc;
+                            }, {});
+                            const completedByGender = employees.reduce((acc: Record<string, number>, e) => {
+                              if (!e.screening_completed) return acc;
+                              const g = (e.gender || 'Unspecified').toString();
+                              acc[g] = (acc[g] || 0) + 1; return acc;
+                            }, {});
+                            const sectionDefaultText = (k: string): string => {
+                              switch (k) {
+                                case 'cover':
+                                  return `${selectedCompany.name} — Wellbeing Report (${period})\n` +
+                                    `Prepared by InnerSpark Africa${selectedCompany.contact_person ? ` for ${selectedCompany.contact_person}` : ''}.\n\n` +
+                                    `${completedScreenings} of ${totalEmployees} employees completed the WHO-5 + Workplace screening (${participationRate}% participation). Average wellbeing score: ${avgScore}%.`;
+                                case 'participation':
+                                  if (totalEmployees === 0) return '';
+                                  return `Total enrolled: ${totalEmployees} · Completed: ${completedScreenings} · Pending: ${totalEmployees - completedScreenings} · Rate: ${participationRate}%\n\n` +
+                                    `Gender breakdown (enrolled / completed):\n` +
+                                    Object.keys(genderCounts).map(g => `• ${g}: ${genderCounts[g]} enrolled / ${completedByGender[g] || 0} completed`).join('\n');
+                                case 'overall_wellbeing':
+                                  if (completedScreenings === 0) return '';
+                                  return `Company average wellbeing: ${avgScore}% (${avgScore >= 76 ? 'Healthy' : avgScore >= 51 ? 'At Risk' : 'Critical'})\n` +
+                                    `🟢 Healthy (76–100%): ${greenCount} (${Math.round((greenCount/completedScreenings)*100)}%)\n` +
+                                    `🟡 At Risk (51–75%): ${yellowCount} (${Math.round((yellowCount/completedScreenings)*100)}%)\n` +
+                                    `🔴 Critical (0–50%): ${redCount} (${Math.round((redCount/completedScreenings)*100)}%)\n` +
+                                    `🆘 Needs immediate support: ${needsSupportCount}`;
+                                case 'per_question':
+                                  if (completedScreenings === 0) return '';
+                                  return QUESTION_ORDER.map(q => {
+                                    const meta = QUESTION_INTELLIGENCE[q];
+                                    const avg = insight.questionAverages[q];
+                                    const status = insight.questionFlagStatus[q];
+                                    const dot = status === 'green' ? '🟢' : status === 'amber' ? '🟡' : '🔴';
+                                    return `${dot} ${meta.shortLabel} — ${avg}% (${meta.flagName})`;
+                                  }).join('\n');
+                                case 'triggered_clusters':
+                                  if (completedScreenings === 0) return '';
+                                  if (insight.triggeredClusters.length === 0) return '✅ No clinical clusters triggered. The team is not showing combined burnout, anxiety, or depression-risk patterns.';
+                                  return insight.triggeredClusters.map(cid => `${CLUSTER_INFO[cid].label}\n${CLUSTER_INFO[cid].interpretation}`).join('\n\n');
+                                case 'priority_areas':
+                                  if (completedScreenings === 0) return '';
+                                  if (insight.triggeredFlags.length === 0) return '✅ No priority concerns flagged. Sustain with quarterly check-ins.';
+                                  return insight.triggeredFlags.slice(0, 5).map((f, i) =>
+                                    `#${i+1} ${f.flagName} — ${f.affectedEmployees} employees affected (avg ${f.averagePct}%)\n${f.recommendation}\n→ Suggested: ${f.serviceLabel} · ~${f.productivityCostDaysPerMonth} productivity days/month at risk`
+                                  ).join('\n\n');
+                                case 'business_impact':
+                                  if (!businessImpact) return '';
+                                  return `Estimated annual cost of inaction: ${formatUGX(businessImpact.estimatedAnnualCostMin)}–${formatUGX(businessImpact.estimatedAnnualCostMax)} (mid: ${formatUGX(businessImpact.estimatedAnnualCostMidpoint)})\n` +
+                                    `Estimated productivity days lost / year: ${businessImpact.estimatedDaysLostMin}–${businessImpact.estimatedDaysLostMax}\n` +
+                                    `Estimated EAP investment: ${formatUGX(businessImpact.estimatedEAPCost)} · Projected ROI: ${businessImpact.estimatedROI}x\n` +
+                                    `Cost of inaction per month: ${formatUGX(businessImpact.costOfInactionPerMonth)}`;
+                                case 'recommended_services':
+                                  if (selectedServiceIds.size === 0) return '';
+                                  return serviceCatalog.filter(s => selectedServiceIds.has(s.id)).map(s => {
+                                    const price = [
+                                      s.physical_price ? `Physical: UGX ${Number(s.physical_price).toLocaleString()}` : '',
+                                      s.virtual_price ? `Virtual: UGX ${Number(s.virtual_price).toLocaleString()}` : '',
+                                      s.per_employee_price ? `UGX ${Number(s.per_employee_price).toLocaleString()} / ${s.unit_label || 'unit'}` : '',
+                                    ].filter(Boolean).join(' · ');
+                                    return `${s.name}${s.description ? `\n${s.description}` : ''}${price ? `\n${price}` : ''}${serviceReasons[s.id]?.trim() ? `\nWhy: ${serviceReasons[s.id]}` : ''}`;
+                                  }).join('\n\n');
+                                case 'action_plan':
+                                  if (insight.actionPlan.length === 0) return '';
+                                  return insight.actionPlan.map(w => `Week ${w.week} — ${w.title}\n${w.items.map(it => `• ${it}`).join('\n')}`).join('\n\n');
+                                case 'consultant_notes':
+                                  return observations || '';
+                                default:
+                                  return '';
+                              }
+                            };
+                            const Section = ({ k, title, children }: { k: string; title: string; children: React.ReactNode }) => {
+                              if (!reportSections[k]) return null;
+                              const override = sectionOverrides[k];
+                              const isEditing = editingSection === k;
+                              return (
+                                <div className="border rounded-md p-4">
+                                  <div className="flex items-center justify-between mb-2 gap-2">
+                                    <div className="font-semibold text-sm text-foreground flex items-center gap-2">
+                                      {title}
+                                      {override && <Badge variant="secondary" className="text-[10px]">Edited</Badge>}
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                      {!isEditing && (
+                                        <Button size="sm" variant="ghost" className="h-7 px-2 text-xs"
+                                          onClick={() => { setEditDraft(override ?? sectionDefaultText(k)); setEditingSection(k); }}>
+                                          ✎ Edit
+                                        </Button>
+                                      )}
+                                      {!isEditing && override && (
+                                        <Button size="sm" variant="ghost" className="h-7 px-2 text-xs text-destructive"
+                                          onClick={() => {
+                                            setSectionOverrides(prev => { const n = { ...prev }; delete n[k]; return n; });
+                                            toast.success('Reverted to auto-generated content');
+                                          }}>
+                                          Reset
+                                        </Button>
+                                      )}
+                                    </div>
+                                  </div>
+                                  {isEditing ? (
+                                    <div className="space-y-2">
+                                      <Textarea
+                                        value={editDraft}
+                                        onChange={(e) => setEditDraft(e.target.value)}
+                                        rows={6}
+                                        placeholder="Write the custom text that will replace the auto-generated content for this section…"
+                                      />
+                                      <div className="flex gap-2 justify-end">
+                                        <Button size="sm" variant="outline" onClick={() => { setEditingSection(null); setEditDraft(''); }}>Cancel</Button>
+                                        <Button size="sm" onClick={() => {
+                                          const t = editDraft.trim();
+                                          setSectionOverrides(prev => {
+                                            const n = { ...prev };
+                                            if (t) n[k] = t; else delete n[k];
+                                            return n;
+                                          });
+                                          setEditingSection(null);
+                                          setEditDraft('');
+                                          toast.success(t ? 'Section saved' : 'Override cleared');
+                                        }}>Save</Button>
+                                      </div>
+                                    </div>
+                                  ) : override ? (
+                                    <div className="text-sm whitespace-pre-wrap text-foreground">{override}</div>
+                                  ) : (
+                                    <div className="text-sm text-muted-foreground space-y-2">{children}</div>
+                                  )}
+                                </div>
+                              );
+                            };
+                            const empty = <p className="italic text-xs">No data yet — section will appear empty in the email/PDF.</p>;
+                            return (
+                              <div className="space-y-3 text-sm">
+                                <div className="p-3 bg-muted/50 rounded-md flex items-center justify-between">
+                                  <div>
+                                    <div className="text-xs text-muted-foreground">Recipient</div>
+                                    <div className="font-medium">{selectedCompany.contact_email || <span className="text-destructive">No contact email set</span>}</div>
+                                  </div>
+                                  <div className="text-right">
+                                    <div className="text-xs text-muted-foreground">Reporting Period</div>
+                                    <div className="font-medium">{period}</div>
+                                  </div>
+                                </div>
+
+                                <Section k="cover" title="1. Cover & Summary">
+                                  <p><strong>{selectedCompany.name}</strong> — Wellbeing Report ({period})</p>
+                                  <p>Prepared by InnerSpark Africa{selectedCompany.contact_person ? ` for ${selectedCompany.contact_person}` : ''}.</p>
+                                  <p>{completedScreenings} of {totalEmployees} employees completed the WHO-5 + Workplace screening ({participationRate}% participation). Average wellbeing score: <strong>{avgScore}%</strong>.</p>
+                                </Section>
+
+                                <Section k="participation" title="2. Participation & Demographics">
+                                  {totalEmployees === 0 ? empty : (
+                                    <>
+                                      <p>Total enrolled: <strong>{totalEmployees}</strong> · Completed: <strong>{completedScreenings}</strong> · Pending: <strong>{totalEmployees - completedScreenings}</strong> · Rate: <strong>{participationRate}%</strong></p>
+                                      <div>
+                                        <div className="text-xs font-medium mt-2 mb-1">Gender breakdown (enrolled / completed)</div>
+                                        <ul className="space-y-0.5">
+                                          {Object.keys(genderCounts).map(g => (
+                                            <li key={g}>• {g}: {genderCounts[g]} enrolled / {completedByGender[g] || 0} completed</li>
+                                          ))}
+                                        </ul>
+                                      </div>
+                                    </>
+                                  )}
+                                </Section>
+
+                                <Section k="overall_wellbeing" title="3. Overall Wellbeing Score">
+                                  {completedScreenings === 0 ? empty : (
+                                    <>
+                                      <p>Company average wellbeing: <strong>{avgScore}%</strong> ({avgScore >= 76 ? 'Healthy' : avgScore >= 51 ? 'At Risk' : 'Critical'})</p>
+                                      <ul className="space-y-0.5">
+                                        <li>🟢 Healthy (76–100%): {greenCount} ({Math.round((greenCount/completedScreenings)*100)}%)</li>
+                                        <li>🟡 At Risk (51–75%): {yellowCount} ({Math.round((yellowCount/completedScreenings)*100)}%)</li>
+                                        <li>🔴 Critical (0–50%): {redCount} ({Math.round((redCount/completedScreenings)*100)}%)</li>
+                                        <li>🆘 Needs immediate support: {needsSupportCount}</li>
+                                      </ul>
+                                    </>
+                                  )}
+                                </Section>
+
+                                <Section k="per_question" title="4. Per-Question Averages">
+                                  {completedScreenings === 0 ? empty : (
+                                    <ul className="space-y-1">
+                                      {QUESTION_ORDER.map(q => {
+                                        const meta = QUESTION_INTELLIGENCE[q];
+                                        const avg = insight.questionAverages[q];
+                                        const status = insight.questionFlagStatus[q];
+                                        const dot = status === 'green' ? '🟢' : status === 'amber' ? '🟡' : '🔴';
+                                        return <li key={q}>{dot} <strong>{meta.shortLabel}</strong> — {avg}% <span className="text-xs">({meta.flagName})</span></li>;
+                                      })}
+                                    </ul>
+                                  )}
+                                </Section>
+
+                                <Section k="triggered_clusters" title="5. Triggered Clusters">
+                                  {completedScreenings === 0 ? empty : insight.triggeredClusters.length === 0 ? (
+                                    <p>✅ No clinical clusters triggered. The team is not showing combined burnout, anxiety, or depression-risk patterns.</p>
+                                  ) : (
+                                    <ul className="space-y-2">
+                                      {insight.triggeredClusters.map(cid => (
+                                        <li key={cid}>
+                                          <strong>{CLUSTER_INFO[cid].label}</strong>
+                                          <div className="text-xs">{CLUSTER_INFO[cid].interpretation}</div>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  )}
+                                </Section>
+
+                                <Section k="priority_areas" title="6. Priority Focus Areas">
+                                  {completedScreenings === 0 ? empty : insight.triggeredFlags.length === 0 ? (
+                                    <p>✅ No priority concerns flagged. Sustain with quarterly check-ins.</p>
+                                  ) : (
+                                    <ul className="space-y-2">
+                                      {insight.triggeredFlags.slice(0, 5).map((f, i) => (
+                                        <li key={f.qid}>
+                                          <strong>#{i+1} {f.flagName}</strong> — {f.affectedEmployees} employees affected (avg {f.averagePct}%)
+                                          <div className="text-xs">{f.recommendation}</div>
+                                          <div className="text-xs">→ Suggested: {f.serviceLabel} · ~{f.productivityCostDaysPerMonth} productivity days/month at risk</div>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  )}
+                                </Section>
+
+                                <Section k="business_impact" title="7. Business Impact">
+                                  {!businessImpact ? <p className="italic text-xs">Business Impact toggle is off, or no screenings yet. Enable it on the Analytics tab.</p> : (
+                                    <>
+                                      <p>Estimated annual cost of inaction: <strong>{formatUGX(businessImpact.estimatedAnnualCostMin)}–{formatUGX(businessImpact.estimatedAnnualCostMax)}</strong> (mid: {formatUGX(businessImpact.estimatedAnnualCostMidpoint)})</p>
+                                      <p>Estimated productivity days lost / year: <strong>{businessImpact.estimatedDaysLostMin}–{businessImpact.estimatedDaysLostMax}</strong></p>
+                                      <p>Estimated EAP investment: <strong>{formatUGX(businessImpact.estimatedEAPCost)}</strong> · Projected ROI: <strong>{businessImpact.estimatedROI}x</strong></p>
+                                      <p>Cost of inaction per month: <strong>{formatUGX(businessImpact.costOfInactionPerMonth)}</strong></p>
+                                    </>
+                                  )}
+                                </Section>
+
+                                <Section k="recommended_services" title="8. Recommended Services">
+                                  {selectedServiceIds.size === 0 ? <p className="italic text-xs">No services selected. Pick one or more services in the builder above.</p> : (
+                                    <ul className="space-y-2">
+                                      {serviceCatalog.filter(s => selectedServiceIds.has(s.id)).map(s => (
+                                        <li key={s.id}>
+                                          <strong>{s.name}</strong>
+                                          {s.description && <div className="text-xs">{s.description}</div>}
+                                          <div className="text-xs text-primary">
+                                            {s.physical_price ? `Physical: UGX ${Number(s.physical_price).toLocaleString()}` : ''}
+                                            {s.physical_price && s.virtual_price ? ' • ' : ''}
+                                            {s.virtual_price ? `Virtual: UGX ${Number(s.virtual_price).toLocaleString()}` : ''}
+                                            {s.per_employee_price ? ` · UGX ${Number(s.per_employee_price).toLocaleString()} / ${s.unit_label || 'unit'}` : ''}
+                                          </div>
+                                          {serviceReasons[s.id]?.trim() && <div className="text-xs italic">Why: {serviceReasons[s.id]}</div>}
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  )}
+                                </Section>
+
+                                <Section k="action_plan" title="9. 30-Day Action Plan">
+                                  {insight.actionPlan.length === 0 ? empty : (
+                                    <ul className="space-y-2">
+                                      {insight.actionPlan.map(w => (
+                                        <li key={w.week}>
+                                          <strong>Week {w.week} — {w.title}</strong>
+                                          <ul className="list-disc ml-5 text-xs">
+                                            {w.items.map((it, i) => <li key={i}>{it}</li>)}
+                                          </ul>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  )}
+                                </Section>
+
+                                <Section k="consultant_notes" title="10. Consultant Observations">
+                                  {!observations.trim() ? <p className="italic text-xs">No observations entered yet.</p> : (
+                                    <p className="whitespace-pre-wrap">{observations}</p>
+                                  )}
+                                </Section>
+                              </div>
+                            );
+                          })()}
+                          <div className="sticky bottom-0 bg-background border-t pt-3 mt-4 flex flex-wrap gap-2 justify-end">
+                            <Button variant="ghost" onClick={() => setPreviewOpen(false)}>Close</Button>
+                            <Button disabled={downloadingPdf} onClick={async () => {
+                              setDownloadingPdf(true);
+                              try {
+                                const period = new Date().toLocaleDateString('en-UG', { year: 'numeric', month: 'long' });
+                                const businessImpact = includeBusinessImpact && completedScreenings > 0
+                                  ? calculateBusinessImpact(
+                                      { healthy: greenCount, at_risk: yellowCount, critical: redCount },
+                                      baselineSalary,
+                                    )
+                                  : null;
+                                const recommended_services_pdf = serviceCatalog
+                                  .filter(s => selectedServiceIds.has(s.id))
+                                  .map(s => ({
+                                    name: s.name, description: s.description,
+                                    physical_price: s.physical_price, virtual_price: s.virtual_price,
+                                    per_employee_price: s.per_employee_price, unit_label: s.unit_label,
+                                    reason: serviceReasons[s.id]?.trim() || undefined,
+                                  }));
+                                // Rich data layer — mirrors the on-screen Report Preview exactly
+                                const richRecordsPdf = screenings.map((s: any) => answerMapFromLegacy(s)).filter(Boolean) as any[];
+                                const insightPdf = aggregateCompany(richRecordsPdf);
+                                const genderMapPdf: Record<string, { enrolled: number; completed: number }> = {};
+                                employees.forEach((e) => {
+                                  const g = e.gender ? e.gender.charAt(0).toUpperCase() + e.gender.slice(1).toLowerCase() : 'Unspecified';
+                                  if (!genderMapPdf[g]) genderMapPdf[g] = { enrolled: 0, completed: 0 };
+                                  genderMapPdf[g].enrolled += 1;
+                                  if (e.screening_completed) genderMapPdf[g].completed += 1;
+                                });
+                                const gender_breakdown_pdf = Object.entries(genderMapPdf).map(([label, v]) => ({ label, enrolled: v.enrolled, completed: v.completed }));
+                                const question_averages_pdf = completedScreenings > 0 ? QUESTION_ORDER.map((q) => ({
+                                  short_label: QUESTION_INTELLIGENCE[q].shortLabel,
+                                  avg: insightPdf.questionAverages[q],
+                                  status: insightPdf.questionFlagStatus[q] as 'green' | 'amber' | 'red',
+                                  flag_name: QUESTION_INTELLIGENCE[q].flagName,
+                                })) : undefined;
+                                const triggered_clusters_pdf = completedScreenings > 0 ? insightPdf.triggeredClusters.map((cid) => ({
+                                  label: CLUSTER_INFO[cid].label,
+                                  interpretation: CLUSTER_INFO[cid].interpretation,
+                                })) : undefined;
+                                const triggered_flags_pdf = completedScreenings > 0 ? insightPdf.triggeredFlags.map((f) => ({
+                                  flag_name: f.flagName,
+                                  affected_employees: f.affectedEmployees,
+                                  average_pct: f.averagePct,
+                                  recommendation: f.recommendation,
+                                  service_label: f.serviceLabel,
+                                  productivity_cost_days_per_month: f.productivityCostDaysPerMonth,
+                                })) : undefined;
+                                const action_plan_pdf = completedScreenings > 0 && insightPdf.actionPlan.length > 0 ? insightPdf.actionPlan : undefined;
+                                const business_impact_extended_pdf = businessImpact ? {
+                                  annual_cost_min: businessImpact.estimatedAnnualCostMin,
+                                  annual_cost_mid: businessImpact.estimatedAnnualCostMidpoint,
+                                  annual_cost_max: businessImpact.estimatedAnnualCostMax,
+                                  lost_days_min: businessImpact.estimatedDaysLostMin,
+                                  lost_days_max: businessImpact.estimatedDaysLostMax,
+                                  eap_investment: businessImpact.estimatedEAPCost,
+                                  projected_roi_x: businessImpact.estimatedROI,
+                                  monthly_cost: businessImpact.costOfInactionPerMonth,
+                                } : null;
+                                const blob = await generateCompanyReportPdf({
+                                  contact_name: selectedCompany.contact_person,
+                                  company_name: selectedCompany.name,
+                                  reporting_period: period,
+                                  total_employees: totalEmployees,
+                                  total_completed: completedScreenings,
+                                  completion_rate: participationRate,
+                                  avg_who5: avgScore,
+                                  high_count: greenCount,
+                                  moderate_count: yellowCount,
+                                  low_count: redCount,
+                                  high_wellbeing_pct: completedScreenings > 0 ? Math.round((greenCount / completedScreenings) * 100) : 0,
+                                  moderate_wellbeing_pct: completedScreenings > 0 ? Math.round((yellowCount / completedScreenings) * 100) : 0,
+                                  low_wellbeing_pct: completedScreenings > 0 ? Math.round((redCount / completedScreenings) * 100) : 0,
+                                  needs_support_count: needsSupportCount,
+                                  sections: reportSections,
+                                  observations: observations.trim() || null,
+                                  recommended_services: recommended_services_pdf,
+                                  business_impact: businessImpact as any,
+                                  section_overrides: sectionOverrides,
+                                  gender_breakdown: gender_breakdown_pdf,
+                                  question_averages: question_averages_pdf,
+                                  triggered_clusters_detailed: triggered_clusters_pdf,
+                                  triggered_flags_detailed: triggered_flags_pdf,
+                                  action_plan: action_plan_pdf,
+                                  business_impact_extended: business_impact_extended_pdf,
+                                });
+                                const url = URL.createObjectURL(blob);
+                                const a = document.createElement('a');
+                                a.href = url;
+                                a.download = `${selectedCompany.name.replace(/\s+/g, '_')}_wellbeing_report.pdf`;
+                                a.click();
+                                URL.revokeObjectURL(url);
+                                toast.success('PDF report downloaded');
+                              } catch (e: any) {
+                                console.error('PDF generation failed', e);
+                                toast.error('Could not generate PDF: ' + (e?.message || 'unknown'));
+                              } finally {
+                                setDownloadingPdf(false);
+                              }
+                            }}>
+                              {downloadingPdf ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <FileText className="w-4 h-4 mr-2" />}
+                              {downloadingPdf ? 'Generating PDF…' : 'Download PDF Report'}
+                            </Button>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
                       </>
                     )}
                   </CardContent>

@@ -115,6 +115,7 @@ import WellbeingCheck from "./pages/WellbeingCheck";
 import Trainings from "./pages/Trainings";
 import CorporateWellbeingCheck from "./pages/CorporateWellbeingCheck";
 import CorporateAdmin from "./pages/CorporateAdmin";
+import CampaignLanding from "./pages/CampaignLanding";
 import Unsubscribe from "./pages/Unsubscribe";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentCanceled from "./pages/PaymentCanceled";
@@ -136,6 +137,10 @@ import CmsEventPost from "./pages/CmsEventPost";
 import ThankYou from "./pages/ThankYou";
 import CorporateServiceRequest from "./pages/CorporateServiceRequest";
 import Whisper from "./pages/Whisper";
+import SessionFeedback from "./pages/SessionFeedback";
+import Kenya from "./pages/Kenya";
+import KenyaCheck from "./pages/KenyaCheck";
+import KenyaReferralRedirect from "./pages/KenyaReferralRedirect";
 
 const queryClient = new QueryClient();
 
@@ -151,7 +156,8 @@ const App = () => (
             <Sonner />
             <BrowserRouter>
               <ScrollToTop />
-              <FloatingWhatsApp />
+              <AIChatWidget />
+              <WhisperFloatingWidget />
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/auth" element={<Auth />} />
@@ -242,6 +248,8 @@ const App = () => (
                 />
                 <Route path="/blog" element={<Blog />} />
                 <Route path="/wellbeing-check" element={<WellbeingCheck />} />
+                <Route path="/whisper" element={<Whisper />} />
+                <Route path="/whisper/:token" element={<Whisper />} />
                 <Route path="/mind-check" element={<MindCheck />} />
                 <Route
                   path="/mind-check/analytics"
@@ -492,6 +500,10 @@ const App = () => (
                 <Route
                   path="/thank-you-corporate"
                   element={<ThankYou type="corporate" />}
+                />
+                <Route
+                  path="/corporate/service-request"
+                  element={<CorporateServiceRequest />}
                 />
                 <Route
                   path="/thank-you-referral"

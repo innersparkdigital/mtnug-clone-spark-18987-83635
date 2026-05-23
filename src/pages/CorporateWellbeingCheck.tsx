@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
-import { Lock, ArrowRight, ArrowLeft, CheckCircle, Heart, Brain, Users, RotateCcw, Download, MessageCircle, Share2, Copy, ExternalLink, Mail } from 'lucide-react';
+import { Lock, ArrowRight, ArrowLeft, CheckCircle, Heart, Brain, Users, RotateCcw, Download, MessageCircle, Share2, Copy, ExternalLink, Mail, Volume2, Globe, RefreshCw } from 'lucide-react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,6 +10,10 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import logo from '@/assets/innerspark-logo.png';
 import { Checkbox } from '@/components/ui/checkbox';
+import EmployeeResultsBreakdown from '@/components/wellbeing/EmployeeResultsBreakdown';
+import { computeAnswers, computeAggregate, AnswerMap } from '@/lib/wellbeingIntelligence';
+import { CampaignBrandingHeader } from '@/components/wellbeing/CampaignBrandingHeader';
+import { ScreeningAnxietyFAQ } from '@/components/wellbeing/ScreeningAnxietyFAQ';
 
 const WHO5_QUESTIONS = [
   "I have felt cheerful and in good spirits",
@@ -44,6 +48,55 @@ const WORKPLACE_OPTIONS = [
   { value: 4, label: "Very often" },
   { value: 5, label: "Always" },
 ];
+
+// === Wave 3: Multilingual + emoji-scale fallbacks ===
+const SCALE_EMOJI = ['😞', '😕', '😐', '🙂', '😊', '🤩'];
+
+type Lang = 'en' | 'lg' | 'sw';
+const LANGS: { code: Lang; label: string; native: string }[] = [
+  { code: 'en', label: 'English', native: 'English' },
+  { code: 'lg', label: 'Luganda', native: 'Luganda' },
+  { code: 'sw', label: 'Kiswahili', native: 'Kiswahili' },
+];
+
+const TRANSLATIONS: Record<Lang, { questions: string[]; who5Options: string[]; workplaceOptions: string[]; ui: Record<string, string> }> = {
+  en: {
+    questions: [...WHO5_QUESTIONS, ...WORKPLACE_QUESTIONS],
+    who5Options: WHO5_OPTIONS.map(o => o.label),
+    workplaceOptions: WORKPLACE_OPTIONS.map(o => o.label),
+    ui: { over_two_weeks: 'Over the past 2 weeks...', listen: 'Listen', question_label: 'Question', of: 'of', back: 'Back', next: 'Next', see_results: 'See My Results', community_mode: 'Community Wellbeing Check', community_subtitle: 'A facilitator-supported check-in. Your responses stay private.', completed_today: 'people have completed this check on this device today', reset_counter: 'Reset counter' },
+  },
+  lg: {
+    questions: [
+      "Nzizeemu essanyu n'okusanyuka",
+      "Nzizeemu emirembe n'okuwummula",
+      "Mbadde nnamaanyi era nga nkola",
+      "Nzuukuse nga mpummudde era nga muggya",
+      "Obulamu bwange obwa buli lunaku bujjuziddwa ebintu ebinsanyusa",
+      "Emirimu gyo musobola gukwatibwa otya?",
+      "Owulira ng'oyambibwa ku mulimu?",
+      "Emirundi emeka gy'owulira ng'omulimu gukuyitiridde?",
+    ],
+    who5Options: ["Tewali kiseera", "Ebiseera ebimu", "Wansi w'ekitundu", "Waggulu w'ekitundu", "Ebiseera ebisinga", "Ebiseera byonna"],
+    workplaceOptions: ["Tekiri kyonna", "Mu butono", "Oluusi", "Emirundi mingi", "Emirundi mingi nnyo", "Bulijjo"],
+    ui: { over_two_weeks: 'Mu wiiki bbiri eziyise...', listen: 'Wuliriza', question_label: 'Ekibuuzo', of: 'ku', back: 'Ddayo', next: 'Mu maaso', see_results: 'Laba ebivudemu', community_mode: 'Okukebera Obulamu obw\u2019Omutima mu Kitundu', community_subtitle: 'Ekikebera ekiyambibwa omuyigiriza. Eby\'oddamu byonna bya kyama.', completed_today: 'abantu bamaze okukola okukebera ku kyuma kino leero', reset_counter: 'Sazaamu omuwendo' },
+  },
+  sw: {
+    questions: [
+      "Nimejisikia mchangamfu na mwenye furaha",
+      "Nimejisikia mtulivu na nimepumzika",
+      "Nimejisikia mwenye nguvu na shughuli",
+      "Niliamka nikijisikia mpya na nimepumzika",
+      "Maisha yangu ya kila siku yamejaa mambo yanayonivutia",
+      "Mzigo wako wa kazi unawezekana kushughulikiwa kiasi gani?",
+      "Je, unahisi unapata msaada kazini?",
+      "Mara ngapi unahisi umelemewa kazini?",
+    ],
+    who5Options: ["Kamwe", "Mara chache", "Chini ya nusu ya wakati", "Zaidi ya nusu ya wakati", "Mara nyingi", "Wakati wote"],
+    workplaceOptions: ["Hapana kabisa", "Mara chache sana", "Mara nyingine", "Mara nyingi", "Mara nyingi sana", "Daima"],
+    ui: { over_two_weeks: 'Katika wiki 2 zilizopita...', listen: 'Sikiliza', question_label: 'Swali', of: 'kati ya', back: 'Rudi', next: 'Endelea', see_results: 'Ona Matokeo Yangu', community_mode: 'Ukaguzi wa Ustawi wa Jamii', community_subtitle: 'Ukaguzi unaosaidiwa na mwezeshaji. Majibu yako ni ya siri.', completed_today: 'watu wamekamilisha ukaguzi huu kwenye kifaa hiki leo', reset_counter: 'Anzisha upya hesabu' },
+  },
+};
 
 type Phase = 'entry' | 'welcome' | 'consent' | 'test' | 'results';
 
@@ -81,10 +134,42 @@ const CorporateWellbeingCheck = () => {
   const [submitting, setSubmitting] = useState(false);
   const [selectedGender, setSelectedGender] = useState<string>('');
   const [consentChecked, setConsentChecked] = useState(false);
+
+  // Wave 3: language + community mode + facilitator counter
+  const isCommunityMode = searchParams.get('mode') === 'community';
+  const campaignSlug = searchParams.get('slug') || '';
+  const [employeeCampaignSlug, setEmployeeCampaignSlug] = useState('');
+  const activeCampaignSlug = campaignSlug || employeeCampaignSlug;
+  const [lang, setLang] = useState<Lang>(() => {
+    const fromUrl = (searchParams.get('lang') || '').toLowerCase();
+    if (fromUrl === 'lg' || fromUrl === 'sw' || fromUrl === 'en') return fromUrl as Lang;
+    try { return (localStorage.getItem('isa_wb_lang') as Lang) || 'en'; } catch { return 'en'; }
+  });
+  useEffect(() => { try { localStorage.setItem('isa_wb_lang', lang); } catch {} }, [lang]);
+  const t = TRANSLATIONS[lang];
+
+  const COUNTER_KEY = `isa_facilitator_count_${new Date().toISOString().slice(0, 10)}`;
+  const [facilitatorCount, setFacilitatorCount] = useState<number>(() => {
+    if (!isCommunityMode) return 0;
+    try { return parseInt(localStorage.getItem(COUNTER_KEY) || '0', 10) || 0; } catch { return 0; }
+  });
+
+  const speakText = (text: string) => {
+    try {
+      if (!('speechSynthesis' in window)) { toast.info('Audio not supported on this device'); return; }
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(text);
+      // Best-effort voice mapping. Browsers may fall back to default.
+      utter.lang = lang === 'sw' ? 'sw-KE' : lang === 'lg' ? 'en-UG' : 'en-US';
+      utter.rate = 0.9;
+      window.speechSynthesis.speak(utter);
+    } catch (e) { console.warn('TTS failed', e); }
+  };
   // Results email state
   const [resultsEmail, setResultsEmail] = useState<string>('');
   const [sendingResultsEmail, setSendingResultsEmail] = useState(false);
   const [resultsEmailSent, setResultsEmailSent] = useState(false);
+  const [intelligenceAnswers, setIntelligenceAnswers] = useState<AnswerMap | null>(null);
 
   // Check for token in URL
   useEffect(() => {
@@ -108,9 +193,11 @@ const CorporateWellbeingCheck = () => {
 
       // Fetch company name and screening history in parallel
       const [companyRes, historyRes] = await Promise.all([
-        supabase.from('corporate_companies').select('name').eq('id', data.company_id).single(),
+        supabase.from('corporate_companies').select('name, slug').eq('id', data.company_id).single(),
         supabase.from('corporate_screenings').select('id, completed_at, total_score, who5_percentage, wellbeing_category').eq('employee_id', data.id).order('completed_at', { ascending: false }),
       ]);
+
+      setEmployeeCampaignSlug(companyRes.data?.slug || '');
 
       setEmployee({
         id: data.id,
@@ -128,25 +215,41 @@ const CorporateWellbeingCheck = () => {
   };
 
   const lookupByCode = async () => {
-    if (!accessCode.trim()) {
-      toast.error('Please enter your access code.');
+    // Sanitize: strip whitespace and any non-alphanumeric characters, uppercase
+    const cleaned = accessCode.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+    if (!cleaned) {
+      toast.error('Please enter your 8-character access code.');
+      return;
+    }
+    if (cleaned.length !== 8) {
+      toast.error(`Access code must be 8 characters. You entered ${cleaned.length}.`);
       return;
     }
     setLoading(true);
     try {
       const { data, error } = await supabase
-        .rpc('lookup_employee_by_code', { _code: accessCode.trim().toUpperCase() }) as { data: any; error: any };
+        .rpc('lookup_employee_by_code', { _code: cleaned }) as { data: any; error: any };
 
-      if (error || !data) {
-        toast.error('Invalid access code. Please check and try again.');
+      if (error) {
+        console.error('lookup_employee_by_code error', error);
+        toast.error('Network issue verifying code. Please try again.');
         setLoading(false);
         return;
       }
+      if (!data) {
+        toast.error('That code was not found. Double-check the code from your employer (letters O/0 and I/1 are easy to mix up).');
+        setLoading(false);
+        return;
+      }
+      // Normalize stored value to the cleaned version
+      setAccessCode(cleaned);
 
       const [companyRes, historyRes] = await Promise.all([
-        supabase.from('corporate_companies').select('name').eq('id', data.company_id).single(),
+        supabase.from('corporate_companies').select('name, slug').eq('id', data.company_id).single(),
         supabase.from('corporate_screenings').select('id, completed_at, total_score, who5_percentage, wellbeing_category').eq('employee_id', data.id).order('completed_at', { ascending: false }),
       ]);
+
+      setEmployeeCampaignSlug(companyRes.data?.slug || '');
 
       setEmployee({
         id: data.id,
@@ -188,7 +291,12 @@ const CorporateWellbeingCheck = () => {
     try {
       const attemptNumber = employee.screening_history.length + 1;
 
-      await supabase.from('corporate_screenings').insert({
+      // Per-question intelligence
+      const intelligence = computeAnswers(answers as number[]);
+      const aggregate = computeAggregate(intelligence);
+      setIntelligenceAnswers(intelligence);
+
+      const { data: screeningRow } = await supabase.from('corporate_screenings').insert({
         employee_id: employee.id,
         company_id: employee.company_id,
         who5_score: who5Score,
@@ -200,7 +308,30 @@ const CorporateWellbeingCheck = () => {
         },
         total_score: totalScore,
         wellbeing_category: category.key,
-      });
+        per_question: intelligence as any,
+        triggered_flags: aggregate.triggeredFlags,
+        triggered_clusters: aggregate.triggeredClusters,
+        crisis_alert_level: aggregate.crisisAlertLevel,
+        risk_category: aggregate.riskCategory,
+      } as any).select('id').single();
+
+      // Crisis alert (independent — must fire even if email/report fails)
+      if (aggregate.crisisAlertRequired && aggregate.crisisAlertLevel) {
+        const triggers = [
+          ...aggregate.triggeredFlags,
+          ...(intelligence.q5.criticalFlag ? ['Q5_ZERO_ANHEDONIA'] : []),
+          ...(aggregate.overallScore.percentage < 20 ? ['OVERALL_BELOW_20'] : []),
+        ];
+        supabase.from('corporate_crisis_alerts').insert({
+          company_id: employee.company_id,
+          employee_id: employee.id,
+          screening_id: screeningRow?.id ?? null,
+          level: aggregate.crisisAlertLevel,
+          triggers,
+        } as any).then(({ error }) => {
+          if (error) console.error('crisis alert insert failed', error);
+        });
+      }
 
       // Update employee record (gender + mark screening done)
       await supabase
@@ -228,6 +359,15 @@ const CorporateWellbeingCheck = () => {
       }
 
       setPhase('results');
+
+      // Wave 3: bump facilitator counter (community mode only)
+      if (isCommunityMode) {
+        try {
+          const next = facilitatorCount + 1;
+          localStorage.setItem(COUNTER_KEY, String(next));
+          setFacilitatorCount(next);
+        } catch {}
+      }
       // Pre-fill the results-email input with the address on file
       setResultsEmail(employee.email || '');
       setResultsEmailSent(true); // auto-send already fired above
@@ -246,26 +386,37 @@ const CorporateWellbeingCheck = () => {
   return (
     <>
       <Helmet>
-        <title>Corporate Wellbeing Check | InnerSpark Africa</title>
-        <meta name="description" content="Confidential employee wellbeing screening by InnerSpark Africa." />
+        <title>Corporate Wellbeing Screening — Enter Your Access Code | InnerSpark Africa</title>
+        <meta name="description" content="InnerSpark's corporate mental health screening tool. Enter your access code to complete your confidential wellbeing check." />
+        <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-b from-blue-50/60 via-white to-blue-50/40">
-        {/* Header */}
-        <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-blue-100">
-          <div className="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
-            <Link to="/" className="flex items-center gap-2">
-              <img src={logo} alt="InnerSpark Africa" className="h-8" />
-              <span className="font-bold text-lg text-foreground">InnerSpark</span>
-            </Link>
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <Lock className="w-3 h-3" />
-              Confidential
+        {/* Standard header (hidden when arriving via a branded campaign link — the campaign hero takes over) */}
+        {!activeCampaignSlug && (
+          <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-blue-100">
+            <div className="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
+              <Link to="/" className="flex items-center gap-2">
+                <img src={logo} alt="InnerSpark Africa" className="h-8" />
+                <span className="font-bold text-lg text-foreground">InnerSpark</span>
+              </Link>
+              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <Lock className="w-3 h-3" />
+                Confidential
+              </div>
             </div>
-          </div>
-        </header>
+          </header>
+        )}
 
-        <main className="max-w-lg mx-auto px-4 pt-20 pb-16">
+        <main className={`pb-16 ${activeCampaignSlug ? 'pt-0' : 'max-w-lg mx-auto px-4 pt-20'}`}>
+          {activeCampaignSlug && (phase === 'entry' || phase === 'welcome') && (
+            <CampaignBrandingHeader
+              slug={activeCampaignSlug}
+              language={lang as 'en' | 'lg' | 'sw'}
+              onLanguageChange={(lng) => setLang(lng)}
+            />
+          )}
+          <div className="max-w-lg mx-auto px-4">
           <AnimatePresence mode="wait">
             {/* ENTRY PHASE */}
             {phase === 'entry' && (
@@ -273,18 +424,29 @@ const CorporateWellbeingCheck = () => {
                 <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
                   <Brain className="w-8 h-8 text-primary" />
                 </div>
-                <h1 className="text-2xl font-bold text-foreground mb-2">Corporate Wellbeing Check</h1>
-                <p className="text-muted-foreground mb-8">Enter your access code or use the link from your email to begin.</p>
+                <h1 className="text-2xl font-bold text-foreground mb-2">{isCommunityMode ? t.ui.community_mode : 'Corporate Wellbeing Check'}</h1>
+                <p className="text-muted-foreground mb-6">{isCommunityMode ? t.ui.community_subtitle : 'Enter your access code to begin.'}</p>
+                {isCommunityMode && (
+                  <div className="mb-4 inline-flex items-center gap-2 bg-primary/10 text-primary text-xs px-3 py-1.5 rounded-full">
+                    <Users className="w-3.5 h-3.5" /> Facilitator mode • {facilitatorCount} completed today
+                  </div>
+                )}
+                <p className="text-sm text-muted-foreground mb-8 max-w-sm mx-auto">
+                  Your individual responses are completely private. Your employer will only see anonymized company-wide results — no names, no personal data.
+                </p>
 
                 <div className="space-y-4 max-w-xs mx-auto">
                   <Input
                     placeholder="Enter Access Code"
                     value={accessCode}
-                    onChange={(e) => setAccessCode(e.target.value.toUpperCase())}
+                    onChange={(e) => setAccessCode(e.target.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase())}
                     className="text-center text-lg tracking-widest font-mono uppercase"
                     maxLength={8}
                     onKeyDown={(e) => e.key === 'Enter' && lookupByCode()}
                   />
+                  <p className="text-xs text-muted-foreground -mt-2">
+                    8 characters · letters &amp; numbers only (e.g. <span className="font-mono">1CF0846B</span>)
+                  </p>
                   <Button onClick={lookupByCode} disabled={loading} className="w-full rounded-full">
                     {loading ? 'Verifying...' : 'Start Screening'}
                     <ArrowRight className="w-4 h-4 ml-2" />
@@ -295,6 +457,24 @@ const CorporateWellbeingCheck = () => {
                   <Lock className="w-3 h-3 inline mr-1" />
                   Your responses are private and confidential
                 </p>
+
+                <div className="mt-10 grid gap-4 text-left">
+                  <div className="bg-card border border-border rounded-2xl p-5">
+                    <p className="text-sm font-semibold text-foreground mb-1">No access code?</p>
+                    <p className="text-xs text-muted-foreground">
+                      If you are an employee who hasn't received a code, ask your HR manager. Or take our free public wellbeing check at{' '}
+                      <Link to="/mind-check" className="text-primary underline">/mind-check</Link>.
+                    </p>
+                  </div>
+                  <div className="bg-primary/5 border border-primary/20 rounded-2xl p-5">
+                    <p className="text-sm font-semibold text-foreground mb-1">For HR managers</p>
+                    <p className="text-xs text-muted-foreground">
+                      Want to run a confidential wellbeing screening for your team? Request your company's access code and dashboard —{' '}
+                      <Link to="/for-business" className="text-primary underline">visit /for-business</Link> or email{' '}
+                      <a href="mailto:info@innersparkafrica.com" className="text-primary underline">info@innersparkafrica.com</a>.
+                    </p>
+                  </div>
+                </div>
               </motion.div>
             )}
 
@@ -376,7 +556,12 @@ const CorporateWellbeingCheck = () => {
                 </div>
 
                 {/* Gender Selection */}
-                <div className="mb-8 max-w-xs mx-auto">
+                <ScreeningAnxietyFAQ
+                  language={lang as 'en' | 'lg' | 'sw'}
+                  companyId={employee.company_id}
+                />
+
+                <div className="mt-8 mb-8 max-w-xs mx-auto">
                   <p className="text-sm font-medium text-foreground mb-3">Please select your gender</p>
                   <div className="flex gap-3 justify-center">
                     {['Male', 'Female'].map(g => (
@@ -502,9 +687,30 @@ const CorporateWellbeingCheck = () => {
             {/* TEST PHASE */}
             {phase === 'test' && (
               <motion.div key="test" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="pt-8">
+                {/* Language selector + audio + community banner */}
+                <div className="mb-4 flex flex-wrap items-center gap-2 justify-between">
+                  <div className="inline-flex items-center gap-1 bg-muted/50 rounded-full p-1">
+                    <Globe className="w-3.5 h-3.5 text-muted-foreground ml-2" />
+                    {LANGS.map(l => (
+                      <button
+                        key={l.code}
+                        onClick={() => setLang(l.code)}
+                        className={`px-3 py-1 rounded-full text-xs font-medium transition ${lang === l.code ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-muted'}`}
+                      >
+                        {l.native}
+                      </button>
+                    ))}
+                  </div>
+                  {isCommunityMode && (
+                    <div className="text-xs text-primary inline-flex items-center gap-1.5 bg-primary/10 px-3 py-1 rounded-full">
+                      <Users className="w-3 h-3" /> {facilitatorCount} {t.ui.completed_today}
+                    </div>
+                  )}
+                </div>
+
                 <div className="mb-6">
                   <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
-                    <span>Question {currentQuestion + 1} of {ALL_QUESTIONS.length}</span>
+                    <span>{t.ui.question_label} {currentQuestion + 1} {t.ui.of} {ALL_QUESTIONS.length}</span>
                     <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-medium">{sectionLabel}</span>
                   </div>
                   <Progress value={progress} className="h-2 [&>div]:bg-primary" />
@@ -519,47 +725,74 @@ const CorporateWellbeingCheck = () => {
                     transition={{ duration: 0.25 }}
                   >
                     {currentQuestion < 5 && (
-                      <p className="text-xs text-muted-foreground mb-2">Over the past 2 weeks...</p>
+                      <p className="text-xs text-muted-foreground mb-2">{t.ui.over_two_weeks}</p>
                     )}
-                    <h2 className="text-xl sm:text-2xl font-bold text-foreground mb-8 leading-snug">
-                      "{ALL_QUESTIONS[currentQuestion]}"
-                    </h2>
+                    <div className="flex items-start justify-between gap-3 mb-6">
+                      <h2 className="text-xl sm:text-2xl font-bold text-foreground leading-snug flex-1">
+                        "{t.questions[currentQuestion]}"
+                      </h2>
+                      <button
+                        type="button"
+                        onClick={() => speakText(t.questions[currentQuestion])}
+                        className="shrink-0 p-2 rounded-full bg-primary/10 hover:bg-primary/20 text-primary transition"
+                        aria-label={t.ui.listen}
+                        title={t.ui.listen}
+                      >
+                        <Volume2 className="w-5 h-5" />
+                      </button>
+                    </div>
 
                     <div className="space-y-3">
-                      {currentOptions.map((option) => (
+                      {currentOptions.map((option, idx) => {
+                        const translatedLabel = currentQuestion < 5 ? t.who5Options[idx] : t.workplaceOptions[idx];
+                        return (
                         <button
                           key={option.value}
                           onClick={() => handleAnswer(option.value)}
-                          className={`w-full text-left p-4 rounded-xl border-2 transition-all duration-200 text-base font-medium
+                          className={`w-full flex items-center gap-3 text-left p-4 rounded-xl border-2 transition-all duration-200 text-base font-medium
                             ${answers[currentQuestion] === option.value
                               ? 'border-primary bg-primary/10 text-primary'
                               : 'border-border bg-card hover:border-muted-foreground/30 text-foreground hover:bg-muted'
                             }`}
                         >
-                          {option.label}
+                          <span className="text-2xl leading-none" aria-hidden>{SCALE_EMOJI[idx]}</span>
+                          <span className="flex-1">{translatedLabel}</span>
                         </button>
-                      ))}
+                        );
+                      })}
                     </div>
                   </motion.div>
                 </AnimatePresence>
 
                 <div className="flex items-center justify-between mt-8">
                   <Button variant="ghost" onClick={() => setCurrentQuestion(prev => Math.max(0, prev - 1))} disabled={currentQuestion === 0} className="text-muted-foreground">
-                    <ArrowLeft className="w-4 h-4 mr-1" /> Back
+                    <ArrowLeft className="w-4 h-4 mr-1" /> {t.ui.back}
                   </Button>
 
                   {isLastQuestion && allAnswered && (
                     <Button onClick={handleSubmit} disabled={submitting} className="rounded-full px-8">
-                      {submitting ? 'Submitting...' : 'See My Results'} <ArrowRight className="w-4 h-4 ml-1" />
+                      {submitting ? 'Submitting...' : t.ui.see_results} <ArrowRight className="w-4 h-4 ml-1" />
                     </Button>
                   )}
 
                   {!isLastQuestion && answers[currentQuestion] !== null && (
                     <Button variant="ghost" onClick={() => setCurrentQuestion(prev => prev + 1)} className="text-primary">
-                      Next <ArrowRight className="w-4 h-4 ml-1" />
+                      {t.ui.next} <ArrowRight className="w-4 h-4 ml-1" />
                     </Button>
                   )}
                 </div>
+
+                {isCommunityMode && (
+                  <div className="mt-4 text-center">
+                    <button
+                      type="button"
+                      onClick={() => { try { localStorage.setItem(COUNTER_KEY, '0'); } catch {} setFacilitatorCount(0); toast.success('Counter reset'); }}
+                      className="text-[11px] text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+                    >
+                      <RefreshCw className="w-3 h-3" /> {t.ui.reset_counter}
+                    </button>
+                  </div>
+                )}
               </motion.div>
             )}
 
@@ -630,6 +863,13 @@ const CorporateWellbeingCheck = () => {
                 <div className="text-center text-sm text-muted-foreground mb-6">
                   Raw score: {totalScore}/{ALL_QUESTIONS.length * 5} • WHO-5 + Workplace Index
                 </div>
+
+                {/* Per-question intelligence breakdown */}
+                {intelligenceAnswers && (
+                  <div className="mb-6">
+                    <EmployeeResultsBreakdown answers={intelligenceAnswers} />
+                  </div>
+                )}
 
                 {/* Score Breakdown */}
                 <div className="bg-card rounded-2xl border p-5 mb-6 text-left space-y-3">
@@ -861,6 +1101,7 @@ const CorporateWellbeingCheck = () => {
               </motion.div>
             )}
           </AnimatePresence>
+          </div>
         </main>
       </div>
     </>

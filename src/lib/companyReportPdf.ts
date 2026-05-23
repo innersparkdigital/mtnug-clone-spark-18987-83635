@@ -15,6 +15,25 @@ export interface CompanyReportData {
   moderate_wellbeing_pct: number;
   low_wellbeing_pct: number;
   needs_support_count: number;
+  // Optional: 10-section toggle map (key -> on). When omitted, all sections render.
+  sections?: Record<string, boolean>;
+  // Optional manual layer
+  observations?: string | null;
+  recommended_services?: Array<{ name: string; description?: string | null; physical_price?: number | null; virtual_price?: number | null; per_employee_price?: number | null; unit_label?: string | null; reason?: string | null }>;
+  business_impact?: { productivity_loss_fte?: number; lost_days_per_year?: number; estimated_annual_cost_ugx?: number; estimated_roi_ugx?: number } | null;
+  // Per-section consultant overrides — when set, replaces auto content for that section
+  section_overrides?: Record<string, string>;
+  // Rich data layer — mirrors the on-screen Report Preview
+  gender_breakdown?: Array<{ label: string; enrolled: number; completed: number }>;
+  question_averages?: Array<{ short_label: string; avg: number; status: 'green' | 'amber' | 'red'; flag_name: string }>;
+  triggered_clusters_detailed?: Array<{ label: string; interpretation: string }>;
+  triggered_flags_detailed?: Array<{ flag_name: string; affected_employees: number; average_pct: number; recommendation: string; service_label: string; productivity_cost_days_per_month: number }>;
+  action_plan?: Array<{ week: number; title: string; items: string[] }>;
+  business_impact_extended?: {
+    annual_cost_min?: number; annual_cost_mid?: number; annual_cost_max?: number;
+    lost_days_min?: number; lost_days_max?: number;
+    eap_investment?: number; projected_roi_x?: number; monthly_cost?: number;
+  } | null;
 }
 
 const PRIMARY: [number, number, number] = [91, 106, 191]; // #5B6ABF
@@ -59,24 +78,18 @@ export async function generateCompanyReportPdf(d: CompanyReportData): Promise<Bl
   };
 
   const drawFooterBanner = async () => {
-    try {
-      const banner = await loadImage(FOOTER_BANNER);
-      const ratio = banner.height / banner.width;
-      const bw = pageW;
-      const bh = bw * ratio;
-      pdf.addImage(banner, 'PNG', 0, pageH - bh, bw, bh);
-    } catch {
-      pdf.setFillColor(...PRIMARY);
-      pdf.rect(0, pageH - 12, pageW, 12, 'F');
-      pdf.setTextColor(255, 255, 255);
-      pdf.setFontSize(9);
-      pdf.text('InnerSpark Africa  •  www.innersparkafrica.com  •  info@innersparkafrica.com', pageW / 2, pageH - 5, { align: 'center' });
-      pdf.setTextColor(...TEXT);
-    }
+    // Footer banner intentionally removed to maximise content space per page.
+    // Keep a thin brand strip with contact info instead.
+    pdf.setFillColor(...PRIMARY);
+    pdf.rect(0, pageH - 8, pageW, 8, 'F');
+    pdf.setTextColor(255, 255, 255);
+    pdf.setFontSize(8);
+    pdf.text('InnerSpark Africa  •  www.innersparkafrica.com  •  info@innersparkafrica.com', pageW / 2, pageH - 3, { align: 'center' });
+    pdf.setTextColor(...TEXT);
   };
 
   const ensureSpace = async (h: number) => {
-    if (y + h > pageH - 30) {
+    if (y + h > pageH - 14) {
       await drawFooterBanner();
       pdf.addPage();
       await drawHeader();
@@ -106,6 +119,23 @@ export async function generateCompanyReportPdf(d: CompanyReportData): Promise<Bl
 
   await drawHeader();
 
+  const sec = (key: string) => !d.sections || d.sections[key] !== false;
+  const ov = (key: string) => {
+    const t = d.section_overrides?.[key];
+    return t && t.trim() ? t.trim() : null;
+  };
+  const renderOverride = async (text: string) => {
+    await para(text);
+  };
+
+  const fmtUGX = (n: number) => `UGX ${Math.round(n).toLocaleString('en-UG')}`;
+  const dotFor = (s: 'green' | 'amber' | 'red') => s === 'green' ? '●' : s === 'amber' ? '●' : '●';
+  const colorFor = (s: 'green' | 'amber' | 'red'): [number, number, number] =>
+    s === 'green' ? [34, 197, 94] : s === 'amber' ? [234, 179, 8] : [239, 68, 68];
+  const sectionHeader = async (n: number, label: string) => {
+    await h2(`${n}. ${label}`);
+  };
+
   // Title block
   pdf.setFont('helvetica', 'bold');
   pdf.setFontSize(18);
@@ -118,190 +148,179 @@ export async function generateCompanyReportPdf(d: CompanyReportData): Promise<Bl
   y += 8;
   pdf.setTextColor(...TEXT);
 
-  if (d.contact_name) {
-    await para(`Hello ${d.contact_name},`, { bold: true, size: 11 });
-  }
-  await para(`Below is the confidential aggregated wellbeing snapshot for ${d.company_name}. All figures are anonymised — no individual employee can be identified.`);
-
-  // Risk banner
-  const isCritical = d.low_wellbeing_pct >= 30 || d.avg_who5 < 50;
-  const isElevated = !isCritical && (d.low_wellbeing_pct >= 10 || d.moderate_wellbeing_pct >= 40 || d.avg_who5 < 65);
-  const banner = isCritical
-    ? { label: 'URGENT - High Risk Detected', bg: [254, 226, 226] as [number,number,number], color: [185, 28, 28] as [number,number,number], text: `${d.low_count} of ${d.total_completed} screened employees are in a critical wellbeing zone. Without intervention, expect rising absenteeism, presenteeism and turnover within the next 60-90 days.` }
-    : isElevated
-      ? { label: 'ATTENTION - Elevated Stress', bg: [254, 243, 199] as [number,number,number], color: [146, 64, 14] as [number,number,number], text: 'A meaningful share of your team is showing reduced wellbeing. Acting now prevents these cases from sliding into crisis.' }
-      : { label: 'STABLE - Maintain Momentum', bg: [220, 252, 231] as [number,number,number], color: [6, 95, 70] as [number,number,number], text: 'Your team is doing well. Keep the momentum with quarterly check-ins and continued access to support.' };
-
-  await ensureSpace(28);
-  pdf.setFillColor(...banner.bg);
-  pdf.roundedRect(margin, y, pageW - margin * 2, 22, 2, 2, 'F');
-  pdf.setTextColor(...banner.color);
-  pdf.setFont('helvetica', 'bold');
-  pdf.setFontSize(11);
-  pdf.text(banner.label, margin + 4, y + 6);
-  pdf.setFont('helvetica', 'normal');
-  pdf.setFontSize(9);
-  pdf.setTextColor(...TEXT);
-  const bLines = pdf.splitTextToSize(banner.text, pageW - margin * 2 - 8);
-  pdf.text(bLines, margin + 4, y + 12);
-  y += 28;
-
-  // Summary stats
-  await h2('At a Glance');
-  const statBox = (label: string, value: string, x: number, w: number) => {
-    pdf.setFillColor(244, 245, 251);
-    pdf.roundedRect(x, y, w, 18, 2, 2, 'F');
-    pdf.setFont('helvetica', 'bold');
-    pdf.setFontSize(13);
-    pdf.setTextColor(...PRIMARY);
-    pdf.text(value, x + w / 2, y + 8, { align: 'center' });
-    pdf.setFont('helvetica', 'normal');
-    pdf.setFontSize(8);
-    pdf.setTextColor(...MUTED);
-    pdf.text(label, x + w / 2, y + 14, { align: 'center' });
-    pdf.setTextColor(...TEXT);
-  };
-  await ensureSpace(22);
-  const colW = (pageW - margin * 2 - 9) / 4;
-  statBox('Completed', `${d.total_completed}/${d.total_employees}`, margin, colW);
-  statBox('Participation', `${d.completion_rate}%`, margin + colW + 3, colW);
-  statBox('Avg WHO-5', `${d.avg_who5}%`, margin + (colW + 3) * 2, colW);
-  statBox('Need Support', `${d.needs_support_count}`, margin + (colW + 3) * 3, colW);
-  y += 22;
-
-  // Distribution
-  await h2('Wellbeing Distribution');
-  const distBox = (label: string, count: number, pct: number, color: [number,number,number], x: number, w: number) => {
-    pdf.setFillColor(249, 250, 252);
-    pdf.roundedRect(x, y, w, 22, 2, 2, 'F');
-    pdf.setFont('helvetica', 'bold');
-    pdf.setFontSize(15);
-    pdf.setTextColor(...color);
-    pdf.text(`${pct}%`, x + w / 2, y + 9, { align: 'center' });
-    pdf.setFont('helvetica', 'normal');
-    pdf.setFontSize(8);
-    pdf.setTextColor(...MUTED);
-    pdf.text(`${label} (${count})`, x + w / 2, y + 16, { align: 'center' });
-    pdf.setTextColor(...TEXT);
-  };
-  await ensureSpace(26);
-  const dW = (pageW - margin * 2 - 6) / 3;
-  distBox('Healthy', d.high_count, d.high_wellbeing_pct, [34, 197, 94], margin, dW);
-  distBox('At Risk', d.moderate_count, d.moderate_wellbeing_pct, [234, 179, 8], margin + dW + 3, dW);
-  distBox('Critical', d.low_count, d.low_wellbeing_pct, [239, 68, 68], margin + (dW + 3) * 2, dW);
-  y += 26;
-
-  // Productivity impact
-  const productivityLoss = Math.round((d.low_count * 0.30 + d.moderate_count * 0.12) * 100) / 100;
-  const lostDays = Math.round(d.low_count * 22 + d.moderate_count * 9);
-  await h2('Productivity & Business Impact');
-  await para('Research from WHO and Deloitte shows that untreated mental health challenges reduce individual productivity by 25-35% and drive absenteeism, presenteeism, and turnover.');
-  await ensureSpace(20);
-  pdf.setFillColor(255, 247, 237);
-  pdf.roundedRect(margin, y, pageW - margin * 2, 16, 2, 2, 'F');
-  pdf.setFont('helvetica', 'bold');
-  pdf.setFontSize(12);
-  pdf.setTextColor(194, 65, 12);
-  pdf.text(`~${productivityLoss}`, margin + 30, y + 7, { align: 'center' });
-  pdf.text(`~${lostDays}`, pageW - margin - 30, y + 7, { align: 'center' });
-  pdf.setFont('helvetica', 'normal');
-  pdf.setFontSize(8);
-  pdf.setTextColor(124, 45, 18);
-  pdf.text('FTE-equivalent at risk', margin + 30, y + 13, { align: 'center' });
-  pdf.text('Lost productive days/yr', pageW - margin - 30, y + 13, { align: 'center' });
-  pdf.setTextColor(...TEXT);
-  y += 20;
-  await para('Every UGX 1 invested in employee mental health returns an estimated UGX 4 in productivity, retention and reduced sick leave (WHO ROI study).', { size: 9, color: MUTED });
-
-  // Recommendations
-  await h2('Recommendations');
-  const recs = [
-    'Activate the InnerSpark Employee Digital Mental Health Package for full coverage.',
-    'Run manager training on supportive conversations and burnout prevention.',
-    'Offer confidential 1:1 sessions for employees flagged as needing support.',
-    'Schedule the next quarterly Mind-Check & WHO-5 in 90 days.',
-  ];
-  for (const r of recs) await para(`•  ${r}`);
-
-  // Solution package — new page for clarity
-  await drawFooterBanner();
-  pdf.addPage();
-  await drawHeader();
-
-  pdf.setFont('helvetica', 'bold');
-  pdf.setFontSize(9);
-  pdf.setTextColor(...PRIMARY);
-  pdf.text('RECOMMENDED SOLUTION', margin, y);
-  y += 6;
-  pdf.setFontSize(18);
-  pdf.setTextColor(...TEXT);
-  pdf.text('Employee Digital Mental Health Package', margin, y);
-  y += 7;
-  pdf.setFont('helvetica', 'normal');
-  pdf.setFontSize(10);
-  pdf.setTextColor(...MUTED);
-  pdf.text('Insurance-style yearly subscription per employee — predictable, budget-friendly, fully virtual.', margin, y);
-  y += 8;
-  pdf.setTextColor(...TEXT);
-
-  await para('Coverage includes:', { bold: true, size: 11 });
-  await para('•  Video Teletherapy — 12 1:1 sessions / year with licensed therapists');
-  await para('•  Support Group — 48 weekly structured online group sessions');
-  await para('•  Chat Consultation — Quick virtual mental health guidance (~12/month)');
-  await para('•  Quarterly Screening — Mind-Check & WHO-5 assessments');
-
-  await para('Excluded:', { bold: true, size: 11 });
-  await para('•  Any in-person intervention beyond the virtual scope');
-  await para('•  Medication, hospitalization or specialised therapy outside the platform');
-
-  // Fee table
-  await h2('Fee Breakdown (per employee / year)');
-  const tCols = [pageW - margin * 2 - 70, 30, 40];
-  const tx = [margin, margin + tCols[0], margin + tCols[0] + tCols[1]];
-  await ensureSpace(8);
-  pdf.setFillColor(...PRIMARY);
-  pdf.rect(margin, y, pageW - margin * 2, 7, 'F');
-  pdf.setTextColor(255, 255, 255);
-  pdf.setFont('helvetica', 'bold');
-  pdf.setFontSize(9);
-  pdf.text('Service', tx[0] + 2, y + 5);
-  pdf.text('Units', tx[1] + 2, y + 5);
-  pdf.text('Total (UGX)', tx[2] + 2, y + 5);
-  y += 7;
-  pdf.setTextColor(...TEXT);
-  pdf.setFont('helvetica', 'normal');
-
-  const rows = [
-    ['Video Teletherapy', '12 / yr', '900,000'],
-    ['Support Group', '48 / yr', '1,200,000'],
-    ['Chat Consultation', '~12 / mo', '360,000'],
-  ];
-  rows.forEach((r, i) => {
-    if (i % 2 === 1) {
-      pdf.setFillColor(248, 250, 252);
-      pdf.rect(margin, y, pageW - margin * 2, 7, 'F');
+  // ===== 1. Cover & Summary =====
+  if (sec('cover')) {
+    await sectionHeader(1, 'Cover & Summary');
+    if (ov('cover')) {
+      await renderOverride(ov('cover')!);
+    } else {
+      await para(`${d.company_name} — Wellbeing Report (${d.reporting_period})`, { bold: true });
+      await para(`Prepared by InnerSpark Africa${d.contact_name ? ` for ${d.contact_name}` : ''}.`);
+      await para(`${d.total_completed} of ${d.total_employees} employees completed the WHO-5 + Workplace screening (${d.completion_rate}% participation). Average wellbeing score: ${d.avg_who5}%.`);
     }
-    pdf.text(r[0], tx[0] + 2, y + 5);
-    pdf.text(r[1], tx[1] + 2, y + 5);
-    pdf.text(r[2], tx[2] + 2, y + 5);
-    y += 7;
-  });
-  pdf.setFillColor(254, 249, 195);
-  pdf.rect(margin, y, pageW - margin * 2, 8, 'F');
-  pdf.setFont('helvetica', 'bold');
-  pdf.text('Discounted bundled fee', tx[0] + 2, y + 5);
-  pdf.text('—', tx[1] + 2, y + 5);
-  pdf.text('UGX 1,000,000', tx[2] + 2, y + 5);
-  y += 12;
+  }
 
-  pdf.setFont('helvetica', 'normal');
-  await para(`For ${d.total_employees} employees, full-year coverage = approx UGX ${(d.total_employees * 1_000_000).toLocaleString('en-UG')}. Employees access every service anytime through the InnerSpark App.`, { bold: true });
+  // ===== 2. Participation & Demographics =====
+  if (sec('participation')) {
+    await sectionHeader(2, 'Participation & Demographics');
+    if (ov('participation')) {
+      await renderOverride(ov('participation')!);
+    } else if (d.total_employees === 0) {
+      await para('No data yet.', { size: 9, color: MUTED });
+    } else {
+      await para(`Total enrolled: ${d.total_employees}  ·  Completed: ${d.total_completed}  ·  Pending: ${d.total_employees - d.total_completed}  ·  Rate: ${d.completion_rate}%`);
+      if (d.gender_breakdown && d.gender_breakdown.length > 0) {
+        await para('Gender breakdown (enrolled / completed)', { bold: true, size: 10 });
+        for (const g of d.gender_breakdown) {
+          await para(`•  ${g.label}: ${g.enrolled} enrolled / ${g.completed} completed`);
+        }
+      }
+    }
+  }
 
-  await para('Confidentiality: Individual employee responses are private and never shared. Reports are based on group-level aggregates only.', { size: 9, color: [6, 95, 70] });
+  // ===== 3. Overall Wellbeing Score =====
+  if (sec('overall_wellbeing')) {
+    await sectionHeader(3, 'Overall Wellbeing Score');
+    if (ov('overall_wellbeing')) {
+      await renderOverride(ov('overall_wellbeing')!);
+    } else if (d.total_completed === 0) {
+      await para('No data yet.', { size: 9, color: MUTED });
+    } else {
+      const band = d.avg_who5 >= 76 ? 'Healthy' : d.avg_who5 >= 51 ? 'At Risk' : 'Critical';
+      await para(`Company average wellbeing: ${d.avg_who5}% (${band})`, { bold: true });
+      await para(`•  Healthy (76-100%): ${d.high_count} (${d.high_wellbeing_pct}%)`, { color: [34, 197, 94] });
+      await para(`•  At Risk (51-75%): ${d.moderate_count} (${d.moderate_wellbeing_pct}%)`, { color: [234, 179, 8] });
+      await para(`•  Critical (0-50%): ${d.low_count} (${d.low_wellbeing_pct}%)`, { color: [239, 68, 68] });
+      await para(`•  Needs immediate support: ${d.needs_support_count}`);
+    }
+  }
 
-  await para('Contact us: info@innersparkafrica.com  •  www.innersparkafrica.com', { size: 9, color: MUTED });
+  // ===== 4. Per-Question Averages =====
+  if (sec('per_question')) {
+    await sectionHeader(4, 'Per-Question Averages');
+    if (ov('per_question')) {
+      await renderOverride(ov('per_question')!);
+    } else if (!d.question_averages || d.question_averages.length === 0) {
+      await para('No data yet.', { size: 9, color: MUTED });
+    } else {
+      for (const q of d.question_averages) {
+        await para(`•  ${q.short_label} — ${q.avg}% (${q.flag_name})`, { color: colorFor(q.status) });
+      }
+    }
+  }
+
+  // ===== 5. Triggered Clusters =====
+  if (sec('triggered_clusters')) {
+    await sectionHeader(5, 'Triggered Clusters');
+    if (ov('triggered_clusters')) {
+      await renderOverride(ov('triggered_clusters')!);
+    } else if (d.total_completed === 0) {
+      await para('No data yet.', { size: 9, color: MUTED });
+    } else if (!d.triggered_clusters_detailed || d.triggered_clusters_detailed.length === 0) {
+      await para('No clinical clusters triggered. The team is not showing combined burnout, anxiety, or depression-risk patterns.');
+    } else {
+      for (const c of d.triggered_clusters_detailed) {
+        await para(c.label, { bold: true });
+        await para(c.interpretation, { size: 9, color: MUTED });
+      }
+    }
+  }
+
+  // ===== 6. Priority Focus Areas =====
+  if (sec('priority_areas')) {
+    await sectionHeader(6, 'Priority Focus Areas');
+    if (ov('priority_areas')) {
+      await renderOverride(ov('priority_areas')!);
+    } else if (d.total_completed === 0) {
+      await para('No data yet.', { size: 9, color: MUTED });
+    } else if (!d.triggered_flags_detailed || d.triggered_flags_detailed.length === 0) {
+      await para('No priority concerns flagged. Sustain with quarterly check-ins.');
+    } else {
+      d.triggered_flags_detailed.slice(0, 5).forEach(() => {});
+      let i = 1;
+      for (const f of d.triggered_flags_detailed.slice(0, 5)) {
+        await para(`#${i} ${f.flag_name} — ${f.affected_employees} employees affected (avg ${f.average_pct}%)`, { bold: true });
+        await para(f.recommendation, { size: 9 });
+        await para(`→ Suggested: ${f.service_label}  ·  ~${f.productivity_cost_days_per_month} productivity days/month at risk`, { size: 9, color: MUTED });
+        i++;
+      }
+    }
+  }
+
+  // ===== 7. Business Impact =====
+  if (sec('business_impact')) {
+    await sectionHeader(7, 'Business Impact');
+    if (ov('business_impact')) {
+      await renderOverride(ov('business_impact')!);
+    } else if (!d.business_impact_extended) {
+      await para('Business Impact toggle is off, or no screenings yet.', { size: 9, color: MUTED });
+    } else {
+      const b = d.business_impact_extended;
+      if (b.annual_cost_min != null && b.annual_cost_max != null) {
+        await para(`Estimated annual cost of inaction: ${fmtUGX(b.annual_cost_min)}–${fmtUGX(b.annual_cost_max)}${b.annual_cost_mid != null ? ` (mid: ${fmtUGX(b.annual_cost_mid)})` : ''}`);
+      }
+      if (b.lost_days_min != null && b.lost_days_max != null) {
+        await para(`Estimated productivity days lost / year: ${b.lost_days_min}–${b.lost_days_max}`);
+      }
+      if (b.eap_investment != null) {
+        await para(`Estimated EAP investment: ${fmtUGX(b.eap_investment)}  ·  Projected ROI: ${b.projected_roi_x ?? 0}x`);
+      }
+      if (b.monthly_cost != null) {
+        await para(`Cost of inaction per month: ${fmtUGX(b.monthly_cost)}`);
+      }
+    }
+  }
+
+  // ===== 8. Recommended Services =====
+  if (sec('recommended_services')) {
+    await sectionHeader(8, 'Recommended Services');
+    if (ov('recommended_services')) {
+      await renderOverride(ov('recommended_services')!);
+    } else if (!d.recommended_services || d.recommended_services.length === 0) {
+      await para('No services selected.', { size: 9, color: MUTED });
+    } else {
+      for (const s of d.recommended_services) {
+        await para(`•  ${s.name}`, { bold: true });
+        if (s.description) await para(`   ${s.description}`, { size: 9, color: MUTED });
+        const priceBits: string[] = [];
+        if (s.physical_price) priceBits.push(`Physical: UGX ${Number(s.physical_price).toLocaleString('en-UG')}`);
+        if (s.virtual_price) priceBits.push(`Virtual: UGX ${Number(s.virtual_price).toLocaleString('en-UG')}`);
+        if (s.per_employee_price) priceBits.push(`UGX ${Number(s.per_employee_price).toLocaleString('en-UG')} / ${s.unit_label || 'unit'}`);
+        if (priceBits.length) await para(`   ${priceBits.join('  ·  ')}`, { size: 9 });
+        if (s.reason) await para(`   Why: ${s.reason}`, { size: 9, color: MUTED });
+      }
+    }
+  }
+
+  // ===== 9. 30-Day Action Plan =====
+  if (sec('action_plan')) {
+    await sectionHeader(9, '30-Day Action Plan');
+    if (ov('action_plan')) {
+      await renderOverride(ov('action_plan')!);
+    } else if (!d.action_plan || d.action_plan.length === 0) {
+      await para('No data yet.', { size: 9, color: MUTED });
+    } else {
+      for (const w of d.action_plan) {
+        await para(`Week ${w.week} — ${w.title}`, { bold: true });
+        for (const it of w.items) {
+          await para(`•  ${it}`, { size: 9 });
+        }
+      }
+    }
+  }
+
+  // ===== 10. Consultant Observations =====
+  if (sec('consultant_notes')) {
+    await sectionHeader(10, 'Consultant Observations');
+    if (ov('consultant_notes')) {
+      await renderOverride(ov('consultant_notes')!);
+    } else if (!d.observations || !d.observations.trim()) {
+      await para('No observations entered yet.', { size: 9, color: MUTED });
+    } else {
+      await para(d.observations.trim());
+    }
+  }
 
   await drawFooterBanner();
-
   return pdf.output('blob');
 }

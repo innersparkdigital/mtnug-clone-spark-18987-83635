@@ -329,6 +329,36 @@ export type Database = {
         }
         Relationships: []
       }
+      campaign_faq_events: {
+        Row: {
+          company_id: string | null
+          created_at: string
+          event_type: string
+          id: string
+          item_index: number | null
+          language: string | null
+          session_id: string
+        }
+        Insert: {
+          company_id?: string | null
+          created_at?: string
+          event_type: string
+          id?: string
+          item_index?: number | null
+          language?: string | null
+          session_id: string
+        }
+        Update: {
+          company_id?: string | null
+          created_at?: string
+          event_type?: string
+          id?: string
+          item_index?: number | null
+          language?: string | null
+          session_id?: string
+        }
+        Relationships: []
+      }
       career_applications: {
         Row: {
           country: string
@@ -684,42 +714,129 @@ export type Database = {
       }
       corporate_companies: {
         Row: {
+          campaign_close_date: string | null
+          campaign_headline: string | null
+          campaign_subtext: string | null
           contact_email: string | null
           contact_person: string | null
           contact_phone: string | null
+          context_notes: string | null
           created_at: string
           created_by: string | null
           employee_count: number | null
           id: string
+          incentive_amount_ugx: number
           industry: string | null
+          languages_enabled: string[]
           location: string | null
+          logo_url: string | null
+          mode: string
           name: string
+          slug: string | null
+          slug_locked: boolean
           updated_at: string
         }
         Insert: {
+          campaign_close_date?: string | null
+          campaign_headline?: string | null
+          campaign_subtext?: string | null
           contact_email?: string | null
           contact_person?: string | null
           contact_phone?: string | null
+          context_notes?: string | null
           created_at?: string
           created_by?: string | null
           employee_count?: number | null
           id?: string
+          incentive_amount_ugx?: number
           industry?: string | null
+          languages_enabled?: string[]
           location?: string | null
+          logo_url?: string | null
+          mode?: string
           name: string
+          slug?: string | null
+          slug_locked?: boolean
           updated_at?: string
         }
         Update: {
+          campaign_close_date?: string | null
+          campaign_headline?: string | null
+          campaign_subtext?: string | null
           contact_email?: string | null
           contact_person?: string | null
           contact_phone?: string | null
+          context_notes?: string | null
           created_at?: string
           created_by?: string | null
           employee_count?: number | null
           id?: string
+          incentive_amount_ugx?: number
           industry?: string | null
+          languages_enabled?: string[]
           location?: string | null
+          logo_url?: string | null
+          mode?: string
           name?: string
+          slug?: string | null
+          slug_locked?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      corporate_crisis_alerts: {
+        Row: {
+          alert_code: string | null
+          assigned_to: string | null
+          company_id: string
+          created_at: string
+          employee_id: string
+          id: string
+          level: number
+          notes: string | null
+          outreach_attempts: Json
+          resolved_at: string | null
+          resolved_by: string | null
+          screening_id: string | null
+          sla_deadline: string | null
+          status: string
+          triggers: string[]
+          updated_at: string
+        }
+        Insert: {
+          alert_code?: string | null
+          assigned_to?: string | null
+          company_id: string
+          created_at?: string
+          employee_id: string
+          id?: string
+          level: number
+          notes?: string | null
+          outreach_attempts?: Json
+          resolved_at?: string | null
+          resolved_by?: string | null
+          screening_id?: string | null
+          sla_deadline?: string | null
+          status?: string
+          triggers?: string[]
+          updated_at?: string
+        }
+        Update: {
+          alert_code?: string | null
+          assigned_to?: string | null
+          company_id?: string
+          created_at?: string
+          employee_id?: string
+          id?: string
+          level?: number
+          notes?: string | null
+          outreach_attempts?: Json
+          resolved_at?: string | null
+          resolved_by?: string | null
+          screening_id?: string | null
+          sla_deadline?: string | null
+          status?: string
+          triggers?: string[]
           updated_at?: string
         }
         Relationships: []
@@ -782,6 +899,7 @@ export type Database = {
       }
       corporate_reports: {
         Row: {
+          business_impact: Json | null
           company_id: string
           created_at: string
           created_by: string | null
@@ -789,12 +907,15 @@ export type Database = {
           observations: string | null
           period_label: string | null
           recommended_service_ids: string[]
+          sections: Json
           sent_at: string | null
           sent_to_email: string | null
           service_notes: Json
+          status: string
           updated_at: string
         }
         Insert: {
+          business_impact?: Json | null
           company_id: string
           created_at?: string
           created_by?: string | null
@@ -802,12 +923,15 @@ export type Database = {
           observations?: string | null
           period_label?: string | null
           recommended_service_ids?: string[]
+          sections?: Json
           sent_at?: string | null
           sent_to_email?: string | null
           service_notes?: Json
+          status?: string
           updated_at?: string
         }
         Update: {
+          business_impact?: Json | null
           company_id?: string
           created_at?: string
           created_by?: string | null
@@ -815,9 +939,11 @@ export type Database = {
           observations?: string | null
           period_label?: string | null
           recommended_service_ids?: string[]
+          sections?: Json
           sent_at?: string | null
           sent_to_email?: string | null
           service_notes?: Json
+          status?: string
           updated_at?: string
         }
         Relationships: []
@@ -872,9 +998,14 @@ export type Database = {
           company_id: string
           completed_at: string
           created_at: string
+          crisis_alert_level: number | null
           employee_id: string
           id: string
+          per_question: Json
+          risk_category: string | null
           total_score: number
+          triggered_clusters: string[]
+          triggered_flags: string[]
           wellbeing_category: string
           who5_percentage: number
           who5_score: number
@@ -884,9 +1015,14 @@ export type Database = {
           company_id: string
           completed_at?: string
           created_at?: string
+          crisis_alert_level?: number | null
           employee_id: string
           id?: string
+          per_question?: Json
+          risk_category?: string | null
           total_score?: number
+          triggered_clusters?: string[]
+          triggered_flags?: string[]
           wellbeing_category?: string
           who5_percentage?: number
           who5_score?: number
@@ -896,9 +1032,14 @@ export type Database = {
           company_id?: string
           completed_at?: string
           created_at?: string
+          crisis_alert_level?: number | null
           employee_id?: string
           id?: string
+          per_question?: Json
+          risk_category?: string | null
           total_score?: number
+          triggered_clusters?: string[]
+          triggered_flags?: string[]
           wellbeing_category?: string
           who5_percentage?: number
           who5_score?: number
@@ -1809,6 +1950,247 @@ export type Database = {
         }
         Relationships: []
       }
+      referral_clicks: {
+        Row: {
+          booking_id: string | null
+          clicked_at: string
+          converted: boolean
+          id: string
+          ip_hash: string | null
+          referral_link_id: string
+          user_agent: string | null
+        }
+        Insert: {
+          booking_id?: string | null
+          clicked_at?: string
+          converted?: boolean
+          id?: string
+          ip_hash?: string | null
+          referral_link_id: string
+          user_agent?: string | null
+        }
+        Update: {
+          booking_id?: string | null
+          clicked_at?: string
+          converted?: boolean
+          id?: string
+          ip_hash?: string | null
+          referral_link_id?: string
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referral_clicks_referral_link_id_fkey"
+            columns: ["referral_link_id"]
+            isOneToOne: false
+            referencedRelation: "referral_links"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      referral_conversions: {
+        Row: {
+          booking_id: string | null
+          booking_reference: string | null
+          client_name: string | null
+          client_phone: string | null
+          converted_at: string
+          discount_applied: number
+          id: string
+          notes: string | null
+          referral_link_id: string
+          reward_issued: boolean
+          reward_issued_at: string | null
+          reward_issued_by: string | null
+          session_amount_kes: number
+        }
+        Insert: {
+          booking_id?: string | null
+          booking_reference?: string | null
+          client_name?: string | null
+          client_phone?: string | null
+          converted_at?: string
+          discount_applied?: number
+          id?: string
+          notes?: string | null
+          referral_link_id: string
+          reward_issued?: boolean
+          reward_issued_at?: string | null
+          reward_issued_by?: string | null
+          session_amount_kes?: number
+        }
+        Update: {
+          booking_id?: string | null
+          booking_reference?: string | null
+          client_name?: string | null
+          client_phone?: string | null
+          converted_at?: string
+          discount_applied?: number
+          id?: string
+          notes?: string | null
+          referral_link_id?: string
+          reward_issued?: boolean
+          reward_issued_at?: string | null
+          reward_issued_by?: string | null
+          session_amount_kes?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referral_conversions_referral_link_id_fkey"
+            columns: ["referral_link_id"]
+            isOneToOne: false
+            referencedRelation: "referral_links"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      referral_links: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          custom_message: string | null
+          discount_amount_kes: number
+          id: string
+          is_active: boolean
+          link_type: string
+          market: string
+          notes: string | null
+          referrer_email: string | null
+          referrer_name: string
+          referrer_phone: string
+          reward_type: string
+          reward_value: number
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          custom_message?: string | null
+          discount_amount_kes?: number
+          id?: string
+          is_active?: boolean
+          link_type?: string
+          market?: string
+          notes?: string | null
+          referrer_email?: string | null
+          referrer_name: string
+          referrer_phone: string
+          reward_type?: string
+          reward_value?: number
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          custom_message?: string | null
+          discount_amount_kes?: number
+          id?: string
+          is_active?: boolean
+          link_type?: string
+          market?: string
+          notes?: string | null
+          referrer_email?: string | null
+          referrer_name?: string
+          referrer_phone?: string
+          reward_type?: string
+          reward_value?: number
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      session_feedback: {
+        Row: {
+          client_consented_to_display: boolean
+          client_display_name: string | null
+          client_name: string | null
+          created_at: string
+          flagged_for_review: boolean
+          id: string
+          open_comment: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          session_addressed: string
+          session_code: string
+          star_rating: number
+          submitted_at: string
+          therapist_fit: string
+          therapist_name: string
+          therapist_slug: string | null
+          would_rebook: string
+          would_recommend: string
+        }
+        Insert: {
+          client_consented_to_display?: boolean
+          client_display_name?: string | null
+          client_name?: string | null
+          created_at?: string
+          flagged_for_review?: boolean
+          id?: string
+          open_comment?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          session_addressed: string
+          session_code: string
+          star_rating: number
+          submitted_at?: string
+          therapist_fit: string
+          therapist_name: string
+          therapist_slug?: string | null
+          would_rebook: string
+          would_recommend: string
+        }
+        Update: {
+          client_consented_to_display?: boolean
+          client_display_name?: string | null
+          client_name?: string | null
+          created_at?: string
+          flagged_for_review?: boolean
+          id?: string
+          open_comment?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          session_addressed?: string
+          session_code?: string
+          star_rating?: number
+          submitted_at?: string
+          therapist_fit?: string
+          therapist_name?: string
+          therapist_slug?: string | null
+          would_rebook?: string
+          would_recommend?: string
+        }
+        Relationships: []
+      }
+      site_sections: {
+        Row: {
+          data: Json
+          id: string
+          is_visible: boolean
+          section_key: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          data?: Json
+          id?: string
+          is_visible?: boolean
+          section_key: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          data?: Json
+          id?: string
+          is_visible?: boolean
+          section_key?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       specialist_availability: {
         Row: {
           day_of_week: number
@@ -1926,6 +2308,7 @@ export type Database = {
           id: string
           image_url: string | null
           is_active: boolean
+          kenya: boolean
           languages: string[]
           name: string
           price_per_hour: number
@@ -1944,6 +2327,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_active?: boolean
+          kenya?: boolean
           languages?: string[]
           name: string
           price_per_hour: number
@@ -1962,6 +2346,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_active?: boolean
+          kenya?: boolean
           languages?: string[]
           name?: string
           price_per_hour?: number
@@ -2028,6 +2413,87 @@ export type Database = {
           rate?: number
           type?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      therapists: {
+        Row: {
+          availability: string[]
+          bio: string | null
+          created_at: string
+          created_by: string | null
+          email: string
+          full_name: string
+          id: string
+          languages: string[]
+          license_number: string | null
+          license_status: Database["public"]["Enums"]["therapist_license_status"]
+          licensing_body: string | null
+          phone: string
+          photo_url: string | null
+          platform_status: Database["public"]["Enums"]["therapist_platform_status"]
+          qualification: string | null
+          rating: number
+          removed_at: string | null
+          session_count: number
+          session_types: string[]
+          specialisations: string[]
+          suspension_reason: string | null
+          suspension_review_date: string | null
+          updated_at: string
+          years_experience: number | null
+        }
+        Insert: {
+          availability?: string[]
+          bio?: string | null
+          created_at?: string
+          created_by?: string | null
+          email: string
+          full_name: string
+          id?: string
+          languages?: string[]
+          license_number?: string | null
+          license_status?: Database["public"]["Enums"]["therapist_license_status"]
+          licensing_body?: string | null
+          phone: string
+          photo_url?: string | null
+          platform_status?: Database["public"]["Enums"]["therapist_platform_status"]
+          qualification?: string | null
+          rating?: number
+          removed_at?: string | null
+          session_count?: number
+          session_types?: string[]
+          specialisations?: string[]
+          suspension_reason?: string | null
+          suspension_review_date?: string | null
+          updated_at?: string
+          years_experience?: number | null
+        }
+        Update: {
+          availability?: string[]
+          bio?: string | null
+          created_at?: string
+          created_by?: string | null
+          email?: string
+          full_name?: string
+          id?: string
+          languages?: string[]
+          license_number?: string | null
+          license_status?: Database["public"]["Enums"]["therapist_license_status"]
+          licensing_body?: string | null
+          phone?: string
+          photo_url?: string | null
+          platform_status?: Database["public"]["Enums"]["therapist_platform_status"]
+          qualification?: string | null
+          rating?: number
+          removed_at?: string | null
+          session_count?: number
+          session_types?: string[]
+          specialisations?: string[]
+          suspension_reason?: string | null
+          suspension_review_date?: string | null
+          updated_at?: string
+          years_experience?: number | null
         }
         Relationships: []
       }
@@ -2371,7 +2837,21 @@ export type Database = {
         Args: { payload: Json; queue_name: string }
         Returns: number
       }
+      get_campaign_by_slug: { Args: { _slug: string }; Returns: Json }
+      get_campaign_completion: { Args: { _company_id: string }; Returns: Json }
       get_doctor_email_by_phone: { Args: { _phone: string }; Returns: string }
+      get_public_testimonials: {
+        Args: { _limit?: number; _market?: string }
+        Returns: {
+          client_display_name: string
+          id: string
+          open_comment: string
+          star_rating: number
+          submitted_at: string
+        }[]
+      }
+      get_referral_link_by_slug: { Args: { _slug: string }; Returns: Json }
+      get_referral_link_stats: { Args: { _link_id: string }; Returns: Json }
       get_service_recommendation_details: {
         Args: { _report_id: string; _service_id: string }
         Returns: Json
@@ -2388,8 +2868,17 @@ export type Database = {
         }
         Returns: boolean
       }
+      lock_campaign_slug: { Args: { _slug: string }; Returns: undefined }
+      log_referral_click: {
+        Args: { _ip_hash?: string; _slug: string; _user_agent?: string }
+        Returns: string
+      }
       lookup_employee_by_code: { Args: { _code: string }; Returns: Json }
       lookup_employee_by_token: { Args: { _token: string }; Returns: Json }
+      merge_feedback_therapist_names: {
+        Args: { _from: string; _to: string }
+        Returns: number
+      }
       move_to_dlq: {
         Args: {
           dlq_name: string
@@ -2411,6 +2900,17 @@ export type Database = {
         Args: { _doctor_id: string; _month_start: string }
         Returns: undefined
       }
+      record_referral_conversion: {
+        Args: {
+          _booking_reference?: string
+          _client_name?: string
+          _client_phone?: string
+          _session_amount_kes?: number
+          _slug: string
+        }
+        Returns: string
+      }
+      slugify_company_name: { Args: { _name: string }; Returns: string }
       sync_form_emails_to_subscribers: { Args: never; Returns: Json }
     }
     Enums: {
@@ -2421,6 +2921,8 @@ export type Database = {
         | "finance_admin"
         | "operations_admin"
         | "content_admin"
+      therapist_license_status: "verified" | "pending" | "suspended"
+      therapist_platform_status: "active" | "inactive" | "suspended" | "removed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -2556,6 +3058,8 @@ export const Constants = {
         "operations_admin",
         "content_admin",
       ],
+      therapist_license_status: ["verified", "pending", "suspended"],
+      therapist_platform_status: ["active", "inactive", "suspended", "removed"],
     },
   },
 } as const

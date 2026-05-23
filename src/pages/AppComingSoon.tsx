@@ -1,21 +1,14 @@
-import { useState } from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { 
   Smartphone, 
-  Bell, 
   ArrowRight, 
   CheckCircle, 
   Heart,
@@ -23,73 +16,12 @@ import {
   Users,
   MessageCircle
 } from "lucide-react";
-import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
 
+const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.innersparkafrica.app";
+const APP_STORE_URL = "https://apps.apple.com/app/innerspark";
+
 const AppComingSoon = () => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-  });
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!formData.email.trim()) {
-      toast.error("Please enter your email address");
-      return;
-    }
-
-    setIsSubmitting(true);
-
-    try {
-      // Subscribe to newsletter for app launch notification
-      const { error } = await supabase
-        .from("newsletter_subscribers")
-        .insert({
-          email: formData.email.toLowerCase().trim()
-        });
-
-      if (error) {
-        if (error.code === "23505") {
-          toast.info("You're already on the list! We'll notify you when the app launches.");
-        } else {
-          throw error;
-        }
-      } else {
-        // Send waitlist confirmation email
-        await supabase.functions.invoke('send-resend-email', {
-          body: {
-            type: 'app-waitlist',
-            to: formData.email.toLowerCase().trim(),
-            data: { name: formData.name || '' },
-          },
-        });
-
-        // Notify admin
-        await supabase.functions.invoke('send-resend-email', {
-          body: {
-            type: 'app-waitlist-notify',
-            to: 'info@innersparkafrica.com',
-            data: { name: formData.name || '', email: formData.email.toLowerCase().trim() },
-          },
-        });
-        toast.success("You're on the list! We'll notify you when the app launches.");
-      }
-      
-      setIsSubmitted(true);
-    } catch (error) {
-      console.error("Error subscribing:", error);
-      toast.error("Something went wrong. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
   const features = [
     {
       icon: Calendar,
@@ -116,15 +48,15 @@ const AppComingSoon = () => {
   return (
     <>
       <Helmet>
-        <title>Mental Health App & Therapy App | Mood Tracker & Online Counseling App | Innerspark Africa</title>
+        <title>Download InnerSpark App | Mental Health & Therapy App for Africa</title>
         <meta
           name="description"
-          content="Innerspark mental health app — therapy app with mood tracking, daily mood journal, emotional support and online counseling. Join the waitlist for iOS & Android. Built for Uganda, Kenya, Tanzania & Africa."
+          content="The InnerSpark mental health app is now live on Google Play and the Apple App Store. Book therapy, track mood, join support groups. Built for Uganda & Africa."
         />
-        <meta name="keywords" content="mental health app, therapy app, mental wellness app, emotional support app, online counseling app, mental health support app, mood tracker app, mood tracking app, track my mood app, daily mood journal app, mental health tracker, mood diary app, mental health app Uganda, therapy app Kenya, mental wellness app Africa" />
+        <meta name="keywords" content="innerspark app download, mental health app Uganda, therapy app Africa, mood tracker app, online counseling app, google play, app store" />
         <link rel="canonical" href="https://www.innersparkafrica.com/app-coming-soon" />
-        <meta property="og:title" content="Mental Health App & Mood Tracker | Innerspark Africa" />
-        <meta property="og:description" content="Therapy app with mood tracking, emotional support and online counseling. Join the waitlist for iOS & Android." />
+        <meta property="og:title" content="Download InnerSpark App — Now Live on Google Play & App Store" />
+        <meta property="og:description" content="Mental health support in your pocket. Book therapy, track mood, join groups. Available on iOS & Android." />
         <meta property="og:url" content="https://www.innersparkafrica.com/app-coming-soon" />
         <meta property="og:type" content="website" />
       </Helmet>
@@ -143,17 +75,34 @@ const AppComingSoon = () => {
               >
                 <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full mb-6">
                   <Smartphone className="w-5 h-5" />
-                  <span className="font-medium">Mobile App</span>
+                  <span className="font-medium">Now Available</span>
                 </div>
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 font-serif">
-                  Our Apologies — The Innerspark App Is Not Yet Live
+                  The InnerSpark App Is Live
                 </h1>
 
                 <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
-                  We're putting the finishing touches on something special. The Innerspark mobile app 
-                  will bring mental health support right to your pocket — and it's launching very soon.
+                  Mental health support in your pocket. Book therapy, track your mood, join
+                  support groups, and chat with a counsellor — all from your phone.
                 </p>
+
+                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
+                  <a href={PLAY_STORE_URL} target="_blank" rel="noopener noreferrer">
+                    <img
+                      src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
+                      alt="Get InnerSpark on Google Play"
+                      className="h-14 hover:scale-105 transition-transform"
+                    />
+                  </a>
+                  <a href={APP_STORE_URL} target="_blank" rel="noopener noreferrer">
+                    <img
+                      src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg"
+                      alt="Download InnerSpark on the App Store"
+                      className="h-14 hover:scale-105 transition-transform"
+                    />
+                  </a>
+                </div>
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                   <div className="flex items-center gap-2 text-muted-foreground">
@@ -166,105 +115,42 @@ const AppComingSoon = () => {
                   </div>
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <CheckCircle className="w-5 h-5 text-primary" />
-                    <span>Coming Soon</span>
+                    <span>Live Now</span>
                   </div>
                 </div>
               </motion.div>
             </div>
 
             <div className="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
-              {/* Waitlist Form */}
+              {/* Download CTA */}
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
               >
                 <Card className="shadow-xl border-primary/10">
-                  <CardHeader>
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                        <Bell className="w-6 h-6 text-primary" />
-                      </div>
-                      <div>
-                        <CardTitle className="text-2xl">Join the Waitlist</CardTitle>
-                        <CardDescription>Be the first to know when we launch</CardDescription>
-                      </div>
+                  <CardContent className="pt-8 pb-8 text-center">
+                    <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                      <Smartphone className="w-8 h-8 text-primary" />
                     </div>
-                  </CardHeader>
-                  <CardContent>
-                    {isSubmitted ? (
-                      <div className="text-center py-8">
-                        <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-4">
-                          <CheckCircle className="w-8 h-8 text-primary" />
-                        </div>
-                        <h3 className="text-xl font-semibold text-foreground mb-2">
-                          You're on the list!
-                        </h3>
-                        <p className="text-muted-foreground mb-6">
-                          We'll send you an email as soon as the app is ready.
-                        </p>
-                        <Link to="/specialists">
-                          <Button className="gap-2">
-                            Book a Therapist Now
-                            <ArrowRight className="w-4 h-4" />
-                          </Button>
-                        </Link>
-                      </div>
-                    ) : (
-                      <form onSubmit={handleSubmit} className="space-y-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="name">Name (optional)</Label>
-                          <Input
-                            id="name"
-                            placeholder="Your name"
-                            value={formData.name}
-                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                          />
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label htmlFor="email">Email Address *</Label>
-                          <Input
-                            id="email"
-                            type="email"
-                            placeholder="you@example.com"
-                            value={formData.email}
-                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                            required
-                          />
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label htmlFor="phone">Phone Number (optional)</Label>
-                          <Input
-                            id="phone"
-                            placeholder="+256 700 000 000"
-                            value={formData.phone}
-                            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                          />
-                        </div>
-
-                        <Button 
-                          type="submit" 
-                          className="w-full gap-2" 
-                          disabled={isSubmitting}
-                        >
-                          {isSubmitting ? (
-                            "Joining..."
-                          ) : (
-                            <>
-                              <Bell className="w-4 h-4" />
-                              Notify Me When It's Live
-                            </>
-                          )}
+                    <h2 className="text-2xl font-bold text-foreground mb-2">Download Now</h2>
+                    <p className="text-muted-foreground mb-6">
+                      Get InnerSpark on your device and start your mental wellness journey today.
+                    </p>
+                    <div className="flex flex-col gap-3">
+                      <a href={PLAY_STORE_URL} target="_blank" rel="noopener noreferrer">
+                        <Button className="w-full gap-2" size="lg">
+                          Get on Google Play
+                          <ArrowRight className="w-4 h-4" />
                         </Button>
-
-                        <p className="text-xs text-muted-foreground text-center">
-                          We'll only use your email to notify you about the app launch. 
-                          No spam, ever.
-                        </p>
-                      </form>
-                    )}
+                      </a>
+                      <a href={APP_STORE_URL} target="_blank" rel="noopener noreferrer">
+                        <Button variant="outline" className="w-full gap-2" size="lg">
+                          Download on the App Store
+                          <ArrowRight className="w-4 h-4" />
+                        </Button>
+                      </a>
+                    </div>
                   </CardContent>
                 </Card>
 
@@ -272,11 +158,11 @@ const AppComingSoon = () => {
                 <Card className="mt-6 bg-primary/5 border-primary/20">
                   <CardContent className="pt-6">
                     <h3 className="text-lg font-semibold text-foreground mb-2">
-                      Need Support Right Now?
+                      Prefer the Web?
                     </h3>
                     <p className="text-muted-foreground mb-4">
-                      You don't have to wait for the app. Book a therapy session 
-                      through our website today.
+                      You can book and attend therapy directly from your browser — no
+                      download needed.
                     </p>
                     <Link to="/specialists">
                       <Button variant="outline" className="w-full gap-2">
@@ -296,7 +182,7 @@ const AppComingSoon = () => {
                 className="space-y-6"
               >
                 <h2 className="text-2xl font-bold text-foreground mb-6">
-                  What's Coming in the App
+                  What You Can Do in the App
                 </h2>
 
                 <div className="grid gap-4">
@@ -325,21 +211,19 @@ const AppComingSoon = () => {
 
                 {/* App Store Badges */}
                 <div className="bg-muted/50 rounded-xl p-6 text-center">
-                  <p className="text-sm text-muted-foreground mb-4">
-                    Available now on
-                  </p>
+                  <p className="text-sm text-muted-foreground mb-4">Available now on</p>
                   <div className="flex justify-center gap-4">
-                    <a href="https://play.google.com/store/apps/details?id=com.innersparkafrica.app" target="_blank" rel="noopener noreferrer">
-                      <img 
-                        src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" 
-                        alt="Get it on Google Play" 
+                    <a href={PLAY_STORE_URL} target="_blank" rel="noopener noreferrer">
+                      <img
+                        src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
+                        alt="Get it on Google Play"
                         className="h-10 hover:scale-105 transition-transform"
                       />
                     </a>
-                    <a href="https://play.google.com/store/apps/details?id=com.innersparkafrica.app" target="_blank" rel="noopener noreferrer">
-                      <img 
-                        src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" 
-                        alt="Download on the App Store" 
+                    <a href={APP_STORE_URL} target="_blank" rel="noopener noreferrer">
+                      <img
+                        src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg"
+                        alt="Download on the App Store"
                         className="h-10 hover:scale-105 transition-transform"
                       />
                     </a>

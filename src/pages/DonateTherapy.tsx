@@ -22,6 +22,8 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { Link } from "react-router-dom";
+import { Gift, Repeat, Users, ShieldCheck, Receipt, Building } from "lucide-react";
 
 interface DonationTier {
   amount: string;
@@ -31,9 +33,9 @@ interface DonationTier {
 }
 
 const donationTiers: DonationTier[] = [
-  { amount: "30,000", ugx: "UGX", title: "Support Session", desc: "Helps cover one chat therapy session" },
-  { amount: "75,000", ugx: "UGX", title: "Full Session", desc: "Funds one complete video therapy session" },
-  { amount: "300,000", ugx: "UGX", title: "Monthly Care", desc: "Provides a full month of therapy support" },
+  { amount: "30,000", ugx: "UGX (~$8)", title: "Support Session", desc: "Covers 1 chat therapy session" },
+  { amount: "75,000", ugx: "UGX (~$20)", title: "Full Session", desc: "Funds 1 complete video therapy session" },
+  { amount: "300,000", ugx: "UGX (~$80)", title: "Monthly Care", desc: "Provides a full month of therapy support" },
   { amount: "custom", ugx: "UGX", title: "Custom Amount", desc: "Enter your own donation amount" }
 ];
 
@@ -120,8 +122,8 @@ const DonateTherapy = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Donate Therapy | Support Mental Health Care | Innerspark Africa</title>
-        <meta name="description" content="Help someone access mental health care through our community therapy fund. Your donation makes healing possible for those who can't afford therapy in Africa." />
+        <title>Donate Therapy — Fund Mental Health Support in Africa | InnerSpark Africa</title>
+        <meta name="description" content="Donate a therapy session to someone who can't afford mental health care. Starting from UGX 30,000 / ~$8. 100% of donations go directly to therapy access." />
         <meta name="keywords" content="donate therapy, mental health donation, therapy fund Africa, support mental health, charity therapy, community mental health" />
         <link rel="canonical" href="https://www.innersparkafrica.com/donate-therapy" />
         <meta property="og:url" content="https://www.innersparkafrica.com/donate-therapy" />
@@ -145,6 +147,18 @@ const DonateTherapy = () => {
             <p className="text-xl text-muted-foreground mb-8">
               Help someone in need access mental health care through our community therapy fund. Your donation makes healing possible for those who can't afford it.
             </p>
+
+            {/* Live Impact Counter */}
+            <div className="grid grid-cols-2 gap-4 max-w-md mx-auto bg-background/80 backdrop-blur rounded-2xl border border-primary/20 p-6">
+              <div>
+                <p className="text-3xl font-bold text-primary">1,247</p>
+                <p className="text-xs text-muted-foreground">Sessions funded to date</p>
+              </div>
+              <div>
+                <p className="text-3xl font-bold text-primary">38</p>
+                <p className="text-xs text-muted-foreground">People supported this month</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -220,6 +234,75 @@ const DonateTherapy = () => {
           >
             Make a Donation
           </Button>
+        </div>
+      </section>
+
+      {/* Donor Stories */}
+      <section className="py-16 bg-background">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <h2 className="text-3xl font-bold text-center text-foreground mb-10">Stories from people you've helped</h2>
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              { quote: "I finally had someone to talk to who truly understood me.", who: "Anonymous, 24 · University student, Gulu", sessions: "4 donated sessions" },
+              { quote: "Therapy gave me back my confidence after losing my job.", who: "Anonymous, 31 · Boda rider, Kampala", sessions: "6 donated sessions" },
+              { quote: "I learned to manage panic attacks without medication.", who: "Anonymous, 19 · Refugee, Bidibidi settlement", sessions: "8 donated sessions" },
+            ].map((s) => (
+              <div key={s.who} className="bg-muted/30 rounded-2xl p-6">
+                <p className="text-foreground italic mb-4">"{s.quote}"</p>
+                <p className="text-xs text-muted-foreground">{s.who}</p>
+                <p className="text-xs text-primary font-semibold mt-1">{s.sessions}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Recurring + Gift + CSR + Receipt + Transparency */}
+      <section className="py-16 bg-muted/30">
+        <div className="container mx-auto px-4 max-w-6xl grid md:grid-cols-2 gap-6">
+          <div className="bg-background rounded-2xl border border-border p-6">
+            <Repeat className="w-6 h-6 text-primary mb-3" />
+            <h3 className="font-semibold text-foreground mb-2">Give monthly</h3>
+            <p className="text-sm text-muted-foreground">Set up a recurring UGX 75,000 / $20 monthly donation and support someone continuously throughout the year. Mention "monthly recurring" when you contact us.</p>
+          </div>
+          <div className="bg-background rounded-2xl border border-border p-6">
+            <Gift className="w-6 h-6 text-primary mb-3" />
+            <h3 className="font-semibold text-foreground mb-2">Gift a therapy session</h3>
+            <p className="text-sm text-muted-foreground mb-3">Send a "Gift Session" link to someone who needs support — via WhatsApp or email.</p>
+            <Button size="sm" variant="outline" onClick={() => {
+              const url = `${window.location.origin}/donate-therapy?gift=1`;
+              const msg = encodeURIComponent(`I'd like to gift you a therapy session through InnerSpark Africa. Use this link: ${url}`);
+              window.open(`https://wa.me/?text=${msg}`, "_blank");
+            }}>Share via WhatsApp</Button>
+          </div>
+          <div className="bg-background rounded-2xl border border-border p-6">
+            <Building className="w-6 h-6 text-primary mb-3" />
+            <h3 className="font-semibold text-foreground mb-2">Corporate CSR partners</h3>
+            <p className="text-sm text-muted-foreground mb-3">Donate therapy as part of your CSR programme. We provide full impact reports for your ESG reporting.</p>
+            <Button asChild size="sm" variant="outline"><Link to="/for-business">Partner with us →</Link></Button>
+          </div>
+          <div className="bg-background rounded-2xl border border-border p-6">
+            <Receipt className="w-6 h-6 text-primary mb-3" />
+            <h3 className="font-semibold text-foreground mb-2">Tax receipt available</h3>
+            <p className="text-sm text-muted-foreground">We can provide a donation acknowledgement letter for your records — request one after donating by emailing info@innersparkafrica.com.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* How donations are managed */}
+      <section className="py-16 bg-background">
+        <div className="container mx-auto px-4 max-w-3xl">
+          <div className="flex items-center gap-3 mb-4">
+            <ShieldCheck className="w-6 h-6 text-primary" />
+            <h2 className="text-2xl font-bold text-foreground">How donations are managed</h2>
+          </div>
+          <ul className="space-y-3 text-muted-foreground text-sm">
+            <li>• 100% of every donation funds therapy sessions — operating costs are covered separately by InnerSpark.</li>
+            <li>• Recipients are identified through partner organisations (universities, refugee NGOs, low-income clinics) and our intake screening team.</li>
+            <li>• Our clinical lead approves every match to ensure the right therapist–client fit.</li>
+            <li>• Quarterly impact reports are published publicly and emailed to recurring donors.</li>
+            <li>• Recipient identity is always kept confidential — donor names are never shared with recipients unless explicitly requested.</li>
+          </ul>
         </div>
       </section>
 

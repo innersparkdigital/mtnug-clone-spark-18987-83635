@@ -1,219 +1,154 @@
-import { useState, useEffect } from "react";
-import { Facebook, Twitter, Instagram, Youtube, Linkedin, Mail, Phone, MapPin, PhoneCall } from "lucide-react";
+import { Facebook, Twitter, Instagram, Youtube, Linkedin, Mail, Phone, MapPin, MessageCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { LanguageSelector } from "@/components/LanguageSelector";
-import { useLanguage } from "@/contexts/LanguageContext";
 
 const Footer = () => {
-  const { language, translateBatch } = useLanguage();
-  const [t, setT] = useState({
-    description: "Online therapy and mental health support — making professional care affordable, accessible, and stigma-free globally.",
-    quickLinks: "Quick Links",
-    ourServices: "Our Services",
-    specialists: "Find a Therapist",
-    aboutUs: "About Us",
-    blog: "Blog",
-    contactUs: "Contact Us",
-    forProfessionals: "For Professionals",
-    forBusiness: "For Business",
-    services: "Therapy Services",
-    onlineTherapy: "Online Therapy",
-    bookTherapist: "Book a Therapist",
-    videoTherapy: "Video Therapy",
-    chatTherapy: "Chat Therapy",
-    supportGroups: "Support Groups",
-    connectWithUs: "Connect With Us",
-    chatWhatsApp: "Chat on WhatsApp",
-    callUs: "Call Us",
-    communityText: "Join our community. Get support when you need it most.",
-    allRights: "All rights reserved.",
-    privacyPolicy: "Privacy Policy",
-    termsOfService: "Terms of Service",
-    cookiePolicy: "Cookie Policy",
-  });
-
-  useEffect(() => {
-    if (language === "en") {
-      setT({
-        description: "Online therapy and mental health support — making professional care affordable, accessible, and stigma-free globally.",
-        quickLinks: "Quick Links",
-        ourServices: "Our Services",
-        specialists: "Find a Therapist",
-        aboutUs: "About Us",
-        blog: "Blog",
-        contactUs: "Contact Us",
-        forProfessionals: "For Professionals",
-        forBusiness: "For Business",
-        services: "Therapy Services",
-        onlineTherapy: "Online Therapy",
-        bookTherapist: "Book a Therapist",
-        videoTherapy: "Video Therapy",
-        chatTherapy: "Chat Therapy",
-        supportGroups: "Support Groups",
-        connectWithUs: "Connect With Us",
-        chatWhatsApp: "Chat on WhatsApp",
-        callUs: "Call Us",
-        communityText: "Join our community. Get support when you need it most.",
-        allRights: "All rights reserved.",
-        privacyPolicy: "Privacy Policy",
-        termsOfService: "Terms of Service",
-        cookiePolicy: "Cookie Policy",
-      });
-      return;
-    }
-
-    const texts = [
-      "Online therapy and mental health support — making professional care affordable, accessible, and stigma-free globally.",
-      "Quick Links",
-      "Our Services",
-      "Find a Therapist",
-      "About Us",
-      "Blog",
-      "Contact Us",
-      "For Professionals",
-      "For Business",
-      "Therapy Services",
-      "Online Therapy",
-      "Book a Therapist",
-      "Video Therapy",
-      "Chat Therapy",
-      "Support Groups",
-      "Connect With Us",
-      "Chat on WhatsApp",
-      "Call Us",
-      "Join our community. Get support when you need it most.",
-      "All rights reserved.",
-      "Privacy Policy",
-      "Terms of Service",
-      "Cookie Policy",
-    ];
-
-    translateBatch(texts).then((results) => {
-      setT({
-        description: results[0],
-        quickLinks: results[1],
-        ourServices: results[2],
-        specialists: results[3],
-        aboutUs: results[4],
-        blog: results[5],
-        contactUs: results[6],
-        forProfessionals: results[7],
-        forBusiness: results[8],
-        services: results[9],
-        onlineTherapy: results[10],
-        bookTherapist: results[11],
-        videoTherapy: results[12],
-        chatTherapy: results[13],
-        supportGroups: results[14],
-        connectWithUs: results[15],
-        chatWhatsApp: results[16],
-        callUs: results[17],
-        communityText: results[18],
-        allRights: results[19],
-        privacyPolicy: results[20],
-        termsOfService: results[21],
-        cookiePolicy: results[22],
-      });
-    });
-  }, [language, translateBatch]);
-
   return (
-    <footer className="bg-secondary text-secondary-foreground">
+    <footer className="bg-secondary text-foreground border-t border-border">
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-          {/* Company Info */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+          {/* Column 1 — Company */}
           <div>
-            <h3 className="text-xl font-bold mb-4 text-primary">Innerspark Africa</h3>
-            <p className="text-sm text-muted-foreground mb-4">
-              {t.description}
-            </p>
-            <div className="space-y-2 text-sm">
-              <div className="flex items-start gap-2">
+            <h4 className="font-display text-base font-semibold mb-4">Company</h4>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li><Link to="/about" className="hover:text-primary transition-colors">About</Link></li>
+              <li><Link to="/blog" className="hover:text-primary transition-colors">Blog</Link></li>
+              <li><Link to="/events-training" className="hover:text-primary transition-colors">Events</Link></li>
+              <li><Link to="/contact" className="hover:text-primary transition-colors">Contact</Link></li>
+              <li><Link to="/donate-therapy" className="hover:text-primary transition-colors">Donate Therapy</Link></li>
+              <li><Link to="/privacy-policy" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
+              <li><Link to="/cookie-policy" className="hover:text-primary transition-colors">Cookie Policy</Link></li>
+            </ul>
+          </div>
+
+          {/* Column 2 — Individual */}
+          <div>
+            <h4 className="font-display text-base font-semibold mb-4">For Individuals</h4>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li><Link to="/online-therapy" className="hover:text-primary transition-colors">Online Therapy</Link></li>
+              <li><Link to="/specialists" className="hover:text-primary transition-colors">Find a Therapist</Link></li>
+              <li><Link to="/support-groups" className="hover:text-primary transition-colors">Support Groups</Link></li>
+              <li><Link to="/mind-check" className="hover:text-primary transition-colors">Mind-Check</Link></li>
+              <li><Link to="/whisper" className="hover:text-primary transition-colors">Whisper</Link></li>
+            </ul>
+          </div>
+
+          {/* Column 3 — Corporate */}
+          <div>
+            <h4 className="font-display text-base font-semibold mb-4">For Business</h4>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li><Link to="/for-business" className="hover:text-primary transition-colors">For Business</Link></li>
+              <li><Link to="/learning" className="hover:text-primary transition-colors">Learning Hub</Link></li>
+              <li><Link to="/corporate-wellbeing-check" className="hover:text-primary transition-colors">Corporate Screening</Link></li>
+              <li><Link to="/events-training/trainings" className="hover:text-primary transition-colors">S.P.A.R.K Training</Link></li>
+            </ul>
+          </div>
+
+          {/* Column 4 — Contact */}
+          <div>
+            <h4 className="font-display text-base font-semibold mb-4">Contact</h4>
+            <ul className="space-y-3 text-sm text-muted-foreground">
+              <li className="flex items-start gap-2">
+                <Phone className="w-4 h-4 mt-0.5 text-primary flex-shrink-0" />
+                <a href="tel:+256792085773" className="hover:text-primary transition-colors">+256 792 085 773</a>
+              </li>
+              <li className="flex items-start gap-2">
+                <Mail className="w-4 h-4 mt-0.5 text-primary flex-shrink-0" />
+                <a href="mailto:info@innersparkafrica.com" className="hover:text-primary transition-colors break-all">info@innersparkafrica.com</a>
+              </li>
+              <li className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 mt-0.5 text-primary flex-shrink-0" />
-                <span className="text-muted-foreground">National ICT Innovation Hub, Kampala, Uganda</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-primary flex-shrink-0" />
-                <span className="text-muted-foreground">+256 792 085 773</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-primary flex-shrink-0" />
-                <span className="text-muted-foreground">info@innersparkafrica.com</span>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <h4 className="font-semibold mb-4">{t.quickLinks}</h4>
-            <ul className="space-y-2 text-sm">
-              <li><Link to="/services" className="hover:text-primary transition-colors">{t.ourServices}</Link></li>
-              <li><Link to="/specialists" className="hover:text-primary transition-colors">{t.specialists}</Link></li>
-              <li><Link to="/about" className="hover:text-primary transition-colors">{t.aboutUs}</Link></li>
-              <li><Link to="/blog" className="hover:text-primary transition-colors">{t.blog}</Link></li>
-              <li><Link to="/contact" className="hover:text-primary transition-colors">{t.contactUs}</Link></li>
-              <li><Link to="/for-professionals" className="hover:text-primary transition-colors">{t.forProfessionals}</Link></li>
-              <li><Link to="/for-business" className="hover:text-primary transition-colors">{t.forBusiness}</Link></li>
+                <span>National ICT Innovation Hub, Nakawa, Kampala</span>
+              </li>
             </ul>
-          </div>
 
-          {/* Services */}
-          <div>
-            <h4 className="font-semibold mb-4">{t.services}</h4>
-            <ul className="space-y-2 text-sm">
-              <li><Link to="/online-therapy" className="hover:text-primary transition-colors">{t.onlineTherapy}</Link></li>
-              <li><Link to="/book-therapist" className="hover:text-primary transition-colors">{t.bookTherapist}</Link></li>
-              <li><Link to="/video-therapy" className="hover:text-primary transition-colors">{t.videoTherapy}</Link></li>
-              <li><Link to="/chat-therapy" className="hover:text-primary transition-colors">{t.chatTherapy}</Link></li>
-              <li><Link to="/support-groups" className="hover:text-primary transition-colors">{t.supportGroups}</Link></li>
-            </ul>
-          </div>
+            <a
+              href="https://wa.me/256792085773?text=Hi%20InnerSpark%2C%20I'd%20like%20to%20chat"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 inline-flex"
+            >
+              <Button size="sm" className="gap-2 bg-[#25D366] hover:bg-[#1ebe5b] text-white">
+                <MessageCircle className="w-4 h-4" /> Chat on WhatsApp
+              </Button>
+            </a>
 
-          {/* Social Media */}
-          <div>
-            <h4 className="font-semibold mb-4">{t.connectWithUs}</h4>
-            <div className="flex gap-2 mb-4">
-              <a href="https://wa.me/256792085773?text=Hi,%20I%20would%20like%20to%20connect%20with%20Innerspark%20Africa" target="_blank" rel="noopener noreferrer" className="flex-1">
-                <Button size="sm" className="w-full">{t.chatWhatsApp}</Button>
+            {/* App badges */}
+            <div className="mt-4 flex flex-wrap gap-2">
+              <a
+                href="https://play.google.com/store/apps/details?id=com.innerspark.africa"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Get it on Google Play"
+                className="inline-flex items-center gap-2 rounded-md bg-foreground text-background px-3 py-1.5 text-xs font-medium hover:opacity-90 transition"
+              >
+                <span className="text-[10px] opacity-80 leading-none">GET IT ON</span>
+                <span className="font-semibold">Google Play</span>
               </a>
-              <a href="tel:+256792085773" className="flex-1">
-                <Button size="sm" variant="outline" className="w-full gap-1">
-                  <PhoneCall className="w-3 h-3" />
-                  {t.callUs}
-                </Button>
-              </a>
+              <Link
+                to="/app-coming-soon"
+                aria-label="Download on the App Store"
+                className="inline-flex items-center gap-2 rounded-md bg-foreground text-background px-3 py-1.5 text-xs font-medium hover:opacity-90 transition"
+              >
+                <span className="text-[10px] opacity-80 leading-none">Download on the</span>
+                <span className="font-semibold">App Store</span>
+              </Link>
             </div>
-            <div className="flex gap-4 mb-4">
-              <a href="https://www.facebook.com/innersparkrecover" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-primary rounded-full flex items-center justify-center hover:bg-primary/90 transition-colors">
-                <Facebook className="w-5 h-5 text-primary-foreground" />
-              </a>
-              <a href="https://x.com/innersparkrcv" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-primary rounded-full flex items-center justify-center hover:bg-primary/90 transition-colors">
-                <Twitter className="w-5 h-5 text-primary-foreground" />
-              </a>
-              <a href="https://www.linkedin.com/in/inner-spark-581014326/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-primary rounded-full flex items-center justify-center hover:bg-primary/90 transition-colors">
-                <Linkedin className="w-5 h-5 text-primary-foreground" />
-              </a>
-              <a href="https://instagram.com/innersparkrecover" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-primary rounded-full flex items-center justify-center hover:bg-primary/90 transition-colors">
-                <Instagram className="w-5 h-5 text-primary-foreground" />
-              </a>
-              <a href="https://www.youtube.com/@INNERSPARK36" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-primary rounded-full flex items-center justify-center hover:bg-primary/90 transition-colors">
-                <Youtube className="w-5 h-5 text-primary-foreground" />
-              </a>
+
+            {/* Socials */}
+            <div className="mt-5 flex items-center gap-2">
+              {[
+                { href: "https://www.facebook.com/innersparkrecover", Icon: Facebook, label: "Facebook" },
+                { href: "https://x.com/innersparkrcv", Icon: Twitter, label: "Twitter" },
+                { href: "https://www.linkedin.com/in/inner-spark-581014326/", Icon: Linkedin, label: "LinkedIn" },
+                { href: "https://instagram.com/innersparkrecover", Icon: Instagram, label: "Instagram" },
+                { href: "https://www.youtube.com/@INNERSPARK36", Icon: Youtube, label: "YouTube" },
+              ].map(({ href, Icon, label }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="w-9 h-9 rounded-full bg-primary text-primary-foreground flex items-center justify-center hover:bg-primary/90 transition-colors"
+                >
+                  <Icon className="w-4 h-4" />
+                </a>
+              ))}
             </div>
-            <p className="text-sm text-muted-foreground">
-              {t.communityText}
-            </p>
           </div>
         </div>
 
+        {/* Brand block + crisis line */}
+        <div className="border-t border-border pt-6 mb-6 grid gap-4 md:grid-cols-2 items-center">
+          <div>
+            <Link to="/" className="font-display text-lg font-semibold tracking-tight">
+              InnerSpark <span className="text-primary">Africa</span>
+            </Link>
+            <p className="text-xs text-muted-foreground mt-1 max-w-md leading-relaxed">
+              Africa's Most Accessible Mental Wellness Platform — connecting individuals, organisations and communities to licensed therapists and self-care tools across the continent.
+            </p>
+          </div>
+          <a
+            href="https://wa.me/256792085773?text=I%20need%20urgent%20mental%20health%20support"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="md:justify-self-end inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
+          >
+            <MessageCircle className="w-4 h-4" />
+            Need urgent help? WhatsApp +256 792 085 773
+          </a>
+        </div>
+
         {/* Bottom Bar */}
-        <div className="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-          <p>&copy; 2025 Innerspark Africa. {t.allRights}</p>
-          <div className="flex items-center gap-6">
+        <div className="border-t border-border pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-muted-foreground">
+          <p>&copy; {new Date().getFullYear()} InnerSpark Africa. All rights reserved.</p>
+          <div className="flex items-center gap-5 flex-wrap justify-center">
             <LanguageSelector variant="footer" />
-            <Link to="/privacy-policy" className="hover:text-primary transition-colors">{t.privacyPolicy}</Link>
-            <Link to="/terms-of-service" className="hover:text-primary transition-colors">{t.termsOfService}</Link>
-            <Link to="/cookie-policy" className="hover:text-primary transition-colors">{t.cookiePolicy}</Link>
+            <Link to="/privacy-policy" className="hover:text-primary transition-colors">Privacy</Link>
+            <Link to="/terms-of-service" className="hover:text-primary transition-colors">Terms</Link>
+            <Link to="/cookie-policy" className="hover:text-primary transition-colors">Cookies</Link>
             <Link to="/account-deletion" className="hover:text-primary transition-colors">Account Deletion</Link>
           </div>
         </div>
