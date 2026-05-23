@@ -156,8 +156,8 @@ const App = () => (
             <Sonner />
             <BrowserRouter>
               <ScrollToTop />
-              <AIChatWidget />
-              <WhisperFloatingWidget />
+              {/* <AIChatWidget />
+              <WhisperFloatingWidget /> */}
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/auth" element={<Auth />} />
