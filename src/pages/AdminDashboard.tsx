@@ -703,6 +703,11 @@ const AdminDashboard = () => {
               <FeedbackTab />
             </TabsContent>
           )}
+          {isAdmin && (
+            <TabsContent value="kenya-referrals">
+              <KenyaReferralsTab />
+            </TabsContent>
+          )}
         </Tabs>
       </main>
 
