@@ -30,6 +30,7 @@ import CrisisAlertsTab from '@/components/admin/CrisisAlertsTab';
 import TherapistsTab from '@/components/admin/TherapistsTab';
 import SiteSectionsTab from '@/components/admin/SiteSectionsTab';
 import FeedbackTab from '@/components/admin/FeedbackTab';
+import KenyaReferralsTab from '@/components/admin/KenyaReferralsTab';
 import { 
   BookOpen, 
   GraduationCap, 
