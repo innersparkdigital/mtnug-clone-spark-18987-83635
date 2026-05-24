@@ -294,6 +294,12 @@ const AdminDashboard = () => {
                 Feedback
               </TabsTrigger>
             )}
+            {isAdmin && (
+              <TabsTrigger value="kenya-referrals" className="gap-2">
+                <span aria-hidden>🇰🇪</span>
+                Kenya Referrals
+              </TabsTrigger>
+            )}
           </TabsList>
 
           <TabsContent value="learning">
