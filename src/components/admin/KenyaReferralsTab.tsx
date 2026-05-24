@@ -63,13 +63,30 @@ export default function KenyaReferralsTab() {
     referrer_phone: "",
     referrer_email: "",
     slug: "",
+    slug_touched: false,
     discount_amount_kes: 200,
     reward_type: "cash",
     reward_value: 500,
     link_type: "individual",
     custom_message: "",
+    message_touched: false,
     notes: "",
   });
+
+  // Auto-generate slug + custom message from referrer name / discount unless user edited them
+  useEffect(() => {
+    setForm((f) => {
+      const next = { ...f };
+      if (!f.slug_touched && f.referrer_name.trim()) {
+        next.slug = slugify(f.referrer_name);
+      }
+      if (!f.message_touched && f.referrer_name.trim()) {
+        const first = f.referrer_name.trim().split(/\s+/)[0];
+        next.custom_message = `${first} sent you — enjoy KES ${f.discount_amount_kes || 0} off your first InnerSpark therapy session. Book in 2 minutes, pay via M-Pesa.`;
+      }
+      return next;
+    });
+  }, [form.referrer_name, form.discount_amount_kes, form.slug_touched, form.message_touched]);
 
   const fetchAll = async () => {
     setLoading(true);
@@ -132,7 +149,7 @@ export default function KenyaReferralsTab() {
     if (error) { toast({ title: "Failed to create", description: error.message, variant: "destructive" }); return; }
     toast({ title: "Referral link created", description: `/${slug}` });
     setOpen(false);
-    setForm({ ...form, referrer_name: "", referrer_phone: "", referrer_email: "", slug: "", custom_message: "", notes: "" });
+    setForm({ ...form, referrer_name: "", referrer_phone: "", referrer_email: "", slug: "", slug_touched: false, custom_message: "", message_touched: false, notes: "" });
     fetchAll();
   };
 
@@ -253,15 +270,22 @@ export default function KenyaReferralsTab() {
 
       {/* Create dialog */}
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader><DialogTitle>Create Kenya referral link</DialogTitle></DialogHeader>
-          <div className="space-y-3">
+        <DialogContent className="max-w-lg max-h-[90vh] flex flex-col p-0">
+          <DialogHeader className="px-6 pt-6"><DialogTitle>Create Kenya referral link</DialogTitle></DialogHeader>
+          <div className="space-y-3 overflow-y-auto px-6 py-4 flex-1">
+            <p className="text-xs text-muted-foreground">
+              This link leads visitors to book a therapy session on the Kenya page. When the client pays, you'll see the conversion below and can mark the referrer's reward as issued.
+            </p>
             <div><Label>Referrer name *</Label><Input value={form.referrer_name} onChange={(e) => setForm({ ...form, referrer_name: e.target.value })} /></div>
             <div className="grid grid-cols-2 gap-3">
               <div><Label>Phone</Label><Input value={form.referrer_phone} onChange={(e) => setForm({ ...form, referrer_phone: e.target.value })} placeholder="+254…" /></div>
               <div><Label>Email</Label><Input value={form.referrer_email} onChange={(e) => setForm({ ...form, referrer_email: e.target.value })} /></div>
             </div>
-            <div><Label>Custom slug (optional)</Label><Input value={form.slug} onChange={(e) => setForm({ ...form, slug: slugify(e.target.value) })} placeholder="auto-generated" /></div>
+            <div>
+              <Label>Custom slug (auto)</Label>
+              <Input value={form.slug} onChange={(e) => setForm({ ...form, slug: slugify(e.target.value), slug_touched: true })} placeholder="auto-generated from name" />
+              <p className="text-xs text-muted-foreground mt-1">Final link: {ORIGIN}/kenya/ref/{form.slug || "…"}-xxxx</p>
+            </div>
             <div className="grid grid-cols-2 gap-3">
               <div><Label>Discount (KES)</Label><Input type="number" value={form.discount_amount_kes} onChange={(e) => setForm({ ...form, discount_amount_kes: Number(e.target.value) })} /></div>
               <div>
@@ -292,10 +316,13 @@ export default function KenyaReferralsTab() {
               </div>
               <div><Label>Reward value (KES)</Label><Input type="number" value={form.reward_value} onChange={(e) => setForm({ ...form, reward_value: Number(e.target.value) })} /></div>
             </div>
-            <div><Label>Custom message (shown on Kenya page)</Label><Textarea rows={2} value={form.custom_message} onChange={(e) => setForm({ ...form, custom_message: e.target.value })} placeholder="e.g. Jane sent you — enjoy KES 200 off your first session." /></div>
+            <div>
+              <Label>Custom message (auto, shown on Kenya page)</Label>
+              <Textarea rows={3} value={form.custom_message} onChange={(e) => setForm({ ...form, custom_message: e.target.value, message_touched: true })} placeholder="Auto-generated from referrer name" />
+            </div>
             <div><Label>Internal notes</Label><Textarea rows={2} value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} /></div>
           </div>
-          <DialogFooter>
+          <DialogFooter className="px-6 py-4 border-t bg-background">
             <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
             <Button onClick={createLink} disabled={saving}>{saving && <Loader2 className="h-4 w-4 mr-1 animate-spin" />}Create link</Button>
           </DialogFooter>
