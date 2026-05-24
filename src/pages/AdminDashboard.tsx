@@ -30,6 +30,7 @@ import CrisisAlertsTab from '@/components/admin/CrisisAlertsTab';
 import TherapistsTab from '@/components/admin/TherapistsTab';
 import SiteSectionsTab from '@/components/admin/SiteSectionsTab';
 import FeedbackTab from '@/components/admin/FeedbackTab';
+import KenyaReferralsTab from '@/components/admin/KenyaReferralsTab';
 import { 
   BookOpen, 
   GraduationCap, 
@@ -291,6 +292,12 @@ const AdminDashboard = () => {
               <TabsTrigger value="feedback" className="gap-2">
                 <FileText className="h-4 w-4" />
                 Feedback
+              </TabsTrigger>
+            )}
+            {isAdmin && (
+              <TabsTrigger value="kenya-referrals" className="gap-2">
+                <span aria-hidden>🇰🇪</span>
+                Kenya Referrals
               </TabsTrigger>
             )}
           </TabsList>
@@ -694,6 +701,11 @@ const AdminDashboard = () => {
           {isAdmin && (
             <TabsContent value="feedback">
               <FeedbackTab />
+            </TabsContent>
+          )}
+          {isAdmin && (
+            <TabsContent value="kenya-referrals">
+              <KenyaReferralsTab />
             </TabsContent>
           )}
         </Tabs>

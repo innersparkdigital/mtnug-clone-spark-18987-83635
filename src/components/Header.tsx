@@ -102,9 +102,9 @@ const Header = () => {
   const isKenyaGeo = useIsKenyaVisitor();
   const { user, signOut } = useAuth();
   const { isAdmin } = useUserRole();
-  const adminEmails = ["info@innersparkafrica.com"];
-  const isAdminByEmail = !!user?.email && adminEmails.includes(user.email.toLowerCase());
-  const isKenyaVisitor = isKenyaGeo || isAdmin || isAdminByEmail;
+  // Always show Kenya entry point to anyone signed in (covers admins regardless
+  // of role-hook timing/RLS) plus visitors detected as Kenyan.
+  const isKenyaVisitor = isKenyaGeo || isAdmin || !!user;
   const closeMobile = () => setIsMenuOpen(false);
 
   return (
