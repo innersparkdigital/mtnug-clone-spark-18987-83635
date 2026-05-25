@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUserRole } from '@/hooks/useUserRole';
 import { useAdminDashboard } from '@/hooks/useAdminDashboard';
@@ -64,24 +64,10 @@ import {
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, PieChart as RechartsPie, Pie, Cell } from 'recharts';
 
 const AdminDashboard = () => {
-  const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const { isAdmin, loading: roleLoading } = useUserRole();
   const { hasPageAccess, loading: permLoading } = usePagePermissions();
   const { users, stats, loading: adminLoading } = useAdminDashboard();
-
-  useEffect(() => {
-    if (!authLoading && !user) {
-      navigate('/auth?redirect=/learning/admin-dashboard');
-    }
-  }, [user, authLoading, navigate]);
-
-  useEffect(() => {
-    // Allow if super admin OR has any granted page
-    if (!roleLoading && !permLoading && user && !isAdmin && !hasPageAccess('learning') && !hasPageAccess('registrations') && !hasPageAccess('newsletter') && !hasPageAccess('referrals') && !hasPageAccess('finance') && !hasPageAccess('content')) {
-      navigate('/learning/student-dashboard');
-    }
-  }, [isAdmin, roleLoading, permLoading, hasPageAccess, user, navigate]);
 
   if (authLoading || roleLoading || permLoading || adminLoading) {
     return (
@@ -92,7 +78,20 @@ const AdminDashboard = () => {
   }
 
   if (!user) {
-    return null;
+    return <Navigate to="/auth?redirect=/learning/admin-dashboard" replace />;
+  }
+
+  // Allow if super admin OR has any granted page
+  if (
+    !isAdmin &&
+    !hasPageAccess('learning') &&
+    !hasPageAccess('registrations') &&
+    !hasPageAccess('newsletter') &&
+    !hasPageAccess('referrals') &&
+    !hasPageAccess('finance') &&
+    !hasPageAccess('content')
+  ) {
+    return <Navigate to="/learning/student-dashboard" replace />;
   }
 
   const getCourseById = (courseId: string) => {
