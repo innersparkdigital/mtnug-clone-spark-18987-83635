@@ -6,6 +6,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { getReferralCookie } from "@/lib/referralCookie";
+import { getSpecialistImage } from "@/lib/specialistImages";
 
 const SPARK_BLUE = "#3B4FD4";
 const WARMTH = "#F2994A";
@@ -171,9 +172,9 @@ export default function Kenya() {
               From KES 2,600 · Pay via M-Pesa · Book in 2 minutes.
             </p>
             <div className="mt-7 flex flex-col sm:flex-row gap-3">
-              <Link to="/book-therapist?market=kenya" className="inline-flex items-center justify-center font-medium text-white rounded-lg px-6 py-3 text-[15px]" style={{ background: WARMTH }}>
+              <a href="https://wa.me/256792085773?text=Hi,%20I%27d%20like%20to%20book%20a%20therapy%20session%20(Kenya)" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center font-medium text-white rounded-lg px-6 py-3 text-[15px]" style={{ background: WARMTH }}>
                 Book a session
-              </Link>
+              </a>
               <Link to="/check/kenya" className="inline-flex items-center justify-center font-medium rounded-lg px-6 py-3 text-[15px] text-white border-[1.5px]" style={{ borderColor: "rgba(255,255,255,0.5)" }}>
                 Try free wellbeing check
               </Link>
@@ -313,8 +314,17 @@ export default function Kenya() {
           <div className="grid md:grid-cols-3 gap-5 mt-10 max-w-5xl mx-auto">
             {therapists.map((t) => (
               <div key={t.id} className="bg-white border rounded-2xl p-5 text-center" style={{ borderColor: "#E6E8FA" }}>
-                <div className="w-[72px] h-[72px] mx-auto rounded-full overflow-hidden bg-gray-100">
-                  {t.image_url ? <img src={t.image_url} alt={t.name} className="w-full h-full object-cover" /> : null}
+                <div className="w-[88px] h-[88px] mx-auto rounded-full overflow-hidden bg-gray-100">
+                  {(() => {
+                    const img = getSpecialistImage(t.name, t.image_url);
+                    return img ? (
+                      <img src={img} alt={t.name} loading="lazy" className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-lg font-semibold" style={{ color: SPARK_BLUE, background: "#EEF0FD" }}>
+                        {t.name.split(" ").map((n) => n[0]).slice(0, 2).join("")}
+                      </div>
+                    );
+                  })()}
                 </div>
                 <h3 className="font-display font-semibold mt-3" style={{ color: DEEP_NIGHT }}>{t.name}</h3>
                 <div className="flex flex-wrap justify-center gap-1 mt-2">
@@ -357,7 +367,7 @@ export default function Kenya() {
                 <li>✓ 50-minute session</li>
                 <li>✓ Pay as you go — no subscription</li>
               </ul>
-              <Link to="/book-therapist?market=kenya" className="block text-center mt-5 font-medium text-white rounded-lg py-2.5" style={{ background: SPARK_BLUE }}>Book now →</Link>
+              <a href="https://wa.me/256792085773?text=Hi,%20I%20would%20like%20to%20book%20a%20video%20call%20session%20with%20a%20therapist" target="_blank" rel="noopener noreferrer" className="block text-center mt-5 font-medium text-white rounded-lg py-2.5" style={{ background: SPARK_BLUE }}>Book now →</a>
               <p className="text-[11px] text-center mt-2 text-gray-500">Pay via M-Pesa · *840#</p>
             </div>
             {/* Monthly */}
@@ -373,7 +383,7 @@ export default function Kenya() {
                 <li>✓ Weekly sessions for real progress</li>
                 <li>✓ Best for ongoing support</li>
               </ul>
-              <Link to="/book-therapist?market=kenya&plan=monthly" className="block text-center mt-5 font-medium text-white rounded-lg py-2.5" style={{ background: SPARK_BLUE }}>Get started →</Link>
+              <a href="https://wa.me/256792085773?text=Hi,%20I%20would%20like%20to%20book%20a%20video%20call%20session%20with%20a%20therapist" target="_blank" rel="noopener noreferrer" className="block text-center mt-5 font-medium text-white rounded-lg py-2.5" style={{ background: SPARK_BLUE }}>Get started →</a>
               <p className="text-[11px] text-center mt-2 text-gray-500">Pay via M-Pesa · *840#</p>
             </div>
             {/* Free check */}

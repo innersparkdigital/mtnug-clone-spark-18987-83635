@@ -14,6 +14,8 @@ import depressionHeroImage from "@/assets/blog/depression-hero.jpg";
 import mentalHealthHeroImage from "@/assets/blog/mental-health-hero.jpg";
 import anxietyHeroImage from "@/assets/blog/anxiety-management-hero.jpg";
 import therapyCostHero from "@/assets/blog/therapy-cost-hero.jpg";
+import burnoutHero from "@/assets/blog/workplace-burnout-uganda.jpg";
+import talkBossHero from "@/assets/blog/talk-to-boss-mental-health-uganda.jpg";
 import findTherapistKampalaHero from "@/assets/blog/find-therapist-kampala-hero.jpg";
 import onlineTherapyAfricaHero from "@/assets/blog/online-therapy-africa-hero.jpg";
 import signsNeedTherapistHero from "@/assets/blog/signs-need-therapist-hero.jpg";
@@ -36,6 +38,69 @@ interface BlogPost {
 }
 
 const blogPosts: BlogPost[] = [
+  {
+    slug: "kampala-professionals-online-therapy",
+    title: "Why Kampala Professionals Are Quietly Turning to Online Therapy",
+    excerpt: "NGO workers, bankers and government professionals in Kampala are choosing private, confidential online therapy. Here's why — and how it works.",
+    date: "May 25, 2026",
+    readTime: "9 min read",
+    image: talkBossHero,
+    category: "Professional Wellbeing"
+  },
+  {
+    slug: "men-therapy-uganda",
+    title: "Men and Therapy in Uganda: Why More Ugandan Men Are Seeking Help Online",
+    excerpt: "Ugandan men strongly prefer anonymous, online therapy over clinic visits. Voice and chat sessions, no video required, from UGX 75,000.",
+    date: "May 25, 2026",
+    readTime: "8 min read",
+    image: mentalHealthHeroImage,
+    category: "Men's Mental Health"
+  },
+  {
+    slug: "burnout-kampala-professionals",
+    title: "Burnout at Work in Kampala: How to Know When You Need More Than a Holiday",
+    excerpt: "Burnout in Kampala professionals is rising. Learn the warning signs, why a vacation won't fix it, and how online therapy helps you recover.",
+    date: "May 25, 2026",
+    readTime: "9 min read",
+    image: burnoutHero,
+    category: "Workplace Wellbeing"
+  },
+  {
+    slug: "relationship-counselling-uganda-online",
+    title: "Relationship Counselling in Uganda: Can It Be Done Online?",
+    excerpt: "Online relationship counselling in Uganda — for couples and individuals. Private video, voice or chat sessions with licensed therapists.",
+    date: "May 25, 2026",
+    readTime: "8 min read",
+    image: benefitsTherapyHero,
+    category: "Relationships"
+  },
+  {
+    slug: "uganda-workplace-mental-health-crisis",
+    title: "Uganda's Workplace Mental Health Crisis: What HR Leaders Need to Know in 2026",
+    excerpt: "Burnout, absenteeism and quiet quitting are draining Uganda's top employers. What HR teams in Kampala can do — and how InnerSpark's EAPs help.",
+    date: "May 25, 2026",
+    readTime: "11 min read",
+    image: talkBossHero,
+    category: "For HR & Employers"
+  },
+  {
+    slug: "innerspark-africa-review",
+    title: "InnerSpark Africa Review (2026): Honest Look at Uganda's Online Therapy Platform",
+    excerpt: "A detailed 2026 review — pricing, therapists, privacy, payment methods and how InnerSpark compares to other online therapy options for Uganda.",
+    date: "May 25, 2026",
+    readTime: "10 min read",
+    image: onlineTherapyAfricaHero,
+    category: "Platform Review"
+  },
+  {
+    slug: "spark-framework-mental-wellbeing",
+    title: "The S.P.A.R.K Framework: A 5-Step Mental Wellbeing Routine Built for Ugandans",
+    excerpt: "InnerSpark's S.P.A.R.K framework — Sleep, Purpose, Activity, Relationships, Knowledge — a practical weekly routine for stronger mental health.",
+    date: "May 25, 2026",
+    readTime: "8 min read",
+    image: anxietyHeroImage,
+    category: "Mental Wellbeing"
+  },
   {
     slug: "therapy-cost-uganda",
     title: "How Much Does Therapy Cost in Uganda? A Complete 2026 Guide",

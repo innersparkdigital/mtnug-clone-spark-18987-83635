@@ -92,9 +92,9 @@ const OnlineTherapy = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Online Therapy & Teletherapy | Talk to a Licensed Therapist Now | Innerspark Africa</title>
-        <meta name="description" content="Affordable online therapy with licensed therapists. Get anxiety help, depression support, stress management & relationship counseling online. Same-day video, chat & phone therapy across Uganda, Kenya, Tanzania & Africa." />
-        <meta name="keywords" content="online therapy, virtual counselling, talk to therapist online, talk to therapist now, teletherapy, therapy app, counseling online services, anxiety help online, depression support online, stress management therapy, relationship counseling online, mental health help now, emotional support online, therapist available now, instant therapy session, urgent mental health help, same day therapy, affordable therapy online, low cost counseling, cheap therapy online, budget mental health support, video therapy session, chat therapy, phone therapy, messaging therapy, licensed therapist online, certified counselor online, best online therapy, therapist in Uganda online, counseling services Kenya online, therapy services Tanzania, African online therapy" />
+        <title>Online Therapy Uganda | Private Video & Chat Sessions | InnerSpark Africa</title>
+        <meta name="description" content="Licensed therapists available via video call, voice call or chat. Sessions from UGX 75,000. Pay via Mobile Money. Completely confidential. Book today." />
+        <meta name="keywords" content="online therapy Uganda, teletherapy Uganda, virtual therapy Uganda, therapy via WhatsApp Uganda, therapy from home Uganda, anonymous therapy Uganda, private therapy Kampala, confidential counselling Kampala, video therapy Uganda, voice call therapy Uganda, chat therapy Uganda, therapy for professionals Uganda, men mental health Uganda" />
         <link rel="canonical" href="https://www.innersparkafrica.com/online-therapy" />
         
         <meta property="og:title" content="Online Therapy - Talk to a Therapist Today | Innerspark" />

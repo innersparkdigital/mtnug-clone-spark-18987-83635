@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Copy, Plus, Link2, MousePointerClick, CheckCircle2, Gift, Loader2 } from "lucide-react";
@@ -46,6 +46,16 @@ type Click = { id: string; referral_link_id: string; clicked_at: string; convert
 const slugify = (s: string) =>
   s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 40);
 
+const normalizeLinkType = (value: string) =>
+  ["client", "corporate", "therapist"].includes(value) ? value : "client";
+
+const normalizeMarket = (value: string) => {
+  const key = value.toLowerCase().trim();
+  if (["ke", "kenya", "nairobi"].includes(key)) return "ke";
+  if (["ug", "uganda", "kampala"].includes(key)) return "ug";
+  return "ke";
+};
+
 const ORIGIN = typeof window !== "undefined" ? window.location.origin : "https://www.innersparkafrica.com";
 
 export default function KenyaReferralsTab() {
@@ -67,7 +77,7 @@ export default function KenyaReferralsTab() {
     discount_amount_kes: 200,
     reward_type: "cash",
     reward_value: 500,
-    link_type: "individual",
+    link_type: "client",
     custom_message: "",
     message_touched: false,
     notes: "",
@@ -136,8 +146,8 @@ export default function KenyaReferralsTab() {
       referrer_name: form.referrer_name,
       referrer_phone: form.referrer_phone || null,
       referrer_email: form.referrer_email || null,
-      market: "kenya",
-      link_type: form.link_type,
+      market: normalizeMarket("ke"),
+      link_type: normalizeLinkType(form.link_type),
       is_active: true,
       discount_amount_kes: form.discount_amount_kes,
       reward_type: form.reward_type,
@@ -271,7 +281,12 @@ export default function KenyaReferralsTab() {
       {/* Create dialog */}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-lg max-h-[90vh] flex flex-col p-0">
-          <DialogHeader className="px-6 pt-6"><DialogTitle>Create Kenya referral link</DialogTitle></DialogHeader>
+          <DialogHeader className="px-6 pt-6">
+            <DialogTitle>Create Kenya referral link</DialogTitle>
+            <DialogDescription>
+              Generate a Kenya booking referral link with automatic slug and message text.
+            </DialogDescription>
+          </DialogHeader>
           <div className="space-y-3 overflow-y-auto px-6 py-4 flex-1">
             <p className="text-xs text-muted-foreground">
               This link leads visitors to book a therapy session on the Kenya page. When the client pays, you'll see the conversion below and can mark the referrer's reward as issued.
@@ -290,13 +305,12 @@ export default function KenyaReferralsTab() {
               <div><Label>Discount (KES)</Label><Input type="number" value={form.discount_amount_kes} onChange={(e) => setForm({ ...form, discount_amount_kes: Number(e.target.value) })} /></div>
               <div>
                 <Label>Link type</Label>
-                <Select value={form.link_type} onValueChange={(v) => setForm({ ...form, link_type: v })}>
+                <Select value={normalizeLinkType(form.link_type)} onValueChange={(v) => setForm({ ...form, link_type: normalizeLinkType(v) })}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="individual">Individual</SelectItem>
-                    <SelectItem value="influencer">Influencer</SelectItem>
-                    <SelectItem value="partner">Partner</SelectItem>
-                    <SelectItem value="corporate">Corporate</SelectItem>
+                    <SelectItem value="client">Client referral</SelectItem>
+                    <SelectItem value="therapist">Therapist / Influencer</SelectItem>
+                    <SelectItem value="corporate">Corporate / Partner</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
