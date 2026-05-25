@@ -67,7 +67,7 @@ export default function KenyaReferralsTab() {
     discount_amount_kes: 200,
     reward_type: "cash",
     reward_value: 500,
-    link_type: "individual",
+    link_type: "client",
     custom_message: "",
     message_touched: false,
     notes: "",
@@ -293,10 +293,9 @@ export default function KenyaReferralsTab() {
                 <Select value={form.link_type} onValueChange={(v) => setForm({ ...form, link_type: v })}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="individual">Individual</SelectItem>
-                    <SelectItem value="influencer">Influencer</SelectItem>
-                    <SelectItem value="partner">Partner</SelectItem>
-                    <SelectItem value="corporate">Corporate</SelectItem>
+                    <SelectItem value="client">Client / Individual</SelectItem>
+                    <SelectItem value="therapist">Therapist / Influencer</SelectItem>
+                    <SelectItem value="corporate">Corporate / Partner</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
