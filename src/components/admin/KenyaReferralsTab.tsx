@@ -46,6 +46,9 @@ type Click = { id: string; referral_link_id: string; clicked_at: string; convert
 const slugify = (s: string) =>
   s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 40);
 
+const normalizeLinkType = (value: string) =>
+  ["client", "corporate", "therapist"].includes(value) ? value : "client";
+
 const ORIGIN = typeof window !== "undefined" ? window.location.origin : "https://www.innersparkafrica.com";
 
 export default function KenyaReferralsTab() {
@@ -137,7 +140,7 @@ export default function KenyaReferralsTab() {
       referrer_phone: form.referrer_phone || null,
       referrer_email: form.referrer_email || null,
       market: "kenya",
-      link_type: form.link_type,
+      link_type: normalizeLinkType(form.link_type),
       is_active: true,
       discount_amount_kes: form.discount_amount_kes,
       reward_type: form.reward_type,
@@ -290,10 +293,10 @@ export default function KenyaReferralsTab() {
               <div><Label>Discount (KES)</Label><Input type="number" value={form.discount_amount_kes} onChange={(e) => setForm({ ...form, discount_amount_kes: Number(e.target.value) })} /></div>
               <div>
                 <Label>Link type</Label>
-                <Select value={form.link_type} onValueChange={(v) => setForm({ ...form, link_type: v })}>
+                <Select value={normalizeLinkType(form.link_type)} onValueChange={(v) => setForm({ ...form, link_type: normalizeLinkType(v) })}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="client">Client / Individual</SelectItem>
+                    <SelectItem value="client">Client referral</SelectItem>
                     <SelectItem value="therapist">Therapist / Influencer</SelectItem>
                     <SelectItem value="corporate">Corporate / Partner</SelectItem>
                   </SelectContent>
