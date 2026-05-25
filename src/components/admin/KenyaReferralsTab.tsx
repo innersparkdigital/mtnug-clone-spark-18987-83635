@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Copy, Plus, Link2, MousePointerClick, CheckCircle2, Gift, Loader2 } from "lucide-react";
@@ -274,7 +274,12 @@ export default function KenyaReferralsTab() {
       {/* Create dialog */}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-lg max-h-[90vh] flex flex-col p-0">
-          <DialogHeader className="px-6 pt-6"><DialogTitle>Create Kenya referral link</DialogTitle></DialogHeader>
+          <DialogHeader className="px-6 pt-6">
+            <DialogTitle>Create Kenya referral link</DialogTitle>
+            <DialogDescription>
+              Generate a Kenya booking referral link with automatic slug and message text.
+            </DialogDescription>
+          </DialogHeader>
           <div className="space-y-3 overflow-y-auto px-6 py-4 flex-1">
             <p className="text-xs text-muted-foreground">
               This link leads visitors to book a therapy session on the Kenya page. When the client pays, you'll see the conversion below and can mark the referrer's reward as issued.
