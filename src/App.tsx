@@ -132,6 +132,10 @@ import StudentTherapyUgandaPost from "./pages/blog/StudentTherapyUgandaPost";
 import WhatIsTherapyPost from "./pages/blog/WhatIsTherapyPost";
 import BenefitsOfTherapyPost from "./pages/blog/BenefitsOfTherapyPost";
 import TypesOfTherapyPost from "./pages/blog/TypesOfTherapyPost";
+import KampalaProfessionalsOnlineTherapyPost from "./pages/blog/KampalaProfessionalsOnlineTherapyPost";
+import MenTherapyUgandaPost from "./pages/blog/MenTherapyUgandaPost";
+import BurnoutKampalaProfessionalsPost from "./pages/blog/BurnoutKampalaProfessionalsPost";
+import RelationshipCounsellingUgandaPost from "./pages/blog/RelationshipCounsellingUgandaPost";
 import CmsBlogPost from "./pages/CmsBlogPost";
 import CmsEventPost from "./pages/CmsEventPost";
 import ThankYou from "./pages/ThankYou";
@@ -281,6 +285,10 @@ const App = () => (
             <Route path="/blog/what-is-therapy" element={<WhatIsTherapyPost />} />
             <Route path="/blog/benefits-of-therapy" element={<BenefitsOfTherapyPost />} />
             <Route path="/blog/types-of-therapy" element={<TypesOfTherapyPost />} />
+            <Route path="/blog/kampala-professionals-online-therapy" element={<KampalaProfessionalsOnlineTherapyPost />} />
+            <Route path="/blog/men-therapy-uganda" element={<MenTherapyUgandaPost />} />
+            <Route path="/blog/burnout-kampala-professionals" element={<BurnoutKampalaProfessionalsPost />} />
+            <Route path="/blog/relationship-counselling-uganda-online" element={<RelationshipCounsellingUgandaPost />} />
             {/* CMS-driven dynamic posts (fallback after hardcoded routes) */}
             <Route path="/blog/:slug" element={<CmsBlogPost />} />
             <Route path="/events-training/:slug" element={<CmsEventPost />} />
