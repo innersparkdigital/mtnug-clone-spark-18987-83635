@@ -172,9 +172,9 @@ export default function Kenya() {
               From KES 2,600 · Pay via M-Pesa · Book in 2 minutes.
             </p>
             <div className="mt-7 flex flex-col sm:flex-row gap-3">
-              <Link to="/book-therapist?market=kenya" className="inline-flex items-center justify-center font-medium text-white rounded-lg px-6 py-3 text-[15px]" style={{ background: WARMTH }}>
+              <a href="https://wa.me/256792085773?text=Hi,%20I%27d%20like%20to%20book%20a%20therapy%20session%20(Kenya)" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center font-medium text-white rounded-lg px-6 py-3 text-[15px]" style={{ background: WARMTH }}>
                 Book a session
-              </Link>
+              </a>
               <Link to="/check/kenya" className="inline-flex items-center justify-center font-medium rounded-lg px-6 py-3 text-[15px] text-white border-[1.5px]" style={{ borderColor: "rgba(255,255,255,0.5)" }}>
                 Try free wellbeing check
               </Link>
