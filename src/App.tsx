@@ -136,6 +136,9 @@ import KampalaProfessionalsOnlineTherapyPost from "./pages/blog/KampalaProfessio
 import MenTherapyUgandaPost from "./pages/blog/MenTherapyUgandaPost";
 import BurnoutKampalaProfessionalsPost from "./pages/blog/BurnoutKampalaProfessionalsPost";
 import RelationshipCounsellingUgandaPost from "./pages/blog/RelationshipCounsellingUgandaPost";
+import UgandaWorkplaceCrisisPost from "./pages/blog/UgandaWorkplaceCrisisPost";
+import InnerSparkAfricaReviewPost from "./pages/blog/InnerSparkAfricaReviewPost";
+import SparkFrameworkPost from "./pages/blog/SparkFrameworkPost";
 import CmsBlogPost from "./pages/CmsBlogPost";
 import CmsEventPost from "./pages/CmsEventPost";
 import ThankYou from "./pages/ThankYou";
@@ -289,6 +292,9 @@ const App = () => (
             <Route path="/blog/men-therapy-uganda" element={<MenTherapyUgandaPost />} />
             <Route path="/blog/burnout-kampala-professionals" element={<BurnoutKampalaProfessionalsPost />} />
             <Route path="/blog/relationship-counselling-uganda-online" element={<RelationshipCounsellingUgandaPost />} />
+            <Route path="/blog/uganda-workplace-mental-health-crisis" element={<UgandaWorkplaceCrisisPost />} />
+            <Route path="/blog/innerspark-africa-review" element={<InnerSparkAfricaReviewPost />} />
+            <Route path="/blog/spark-framework-mental-wellbeing" element={<SparkFrameworkPost />} />
             {/* CMS-driven dynamic posts (fallback after hardcoded routes) */}
             <Route path="/blog/:slug" element={<CmsBlogPost />} />
             <Route path="/events-training/:slug" element={<CmsEventPost />} />

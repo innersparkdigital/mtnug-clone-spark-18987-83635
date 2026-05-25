@@ -75,6 +75,33 @@ const blogPosts: BlogPost[] = [
     category: "Relationships"
   },
   {
+    slug: "uganda-workplace-mental-health-crisis",
+    title: "Uganda's Workplace Mental Health Crisis: What HR Leaders Need to Know in 2026",
+    excerpt: "Burnout, absenteeism and quiet quitting are draining Uganda's top employers. What HR teams in Kampala can do — and how InnerSpark's EAPs help.",
+    date: "May 25, 2026",
+    readTime: "11 min read",
+    image: talkBossHero,
+    category: "For HR & Employers"
+  },
+  {
+    slug: "innerspark-africa-review",
+    title: "InnerSpark Africa Review (2026): Honest Look at Uganda's Online Therapy Platform",
+    excerpt: "A detailed 2026 review — pricing, therapists, privacy, payment methods and how InnerSpark compares to other online therapy options for Uganda.",
+    date: "May 25, 2026",
+    readTime: "10 min read",
+    image: onlineTherapyAfricaHero,
+    category: "Platform Review"
+  },
+  {
+    slug: "spark-framework-mental-wellbeing",
+    title: "The S.P.A.R.K Framework: A 5-Step Mental Wellbeing Routine Built for Ugandans",
+    excerpt: "InnerSpark's S.P.A.R.K framework — Sleep, Purpose, Activity, Relationships, Knowledge — a practical weekly routine for stronger mental health.",
+    date: "May 25, 2026",
+    readTime: "8 min read",
+    image: anxietyHeroImage,
+    category: "Mental Wellbeing"
+  },
+  {
     slug: "therapy-cost-uganda",
     title: "How Much Does Therapy Cost in Uganda? A Complete 2026 Guide",
     excerpt: "Therapy in Uganda costs UGX 30,000–200,000 per session. Compare online vs in-person prices, discover affordable options, and book your first session today.",
