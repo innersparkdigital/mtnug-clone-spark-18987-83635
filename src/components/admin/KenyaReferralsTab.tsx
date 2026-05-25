@@ -49,6 +49,13 @@ const slugify = (s: string) =>
 const normalizeLinkType = (value: string) =>
   ["client", "corporate", "therapist"].includes(value) ? value : "client";
 
+const normalizeMarket = (value: string) => {
+  const key = value.toLowerCase().trim();
+  if (["ke", "kenya", "nairobi"].includes(key)) return "ke";
+  if (["ug", "uganda", "kampala"].includes(key)) return "ug";
+  return "ke";
+};
+
 const ORIGIN = typeof window !== "undefined" ? window.location.origin : "https://www.innersparkafrica.com";
 
 export default function KenyaReferralsTab() {
@@ -139,7 +146,7 @@ export default function KenyaReferralsTab() {
       referrer_name: form.referrer_name,
       referrer_phone: form.referrer_phone || null,
       referrer_email: form.referrer_email || null,
-      market: "kenya",
+      market: normalizeMarket("ke"),
       link_type: normalizeLinkType(form.link_type),
       is_active: true,
       discount_amount_kes: form.discount_amount_kes,
