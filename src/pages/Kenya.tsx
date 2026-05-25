@@ -367,7 +367,7 @@ export default function Kenya() {
                 <li>✓ 50-minute session</li>
                 <li>✓ Pay as you go — no subscription</li>
               </ul>
-              <Link to="/book-therapist?market=kenya" className="block text-center mt-5 font-medium text-white rounded-lg py-2.5" style={{ background: SPARK_BLUE }}>Book now →</Link>
+              <a href="https://wa.me/256792085773?text=Hi,%20I%20would%20like%20to%20book%20a%20video%20call%20session%20with%20a%20therapist" target="_blank" rel="noopener noreferrer" className="block text-center mt-5 font-medium text-white rounded-lg py-2.5" style={{ background: SPARK_BLUE }}>Book now →</a>
               <p className="text-[11px] text-center mt-2 text-gray-500">Pay via M-Pesa · *840#</p>
             </div>
             {/* Monthly */}
@@ -383,7 +383,7 @@ export default function Kenya() {
                 <li>✓ Weekly sessions for real progress</li>
                 <li>✓ Best for ongoing support</li>
               </ul>
-              <Link to="/book-therapist?market=kenya&plan=monthly" className="block text-center mt-5 font-medium text-white rounded-lg py-2.5" style={{ background: SPARK_BLUE }}>Get started →</Link>
+              <a href="https://wa.me/256792085773?text=Hi,%20I%20would%20like%20to%20book%20a%20video%20call%20session%20with%20a%20therapist" target="_blank" rel="noopener noreferrer" className="block text-center mt-5 font-medium text-white rounded-lg py-2.5" style={{ background: SPARK_BLUE }}>Get started →</a>
               <p className="text-[11px] text-center mt-2 text-gray-500">Pay via M-Pesa · *840#</p>
             </div>
             {/* Free check */}
