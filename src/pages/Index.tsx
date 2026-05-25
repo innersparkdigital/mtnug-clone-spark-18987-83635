@@ -42,9 +42,9 @@ const Index = () => {
   return (
     <>
       <Helmet>
-        <title>InnerSpark Africa — Online Therapy & Mental Wellness | Africa's #1 Digital Mental Health Platform</title>
-        <meta name="description" content="Connect with licensed African therapists via video, chat or voice. Starting from UGX 30,000. Available 24/7 in Uganda, Kenya, Tanzania and beyond." />
-        <meta name="keywords" content="online therapy, virtual counselling, talk to therapist online, talk to therapist now, therapy app, teletherapy, anxiety help online, depression support online, stress management therapy, relationship counseling online, mental health help now, emotional support online, therapist available now, instant therapy session, same day therapy, affordable therapy online, low cost counseling, cheap therapy online, chat therapy, video therapy session, phone therapy, messaging therapy, licensed therapist online, certified counselor online, best online therapy, therapist in Uganda online, counseling services Kenya online, therapy services Tanzania, African online therapy" />
+        <title>Online Therapy in Uganda | Licensed Therapists | InnerSpark Africa</title>
+        <meta name="description" content="Private, confidential online therapy in Uganda with licensed African therapists. Video, voice or chat sessions from UGX 75,000. Pay via MTN Mobile Money or Airtel. Book in 2 minutes." />
+        <meta name="keywords" content="online therapy Uganda, therapist Uganda, therapist Kampala, counsellor Kampala, online counselling Uganda, teletherapy Uganda, private therapy Kampala, confidential therapy Kampala, mental health Uganda, therapy for professionals Uganda, burnout therapy Uganda, anonymous therapy Uganda, corporate mental health Uganda, WHO-5 Uganda" />
         <link rel="canonical" href="https://www.innersparkafrica.com/" />
       </Helmet>
       <div className="min-h-screen bg-background">
