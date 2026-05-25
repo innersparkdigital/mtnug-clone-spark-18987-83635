@@ -10,7 +10,7 @@ import { Eye, Pause, MessageSquare, RefreshCw, Sparkles, Shield, FileLock2, Buil
 
 export const PricingTable = () => {
   const tiers = [
-    { name: "Screening only", price: "UGX 5,000", usd: "~$1.40", unit: "per employee · one-time", features: ["WHO-5 + workplace screening", "Aggregate company report", "Confidential individual results"] },
+    { name: "Screening only", price: "UGX 7,500 / KES 270", usd: "~$2.20", unit: "per employee · one-time", features: ["WHO-5 + workplace screening", "Aggregate company report", "Confidential individual results"] },
     { name: "S.P.A.R.K Training", price: "UGX 650,000", usd: "~$175", unit: "per session", features: ["On-site or virtual workshop", "Manager toolkit", "Up to 30 participants"] },
     { name: "Basic Digital Access", price: "UGX 150,000–250,000", usd: "~$40–68", unit: "per employee / year", features: ["App + self-care library", "Mind-Check unlimited", "Email support"] },
     { name: "Standard Support", price: "UGX 400,000–650,000", usd: "~$110–175", unit: "per employee / year", features: ["Everything in Basic", "4 therapy sessions / yr", "Quarterly screening"], popular: true },
