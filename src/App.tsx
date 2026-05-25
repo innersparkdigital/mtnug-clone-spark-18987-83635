@@ -3,155 +3,156 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { lazy, Suspense } from "react";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { AssessmentProvider } from "@/contexts/AssessmentContext";
+// Keep Index eager — it's the LCP/landing route. Everything else is lazy
+// so visitors download only the JS for the page they actually open.
 import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
-import VirtualTherapy from "./pages/VirtualTherapy";
-import SupportGroups from "./pages/SupportGroups";
-import ChatSessions from "./pages/ChatSessions";
-import MoodCheckIn from "./pages/MoodCheckIn";
-import MyGoals from "./pages/MyGoals";
-import EmergencySupport from "./pages/EmergencySupport";
-import EventsTraining from "./pages/EventsTraining";
-import DonateTherapy from "./pages/DonateTherapy";
-import WellnessReports from "./pages/WellnessReports";
-import Meditations from "./pages/Meditations";
-import FindTherapist from "./pages/FindTherapist";
-import ProfileSettings from "./pages/ProfileSettings";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
-import TermsOfService from "./pages/TermsOfService";
-import CookiePolicy from "./pages/CookiePolicy";
-import AccountDeletion from "./pages/AccountDeletion";
-import Services from "./pages/Services";
-import About from "./pages/About";
-import Contact from "./pages/Contact";
-// import Careers from "./pages/Careers";
-import TruckDriversPost from "./pages/blog/TruckDriversPost";
-import FoundersPost from "./pages/blog/FoundersPost";
-import ChildrenMentalHealthPost from "./pages/blog/ChildrenMentalHealthPost";
-import MIICPost from "./pages/blog/MIICPost";
-import MTNPost from "./pages/blog/MTNPost";
-import WorldMentalHealthDayPost from "./pages/blog/WorldMentalHealthDayPost";
-import UICTPost from "./pages/blog/UICTPost";
-import UICTWellnessPost from "./pages/blog/UICTWellnessPost";
-import Blog from "./pages/Blog";
-import MindCheck from "./pages/MindCheck";
-import DepressionTest from "./pages/tests/DepressionTest";
-import AnxietyTest from "./pages/tests/AnxietyTest";
-import AdultADHDTest from "./pages/tests/AdultADHDTest";
-import PTSDTest from "./pages/tests/PTSDTest";
-import BorderlinePersonalityTest from "./pages/tests/BorderlinePersonalityTest";
-import EatingDisorderTest from "./pages/tests/EatingDisorderTest";
-import GamblingAddictionTest from "./pages/tests/GamblingAddictionTest";
-import ManiaTest from "./pages/tests/ManiaTest";
-import NarcissisticPersonalityTest from "./pages/tests/NarcissisticPersonalityTest";
-import PostpartumDepressionTest from "./pages/tests/PostpartumDepressionTest";
-// New Assessment Tests
-import SexAddictionTest from "./pages/tests/SexAddictionTest";
-import VideoGameAddictionTest from "./pages/tests/VideoGameAddictionTest";
-import InternetAddictionTest from "./pages/tests/InternetAddictionTest";
-import JobBurnoutTest from "./pages/tests/JobBurnoutTest";
-import ToxicWorkplaceTest from "./pages/tests/ToxicWorkplaceTest";
-import PanicDisorderTest from "./pages/tests/PanicDisorderTest";
-import OCDTest from "./pages/tests/OCDTest";
-import BipolarTest from "./pages/tests/BipolarTest";
-import SocialAnxietyTest from "./pages/tests/SocialAnxietyTest";
-import HoardingTest from "./pages/tests/HoardingTest";
-import PsychosisTest from "./pages/tests/PsychosisTest";
-import GriefTest from "./pages/tests/GriefTest";
-import DIDTest from "./pages/tests/DIDTest";
-import SchizophreniaTest from "./pages/tests/SchizophreniaTest";
-import StressTest from "./pages/tests/StressTest";
-import AgoraphobiaTest from "./pages/tests/AgoraphobiaTest";
-import SeparationAnxietyTest from "./pages/tests/SeparationAnxietyTest";
-import SleepDisorderTest from "./pages/tests/SleepDisorderTest";
-import EmpathyDeficitTest from "./pages/tests/EmpathyDeficitTest";
-import BingeEatingTest from "./pages/tests/BingeEatingTest";
-import GenderDysphoriaTest from "./pages/tests/GenderDysphoriaTest";
-import RelationshipHealthTest from "./pages/tests/RelationshipHealthTest";
-import SociopathyTest from "./pages/tests/SociopathyTest";
-import JobSatisfactionTest from "./pages/tests/JobSatisfactionTest";
-import WorkLifeBalanceTest from "./pages/tests/WorkLifeBalanceTest";
-import ImposterSyndromeTest from "./pages/tests/ImposterSyndromeTest";
-import SADTest from "./pages/tests/SADTest";
-import HowToHandleStressPost from "./pages/blog/HowToHandleStressPost";
-import PanicAttackPost from "./pages/blog/PanicAttackPost";
-import DepressionPost from "./pages/blog/DepressionPost";
-import MentalHealthPost from "./pages/blog/MentalHealthPost";
-import AnxietyManagementPost from "./pages/blog/AnxietyManagementPost";
-import SignsOfDepressionPost from "./pages/blog/SignsOfDepressionPost";
-import AnxietySymptomsPost from "./pages/blog/AnxietySymptomsPost";
-import HowToFindATherapistPost from "./pages/blog/HowToFindATherapistPost";
-import ForBusiness from "./pages/ForBusiness";
-import ForProfessionals from "./pages/ForProfessionals";
-import DoctorRefer from "./pages/professionals/DoctorRefer";
-import Specialists from "./pages/Specialists";
-import SpecialistProfile from "./pages/SpecialistProfile";
+const NotFound = lazy(() => import("./pages/NotFound"));
+const VirtualTherapy = lazy(() => import("./pages/VirtualTherapy"));
+const SupportGroups = lazy(() => import("./pages/SupportGroups"));
+const ChatSessions = lazy(() => import("./pages/ChatSessions"));
+const MoodCheckIn = lazy(() => import("./pages/MoodCheckIn"));
+const MyGoals = lazy(() => import("./pages/MyGoals"));
+const EmergencySupport = lazy(() => import("./pages/EmergencySupport"));
+const EventsTraining = lazy(() => import("./pages/EventsTraining"));
+const DonateTherapy = lazy(() => import("./pages/DonateTherapy"));
+const WellnessReports = lazy(() => import("./pages/WellnessReports"));
+const Meditations = lazy(() => import("./pages/Meditations"));
+const ProfileSettings = lazy(() => import("./pages/ProfileSettings"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
+const TermsOfService = lazy(() => import("./pages/TermsOfService"));
+const CookiePolicy = lazy(() => import("./pages/CookiePolicy"));
+const AccountDeletion = lazy(() => import("./pages/AccountDeletion"));
+const Services = lazy(() => import("./pages/Services"));
+const About = lazy(() => import("./pages/About"));
+const Contact = lazy(() => import("./pages/Contact"));
+const TruckDriversPost = lazy(() => import("./pages/blog/TruckDriversPost"));
+const FoundersPost = lazy(() => import("./pages/blog/FoundersPost"));
+const ChildrenMentalHealthPost = lazy(() => import("./pages/blog/ChildrenMentalHealthPost"));
+const MIICPost = lazy(() => import("./pages/blog/MIICPost"));
+const MTNPost = lazy(() => import("./pages/blog/MTNPost"));
+const WorldMentalHealthDayPost = lazy(() => import("./pages/blog/WorldMentalHealthDayPost"));
+const UICTPost = lazy(() => import("./pages/blog/UICTPost"));
+const UICTWellnessPost = lazy(() => import("./pages/blog/UICTWellnessPost"));
+const Blog = lazy(() => import("./pages/Blog"));
+const MindCheck = lazy(() => import("./pages/MindCheck"));
+const DepressionTest = lazy(() => import("./pages/tests/DepressionTest"));
+const AnxietyTest = lazy(() => import("./pages/tests/AnxietyTest"));
+const AdultADHDTest = lazy(() => import("./pages/tests/AdultADHDTest"));
+const PTSDTest = lazy(() => import("./pages/tests/PTSDTest"));
+const BorderlinePersonalityTest = lazy(() => import("./pages/tests/BorderlinePersonalityTest"));
+const EatingDisorderTest = lazy(() => import("./pages/tests/EatingDisorderTest"));
+const GamblingAddictionTest = lazy(() => import("./pages/tests/GamblingAddictionTest"));
+const ManiaTest = lazy(() => import("./pages/tests/ManiaTest"));
+const NarcissisticPersonalityTest = lazy(() => import("./pages/tests/NarcissisticPersonalityTest"));
+const PostpartumDepressionTest = lazy(() => import("./pages/tests/PostpartumDepressionTest"));
+const SexAddictionTest = lazy(() => import("./pages/tests/SexAddictionTest"));
+const VideoGameAddictionTest = lazy(() => import("./pages/tests/VideoGameAddictionTest"));
+const InternetAddictionTest = lazy(() => import("./pages/tests/InternetAddictionTest"));
+const JobBurnoutTest = lazy(() => import("./pages/tests/JobBurnoutTest"));
+const ToxicWorkplaceTest = lazy(() => import("./pages/tests/ToxicWorkplaceTest"));
+const PanicDisorderTest = lazy(() => import("./pages/tests/PanicDisorderTest"));
+const OCDTest = lazy(() => import("./pages/tests/OCDTest"));
+const BipolarTest = lazy(() => import("./pages/tests/BipolarTest"));
+const SocialAnxietyTest = lazy(() => import("./pages/tests/SocialAnxietyTest"));
+const HoardingTest = lazy(() => import("./pages/tests/HoardingTest"));
+const PsychosisTest = lazy(() => import("./pages/tests/PsychosisTest"));
+const GriefTest = lazy(() => import("./pages/tests/GriefTest"));
+const DIDTest = lazy(() => import("./pages/tests/DIDTest"));
+const SchizophreniaTest = lazy(() => import("./pages/tests/SchizophreniaTest"));
+const StressTest = lazy(() => import("./pages/tests/StressTest"));
+const AgoraphobiaTest = lazy(() => import("./pages/tests/AgoraphobiaTest"));
+const SeparationAnxietyTest = lazy(() => import("./pages/tests/SeparationAnxietyTest"));
+const SleepDisorderTest = lazy(() => import("./pages/tests/SleepDisorderTest"));
+const EmpathyDeficitTest = lazy(() => import("./pages/tests/EmpathyDeficitTest"));
+const BingeEatingTest = lazy(() => import("./pages/tests/BingeEatingTest"));
+const GenderDysphoriaTest = lazy(() => import("./pages/tests/GenderDysphoriaTest"));
+const RelationshipHealthTest = lazy(() => import("./pages/tests/RelationshipHealthTest"));
+const SociopathyTest = lazy(() => import("./pages/tests/SociopathyTest"));
+const JobSatisfactionTest = lazy(() => import("./pages/tests/JobSatisfactionTest"));
+const WorkLifeBalanceTest = lazy(() => import("./pages/tests/WorkLifeBalanceTest"));
+const ImposterSyndromeTest = lazy(() => import("./pages/tests/ImposterSyndromeTest"));
+const SADTest = lazy(() => import("./pages/tests/SADTest"));
+const HowToHandleStressPost = lazy(() => import("./pages/blog/HowToHandleStressPost"));
+const PanicAttackPost = lazy(() => import("./pages/blog/PanicAttackPost"));
+const DepressionPost = lazy(() => import("./pages/blog/DepressionPost"));
+const MentalHealthPost = lazy(() => import("./pages/blog/MentalHealthPost"));
+const AnxietyManagementPost = lazy(() => import("./pages/blog/AnxietyManagementPost"));
+const SignsOfDepressionPost = lazy(() => import("./pages/blog/SignsOfDepressionPost"));
+const AnxietySymptomsPost = lazy(() => import("./pages/blog/AnxietySymptomsPost"));
+const HowToFindATherapistPost = lazy(() => import("./pages/blog/HowToFindATherapistPost"));
+const ForBusiness = lazy(() => import("./pages/ForBusiness"));
+const ForProfessionals = lazy(() => import("./pages/ForProfessionals"));
+const DoctorRefer = lazy(() => import("./pages/professionals/DoctorRefer"));
+const Specialists = lazy(() => import("./pages/Specialists"));
+const SpecialistProfile = lazy(() => import("./pages/SpecialistProfile"));
 import ScrollToTop from "./components/ScrollToTop";
 import AIChatWidget from "./components/AIChatWidget";
 import WhisperFloatingWidget from "./components/WhisperFloatingWidget";
-import Learning from "./pages/Learning";
-import CourseDetail from "./pages/CourseDetail";
-import LessonViewer from "./pages/LessonViewer";
-import CourseCertificate from "./pages/CourseCertificate";
-import LearningDashboard from "./pages/LearningDashboard";
-import StudentDashboard from "./pages/StudentDashboard";
-import AdminDashboard from "./pages/AdminDashboard";
-import AdminFinance from "./pages/AdminFinance";
-import MindCheckAnalytics from "./pages/MindCheckAnalytics";
-import Auth from "./pages/Auth";
-import ResetPassword from "./pages/ResetPassword";
-// SEO Landing Pages
-import OnlineTherapy from "./pages/OnlineTherapy";
-import BookTherapist from "./pages/BookTherapist";
-import MentalHealthSupport from "./pages/MentalHealthSupport";
-import VideoTherapy from "./pages/VideoTherapy";
-import ChatTherapy from "./pages/ChatTherapy";
-// App Coming Soon Page
-import AppComingSoon from "./pages/AppComingSoon";
-import WellbeingCheck from "./pages/WellbeingCheck";
-import Trainings from "./pages/Trainings";
-import CorporateWellbeingCheck from "./pages/CorporateWellbeingCheck";
-import CorporateAdmin from "./pages/CorporateAdmin";
-import CampaignLanding from "./pages/CampaignLanding";
-import Unsubscribe from "./pages/Unsubscribe";
-import PaymentSuccess from "./pages/PaymentSuccess";
-import PaymentCanceled from "./pages/PaymentCanceled";
-// Location SEO Pages
-import TherapyInUganda from "./pages/TherapyInUganda";
-import TherapyInKampala from "./pages/TherapyInKampala";
-// Buying-Intent Blog Posts
-import TherapyCostUgandaPost from "./pages/blog/TherapyCostUgandaPost";
-import FindTherapistKampalaPost from "./pages/blog/FindTherapistKampalaPost";
-import OnlineTherapyAfricaPost from "./pages/blog/OnlineTherapyAfricaPost";
-import SignsYouNeedTherapistPost from "./pages/blog/SignsYouNeedTherapistPost";
-import StudentTherapyUgandaPost from "./pages/blog/StudentTherapyUgandaPost";
-// TOFU Blog Posts
-import WhatIsTherapyPost from "./pages/blog/WhatIsTherapyPost";
-import BenefitsOfTherapyPost from "./pages/blog/BenefitsOfTherapyPost";
-import TypesOfTherapyPost from "./pages/blog/TypesOfTherapyPost";
-import KampalaProfessionalsOnlineTherapyPost from "./pages/blog/KampalaProfessionalsOnlineTherapyPost";
-import MenTherapyUgandaPost from "./pages/blog/MenTherapyUgandaPost";
-import BurnoutKampalaProfessionalsPost from "./pages/blog/BurnoutKampalaProfessionalsPost";
-import RelationshipCounsellingUgandaPost from "./pages/blog/RelationshipCounsellingUgandaPost";
-import UgandaWorkplaceCrisisPost from "./pages/blog/UgandaWorkplaceCrisisPost";
-import InnerSparkAfricaReviewPost from "./pages/blog/InnerSparkAfricaReviewPost";
-import SparkFrameworkPost from "./pages/blog/SparkFrameworkPost";
-import CmsBlogPost from "./pages/CmsBlogPost";
-import CmsEventPost from "./pages/CmsEventPost";
-import ThankYou from "./pages/ThankYou";
-import CorporateServiceRequest from "./pages/CorporateServiceRequest";
-import Whisper from "./pages/Whisper";
-import SessionFeedback from "./pages/SessionFeedback";
-import Kenya from "./pages/Kenya";
-import KenyaCheck from "./pages/KenyaCheck";
-import KenyaReferralRedirect from "./pages/KenyaReferralRedirect";
+const Learning = lazy(() => import("./pages/Learning"));
+const CourseDetail = lazy(() => import("./pages/CourseDetail"));
+const LessonViewer = lazy(() => import("./pages/LessonViewer"));
+const CourseCertificate = lazy(() => import("./pages/CourseCertificate"));
+const LearningDashboard = lazy(() => import("./pages/LearningDashboard"));
+const StudentDashboard = lazy(() => import("./pages/StudentDashboard"));
+const AdminDashboard = lazy(() => import(/* webpackChunkName: "admin" */ "./pages/AdminDashboard"));
+const AdminFinance = lazy(() => import(/* webpackChunkName: "admin" */ "./pages/AdminFinance"));
+const MindCheckAnalytics = lazy(() => import(/* webpackChunkName: "admin" */ "./pages/MindCheckAnalytics"));
+const Auth = lazy(() => import("./pages/Auth"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
+const OnlineTherapy = lazy(() => import("./pages/OnlineTherapy"));
+const BookTherapist = lazy(() => import("./pages/BookTherapist"));
+const MentalHealthSupport = lazy(() => import("./pages/MentalHealthSupport"));
+const VideoTherapy = lazy(() => import("./pages/VideoTherapy"));
+const ChatTherapy = lazy(() => import("./pages/ChatTherapy"));
+const AppComingSoon = lazy(() => import("./pages/AppComingSoon"));
+const WellbeingCheck = lazy(() => import("./pages/WellbeingCheck"));
+const Trainings = lazy(() => import("./pages/Trainings"));
+const CorporateWellbeingCheck = lazy(() => import("./pages/CorporateWellbeingCheck"));
+const CorporateAdmin = lazy(() => import(/* webpackChunkName: "admin" */ "./pages/CorporateAdmin"));
+const CampaignLanding = lazy(() => import("./pages/CampaignLanding"));
+const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
+const PaymentSuccess = lazy(() => import("./pages/PaymentSuccess"));
+const PaymentCanceled = lazy(() => import("./pages/PaymentCanceled"));
+const TherapyInUganda = lazy(() => import("./pages/TherapyInUganda"));
+const TherapyInKampala = lazy(() => import("./pages/TherapyInKampala"));
+const TherapyCostUgandaPost = lazy(() => import("./pages/blog/TherapyCostUgandaPost"));
+const FindTherapistKampalaPost = lazy(() => import("./pages/blog/FindTherapistKampalaPost"));
+const OnlineTherapyAfricaPost = lazy(() => import("./pages/blog/OnlineTherapyAfricaPost"));
+const SignsYouNeedTherapistPost = lazy(() => import("./pages/blog/SignsYouNeedTherapistPost"));
+const StudentTherapyUgandaPost = lazy(() => import("./pages/blog/StudentTherapyUgandaPost"));
+const WhatIsTherapyPost = lazy(() => import("./pages/blog/WhatIsTherapyPost"));
+const BenefitsOfTherapyPost = lazy(() => import("./pages/blog/BenefitsOfTherapyPost"));
+const TypesOfTherapyPost = lazy(() => import("./pages/blog/TypesOfTherapyPost"));
+const KampalaProfessionalsOnlineTherapyPost = lazy(() => import("./pages/blog/KampalaProfessionalsOnlineTherapyPost"));
+const MenTherapyUgandaPost = lazy(() => import("./pages/blog/MenTherapyUgandaPost"));
+const BurnoutKampalaProfessionalsPost = lazy(() => import("./pages/blog/BurnoutKampalaProfessionalsPost"));
+const RelationshipCounsellingUgandaPost = lazy(() => import("./pages/blog/RelationshipCounsellingUgandaPost"));
+const UgandaWorkplaceCrisisPost = lazy(() => import("./pages/blog/UgandaWorkplaceCrisisPost"));
+const InnerSparkAfricaReviewPost = lazy(() => import("./pages/blog/InnerSparkAfricaReviewPost"));
+const SparkFrameworkPost = lazy(() => import("./pages/blog/SparkFrameworkPost"));
+const CmsBlogPost = lazy(() => import("./pages/CmsBlogPost"));
+const CmsEventPost = lazy(() => import("./pages/CmsEventPost"));
+const ThankYou = lazy(() => import("./pages/ThankYou"));
+const CorporateServiceRequest = lazy(() => import("./pages/CorporateServiceRequest"));
+const Whisper = lazy(() => import("./pages/Whisper"));
+const SessionFeedback = lazy(() => import("./pages/SessionFeedback"));
+const Kenya = lazy(() => import("./pages/Kenya"));
+const KenyaCheck = lazy(() => import("./pages/KenyaCheck"));
+const KenyaReferralRedirect = lazy(() => import("./pages/KenyaReferralRedirect"));
 
 const queryClient = new QueryClient();
 
 // Language support enabled - LanguageProvider wraps entire app
+
+const RouteFallback = () => (
+  <div className="min-h-[60vh] flex items-center justify-center" aria-busy="true" aria-live="polite">
+    <div className="h-8 w-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+  </div>
+);
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -165,6 +166,7 @@ const App = () => (
               <ScrollToTop />
               <AIChatWidget />
               <WhisperFloatingWidget />
+          <Suspense fallback={<RouteFallback />}>
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
@@ -314,6 +316,7 @@ const App = () => (
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
             </Routes>
+          </Suspense>
             </BrowserRouter>
           </TooltipProvider>
         </AssessmentProvider>
