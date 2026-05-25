@@ -1,5 +1,4 @@
-import { useEffect, startTransition } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLearningProgress } from '@/hooks/useLearningProgress';
 import { allWorkplaceCourses, getWorkplaceCourseById, careerTracks } from '@/lib/workplaceCourseData';
@@ -88,17 +87,8 @@ const studentCourses = [
 const allCourses = [...studentCourses, ...allWorkplaceCourses];
 
 const StudentDashboard = () => {
-  const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const { enrollments, lessonProgress, loading: progressLoading, getCourseProgress } = useLearningProgress();
-
-  useEffect(() => {
-    if (!authLoading && !user) {
-      startTransition(() => {
-        navigate('/auth?redirect=/learning/student-dashboard');
-      });
-    }
-  }, [user, authLoading, navigate]);
 
   if (authLoading || progressLoading) {
     return (
@@ -109,7 +99,7 @@ const StudentDashboard = () => {
   }
 
   if (!user) {
-    return null;
+    return <Navigate to="/auth?redirect=/learning/student-dashboard" replace />;
   }
 
   const getCourseById = (courseId: string) => {
