@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, startTransition } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLearningProgress } from '@/hooks/useLearningProgress';
@@ -94,7 +94,9 @@ const StudentDashboard = () => {
 
   useEffect(() => {
     if (!authLoading && !user) {
-      navigate('/auth?redirect=/learning/student-dashboard');
+      startTransition(() => {
+        navigate('/auth?redirect=/learning/student-dashboard');
+      });
     }
   }, [user, authLoading, navigate]);
 
