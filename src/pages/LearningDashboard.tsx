@@ -1,5 +1,4 @@
-import { useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUserRole } from '@/hooks/useUserRole';
 import { useLearningProgress } from '@/hooks/useLearningProgress';
@@ -47,17 +46,10 @@ const originalCourses = [
 const allCourses = [...allWorkplaceCourses];
 
 const LearningDashboard = () => {
-  const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const { isAdmin, loading: roleLoading } = useUserRole();
   const { enrollments, lessonProgress, loading: progressLoading, getCourseProgress } = useLearningProgress();
   const { users, stats, loading: adminLoading } = useAdminDashboard();
-
-  useEffect(() => {
-    if (!authLoading && !user) {
-      navigate('/auth');
-    }
-  }, [user, authLoading, navigate]);
 
   if (authLoading || roleLoading) {
     return (
@@ -68,7 +60,7 @@ const LearningDashboard = () => {
   }
 
   if (!user) {
-    return null;
+    return <Navigate to="/auth?redirect=/learning/dashboard" replace />;
   }
 
   const getCourseById = (courseId: string) => {
