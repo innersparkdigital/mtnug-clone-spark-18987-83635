@@ -22,6 +22,7 @@ interface Training {
   target_audience: string;
   facilitator_name: string;
   facilitator_title: string;
+  facilitator_role?: string;
   training_date: string;
   end_time: string;
   flier_image_url: string | null;
@@ -66,6 +67,15 @@ const CountdownTimer = ({ targetDate }: { targetDate: string }) => {
       ))}
     </div>
   );
+};
+
+const formatTimeRange = (start: string, end?: string | null) => {
+  if (!start) return "";
+  const opts: Intl.DateTimeFormatOptions = { hour: "numeric", minute: "2-digit", hour12: true };
+  const startStr = new Date(start).toLocaleTimeString("en-US", opts);
+  if (!end) return startStr;
+  const endStr = new Date(end).toLocaleTimeString("en-US", opts);
+  return `${startStr} – ${endStr}`;
 };
 
 const Trainings = () => {
@@ -135,11 +145,12 @@ const Trainings = () => {
             recipientName: firstName,
             trainingTitle: selectedTraining.title,
             trainingDate: trainingDateFormatted,
-            trainingTime: `10:00AM – ${selectedTraining.end_time || "11:00AM"}`,
+            trainingTime: formatTimeRange(selectedTraining.training_date, selectedTraining.end_time),
             meetingLink: selectedTraining.meeting_link || "",
             meetingPassword: selectedTraining.meeting_password || "",
             facilitatorName: selectedTraining.facilitator_name,
             facilitatorTitle: selectedTraining.facilitator_title,
+            facilitatorRole: selectedTraining.facilitator_role || "Facilitator",
           },
         },
       });
@@ -201,7 +212,7 @@ const Trainings = () => {
           </div>
           <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
             <Clock className="w-4 h-4" />
-            <span>10:00AM – {training.end_time}</span>
+            <span>{formatTimeRange(training.training_date, training.end_time)}</span>
           </div>
           {!passed && <CountdownTimer targetDate={training.training_date} />}
           <Button
@@ -322,7 +333,7 @@ const Trainings = () => {
                 </div>
                 <div className="flex items-center gap-2">
                   <Clock className="w-4 h-4 text-primary" />
-                  <span>10:00AM – {selectedTraining.end_time}</span>
+                  <span>{formatTimeRange(selectedTraining.training_date, selectedTraining.end_time)}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <MapPin className="w-4 h-4 text-primary" />
@@ -330,7 +341,7 @@ const Trainings = () => {
                 </div>
                 <div className="flex items-center gap-2">
                   <Users className="w-4 h-4 text-primary" />
-                  <span>Facilitator: {selectedTraining.facilitator_name} – {selectedTraining.facilitator_title}</span>
+                  <span>{selectedTraining.facilitator_role || "Facilitator"}: {selectedTraining.facilitator_name} – {selectedTraining.facilitator_title}</span>
                 </div>
               </div>
 
