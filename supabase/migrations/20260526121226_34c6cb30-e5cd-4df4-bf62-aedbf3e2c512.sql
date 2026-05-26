@@ -1,0 +1,1 @@
+ALTER TABLE public.trainings ADD COLUMN IF NOT EXISTS facilitator_role text NOT NULL DEFAULT 'Facilitator';

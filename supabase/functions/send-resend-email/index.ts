@@ -257,7 +257,7 @@ function trainingConfirmation(d: Record<string, any>): EmailContent {
       box(
         detail('📅 Date', d.trainingDate || 'TBC') +
         detail('⏰ Time', d.trainingTime || 'TBC') +
-        detail('👩‍⚕️ Facilitator', `${d.facilitatorName || ''} — ${d.facilitatorTitle || ''}`)
+        detail(`👩‍⚕️ ${d.facilitatorRole || 'Facilitator'}`, `${d.facilitatorName || ''} — ${d.facilitatorTitle || ''}`)
       ) +
       (d.meetingLink ? btn('Join Google Meet', d.meetingLink) : '') +
       (calUrl ? btnOutline('📅 Add to Google Calendar', calUrl) : '') +

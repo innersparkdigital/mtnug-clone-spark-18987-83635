@@ -2544,6 +2544,7 @@ export type Database = {
           description: string
           end_time: string | null
           facilitator_name: string
+          facilitator_role: string
           facilitator_title: string
           flier_image_url: string | null
           id: string
@@ -2561,6 +2562,7 @@ export type Database = {
           description: string
           end_time?: string | null
           facilitator_name?: string
+          facilitator_role?: string
           facilitator_title?: string
           flier_image_url?: string | null
           id?: string
@@ -2578,6 +2580,7 @@ export type Database = {
           description?: string
           end_time?: string | null
           facilitator_name?: string
+          facilitator_role?: string
           facilitator_title?: string
           flier_image_url?: string | null
           id?: string

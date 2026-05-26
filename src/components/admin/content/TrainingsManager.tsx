@@ -14,7 +14,7 @@ import { uploadContentMedia } from "./uploadMedia";
 
 interface Training {
   id: string; title: string; description: string;
-  facilitator_name: string; facilitator_title: string;
+  facilitator_name: string; facilitator_title: string; facilitator_role: string;
   training_date: string; end_time: string | null;
   flier_image_url: string | null; meeting_link: string | null;
   meeting_password: string | null; target_audience: string;
@@ -22,7 +22,7 @@ interface Training {
 }
 
 const empty: Partial<Training> = {
-  title: "", description: "", facilitator_name: "", facilitator_title: "",
+  title: "", description: "", facilitator_name: "", facilitator_title: "", facilitator_role: "Facilitator",
   training_date: "", end_time: "", flier_image_url: "", meeting_link: "",
   meeting_password: "", target_audience: "All", session_focus: [], is_active: true,
 };
@@ -65,6 +65,7 @@ const TrainingsManager = () => {
       title: form.title, description: form.description || "",
       facilitator_name: form.facilitator_name || "InnerSpark Team",
       facilitator_title: form.facilitator_title || "Facilitator",
+      facilitator_role: form.facilitator_role || "Facilitator",
       training_date: new Date(form.training_date as string).toISOString(),
       end_time: form.end_time ? new Date(form.end_time as string).toISOString() : null,
       flier_image_url: form.flier_image_url || null,
@@ -125,9 +126,21 @@ const TrainingsManager = () => {
           <div className="space-y-3">
             <div><Label>Title *</Label><Input value={form.title || ""} onChange={(e) => setForm({ ...form, title: e.target.value })} /></div>
             <div><Label>Description</Label><Textarea rows={3} value={form.description || ""} onChange={(e) => setForm({ ...form, description: e.target.value })} /></div>
-            <div className="grid grid-cols-2 gap-3">
-              <div><Label>Facilitator Name</Label><Input value={form.facilitator_name || ""} onChange={(e) => setForm({ ...form, facilitator_name: e.target.value })} /></div>
-              <div><Label>Facilitator Title</Label><Input value={form.facilitator_title || ""} onChange={(e) => setForm({ ...form, facilitator_title: e.target.value })} /></div>
+            <div className="grid grid-cols-3 gap-3">
+              <div>
+                <Label>Role</Label>
+                <select
+                  className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm"
+                  value={form.facilitator_role || "Facilitator"}
+                  onChange={(e) => setForm({ ...form, facilitator_role: e.target.value })}
+                >
+                  <option value="Facilitator">Facilitator</option>
+                  <option value="Guest Speaker">Guest Speaker</option>
+                  <option value="Moderator">Moderator</option>
+                </select>
+              </div>
+              <div><Label>Name</Label><Input value={form.facilitator_name || ""} onChange={(e) => setForm({ ...form, facilitator_name: e.target.value })} /></div>
+              <div><Label>Title</Label><Input value={form.facilitator_title || ""} onChange={(e) => setForm({ ...form, facilitator_title: e.target.value })} /></div>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div><Label>Start *</Label><Input type="datetime-local" value={form.training_date as string || ""} onChange={(e) => setForm({ ...form, training_date: e.target.value })} /></div>
