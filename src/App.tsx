@@ -256,6 +256,7 @@ const App = () => (
               <ScrollToTop />
               <AIChatWidget />
               <WhisperFloatingWidget />
+              <Suspense fallback={<RouteFallback />}>
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/auth" element={<Auth />} />
