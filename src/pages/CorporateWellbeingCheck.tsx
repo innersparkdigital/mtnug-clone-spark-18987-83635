@@ -297,12 +297,6 @@ const CorporateWellbeingCheck = () => {
     const newAnswers = [...answers];
     newAnswers[currentQuestion] = value;
     setAnswers(newAnswers);
-
-    setTimeout(() => {
-      if (currentQuestion < ALL_QUESTIONS.length - 1) {
-        setCurrentQuestion(prev => prev + 1);
-      }
-    }, 300);
   };
 
   const who5Score = answers.slice(0, 5).reduce((sum, a) => sum + (a || 0), 0);
