@@ -52,6 +52,33 @@ const WORKPLACE_OPTIONS = [
 // === Wave 3: Multilingual + emoji-scale fallbacks ===
 const SCALE_EMOJI = ['😞', '😕', '😐', '🙂', '😊', '🤩'];
 
+// Per-spec emoji + soft background by question type and option value (0..5)
+const EMOJI_SETS = {
+  // WHO-5 positive: value 5 = best ("All of the time")
+  who5: [
+    { emoji: '😞', bg: '#F7C1C1' },
+    { emoji: '😟', bg: '#FCEBEB' },
+    { emoji: '😔', bg: '#FAECE7' },
+    { emoji: '😐', bg: '#FAEEDA' },
+    { emoji: '🙂', bg: '#EAF3DE' },
+    { emoji: '😄', bg: '#E1F5EE' },
+  ],
+  // Frequency-negative: value 0 = best ("Not at all")
+  negFreq: [
+    { emoji: '😌', bg: '#E1F5EE' },
+    { emoji: '🙂', bg: '#EAF3DE' },
+    { emoji: '😐', bg: '#FAEEDA' },
+    { emoji: '😟', bg: '#FAECE7' },
+    { emoji: '😣', bg: '#FCEBEB' },
+    { emoji: '😰', bg: '#F7C1C1' },
+  ],
+} as const;
+
+// Question index → emoji/colour set. Overwhelm (last) is frequency-negative;
+// WHO-5 (0-4) and workload/support (5,6) are positive.
+const getEmojiSet = (qIndex: number) =>
+  qIndex === 7 ? EMOJI_SETS.negFreq : EMOJI_SETS.who5;
+
 type Lang = 'en' | 'lg' | 'sw';
 const LANGS: { code: Lang; label: string; native: string }[] = [
   { code: 'en', label: 'English', native: 'English' },
@@ -270,12 +297,6 @@ const CorporateWellbeingCheck = () => {
     const newAnswers = [...answers];
     newAnswers[currentQuestion] = value;
     setAnswers(newAnswers);
-
-    setTimeout(() => {
-      if (currentQuestion < ALL_QUESTIONS.length - 1) {
-        setCurrentQuestion(prev => prev + 1);
-      }
-    }, 300);
   };
 
   const who5Score = answers.slice(0, 5).reduce((sum, a) => sum + (a || 0), 0);
@@ -708,78 +729,177 @@ const CorporateWellbeingCheck = () => {
                   )}
                 </div>
 
-                <div className="mb-6">
-                  <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
-                    <span>{t.ui.question_label} {currentQuestion + 1} {t.ui.of} {ALL_QUESTIONS.length}</span>
-                    <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-medium">{sectionLabel}</span>
+                {/* Card-list redesign — single full-screen question with progress bar */}
+                <div className="rounded-2xl p-5 sm:p-6" style={{ background: '#F8F9FF' }}>
+                  {/* Progress bar */}
+                  <div className="mb-5">
+                    <div className="flex items-center justify-between mb-2">
+                      <span
+                        className="uppercase font-medium"
+                        style={{ fontSize: '12px', letterSpacing: '0.5px', color: '#9CA3AF' }}
+                      >
+                        {t.ui.question_label} {currentQuestion + 1} {t.ui.of} {ALL_QUESTIONS.length}
+                      </span>
+                      <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[11px] font-medium">
+                        {sectionLabel}
+                      </span>
+                    </div>
+                    <div
+                      role="progressbar"
+                      aria-valuenow={currentQuestion + 1}
+                      aria-valuemin={1}
+                      aria-valuemax={ALL_QUESTIONS.length}
+                      className="w-full overflow-hidden"
+                      style={{ height: '4px', borderRadius: '2px', background: '#F3F4F6' }}
+                    >
+                      <div
+                        className="h-full"
+                        style={{
+                          width: `${progress}%`,
+                          background: '#3B4FD4',
+                          borderRadius: '2px',
+                          transition: 'width 0.4s ease',
+                        }}
+                      />
+                    </div>
                   </div>
-                  <Progress value={progress} className="h-2 [&>div]:bg-primary" />
-                </div>
 
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={currentQuestion}
-                    initial={{ opacity: 0, x: 30 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -30 }}
-                    transition={{ duration: 0.25 }}
-                  >
-                    {currentQuestion < 5 && (
-                      <p className="text-xs text-muted-foreground mb-2">{t.ui.over_two_weeks}</p>
-                    )}
-                    <div className="flex items-start justify-between gap-3 mb-6">
-                      <h2 className="text-xl sm:text-2xl font-bold text-foreground leading-snug flex-1">
-                        "{t.questions[currentQuestion]}"
-                      </h2>
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={currentQuestion}
+                      initial={{ opacity: 0, x: 24 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -24 }}
+                      transition={{ duration: 0.25 }}
+                    >
+                      {currentQuestion < 5 && (
+                        <p className="mb-2" style={{ fontSize: '12px', color: '#9CA3AF' }}>
+                          {t.ui.over_two_weeks}
+                        </p>
+                      )}
+                      <div className="flex items-start justify-between gap-3 mb-5">
+                        <h2
+                          className="flex-1 font-medium"
+                          style={{
+                            color: '#1A1A2E',
+                            lineHeight: 1.5,
+                            fontWeight: 500,
+                            fontSize: 'clamp(16px, 4.2vw, 17px)',
+                          }}
+                        >
+                          {t.questions[currentQuestion]}
+                        </h2>
+                        <button
+                          type="button"
+                          onClick={() => speakText(t.questions[currentQuestion])}
+                          className="shrink-0 p-2 rounded-full bg-primary/10 hover:bg-primary/20 text-primary transition"
+                          aria-label={t.ui.listen}
+                          title={t.ui.listen}
+                        >
+                          <Volume2 className="w-5 h-5" />
+                        </button>
+                      </div>
+
+                      <div className="flex flex-col" style={{ gap: '12px' }}>
+                        {currentOptions.map((option, idx) => {
+                          const translatedLabel =
+                            currentQuestion < 5 ? t.who5Options[idx] : t.workplaceOptions[idx];
+                          const selected = answers[currentQuestion] === option.value;
+                          const { emoji, bg } = getEmojiSet(currentQuestion)[option.value];
+                          return (
+                            <button
+                              key={option.value}
+                              type="button"
+                              onClick={() => handleAnswer(option.value)}
+                              aria-label={translatedLabel}
+                              aria-pressed={selected}
+                              className="w-full flex items-center text-left transition-all duration-200"
+                              style={{
+                                minHeight: '56px',
+                                gap: '12px',
+                                padding:
+                                  typeof window !== 'undefined' && window.innerWidth < 480
+                                    ? '12px 14px'
+                                    : '14px 16px',
+                                borderRadius: '12px',
+                                background: selected ? '#EEF0FD' : '#FFFFFF',
+                                border: `1.5px solid ${selected ? '#3B4FD4' : '#E5E7EB'}`,
+                                color: selected ? '#3B4FD4' : '#1A1A2E',
+                                fontWeight: selected ? 500 : 400,
+                                fontSize: 'clamp(14px, 3.8vw, 15px)',
+                              }}
+                            >
+                              <span
+                                aria-hidden
+                                className="shrink-0 inline-flex items-center justify-center"
+                                style={{
+                                  width: '36px',
+                                  height: '36px',
+                                  borderRadius: '50%',
+                                  background: bg,
+                                  fontSize: '26px',
+                                  lineHeight: 1,
+                                }}
+                              >
+                                {emoji}
+                              </span>
+                              <span className="flex-1">{translatedLabel}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </motion.div>
+                  </AnimatePresence>
+
+                  <div className="flex items-center justify-between mt-8">
+                    <button
+                      type="button"
+                      onClick={() => setCurrentQuestion(prev => Math.max(0, prev - 1))}
+                      disabled={currentQuestion === 0}
+                      className="inline-flex items-center gap-1 disabled:opacity-40"
+                      style={{ fontSize: '14px', color: '#6B7280' }}
+                    >
+                      <ArrowLeft className="w-4 h-4" /> {t.ui.back}
+                    </button>
+
+                    {isLastQuestion ? (
                       <button
                         type="button"
-                        onClick={() => speakText(t.questions[currentQuestion])}
-                        className="shrink-0 p-2 rounded-full bg-primary/10 hover:bg-primary/20 text-primary transition"
-                        aria-label={t.ui.listen}
-                        title={t.ui.listen}
+                        onClick={handleSubmit}
+                        disabled={!allAnswered || submitting}
+                        className="inline-flex items-center gap-1 transition disabled:cursor-not-allowed"
+                        style={{
+                          background: !allAnswered || submitting ? '#C7CBE8' : '#3B4FD4',
+                          color: '#FFFFFF',
+                          borderRadius: '8px',
+                          padding: '10px 22px',
+                          fontSize: '14px',
+                          fontWeight: 500,
+                        }}
                       >
-                        <Volume2 className="w-5 h-5" />
+                        {submitting ? 'Submitting...' : t.ui.see_results}
+                        <ArrowRight className="w-4 h-4" />
                       </button>
-                    </div>
-
-                    <div className="space-y-3">
-                      {currentOptions.map((option, idx) => {
-                        const translatedLabel = currentQuestion < 5 ? t.who5Options[idx] : t.workplaceOptions[idx];
-                        return (
-                        <button
-                          key={option.value}
-                          onClick={() => handleAnswer(option.value)}
-                          className={`w-full flex items-center gap-3 text-left p-4 rounded-xl border-2 transition-all duration-200 text-base font-medium
-                            ${answers[currentQuestion] === option.value
-                              ? 'border-primary bg-primary/10 text-primary'
-                              : 'border-border bg-card hover:border-muted-foreground/30 text-foreground hover:bg-muted'
-                            }`}
-                        >
-                          <span className="text-2xl leading-none" aria-hidden>{SCALE_EMOJI[idx]}</span>
-                          <span className="flex-1">{translatedLabel}</span>
-                        </button>
-                        );
-                      })}
-                    </div>
-                  </motion.div>
-                </AnimatePresence>
-
-                <div className="flex items-center justify-between mt-8">
-                  <Button variant="ghost" onClick={() => setCurrentQuestion(prev => Math.max(0, prev - 1))} disabled={currentQuestion === 0} className="text-muted-foreground">
-                    <ArrowLeft className="w-4 h-4 mr-1" /> {t.ui.back}
-                  </Button>
-
-                  {isLastQuestion && allAnswered && (
-                    <Button onClick={handleSubmit} disabled={submitting} className="rounded-full px-8">
-                      {submitting ? 'Submitting...' : t.ui.see_results} <ArrowRight className="w-4 h-4 ml-1" />
-                    </Button>
-                  )}
-
-                  {!isLastQuestion && answers[currentQuestion] !== null && (
-                    <Button variant="ghost" onClick={() => setCurrentQuestion(prev => prev + 1)} className="text-primary">
-                      {t.ui.next} <ArrowRight className="w-4 h-4 ml-1" />
-                    </Button>
-                  )}
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => setCurrentQuestion(prev => prev + 1)}
+                        disabled={answers[currentQuestion] === null}
+                        className="inline-flex items-center gap-1 transition disabled:cursor-not-allowed"
+                        style={{
+                          background: answers[currentQuestion] === null ? '#C7CBE8' : '#3B4FD4',
+                          color: '#FFFFFF',
+                          borderRadius: '8px',
+                          padding: '10px 22px',
+                          fontSize: '14px',
+                          fontWeight: 500,
+                        }}
+                      >
+                        {t.ui.next}
+                        <ArrowRight className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
                 </div>
 
                 {isCommunityMode && (
