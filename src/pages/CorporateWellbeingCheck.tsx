@@ -52,6 +52,33 @@ const WORKPLACE_OPTIONS = [
 // === Wave 3: Multilingual + emoji-scale fallbacks ===
 const SCALE_EMOJI = ['😞', '😕', '😐', '🙂', '😊', '🤩'];
 
+// Per-spec emoji + soft background by question type and option value (0..5)
+const EMOJI_SETS = {
+  // WHO-5 positive: value 5 = best ("All of the time")
+  who5: [
+    { emoji: '😞', bg: '#F7C1C1' },
+    { emoji: '😟', bg: '#FCEBEB' },
+    { emoji: '😔', bg: '#FAECE7' },
+    { emoji: '😐', bg: '#FAEEDA' },
+    { emoji: '🙂', bg: '#EAF3DE' },
+    { emoji: '😄', bg: '#E1F5EE' },
+  ],
+  // Frequency-negative: value 0 = best ("Not at all")
+  negFreq: [
+    { emoji: '😌', bg: '#E1F5EE' },
+    { emoji: '🙂', bg: '#EAF3DE' },
+    { emoji: '😐', bg: '#FAEEDA' },
+    { emoji: '😟', bg: '#FAECE7' },
+    { emoji: '😣', bg: '#FCEBEB' },
+    { emoji: '😰', bg: '#F7C1C1' },
+  ],
+} as const;
+
+// Question index → emoji/colour set. Overwhelm (last) is frequency-negative;
+// WHO-5 (0-4) and workload/support (5,6) are positive.
+const getEmojiSet = (qIndex: number) =>
+  qIndex === 7 ? EMOJI_SETS.negFreq : EMOJI_SETS.who5;
+
 type Lang = 'en' | 'lg' | 'sw';
 const LANGS: { code: Lang; label: string; native: string }[] = [
   { code: 'en', label: 'English', native: 'English' },
