@@ -27,23 +27,47 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let mounted = true;
+
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      (_event, session) => {
+        if (!mounted) return;
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
       }
     );
 
-    // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
+    // THEN check for existing session. If the stored refresh token is invalid
+    // (common after switching between preview/published domains), clear it so
+    // the app renders cleanly on the first load instead of requiring a second refresh.
+    (async () => {
+      try {
+        const { data, error } = await supabase.auth.getSession();
+        if (error) {
+          await supabase.auth.signOut().catch(() => {});
+          if (!mounted) return;
+          setSession(null);
+          setUser(null);
+        } else if (mounted) {
+          setSession(data.session);
+          setUser(data.session?.user ?? null);
+        }
+      } catch {
+        await supabase.auth.signOut().catch(() => {});
+        if (!mounted) return;
+        setSession(null);
+        setUser(null);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    })();
 
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signUp = async (email: string, password: string, displayName?: string) => {
