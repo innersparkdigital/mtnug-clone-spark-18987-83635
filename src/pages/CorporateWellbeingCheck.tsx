@@ -429,7 +429,7 @@ const CorporateWellbeingCheck = () => {
           </header>
         )}
 
-        <main className={`pb-16 ${activeCampaignSlug ? 'pt-0' : 'max-w-lg mx-auto px-4 pt-20'}`}>
+        <main className={`pb-10 ${activeCampaignSlug ? 'pt-0' : 'max-w-lg mx-auto px-4 pt-16'}`}>
           {activeCampaignSlug && (phase === 'entry' || phase === 'welcome') && (
             <CampaignBrandingHeader
               slug={activeCampaignSlug}
@@ -501,19 +501,19 @@ const CorporateWellbeingCheck = () => {
 
             {/* WELCOME PHASE */}
             {phase === 'welcome' && employee && (
-              <motion.div key="welcome" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="pt-12 text-center">
-                <div className="text-4xl mb-4">👋</div>
-                <h1 className="text-2xl font-bold text-foreground mb-2">
+              <motion.div key="welcome" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="pt-4 sm:pt-6 text-center">
+                <div className="text-3xl mb-2">👋</div>
+                <h1 className="text-xl sm:text-2xl font-bold text-foreground mb-2">
                   Hi {employee.name.split(' ')[0]}
                 </h1>
-                <p className="text-lg text-muted-foreground mb-6">
+                <p className="text-base text-muted-foreground mb-4">
                   {employee.screening_history.length > 0
                     ? `Welcome back! This will be your check #${employee.screening_history.length + 1}.`
                     : 'Welcome to your confidential wellbeing check.'}
                 </p>
 
                 {employee.company_name && (
-                  <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/5 rounded-full text-sm text-primary mb-6">
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/5 rounded-full text-sm text-primary mb-4">
                     <Users className="w-3.5 h-3.5" />
                     {employee.company_name}
                   </div>
@@ -561,47 +561,27 @@ const CorporateWellbeingCheck = () => {
                   </div>
                 )}
 
-                <div className="bg-card rounded-2xl border p-6 text-left space-y-3 mb-6">
+                <div className="bg-card rounded-2xl border p-4 text-left space-y-2 mb-4">
                   <div className="flex items-start gap-3">
-                    <span className="text-lg">⏱️</span>
+                    <span className="text-base">⏱️</span>
                     <p className="text-sm text-muted-foreground">Takes only 2–3 minutes</p>
                   </div>
                   <div className="flex items-start gap-3">
-                    <span className="text-lg">🔒</span>
+                    <span className="text-base">🔒</span>
                     <p className="text-sm text-muted-foreground">Your responses are completely private</p>
                   </div>
                   <div className="flex items-start gap-3">
-                    <span className="text-lg">💙</span>
+                    <span className="text-base">💙</span>
                     <p className="text-sm text-muted-foreground">Designed to support your wellbeing</p>
                   </div>
                 </div>
 
-                {/* Gender Selection */}
                 <ScreeningAnxietyFAQ
                   language={lang as 'en' | 'lg' | 'sw'}
                   companyId={employee.company_id}
                 />
 
-                <div className="mt-8 mb-8 max-w-xs mx-auto">
-                  <p className="text-sm font-medium text-foreground mb-3">Please select your gender</p>
-                  <div className="flex gap-3 justify-center">
-                    {['Male', 'Female'].map(g => (
-                      <button
-                        key={g}
-                        onClick={() => setSelectedGender(g)}
-                        className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all border ${
-                          selectedGender === g
-                            ? 'bg-primary text-primary-foreground border-primary'
-                            : 'bg-card text-muted-foreground border-border hover:border-primary/50'
-                        }`}
-                      >
-                        {g}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <Button onClick={() => setPhase('consent')} className="rounded-full px-8" size="lg" disabled={!selectedGender}>
+                <Button onClick={() => setPhase('consent')} className="rounded-full px-8 mt-6" size="lg">
                   {employee.screening_history.length > 0 ? 'Take Another Check' : 'Begin Check'} <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               </motion.div>
