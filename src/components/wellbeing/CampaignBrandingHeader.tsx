@@ -72,7 +72,7 @@ export const CampaignBrandingHeader = ({ slug, language, onLanguageChange, showP
       });
     };
     fetchCompletion();
-    const id = setInterval(fetchCompletion, 60_000);
+    const id = setInterval(fetchCompletion, 15_000);
     return () => { cancelled = true; clearInterval(id); };
   }, [campaign]);
 
@@ -92,7 +92,9 @@ export const CampaignBrandingHeader = ({ slug, language, onLanguageChange, showP
   const headline = campaign.campaign_headline?.trim() || T.defaultHeadline(campaign.name);
   const subtext = campaign.campaign_subtext?.trim() || T.defaultSubtext;
   const remaining = campaign.campaign_close_date ? getRemaining(campaign.campaign_close_date) : null;
-  const totalEmployees = Math.max(completion.total, campaign.employee_count || 0, 1);
+  // Use the real count of employees enrolled in the system (not the
+  // admin-entered target), so the bar reflects live participation.
+  const totalEmployees = Math.max(completion.total, 1);
   const pct = Math.min(100, Math.round((completion.completed / totalEmployees) * 100));
 
   return (
