@@ -23,7 +23,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { generateCompanyReportPdf } from '@/lib/companyReportPdf';
 import CampaignSettingsCard from '@/components/business/CampaignSettingsCard';
 import { Loader2 } from 'lucide-react';
-import { answerMapFromStored, answerMapFromLegacy, aggregateCompany, QUESTION_INTELLIGENCE, QUESTION_ORDER, CLUSTER_INFO } from '@/lib/wellbeingIntelligence';
+import { answerMapFromStored, answerMapFromLegacy, aggregateCompany, computeAggregate, getAnswerLabel, getRiskCategory, RISK_LABEL, QUESTION_INTELLIGENCE, QUESTION_ORDER, CLUSTER_INFO } from '@/lib/wellbeingIntelligence';
 import { CompanyTriggersDashboard, CompanyActionPlan } from '@/components/business/CompanyInsights';
 import PerQuestionEmployeeBreakdown from '@/components/business/PerQuestionEmployeeBreakdown';
 import BusinessImpactSummary from '@/components/business/BusinessImpactSummary';
@@ -419,15 +419,45 @@ const CorporateAdmin = () => {
 
   const exportToCSV = () => {
     if (!selectedCompany) return;
-    const headers = ['Name', 'Email', 'Phone', 'Gender', 'Access Code', 'Screening Status', 'Date Taken', 'Total Score', 'Overall %', 'Wellbeing Category'];
-    const rows = sortedEmployees.map(emp => {
-      const screening = employeeScreeningMap.get(emp.id);
-      return [emp.name, emp.email, emp.phone || '', emp.gender || '', emp.access_code,
-        emp.screening_completed ? 'Completed' : emp.invitation_sent ? 'Invited' : 'Pending',
-        screening ? new Date(screening.completed_at).toLocaleDateString('en-GB') : '',
-        screening ? screening.total_score : '', screening ? overallPct(screening) + '%' : '',
-        screening ? screening.wellbeing_category : '',
-      ].map(v => `"${v}"`).join(',');
+    const headers = [
+      'Name', 'Email', 'Phone', 'Access Code', 'Check-in Status', 'Total Check-ins',
+      'Check-in #', 'Check-in Date', 'Overall %', 'Risk Status',
+      'Question #', 'Question', 'Domain', 'Answer', 'Score (/5)', 'Percent', 'Flag',
+    ];
+    const esc = (v: any) => `"${String(v ?? '').replace(/"/g, '""')}"`;
+    const rows: string[] = [];
+    sortedEmployees.forEach(emp => {
+      const empScreenings = screenings
+        .filter(s => s.employee_id === emp.id)
+        .sort((a, b) => new Date(a.completed_at).getTime() - new Date(b.completed_at).getTime());
+      const totalCheckins = empScreenings.length;
+      const status = emp.screening_completed ? 'Completed' : emp.invitation_sent ? 'Invited' : 'Pending';
+      const base = [emp.name, emp.email, emp.phone || '', emp.access_code, status, totalCheckins];
+      if (empScreenings.length === 0) {
+        rows.push([...base, '', '', '', '', '', '', '', '', '', '', '', ''].map(esc).join(','));
+        return;
+      }
+      empScreenings.forEach((s, idx) => {
+        const answers = answerMapFromLegacy(s as any);
+        const overall = overallPct(s);
+        const risk = RISK_LABEL[getRiskCategory(overall)];
+        const date = new Date(s.completed_at).toLocaleString('en-GB');
+        if (!answers) {
+          rows.push([...base, idx + 1, date, overall + '%', risk, '', '', '', '', '', '', ''].map(esc).join(','));
+          return;
+        }
+        QUESTION_ORDER.forEach((qid, qi) => {
+          const meta = QUESTION_INTELLIGENCE[qid];
+          const a = answers[qid];
+          const flag = a.percentageScore >= 60 ? 'Healthy' : a.percentageScore >= 40 ? 'At Risk' : 'Critical';
+          rows.push([
+            ...base,
+            idx + 1, date, overall + '%', risk,
+            `Q${qi + 1}`, meta.text, meta.domain === 'who5' ? 'WHO-5' : 'Workplace',
+            getAnswerLabel(qid, a.rawAnswer), a.effectiveScore, a.percentageScore + '%', flag,
+          ].map(esc).join(','));
+        });
+      });
     });
     const csv = [headers.join(','), ...rows].join('\n');
     const blob = new Blob([csv], { type: 'text/csv' });
