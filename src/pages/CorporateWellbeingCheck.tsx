@@ -327,7 +327,7 @@ const CorporateWellbeingCheck = () => {
           support: workplaceScores[1],
           overwhelm: workplaceScores[2],
         },
-        total_score: totalScore,
+        total_score: aggregate.overallScore.raw,
         wellbeing_category: category.key,
         per_question: intelligence as any,
         triggered_flags: aggregate.triggeredFlags,
