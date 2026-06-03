@@ -13,7 +13,7 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Switch } from "@/components/ui/switch";
-import { Loader2, Plus, Star, Pencil, Pause, Trash2, Search } from "lucide-react";
+import { Loader2, Plus, Star, Pencil, Pause, Trash2, Search, Upload, X } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 const SPECS = ["Anxiety","Depression","Burnout","Grief","Relationships","Addiction","Trauma","Workplace Stress","Adolescents","Family","Other"];
@@ -64,6 +64,25 @@ export default function TherapistsTab() {
   const [confirmSuspend, setConfirmSuspend] = useState<Therapist | null>(null);
   const [suspendReason, setSuspendReason] = useState("");
   const [suspendDate, setSuspendDate] = useState("");
+  const [previewPhoto, setPreviewPhoto] = useState<string | null>(null);
+
+  const photoFilePreview = photoFile ? URL.createObjectURL(photoFile) : null;
+  const currentPhoto = photoFilePreview || editing.photo_url || null;
+
+  const removePhotoFromStorage = async (url: string) => {
+    try {
+      const marker = "/therapist-photos/";
+      const idx = url.indexOf(marker);
+      if (idx === -1) return;
+      const path = url.slice(idx + marker.length);
+      await supabase.storage.from("therapist-photos").remove([path]);
+    } catch { /* best-effort */ }
+  };
+
+  const clearPhoto = () => {
+    setPhotoFile(null);
+    setEditing({ ...editing, photo_url: "" });
+  };
 
   const load = async () => {
     setLoading(true);
@@ -82,8 +101,9 @@ export default function TherapistsTab() {
     t.specialisations.some(s => s.toLowerCase().includes(search.toLowerCase()))
   );
 
-  const openNew = () => { setEditing(emptyForm); setPhotoFile(null); setOpen(true); };
-  const openEdit = (t: Therapist) => { setEditing(t); setPhotoFile(null); setOpen(true); };
+  const [originalPhotoUrl, setOriginalPhotoUrl] = useState<string | null>(null);
+  const openNew = () => { setEditing(emptyForm); setPhotoFile(null); setOriginalPhotoUrl(null); setOpen(true); };
+  const openEdit = (t: Therapist) => { setEditing(t); setPhotoFile(null); setOriginalPhotoUrl(t.photo_url || null); setOpen(true); };
 
   const toggleArray = (key: keyof Therapist, value: string) => {
     const current = ((editing as any)[key] as string[]) || [];
@@ -108,6 +128,10 @@ export default function TherapistsTab() {
       const { error: upErr } = await supabase.storage.from("therapist-photos").upload(path, photoFile);
       if (upErr) { toast({ title: "Upload failed", description: upErr.message, variant: "destructive" }); setSaving(false); return; }
       photo_url = supabase.storage.from("therapist-photos").getPublicUrl(path).data.publicUrl;
+    }
+    // If the photo was changed or cleared, delete the prior file from storage (best effort).
+    if (originalPhotoUrl && originalPhotoUrl !== photo_url) {
+      await removePhotoFromStorage(originalPhotoUrl);
     }
     const payload = { ...editing, photo_url };
     delete (payload as any).id; delete (payload as any).created_at;
@@ -196,7 +220,14 @@ export default function TherapistsTab() {
               <TableRow key={t.id}>
                 <TableCell>
                   <div className="flex items-center gap-2">
-                    <Avatar className="w-10 h-10"><AvatarImage src={t.photo_url || undefined} /><AvatarFallback>{t.full_name.split(" ").map(n => n[0]).join("").slice(0,2)}</AvatarFallback></Avatar>
+                    <button
+                      type="button"
+                      onClick={() => t.photo_url && setPreviewPhoto(t.photo_url)}
+                      className="shrink-0 rounded-full focus:outline-none focus:ring-2 focus:ring-primary"
+                      aria-label={`Preview photo for ${t.full_name}`}
+                    >
+                      <Avatar className="w-10 h-10"><AvatarImage src={t.photo_url || undefined} /><AvatarFallback>{t.full_name.split(" ").map(n => n[0]).join("").slice(0,2)}</AvatarFallback></Avatar>
+                    </button>
                     <div>
                       <p className="font-medium">{t.full_name}</p>
                       <p className="text-xs text-muted-foreground">{t.email}</p>
@@ -238,7 +269,33 @@ export default function TherapistsTab() {
               <div><Label>License / registration number</Label><Input value={editing.license_number || ""} onChange={e => setEditing({...editing, license_number: e.target.value})} /></div>
               <div className="col-span-2"><Label>Licensing body</Label><Input value={editing.licensing_body || ""} onChange={e => setEditing({...editing, licensing_body: e.target.value})} placeholder="e.g. Uganda Allied Health Professional Councils" /></div>
             </div>
-            <div><Label>Photo (max 2MB)</Label><Input type="file" accept="image/*" onChange={e => setPhotoFile(e.target.files?.[0] || null)} />{editing.photo_url && !photoFile && <img src={editing.photo_url} className="w-16 h-16 rounded-full mt-2 object-cover" />}</div>
+            <div>
+              <Label>Profile photo (max 2MB)</Label>
+              <div className="mt-2 flex items-start gap-4">
+                <div className="relative">
+                  {currentPhoto ? (
+                    <button type="button" onClick={() => setPreviewPhoto(currentPhoto)} className="block">
+                      <img src={currentPhoto} alt="Therapist photo preview" className="w-24 h-24 rounded-full object-cover border" />
+                    </button>
+                  ) : (
+                    <div className="w-24 h-24 rounded-full bg-muted flex items-center justify-center text-xs text-muted-foreground border">No photo</div>
+                  )}
+                </div>
+                <div className="flex-1 space-y-2">
+                  <label className="inline-flex items-center gap-2 px-3 py-2 rounded-md border bg-background hover:bg-accent cursor-pointer text-sm">
+                    <Upload className="w-4 h-4" />
+                    {currentPhoto ? "Change photo" : "Upload photo"}
+                    <input type="file" accept="image/*" className="hidden" onChange={e => setPhotoFile(e.target.files?.[0] || null)} />
+                  </label>
+                  {currentPhoto && (
+                    <Button type="button" variant="ghost" size="sm" onClick={clearPhoto} className="text-red-600 hover:text-red-700">
+                      <X className="w-4 h-4 mr-1" /> Remove photo
+                    </Button>
+                  )}
+                  <p className="text-xs text-muted-foreground">PNG or JPG. Max 2MB. Click preview to enlarge.</p>
+                </div>
+              </div>
+            </div>
             <div><Label>Bio (max 300 chars)</Label><Textarea maxLength={300} value={editing.bio || ""} onChange={e => setEditing({...editing, bio: e.target.value})} /></div>
             {[
               { key: "specialisations", label: "Specialisations", opts: SPECS },
@@ -311,6 +368,22 @@ export default function TherapistsTab() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {previewPhoto && (
+        <div
+          className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4"
+          onClick={() => setPreviewPhoto(null)}
+        >
+          <button
+            className="absolute top-4 right-4 text-white p-2 rounded-full bg-white/10 hover:bg-white/20"
+            onClick={() => setPreviewPhoto(null)}
+            aria-label="Close preview"
+          >
+            <X className="w-5 h-5" />
+          </button>
+          <img src={previewPhoto} alt="Therapist photo" className="max-h-[90vh] max-w-[90vw] rounded-lg shadow-2xl" onClick={(e) => e.stopPropagation()} />
+        </div>
+      )}
     </div>
   );
 }
