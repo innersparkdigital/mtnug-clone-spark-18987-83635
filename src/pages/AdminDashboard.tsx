@@ -28,6 +28,7 @@ import ChatLeadsTab from '@/components/admin/ChatLeadsTab';
 import WhispersTab from '@/components/admin/WhispersTab';
 import CrisisAlertsTab from '@/components/admin/CrisisAlertsTab';
 import TherapistsTab from '@/components/admin/TherapistsTab';
+import SpecialistsTab from '@/components/admin/SpecialistsTab';
 import SiteSectionsTab from '@/components/admin/SiteSectionsTab';
 import FeedbackTab from '@/components/admin/FeedbackTab';
 import KenyaReferralsTab from '@/components/admin/KenyaReferralsTab';
@@ -279,6 +280,12 @@ const AdminDashboard = () => {
               <TabsTrigger value="therapists" className="gap-2">
                 <Stethoscope className="h-4 w-4" />
                 Therapists
+              </TabsTrigger>
+            )}
+            {isAdmin && (
+              <TabsTrigger value="specialists" className="gap-2">
+                <Stethoscope className="h-4 w-4" />
+                Specialists
               </TabsTrigger>
             )}
             {isAdmin && (
@@ -690,6 +697,11 @@ const AdminDashboard = () => {
           {isAdmin && (
             <TabsContent value="therapists">
               <TherapistsTab />
+            </TabsContent>
+          )}
+          {isAdmin && (
+            <TabsContent value="specialists">
+              <SpecialistsTab />
             </TabsContent>
           )}
           {isAdmin && (
