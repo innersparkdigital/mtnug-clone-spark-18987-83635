@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Loader2, Plus, Pencil, Trash2, Upload, Eye } from "lucide-react";
 import { toast } from "sonner";
 import { uploadContentMedia, slugify } from "./uploadMedia";
+import RichTextEditor from "./RichTextEditor";
 
 interface BlogPost {
   id: string;
@@ -168,7 +169,14 @@ const BlogsManager = () => {
               <div><Label>Author</Label><Input value={form.author || ""} onChange={(e) => setForm({ ...form, author: e.target.value })} /></div>
               <div><Label>Read time</Label><Input value={form.read_time || ""} onChange={(e) => setForm({ ...form, read_time: e.target.value })} placeholder="5 min read" /></div>
             </div>
-            <div><Label>Content (HTML supported)</Label><Textarea rows={12} value={form.content || ""} onChange={(e) => setForm({ ...form, content: e.target.value })} className="font-mono text-xs" /></div>
+            <div>
+              <Label>Content</Label>
+              <RichTextEditor
+                value={form.content || ""}
+                onChange={(html) => setForm({ ...form, content: html })}
+                placeholder="Write your blog post — use the toolbar for headings, paragraphs, lists, images and links."
+              />
+            </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <Label>Status</Label>
