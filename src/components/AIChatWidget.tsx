@@ -219,6 +219,13 @@ const AIChatWidget = () => {
     logEvent("chat_opened");
   };
 
+  // Allow other pages (e.g. /amani-ai landing) to open Amani via a custom event.
+  useEffect(() => {
+    const openHandler = () => handleOpen();
+    window.addEventListener("amani:open", openHandler);
+    return () => window.removeEventListener("amani:open", openHandler);
+  }, []);
+
   const handleCTA = (cta: string, path?: string) => {
     trackEvent("ai_chat_cta_click", { cta });
     logEvent("cta_click", { cta, path });
