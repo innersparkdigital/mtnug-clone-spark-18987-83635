@@ -220,6 +220,12 @@ const MeetAmaniPost = lazy(() => import("./pages/blog/MeetAmaniPost"));
 const WhisperAnonymousPost = lazy(
   () => import("./pages/blog/WhisperAnonymousPost"),
 );
+const FindTherapistUgandaPost = lazy(
+  () => import("./pages/blog/FindTherapistUgandaPost"),
+);
+const CorporateWellbeingScreeningPost = lazy(
+  () => import("./pages/blog/CorporateWellbeingScreeningPost"),
+);
 const AmaniAI = lazy(() => import("./pages/AmaniAI"));
 const CmsBlogPost = lazy(() => import("./pages/CmsBlogPost"));
 const CmsEventPost = lazy(() => import("./pages/CmsEventPost"));
@@ -594,6 +600,14 @@ const App = () => (
                 <Route
                   path="/blog/whisper-anonymous-therapy-uganda"
                   element={<WhisperAnonymousPost />}
+                />
+                <Route
+                  path="/blog/find-a-therapist-in-uganda"
+                  element={<FindTherapistUgandaPost />}
+                />
+                <Route
+                  path="/blog/corporate-wellbeing-screening-uganda"
+                  element={<CorporateWellbeingScreeningPost />}
                 />
                 {/* CMS-driven dynamic posts (fallback after hardcoded routes) */}
                 <Route path="/blog/:slug" element={<CmsBlogPost />} />
