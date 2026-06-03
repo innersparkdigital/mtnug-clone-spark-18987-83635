@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUserRole } from '@/hooks/useUserRole';
@@ -14,24 +14,30 @@ import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import TrainingRegistrationsTab from '@/components/admin/TrainingRegistrationsTab';
-import NewsletterTab from '@/components/admin/NewsletterTab';
-import ReferralsTab from '@/components/admin/ReferralsTab';
-import AdminUsersTab from '@/components/admin/AdminUsersTab';
-import ContentTab from '@/components/admin/ContentTab';
-import EmailLogTab from '@/components/admin/EmailLogTab';
-import CorporateBookingsTab from '@/components/admin/CorporateBookingsTab';
-import EmailSegmentsTab from '@/components/admin/EmailSegmentsTab';
-import ChatAnalyticsTab from '@/components/admin/ChatAnalyticsTab';
-import CrisisReviewQueueTab from '@/components/admin/CrisisReviewQueueTab';
-import ChatLeadsTab from '@/components/admin/ChatLeadsTab';
-import WhispersTab from '@/components/admin/WhispersTab';
-import CrisisAlertsTab from '@/components/admin/CrisisAlertsTab';
-import TherapistsTab from '@/components/admin/TherapistsTab';
-import SpecialistsTab from '@/components/admin/SpecialistsTab';
-import SiteSectionsTab from '@/components/admin/SiteSectionsTab';
-import FeedbackTab from '@/components/admin/FeedbackTab';
-import KenyaReferralsTab from '@/components/admin/KenyaReferralsTab';
+const TrainingRegistrationsTab = lazy(() => import('@/components/admin/TrainingRegistrationsTab'));
+const NewsletterTab = lazy(() => import('@/components/admin/NewsletterTab'));
+const ReferralsTab = lazy(() => import('@/components/admin/ReferralsTab'));
+const AdminUsersTab = lazy(() => import('@/components/admin/AdminUsersTab'));
+const ContentTab = lazy(() => import('@/components/admin/ContentTab'));
+const EmailLogTab = lazy(() => import('@/components/admin/EmailLogTab'));
+const CorporateBookingsTab = lazy(() => import('@/components/admin/CorporateBookingsTab'));
+const EmailSegmentsTab = lazy(() => import('@/components/admin/EmailSegmentsTab'));
+const ChatAnalyticsTab = lazy(() => import('@/components/admin/ChatAnalyticsTab'));
+const CrisisReviewQueueTab = lazy(() => import('@/components/admin/CrisisReviewQueueTab'));
+const ChatLeadsTab = lazy(() => import('@/components/admin/ChatLeadsTab'));
+const WhispersTab = lazy(() => import('@/components/admin/WhispersTab'));
+const CrisisAlertsTab = lazy(() => import('@/components/admin/CrisisAlertsTab'));
+const TherapistsTab = lazy(() => import('@/components/admin/TherapistsTab'));
+const SpecialistsTab = lazy(() => import('@/components/admin/SpecialistsTab'));
+const SiteSectionsTab = lazy(() => import('@/components/admin/SiteSectionsTab'));
+const FeedbackTab = lazy(() => import('@/components/admin/FeedbackTab'));
+const KenyaReferralsTab = lazy(() => import('@/components/admin/KenyaReferralsTab'));
+
+const TabFallback = () => (
+  <div className="flex items-center justify-center py-12">
+    <Loader2 className="h-6 w-6 animate-spin text-primary" />
+  </div>
+);
 import { 
   BookOpen, 
   GraduationCap, 
@@ -634,89 +640,89 @@ const AdminDashboard = () => {
           </TabsContent>
 
           <TabsContent value="registrations">
-            <TrainingRegistrationsTab />
+            <Suspense fallback={<TabFallback />}><TrainingRegistrationsTab /></Suspense>
           </TabsContent>
 
           <TabsContent value="newsletter">
-            <NewsletterTab />
+            <Suspense fallback={<TabFallback />}><NewsletterTab /></Suspense>
           </TabsContent>
 
           <TabsContent value="referrals">
-            <ReferralsTab />
+            <Suspense fallback={<TabFallback />}><ReferralsTab /></Suspense>
           </TabsContent>
 
           <TabsContent value="content">
-            <ContentTab />
+            <Suspense fallback={<TabFallback />}><ContentTab /></Suspense>
           </TabsContent>
 
           {isAdmin && (
             <TabsContent value="users">
-              <AdminUsersTab />
+              <Suspense fallback={<TabFallback />}><AdminUsersTab /></Suspense>
             </TabsContent>
           )}
           {isAdmin && (
             <TabsContent value="emails">
-              <EmailLogTab />
+              <Suspense fallback={<TabFallback />}><EmailLogTab /></Suspense>
             </TabsContent>
           )}
           {isAdmin && (
             <TabsContent value="corporate-bookings">
-              <CorporateBookingsTab />
+              <Suspense fallback={<TabFallback />}><CorporateBookingsTab /></Suspense>
             </TabsContent>
           )}
           {isAdmin && (
             <TabsContent value="email-segments">
-              <EmailSegmentsTab />
+              <Suspense fallback={<TabFallback />}><EmailSegmentsTab /></Suspense>
             </TabsContent>
           )}
           {isAdmin && (
             <TabsContent value="chat-analytics">
-              <ChatAnalyticsTab />
+              <Suspense fallback={<TabFallback />}><ChatAnalyticsTab /></Suspense>
             </TabsContent>
           )}
           {isAdmin && (
             <TabsContent value="crisis-queue">
-              <CrisisReviewQueueTab />
+              <Suspense fallback={<TabFallback />}><CrisisReviewQueueTab /></Suspense>
             </TabsContent>
           )}
           {isAdmin && (
             <TabsContent value="chat-leads">
-              <ChatLeadsTab />
+              <Suspense fallback={<TabFallback />}><ChatLeadsTab /></Suspense>
             </TabsContent>
           )}
           {isAdmin && (
             <TabsContent value="whispers">
-              <WhispersTab />
+              <Suspense fallback={<TabFallback />}><WhispersTab /></Suspense>
             </TabsContent>
           )}
           {isAdmin && (
             <TabsContent value="crisis-alerts">
-              <CrisisAlertsTab />
+              <Suspense fallback={<TabFallback />}><CrisisAlertsTab /></Suspense>
             </TabsContent>
           )}
           {isAdmin && (
             <TabsContent value="therapists">
-              <TherapistsTab />
+              <Suspense fallback={<TabFallback />}><TherapistsTab /></Suspense>
             </TabsContent>
           )}
           {isAdmin && (
             <TabsContent value="specialists">
-              <SpecialistsTab />
+              <Suspense fallback={<TabFallback />}><SpecialistsTab /></Suspense>
             </TabsContent>
           )}
           {isAdmin && (
             <TabsContent value="site-sections">
-              <SiteSectionsTab />
+              <Suspense fallback={<TabFallback />}><SiteSectionsTab /></Suspense>
             </TabsContent>
           )}
           {isAdmin && (
             <TabsContent value="feedback">
-              <FeedbackTab />
+              <Suspense fallback={<TabFallback />}><FeedbackTab /></Suspense>
             </TabsContent>
           )}
           {isAdmin && (
             <TabsContent value="kenya-referrals">
-              <KenyaReferralsTab />
+              <Suspense fallback={<TabFallback />}><KenyaReferralsTab /></Suspense>
             </TabsContent>
           )}
         </Tabs>
