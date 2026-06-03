@@ -74,6 +74,8 @@ Allow: /for-business
 Allow: /for-professionals
 Allow: /emergency-support
 Allow: /donate-therapy
+Allow: /amani-ai
+Allow: /whisper
 
 # Sitemaps
 Sitemap: https://www.innersparkafrica.com/sitemap.xml

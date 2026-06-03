@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, MessageSquareLock } from "lucide-react";
+import { ArrowRight, MessageSquareLock, Sparkles } from "lucide-react";
 import ScrollReveal from "@/components/ScrollReveal";
 
 const WhisperTeaser = () => (
@@ -14,12 +14,20 @@ const WhisperTeaser = () => (
           <p className="text-base md:text-lg text-background/80 mb-8 leading-relaxed">
             Share what's on your mind without giving your name. Get a thoughtful, human reply — completely anonymous, completely free.
           </p>
-          <Link
-            to="/whisper"
-            className="inline-flex items-center gap-2 bg-background text-foreground rounded-full px-6 py-3 font-semibold hover:bg-background/90 transition-colors"
-          >
-            Try Whisper <ArrowRight className="w-4 h-4" />
-          </Link>
+          <div className="flex flex-wrap gap-3 justify-center">
+            <Link
+              to="/whisper"
+              className="inline-flex items-center gap-2 bg-background text-foreground rounded-full px-6 py-3 font-semibold hover:bg-background/90 transition-colors"
+            >
+              Try Whisper <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link
+              to="/amani-ai"
+              className="inline-flex items-center gap-2 bg-background/10 text-background border border-background/30 rounded-full px-6 py-3 font-semibold hover:bg-background/20 transition-colors"
+            >
+              <Sparkles className="w-4 h-4" /> Or chat free with Amani AI
+            </Link>
+          </div>
         </div>
       </ScrollReveal>
     </div>

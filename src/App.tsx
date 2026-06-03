@@ -216,6 +216,11 @@ const InnerSparkAfricaReviewPost = lazy(
 const SparkFrameworkPost = lazy(
   () => import("./pages/blog/SparkFrameworkPost"),
 );
+const MeetAmaniPost = lazy(() => import("./pages/blog/MeetAmaniPost"));
+const WhisperAnonymousPost = lazy(
+  () => import("./pages/blog/WhisperAnonymousPost"),
+);
+const AmaniAI = lazy(() => import("./pages/AmaniAI"));
 const CmsBlogPost = lazy(() => import("./pages/CmsBlogPost"));
 const CmsEventPost = lazy(() => import("./pages/CmsEventPost"));
 const ThankYou = lazy(() => import("./pages/ThankYou"));
@@ -350,6 +355,7 @@ const App = () => (
                 <Route path="/wellbeing-check" element={<WellbeingCheck />} />
                 <Route path="/whisper" element={<Whisper />} />
                 <Route path="/whisper/:token" element={<Whisper />} />
+                <Route path="/amani-ai" element={<AmaniAI />} />
                 <Route path="/mind-check" element={<MindCheck />} />
                 <Route
                   path="/mind-check/analytics"
@@ -580,6 +586,14 @@ const App = () => (
                 <Route
                   path="/blog/types-of-therapy"
                   element={<TypesOfTherapyPost />}
+                />
+                <Route
+                  path="/blog/meet-amani-ai-mental-wellness-uganda"
+                  element={<MeetAmaniPost />}
+                />
+                <Route
+                  path="/blog/whisper-anonymous-therapy-uganda"
+                  element={<WhisperAnonymousPost />}
                 />
                 {/* CMS-driven dynamic posts (fallback after hardcoded routes) */}
                 <Route path="/blog/:slug" element={<CmsBlogPost />} />

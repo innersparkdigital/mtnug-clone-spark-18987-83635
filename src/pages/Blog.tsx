@@ -26,6 +26,8 @@ import typesTherapyHero from "@/assets/blog/types-therapy-hero.jpg";
 import findTherapistHero from "@/assets/blog/find-therapist-hero.jpg";
 import signsDepressionHero from "@/assets/blog/signs-depression-hero.jpg";
 import anxietySymptomsHero from "@/assets/blog/anxiety-symptoms-hero.jpg";
+import amaniAIHero from "@/assets/blog/amani-ai-hero.jpg";
+import whisperHero from "@/assets/blog/whisper-hero.jpg";
 
 interface BlogPost {
   slug: string;
@@ -38,6 +40,24 @@ interface BlogPost {
 }
 
 const blogPosts: BlogPost[] = [
+  {
+    slug: "meet-amani-ai-mental-wellness-uganda",
+    title: "Meet Amani: The Free AI Mental Wellness Companion Built for Uganda",
+    excerpt: "Amani is InnerSpark's free AI mental health chatbot — built for Ugandans who need someone to talk to right now. Here's how it works and where it can't replace a therapist.",
+    date: "June 3, 2026",
+    readTime: "6 min read",
+    image: amaniAIHero,
+    category: "Product"
+  },
+  {
+    slug: "whisper-anonymous-therapy-uganda",
+    title: "Too Heavy to Type? Try Whisper — Anonymous, Free Therapist Replies in Uganda",
+    excerpt: "Whisper lets you send a 3-minute anonymous voice note to a real Ugandan therapist — and get a thoughtful private reply within 24 hours. Free, no signup.",
+    date: "June 3, 2026",
+    readTime: "7 min read",
+    image: whisperHero,
+    category: "Mental Health"
+  },
   {
     slug: "kampala-professionals-online-therapy",
     title: "Why Kampala Professionals Are Quietly Turning to Online Therapy",
