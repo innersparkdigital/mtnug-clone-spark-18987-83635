@@ -28,6 +28,8 @@ import signsDepressionHero from "@/assets/blog/signs-depression-hero.jpg";
 import anxietySymptomsHero from "@/assets/blog/anxiety-symptoms-hero.jpg";
 import amaniAIHero from "@/assets/blog/amani-ai-hero.jpg";
 import whisperHero from "@/assets/blog/whisper-hero.jpg";
+import findTherapistUgandaHero from "@/assets/blog/find-therapist-uganda-hero.jpg";
+import corporateWellbeingHero from "@/assets/blog/corporate-wellbeing-uganda-hero.jpg";
 
 interface BlogPost {
   slug: string;
@@ -40,6 +42,24 @@ interface BlogPost {
 }
 
 const blogPosts: BlogPost[] = [
+  {
+    slug: "corporate-wellbeing-screening-uganda",
+    title: "Corporate Wellbeing Screening in Uganda — UGX 7,500/Employee with Clinical Safety Cover",
+    excerpt: "Screen every employee for under UGX 7,500. Get an anonymous HR dashboard plus clinical safety cover — at-risk staff get a free outreach from a licensed Ugandan therapist.",
+    date: "June 3, 2026",
+    readTime: "8 min read",
+    image: corporateWellbeingHero,
+    category: "For HR & Employers"
+  },
+  {
+    slug: "find-a-therapist-in-uganda",
+    title: "How to Find a Licensed Therapist in Uganda — A 2026 Guide",
+    excerpt: "InnerSpark's vetted network of licensed Ugandan therapists, from UGX 30,000 per session. How to pick the right one, what to expect, and how to book in minutes.",
+    date: "June 3, 2026",
+    readTime: "7 min read",
+    image: findTherapistUgandaHero,
+    category: "Find a Therapist"
+  },
   {
     slug: "meet-amani-ai-mental-wellness-uganda",
     title: "Meet Amani: The Free AI Mental Wellness Companion Built for Uganda",
