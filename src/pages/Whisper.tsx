@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams, Link } from "react-router-dom";
+import { Helmet } from "react-helmet";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -161,6 +162,36 @@ function WhisperRecorder() {
 
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>Whisper — Free Anonymous Therapist Reply in 24h | InnerSpark Africa</title>
+        <meta name="description" content="Record a 3-minute anonymous voice note. A licensed Ugandan therapist replies within 24 hours — free, private, no signup. Try Whisper by InnerSpark Africa." />
+        <meta name="keywords" content="anonymous therapy Uganda, free therapist reply, voice therapy Africa, Whisper InnerSpark, anonymous mental health support" />
+        <link rel="canonical" href="https://www.innersparkafrica.com/whisper" />
+        <meta property="og:title" content="Whisper — Anonymous Therapist Reply in 24 Hours" />
+        <meta property="og:description" content="Too heavy to type? Whisper it. A real licensed Ugandan therapist replies within 24 hours — free and anonymous." />
+        <meta property="og:url" content="https://www.innersparkafrica.com/whisper" />
+        <meta property="og:type" content="website" />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Service",
+          name: "Whisper — Anonymous Voice Therapy Reply",
+          serviceType: "Anonymous mental health support",
+          provider: { "@type": "Organization", name: "InnerSpark Africa", url: "https://www.innersparkafrica.com" },
+          areaServed: ["Uganda", "Africa"],
+          offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+          url: "https://www.innersparkafrica.com/whisper",
+          description: "Record a 3-minute anonymous voice note and receive a private reply from a licensed Ugandan therapist within 24 hours.",
+        })}</script>
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: [
+            { "@type": "Question", name: "Is Whisper anonymous?", acceptedAnswer: { "@type": "Answer", text: "Yes. No name needed. Your email is only used to send your reply and is never shared with the therapist." } },
+            { "@type": "Question", name: "How long until I get a reply?", acceptedAnswer: { "@type": "Answer", text: "Usually within 24 hours. A real licensed Ugandan therapist listens and records a private reply for you." } },
+            { "@type": "Question", name: "Does Whisper cost anything?", acceptedAnswer: { "@type": "Answer", text: "No. Whisper is completely free." } },
+          ],
+        })}</script>
+      </Helmet>
       <Header />
       <main className="max-w-2xl mx-auto px-4 py-12">
         <div className="text-center mb-10">
@@ -297,6 +328,10 @@ function WhisperReplyView({ token }: { token: string }) {
 
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>Your Whisper Reply | InnerSpark Africa</title>
+        <meta name="robots" content="noindex,nofollow" />
+      </Helmet>
       <Header />
       <main className="max-w-2xl mx-auto px-4 py-12">
         <div className="text-center mb-8">
