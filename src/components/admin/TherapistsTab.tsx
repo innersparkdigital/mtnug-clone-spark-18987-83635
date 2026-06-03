@@ -368,6 +368,22 @@ export default function TherapistsTab() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {previewPhoto && (
+        <div
+          className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4"
+          onClick={() => setPreviewPhoto(null)}
+        >
+          <button
+            className="absolute top-4 right-4 text-white p-2 rounded-full bg-white/10 hover:bg-white/20"
+            onClick={() => setPreviewPhoto(null)}
+            aria-label="Close preview"
+          >
+            <X className="w-5 h-5" />
+          </button>
+          <img src={previewPhoto} alt="Therapist photo" className="max-h-[90vh] max-w-[90vw] rounded-lg shadow-2xl" onClick={(e) => e.stopPropagation()} />
+        </div>
+      )}
     </div>
   );
 }
