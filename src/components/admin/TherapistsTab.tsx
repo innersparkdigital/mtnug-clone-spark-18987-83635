@@ -101,8 +101,9 @@ export default function TherapistsTab() {
     t.specialisations.some(s => s.toLowerCase().includes(search.toLowerCase()))
   );
 
-  const openNew = () => { setEditing(emptyForm); setPhotoFile(null); setOpen(true); };
-  const openEdit = (t: Therapist) => { setEditing(t); setPhotoFile(null); setOpen(true); };
+  const [originalPhotoUrl, setOriginalPhotoUrl] = useState<string | null>(null);
+  const openNew = () => { setEditing(emptyForm); setPhotoFile(null); setOriginalPhotoUrl(null); setOpen(true); };
+  const openEdit = (t: Therapist) => { setEditing(t); setPhotoFile(null); setOriginalPhotoUrl(t.photo_url || null); setOpen(true); };
 
   const toggleArray = (key: keyof Therapist, value: string) => {
     const current = ((editing as any)[key] as string[]) || [];
@@ -127,6 +128,10 @@ export default function TherapistsTab() {
       const { error: upErr } = await supabase.storage.from("therapist-photos").upload(path, photoFile);
       if (upErr) { toast({ title: "Upload failed", description: upErr.message, variant: "destructive" }); setSaving(false); return; }
       photo_url = supabase.storage.from("therapist-photos").getPublicUrl(path).data.publicUrl;
+    }
+    // If the photo was changed or cleared, delete the prior file from storage (best effort).
+    if (originalPhotoUrl && originalPhotoUrl !== photo_url) {
+      await removePhotoFromStorage(originalPhotoUrl);
     }
     const payload = { ...editing, photo_url };
     delete (payload as any).id; delete (payload as any).created_at;
