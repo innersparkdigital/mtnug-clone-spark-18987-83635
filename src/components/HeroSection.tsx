@@ -1,18 +1,63 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Shield, Star, Users, CheckCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import heroImage from "@/assets/hero-slide-1.jpg";
+import heroVideo1 from "@/assets/hero-videos/hero-1.mp4.asset.json";
+import heroVideo2 from "@/assets/hero-videos/hero-2.mp4.asset.json";
+import heroVideo3 from "@/assets/hero-videos/hero-3.mp4.asset.json";
+import heroVideo4 from "@/assets/hero-videos/hero-4.mp4.asset.json";
+
+const heroVideos = [heroVideo1.url, heroVideo2.url, heroVideo3.url, heroVideo4.url];
+const SLIDE_MS = 6000;
 
 const HeroSection = () => {
   const [heroLoaded, setHeroLoaded] = useState(false);
+  const [activeIdx, setActiveIdx] = useState(0);
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setActiveIdx((i) => (i + 1) % heroVideos.length);
+    }, SLIDE_MS);
+    return () => clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    const v = videoRefs.current[activeIdx];
+    if (v) {
+      try { v.currentTime = 0; v.play().catch(() => {}); } catch {}
+    }
+  }, [activeIdx]);
 
   return (
     <section className="relative min-h-[85vh] md:min-h-[90vh] flex items-center overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0">
-        <img src={heroImage} alt="Therapy session" className={`w-full h-full object-cover object-top transition-opacity duration-100 ${heroLoaded ? 'opacity-100' : 'opacity-0'}`} loading="eager" fetchPriority="high" decoding="sync" onLoad={() => setHeroLoaded(true)} />
+        {/* Poster image — shows instantly while first video loads */}
+        <img
+          src={heroImage}
+          alt="Therapy session"
+          className={`absolute inset-0 w-full h-full object-cover object-top transition-opacity duration-700 ${heroLoaded ? 'opacity-0' : 'opacity-100'}`}
+          loading="eager"
+          fetchPriority="high"
+          decoding="sync"
+        />
+        {heroVideos.map((src, i) => (
+          <video
+            key={src}
+            ref={(el) => (videoRefs.current[i] = el)}
+            src={src}
+            autoPlay={i === 0}
+            muted
+            loop
+            playsInline
+            preload={i === 0 ? "auto" : "metadata"}
+            onLoadedData={() => { if (i === 0) setHeroLoaded(true); }}
+            className={`absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-[1200ms] ease-in-out ${i === activeIdx ? 'opacity-100' : 'opacity-0'}`}
+          />
+        ))}
         <div className="absolute inset-0 bg-gradient-to-r from-foreground/85 via-foreground/70 to-foreground/40" />
       </div>
 
