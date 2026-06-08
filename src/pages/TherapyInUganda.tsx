@@ -7,16 +7,54 @@ import { CheckCircle, MapPin, Phone, Video, MessageCircle, Star, Users, Shield }
 import { T } from "@/components/Translate";
 import ugandaBadge from "@/assets/uganda-badge.png";
 
+const UGANDA_CITIES = [
+  {
+    slug: "kampala",
+    name: "Kampala",
+    headline: "Therapy in Kampala",
+    intro: "Kampala life moves fast — traffic on Jinja Road, deadlines at the office, family expectations after work. Our licensed therapists understand the pressure of professional life in the capital and offer private online sessions from anywhere in Nakawa, Kololo, Ntinda, Bukoto, Naguru or Makindye.",
+    highlights: ["Sessions from UGX 75,000 / $22", "Evening slots for working professionals", "Sessions in English & Luganda"],
+  },
+  {
+    slug: "entebbe",
+    name: "Entebbe",
+    headline: "Therapy in Entebbe",
+    intro: "Whether you live near the airport, work at one of the international agencies, or are based on the lake shore, you can talk to a Ugandan therapist over a private WhatsApp video or voice call — no need to drive into Kampala.",
+    highlights: ["100% online — no travel", "Discreet sessions from home", "Same-week appointments"],
+  },
+  {
+    slug: "jinja",
+    name: "Therapy in Jinja",
+    headline: "Therapy in Jinja",
+    intro: "Access licensed counselling in Jinja town and the wider Busoga region without leaving your home. Our therapists work with students at Busoga University, NGO staff, hospitality workers and parents — in English or Luganda.",
+    highlights: ["Works on low bandwidth", "Voice & chat options available", "Confidential — never shared with employers"],
+  },
+  {
+    slug: "mbarara",
+    name: "Therapy in Mbarara",
+    headline: "Therapy in Mbarara",
+    intro: "Mental health support for the western region — Mbarara, Bushenyi, Kabale and surrounding areas. Sessions available in English and Runyankole with therapists who understand the cultural context of the south-west.",
+    highlights: ["Runyankole-speaking therapists", "Students & MUST community welcome", "Pay via Mobile Money"],
+  },
+  {
+    slug: "gulu",
+    name: "Therapy in Gulu",
+    headline: "Therapy in Gulu",
+    intro: "Trauma-informed therapy for northern Uganda — Gulu, Lira, Kitgum and surrounding districts. Our therapists are trained in working with post-conflict trauma, grief, and family healing in the Acholi sub-region.",
+    highlights: ["Trauma-informed care", "Sessions in English & Luo", "Discreet WhatsApp delivery"],
+  },
+];
+
 const TherapyInUganda = () => {
   return (
     <>
       <Helmet>
-        <title>Therapy in Uganda – Licensed Therapists & Counsellors | Innerspark Africa</title>
-        <meta name="description" content="Find licensed therapists in Uganda. Affordable online therapy for depression, anxiety, trauma & stress. Video, voice & chat sessions with verified Ugandan counsellors. Book today." />
-        <meta name="keywords" content="therapy in Uganda, therapist Uganda, counsellor Uganda, mental health Uganda, online therapy Uganda, psychologist Uganda, counselling Kampala, affordable therapy Uganda" />
+        <title>Therapy in Uganda | Online Counsellors in Kampala, Jinja, Mbarara | InnerSpark</title>
+        <meta name="description" content="Online therapy in Uganda from UGX 75,000. Licensed Ugandan counsellors for Kampala, Entebbe, Jinja, Mbarara & Gulu. WhatsApp video, voice & chat — book in 2 minutes." />
+        <meta name="keywords" content="therapy in Uganda, therapist in Kampala, counsellor in Kampala, online therapy Uganda, psychologist Kampala, counselling Jinja, therapist Mbarara, therapy Gulu, mental health Uganda, online counselling Uganda, Luganda therapist, affordable therapy Uganda, depression therapist Uganda, anxiety counsellor Kampala, trauma therapy Gulu" />
         <link rel="canonical" href="https://www.innersparkafrica.com/therapy-in-uganda" />
-        <meta property="og:title" content="Therapy in Uganda – Licensed Therapists | Innerspark Africa" />
-        <meta property="og:description" content="Find licensed therapists in Uganda. Affordable online therapy for depression, anxiety, trauma & stress. Book today." />
+        <meta property="og:title" content="Therapy in Uganda | Online Counsellors in Kampala, Jinja, Mbarara | InnerSpark" />
+        <meta property="og:description" content="Licensed Ugandan therapists. WhatsApp video, voice & chat from UGX 75,000. Serving Kampala, Entebbe, Jinja, Mbarara & Gulu." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.innersparkafrica.com/therapy-in-uganda" />
         <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
@@ -27,13 +65,49 @@ const TherapyInUganda = () => {
             "name": "Innerspark Africa – Therapy in Uganda",
             "description": "Licensed therapists providing affordable online therapy in Uganda.",
             "url": "https://www.innersparkafrica.com/therapy-in-uganda",
-            "areaServed": { "@type": "Country", "name": "Uganda" },
+            "telephone": "+256792085773",
+            "image": "https://www.innersparkafrica.com/innerspark-logo.png",
+            "priceRange": "UGX 30,000 - UGX 75,000",
+            "currenciesAccepted": "UGX",
+            "paymentAccepted": ["Mobile Money", "MTN MoMo", "Airtel Money", "PesaPal"],
+            "medicalSpecialty": ["Psychotherapy", "Counseling", "MentalHealth"],
+            "address": { "@type": "PostalAddress", "addressCountry": "UG" },
+            "areaServed": [
+              { "@type": "Country", "name": "Uganda" },
+              { "@type": "City", "name": "Kampala" },
+              { "@type": "City", "name": "Entebbe" },
+              { "@type": "City", "name": "Jinja" },
+              { "@type": "City", "name": "Mbarara" },
+              { "@type": "City", "name": "Gulu" },
+              { "@type": "City", "name": "Mbale" },
+              { "@type": "City", "name": "Fort Portal" },
+              { "@type": "City", "name": "Lira" }
+            ],
             "serviceType": "Online Therapy",
+            "hasOfferCatalog": {
+              "@type": "OfferCatalog",
+              "name": "Online Therapy Services in Uganda",
+              "itemListElement": [
+                { "@type": "Offer", "name": "Individual therapy session", "price": "75000", "priceCurrency": "UGX", "availability": "https://schema.org/InStock" },
+                { "@type": "Offer", "name": "Group therapy session", "price": "30000", "priceCurrency": "UGX", "availability": "https://schema.org/InStock" },
+                { "@type": "Offer", "name": "Free WHO-5 wellbeing check", "price": "0", "priceCurrency": "UGX", "availability": "https://schema.org/InStock" }
+              ]
+            },
             "availableChannel": {
               "@type": "ServiceChannel",
               "serviceType": "Online",
               "availableLanguage": ["English", "Luganda", "Runyankole", "Swahili"]
             }
+          })}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.innersparkafrica.com/" },
+              { "@type": "ListItem", "position": 2, "name": "Therapy in Uganda", "item": "https://www.innersparkafrica.com/therapy-in-uganda" }
+            ]
           })}
         </script>
         <script type="application/ld+json">
@@ -158,6 +232,64 @@ const TherapyInUganda = () => {
                   <p className="text-3xl md:text-4xl font-bold text-primary">{stat.num}</p>
                   <p className="text-sm text-muted-foreground mt-1"><T>{stat.label}</T></p>
                 </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Therapy by City */}
+        <section className="py-16 bg-muted/30" id="therapy-by-city">
+          <div className="container mx-auto px-4 max-w-5xl">
+            <h2 className="text-3xl font-bold text-center text-foreground mb-3">
+              <T>Therapy Across Uganda — by City</T>
+            </h2>
+            <p className="text-center text-muted-foreground mb-10 max-w-2xl mx-auto">
+              <T>Online therapy means a licensed Ugandan counsellor is one WhatsApp call away — wherever you are in the country.</T>
+            </p>
+
+            <div className="flex flex-wrap justify-center gap-2 mb-10">
+              {UGANDA_CITIES.map((c) => (
+                <a key={c.slug} href={`#${c.slug}`} className="px-4 py-1.5 rounded-full text-sm bg-card border border-border hover:border-primary/60 hover:text-primary transition-colors">
+                  {c.name.replace("Therapy in ", "")}
+                </a>
+              ))}
+            </div>
+
+            <div className="space-y-8">
+              {UGANDA_CITIES.map((c) => (
+                <article key={c.slug} id={c.slug} className="bg-card rounded-xl p-6 md:p-8 border border-border scroll-mt-24">
+                  <div className="flex items-start gap-3 mb-3">
+                    <MapPin className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
+                    <div>
+                      <h3 className="text-xl md:text-2xl font-semibold text-foreground">
+                        <T>{c.headline}</T>
+                      </h3>
+                      <p className="text-muted-foreground mt-2 leading-relaxed text-sm md:text-base">
+                        <T>{c.intro}</T>
+                      </p>
+                    </div>
+                  </div>
+                  <ul className="grid sm:grid-cols-3 gap-2 mt-4 ml-8">
+                    {c.highlights.map((h) => (
+                      <li key={h} className="flex items-center gap-2 text-sm text-foreground">
+                        <CheckCircle className="h-4 w-4 text-primary flex-shrink-0" />
+                        <T>{h}</T>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="ml-8 mt-5 flex flex-wrap gap-3">
+                    <Link to="/book-therapist">
+                      <Button size="sm" className="rounded-full">
+                        <T>Book a session</T>
+                      </Button>
+                    </Link>
+                    <Link to="/mind-check">
+                      <Button size="sm" variant="outline" className="rounded-full">
+                        <T>Free wellbeing check</T>
+                      </Button>
+                    </Link>
+                  </div>
+                </article>
               ))}
             </div>
           </div>
