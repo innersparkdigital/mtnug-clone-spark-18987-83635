@@ -32,6 +32,7 @@ const Footer = () => {
               <li><Link to="/mind-check" className="hover:text-primary transition-colors">Mind-Check</Link></li>
               <li><Link to="/whisper" className="hover:text-primary transition-colors">Whisper</Link></li>
               <li><Link to="/amani-ai" className="hover:text-primary transition-colors">Amani AI</Link></li>
+              <li><Link to="/kenya" className="hover:text-primary transition-colors">Therapy in Kenya</Link></li>
             </ul>
           </div>
 

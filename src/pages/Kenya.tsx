@@ -164,11 +164,40 @@ export default function Kenya() {
           "@context": "https://schema.org",
           "@type": "MedicalBusiness",
           name: "InnerSpark Africa — Kenya",
-          areaServed: { "@type": "Country", name: "Kenya" },
           url: "https://www.innersparkafrica.com/kenya",
           priceRange: "KES 2,600 - KES 9,600",
           telephone: "+256792085773",
           medicalSpecialty: ["Psychotherapy", "Counseling", "MentalHealth"],
+          image: "https://www.innersparkafrica.com/og-image.jpg",
+          areaServed: [
+            { "@type": "Country", name: "Kenya" },
+            { "@type": "City", name: "Nairobi" },
+            { "@type": "City", name: "Mombasa" },
+            { "@type": "City", name: "Kisumu" },
+            { "@type": "City", name: "Nakuru" },
+            { "@type": "City", name: "Eldoret" },
+          ],
+          address: { "@type": "PostalAddress", addressCountry: "KE" },
+          availableLanguage: ["English", "Swahili"],
+          paymentAccepted: ["M-Pesa", "Mobile Money"],
+          currenciesAccepted: "KES",
+          hasOfferCatalog: {
+            "@type": "OfferCatalog",
+            name: "Online Therapy Services in Kenya",
+            itemListElement: [
+              { "@type": "Offer", name: "Single online therapy session", price: "2600", priceCurrency: "KES", availability: "https://schema.org/InStock", url: "https://www.innersparkafrica.com/kenya" },
+              { "@type": "Offer", name: "Monthly therapy package (4 sessions)", price: "9600", priceCurrency: "KES", availability: "https://schema.org/InStock", url: "https://www.innersparkafrica.com/kenya" },
+              { "@type": "Offer", name: "Free WHO-5 wellbeing check", price: "0", priceCurrency: "KES", availability: "https://schema.org/InStock", url: "https://www.innersparkafrica.com/check/kenya" },
+            ],
+          },
+        })}</script>
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: "https://www.innersparkafrica.com/" },
+            { "@type": "ListItem", position: 2, name: "Kenya", item: "https://www.innersparkafrica.com/kenya" },
+          ],
         })}</script>
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org",
