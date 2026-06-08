@@ -409,6 +409,127 @@ const Services = () => {
         </div>
       </section>
 
+      {/* Payment methods */}
+      {/* Chat Consultation */}
+      <section className="py-20 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <ScrollReveal direction="left">
+              <div className="relative">
+                <img src={chatConsultationImg} alt="Chat consultation with a licensed therapist" className="rounded-2xl shadow-lg" />
+              </div>
+            </ScrollReveal>
+            <ScrollReveal direction="right" delay={0.1}>
+              <div>
+                <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">Chat Consultation</h2>
+                <p className="text-xl text-primary mb-4">Professional Support, One Message Away</p>
+                <div className="inline-block bg-primary/10 text-primary text-sm font-semibold rounded-full px-3 py-1 mb-4">UGX 30,000 per session</div>
+                <p className="text-muted-foreground mb-6 leading-relaxed">
+                  Connect with a licensed therapist through private, text-based conversations. Chat consultation lets you share what's on your mind and receive professional guidance at your own pace, without needing to meet face to face. It's a comfortable, discreet way to get support whenever you need it.
+                </p>
+                <StaggerContainer className="space-y-3 mb-8">
+                  {[
+                    "Private one-on-one chat with a licensed therapist",
+                    "Share and get guidance at your own pace",
+                    "Comfortable, discreet, and judgment-free",
+                    "Support from wherever you are",
+                  ].map((b) => (
+                    <StaggerItem key={b}>
+                      <div className="flex items-start gap-3">
+                        <div className="w-2 h-2 bg-primary rounded-full mt-2" />
+                        <p className="text-foreground">{b}</p>
+                      </div>
+                    </StaggerItem>
+                  ))}
+                </StaggerContainer>
+                <Button size="lg" onClick={startBooking}>Start a Chat Session</Button>
+              </div>
+            </ScrollReveal>
+          </div>
+        </div>
+      </section>
+
+      {/* Training of Trainers (ToT) */}
+      <section className="py-20 bg-muted">
+        <div className="container mx-auto px-4">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <ScrollReveal direction="left" className="order-2 md:order-1">
+              <div>
+                <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">Training of Trainers (ToT)</h2>
+                <p className="text-xl text-primary mb-4">Equipping Champions to Support Their Communities</p>
+                <div className="inline-block bg-primary/10 text-primary text-sm font-semibold rounded-full px-3 py-1 mb-4">Custom pricing based on your needs</div>
+                <p className="text-muted-foreground mb-6 leading-relaxed">
+                  InnerSpark equips organizations, schools, churches, and communities with the skills to support mental health from within. Our Training of Trainers programs prepare your staff, leaders, and volunteers to recognize mental health needs, offer first-line support, and pass that knowledge on to others, multiplying impact long after the training ends.
+                </p>
+                <StaggerContainer className="space-y-3 mb-8">
+                  {[
+                    "Practical, facilitator-led training",
+                    "Covers mental health literacy, psychological first aid, and safe referral",
+                    "Equips participants to train and support others",
+                    "Certificate of participation for each trainee",
+                  ].map((b) => (
+                    <StaggerItem key={b}>
+                      <div className="flex items-start gap-3">
+                        <div className="w-2 h-2 bg-primary rounded-full mt-2" />
+                        <p className="text-foreground">{b}</p>
+                      </div>
+                    </StaggerItem>
+                  ))}
+                </StaggerContainer>
+                <Link to="/contact">
+                  <Button size="lg" variant="secondary">Request a Training</Button>
+                </Link>
+              </div>
+            </ScrollReveal>
+            <ScrollReveal direction="right" delay={0.1} className="order-1 md:order-2">
+              <div className="relative">
+                <img src={totTrainingImg} alt="Training of Trainers session" className="rounded-2xl shadow-lg" />
+              </div>
+            </ScrollReveal>
+          </div>
+        </div>
+      </section>
+
+      {/* Whisper */}
+      <section className="py-20 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <ScrollReveal direction="left">
+              <div className="relative">
+                <img src={whisperImg} alt="Whisper anonymous voice note" className="rounded-2xl shadow-lg" />
+              </div>
+            </ScrollReveal>
+            <ScrollReveal direction="right" delay={0.1}>
+              <div>
+                <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">Whisper</h2>
+                <p className="text-xl text-primary mb-4">Speak Your Heart, Anonymously</p>
+                <div className="inline-block bg-green-wellness/10 text-green-wellness text-sm font-semibold rounded-full px-3 py-1 mb-4">Free</div>
+                <p className="text-muted-foreground mb-6 leading-relaxed">
+                  Sometimes you just need to let it out. Whisper lets you share what's weighing on you through a private, anonymous voice note, and receive a caring, professional response. No names, no judgment, just a safe space to be heard whenever you need it.
+                </p>
+                <StaggerContainer className="space-y-3 mb-8">
+                  {[
+                    "Send an anonymous voice note",
+                    "Receive a caring, professional response",
+                    "Completely private, no names required",
+                    "A safe first step toward feeling better",
+                  ].map((b) => (
+                    <StaggerItem key={b}>
+                      <div className="flex items-start gap-3">
+                        <div className="w-2 h-2 bg-primary rounded-full mt-2" />
+                        <p className="text-foreground">{b}</p>
+                      </div>
+                    </StaggerItem>
+                  ))}
+                </StaggerContainer>
+                <Link to="/whisper">
+                  <Button size="lg">Send a Whisper</Button>
+                </Link>
+              </div>
+            </ScrollReveal>
+          </div>
+        </div>
+      </section>
 
       {/* Payment methods */}
       <section className="py-16 bg-muted">
