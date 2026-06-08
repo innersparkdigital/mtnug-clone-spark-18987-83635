@@ -237,6 +237,64 @@ const TherapyInUganda = () => {
           </div>
         </section>
 
+        {/* Therapy by City */}
+        <section className="py-16 bg-muted/30" id="therapy-by-city">
+          <div className="container mx-auto px-4 max-w-5xl">
+            <h2 className="text-3xl font-bold text-center text-foreground mb-3">
+              <T>Therapy Across Uganda — by City</T>
+            </h2>
+            <p className="text-center text-muted-foreground mb-10 max-w-2xl mx-auto">
+              <T>Online therapy means a licensed Ugandan counsellor is one WhatsApp call away — wherever you are in the country.</T>
+            </p>
+
+            <div className="flex flex-wrap justify-center gap-2 mb-10">
+              {UGANDA_CITIES.map((c) => (
+                <a key={c.slug} href={`#${c.slug}`} className="px-4 py-1.5 rounded-full text-sm bg-card border border-border hover:border-primary/60 hover:text-primary transition-colors">
+                  {c.name.replace("Therapy in ", "")}
+                </a>
+              ))}
+            </div>
+
+            <div className="space-y-8">
+              {UGANDA_CITIES.map((c) => (
+                <article key={c.slug} id={c.slug} className="bg-card rounded-xl p-6 md:p-8 border border-border scroll-mt-24">
+                  <div className="flex items-start gap-3 mb-3">
+                    <MapPin className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
+                    <div>
+                      <h3 className="text-xl md:text-2xl font-semibold text-foreground">
+                        <T>{c.headline}</T>
+                      </h3>
+                      <p className="text-muted-foreground mt-2 leading-relaxed text-sm md:text-base">
+                        <T>{c.intro}</T>
+                      </p>
+                    </div>
+                  </div>
+                  <ul className="grid sm:grid-cols-3 gap-2 mt-4 ml-8">
+                    {c.highlights.map((h) => (
+                      <li key={h} className="flex items-center gap-2 text-sm text-foreground">
+                        <CheckCircle className="h-4 w-4 text-primary flex-shrink-0" />
+                        <T>{h}</T>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="ml-8 mt-5 flex flex-wrap gap-3">
+                    <Link to="/book-therapist">
+                      <Button size="sm" className="rounded-full">
+                        <T>Book a session</T>
+                      </Button>
+                    </Link>
+                    <Link to="/mind-check">
+                      <Button size="sm" variant="outline" className="rounded-full">
+                        <T>Free wellbeing check</T>
+                      </Button>
+                    </Link>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* CTA */}
         <section className="py-16 bg-primary text-primary-foreground">
           <div className="container mx-auto px-4 text-center">
