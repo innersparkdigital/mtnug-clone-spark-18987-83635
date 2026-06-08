@@ -10,6 +10,26 @@ import {
 } from "@/components/ui/dialog";
 import { Link } from "react-router-dom";
 
+// Push consent prefs into Google Consent Mode v2 so GA4 and Google Ads
+// only set cookies / use identifiers when the user has agreed.
+const applyConsentToGtag = (prefs: {
+  functional: boolean;
+  analytics: boolean;
+  marketing: boolean;
+}) => {
+  if (typeof window === "undefined") return;
+  const w = window as unknown as { gtag?: (...args: unknown[]) => void };
+  if (typeof w.gtag !== "function") return;
+  w.gtag("consent", "update", {
+    ad_storage: prefs.marketing ? "granted" : "denied",
+    ad_user_data: prefs.marketing ? "granted" : "denied",
+    ad_personalization: prefs.marketing ? "granted" : "denied",
+    analytics_storage: prefs.analytics ? "granted" : "denied",
+    functionality_storage: prefs.functional ? "granted" : "denied",
+    personalization_storage: prefs.functional ? "granted" : "denied",
+  });
+};
+
 const CookieConsent = () => {
   const [showBanner, setShowBanner] = useState(false);
   const [showPreferences, setShowPreferences] = useState(false);
@@ -28,24 +48,22 @@ const CookieConsent = () => {
   }, []);
 
   const handleAcceptAll = () => {
+    const prefs = { necessary: true, functional: true, analytics: true, marketing: true };
     localStorage.setItem("cookieConsent", JSON.stringify({
-      necessary: true,
-      functional: true,
-      analytics: true,
-      marketing: true,
+      ...prefs,
       timestamp: new Date().toISOString(),
     }));
+    applyConsentToGtag(prefs);
     setShowBanner(false);
   };
 
   const handleRejectNonEssential = () => {
+    const prefs = { necessary: true, functional: false, analytics: false, marketing: false };
     localStorage.setItem("cookieConsent", JSON.stringify({
-      necessary: true,
-      functional: false,
-      analytics: false,
-      marketing: false,
+      ...prefs,
       timestamp: new Date().toISOString(),
     }));
+    applyConsentToGtag(prefs);
     setShowBanner(false);
   };
 
@@ -54,6 +72,7 @@ const CookieConsent = () => {
       ...preferences,
       timestamp: new Date().toISOString(),
     }));
+    applyConsentToGtag(preferences);
     setShowPreferences(false);
     setShowBanner(false);
   };
