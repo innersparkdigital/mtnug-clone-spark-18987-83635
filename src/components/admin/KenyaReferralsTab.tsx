@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Copy, Plus, Link2, MousePointerClick, CheckCircle2, Gift, Loader2 } from "lucide-react";
+import { Copy, Plus, Link2, MousePointerClick, CheckCircle2, Gift, Loader2, Eye, Globe } from "lucide-react";
 
 type RefLink = {
   id: string;
@@ -43,6 +43,15 @@ type Conv = {
 
 type Click = { id: string; referral_link_id: string; clicked_at: string; converted: boolean };
 
+type KenyaVisit = {
+  id: string;
+  session_id: string | null;
+  source: string | null;
+  device_type: string | null;
+  referrer: string | null;
+  created_at: string;
+};
+
 const slugify = (s: string) =>
   s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 40);
 
@@ -64,6 +73,7 @@ export default function KenyaReferralsTab() {
   const [links, setLinks] = useState<RefLink[]>([]);
   const [clicks, setClicks] = useState<Click[]>([]);
   const [convs, setConvs] = useState<Conv[]>([]);
+  const [visits, setVisits] = useState<KenyaVisit[]>([]);
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [detail, setDetail] = useState<RefLink | null>(null);
@@ -100,14 +110,16 @@ export default function KenyaReferralsTab() {
 
   const fetchAll = async () => {
     setLoading(true);
-    const [l, c, v] = await Promise.all([
+    const [l, c, v, pv] = await Promise.all([
       supabase.from("referral_links").select("*").order("created_at", { ascending: false }),
       supabase.from("referral_clicks").select("id, referral_link_id, clicked_at, converted"),
       supabase.from("referral_conversions").select("*"),
+      supabase.from("kenya_page_visits" as any).select("id, session_id, source, device_type, referrer, created_at").order("created_at", { ascending: false }).limit(2000),
     ]);
     if (l.data) setLinks(l.data as RefLink[]);
     if (c.data) setClicks(c.data as Click[]);
     if (v.data) setConvs(v.data as Conv[]);
+    if (pv.data) setVisits(pv.data as unknown as KenyaVisit[]);
     setLoading(false);
   };
 
@@ -121,6 +133,44 @@ export default function KenyaReferralsTab() {
     const pendingRewards = convs.filter((c) => !c.reward_issued).length;
     return { active, totalClicks, totalConv, rate, pendingRewards };
   }, [links, clicks, convs]);
+
+  const visitStats = useMemo(() => {
+    const now = Date.now();
+    const dayMs = 24 * 60 * 60 * 1000;
+    let today = 0, week = 0, month = 0;
+    const sourceCounts: Record<string, number> = {};
+    const deviceCounts: Record<string, number> = {};
+    const dailySeries: Record<string, number> = {};
+    visits.forEach((v) => {
+      const t = new Date(v.created_at).getTime();
+      const ageDays = (now - t) / dayMs;
+      if (ageDays < 1) today++;
+      if (ageDays < 7) week++;
+      if (ageDays < 30) month++;
+      const s = (v.source || "unknown").toLowerCase();
+      sourceCounts[s] = (sourceCounts[s] || 0) + 1;
+      const d = (v.device_type || "unknown").toLowerCase();
+      deviceCounts[d] = (deviceCounts[d] || 0) + 1;
+      const dayKey = new Date(v.created_at).toISOString().slice(0, 10);
+      dailySeries[dayKey] = (dailySeries[dayKey] || 0) + 1;
+    });
+    const last14 = Array.from({ length: 14 }, (_, i) => {
+      const d = new Date(now - (13 - i) * dayMs);
+      const key = d.toISOString().slice(0, 10);
+      return { day: key.slice(5), count: dailySeries[key] || 0 };
+    });
+    const maxDay = Math.max(1, ...last14.map((d) => d.count));
+    return {
+      total: visits.length,
+      today,
+      week,
+      month,
+      sources: Object.entries(sourceCounts).sort((a, b) => b[1] - a[1]),
+      devices: Object.entries(deviceCounts).sort((a, b) => b[1] - a[1]),
+      last14,
+      maxDay,
+    };
+  }, [visits]);
 
   const perLink = useMemo(() => {
     const m: Record<string, { clicks: number; conv: number; pending: number }> = {};
@@ -214,6 +264,65 @@ export default function KenyaReferralsTab() {
 
   return (
     <div className="space-y-6">
+      {/* Kenya page visit analytics */}
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle className="flex items-center gap-2"><Globe className="h-5 w-5" /> Kenya Page Visits</CardTitle>
+          <Badge variant="secondary">{visitStats.total.toLocaleString()} total</Badge>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <Stat icon={<Eye className="h-4 w-4" />} label="Today" value={visitStats.today} />
+            <Stat icon={<Eye className="h-4 w-4" />} label="Last 7 days" value={visitStats.week} />
+            <Stat icon={<Eye className="h-4 w-4" />} label="Last 30 days" value={visitStats.month} />
+            <Stat icon={<Eye className="h-4 w-4" />} label="All time" value={visitStats.total} />
+          </div>
+
+          <div>
+            <div className="text-sm font-medium mb-2">Visits — last 14 days</div>
+            <div className="flex items-end gap-1 h-24">
+              {visitStats.last14.map((d) => (
+                <div key={d.day} className="flex-1 flex flex-col items-center gap-1">
+                  <div
+                    className="w-full rounded-t bg-primary/70"
+                    style={{ height: `${(d.count / visitStats.maxDay) * 100}%`, minHeight: d.count > 0 ? 4 : 1 }}
+                    title={`${d.day}: ${d.count}`}
+                  />
+                  <span className="text-[9px] text-muted-foreground">{d.day}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            <div>
+              <div className="text-sm font-medium mb-2">Top sources</div>
+              <div className="space-y-1">
+                {visitStats.sources.slice(0, 6).map(([s, n]) => (
+                  <div key={s} className="flex justify-between text-sm">
+                    <span className="capitalize">{s}</span>
+                    <span className="font-medium">{n}</span>
+                  </div>
+                ))}
+                {visitStats.sources.length === 0 && <div className="text-sm text-muted-foreground">No visits yet.</div>}
+              </div>
+            </div>
+            <div>
+              <div className="text-sm font-medium mb-2">Devices</div>
+              <div className="space-y-1">
+                {visitStats.devices.map(([d, n]) => (
+                  <div key={d} className="flex justify-between text-sm">
+                    <span className="capitalize">{d}</span>
+                    <span className="font-medium">{n}</span>
+                  </div>
+                ))}
+                {visitStats.devices.length === 0 && <div className="text-sm text-muted-foreground">—</div>}
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
         <Stat icon={<Link2 className="h-4 w-4" />} label="Active Links" value={stats.active} />
         <Stat icon={<MousePointerClick className="h-4 w-4" />} label="Clicks" value={stats.totalClicks} />
