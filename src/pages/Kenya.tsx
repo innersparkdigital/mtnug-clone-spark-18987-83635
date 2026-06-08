@@ -501,6 +501,39 @@ export default function Kenya() {
 
       {/* FINAL CTA */}
       <div style={{ background: WARMTH, height: 4 }} />
+
+      {/* CITY COVERAGE — SEO long-tail */}
+      <section id="cities" className="py-14 bg-white" style={{ borderTop: "0.5px solid #DDDDEE" }}>
+        <div className="container mx-auto px-4 max-w-5xl">
+          <h2 className="text-[26px] font-semibold text-center" style={{ color: DEEP_NIGHT }}>
+            Online therapy across every Kenyan city
+          </h2>
+          <p className="text-[15px] text-center max-w-2xl mx-auto mt-3" style={{ color: "#555" }}>
+            Wherever you are in Kenya, your next session is one WhatsApp call away. Bandwidth-friendly video, voice or chat — no clinic visit required.
+          </p>
+          <div className="grid md:grid-cols-3 gap-5 mt-10">
+            {[
+              { id: "nairobi", city: "Nairobi", body: "Skip Nairobi traffic and clinic waiting rooms. Connect with a licensed therapist from Kilimani, Westlands, Karen, Lavington or anywhere in the city — evenings and weekends included.", kw: "Therapist in Nairobi" },
+              { id: "mombasa", city: "Mombasa", body: "Coastal-based clients book online sessions in English or Kiswahili from Nyali, Bamburi or Mombasa Island. Pay via M-Pesa, meet on WhatsApp video.", kw: "Counsellor in Mombasa" },
+              { id: "kisumu", city: "Kisumu", body: "Lakeside therapy for professionals, students and families in Kisumu, Milimani and surrounding areas — without leaving home. Kiswahili and Dholuo-friendly therapists.", kw: "Therapy in Kisumu" },
+              { id: "nakuru", city: "Nakuru", body: "Whether you're in Nakuru CBD, Section 58 or Naivasha, book a licensed African therapist online. Sessions run on low-bandwidth video, voice or chat.", kw: "Therapist in Nakuru" },
+              { id: "eldoret", city: "Eldoret", body: "Eldoret-based clients access mental health support discreetly — pay with M-Pesa, talk on WhatsApp, in English or Kiswahili.", kw: "Counselling in Eldoret" },
+              { id: "rural-kenya", city: "Rural Kenya", body: "From Garissa to Kakamega, Meru to Kitale — if you have a phone and mobile data, you can see a therapist this week. Designed for low-bandwidth connections.", kw: "Online therapy Kenya" },
+            ].map((c) => (
+              <div key={c.id} id={c.id} className="bg-white border rounded-2xl p-5" style={{ borderColor: "#E6E8FA", scrollMarginTop: 80 }}>
+                <p className="text-[11px] font-semibold uppercase tracking-wide" style={{ color: SPARK_BLUE }}>{c.kw}</p>
+                <h3 className="font-display font-semibold text-lg mt-1" style={{ color: DEEP_NIGHT }}>Therapy in {c.city}</h3>
+                <p className="text-sm mt-2 leading-relaxed" style={{ color: "#555" }}>{c.body}</p>
+                <Link to={`/book-therapist?market=kenya&city=${c.id}`} className="inline-block text-sm font-medium mt-3" style={{ color: SPARK_BLUE }}>
+                  Book a session in {c.city} →
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+      <div style={{ background: WARMTH, height: 4 }} />
+
       <section style={{ background: DEEP_NIGHT }} className="py-20 text-white">
         <div className="container mx-auto px-4 text-center max-w-2xl">
           <h2 className="text-3xl md:text-4xl font-bold font-display leading-tight">
