@@ -13,7 +13,7 @@ import servicesHero from "@/assets/mental-health-support-new.png";
 import virtualTherapy from "@/assets/virtual-therapy-service-new.png";
 import supportGroups from "@/assets/support-groups-service-new.png";
 import wellnessResources from "@/assets/wellness-resources-service-new.png";
-import corporateWellness from "@/assets/corporate-wellness-service-new.png";
+import corporateWellness from "@/assets/corporate-wellness-service-new.jpg";
 import mtnMomoLogo from "@/assets/payments/mtn-momo.png";
 import airtelMoneyLogo from "@/assets/payments/airtel-money.png";
 import mpesaLogo from "@/assets/payments/mpesa.png";
