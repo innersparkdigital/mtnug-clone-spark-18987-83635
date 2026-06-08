@@ -10,54 +10,99 @@ import heroVideo3 from "@/assets/hero-videos/hero-3.mp4.asset.json";
 import heroVideo4 from "@/assets/hero-videos/hero-4.mp4.asset.json";
 
 const heroVideos = [heroVideo1.url, heroVideo2.url, heroVideo3.url, heroVideo4.url];
-const SLIDE_MS = 6000;
+const SLIDE_MS = 7000;
+
+// Detect low-power / data-saving conditions where video should not play.
+const shouldDisableVideo = () => {
+  if (typeof window === "undefined") return false;
+  const nav: any = navigator;
+  if (nav?.connection?.saveData) return true;
+  const eff = nav?.connection?.effectiveType;
+  if (eff && /(^|-)2g$/i.test(eff)) return true;
+  if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return true;
+  return false;
+};
 
 const HeroSection = () => {
-  const [heroLoaded, setHeroLoaded] = useState(false);
-  const [activeIdx, setActiveIdx] = useState(0);
-  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+  const [videoEnabled, setVideoEnabled] = useState(false);
+  const [idx, setIdx] = useState(0);
+  const [showA, setShowA] = useState(true); // which buffer is on top
+  const aRef = useRef<HTMLVideoElement | null>(null);
+  const bRef = useRef<HTMLVideoElement | null>(null);
 
+  // Decide whether to load videos at all (after mount → SSR-safe + non-blocking)
   useEffect(() => {
-    const id = setInterval(() => {
-      setActiveIdx((i) => (i + 1) % heroVideos.length);
-    }, SLIDE_MS);
-    return () => clearInterval(id);
+    if (shouldDisableVideo()) return;
+    // Defer video boot until after the LCP image paints
+    const t = setTimeout(() => setVideoEnabled(true), 600);
+    return () => clearTimeout(t);
   }, []);
 
+  // Rotate sources using a 2-buffer A/B cross-fade — only 2 <video> elements ever exist.
   useEffect(() => {
-    const v = videoRefs.current[activeIdx];
-    if (v) {
-      try { v.currentTime = 0; v.play().catch(() => {}); } catch {}
-    }
-  }, [activeIdx]);
+    if (!videoEnabled) return;
+    const tick = () => {
+      setIdx((i) => (i + 1) % heroVideos.length);
+      setShowA((s) => !s);
+    };
+    const id = window.setInterval(tick, SLIDE_MS);
+    const onVis = () => {
+      const v = showA ? aRef.current : bRef.current;
+      if (document.hidden) v?.pause();
+      else v?.play().catch(() => {});
+    };
+    document.addEventListener("visibilitychange", onVis);
+    return () => {
+      window.clearInterval(id);
+      document.removeEventListener("visibilitychange", onVis);
+    };
+  }, [videoEnabled, showA]);
+
+  // Current source on the visible buffer; "next" source preloaded on hidden buffer
+  const visibleSrc = heroVideos[idx];
+  const nextSrc = heroVideos[(idx + 1) % heroVideos.length];
+  const aSrc = showA ? visibleSrc : nextSrc;
+  const bSrc = showA ? nextSrc : visibleSrc;
 
   return (
     <section className="relative min-h-[85vh] md:min-h-[90vh] flex items-center overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0">
-        {/* Poster image — shows instantly while first video loads */}
+        {/* Poster image — instant LCP, always present underneath the videos */}
         <img
           src={heroImage}
           alt="Therapy session"
-          className={`absolute inset-0 w-full h-full object-cover object-top transition-opacity duration-700 ${heroLoaded ? 'opacity-0' : 'opacity-100'}`}
+          className="absolute inset-0 w-full h-full object-cover object-top"
           loading="eager"
           fetchPriority="high"
           decoding="sync"
         />
-        {heroVideos.map((src, i) => (
-          <video
-            key={src}
-            ref={(el) => (videoRefs.current[i] = el)}
-            src={src}
-            autoPlay={i === 0}
-            muted
-            loop
-            playsInline
-            preload={i === 0 ? "auto" : "metadata"}
-            onLoadedData={() => { if (i === 0) setHeroLoaded(true); }}
-            className={`absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-[1200ms] ease-in-out ${i === activeIdx ? 'opacity-100' : 'opacity-0'}`}
-          />
-        ))}
+        {videoEnabled && (
+          <>
+            <video
+              ref={aRef}
+              src={aSrc}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="auto"
+              poster={heroImage}
+              className={`absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-[1000ms] ease-in-out ${showA ? "opacity-100" : "opacity-0"}`}
+            />
+            <video
+              ref={bRef}
+              src={bSrc}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="auto"
+              poster={heroImage}
+              className={`absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-[1000ms] ease-in-out ${showA ? "opacity-0" : "opacity-100"}`}
+            />
+          </>
+        )}
         <div className="absolute inset-0 bg-gradient-to-r from-foreground/85 via-foreground/70 to-foreground/40" />
       </div>
 
