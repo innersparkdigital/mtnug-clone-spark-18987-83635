@@ -136,6 +136,7 @@ const SpecialistProfile = lazy(() => import("./pages/SpecialistProfile"));
 import ScrollToTop from "./components/ScrollToTop";
 import AIChatWidget from "./components/AIChatWidget";
 import WhisperFloatingWidget from "./components/WhisperFloatingWidget";
+import RoutePrefetcher from "./components/RoutePrefetcher";
 const Learning = lazy(() => import("./pages/Learning"));
 const CourseDetail = lazy(() => import("./pages/CourseDetail"));
 const LessonViewer = lazy(() => import("./pages/LessonViewer"));
@@ -265,6 +266,7 @@ const App = () => (
             <Sonner />
             <BrowserRouter>
               <ScrollToTop />
+              <RoutePrefetcher />
               <AIChatWidget />
               <WhisperFloatingWidget />
               <Suspense fallback={<RouteFallback />}>
