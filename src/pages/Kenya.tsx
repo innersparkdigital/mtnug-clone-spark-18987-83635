@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { ShieldCheck, Lock, Smartphone, Clock, Heart, Users, Building2, User as UserIcon, X } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -41,6 +41,36 @@ export default function Kenya() {
   const [bannerDismissed, setBannerDismissed] = useState(false);
   const [therapists, setTherapists] = useState<Therapist[]>([]);
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [searchParams] = useSearchParams();
+  const visitTracked = useRef(false);
+
+  // Track this Kenya page visit (admin analytics)
+  useEffect(() => {
+    if (visitTracked.current) return;
+    visitTracked.current = true;
+
+    const ua = navigator.userAgent;
+    const device = /Mobi|Android/i.test(ua) ? "mobile" : /Tablet|iPad/i.test(ua) ? "tablet" : "desktop";
+    const ref = document.referrer || "";
+    const sourceParam = searchParams.get("source") || searchParams.get("utm_source");
+    let source = "direct";
+    if (sourceParam) source = sourceParam;
+    else if (!ref) source = "direct";
+    else if (/facebook|twitter|instagram|linkedin|tiktok/i.test(ref)) source = "social";
+    else if (/innersparkafrica\.com/i.test(ref)) source = "internal";
+    else if (/google\.|bing\.|yahoo\./i.test(ref)) source = "search";
+    else if (/wa\.me|whatsapp/i.test(ref)) source = "whatsapp";
+    else source = "referral";
+
+    supabase.from("kenya_page_visits").insert({
+      session_id: `kv_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
+      source,
+      device_type: device,
+      user_agent: ua,
+      referrer: ref || null,
+      path: typeof window !== "undefined" ? window.location.pathname : "/kenya",
+    } as any).then(() => {});
+  }, [searchParams]);
 
   // Load referral banner from cookie
   useEffect(() => {

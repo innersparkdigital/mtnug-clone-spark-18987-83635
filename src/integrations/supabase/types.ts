@@ -1747,6 +1747,39 @@ export type Database = {
           },
         ]
       }
+      kenya_page_visits: {
+        Row: {
+          created_at: string
+          device_type: string | null
+          id: string
+          path: string | null
+          referrer: string | null
+          session_id: string | null
+          source: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string
+          device_type?: string | null
+          id?: string
+          path?: string | null
+          referrer?: string | null
+          session_id?: string | null
+          source?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string
+          device_type?: string | null
+          id?: string
+          path?: string | null
+          referrer?: string | null
+          session_id?: string | null
+          source?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       lesson_progress: {
         Row: {
           completed: boolean | null
