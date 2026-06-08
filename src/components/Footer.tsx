@@ -33,6 +33,7 @@ const Footer = () => {
               <li><Link to="/whisper" className="hover:text-primary transition-colors">Whisper</Link></li>
               <li><Link to="/amani-ai" className="hover:text-primary transition-colors">Amani AI</Link></li>
               <li><Link to="/kenya" className="hover:text-primary transition-colors">Therapy in Kenya</Link></li>
+              <li><Link to="/therapy-in-uganda" className="hover:text-primary transition-colors">Therapy in Uganda</Link></li>
             </ul>
           </div>
 
