@@ -32,6 +32,7 @@ const SpecialistsTab = lazy(() => import('@/components/admin/SpecialistsTab'));
 const SiteSectionsTab = lazy(() => import('@/components/admin/SiteSectionsTab'));
 const FeedbackTab = lazy(() => import('@/components/admin/FeedbackTab'));
 const KenyaReferralsTab = lazy(() => import('@/components/admin/KenyaReferralsTab'));
+const SearchConsoleTab = lazy(() => import('@/components/admin/SearchConsoleTab'));
 
 const TabFallback = () => (
   <div className="flex items-center justify-center py-12">
@@ -310,6 +311,12 @@ const AdminDashboard = () => {
               <TabsTrigger value="kenya-referrals" className="gap-2">
                 <span aria-hidden>🇰🇪</span>
                 Kenya Referrals
+              </TabsTrigger>
+            )}
+            {isAdmin && (
+              <TabsTrigger value="search-console" className="gap-2">
+                <BarChart3 className="h-4 w-4" />
+                Search Console
               </TabsTrigger>
             )}
           </TabsList>
@@ -723,6 +730,11 @@ const AdminDashboard = () => {
           {isAdmin && (
             <TabsContent value="kenya-referrals">
               <Suspense fallback={<TabFallback />}><KenyaReferralsTab /></Suspense>
+            </TabsContent>
+          )}
+          {isAdmin && (
+            <TabsContent value="search-console">
+              <Suspense fallback={<TabFallback />}><SearchConsoleTab /></Suspense>
             </TabsContent>
           )}
         </Tabs>
