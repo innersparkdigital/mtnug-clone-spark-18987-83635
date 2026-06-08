@@ -11,40 +11,55 @@ import heroVideo4 from "@/assets/hero-videos/hero-4.mp4.asset.json";
 
 const heroVideos = [heroVideo1.url, heroVideo2.url, heroVideo3.url, heroVideo4.url];
 const SLIDE_MS = 7000;
+const PRELOAD_LEAD_MS = 1500; // start fetching the next clip this long before the swap
 
-// Detect low-power / data-saving conditions where video should not play.
+// Skip videos on low-power / data-saving / small-screen conditions (Uganda-first).
 const shouldDisableVideo = () => {
   if (typeof window === "undefined") return false;
   const nav: any = navigator;
   if (nav?.connection?.saveData) return true;
   const eff = nav?.connection?.effectiveType;
   if (eff && /(^|-)2g$/i.test(eff)) return true;
+  if (eff === "3g") return true; // be conservative on slow 3G
   if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return true;
+  if (window.matchMedia?.("(max-width: 767px)").matches) return true; // mobile = poster only
   return false;
 };
 
 const HeroSection = () => {
   const [videoEnabled, setVideoEnabled] = useState(false);
   const [idx, setIdx] = useState(0);
-  const [showA, setShowA] = useState(true); // which buffer is on top
+  const [showA, setShowA] = useState(true);
+  const [preloadNext, setPreloadNext] = useState(false); // gate the second buffer's src
   const aRef = useRef<HTMLVideoElement | null>(null);
   const bRef = useRef<HTMLVideoElement | null>(null);
 
-  // Decide whether to load videos at all (after mount → SSR-safe + non-blocking)
+  // Defer video boot until the browser is idle (after LCP paint), and only on capable devices.
   useEffect(() => {
     if (shouldDisableVideo()) return;
-    // Defer video boot until after the LCP image paints
-    const t = setTimeout(() => setVideoEnabled(true), 600);
-    return () => clearTimeout(t);
+    const start = () => setVideoEnabled(true);
+    const w = window as any;
+    if (typeof w.requestIdleCallback === "function") {
+      const id = w.requestIdleCallback(start, { timeout: 2500 });
+      return () => w.cancelIdleCallback?.(id);
+    }
+    const t = window.setTimeout(start, 1500);
+    return () => window.clearTimeout(t);
   }, []);
 
-  // Rotate sources using a 2-buffer A/B cross-fade — only 2 <video> elements ever exist.
+  // Rotate clips — fetch the next clip only ~1.5s before swapping (saves 1 video download upfront).
   useEffect(() => {
     if (!videoEnabled) return;
+    let preloadTimer: number | undefined;
     const tick = () => {
-      setIdx((i) => (i + 1) % heroVideos.length);
-      setShowA((s) => !s);
+      preloadTimer = window.setTimeout(() => setPreloadNext(true), SLIDE_MS - PRELOAD_LEAD_MS);
+      window.setTimeout(() => {
+        setIdx((i) => (i + 1) % heroVideos.length);
+        setShowA((s) => !s);
+        setPreloadNext(false);
+      }, SLIDE_MS);
     };
+    tick();
     const id = window.setInterval(tick, SLIDE_MS);
     const onVis = () => {
       const v = showA ? aRef.current : bRef.current;
@@ -54,15 +69,17 @@ const HeroSection = () => {
     document.addEventListener("visibilitychange", onVis);
     return () => {
       window.clearInterval(id);
+      if (preloadTimer) window.clearTimeout(preloadTimer);
       document.removeEventListener("visibilitychange", onVis);
     };
   }, [videoEnabled, showA]);
 
-  // Current source on the visible buffer; "next" source preloaded on hidden buffer
   const visibleSrc = heroVideos[idx];
   const nextSrc = heroVideos[(idx + 1) % heroVideos.length];
   const aSrc = showA ? visibleSrc : nextSrc;
   const bSrc = showA ? nextSrc : visibleSrc;
+  // Only attach the hidden buffer's src when we're about to need it.
+  const hiddenHasSrc = preloadNext;
 
   return (
     <section className="relative min-h-[85vh] md:min-h-[90vh] flex items-center overflow-hidden">
@@ -81,7 +98,7 @@ const HeroSection = () => {
           <>
             <video
               ref={aRef}
-              src={aSrc}
+              src={showA ? aSrc : (hiddenHasSrc ? aSrc : undefined)}
               autoPlay
               muted
               loop
@@ -92,7 +109,7 @@ const HeroSection = () => {
             />
             <video
               ref={bRef}
-              src={bSrc}
+              src={!showA ? bSrc : (hiddenHasSrc ? bSrc : undefined)}
               autoPlay
               muted
               loop
