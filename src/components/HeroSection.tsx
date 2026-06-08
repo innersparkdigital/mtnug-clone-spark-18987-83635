@@ -13,16 +13,14 @@ const heroVideos = [heroVideo1.url, heroVideo2.url, heroVideo3.url, heroVideo4.u
 const SLIDE_MS = 7000;
 const PRELOAD_LEAD_MS = 1500; // start fetching the next clip this long before the swap
 
-// Skip videos on low-power / data-saving / small-screen conditions (Uganda-first).
+// Skip videos only on the clearest low-power signals.
 const shouldDisableVideo = () => {
   if (typeof window === "undefined") return false;
   const nav: any = navigator;
   if (nav?.connection?.saveData) return true;
   const eff = nav?.connection?.effectiveType;
   if (eff && /(^|-)2g$/i.test(eff)) return true;
-  if (eff === "3g") return true; // be conservative on slow 3G
   if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return true;
-  if (window.matchMedia?.("(max-width: 767px)").matches) return true; // mobile = poster only
   return false;
 };
 
