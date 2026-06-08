@@ -450,6 +450,35 @@
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
+
+      // ─── Google Consent Mode v2 ───
+      // Default: deny all storage until the user accepts via the cookie banner.
+      gtag('consent', 'default', {
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        analytics_storage: 'denied',
+        functionality_storage: 'denied',
+        personalization_storage: 'denied',
+        security_storage: 'granted',
+        wait_for_update: 500
+      });
+
+      // Re-apply any previously saved consent on subsequent visits.
+      try {
+        var saved = JSON.parse(localStorage.getItem('cookieConsent') || 'null');
+        if (saved) {
+          gtag('consent', 'update', {
+            ad_storage: saved.marketing ? 'granted' : 'denied',
+            ad_user_data: saved.marketing ? 'granted' : 'denied',
+            ad_personalization: saved.marketing ? 'granted' : 'denied',
+            analytics_storage: saved.analytics ? 'granted' : 'denied',
+            functionality_storage: saved.functional ? 'granted' : 'denied',
+            personalization_storage: saved.functional ? 'granted' : 'denied'
+          });
+        }
+      } catch (e) {}
+
       gtag('js', new Date());
       gtag('config', 'G-CPL2J7D1TQ');
     </script>
