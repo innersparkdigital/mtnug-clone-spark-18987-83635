@@ -240,10 +240,10 @@ export default function SpecialistsTab() {
                 <div className="relative">
                   {currentPhoto ? (
                     <button type="button" onClick={() => setPreviewPhoto(currentPhoto)} className="block">
-                      <img src={currentPhoto} alt="Specialist photo preview" className="w-24 h-24 rounded-full object-cover border" />
+                      <img src={currentPhoto} alt="Specialist photo preview" className="w-40 h-40 rounded-lg object-cover border shadow-sm hover:opacity-90 transition" />
                     </button>
                   ) : (
-                    <div className="w-24 h-24 rounded-full bg-muted flex items-center justify-center text-xs text-muted-foreground border">No photo</div>
+                    <div className="w-40 h-40 rounded-lg bg-muted flex items-center justify-center text-xs text-muted-foreground border">No photo</div>
                   )}
                 </div>
                 <div className="flex-1 space-y-2">
@@ -257,7 +257,7 @@ export default function SpecialistsTab() {
                       <X className="w-4 h-4 mr-1" /> Remove photo
                     </Button>
                   )}
-                  <p className="text-xs text-muted-foreground">PNG or JPG. Click preview to enlarge.</p>
+                  <p className="text-xs text-muted-foreground">PNG or JPG. Click the photo to enlarge. New uploads preview instantly before saving.</p>
                 </div>
               </div>
             </div>
