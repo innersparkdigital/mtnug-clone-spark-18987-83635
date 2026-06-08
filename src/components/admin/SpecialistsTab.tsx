@@ -15,6 +15,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Loader2, Plus, Pencil, Trash2, Search, Upload, X } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { getSpecialistImage } from "@/lib/specialistImages";
 
 const TYPES = ["Therapist", "Psychologist", "Psychiatrist", "Counsellor", "Coach", "Social Worker"];
 const SPECS = ["Anxiety","Depression","Burnout","Grief","Relationships","Addiction","Trauma","Workplace Stress","Adolescents","Family","Marriage","Couples","Children","Other"];
@@ -60,7 +61,8 @@ export default function SpecialistsTab() {
   const [previewPhoto, setPreviewPhoto] = useState<string | null>(null);
 
   const photoFilePreview = photoFile ? URL.createObjectURL(photoFile) : null;
-  const currentPhoto = photoFilePreview || editing.image_url || null;
+  const fallbackPhoto = editing.name ? getSpecialistImage(editing.name, editing.image_url || null) : null;
+  const currentPhoto = photoFilePreview || editing.image_url || fallbackPhoto || null;
 
   const load = async () => {
     setLoading(true);
@@ -190,12 +192,15 @@ export default function SpecialistsTab() {
                   <div className="flex items-center gap-2">
                     <button
                       type="button"
-                      onClick={() => s.image_url && setPreviewPhoto(s.image_url)}
+                      onClick={() => {
+                        const p = getSpecialistImage(s.name, s.image_url);
+                        if (p) setPreviewPhoto(p);
+                      }}
                       className="shrink-0 rounded-full focus:outline-none focus:ring-2 focus:ring-primary"
                       aria-label={`Preview photo of ${s.name}`}
                     >
                       <Avatar className="w-10 h-10">
-                        <AvatarImage src={s.image_url || undefined} />
+                        <AvatarImage src={getSpecialistImage(s.name, s.image_url) || undefined} />
                         <AvatarFallback>{s.name.split(" ").map(n => n[0]).join("").slice(0,2)}</AvatarFallback>
                       </Avatar>
                     </button>
