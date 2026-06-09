@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import hero1 from "@/assets/hero-videos/hero-1.mp4.asset.json";
 import hero2 from "@/assets/hero-videos/hero-2.mp4.asset.json";
+import hero3 from "@/assets/hero-videos/hero-3.mp4.asset.json";
 
-const videos = [hero1.url, hero2.url];
+const videos = [hero1.url, hero2.url, hero3.url];
 
 export default function KenyaHeroVideo() {
   const [idx, setIdx] = useState(0);
