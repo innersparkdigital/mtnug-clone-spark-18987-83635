@@ -12,6 +12,9 @@ const heroVideos = [heroVideo1.url, heroVideo2.url, heroVideo3.url, heroVideo4.u
 const SLIDE_MS = 7000;
 const PRELOAD_LEAD_MS = 1500; // start fetching the next clip this long before the swap
 
+const isMobileViewport = () =>
+  typeof window !== "undefined" && window.matchMedia?.("(max-width: 767px)").matches;
+
 // Skip videos only on the clearest low-power signals.
 const shouldDisableVideo = () => {
   if (typeof window === "undefined") return false;
@@ -25,6 +28,7 @@ const shouldDisableVideo = () => {
 
 const HeroSection = () => {
   const [videoEnabled, setVideoEnabled] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [idx, setIdx] = useState(0);
   const [showA, setShowA] = useState(true);
   const [preloadNext, setPreloadNext] = useState(false); // gate the second buffer's src
@@ -35,11 +39,16 @@ const HeroSection = () => {
   useEffect(() => {
     if (shouldDisableVideo()) return;
     setVideoEnabled(true);
+    setIsMobile(isMobileViewport());
+    const mql = window.matchMedia("(max-width: 767px)");
+    const onChange = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mql.addEventListener?.("change", onChange);
+    return () => mql.removeEventListener?.("change", onChange);
   }, []);
 
   // Rotate clips — fetch the next clip only ~1.5s before swapping (saves 1 video download upfront).
   useEffect(() => {
-    if (!videoEnabled) return;
+    if (!videoEnabled || isMobile) return; // mobile shows a single looping clip
     let preloadTimer: number | undefined;
     const tick = () => {
       preloadTimer = window.setTimeout(() => setPreloadNext(true), SLIDE_MS - PRELOAD_LEAD_MS);
@@ -62,7 +71,7 @@ const HeroSection = () => {
       if (preloadTimer) window.clearTimeout(preloadTimer);
       document.removeEventListener("visibilitychange", onVis);
     };
-  }, [videoEnabled, showA]);
+  }, [videoEnabled, showA, isMobile]);
 
   const visibleSrc = heroVideos[idx];
   const nextSrc = heroVideos[(idx + 1) % heroVideos.length];
@@ -77,7 +86,19 @@ const HeroSection = () => {
       <div className="absolute inset-0">
         {/* Solid fallback so there's never a flash of broken content */}
         <div className="absolute inset-0 bg-foreground" />
-        {videoEnabled && (
+        {videoEnabled && isMobile && (
+          <video
+            ref={aRef}
+            src={heroVideos[0]}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            className="absolute inset-0 w-full h-full object-cover object-center"
+          />
+        )}
+        {videoEnabled && !isMobile && (
           <>
             <video
               ref={aRef}
