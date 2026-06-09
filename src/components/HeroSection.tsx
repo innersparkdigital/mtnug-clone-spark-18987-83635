@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Shield, Star, Users, CheckCircle } from "lucide-react";
 import { motion } from "framer-motion";
-import heroImage from "@/assets/hero-slide-1.jpg";
 import heroVideo1 from "@/assets/hero-videos/hero-1.mp4.asset.json";
 import heroVideo2 from "@/assets/hero-videos/hero-2.mp4.asset.json";
 import heroVideo3 from "@/assets/hero-videos/hero-3.mp4.asset.json";
@@ -32,17 +31,10 @@ const HeroSection = () => {
   const aRef = useRef<HTMLVideoElement | null>(null);
   const bRef = useRef<HTMLVideoElement | null>(null);
 
-  // Defer video boot until the browser is idle (after LCP paint), and only on capable devices.
+  // Enable videos immediately on capable devices (no idle delay so mobile shows it too).
   useEffect(() => {
     if (shouldDisableVideo()) return;
-    const start = () => setVideoEnabled(true);
-    const w = window as any;
-    if (typeof w.requestIdleCallback === "function") {
-      const id = w.requestIdleCallback(start, { timeout: 2500 });
-      return () => w.cancelIdleCallback?.(id);
-    }
-    const t = window.setTimeout(start, 1500);
-    return () => window.clearTimeout(t);
+    setVideoEnabled(true);
   }, []);
 
   // Rotate clips — fetch the next clip only ~1.5s before swapping (saves 1 video download upfront).
@@ -83,15 +75,8 @@ const HeroSection = () => {
     <section className="relative min-h-[85vh] md:min-h-[90vh] flex items-center overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0">
-        {/* Poster image — instant LCP, always present underneath the videos */}
-        <img
-          src={heroImage}
-          alt="Therapy session"
-          className="absolute inset-0 w-full h-full object-cover object-top"
-          loading="eager"
-          fetchPriority="high"
-          decoding="sync"
-        />
+        {/* Solid fallback so there's never a flash of broken content */}
+        <div className="absolute inset-0 bg-foreground" />
         {videoEnabled && (
           <>
             <video
@@ -102,7 +87,6 @@ const HeroSection = () => {
               loop
               playsInline
               preload="auto"
-              poster={heroImage}
               className={`absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-[1000ms] ease-in-out ${showA ? "opacity-100" : "opacity-0"}`}
             />
             <video
@@ -113,7 +97,6 @@ const HeroSection = () => {
               loop
               playsInline
               preload="auto"
-              poster={heroImage}
               className={`absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-[1000ms] ease-in-out ${showA ? "opacity-0" : "opacity-100"}`}
             />
           </>
