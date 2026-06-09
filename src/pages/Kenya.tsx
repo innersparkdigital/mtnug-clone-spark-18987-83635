@@ -241,12 +241,7 @@ export default function Kenya() {
           </div>
           <div className="hidden md:block">
             <div className="rounded-2xl overflow-hidden aspect-[4/3]" style={{ background: "#2A3AAF" }}>
-              <img
-                src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=900&q=75"
-                alt="East African professional in a video therapy session on her laptop"
-                className="w-full h-full object-cover"
-                loading="eager"
-              />
+              <KenyaHeroVideo />
             </div>
           </div>
         </div>
