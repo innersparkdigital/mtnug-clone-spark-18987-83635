@@ -181,7 +181,7 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
       return (
         `*New Support Group Request – InnerSpark Africa*\n\n` +
         `*Name:* ${data.name}\n*Phone:* ${data.phone}\n*Email:* ${data.email}\n` + refLine + `\n` +
-        `*Group:* ${groupName}\n*Weekly Fee:* UGX 25,000`
+        `*Group:* ${groupName}\n*Weekly Fee:* ${groupPriceLabel}`
       );
     }
     const typeLabel = THERAPY_OPTIONS.find((t) => t.id === data.therapyType)?.title ?? "—";
@@ -280,7 +280,7 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
         <div className="space-y-4">
           <div className="rounded-lg bg-primary/10 px-4 py-3 text-sm">
             <span className="font-semibold text-primary">Weekly fee:</span>{" "}
-            <span className="text-foreground">UGX 25,000</span>
+            <span className="text-foreground">{groupPriceLabel}</span>
           </div>
           <div>
             <Label>Select a group</Label>
