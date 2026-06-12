@@ -166,10 +166,12 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
   };
 
   const buildSummary = () => {
+    const refSlug = getReferralCookie();
+    const refLine = refSlug ? `\n*Referred by:* ${refSlug}\n` : "";
     if (isGroup) {
       return (
         `*New Support Group Request – InnerSpark Africa*\n\n` +
-        `*Name:* ${data.name}\n*Phone:* ${data.phone}\n*Email:* ${data.email}\n\n` +
+        `*Name:* ${data.name}\n*Phone:* ${data.phone}\n*Email:* ${data.email}\n` + refLine + `\n` +
         `*Group:* ${groupName}\n*Weekly Fee:* UGX 25,000`
       );
     }
@@ -179,7 +181,7 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
       : `*New Therapy Booking – InnerSpark Africa*`;
     return (
       `${header}\n\n` +
-      `*Name:* ${data.name}\n*Phone:* ${data.phone}\n*Email:* ${data.email}\n\n` +
+      `*Name:* ${data.name}\n*Phone:* ${data.phone}\n*Email:* ${data.email}\n` + refLine + `\n` +
       `*Therapy type:* ${typeLabel}\n` +
       `*Gender:* ${data.gender}\n` +
       `*Age:* ${data.age}\n` +
