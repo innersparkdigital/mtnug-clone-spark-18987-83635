@@ -7,6 +7,8 @@ import heroVideo1 from "@/assets/hero-videos/hero-1.mp4.asset.json";
 import heroVideo2 from "@/assets/hero-videos/hero-2.mp4.asset.json";
 import heroVideo3 from "@/assets/hero-videos/hero-3.mp4.asset.json";
 import heroVideo4 from "@/assets/hero-videos/hero-4.mp4.asset.json";
+import { useBookingFlow } from "@/hooks/useBookingFlow";
+import BookingFormModal from "@/components/BookingFormModal";
 
 const heroVideos = [heroVideo1.url, heroVideo2.url, heroVideo3.url, heroVideo4.url];
 const SLIDE_MS = 7000;
@@ -34,6 +36,7 @@ const HeroSection = () => {
   const [preloadNext, setPreloadNext] = useState(false); // gate the second buffer's src
   const aRef = useRef<HTMLVideoElement | null>(null);
   const bRef = useRef<HTMLVideoElement | null>(null);
+  const { startBooking, closeFlow, isBookingFormOpen, actionType } = useBookingFlow();
 
   // Enable videos immediately on capable devices (no idle delay so mobile shows it too).
   useEffect(() => {
@@ -191,10 +194,10 @@ const HeroSection = () => {
           >
             <Button
               size="lg"
-              asChild
               className="bg-primary hover:bg-primary/90 text-primary-foreground px-10 py-7 text-lg font-bold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+              onClick={startBooking}
             >
-              <Link to="/mind-check">Start with a Free Wellbeing Check</Link>
+              Book a Session
             </Button>
             <Button
               size="lg"
@@ -231,6 +234,11 @@ const HeroSection = () => {
           </motion.div>
         </div>
       </div>
+      <BookingFormModal
+        isOpen={isBookingFormOpen}
+        onClose={closeFlow}
+        formType={actionType}
+      />
     </section>
   );
 };
