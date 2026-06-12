@@ -21,15 +21,30 @@ Deno.serve(async (req) => {
 
   try {
     const form = await req.formData()
-    const email = String(form.get('email') || '').trim().toLowerCase()
+    const emailRaw = String(form.get('email') || '').trim().toLowerCase()
+    const whatsappRaw = String(form.get('whatsapp_number') || '').trim()
+    const replyChannel = (String(form.get('reply_channel') || 'whatsapp').toLowerCase() === 'email') ? 'email' : 'whatsapp'
     const audio = form.get('audio') as File | null
     const duration = Number(form.get('duration') || 0)
     const language = String(form.get('language') || 'en')
     const topicHint = String(form.get('topic_hint') || '').slice(0, 200)
 
-    // Basic validation
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      return jsonError('A valid email is required', 400)
+    // Validation: require either WhatsApp number or email based on chosen channel
+    let email: string | null = null
+    let whatsapp: string | null = null
+    if (replyChannel === 'email') {
+      if (!emailRaw || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailRaw)) {
+        return jsonError('A valid email is required', 400)
+      }
+      email = emailRaw
+    } else {
+      // Normalize WhatsApp number: keep digits and leading +
+      const cleaned = whatsappRaw.replace(/[^\d+]/g, '')
+      if (!cleaned || cleaned.replace(/\D/g, '').length < 9) {
+        return jsonError('A valid WhatsApp number is required', 400)
+      }
+      whatsapp = cleaned.startsWith('+') ? cleaned : `+${cleaned.replace(/^0+/, '256')}`
+      if (emailRaw && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailRaw)) email = emailRaw
     }
     if (!audio || !(audio instanceof File)) {
       return jsonError('Audio recording is required', 400)
@@ -70,6 +85,8 @@ Deno.serve(async (req) => {
       .from('whispers')
       .insert({
         email,
+        whatsapp_number: whatsapp,
+        reply_channel: replyChannel,
         audio_path: fileName,
         duration_seconds: duration > 0 ? Math.round(duration) : null,
         language,
@@ -84,31 +101,36 @@ Deno.serve(async (req) => {
       return jsonError('Could not register your whisper. Please try again.', 500)
     }
 
-    // Newsletter auto-enroll (silent)
-    try {
-      await supabase.from('newsletter_subscribers').upsert(
-        { email, is_active: true },
-        { onConflict: 'email', ignoreDuplicates: true }
-      )
-    } catch (e) { console.warn('newsletter upsert failed', e) }
+    // Newsletter auto-enroll (silent) — only when we have an email
+    if (email) {
+      try {
+        await supabase.from('newsletter_subscribers').upsert(
+          { email, is_active: true },
+          { onConflict: 'email', ignoreDuplicates: true }
+        )
+      } catch (e) { console.warn('newsletter upsert failed', e) }
+    }
 
     const replyUrl = `https://www.innersparkafrica.com/whisper/${row.public_token}`
 
     // Fire-and-forget emails
-    sendEmail({
-      to: email,
-      subject: 'Your Whisper has been received 🤍',
-      html: userEmailHtml(replyUrl, row.public_token),
-    }).catch((e) => console.error('user email failed', e))
+    if (email) {
+      sendEmail({
+        to: email,
+        subject: 'Your Whisper has been received 🤍',
+        html: userEmailHtml(replyUrl, row.public_token),
+      }).catch((e) => console.error('user email failed', e))
+    }
 
+    const fromLabel = whatsapp ? `WhatsApp ${whatsapp}` : (email || 'anonymous')
     sendEmail({
       to: ADMIN_EMAIL,
-      subject: `🎙️ New Whisper from ${email}`,
-      html: adminEmailHtml(email, duration, topicHint, row.public_token),
+      subject: `🎙️ New Whisper from ${fromLabel}`,
+      html: adminEmailHtml(fromLabel, duration, topicHint, row.public_token),
     }).catch((e) => console.error('admin email failed', e))
 
     return new Response(
-      JSON.stringify({ success: true, public_token: row.public_token, reply_url: replyUrl }),
+      JSON.stringify({ success: true, public_token: row.public_token, reply_url: replyUrl, reply_channel: replyChannel }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   } catch (e) {
