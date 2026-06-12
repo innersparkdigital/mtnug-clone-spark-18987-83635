@@ -459,6 +459,19 @@ export default function KenyaReferralsTab() {
             <>
               <DialogHeader><DialogTitle>{detail.referrer_name} — /{detail.slug}</DialogTitle></DialogHeader>
               <div className="space-y-4 text-sm">
+                <div className="rounded-md border p-3 bg-muted/30 space-y-1">
+                  <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs">
+                    <div><span className="text-muted-foreground">Phone:</span> {detail.referrer_phone || "—"}</div>
+                    <div><span className="text-muted-foreground">Email:</span> {detail.referrer_email || "—"}</div>
+                    <div><span className="text-muted-foreground">Discount:</span> KES {detail.discount_amount_kes}</div>
+                    <div><span className="text-muted-foreground">Reward:</span> {detail.reward_type || "—"} {detail.reward_value ? `(${detail.reward_value})` : ""}</div>
+                  </div>
+                  <div className="flex items-center gap-2 pt-1">
+                    <code className="text-xs break-all">{ORIGIN}/kenya/ref/{detail.slug}</code>
+                    <Button size="icon" variant="ghost" onClick={() => copyText(`${ORIGIN}/kenya/ref/${detail.slug}`, "Link copied")}><Copy className="h-3 w-3" /></Button>
+                  </div>
+                </div>
+
                 <div className="grid grid-cols-3 gap-3">
                   <Stat label="Clicks" value={perLink[detail.id]?.clicks ?? 0} />
                   <Stat label="Conversions" value={perLink[detail.id]?.conv ?? 0} />
@@ -483,18 +496,39 @@ export default function KenyaReferralsTab() {
                 <div>
                   <h4 className="font-semibold mb-2">Conversions</h4>
                   <Table>
-                    <TableHeader><TableRow><TableHead>Client</TableHead><TableHead>Amount</TableHead><TableHead>Reward</TableHead><TableHead></TableHead></TableRow></TableHeader>
+                    <TableHeader><TableRow><TableHead>Client</TableHead><TableHead>When</TableHead><TableHead>Amount</TableHead><TableHead>Reward</TableHead><TableHead></TableHead></TableRow></TableHeader>
                     <TableBody>
                       {convs.filter((c) => c.referral_link_id === detail.id).map((c) => (
                         <TableRow key={c.id}>
                           <TableCell>{c.client_name || "—"}<div className="text-xs text-muted-foreground">{c.client_phone || ""}</div></TableCell>
+                          <TableCell className="text-xs">{new Date(c.converted_at).toLocaleString()}</TableCell>
                           <TableCell>KES {c.session_amount_kes ?? 0}</TableCell>
                           <TableCell>{c.reward_issued ? <Badge>Issued</Badge> : <Badge variant="secondary">Pending</Badge>}</TableCell>
                           <TableCell>{!c.reward_issued && <Button size="sm" variant="outline" onClick={() => issueReward(c)}>Mark issued</Button>}</TableCell>
                         </TableRow>
                       ))}
                       {convs.filter((c) => c.referral_link_id === detail.id).length === 0 && (
-                        <TableRow><TableCell colSpan={4} className="text-center text-muted-foreground">No conversions yet.</TableCell></TableRow>
+                        <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-4">
+                          No conversions yet. A conversion appears here when someone books a session after clicking this referral link.
+                        </TableCell></TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
+                </div>
+
+                <div>
+                  <h4 className="font-semibold mb-2">Recent clicks</h4>
+                  <Table>
+                    <TableHeader><TableRow><TableHead>When</TableHead><TableHead>Converted?</TableHead></TableRow></TableHeader>
+                    <TableBody>
+                      {clicks.filter((c) => c.referral_link_id === detail.id).slice(0, 20).map((c) => (
+                        <TableRow key={c.id}>
+                          <TableCell className="text-xs">{new Date(c.clicked_at).toLocaleString()}</TableCell>
+                          <TableCell>{c.converted ? <Badge>Yes</Badge> : <Badge variant="secondary">No</Badge>}</TableCell>
+                        </TableRow>
+                      ))}
+                      {clicks.filter((c) => c.referral_link_id === detail.id).length === 0 && (
+                        <TableRow><TableCell colSpan={2} className="text-center text-muted-foreground py-4">No clicks yet. Share this link to start tracking.</TableCell></TableRow>
                       )}
                     </TableBody>
                   </Table>
