@@ -49,19 +49,18 @@ export const useBookingFlow = () => {
   }, [flowStep]);
 
   const startBooking = useCallback(() => {
-    // Always show assessment choice first (no auto-skip based on stale data)
-    setFlowStep("assessment-choice");
+    // Skip assessment — go directly to the BetterHelp-style intake
+    setFlowStep("booking-form");
     setActionType("book");
   }, []);
 
   const startGroup = useCallback(() => {
-    // Always show assessment choice first (no auto-skip based on stale data)
-    setFlowStep("assessment-choice");
+    setFlowStep("group-form");
     setActionType("group");
   }, []);
 
   const startConsultation = useCallback(() => {
-    setFlowStep("assessment-choice");
+    setFlowStep("booking-form");
     setActionType("consultation");
   }, []);
 
