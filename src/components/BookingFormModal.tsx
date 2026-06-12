@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   Dialog,
   DialogContent,
@@ -44,10 +44,10 @@ interface BookingFormModalProps {
 
 type TherapyType = "individual" | "couples" | "teen";
 
-const THERAPY_OPTIONS: { id: TherapyType; title: string; subtitle: string; price: string; icon: any; color: string }[] = [
-  { id: "individual", title: "Individual", subtitle: "For myself", price: "UGX 75,000 / session", icon: User, color: "from-emerald-500 to-emerald-600" },
-  { id: "couples", title: "Couples", subtitle: "For me and my partner", price: "UGX 75,000 / session", icon: Heart, color: "from-sky-500 to-sky-600" },
-  { id: "teen", title: "Teen", subtitle: "For my child", price: "UGX 75,000 / session", icon: Users, color: "from-amber-500 to-amber-600" },
+const THERAPY_OPTIONS: { id: TherapyType; title: string; subtitle: string; icon: any; color: string }[] = [
+  { id: "individual", title: "Individual", subtitle: "For myself", icon: User, color: "from-emerald-500 to-emerald-600" },
+  { id: "couples", title: "Couples", subtitle: "For me and my partner", icon: Heart, color: "from-sky-500 to-sky-600" },
+  { id: "teen", title: "Teen", subtitle: "For my child", icon: Users, color: "from-amber-500 to-amber-600" },
 ];
 
 const GENDER_OPTIONS = ["Woman", "Man", "Non-binary", "Prefer not to say"];
