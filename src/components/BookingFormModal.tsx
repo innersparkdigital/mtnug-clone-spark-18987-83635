@@ -1,8 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import {
   Dialog,
   DialogContent,
@@ -12,15 +9,8 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -28,14 +18,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useAssessment, AssessmentResult, BookingActionType } from "@/contexts/AssessmentContext";
-import { Calendar, Clock, CheckCircle, Send, AlertCircle, Users, Phone, User, ArrowRight, CreditCard, Smartphone, Languages, Globe, Loader2, Mail } from "lucide-react";
+import { useAssessment, BookingActionType } from "@/contexts/AssessmentContext";
+import {
+  ArrowLeft,
+  ArrowRight,
+  CheckCircle,
+  Loader2,
+  User,
+  Users,
+  Heart,
+  Mail,
+  Phone,
+} from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { trackBookingFormOpened, trackBookingSubmitted, trackWhatsAppClick } from "@/lib/analytics";
 import { trackGadsBookingConversion, trackGadsWhatsAppClick, trackGadsThankYouConversion } from "@/lib/gadsTracking";
-import TherapistRecommendationCard from "./TherapistRecommendationCard";
 import { supabase } from "@/integrations/supabase/client";
-import PesaPalMethodSelector from "@/components/booking/PesaPalMethodSelector";
 
 interface BookingFormModalProps {
   isOpen: boolean;
@@ -43,727 +41,491 @@ interface BookingFormModalProps {
   formType: BookingActionType;
 }
 
-const bookingSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters").max(100),
-  email: z.string().email("Enter a valid email address"),
-  phone: z.string().min(10, "Enter a valid phone number").max(20),
-  preferredDay: z.string().min(1, "Please select a preferred day"),
-  preferredTime: z.string().min(1, "Please select a preferred time"),
-  paymentMethod: z.string().min(1, "Please select a payment method"),
-  preferredLanguage: z.string().min(1, "Please enter your preferred language").max(50),
-  country: z.string().min(1, "Please enter your country").max(60),
-  notes: z.string().max(500).optional(),
-});
+type TherapyType = "individual" | "couples" | "teen";
 
-const groupSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters").max(100),
-  email: z.string().email("Enter a valid email address"),
-  phone: z.string().min(10, "Enter a valid phone number").max(20),
-  groupType: z.string().min(1, "Please select a group"),
-  paymentMethod: z.string().min(1, "Please select a payment method"),
-  preferredLanguage: z.string().min(1, "Please enter your preferred language").max(50),
-  country: z.string().min(1, "Please enter your country").max(60),
-  notes: z.string().max(500).optional(),
-});
-
-type BookingFormData = z.infer<typeof bookingSchema>;
-type GroupFormData = z.infer<typeof groupSchema>;
-
-const supportGroups = [
-  { id: "depression", name: "Depression Support Group", fee: "UGX 25,000/week" },
-  { id: "anxiety", name: "Anxiety Management Group", fee: "UGX 25,000/week" },
-  { id: "grief", name: "Grief & Loss Support", fee: "UGX 25,000/week" },
-  { id: "addiction", name: "Addiction Recovery Group", fee: "UGX 25,000/week" },
-  { id: "stress", name: "Stress Management Circle", fee: "UGX 25,000/week" },
-  { id: "relationships", name: "Healthy Relationships Group", fee: "UGX 25,000/week" },
-  { id: "trauma", name: "Trauma Survivors Support", fee: "UGX 25,000/week" },
-  { id: "parents", name: "New Parents Support", fee: "UGX 25,000/week" },
+const THERAPY_OPTIONS: { id: TherapyType; title: string; subtitle: string; price: string; icon: any; color: string }[] = [
+  { id: "individual", title: "Individual", subtitle: "For myself", price: "UGX 75,000 / session", icon: User, color: "from-emerald-500 to-emerald-600" },
+  { id: "couples", title: "Couples", subtitle: "For me and my partner", price: "UGX 75,000 / session", icon: Heart, color: "from-sky-500 to-sky-600" },
+  { id: "teen", title: "Teen", subtitle: "For my child", price: "UGX 75,000 / session", icon: Users, color: "from-amber-500 to-amber-600" },
 ];
 
-const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-const times = ["Morning (8AM-12PM)", "Afternoon (12PM-4PM)", "Evening (4PM-8PM)"];
+const GENDER_OPTIONS = ["Woman", "Man", "Non-binary", "Prefer not to say"];
 
-const formatWhatsAppMessage = (
-  formType: BookingActionType,
-  data: BookingFormData | GroupFormData,
-  assessment: AssessmentResult | null
-) => {
-  const hasAssessment = assessment !== null;
-  
-  if (formType === "book" || formType === "consultation") {
-    const bookingData = data as BookingFormData;
-    const isConsultation = formType === "consultation";
-    let message = isConsultation
-      ? `*🟢 FREE CONSULTATION Request – Innerspark Africa*\n\n`
-      : `*New Booking Request – Innerspark Africa*\n\n`;
-    message += `*Name:* ${bookingData.name}\n`;
-    message += `*Email:* ${bookingData.email}\n`;
-    message += `*Phone:* ${bookingData.phone}\n\n`;
-    
-    if (hasAssessment) {
-      message += `*Assessment Taken:* YES\n`;
-      message += `*Condition:* ${assessment.assessmentLabel}\n`;
-      message += `*Severity:* ${assessment.severity}\n`;
-      message += `*Score:* ${assessment.score}/${assessment.maxScore}\n\n`;
-      message += `*System Recommendation:*\n`;
-      message += `– ${assessment.recommendation}\n`;
-      message += `– ${assessment.recommendedFormat}\n\n`;
-    } else {
-      message += `*Assessment Taken:* NO\n\n`;
-    }
-    
-    message += `*Preferred Day:* ${bookingData.preferredDay}\n`;
-    message += `*Preferred Time:* ${bookingData.preferredTime}\n`;
-    message += `*Payment Method:* ${bookingData.paymentMethod === "mobile_money" ? "Mobile Money" : "Visa/Card"}\n`;
-    message += `*Preferred Language:* ${bookingData.preferredLanguage}\n`;
-    message += `*Country:* ${bookingData.country}\n\n`;
-    message += `*Session Cost:* ${isConsultation ? "FREE (Initial Consultation)" : "$22 / UGX 75,000 per hour"}\n`;
-    
-    if (bookingData.notes) {
-      message += `\n*Additional Notes:* ${bookingData.notes}`;
-    }
-    
-    return message;
-  } else {
-    const groupData = data as GroupFormData;
-    const selectedGroup = supportGroups.find(g => g.id === groupData.groupType);
-    
-    let message = `*New Support Group Request – Innerspark Africa*\n\n`;
-    message += `*Name:* ${groupData.name}\n`;
-    message += `*Email:* ${groupData.email}\n`;
-    message += `*Phone:* ${groupData.phone}\n\n`;
-    
-    if (hasAssessment) {
-      message += `*Assessment Taken:* YES\n`;
-      message += `*Condition:* ${assessment.assessmentLabel}\n`;
-      message += `*Severity:* ${assessment.severity}\n\n`;
-    } else {
-      message += `*Assessment Taken:* NO\n\n`;
-    }
-    
-    message += `*Selected Group:* ${selectedGroup?.name || groupData.groupType}\n`;
-    message += `*Payment Method:* ${groupData.paymentMethod === "mobile_money" ? "Mobile Money" : "Visa/Card"}\n`;
-    message += `*Preferred Language:* ${groupData.preferredLanguage}\n`;
-    message += `*Country:* ${groupData.country}\n`;
-    message += `*Weekly Fee:* ${selectedGroup?.fee || "UGX 25,000/week"}\n`;
-    
-    if (groupData.notes) {
-      message += `\n*Additional Notes:* ${groupData.notes}`;
-    }
-    
-    return message;
-  }
+const AGE_OPTIONS = [
+  "Under 18", "18–24", "25–34", "35–44", "45–54", "55–64", "65+",
+];
+
+const REASON_OPTIONS = [
+  "I've been feeling depressed",
+  "I feel anxious or overwhelmed",
+  "My mood is interfering with my job/school",
+  "I struggle with relationships",
+  "I can't find purpose or meaning",
+  "I am grieving",
+  "I have experienced trauma",
+  "I need to talk through a specific challenge",
+  "I want to gain self-confidence",
+  "I want to improve myself but don't know where to start",
+];
+
+const COMMUNICATION_OPTIONS = [
+  "Mostly via messaging",
+  "Mostly via phone or video sessions",
+  "Not sure yet (decide later)",
+];
+
+const SUPPORT_GROUPS = [
+  "Depression Support Group",
+  "Anxiety Management Group",
+  "Grief & Loss Support",
+  "Addiction Recovery Group",
+  "Stress Management Circle",
+  "Healthy Relationships Group",
+  "Trauma Survivors Support",
+  "New Parents Support",
+];
+
+interface IntakeData {
+  therapyType: TherapyType | "";
+  gender: string;
+  age: string;
+  reasons: string[];
+  communication: string;
+  name: string;
+  email: string;
+  phone: string;
+}
+
+const initialIntake: IntakeData = {
+  therapyType: "",
+  gender: "",
+  age: "",
+  reasons: [],
+  communication: "",
+  name: "",
+  email: "",
+  phone: "",
 };
 
 const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showForm, setShowForm] = useState(false);
-  const { assessmentResult, clearAssessment, setPendingAction, selectedSpecialist } = useAssessment();
   const navigate = useNavigate();
+  const { clearAssessment } = useAssessment();
+  const [step, setStep] = useState(0);
+  const [data, setData] = useState<IntakeData>(initialIntake);
+  const [groupName, setGroupName] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
-  // Track form opened and manage view state
+  const isGroup = formType === "group";
+  const isConsultation = formType === "consultation";
+
+  // 6 steps for book/consultation, 1 step for group
+  const totalSteps = isGroup ? 1 : 6;
+
   useEffect(() => {
     if (isOpen) {
-      trackBookingFormOpened(!!assessmentResult);
-      if (assessmentResult && (formType === "book" || formType === "consultation")) {
-        setShowForm(false);
-      } else {
-        setShowForm(true);
-      }
-    } else {
-      setShowForm(false);
+      trackBookingFormOpened(false);
+      setStep(0);
+      setData(initialIntake);
+      setGroupName("");
     }
-  }, [isOpen, assessmentResult, formType]);
+  }, [isOpen]);
 
-  const handleProceedWithTherapist = () => {
-    setShowForm(true);
+  const priceLabel = useMemo(() => {
+    if (isGroup) return "UGX 25,000 / week";
+    if (isConsultation) return "FREE Consultation";
+    return "UGX 75,000 / session";
+  }, [isGroup, isConsultation]);
+
+  const headerTitle = isGroup
+    ? "Join a Support Group"
+    : isConsultation
+    ? "Book a Free Consultation"
+    : "Find your therapist";
+
+  const canProceed = useMemo(() => {
+    if (isGroup) {
+      return !!(groupName && data.name.trim() && data.phone.trim() && data.email.trim());
+    }
+    switch (step) {
+      case 0: return !!data.therapyType;
+      case 1: return !!data.gender;
+      case 2: return !!data.age;
+      case 3: return data.reasons.length > 0;
+      case 4: return !!data.communication;
+      case 5: return !!(data.name.trim() && data.phone.trim() && data.email.trim());
+      default: return false;
+    }
+  }, [step, data, isGroup, groupName]);
+
+  const toggleReason = (r: string) => {
+    setData((d) => ({
+      ...d,
+      reasons: d.reasons.includes(r) ? d.reasons.filter((x) => x !== r) : [...d.reasons, r],
+    }));
   };
 
-  const handleSwitchToGroup = () => {
-    setPendingAction("group");
-    onClose();
-    setTimeout(() => {
-      window.dispatchEvent(new CustomEvent('openGroupForm'));
-    }, 100);
+  const buildSummary = () => {
+    if (isGroup) {
+      return (
+        `*New Support Group Request – InnerSpark Africa*\n\n` +
+        `*Name:* ${data.name}\n*Phone:* ${data.phone}\n*Email:* ${data.email}\n\n` +
+        `*Group:* ${groupName}\n*Weekly Fee:* UGX 25,000`
+      );
+    }
+    const typeLabel = THERAPY_OPTIONS.find((t) => t.id === data.therapyType)?.title ?? "—";
+    const header = isConsultation
+      ? `*🟢 FREE CONSULTATION Request – InnerSpark Africa*`
+      : `*New Therapy Booking – InnerSpark Africa*`;
+    return (
+      `${header}\n\n` +
+      `*Name:* ${data.name}\n*Phone:* ${data.phone}\n*Email:* ${data.email}\n\n` +
+      `*Therapy type:* ${typeLabel}\n` +
+      `*Gender:* ${data.gender}\n` +
+      `*Age:* ${data.age}\n` +
+      `*Reasons:* ${data.reasons.join("; ")}\n` +
+      `*Communication preference:* ${data.communication}\n\n` +
+      `*Pricing:* ${priceLabel}`
+    );
   };
-  
-  const bookingForm = useForm<BookingFormData>({
-    resolver: zodResolver(bookingSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      phone: "",
-      preferredDay: "",
-      preferredTime: "",
-      paymentMethod: "",
-      preferredLanguage: "",
-      country: "",
-      notes: "",
-    },
-  });
 
-  const groupForm = useForm<GroupFormData>({
-    resolver: zodResolver(groupSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      phone: "",
-      groupType: "",
-      paymentMethod: "",
-      preferredLanguage: "",
-      country: "",
-      notes: "",
-    },
-  });
-
-  const handleSubmit = async (data: BookingFormData | GroupFormData) => {
-    setIsSubmitting(true);
-    
+  const handleSubmit = async () => {
+    setSubmitting(true);
     try {
-      const amount = formType === "group" ? 25000 : 75000;
-      const amountFormatted = formType === "group" ? "25,000" : "75,000";
-      const description = formType === "group" 
-        ? "InnerSpark Africa - Support Group Session" 
-        : formType === "consultation"
-        ? "InnerSpark Africa - Free Consultation"
-        : "InnerSpark Africa - Therapy Session";
+      const summaryText = buildSummary();
 
-      // For free consultations, skip payment and go directly to WhatsApp
-      if (formType === "consultation") {
-        await sendViaWhatsApp(data);
-        return;
-      }
-
-      // Initiate PesaPal payment
-      const { data: paymentData, error: paymentError } = await supabase.functions.invoke(
-        "create-pesapal-payment",
-        {
+      // Send confirmation email to client + BCC admin via existing transactional template
+      try {
+        await supabase.functions.invoke("send-transactional-email", {
           body: {
-            customerName: data.name,
-            customerPhone: data.phone,
-            customerEmail: data.email,
-            amount,
-            currency: "UGX",
-            description,
-            callbackUrl: window.location.origin,
+            templateName: "contact-confirmation",
+            recipientEmail: data.email,
+            idempotencyKey: `booking-${Date.now()}-${data.email}`,
+            templateData: {
+              name: data.name,
+              subject: isGroup
+                ? `Support Group Request: ${groupName}`
+                : isConsultation
+                ? `Free Consultation Request (${THERAPY_OPTIONS.find(t => t.id === data.therapyType)?.title ?? ""})`
+                : `Therapy Booking Request (${THERAPY_OPTIONS.find(t => t.id === data.therapyType)?.title ?? ""})`,
+              message: summaryText.replace(/\*/g, ""),
+            },
           },
-        }
-      );
-
-      if (paymentError || !paymentData?.url) {
-        throw new Error(paymentError?.message || "Failed to initiate payment");
+        });
+      } catch (err) {
+        console.warn("Email send failed (non-blocking):", err);
       }
 
-      // Track the booking
-      trackBookingSubmitted(
-        formType,
-        assessmentResult?.assessmentType,
-        assessmentResult?.severity
-      );
-      trackGadsBookingConversion(formType, assessmentResult?.assessmentType);
-
-      // Save booking data to sessionStorage so PaymentSuccess page can send WhatsApp + email
-      const bookingPayload = {
-        formType,
-        formData: data,
-        assessment: assessmentResult,
-        selectedSpecialist: selectedSpecialist ? { name: selectedSpecialist.name } : null,
-        merchantReference: paymentData.merchantReference,
-        amount: amountFormatted,
-        description,
-      };
-      sessionStorage.setItem("innerspark_pending_booking", JSON.stringify(bookingPayload));
-
-      // Redirect to PesaPal payment page in same tab
-      window.location.href = paymentData.url;
-
-    } catch (error) {
-      console.error("Payment error:", error);
-      toast({
-        title: "Payment Error",
-        description: "Could not initiate payment. Sending your request via WhatsApp instead.",
-        variant: "destructive",
-      });
-      await sendViaWhatsApp(data);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const sendViaWhatsApp = async (data: BookingFormData | GroupFormData, paymentRef?: string) => {
-    let message = formatWhatsAppMessage(formType, data, assessmentResult);
-    
-    if (selectedSpecialist && formType === "book") {
-      message = message.replace(
-        "*New Booking Request – Innerspark Africa*",
-        `*New Booking Request – Innerspark Africa*\n\n*Selected Therapist:* ${selectedSpecialist.name}`
-      );
-    }
-
-    if (paymentRef) {
-      message += `\n\n*Payment Reference:* ${paymentRef}`;
-      message += `\n*Payment Status:* ✅ PAID`;
-    }
-    
-    const encodedMessage = encodeURIComponent(message);
-    const whatsappUrl = `https://wa.me/256792085773?text=${encodedMessage}`;
-    
-    trackWhatsAppClick(formType === "book" ? "booking_form" : "group_form");
-    trackGadsWhatsAppClick(formType === "book" ? "booking_form" : "group_form");
-    
-    window.open(whatsappUrl, "_blank");
-    
-    if (!paymentRef) {
-      // Fire booking conversion (covers free consultation + fallback path)
+      // Tracking
+      trackBookingSubmitted(formType);
+      trackGadsBookingConversion(formType);
       trackGadsThankYouConversion("booking", { form_type: formType });
+      trackWhatsAppClick(isGroup ? "group_form" : "booking_form");
+      trackGadsWhatsAppClick(isGroup ? "group_form" : "booking_form");
+
+      // Open WhatsApp with full summary
+      const whatsappUrl = `https://wa.me/256792085773?text=${encodeURIComponent(summaryText)}`;
+      window.open(whatsappUrl, "_blank");
+
+      toast({
+        title: "Request sent!",
+        description: "We'll be in touch shortly. A confirmation email is on its way.",
+      });
+
       clearAssessment();
       onClose();
-      if (formType === "book") {
-        bookingForm.reset();
-      } else {
-        groupForm.reset();
-      }
       navigate("/thank-you-booking");
+    } catch (e) {
+      console.error(e);
+      toast({
+        title: "Something went wrong",
+        description: "Please try again or WhatsApp us directly.",
+        variant: "destructive",
+      });
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  const getSeverityColor = (severity: string) => {
-    switch (severity) {
-      case "Minimal": return "text-green-600 bg-green-50";
-      case "Mild": return "text-yellow-600 bg-yellow-50";
-      case "Moderate": return "text-orange-600 bg-orange-50";
-      case "Moderately Severe": return "text-red-500 bg-red-50";
-      case "Severe": return "text-red-700 bg-red-100";
-      default: return "text-primary bg-primary/10";
+  const renderStep = () => {
+    if (isGroup) {
+      return (
+        <div className="space-y-4">
+          <div className="rounded-lg bg-primary/10 px-4 py-3 text-sm">
+            <span className="font-semibold text-primary">Weekly fee:</span>{" "}
+            <span className="text-foreground">UGX 25,000</span>
+          </div>
+          <div>
+            <Label>Select a group</Label>
+            <Select value={groupName} onValueChange={setGroupName}>
+              <SelectTrigger className="mt-1.5">
+                <SelectValue placeholder="Choose a support group" />
+              </SelectTrigger>
+              <SelectContent>
+                {SUPPORT_GROUPS.map((g) => (
+                  <SelectItem key={g} value={g}>{g}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <ContactFields data={data} setData={setData} />
+        </div>
+      );
     }
-  };
 
-  const renderEmailField = (form: any, prefix: string) => (
-    <FormField
-      control={form.control}
-      name="email"
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel>Email Address</FormLabel>
-          <FormControl>
-            <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input placeholder="your@email.com" type="email" className="pl-10" {...field} />
+    switch (step) {
+      case 0:
+        return (
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-foreground">What type of therapy are you looking for?</h3>
+            <div className="grid gap-3 sm:grid-cols-3">
+              {THERAPY_OPTIONS.map((opt) => {
+                const Icon = opt.icon;
+                const selected = data.therapyType === opt.id;
+                return (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    onClick={() => setData((d) => ({ ...d, therapyType: opt.id }))}
+                    className={`relative overflow-hidden rounded-xl border-2 p-4 text-left transition-all bg-gradient-to-br ${opt.color} text-white ${
+                      selected ? "border-foreground ring-2 ring-foreground/30 scale-[0.98]" : "border-transparent hover:scale-[1.02]"
+                    }`}
+                  >
+                    <Icon className="h-6 w-6 mb-2 opacity-90" />
+                    <div className="text-lg font-bold">{opt.title}</div>
+                    <div className="text-xs opacity-90 mb-2">{opt.subtitle}</div>
+                    <div className="text-xs font-semibold bg-white/20 rounded px-2 py-1 inline-block">
+                      {opt.price}
+                    </div>
+                    {selected && (
+                      <CheckCircle className="absolute top-2 right-2 h-5 w-5" />
+                    )}
+                  </button>
+                );
+              })}
             </div>
-          </FormControl>
-          <p className="text-xs text-muted-foreground">Payment receipt will be sent to this email</p>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-  );
+          </div>
+        );
+      case 1:
+        return (
+          <div className="space-y-3">
+            <h3 className="text-lg font-semibold text-foreground">What is your gender identity?</h3>
+            <div className="space-y-2">
+              {GENDER_OPTIONS.map((g) => (
+                <button
+                  key={g}
+                  type="button"
+                  onClick={() => setData((d) => ({ ...d, gender: g }))}
+                  className={`w-full rounded-full py-3 px-5 text-left transition-all ${
+                    data.gender === g
+                      ? "bg-primary text-primary-foreground font-semibold"
+                      : "bg-primary/10 text-foreground hover:bg-primary/20"
+                  }`}
+                >
+                  {g}
+                </button>
+              ))}
+            </div>
+          </div>
+        );
+      case 2:
+        return (
+          <div className="space-y-3">
+            <h3 className="text-lg font-semibold text-foreground">How old are you?</h3>
+            <Select value={data.age} onValueChange={(v) => setData((d) => ({ ...d, age: v }))}>
+              <SelectTrigger className="h-12">
+                <SelectValue placeholder="Select your age" />
+              </SelectTrigger>
+              <SelectContent>
+                {AGE_OPTIONS.map((a) => (
+                  <SelectItem key={a} value={a}>{a}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        );
+      case 3:
+        return (
+          <div className="space-y-3">
+            <h3 className="text-lg font-semibold text-foreground">What led you to consider therapy today?</h3>
+            <p className="text-xs text-muted-foreground">Select all that apply</p>
+            <div className="space-y-2 max-h-[40vh] overflow-y-auto pr-1">
+              {REASON_OPTIONS.map((r) => {
+                const checked = data.reasons.includes(r);
+                return (
+                  <label
+                    key={r}
+                    className={`flex items-center gap-3 rounded-lg border p-3 cursor-pointer transition-colors ${
+                      checked ? "border-primary bg-primary/5" : "border-border hover:bg-muted/50"
+                    }`}
+                  >
+                    <Checkbox checked={checked} onCheckedChange={() => toggleReason(r)} />
+                    <span className="text-sm text-foreground">{r}</span>
+                  </label>
+                );
+              })}
+            </div>
+          </div>
+        );
+      case 4:
+        return (
+          <div className="space-y-3">
+            <h3 className="text-lg font-semibold text-foreground">How do you prefer to communicate with your therapist?</h3>
+            <div className="space-y-2">
+              {COMMUNICATION_OPTIONS.map((c) => (
+                <button
+                  key={c}
+                  type="button"
+                  onClick={() => setData((d) => ({ ...d, communication: c }))}
+                  className={`w-full rounded-full py-3 px-5 text-left transition-all ${
+                    data.communication === c
+                      ? "bg-primary text-primary-foreground font-semibold"
+                      : "bg-primary/10 text-foreground hover:bg-primary/20"
+                  }`}
+                >
+                  {c}
+                </button>
+              ))}
+            </div>
+          </div>
+        );
+      case 5:
+        return (
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-foreground">Almost there — how can we reach you?</h3>
+            <div className="rounded-lg bg-primary/10 px-4 py-3 text-sm">
+              <span className="font-semibold text-primary">{isConsultation ? "Cost: " : "Session price: "}</span>
+              <span className="text-foreground">{priceLabel}</span>
+            </div>
+            <ContactFields data={data} setData={setData} />
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-xl max-h-[92vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-lg max-h-[92vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-xl">
-            {formType === "consultation" ? (
-              <>
-                <Calendar className="h-6 w-6 text-primary" />
-                Free Consultation Request
-              </>
-            ) : formType === "book" ? (
-              <>
-                <Calendar className="h-6 w-6 text-primary" />
-                Book a Therapy Session
-              </>
-            ) : (
-              <>
-                <Users className="h-6 w-6 text-primary" />
-                Join a Support Group
-              </>
-            )}
-          </DialogTitle>
+          <DialogTitle className="text-xl">{headerTitle}</DialogTitle>
           <DialogDescription>
-            {formType === "consultation"
-              ? showForm
-                ? "Tell us about yourself so we can arrange your free consultation."
-                : "Based on your assessment, we've matched you with a recommended therapist."
-              : formType === "book" 
-              ? showForm 
-                ? "Complete your booking details and continue to secure PesaPal payment for your therapy session."
-                : "Based on your assessment, we've matched you with a recommended therapist."
-              : "Fill in your details to join a supportive community."}
+            {isGroup
+              ? "Fill in your details to join a supportive community."
+              : "A few quick questions so we can match you with the right therapist."}
           </DialogDescription>
         </DialogHeader>
 
-        {/* Therapist Recommendation (for booking with assessment, before form) */}
-        {(formType === "book" || formType === "consultation") && assessmentResult && !showForm && (
-          <TherapistRecommendationCard
-            assessmentResult={assessmentResult}
-            onProceedWithTherapist={handleProceedWithTherapist}
-            onJoinSupportGroup={handleSwitchToGroup}
-            selectedSpecialist={selectedSpecialist}
-          />
+        {/* Progress bar (only multi-step) */}
+        {!isGroup && (
+          <div className="flex gap-1.5 mt-1 mb-2">
+            {Array.from({ length: totalSteps }).map((_, i) => (
+              <div
+                key={i}
+                className={`h-1.5 flex-1 rounded-full transition-colors ${
+                  i <= step ? "bg-primary" : "bg-muted"
+                }`}
+              />
+            ))}
+          </div>
         )}
 
-        {/* Show form when ready */}
-        {showForm && (
-          <>
-            {/* Compact Assessment Summary (when showing form) */}
-            {assessmentResult && (
-              <div className="bg-muted/50 rounded-lg p-3 border">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">
-                    {assessmentResult.assessmentLabel} • <span className={getSeverityColor(assessmentResult.severity).split(' ')[0]}>{assessmentResult.severity}</span>
-                  </span>
-                  <CheckCircle className="h-4 w-4 text-primary" />
-                </div>
-              </div>
-            )}
+        <div className="py-2">{renderStep()}</div>
 
-            {(formType === "book" || formType === "consultation") ? (
-              <Form {...bookingForm}>
-                <form onSubmit={bookingForm.handleSubmit(handleSubmit)} className="space-y-3">
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <FormField
-                      control={bookingForm.control}
-                      name="name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Full Name</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Your name" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+        <div className="flex justify-between gap-3 pt-2">
+          {!isGroup && step > 0 ? (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setStep((s) => Math.max(0, s - 1))}
+              disabled={submitting}
+            >
+              <ArrowLeft className="h-4 w-4 mr-1" /> Back
+            </Button>
+          ) : (
+            <span />
+          )}
 
-                    {renderEmailField(bookingForm, "booking")}
-                  </div>
-
-                  <FormField
-                    control={bookingForm.control}
-                    name="phone"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Phone Number</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                            <Input placeholder="+256 XXX XXXXXX" className="pl-10" {...field} />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={bookingForm.control}
-                    name="paymentMethod"
-                    render={({ field }) => (
-                      <FormItem>
-                        <PesaPalMethodSelector
-                          value={field.value}
-                          onChange={field.onChange}
-                          idPrefix="booking"
-                        />
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <FormField
-                      control={bookingForm.control}
-                      name="preferredDay"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Preferred Day</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select day" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {days.map((day) => (
-                                <SelectItem key={day} value={day}>{day}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={bookingForm.control}
-                      name="preferredTime"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Preferred Time</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select time" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {times.map((time) => (
-                                <SelectItem key={time} value={time}>{time}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <FormField
-                      control={bookingForm.control}
-                      name="preferredLanguage"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Preferred Language</FormLabel>
-                          <FormControl>
-                            <div className="relative">
-                              <Languages className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                              <Input placeholder="e.g. English, Luganda" className="pl-10" {...field} />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={bookingForm.control}
-                      name="country"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Country</FormLabel>
-                          <FormControl>
-                            <div className="relative">
-                              <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                              <Input placeholder="e.g. Uganda" className="pl-10" {...field} />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div className="bg-primary/5 rounded-lg p-3 flex items-center gap-2">
-                    <Clock className="h-4 w-4 text-primary" />
-                    <span className="text-sm text-foreground">
-                      Session Cost: <strong>$22 / UGX 75,000 per hour</strong>
-                    </span>
-                  </div>
-
-                  <Button type="submit" className="w-full gap-2" disabled={isSubmitting}>
-                    {isSubmitting ? (
-                      <>
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        Processing...
-                      </>
-                    ) : (
-                      <>
-                        <Send className="h-4 w-4" />
-                        Continue to PesaPal
-                      </>
-                    )}
-                  </Button>
-
-                  <FormField
-                    control={bookingForm.control}
-                    name="notes"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Additional Notes (Optional)</FormLabel>
-                        <FormControl>
-                          <Textarea 
-                            placeholder="Any specific concerns or preferences..." 
-                            className="resize-none" 
-                            {...field} 
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                </form>
-              </Form>
-            ) : (
-              <Form {...groupForm}>
-                <form onSubmit={groupForm.handleSubmit(handleSubmit)} className="space-y-3">
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <FormField
-                      control={groupForm.control}
-                      name="name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Full Name</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Your name" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    {renderEmailField(groupForm, "group")}
-                  </div>
-
-                  <FormField
-                    control={groupForm.control}
-                    name="phone"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Phone Number</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                            <Input placeholder="+256 XXX XXXXXX" className="pl-10" {...field} />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={groupForm.control}
-                    name="groupType"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Select Support Group</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Choose a group..." />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {supportGroups.map((group) => (
-                              <SelectItem key={group.id} value={group.id}>
-                                <div className="flex justify-between items-center w-full">
-                                  <span>{group.name}</span>
-                                </div>
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={groupForm.control}
-                    name="paymentMethod"
-                    render={({ field }) => (
-                      <FormItem>
-                        <PesaPalMethodSelector
-                          value={field.value}
-                          onChange={field.onChange}
-                          idPrefix="group"
-                        />
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <FormField
-                      control={groupForm.control}
-                      name="preferredLanguage"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Preferred Language</FormLabel>
-                          <FormControl>
-                            <div className="relative">
-                              <Languages className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                              <Input placeholder="e.g. English, Luganda" className="pl-10" {...field} />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={groupForm.control}
-                      name="country"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Country</FormLabel>
-                          <FormControl>
-                            <div className="relative">
-                              <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                              <Input placeholder="e.g. Uganda" className="pl-10" {...field} />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div className="bg-primary/5 rounded-lg p-3 flex items-center gap-2">
-                    <Users className="h-4 w-4 text-primary" />
-                    <span className="text-sm text-foreground">
-                      Weekly Fee: <strong>UGX 25,000</strong>
-                    </span>
-                  </div>
-
-                  <Button type="submit" className="w-full gap-2" disabled={isSubmitting}>
-                    {isSubmitting ? (
-                      <>
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        Processing...
-                      </>
-                    ) : (
-                      <>
-                        <Send className="h-4 w-4" />
-                        Continue to PesaPal
-                      </>
-                    )}
-                  </Button>
-
-                  <FormField
-                    control={groupForm.control}
-                    name="notes"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Additional Notes (Optional)</FormLabel>
-                        <FormControl>
-                          <Textarea 
-                            placeholder="Any specific concerns or preferences..." 
-                            className="resize-none" 
-                            {...field} 
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                </form>
-              </Form>
-            )}
-          </>
-        )}
-
-        <p className="text-xs text-muted-foreground text-center">
-          <AlertCircle className="inline h-3 w-3 mr-1" />
-          Your information is kept confidential and secure.
-        </p>
+          {isGroup || step === totalSteps - 1 ? (
+            <Button
+              type="button"
+              disabled={!canProceed || submitting}
+              onClick={handleSubmit}
+              className="bg-primary hover:bg-primary/90"
+            >
+              {submitting ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Sending...
+                </>
+              ) : (
+                <>Submit request <ArrowRight className="h-4 w-4 ml-1" /></>
+              )}
+            </Button>
+          ) : (
+            <Button
+              type="button"
+              disabled={!canProceed}
+              onClick={() => setStep((s) => s + 1)}
+              className="bg-primary hover:bg-primary/90"
+            >
+              Next <ArrowRight className="h-4 w-4 ml-1" />
+            </Button>
+          )}
+        </div>
       </DialogContent>
     </Dialog>
   );
 };
+
+const ContactFields = ({
+  data,
+  setData,
+}: {
+  data: IntakeData;
+  setData: React.Dispatch<React.SetStateAction<IntakeData>>;
+}) => (
+  <div className="space-y-3">
+    <div>
+      <Label>Full name</Label>
+      <div className="relative mt-1.5">
+        <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input
+          className="pl-10"
+          placeholder="Your name"
+          value={data.name}
+          onChange={(e) => setData((d) => ({ ...d, name: e.target.value }))}
+        />
+      </div>
+    </div>
+    <div>
+      <Label>Phone number</Label>
+      <div className="relative mt-1.5">
+        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input
+          className="pl-10"
+          placeholder="+256 7XX XXX XXX"
+          value={data.phone}
+          onChange={(e) => setData((d) => ({ ...d, phone: e.target.value }))}
+        />
+      </div>
+    </div>
+    <div>
+      <Label>Email address</Label>
+      <div className="relative mt-1.5">
+        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input
+          type="email"
+          className="pl-10"
+          placeholder="you@example.com"
+          value={data.email}
+          onChange={(e) => setData((d) => ({ ...d, email: e.target.value }))}
+        />
+      </div>
+    </div>
+    <p className="text-xs text-muted-foreground">
+      We'll send your request to WhatsApp and email a confirmation to you.
+    </p>
+  </div>
+);
 
 export default BookingFormModal;
