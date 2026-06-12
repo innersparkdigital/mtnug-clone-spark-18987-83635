@@ -34,6 +34,7 @@ import { toast } from "@/hooks/use-toast";
 import { trackBookingFormOpened, trackBookingSubmitted, trackWhatsAppClick } from "@/lib/analytics";
 import { trackGadsBookingConversion, trackGadsWhatsAppClick, trackGadsThankYouConversion } from "@/lib/gadsTracking";
 import { supabase } from "@/integrations/supabase/client";
+import { getReferralCookie } from "@/lib/referralCookie";
 
 interface BookingFormModalProps {
   isOpen: boolean;
@@ -192,6 +193,22 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
     setSubmitting(true);
     try {
       const summaryText = buildSummary();
+
+      // Referral conversion tracking (Kenya / Synder-style links)
+      const refSlug = getReferralCookie();
+      if (refSlug) {
+        try {
+          await supabase.rpc("record_referral_conversion", {
+            _slug: refSlug,
+            _booking_reference: `booking-${Date.now()}`,
+            _client_name: data.name || null,
+            _client_phone: data.phone || null,
+            _session_amount_kes: isGroup ? 1000 : 2600,
+          });
+        } catch (err) {
+          console.warn("Referral conversion logging failed (non-blocking):", err);
+        }
+      }
 
       // Send confirmation email to client + BCC admin via existing transactional template
       try {
