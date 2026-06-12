@@ -233,6 +233,9 @@ const AffordableOnlineCounsellingPost = lazy(
 const BestTherapistForAnxietyUgandaPost = lazy(
   () => import("./pages/blog/BestTherapistForAnxietyUgandaPost"),
 );
+const OnlineVsInPersonTherapyUgandaPost = lazy(
+  () => import("./pages/blog/OnlineVsInPersonTherapyUgandaPost"),
+);
 const AmaniAI = lazy(() => import("./pages/AmaniAI"));
 const CmsBlogPost = lazy(() => import("./pages/CmsBlogPost"));
 const CmsEventPost = lazy(() => import("./pages/CmsEventPost"));
@@ -624,6 +627,10 @@ const App = () => (
                 <Route
                   path="/blog/best-therapist-for-anxiety-in-uganda"
                   element={<BestTherapistForAnxietyUgandaPost />}
+                />
+                <Route
+                  path="/blog/online-vs-in-person-therapy-uganda"
+                  element={<OnlineVsInPersonTherapyUgandaPost />}
                 />
                 {/* CMS-driven dynamic posts (fallback after hardcoded routes) */}
                 <Route path="/blog/:slug" element={<CmsBlogPost />} />
