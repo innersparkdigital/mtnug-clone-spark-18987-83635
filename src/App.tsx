@@ -227,6 +227,9 @@ const FindTherapistUgandaPost = lazy(
 const CorporateWellbeingScreeningPost = lazy(
   () => import("./pages/blog/CorporateWellbeingScreeningPost"),
 );
+const AffordableOnlineCounsellingPost = lazy(
+  () => import("./pages/blog/AffordableOnlineCounsellingPost"),
+);
 const AmaniAI = lazy(() => import("./pages/AmaniAI"));
 const CmsBlogPost = lazy(() => import("./pages/CmsBlogPost"));
 const CmsEventPost = lazy(() => import("./pages/CmsEventPost"));
