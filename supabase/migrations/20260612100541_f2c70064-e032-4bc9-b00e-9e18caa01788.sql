@@ -1,0 +1,1 @@
+ALTER TABLE public.whispers ALTER COLUMN email DROP NOT NULL; ALTER TABLE public.whispers ADD COLUMN IF NOT EXISTS whatsapp_number text; ALTER TABLE public.whispers ADD COLUMN IF NOT EXISTS reply_channel text NOT NULL DEFAULT 'email'; CREATE INDEX IF NOT EXISTS idx_whispers_whatsapp ON public.whispers (whatsapp_number);
