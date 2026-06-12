@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Mic, Square, Loader2, ShieldCheck, Heart, Clock, Send, Trash2, MessageCircle, CheckCheck } from "lucide-react";
+import { Mic, Square, Loader2, ShieldCheck, Heart, Clock, Send, Trash2, MessageCircle, CheckCheck, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
 
@@ -181,10 +181,15 @@ function WhisperRecorder() {
   if (submittedToken) {
     const isWa = channel === "whatsapp";
     return (
-      <div className="min-h-screen bg-background">
-        <Header />
-        <main className="max-w-md mx-auto px-4 py-12">
-          <Card className="border-primary/20 shadow-xl rounded-3xl overflow-hidden">
+      <div className="fixed inset-0 bg-background flex flex-col z-50 overflow-y-auto">
+        <div className="bg-primary text-primary-foreground px-4 py-3 flex items-center gap-3 shadow-md">
+          <Link to="/" className="p-1 -ml-1 rounded-full hover:bg-primary-foreground/10">
+            <ArrowLeft className="w-5 h-5" />
+          </Link>
+          <div className="font-semibold">Whisper</div>
+        </div>
+        <main className="flex-1 flex items-center justify-center px-5 py-8">
+          <Card className="border-primary/20 shadow-xl rounded-3xl overflow-hidden w-full max-w-md">
             <CardContent className="pt-10 pb-10 text-center">
               <div className="w-20 h-20 rounded-full bg-primary/10 mx-auto flex items-center justify-center mb-4">
                 {isWa ? <MessageCircle className="w-10 h-10 text-primary" /> : <Heart className="w-10 h-10 text-primary" />}
@@ -200,7 +205,6 @@ function WhisperRecorder() {
             </CardContent>
           </Card>
         </main>
-        <Footer />
       </div>
     );
   }
@@ -232,11 +236,14 @@ function WhisperRecorder() {
           description: "Record a 3-minute voice note and receive a private reply from a licensed Ugandan therapist on WhatsApp within 24 hours.",
         })}</script>
       </Helmet>
-      <Header />
-      <main className="max-w-md mx-auto px-3 py-6 sm:py-10">
-        <div className="rounded-3xl overflow-hidden shadow-2xl border border-primary/10 bg-card">
+      <div className="fixed inset-0 bg-background flex flex-col z-50 overflow-hidden">
+        {/* App-style chat container, fills the viewport on every device */}
+        <div className="flex flex-col w-full h-full mx-auto bg-card sm:max-w-md sm:my-4 sm:h-[calc(100dvh-2rem)] sm:rounded-3xl sm:shadow-2xl sm:border sm:border-primary/10 overflow-hidden">
           {/* Chat header */}
-          <div className="bg-primary text-primary-foreground px-4 py-3 flex items-center gap-3">
+          <div className="bg-primary text-primary-foreground px-4 py-3 flex items-center gap-3 shrink-0" style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))' }}>
+            <Link to="/" className="p-1 -ml-1 rounded-full hover:bg-primary-foreground/10 sm:hidden">
+              <ArrowLeft className="w-5 h-5" />
+            </Link>
             <div className="w-10 h-10 rounded-full bg-primary-foreground/15 flex items-center justify-center">
               <Heart className="w-5 h-5" />
             </div>
@@ -253,7 +260,7 @@ function WhisperRecorder() {
           </div>
 
           {/* Chat body */}
-          <div className="bg-muted/20 px-4 py-5 space-y-3 min-h-[340px]">
+          <div className="bg-muted/20 px-4 py-5 space-y-3 flex-1 overflow-y-auto">
             <div className="flex gap-2 items-end">
               <div className="w-7 h-7 rounded-full bg-primary/15 flex items-center justify-center shrink-0">
                 <Heart className="w-3.5 h-3.5 text-primary" />
@@ -323,7 +330,7 @@ function WhisperRecorder() {
           </div>
 
           {/* Composer */}
-          <div className="bg-background border-t px-3 py-3 space-y-2">
+          <div className="bg-background border-t px-3 py-3 space-y-2 shrink-0" style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))' }}>
             {showDetails && (
               <div className="space-y-2 pb-1">
                 {channel === "whatsapp" ? (
@@ -404,24 +411,7 @@ function WhisperRecorder() {
             </button>
           </div>
         </div>
-
-        <div className="grid grid-cols-3 gap-2 mt-5 text-center text-[11px] text-muted-foreground">
-          <div className="flex flex-col items-center gap-1">
-            <ShieldCheck className="w-4 h-4 text-primary" /> Private
-          </div>
-          <div className="flex flex-col items-center gap-1">
-            <Clock className="w-4 h-4 text-primary" /> Reply in 24h
-          </div>
-          <div className="flex flex-col items-center gap-1">
-            <CheckCheck className="w-4 h-4 text-primary" /> Real therapist
-          </div>
-        </div>
-
-        <p className="text-center text-[11px] text-muted-foreground mt-4 max-w-xs mx-auto">
-          Whisper is free. Max 3 minutes per voice note. We never publish your recording or share your number with anyone outside our licensed team.
-        </p>
-      </main>
-      <Footer />
+      </div>
     </div>
   );
 }
