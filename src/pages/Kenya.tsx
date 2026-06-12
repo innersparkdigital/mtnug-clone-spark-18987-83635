@@ -577,6 +577,11 @@ export default function Kenya() {
       </section>
 
       <Footer />
+      <BookingFormModal
+        isOpen={isBookingFormOpen}
+        onClose={closeFlow}
+        formType={actionType}
+      />
     </div>
   );
 }
