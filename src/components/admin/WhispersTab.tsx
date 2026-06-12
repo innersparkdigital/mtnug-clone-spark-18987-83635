@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, Mic, Square, Headphones, Send, RefreshCw, MessageCircle, Mail } from "lucide-react";
+import { Loader2, Mic, Square, Headphones, Send, RefreshCw, MessageCircle, Mail, AlertTriangle, Copy } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -27,6 +27,28 @@ type Whisper = {
 };
 
 const STATUSES = ["new", "in_review", "replied", "archived"];
+
+/**
+ * Validate a WhatsApp number for the admin inbox.
+ * Rules:
+ *  - Must start with "+"
+ *  - Country code + subscriber number => 10–15 digits total (E.164)
+ *  - Uganda numbers (+256) must have exactly 12 digits total and
+ *    the subscriber part cannot start with 0
+ */
+function validateWhatsapp(raw: string | null): { ok: boolean; reason?: string; normalized: string } {
+  const v = (raw || "").trim();
+  if (!v) return { ok: false, reason: "Missing number", normalized: "" };
+  if (!v.startsWith("+")) return { ok: false, reason: "Must start with +country code", normalized: v };
+  const digits = v.replace(/\D/g, "");
+  if (digits.length < 10) return { ok: false, reason: "Too short (need 10–15 digits)", normalized: v };
+  if (digits.length > 15) return { ok: false, reason: "Too long (max 15 digits)", normalized: v };
+  if (digits.startsWith("256")) {
+    if (digits.length !== 12) return { ok: false, reason: "Uganda numbers need +256 + 9 digits", normalized: v };
+    if (digits[3] === "0") return { ok: false, reason: "Drop leading 0 after +256", normalized: v };
+  }
+  return { ok: true, normalized: v };
+}
 
 export default function WhispersTab() {
   return (
@@ -128,9 +150,11 @@ function WhisperCard({ n, w, onSign, onStatus, onReply }: {
   onReply: () => void;
 }) {
   const [url, setUrl] = useState<string | null>(null);
+  const { toast } = useToast();
   const isWa = w.reply_channel === "whatsapp" && !!w.whatsapp_number;
+  const waCheck = isWa ? validateWhatsapp(w.whatsapp_number) : { ok: false, normalized: "" } as ReturnType<typeof validateWhatsapp>;
   const contactLabel = isWa ? w.whatsapp_number : (w.email || "anonymous");
-  const waLink = isWa
+  const waLink = isWa && waCheck.ok
     ? `https://wa.me/${(w.whatsapp_number || "").replace(/\D/g, "")}?text=${encodeURIComponent(
         `Hi 🤍 This is InnerSpark Africa replying to your Whisper. We've listened to your voice note and a licensed therapist has a private reply for you here:`
       )}`
@@ -141,11 +165,23 @@ function WhisperCard({ n, w, onSign, onStatus, onReply }: {
         <div className="flex items-start justify-between flex-wrap gap-2">
           <div>
             <div className="text-xs text-muted-foreground">#{n} · {format(new Date(w.created_at), "MMM d, h:mm a")}</div>
-            <div className="font-semibold flex items-center gap-2">
+            <div className="font-semibold flex items-center gap-2 flex-wrap">
               {isWa ? <MessageCircle className="w-4 h-4 text-green-600" /> : <Mail className="w-4 h-4 text-muted-foreground" />}
               {contactLabel}
+              {isWa && (
+                waCheck.ok ? (
+                  <Badge variant="outline" className="border-green-600 text-green-700 text-[10px] px-1.5 py-0">Valid</Badge>
+                ) : (
+                  <Badge variant="destructive" className="text-[10px] px-1.5 py-0 flex items-center gap-1">
+                    <AlertTriangle className="w-3 h-3" /> Invalid
+                  </Badge>
+                )
+              )}
             </div>
             {w.topic_hint && <div className="text-sm text-muted-foreground">"{w.topic_hint}"</div>}
+            {isWa && !waCheck.ok && (
+              <div className="text-xs text-red-600 mt-1">⚠ {waCheck.reason} — verify before contacting.</div>
+            )}
           </div>
           <Badge variant={w.status === "replied" ? "default" : "secondary"}>{w.status}</Badge>
         </div>
@@ -159,12 +195,29 @@ function WhisperCard({ n, w, onSign, onStatus, onReply }: {
         )}
 
         <div className="flex gap-2 flex-wrap">
-          {waLink && (
+          {isWa && waLink && (
             <a href={waLink} target="_blank" rel="noopener noreferrer">
               <Button size="sm" variant="outline" className="border-green-600 text-green-700 hover:bg-green-50">
                 <MessageCircle className="w-4 h-4 mr-2" /> Open WhatsApp
               </Button>
             </a>
+          )}
+          {isWa && !waCheck.ok && (
+            <Button size="sm" variant="outline" disabled className="border-red-300 text-red-600">
+              <AlertTriangle className="w-4 h-4 mr-2" /> WhatsApp blocked
+            </Button>
+          )}
+          {isWa && w.whatsapp_number && (
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => {
+                navigator.clipboard.writeText(w.whatsapp_number || "");
+                toast({ title: "Number copied", description: w.whatsapp_number || "" });
+              }}
+            >
+              <Copy className="w-4 h-4 mr-2" /> Copy number
+            </Button>
           )}
           {w.status !== "in_review" && w.status !== "replied" && (
             <Button size="sm" variant="secondary" onClick={() => onStatus(w.id, "in_review")}>Mark in review</Button>
