@@ -8,6 +8,8 @@ import KenyaHeroVideo from "@/components/KenyaHeroVideo";
 import { supabase } from "@/integrations/supabase/client";
 import { getReferralCookie } from "@/lib/referralCookie";
 import { getSpecialistImage } from "@/lib/specialistImages";
+import { useBookingFlow } from "@/hooks/useBookingFlow";
+import BookingFormModal from "@/components/BookingFormModal";
 
 const SPARK_BLUE = "#3B4FD4";
 const WARMTH = "#F2994A";
@@ -44,6 +46,7 @@ export default function Kenya() {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [searchParams] = useSearchParams();
   const visitTracked = useRef(false);
+  const { startBooking, closeFlow, isBookingFormOpen, actionType } = useBookingFlow();
 
   // Track this Kenya page visit (admin analytics)
   useEffect(() => {
@@ -232,9 +235,9 @@ export default function Kenya() {
               From KES 2,600 · Pay via M-Pesa · Book in 2 minutes.
             </p>
             <div className="mt-7 flex flex-col sm:flex-row gap-3">
-              <a href="https://wa.me/256792085773?text=Hi,%20I%27d%20like%20to%20book%20a%20therapy%20session%20(Kenya)" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center font-medium text-white rounded-lg px-6 py-3 text-[15px]" style={{ background: WARMTH }}>
+              <button type="button" onClick={startBooking} className="inline-flex items-center justify-center font-medium text-white rounded-lg px-6 py-3 text-[15px]" style={{ background: WARMTH }}>
                 Book a session
-              </a>
+              </button>
               <Link to="/check/kenya" className="inline-flex items-center justify-center font-medium rounded-lg px-6 py-3 text-[15px] text-white border-[1.5px]" style={{ borderColor: "rgba(255,255,255,0.5)" }}>
                 Try free wellbeing check
               </Link>
@@ -422,7 +425,7 @@ export default function Kenya() {
                 <li>✓ 50-minute session</li>
                 <li>✓ Pay as you go — no subscription</li>
               </ul>
-              <a href="https://wa.me/256792085773?text=Hi,%20I%20would%20like%20to%20book%20a%20video%20call%20session%20with%20a%20therapist" target="_blank" rel="noopener noreferrer" className="block text-center mt-5 font-medium text-white rounded-lg py-2.5" style={{ background: SPARK_BLUE }}>Book now →</a>
+              <button type="button" onClick={startBooking} className="block w-full text-center mt-5 font-medium text-white rounded-lg py-2.5" style={{ background: SPARK_BLUE }}>Book now →</button>
               <p className="text-[11px] text-center mt-2 text-gray-500">Pay via M-Pesa · *840#</p>
             </div>
             {/* Monthly */}
