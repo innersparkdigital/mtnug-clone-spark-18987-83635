@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, Mic, Square, Headphones, Send, RefreshCw } from "lucide-react";
+import { Loader2, Mic, Square, Headphones, Send, RefreshCw, MessageCircle, Mail } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -12,7 +12,9 @@ import WhisperAnalyticsTab from "./WhisperAnalyticsTab";
 
 type Whisper = {
   id: string;
-  email: string;
+  email: string | null;
+  whatsapp_number: string | null;
+  reply_channel: string | null;
   audio_path: string;
   duration_seconds: number | null;
   topic_hint: string | null;
@@ -126,13 +128,23 @@ function WhisperCard({ n, w, onSign, onStatus, onReply }: {
   onReply: () => void;
 }) {
   const [url, setUrl] = useState<string | null>(null);
+  const isWa = w.reply_channel === "whatsapp" && !!w.whatsapp_number;
+  const contactLabel = isWa ? w.whatsapp_number : (w.email || "anonymous");
+  const waLink = isWa
+    ? `https://wa.me/${(w.whatsapp_number || "").replace(/\D/g, "")}?text=${encodeURIComponent(
+        `Hi 🤍 This is InnerSpark Africa replying to your Whisper. We've listened to your voice note and a licensed therapist has a private reply for you here:`
+      )}`
+    : null;
   return (
     <Card>
       <CardContent className="pt-5 space-y-3">
         <div className="flex items-start justify-between flex-wrap gap-2">
           <div>
             <div className="text-xs text-muted-foreground">#{n} · {format(new Date(w.created_at), "MMM d, h:mm a")}</div>
-            <div className="font-semibold">{w.email}</div>
+            <div className="font-semibold flex items-center gap-2">
+              {isWa ? <MessageCircle className="w-4 h-4 text-green-600" /> : <Mail className="w-4 h-4 text-muted-foreground" />}
+              {contactLabel}
+            </div>
             {w.topic_hint && <div className="text-sm text-muted-foreground">"{w.topic_hint}"</div>}
           </div>
           <Badge variant={w.status === "replied" ? "default" : "secondary"}>{w.status}</Badge>
@@ -147,6 +159,13 @@ function WhisperCard({ n, w, onSign, onStatus, onReply }: {
         )}
 
         <div className="flex gap-2 flex-wrap">
+          {waLink && (
+            <a href={waLink} target="_blank" rel="noopener noreferrer">
+              <Button size="sm" variant="outline" className="border-green-600 text-green-700 hover:bg-green-50">
+                <MessageCircle className="w-4 h-4 mr-2" /> Open WhatsApp
+              </Button>
+            </a>
+          )}
           {w.status !== "in_review" && w.status !== "replied" && (
             <Button size="sm" variant="secondary" onClick={() => onStatus(w.id, "in_review")}>Mark in review</Button>
           )}
@@ -239,9 +258,15 @@ function ReplyDialog({ whisper, onClose, onDone, onSign }: {
     <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
       <Card className="max-w-lg w-full my-8">
         <CardHeader>
-          <CardTitle>Reply to {whisper.email}</CardTitle>
+          <CardTitle>Reply to {whisper.whatsapp_number || whisper.email || "Whisper"}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
+          {whisper.reply_channel === "whatsapp" && whisper.whatsapp_number && (
+            <div className="bg-green-50 border border-green-200 rounded-xl p-3 text-xs text-green-900">
+              This Whisper requested a <strong>WhatsApp reply</strong>. After recording your voice note below,
+              click <strong>Open WhatsApp</strong> on the inbox card and forward the reply link to {whisper.whatsapp_number}.
+            </div>
+          )}
           {origUrl && (
             <div>
               <p className="text-xs text-muted-foreground mb-1">Original whisper</p>

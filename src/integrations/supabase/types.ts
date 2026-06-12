@@ -2703,12 +2703,13 @@ export type Database = {
           country: string | null
           created_at: string
           duration_seconds: number | null
-          email: string
+          email: string | null
           id: string
           language: string | null
           public_token: string
           replied_by: string | null
           reply_audio_path: string | null
+          reply_channel: string
           reply_sent_at: string | null
           reply_text: string | null
           source: string | null
@@ -2716,6 +2717,7 @@ export type Database = {
           topic_hint: string | null
           updated_at: string
           user_agent: string | null
+          whatsapp_number: string | null
         }
         Insert: {
           ai_analyzed_at?: string | null
@@ -2729,12 +2731,13 @@ export type Database = {
           country?: string | null
           created_at?: string
           duration_seconds?: number | null
-          email: string
+          email?: string | null
           id?: string
           language?: string | null
           public_token?: string
           replied_by?: string | null
           reply_audio_path?: string | null
+          reply_channel?: string
           reply_sent_at?: string | null
           reply_text?: string | null
           source?: string | null
@@ -2742,6 +2745,7 @@ export type Database = {
           topic_hint?: string | null
           updated_at?: string
           user_agent?: string | null
+          whatsapp_number?: string | null
         }
         Update: {
           ai_analyzed_at?: string | null
@@ -2755,12 +2759,13 @@ export type Database = {
           country?: string | null
           created_at?: string
           duration_seconds?: number | null
-          email?: string
+          email?: string | null
           id?: string
           language?: string | null
           public_token?: string
           replied_by?: string | null
           reply_audio_path?: string | null
+          reply_channel?: string
           reply_sent_at?: string | null
           reply_text?: string | null
           source?: string | null
@@ -2768,6 +2773,7 @@ export type Database = {
           topic_hint?: string | null
           updated_at?: string
           user_agent?: string | null
+          whatsapp_number?: string | null
         }
         Relationships: []
       }

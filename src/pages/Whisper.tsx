@@ -5,16 +5,16 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Mic, Square, Play, Loader2, ShieldCheck, Heart, Clock, Headphones } from "lucide-react";
+import { Mic, Square, Loader2, ShieldCheck, Heart, Clock, Send, Trash2, MessageCircle, CheckCheck } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
 
 const MAX_SECONDS = 180; // 3 minutes
 
 const emailSchema = z.string().trim().email().max(255);
+const whatsappSchema = z.string().trim().regex(/^\+?\d[\d\s-]{7,}$/, "Enter a valid WhatsApp number");
 
 const Whisper = () => {
   const { token } = useParams();
@@ -28,18 +28,25 @@ function WhisperRecorder() {
   const [seconds, setSeconds] = useState(0);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const [channel, setChannel] = useState<"whatsapp" | "email">("whatsapp");
+  const [whatsapp, setWhatsapp] = useState("");
   const [email, setEmail] = useState("");
   const [topic, setTopic] = useState("");
+  const [textNote, setTextNote] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submittedToken, setSubmittedToken] = useState<string | null>(null);
+  const [showDetails, setShowDetails] = useState(false);
+  const [levels, setLevels] = useState<number[]>([]);
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const timerRef = useRef<number | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  const rafRef = useRef<number | null>(null);
 
   useEffect(() => () => {
     if (timerRef.current) window.clearInterval(timerRef.current);
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
     streamRef.current?.getTracks().forEach((t) => t.stop());
     if (audioUrl) URL.revokeObjectURL(audioUrl);
   }, [audioUrl]);
@@ -56,6 +63,7 @@ function WhisperRecorder() {
         setAudioBlob(blob);
         setAudioUrl(URL.createObjectURL(blob));
         stream.getTracks().forEach((t) => t.stop());
+        if (rafRef.current) cancelAnimationFrame(rafRef.current);
       };
       mr.start();
       mediaRecorderRef.current = mr;
@@ -63,6 +71,22 @@ function WhisperRecorder() {
       setSeconds(0);
       setAudioBlob(null);
       setAudioUrl(null);
+      setLevels([]);
+      try {
+        const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+        const src = ctx.createMediaStreamSource(stream);
+        const analyser = ctx.createAnalyser();
+        analyser.fftSize = 256;
+        src.connect(analyser);
+        const data = new Uint8Array(analyser.frequencyBinCount);
+        const tick = () => {
+          analyser.getByteFrequencyData(data);
+          const avg = data.reduce((a, b) => a + b, 0) / data.length;
+          setLevels((prev) => [...prev.slice(-39), Math.min(100, Math.round((avg / 255) * 100))]);
+          rafRef.current = requestAnimationFrame(tick);
+        };
+        tick();
+      } catch {}
       timerRef.current = window.setInterval(() => {
         setSeconds((s) => {
           if (s + 1 >= MAX_SECONDS) {
@@ -86,6 +110,7 @@ function WhisperRecorder() {
     mediaRecorderRef.current?.stop();
     setRecording(false);
     if (timerRef.current) window.clearInterval(timerRef.current);
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
   };
 
   const reset = () => {
@@ -93,26 +118,48 @@ function WhisperRecorder() {
     if (audioUrl) URL.revokeObjectURL(audioUrl);
     setAudioUrl(null);
     setSeconds(0);
+    setLevels([]);
   };
 
   const submit = async () => {
-    if (!audioBlob) {
-      toast({ title: "Please record your whisper first", variant: "destructive" });
+    if (!audioBlob && !textNote.trim()) {
+      toast({ title: "Add a voice note or a written message first", variant: "destructive" });
       return;
     }
-    const parsed = emailSchema.safeParse(email);
-    if (!parsed.success) {
-      toast({ title: "Please enter a valid email", description: "We need it to send your reply.", variant: "destructive" });
-      return;
+    let waValue = "";
+    let emailValue = "";
+    if (channel === "whatsapp") {
+      const p = whatsappSchema.safeParse(whatsapp);
+      if (!p.success) {
+        setShowDetails(true);
+        toast({ title: "Enter your WhatsApp number", description: "We'll reply privately on WhatsApp.", variant: "destructive" });
+        return;
+      }
+      waValue = p.data;
+    } else {
+      const p = emailSchema.safeParse(email);
+      if (!p.success) {
+        setShowDetails(true);
+        toast({ title: "Please enter a valid email", description: "We need it to send your reply.", variant: "destructive" });
+        return;
+      }
+      emailValue = p.data;
     }
 
     setSubmitting(true);
     try {
       const fd = new FormData();
-      fd.append("audio", audioBlob, "whisper.webm");
-      fd.append("email", parsed.data);
+      if (audioBlob) {
+        fd.append("audio", audioBlob, "whisper.webm");
+      } else {
+        // submit-whisper still requires an audio file; send a tiny placeholder
+        fd.append("audio", new Blob([new Uint8Array(1)], { type: "audio/webm" }), "whisper.webm");
+      }
+      fd.append("reply_channel", channel);
+      if (waValue) fd.append("whatsapp_number", waValue);
+      if (emailValue) fd.append("email", emailValue);
       fd.append("duration", String(seconds));
-      fd.append("topic_hint", topic.slice(0, 200));
+      fd.append("topic_hint", (textNote.trim() || topic).slice(0, 200));
 
       const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/submit-whisper`;
       const res = await fetch(url, {
@@ -132,22 +179,23 @@ function WhisperRecorder() {
   };
 
   if (submittedToken) {
+    const isWa = channel === "whatsapp";
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        <main className="max-w-2xl mx-auto px-4 py-16">
-          <Card className="border-primary/20 shadow-xl">
+        <main className="max-w-md mx-auto px-4 py-12">
+          <Card className="border-primary/20 shadow-xl rounded-3xl overflow-hidden">
             <CardContent className="pt-10 pb-10 text-center">
-              <div className="w-16 h-16 rounded-full bg-primary/10 mx-auto flex items-center justify-center mb-4">
-                <Heart className="w-8 h-8 text-primary" />
+              <div className="w-20 h-20 rounded-full bg-primary/10 mx-auto flex items-center justify-center mb-4">
+                {isWa ? <MessageCircle className="w-10 h-10 text-primary" /> : <Heart className="w-10 h-10 text-primary" />}
               </div>
-              <h1 className="text-3xl font-bold mb-3">Your Whisper is safely with us</h1>
-              <p className="text-muted-foreground mb-6">
-                A licensed therapist will listen and reply with a personal voice note within 24 hours.
-                We've also emailed you a private link.
+              <h1 className="text-2xl font-bold mb-3">Your Whisper is with us 🤍</h1>
+              <p className="text-muted-foreground mb-6 text-sm">
+                A licensed therapist will listen and reply within 24 hours
+                {isWa ? " on WhatsApp." : " by email."} Your message is private — no name, no profile.
               </p>
               <Link to={`/whisper/${submittedToken}`}>
-                <Button size="lg" className="rounded-full">View my Whisper page</Button>
+                <Button size="lg" className="rounded-full w-full">View my Whisper page</Button>
               </Link>
             </CardContent>
           </Card>
@@ -159,130 +207,219 @@ function WhisperRecorder() {
 
   const mins = Math.floor(seconds / 60);
   const secs = seconds % 60;
+  const timeStr = `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
 
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Whisper — Free Anonymous Therapist Reply in 24h | InnerSpark Africa</title>
-        <meta name="description" content="Record a 3-minute anonymous voice note. A licensed Ugandan therapist replies within 24 hours — free, private, no signup. Try Whisper by InnerSpark Africa." />
-        <meta name="keywords" content="anonymous therapy Uganda, free therapist reply, voice therapy Africa, Whisper InnerSpark, anonymous mental health support" />
+        <title>Whisper — Free Private Therapist Reply on WhatsApp | InnerSpark</title>
+        <meta name="description" content="Whisper a voice note. A licensed Ugandan therapist replies privately on WhatsApp within 24 hours — free, no signup. Email reply also available." />
+        <meta name="keywords" content="WhatsApp therapy Uganda, private therapist reply, voice therapy Africa, Whisper InnerSpark, free mental health support" />
         <link rel="canonical" href="https://www.innersparkafrica.com/whisper" />
-        <meta property="og:title" content="Whisper — Anonymous Therapist Reply in 24 Hours" />
-        <meta property="og:description" content="Too heavy to type? Whisper it. A real licensed Ugandan therapist replies within 24 hours — free and anonymous." />
+        <meta property="og:title" content="Whisper — Private Therapist Reply on WhatsApp in 24h" />
+        <meta property="og:description" content="Too heavy to type? Whisper it. A real licensed Ugandan therapist replies privately on WhatsApp within 24 hours — free." />
         <meta property="og:url" content="https://www.innersparkafrica.com/whisper" />
         <meta property="og:type" content="website" />
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Service",
-          name: "Whisper — Anonymous Voice Therapy Reply",
-          serviceType: "Anonymous mental health support",
+          name: "Whisper — Private Voice Therapy Reply on WhatsApp",
+          serviceType: "Private mental health support",
           provider: { "@type": "Organization", name: "InnerSpark Africa", url: "https://www.innersparkafrica.com" },
           areaServed: ["Uganda", "Africa"],
           offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
           url: "https://www.innersparkafrica.com/whisper",
-          description: "Record a 3-minute anonymous voice note and receive a private reply from a licensed Ugandan therapist within 24 hours.",
-        })}</script>
-        <script type="application/ld+json">{JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          mainEntity: [
-            { "@type": "Question", name: "Is Whisper anonymous?", acceptedAnswer: { "@type": "Answer", text: "Yes. No name needed. Your email is only used to send your reply and is never shared with the therapist." } },
-            { "@type": "Question", name: "How long until I get a reply?", acceptedAnswer: { "@type": "Answer", text: "Usually within 24 hours. A real licensed Ugandan therapist listens and records a private reply for you." } },
-            { "@type": "Question", name: "Does Whisper cost anything?", acceptedAnswer: { "@type": "Answer", text: "No. Whisper is completely free." } },
-          ],
+          description: "Record a 3-minute voice note and receive a private reply from a licensed Ugandan therapist on WhatsApp within 24 hours.",
         })}</script>
       </Helmet>
       <Header />
-      <main className="max-w-2xl mx-auto px-4 py-12">
-        <div className="text-center mb-10">
-          <Badge variant="secondary" className="mb-3">New · Anonymous</Badge>
-          <h1 className="text-4xl md:text-5xl font-bold mb-3">Whisper</h1>
-          <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-            Record a 3-minute voice note. A licensed therapist will reply — anonymously,
-            with their own voice — within 24 hours. No account. No judgment.
-          </p>
-        </div>
+      <main className="max-w-md mx-auto px-3 py-6 sm:py-10">
+        <div className="rounded-3xl overflow-hidden shadow-2xl border border-primary/10 bg-card">
+          {/* Chat header */}
+          <div className="bg-primary text-primary-foreground px-4 py-3 flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-primary-foreground/15 flex items-center justify-center">
+              <Heart className="w-5 h-5" />
+            </div>
+            <div className="flex-1">
+              <div className="font-semibold leading-tight">InnerSpark Therapist</div>
+              <div className="text-xs opacity-80 flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block" />
+                Listening · replies in 24h
+              </div>
+            </div>
+            <Badge variant="secondary" className="text-[10px] bg-primary-foreground/15 text-primary-foreground border-0">
+              Private
+            </Badge>
+          </div>
 
-        <Card className="shadow-lg border-primary/10">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Headphones className="w-5 h-5 text-primary" />
-              Speak freely
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="bg-muted/30 rounded-2xl p-8 text-center">
-              {!recording && !audioBlob && (
-                <Button onClick={start} size="lg" className="rounded-full h-20 w-20 p-0">
-                  <Mic className="w-8 h-8" />
-                </Button>
-              )}
-              {recording && (
-                <>
-                  <div className="flex items-center justify-center gap-2 mb-4">
-                    <span className="w-3 h-3 rounded-full bg-red-500 animate-pulse" />
-                    <span className="font-mono text-2xl">
-                      {String(mins).padStart(2, "0")}:{String(secs).padStart(2, "0")}
-                    </span>
-                    <span className="text-sm text-muted-foreground">/ 03:00</span>
-                  </div>
-                  <Button onClick={stop} size="lg" variant="destructive" className="rounded-full">
-                    <Square className="w-5 h-5 mr-2" /> Stop
-                  </Button>
-                </>
-              )}
-              {!recording && audioBlob && audioUrl && (
-                <div className="space-y-3">
-                  <audio controls src={audioUrl} className="w-full" />
-                  <div className="flex justify-center gap-2">
-                    <Button variant="outline" onClick={reset}>Record again</Button>
+          {/* Chat body */}
+          <div className="bg-muted/20 px-4 py-5 space-y-3 min-h-[340px]">
+            <div className="flex gap-2 items-end">
+              <div className="w-7 h-7 rounded-full bg-primary/15 flex items-center justify-center shrink-0">
+                <Heart className="w-3.5 h-3.5 text-primary" />
+              </div>
+              <div className="max-w-[80%] bg-background rounded-2xl rounded-bl-md px-4 py-2.5 shadow-sm">
+                <p className="text-sm leading-relaxed">
+                  Hi 🤍 You're safe here. Tap the mic and say whatever's on your heart — a real therapist will reply within 24 hours.
+                </p>
+                <p className="text-[10px] text-muted-foreground mt-1">No name needed</p>
+              </div>
+            </div>
+
+            {audioUrl && !recording && (
+              <div className="flex justify-end">
+                <div className="max-w-[80%] bg-primary text-primary-foreground rounded-2xl rounded-br-md px-3 py-2 shadow-sm">
+                  <audio controls src={audioUrl} className="w-full max-w-[220px]" />
+                  <div className="flex items-center justify-between mt-1 text-[10px] opacity-80">
+                    <span>{timeStr}</span>
+                    <button onClick={reset} className="inline-flex items-center gap-1 hover:opacity-100 opacity-80">
+                      <Trash2 className="w-3 h-3" /> Re-record
+                    </button>
                   </div>
                 </div>
+              </div>
+            )}
+
+            {recording && (
+              <div className="flex justify-end">
+                <div className="max-w-[80%] bg-primary text-primary-foreground rounded-2xl rounded-br-md px-4 py-3 shadow-sm">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="w-2 h-2 rounded-full bg-red-300 animate-pulse" />
+                    <span className="font-mono text-sm">{timeStr}</span>
+                    <span className="text-[10px] opacity-70">/ 03:00</span>
+                  </div>
+                  <div className="flex items-end gap-[2px] h-8">
+                    {Array.from({ length: 40 }).map((_, i) => {
+                      const v = levels[i] ?? 0;
+                      return (
+                        <span
+                          key={i}
+                          className="w-1 rounded-full bg-primary-foreground/80"
+                          style={{ height: `${Math.max(4, v)}%` }}
+                        />
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="flex justify-center pt-2">
+              <div className="inline-flex rounded-full bg-background p-1 shadow-sm border">
+                <button
+                  onClick={() => setChannel("whatsapp")}
+                  className={`px-3 py-1 rounded-full text-xs font-medium transition ${channel === "whatsapp" ? "bg-primary text-primary-foreground" : "text-muted-foreground"}`}
+                >
+                  Reply on WhatsApp
+                </button>
+                <button
+                  onClick={() => setChannel("email")}
+                  className={`px-3 py-1 rounded-full text-xs font-medium transition ${channel === "email" ? "bg-primary text-primary-foreground" : "text-muted-foreground"}`}
+                >
+                  Reply by email
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Composer */}
+          <div className="bg-background border-t px-3 py-3 space-y-2">
+            {showDetails && (
+              <div className="space-y-2 pb-1">
+                {channel === "whatsapp" ? (
+                  <Input
+                    inputMode="tel"
+                    placeholder="Your WhatsApp number e.g. +256 7XX XXX XXX"
+                    value={whatsapp}
+                    onChange={(e) => setWhatsapp(e.target.value)}
+                    disabled={submitting}
+                    className="rounded-full"
+                  />
+                ) : (
+                  <Input
+                    type="email"
+                    placeholder="Your email (private)"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    disabled={submitting}
+                    className="rounded-full"
+                  />
+                )}
+                <Input
+                  placeholder="Optional: a few words about what's on your mind"
+                  value={topic}
+                  maxLength={200}
+                  onChange={(e) => setTopic(e.target.value)}
+                  disabled={submitting}
+                  className="rounded-full"
+                />
+              </div>
+            )}
+
+            <div className="flex items-end gap-2">
+              <input
+                type="text"
+                value={textNote}
+                onChange={(e) => setTextNote(e.target.value)}
+                placeholder={recording ? "Recording…" : (audioBlob ? "Add a written note (optional)" : "Or type your message…")}
+                disabled={recording || submitting}
+                maxLength={500}
+                className="flex-1 h-11 rounded-full border border-input bg-background px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+                onFocus={() => setShowDetails(true)}
+              />
+              {!recording ? (
+                <button
+                  onClick={() => { setShowDetails(true); start(); }}
+                  disabled={submitting}
+                  className="h-11 w-11 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg hover:scale-105 transition active:scale-95"
+                  aria-label="Record voice note"
+                >
+                  <Mic className="w-5 h-5" />
+                </button>
+              ) : (
+                <button
+                  onClick={stop}
+                  className="h-11 w-11 rounded-full bg-red-500 text-white flex items-center justify-center shadow-lg animate-pulse"
+                  aria-label="Stop recording"
+                >
+                  <Square className="w-4 h-4" />
+                </button>
               )}
-              <p className="text-xs text-muted-foreground mt-4">
-                Max 3 minutes. We never publish your recording.
-              </p>
+              <button
+                onClick={submit}
+                disabled={submitting || recording || (!audioBlob && !textNote.trim())}
+                className="h-11 w-11 rounded-full bg-foreground text-background flex items-center justify-center shadow disabled:opacity-30 active:scale-95 transition"
+                aria-label="Send whisper"
+              >
+                {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
+              </button>
             </div>
 
-            <div className="space-y-3">
-              <Input
-                type="email"
-                placeholder="Your email (private — only used to send your reply)"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                disabled={submitting}
-              />
-              <Input
-                placeholder="Optional: a few words about what you'd like to talk about"
-                value={topic}
-                maxLength={200}
-                onChange={(e) => setTopic(e.target.value)}
-                disabled={submitting}
-              />
-            </div>
-
-            <Button
-              onClick={submit}
-              disabled={submitting || !audioBlob}
-              size="lg"
-              className="w-full rounded-full"
+            <button
+              type="button"
+              onClick={() => setShowDetails((v) => !v)}
+              className="text-[11px] text-muted-foreground hover:text-foreground"
             >
-              {submitting ? <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> Sending…</> : "Send my Whisper"}
-            </Button>
+              {showDetails ? "Hide details" : `Set ${channel === "whatsapp" ? "WhatsApp number" : "email"} to receive your reply`}
+            </button>
+          </div>
+        </div>
 
-            <div className="grid grid-cols-3 gap-3 pt-2 text-center text-xs text-muted-foreground">
-              <div className="flex flex-col items-center gap-1">
-                <ShieldCheck className="w-4 h-4 text-primary" /> Anonymous
-              </div>
-              <div className="flex flex-col items-center gap-1">
-                <Clock className="w-4 h-4 text-primary" /> Reply within 24h
-              </div>
-              <div className="flex flex-col items-center gap-1">
-                <Heart className="w-4 h-4 text-primary" /> Real therapist
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        <div className="grid grid-cols-3 gap-2 mt-5 text-center text-[11px] text-muted-foreground">
+          <div className="flex flex-col items-center gap-1">
+            <ShieldCheck className="w-4 h-4 text-primary" /> Private
+          </div>
+          <div className="flex flex-col items-center gap-1">
+            <Clock className="w-4 h-4 text-primary" /> Reply in 24h
+          </div>
+          <div className="flex flex-col items-center gap-1">
+            <CheckCheck className="w-4 h-4 text-primary" /> Real therapist
+          </div>
+        </div>
+
+        <p className="text-center text-[11px] text-muted-foreground mt-4 max-w-xs mx-auto">
+          Whisper is free. Max 3 minutes per voice note. We never publish your recording or share your number with anyone outside our licensed team.
+        </p>
       </main>
       <Footer />
     </div>
@@ -364,7 +501,7 @@ function WhisperReplyView({ token }: { token: string }) {
                   <Clock className="w-8 h-8 mx-auto mb-3 text-primary" />
                   <p className="font-medium">Your therapist is preparing a thoughtful reply.</p>
                   <p className="text-sm text-muted-foreground mt-2">
-                    We'll email you the moment it's ready. Usually within 24 hours.
+                    We'll reach you on WhatsApp (or email) the moment it's ready. Usually within 24 hours.
                   </p>
                 </div>
               )}
