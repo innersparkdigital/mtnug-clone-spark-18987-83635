@@ -322,7 +322,7 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
                     <div className="text-lg font-bold">{opt.title}</div>
                     <div className="text-xs opacity-90 mb-2">{opt.subtitle}</div>
                     <div className="text-xs font-semibold bg-white/20 rounded px-2 py-1 inline-block">
-                      {opt.price}
+                      {therapyPriceLabel}
                     </div>
                     {selected && (
                       <CheckCircle className="absolute top-2 right-2 h-5 w-5" />
