@@ -110,6 +110,7 @@ const initialIntake: IntakeData = {
 
 const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { clearAssessment } = useAssessment();
   const [step, setStep] = useState(0);
   const [data, setData] = useState<IntakeData>(initialIntake);
@@ -131,11 +132,19 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
     }
   }, [isOpen]);
 
+  const isKenya = useMemo(
+    () => /^\/(kenya|check\/kenya)/i.test(location.pathname),
+    [location.pathname]
+  );
+
+  const therapyPriceLabel = isKenya ? "KES 2,600 / session" : "UGX 75,000 / session";
+  const groupPriceLabel = isKenya ? "KES 1,000 / week" : "UGX 25,000 / week";
+
   const priceLabel = useMemo(() => {
-    if (isGroup) return "UGX 25,000 / week";
+    if (isGroup) return groupPriceLabel;
     if (isConsultation) return "FREE Consultation";
-    return "UGX 75,000 / session";
-  }, [isGroup, isConsultation]);
+    return therapyPriceLabel;
+  }, [isGroup, isConsultation, therapyPriceLabel, groupPriceLabel]);
 
   const headerTitle = isGroup
     ? "Join a Support Group"
