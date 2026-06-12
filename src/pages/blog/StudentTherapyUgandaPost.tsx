@@ -1,212 +1,113 @@
-import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
-import RelatedArticles from "@/components/RelatedArticles";
-import { ArrowLeft, Calendar, Clock, CheckCircle, GraduationCap } from "lucide-react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import AppDownload from "@/components/AppDownload";
-import SocialShareButtons from "@/components/SocialShareButtons";
-import { Button } from "@/components/ui/button";
-import stressHeroImage from "@/assets/blog/stress-management-hero.jpg";
+import BlogPostLayout, { BlogPostData } from "@/components/blog/BlogPostLayout";
 
 const StudentTherapyUgandaPost = () => {
-  const articleSchema = {
-    "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    headline: "Best Therapy Options for University Students in Uganda (2026 Guide)",
-    description: "University students in Uganda face unique mental health challenges. Discover affordable therapy options, free counseling resources, and how to get help while at school.",
-    image: "https://www.innersparkafrica.com/innerspark-logo.png",
-    author: { "@type": "Organization", name: "Innerspark Africa", url: "https://www.innersparkafrica.com" },
-    publisher: { "@type": "Organization", name: "Innerspark Africa", logo: { "@type": "ImageObject", url: "https://www.innersparkafrica.com/innerspark-logo.png" } },
-    datePublished: "2026-02-22",
-    dateModified: "2026-02-22",
-    inLanguage: "en",
-    keywords: ["student therapy Uganda", "university counseling Uganda", "student mental health", "affordable therapy students", "Makerere counseling"],
-    mainEntityOfPage: { "@type": "WebPage", "@id": "https://www.innersparkafrica.com/blog/student-therapy-uganda" }
+  const data: BlogPostData = {
+    slug: "student-therapy-uganda",
+    category: "Students & University",
+    title: "Student Mental Health in Uganda: Real Support for University Life",
+    metaTitle: "Student Mental Health Uganda — Affordable Therapy for University Students | Innerspark",
+    metaDescription: "Practical mental health support for Ugandan university students — coping with exams, hostel life, family pressure, and where to find affordable therapy from UGX 30,000.",
+    date: "June 7, 2026",
+    isoDate: "2026-06-07",
+    readTime: "10 min read",
+    keywords: ["student mental health Uganda", "university therapy Uganda", "student counselling Kampala", "Makerere mental health", "exam stress Uganda", "young adult therapy Kampala"],
+    heroImage: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1600&q=75",
+    heroAlt: "Ugandan university student studying in a quiet campus library in Kampala",
+    sections: [
+      { title: "Being a student in Uganda is harder than people admit", blocks: [
+        { type: "lead", text: "Exams every few weeks. Family expectations heavier than the textbooks. Rent, transport, data, food — all on a budget that never quite stretches. Add relationships, hostel drama, and the quiet question of \"what next?\" and it is no surprise that more Ugandan students than ever are reaching out for help. The good news: affordable, confidential therapy is finally within reach." },
+        { type: "callout", label: "The short version:", text: "Therapy is no longer a luxury for Ugandan students. Innerspark offers sessions from UGX 30,000, group support from UGX 25,000 per week, and 37+ free self-assessments. All online, all private, no parent or lecturer ever knows." },
+        { type: "p", text: "Below: the most common mental health struggles for Ugandan students, when to actually seek help, what therapy looks like at this stage of life, and how to start this week — even on a student budget." },
+      ]},
+      { title: "What students in Uganda are really dealing with", blocks: [
+        { type: "checkGrid", items: [
+          "Exam pressure and constant academic anxiety",
+          "Imposter feelings — \"do I even belong here?\"",
+          "Family expectations and being the \"first to study\"",
+          "Money stress and skipping meals",
+          "Relationship and dating struggles",
+          "Loneliness despite being surrounded by people",
+          "Hostel conflict and lack of privacy",
+          "Heavy use of alcohol, weed, or social media to cope",
+        ]},
+        { type: "p", text: "None of these mean something is wrong with you. They mean you are a human being in a high-pressure stage of life that very few people prepared you for." },
+      ]},
+      { title: "Signs it is time to talk to someone", blocks: [
+        { type: "p", text: "Therapy is not just for crisis. But these signs are a clear nudge to reach out." },
+        { type: "list", items: [
+          "Low mood or hopelessness that lasts more than two weeks",
+          "Anxiety or panic that interferes with classes or sleep",
+          "Skipping lectures, tests, or social plans you used to enjoy",
+          "Sleeping too much or too little",
+          "Drinking or smoking to numb how you feel",
+          "Thoughts of self-harm or that life is not worth it",
+          "Any major life event — bereavement, breakup, illness, assault — you have not processed",
+        ]},
+        { type: "p", text: <>If you are in immediate crisis, please visit our <Link to="/emergency-support" className="text-primary hover:underline font-medium">emergency support page</Link> or call Butabika Hospital directly.</> },
+      ]},
+      { title: "Why most students avoid therapy — and why those reasons no longer hold", blocks: [
+        { type: "quote", text: "Students do not avoid therapy because they do not need it. They avoid it because of cost, stigma, and the fear that a parent or lecturer will find out. Online therapy quietly solves all three.", cite: "Innerspark student wellbeing team" },
+        { type: "iconGrid", items: [
+          { icon: "💳", text: "From UGX 30,000 — less than a night out" },
+          { icon: "🔒", text: "No one sees you walk into a clinic" },
+          { icon: "📱", text: "Done from your phone, hostel or library" },
+          { icon: "🕐", text: "Evenings, weekends, between lectures" },
+          { icon: "🌍", text: "Same therapist when you go home for holidays" },
+          { icon: "🤝", text: "Group support from UGX 25,000 per week" },
+        ]},
+      ]},
+      { title: "What student-friendly therapy actually looks like", blocks: [
+        { type: "numberedCards", title: "Your first 3 sessions", items: [
+          "Session 1: A 60-minute conversation. You share what is happening. Your therapist listens, asks gentle questions, and agrees a simple plan with you.",
+          "Session 2: Map your patterns — exam triggers, sleep, social anxiety, relationships. You leave with one or two tools you can use this week.",
+          "Session 3: Review what is helping. Add small, practical experiments to keep the momentum going. Progress, not perfection.",
+        ]},
+      ]},
+      { title: "Free tools every Ugandan student should try first", blocks: [
+        { type: "highlight", title: "Start here — no payment needed", text: <>Take the free <Link to="/wellbeing-check" className="text-primary hover:underline font-medium">3-minute wellbeing check</Link> or any of the <Link to="/mind-check" className="text-primary hover:underline font-medium">37 mental health self-assessments</Link> — including anxiety, depression, burnout, and sleep. They are private, take a few minutes, and give you a clear sense of what to do next.</> },
+        { type: "p", text: <>You can also chat anonymously with <Link to="/meet-amani" className="text-primary hover:underline font-medium">Amani</Link>, our free AI wellness companion, any time of day.</> },
+      ]},
+      { title: "Budgeting therapy as a student", blocks: [
+        { type: "numberedCards", title: "5 ways to make it affordable", items: [
+          "Use the free self-assessments and Amani first to clarify your concerns.",
+          "Start at the entry rate of UGX 30,000 — designed for students.",
+          "Join a support group at UGX 25,000 per week — same therapist, shared cost.",
+          "Space sessions every 2 weeks instead of weekly during exam terms.",
+          "Ask if your university clinic offers subsidised referrals for ongoing care.",
+        ]},
+      ]},
+      { title: "What you can talk about with a therapist", blocks: [
+        { type: "checkGrid", items: [
+          "Academic anxiety, procrastination, and exam panic",
+          "Family pressure and being misunderstood at home",
+          "Relationships, breakups, and dating safely",
+          "Sexuality, identity, and self-image",
+          "Loss, trauma, or assault you have not spoken about",
+          "Alcohol, weed, or social media patterns that feel out of control",
+          "Hopelessness and thoughts of self-harm",
+          "Just feeling lost — and wanting a clearer plan",
+        ]},
+      ]},
+    ],
+    faqs: [
+      { q: "Will my parents or lecturers find out if I see a therapist?", a: "No. Sessions are completely confidential. We do not share information with parents, lecturers, or your university unless there is immediate risk to life — the same rule applied worldwide. Many students even pay with their own Mobile Money to stay fully private." },
+      { q: "How much does therapy cost for a Ugandan student?", a: "Innerspark Africa sessions start at UGX 30,000. Group support is UGX 25,000 per week. We also offer 37+ free self-assessments and Amani, our free AI wellness companion, so you can get value without spending anything." },
+      { q: "Can I do therapy from my hostel?", a: "Yes. All you need is a phone, headphones, mobile data, and 60 minutes in a private space. If your hostel feels crowded, sessions can be done by voice or chat instead of video." },
+      { q: "Is there free or subsidised support at universities in Uganda?", a: "Yes — Makerere, Kyambogo, Mbarara, and several private universities now have wellness or counselling units. Innerspark also partners with universities for subsidised care. Ask your dean of students." },
+      { q: "I just need someone to talk to — is that worth therapy?", a: "Absolutely. You do not need a diagnosis to deserve support. Many of our student clients come in just wanting clarity about life, family, or relationships — and leave with practical tools and a calmer mind." },
+      { q: "Can I switch therapists if it doesn't feel right?", a: "Yes — and you should. Tell us within the first 2–3 sessions and we will reassign you at no extra cost. Fit matters more than reputation." },
+    ],
+    resources: [
+      { label: "WHO — Adolescent and youth mental health", url: "https://www.who.int/health-topics/adolescent-health" },
+      { label: "Makerere University Counselling and Guidance Centre", url: "https://www.mak.ac.ug/" },
+      { label: "Innerspark — Browse student-friendly therapists", url: "https://www.innersparkafrica.com/specialists" },
+      { label: "Innerspark — Free wellbeing check", url: "https://www.innersparkafrica.com/wellbeing-check" },
+    ],
+    closing: { headline: "Being a student in Uganda is heavy. You are not weak for finding it heavy.", primary: "One good session can change the next four years of your life." },
+    cta: { heading: "Start with one student-friendly session", body: "Sessions from UGX 30,000. Group support from UGX 25,000 per week. Paid by Mobile Money, fully confidential.", whatsappText: "Hi, I'm a student in Uganda and would like to book my first therapy session." },
   };
-
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: [
-      {
-        "@type": "Question",
-        name: "Can university students in Uganda get free therapy?",
-        acceptedAnswer: { "@type": "Answer", text: "Yes. Most universities in Uganda including Makerere, Kyambogo, and UCU offer free counseling services through their Dean of Students offices. Online platforms like Innerspark Africa also offer free initial consultations and affordable sessions from UGX 30,000." }
-      },
-      {
-        "@type": "Question",
-        name: "What mental health issues do Ugandan university students face?",
-        acceptedAnswer: { "@type": "Answer", text: "Common issues include academic stress, exam anxiety, depression, relationship problems, financial pressure, substance use, identity struggles, and adjustment difficulties, especially for students from rural areas." }
-      }
-    ]
-  };
-
-  return (
-    <>
-      <Helmet>
-        <title>Best Therapy Options for University Students in Uganda | Innerspark Africa</title>
-        <meta name="description" content="University students in Uganda can access affordable therapy from UGX 30,000. Discover free campus counseling, online therapy, and student mental health resources." />
-        <link rel="canonical" href="https://www.innersparkafrica.com/blog/student-therapy-uganda" />
-        <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>
-        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
-      </Helmet>
-
-      <Header />
-      <main>
-        <article className="max-w-4xl mx-auto px-4 py-12">
-          <nav className="mb-8">
-            <Link to="/blog" className="inline-flex items-center text-primary hover:text-primary/80 transition-colors">
-              <ArrowLeft className="h-4 w-4 mr-2" /> Back to Blog
-            </Link>
-          </nav>
-
-          <header className="mb-10">
-            <span className="bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-medium">Student Mental Health</span>
-            <h1 className="text-3xl md:text-5xl font-bold text-foreground mt-4 mb-4">Best Therapy Options for University Students in Uganda (2026 Guide)</h1>
-            <div className="flex items-center gap-4 text-sm text-muted-foreground mb-6">
-              <span className="flex items-center gap-1"><Calendar className="h-4 w-4" /> February 22, 2026</span>
-              <span className="flex items-center gap-1"><Clock className="h-4 w-4" /> 9 min read</span>
-            </div>
-            <img src={stressHeroImage} alt="University student mental health in Uganda" className="w-full rounded-xl aspect-video object-cover" />
-          </header>
-
-          <div className="prose prose-lg max-w-none text-foreground">
-            <p className="text-xl text-muted-foreground leading-relaxed">
-              University life in Uganda brings excitement — and enormous pressure. A <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8266549/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">2021 study</a> found that <strong>over 30% of Ugandan university students</strong> experience depression or anxiety symptoms. Yet most never seek help. Here are the best therapy options available to you.
-            </p>
-
-            <h2>The Student Mental Health Crisis in Uganda</h2>
-            <p>
-              Between academic pressure, financial stress, relationship challenges, and uncertain career prospects, Ugandan students face a perfect storm of mental health risks:
-            </p>
-            <div className="bg-accent/50 rounded-xl p-6 my-6">
-              <h3 className="text-xl font-bold mb-4 flex items-center gap-2"><GraduationCap className="w-5 h-5 text-primary" /> Student Mental Health Statistics</h3>
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="bg-background rounded-lg p-4">
-                  <p className="text-3xl font-bold text-primary">35%</p>
-                  <p className="text-sm text-muted-foreground">of Ugandan students report anxiety symptoms</p>
-                </div>
-                <div className="bg-background rounded-lg p-4">
-                  <p className="text-3xl font-bold text-primary">28%</p>
-                  <p className="text-sm text-muted-foreground">report depression symptoms</p>
-                </div>
-                <div className="bg-background rounded-lg p-4">
-                  <p className="text-3xl font-bold text-primary">70%</p>
-                  <p className="text-sm text-muted-foreground">cite academic stress as a primary concern</p>
-                </div>
-                <div className="bg-background rounded-lg p-4">
-                  <p className="text-3xl font-bold text-primary">90%</p>
-                  <p className="text-sm text-muted-foreground">have never spoken to a counselor</p>
-                </div>
-              </div>
-            </div>
-
-            <h2>1. Campus Counseling Services (Free)</h2>
-            <p>Most Ugandan universities offer free counseling through the Dean of Students' office:</p>
-            <ul>
-              <li><strong>Makerere University:</strong> Counseling and Guidance Centre, Senate Building</li>
-              <li><strong>Kyambogo University:</strong> Student Affairs counseling services</li>
-              <li><strong>Uganda Christian University:</strong> Chaplaincy and wellness programs</li>
-              <li><strong>Mbarara University:</strong> Student counseling unit</li>
-              <li><strong>IUIU:</strong> Guidance and counseling department</li>
-            </ul>
-            <p><em>Limitation:</em> Campus counselors are often overwhelmed with long wait times. If you need faster access, consider online options.</p>
-
-            <h2>2. Online Therapy (From UGX 30,000)</h2>
-            <p>
-              Online therapy is the most practical option for busy students. <Link to="/" className="text-primary hover:underline">Innerspark Africa</Link> offers:
-            </p>
-            <div className="space-y-3 my-4">
-              {[
-                "Sessions from UGX 30,000 — less than a night out",
-                "Video, voice, or chat — your choice",
-                "Evening and weekend availability around class schedules",
-                "Complete privacy — no one knows you're in therapy",
-                "Therapists who understand student-specific challenges"
-              ].map((item, i) => (
-                <div key={i} className="flex items-start gap-3">
-                  <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span>{item}</span>
-                </div>
-              ))}
-            </div>
-
-            <h2>3. Peer Support Groups</h2>
-            <p>
-              Sometimes talking to peers who understand your experience is exactly what you need. <Link to="/support-groups" className="text-primary hover:underline">Innerspark's support groups</Link> connect you with other young adults navigating similar challenges — facilitated by a licensed therapist for as little as UGX 15,000.
-            </p>
-
-            <h2>4. Self-Help Tools</h2>
-            <p>
-              While not a substitute for professional help, these free tools can complement your mental health journey:
-            </p>
-            <ul>
-              <li><Link to="/mind-check" className="text-primary hover:underline">Mind-Check assessments</Link> — understand your anxiety, depression, or stress levels</li>
-              <li><Link to="/meditations" className="text-primary hover:underline">Guided meditations</Link> — manage exam stress and improve sleep</li>
-              <li><Link to="/mood-check-in" className="text-primary hover:underline">Mood tracking</Link> — identify patterns in your emotional health</li>
-            </ul>
-
-            <h2>5. Crisis Support</h2>
-            <p>
-              If you're in immediate distress, don't wait for an appointment:
-            </p>
-            <ul>
-              <li>Call <strong>0792 085 773</strong> (Innerspark crisis support)</li>
-              <li>Visit the <Link to="/emergency-support" className="text-primary hover:underline">Emergency Support page</Link></li>
-              <li>Go to Butabika Hospital emergency or your campus health center</li>
-            </ul>
-
-            <h2>Common Issues Students Seek Therapy For</h2>
-            <ul>
-              <li><strong>Exam anxiety and academic stress</strong> — fear of failure, perfectionism</li>
-              <li><strong>Depression</strong> — especially during semester breaks and after results</li>
-              <li><strong>Relationship issues</strong> — breakups, family conflicts, loneliness</li>
-              <li><strong>Financial stress</strong> — tuition worries, lack of pocket money</li>
-              <li><strong>Identity and purpose</strong> — career confusion, self-doubt</li>
-              <li><strong>Substance use</strong> — alcohol, cannabis, prescription drug misuse</li>
-              <li><strong>Grief and loss</strong> — losing a parent or loved one during university</li>
-            </ul>
-
-            <h2>Frequently Asked Questions</h2>
-            <div className="space-y-6 my-8">
-              <div className="bg-muted/50 rounded-lg p-5">
-                <h3 className="font-bold mb-2">Can university students in Uganda get free therapy?</h3>
-                <p className="text-muted-foreground">Yes. Most universities offer free counseling through the Dean of Students. Online platforms also offer free consultations and affordable sessions from UGX 30,000.</p>
-              </div>
-              <div className="bg-muted/50 rounded-lg p-5">
-                <h3 className="font-bold mb-2">What mental health issues do Ugandan students face?</h3>
-                <p className="text-muted-foreground">Common issues include academic stress, exam anxiety, depression, relationship problems, financial pressure, substance use, and adjustment difficulties.</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Booking CTA */}
-          <div className="bg-primary text-primary-foreground rounded-2xl p-8 md:p-12 text-center my-12">
-            <h2 className="text-2xl md:text-3xl font-bold mb-4">Student? Get Affordable Therapy Today</h2>
-            <p className="text-primary-foreground/85 mb-6 max-w-lg mx-auto">
-              Sessions from UGX 30,000. Therapists who understand student life. Book in under 2 minutes.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild size="lg" variant="secondary" className="rounded-full font-bold px-8">
-                <Link to="/specialists">Book a Session</Link>
-              </Button>
-              <Button asChild size="lg" variant="outline" className="rounded-full font-bold px-8 border-primary-foreground/40 text-primary-foreground hover:bg-primary-foreground/10">
-                <a href="https://wa.me/256792085773?text=Hi,%20I'm%20a%20student%20and%20I'd%20like%20to%20talk%20to%20a%20therapist" target="_blank" rel="noopener noreferrer">
-                  Free Consultation
-                </a>
-              </Button>
-            </div>
-          </div>
-
-          <SocialShareButtons title="Best Therapy Options for University Students in Uganda" url="https://www.innersparkafrica.com/blog/student-therapy-uganda" />
-          <RelatedArticles currentSlug="student-therapy-uganda" />
-        </article>
-      </main>
-      <AppDownload />
-      <Footer />
-    </>
-  );
+  return <BlogPostLayout data={data} />;
 };
 
 export default StudentTherapyUgandaPost;
