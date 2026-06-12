@@ -614,6 +614,10 @@ const App = () => (
                   path="/blog/corporate-wellbeing-screening-uganda"
                   element={<CorporateWellbeingScreeningPost />}
                 />
+                <Route
+                  path="/blog/affordable-online-counselling-uganda"
+                  element={<AffordableOnlineCounsellingPost />}
+                />
                 {/* CMS-driven dynamic posts (fallback after hardcoded routes) */}
                 <Route path="/blog/:slug" element={<CmsBlogPost />} />
                 <Route
