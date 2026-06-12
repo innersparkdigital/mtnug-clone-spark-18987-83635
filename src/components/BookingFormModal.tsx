@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   Dialog,
   DialogContent,
@@ -44,10 +44,10 @@ interface BookingFormModalProps {
 
 type TherapyType = "individual" | "couples" | "teen";
 
-const THERAPY_OPTIONS: { id: TherapyType; title: string; subtitle: string; price: string; icon: any; color: string }[] = [
-  { id: "individual", title: "Individual", subtitle: "For myself", price: "UGX 75,000 / session", icon: User, color: "from-emerald-500 to-emerald-600" },
-  { id: "couples", title: "Couples", subtitle: "For me and my partner", price: "UGX 75,000 / session", icon: Heart, color: "from-sky-500 to-sky-600" },
-  { id: "teen", title: "Teen", subtitle: "For my child", price: "UGX 75,000 / session", icon: Users, color: "from-amber-500 to-amber-600" },
+const THERAPY_OPTIONS: { id: TherapyType; title: string; subtitle: string; icon: any; color: string }[] = [
+  { id: "individual", title: "Individual", subtitle: "For myself", icon: User, color: "from-emerald-500 to-emerald-600" },
+  { id: "couples", title: "Couples", subtitle: "For me and my partner", icon: Heart, color: "from-sky-500 to-sky-600" },
+  { id: "teen", title: "Teen", subtitle: "For my child", icon: Users, color: "from-amber-500 to-amber-600" },
 ];
 
 const GENDER_OPTIONS = ["Woman", "Man", "Non-binary", "Prefer not to say"];
@@ -110,6 +110,7 @@ const initialIntake: IntakeData = {
 
 const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { clearAssessment } = useAssessment();
   const [step, setStep] = useState(0);
   const [data, setData] = useState<IntakeData>(initialIntake);
@@ -131,11 +132,19 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
     }
   }, [isOpen]);
 
+  const isKenya = useMemo(
+    () => /^\/(kenya|check\/kenya)/i.test(location.pathname),
+    [location.pathname]
+  );
+
+  const therapyPriceLabel = isKenya ? "KES 2,600 / session" : "UGX 75,000 / session";
+  const groupPriceLabel = isKenya ? "KES 1,000 / week" : "UGX 25,000 / week";
+
   const priceLabel = useMemo(() => {
-    if (isGroup) return "UGX 25,000 / week";
+    if (isGroup) return groupPriceLabel;
     if (isConsultation) return "FREE Consultation";
-    return "UGX 75,000 / session";
-  }, [isGroup, isConsultation]);
+    return therapyPriceLabel;
+  }, [isGroup, isConsultation, therapyPriceLabel, groupPriceLabel]);
 
   const headerTitle = isGroup
     ? "Join a Support Group"
@@ -172,7 +181,7 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
       return (
         `*New Support Group Request – InnerSpark Africa*\n\n` +
         `*Name:* ${data.name}\n*Phone:* ${data.phone}\n*Email:* ${data.email}\n` + refLine + `\n` +
-        `*Group:* ${groupName}\n*Weekly Fee:* UGX 25,000`
+        `*Group:* ${groupName}\n*Weekly Fee:* ${groupPriceLabel}`
       );
     }
     const typeLabel = THERAPY_OPTIONS.find((t) => t.id === data.therapyType)?.title ?? "—";
@@ -271,7 +280,7 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
         <div className="space-y-4">
           <div className="rounded-lg bg-primary/10 px-4 py-3 text-sm">
             <span className="font-semibold text-primary">Weekly fee:</span>{" "}
-            <span className="text-foreground">UGX 25,000</span>
+            <span className="text-foreground">{groupPriceLabel}</span>
           </div>
           <div>
             <Label>Select a group</Label>
@@ -313,7 +322,7 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
                     <div className="text-lg font-bold">{opt.title}</div>
                     <div className="text-xs opacity-90 mb-2">{opt.subtitle}</div>
                     <div className="text-xs font-semibold bg-white/20 rounded px-2 py-1 inline-block">
-                      {opt.price}
+                      {therapyPriceLabel}
                     </div>
                     {selected && (
                       <CheckCircle className="absolute top-2 right-2 h-5 w-5" />
