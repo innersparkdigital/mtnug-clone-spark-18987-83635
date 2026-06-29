@@ -3,14 +3,15 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Shield, Star, Users, CheckCircle } from "lucide-react";
 import { motion } from "framer-motion";
-import heroVideo1 from "@/assets/hero-videos/hero-1.mp4.asset.json";
-import heroVideo2 from "@/assets/hero-videos/hero-2.mp4.asset.json";
-import heroVideo3 from "@/assets/hero-videos/hero-3.mp4.asset.json";
-import heroVideo4 from "@/assets/hero-videos/hero-4.mp4.asset.json";
 import { useBookingFlow } from "@/hooks/useBookingFlow";
 import BookingFormModal from "@/components/BookingFormModal";
 
-const heroVideos = [heroVideo1.url, heroVideo2.url, heroVideo3.url, heroVideo4.url];
+const heroVideos = [
+  "/hero-videos/hero-1.mp4",
+  "/hero-videos/hero-2.mp4",
+  "/hero-videos/hero-3.mp4",
+  "/hero-videos/hero-4.mp4",
+];
 const SLIDE_MS = 7000;
 const PRELOAD_LEAD_MS = 1500; // start fetching the next clip this long before the swap
 
