@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { WELLBEING_TOOLS } from "@/lib/wellbeingToolsCatalog";
+import { copyToClipboard } from "@/lib/copyToClipboard";
 import { toast } from "sonner";
 import { Loader2, Copy, Mail } from "lucide-react";
 
@@ -97,8 +98,9 @@ const AssignmentBuilder = ({ client, therapistName, onDone }: Props) => {
   };
 
   const copyLink = async () => {
-    await navigator.clipboard.writeText(portalUrl);
-    toast.success("Link copied");
+    const ok = await copyToClipboard(portalUrl);
+    if (ok) toast.success("Link copied");
+    else toast.error("Couldn't copy automatically — long-press the link to copy.");
   };
 
   if (savedAssignmentId) {
@@ -111,9 +113,12 @@ const AssignmentBuilder = ({ client, therapistName, onDone }: Props) => {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
-          <div className="flex items-center gap-2 p-2 rounded-lg border bg-muted/50 text-xs break-all">
-            {portalUrl}
-          </div>
+          <input
+            readOnly
+            value={portalUrl}
+            onFocus={(e) => e.currentTarget.select()}
+            className="w-full p-2 rounded-lg border bg-muted/50 text-xs break-all font-mono select-all"
+          />
           <div className="flex flex-wrap gap-2">
             <Button onClick={sendInvite} disabled={!client.email}>
               <Mail className="h-4 w-4 mr-2" /> Email the invite

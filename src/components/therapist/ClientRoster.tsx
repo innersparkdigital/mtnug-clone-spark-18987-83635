@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { toast } from "sonner";
 import { Loader2, Plus, UserPlus, Sparkles, Copy } from "lucide-react";
 import AssignmentBuilder from "./AssignmentBuilder";
+import { copyToClipboard } from "@/lib/copyToClipboard";
 
 interface Client {
   id: string;
@@ -65,8 +66,10 @@ const ClientRoster = ({ therapistId, therapistName }: Props) => {
   };
 
   const copyLink = async (c: Client) => {
-    await navigator.clipboard.writeText(`${window.location.origin}/my-progress/${c.access_token}`);
-    toast.success("Private link copied");
+    const url = `${window.location.origin}/my-progress/${c.access_token}`;
+    const ok = await copyToClipboard(url);
+    if (ok) toast.success("Private link copied");
+    else toast.error("Couldn't copy — please copy manually.");
   };
 
   if (assignFor) {
