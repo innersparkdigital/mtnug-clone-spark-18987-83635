@@ -16,7 +16,7 @@ export const WELLBEING_TOOLS: WellbeingTool[] = [
     short: "Look at a difficult thought and find a more balanced view.",
     description:
       "Guides you through a situation, the automatic thought, the emotion, evidence for and against, and a more balanced conclusion.",
-    status: "coming-soon",
+    status: "ready",
     category: "core",
   },
   {
@@ -25,7 +25,7 @@ export const WELLBEING_TOOLS: WellbeingTool[] = [
     short: "Tasks your therapist set for you between sessions.",
     description:
       "Mark each task as not started, in progress, or complete. Reflect on what helped and what got in the way.",
-    status: "coming-soon",
+    status: "ready",
     category: "core",
   },
   {
@@ -34,7 +34,7 @@ export const WELLBEING_TOOLS: WellbeingTool[] = [
     short: "Notice patterns in how you feel across the week.",
     description:
       "Log a situation, the emotions you felt (with intensity), your thoughts, your response, and the outcome.",
-    status: "coming-soon",
+    status: "ready",
     category: "core",
   },
   {

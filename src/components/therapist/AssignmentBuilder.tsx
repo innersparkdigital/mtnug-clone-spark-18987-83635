@@ -26,6 +26,7 @@ interface Props {
 interface ToolConfig {
   therapist_note: string;
   due_date: string;
+  tasks?: string;
 }
 
 const AssignmentBuilder = ({ client, therapistName, onDone }: Props) => {
@@ -59,7 +60,7 @@ const AssignmentBuilder = ({ client, therapistName, onDone }: Props) => {
       title: null,
       therapist_note: selected[k].therapist_note || null,
       due_date: selected[k].due_date || null,
-      config: {},
+      config: k === "homework" && selected[k].tasks ? { tasks: selected[k].tasks } : {},
     }));
     const { data, error } = await supabase.rpc("create_client_assignment", {
       _client_id: client.id,
@@ -180,6 +181,18 @@ const AssignmentBuilder = ({ client, therapistName, onDone }: Props) => {
                         className="mt-1"
                       />
                     </div>
+                    {tool.key === "homework" && (
+                      <div>
+                        <Label className="text-xs">Task list (one per line)</Label>
+                        <Textarea
+                          rows={4}
+                          placeholder={"Practice 4-7-8 breathing daily\nGo for one 20-min walk\nJournal before bed"}
+                          value={selected[tool.key].tasks || ""}
+                          onChange={(e) => setSelected((p) => ({ ...p, [tool.key]: { ...p[tool.key], tasks: e.target.value } }))}
+                          className="mt-1"
+                        />
+                      </div>
+                    )}
                     <div>
                       <Label className="text-xs">Due date (optional)</Label>
                       <Input
