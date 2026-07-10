@@ -21,6 +21,7 @@ import { template as b2bEmployeeResults } from './b2b-employee-results.tsx'
 import { template as b2bCompanyConfirmation } from './b2b-company-confirmation.tsx'
 import { template as b2bCompanyReport } from './b2b-company-report.tsx'
 import { template as therapistWelcome } from './therapist-welcome.tsx'
+import { template as clientAssignmentInvite } from './client-assignment-invite.tsx'
 
 export const TEMPLATES: Record<string, TemplateEntry> = {
   'training-confirmation': trainingConfirmation,
@@ -35,4 +36,5 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   'b2b-company-confirmation': b2bCompanyConfirmation,
   'b2b-company-report': b2bCompanyReport,
   'therapist-welcome': therapistWelcome,
+  'client-assignment-invite': clientAssignmentInvite,
 }

@@ -6,8 +6,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2, Stethoscope, LogOut, Users } from "lucide-react";
+import { Loader2, Stethoscope, LogOut } from "lucide-react";
 import { toast } from "sonner";
+import ClientRoster from "@/components/therapist/ClientRoster";
 
 interface TherapistAccount {
   id: string;
@@ -169,21 +170,7 @@ const TherapistPortal = () => {
         </div>
       </header>
       <main className="max-w-5xl mx-auto p-6 space-y-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Users className="h-5 w-5" /> Your clients
-            </CardTitle>
-            <CardDescription>
-              Client roster, assignment builder, and progress tracking come next. This dashboard is ready — the client tools ship in Phase 2.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="text-sm text-muted-foreground">
-              You'll be able to add clients, generate a personalised link with the 14 wellbeing tools, and see submissions in real time here.
-            </div>
-          </CardContent>
-        </Card>
+        <ClientRoster therapistId={account.id} therapistName={account.full_name} />
       </main>
     </div>
   );
