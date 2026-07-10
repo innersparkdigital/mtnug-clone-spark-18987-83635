@@ -42,9 +42,9 @@ const Auth = () => {
 
   useEffect(() => {
     if (user && !loading) {
-      navigate('/learning');
+      navigate(redirectTo);
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, navigate, redirectTo]);
 
   const handleGoogleSignIn = async () => {
     setGoogleLoading(true);
@@ -58,7 +58,7 @@ const Auth = () => {
       }
       if (result.redirected) return;
       toast.success('Welcome!');
-      navigate('/learning');
+      navigate(redirectTo);
     } catch {
       toast.error('Google sign-in failed. Please try again.');
     } finally {
@@ -78,7 +78,7 @@ const Auth = () => {
       }
       if (result.redirected) return;
       toast.success('Welcome!');
-      navigate('/learning');
+      navigate(redirectTo);
     } catch {
       toast.error('Apple sign-in failed. Please try again.');
     } finally {
@@ -111,7 +111,7 @@ const Auth = () => {
       }
     } else {
       toast.success('Welcome back!');
-      navigate('/learning');
+      navigate(redirectTo);
     }
   };
 
@@ -145,7 +145,7 @@ const Auth = () => {
       }
     } else {
       toast.success('Account created successfully! Welcome to Innerspark Learning.');
-      navigate('/learning');
+      navigate(redirectTo);
     }
   };
 
