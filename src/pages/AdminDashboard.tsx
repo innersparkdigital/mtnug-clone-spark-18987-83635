@@ -720,6 +720,11 @@ const AdminDashboard = () => {
             </TabsContent>
           )}
           {isAdmin && (
+            <TabsContent value="therapist-portal">
+              <Suspense fallback={<TabFallback />}><TherapistPortalAdminTab /></Suspense>
+            </TabsContent>
+          )}
+          {isAdmin && (
             <TabsContent value="specialists">
               <Suspense fallback={<TabFallback />}><SpecialistsTab /></Suspense>
             </TabsContent>
