@@ -13,6 +13,10 @@ import SafetyCheckInTool from "@/components/client-portal/SafetyCheckInTool";
 import ThoughtRecordTool from "@/components/client-portal/ThoughtRecordTool";
 import HomeworkTool from "@/components/client-portal/HomeworkTool";
 import EmotionDiaryTool from "@/components/client-portal/EmotionDiaryTool";
+import ScreeningTool from "@/components/client-portal/ScreeningTool";
+import GratitudeTool from "@/components/client-portal/GratitudeTool";
+import SelfCareTool from "@/components/client-portal/SelfCareTool";
+import ActivityScheduleTool from "@/components/client-portal/ActivityScheduleTool";
 import ToolStub from "@/components/client-portal/ToolStub";
 import { getTool } from "@/lib/wellbeingToolsCatalog";
 
@@ -221,6 +225,50 @@ const ClientPortal = () => {
     if (activeTool.tool_key === "emotion-diary") {
       return (
         <EmotionDiaryTool
+          token={token!}
+          assignmentToolId={activeTool.id}
+          initial={activeTool.latest_submission?.payload}
+          onDone={() => { setActiveToolId(null); load(); }}
+          onBack={() => setActiveToolId(null)}
+        />
+      );
+    }
+    if (activeTool.tool_key === "screening-phq9" || activeTool.tool_key === "screening-gad7") {
+      return (
+        <ScreeningTool
+          variant={activeTool.tool_key === "screening-phq9" ? "phq9" : "gad7"}
+          token={token!}
+          assignmentToolId={activeTool.id}
+          onDone={() => { setActiveToolId(null); load(); }}
+          onBack={() => setActiveToolId(null)}
+        />
+      );
+    }
+    if (activeTool.tool_key === "gratitude") {
+      return (
+        <GratitudeTool
+          token={token!}
+          assignmentToolId={activeTool.id}
+          initial={activeTool.latest_submission?.payload}
+          onDone={() => { setActiveToolId(null); load(); }}
+          onBack={() => setActiveToolId(null)}
+        />
+      );
+    }
+    if (activeTool.tool_key === "self-care") {
+      return (
+        <SelfCareTool
+          token={token!}
+          assignmentToolId={activeTool.id}
+          initial={activeTool.latest_submission?.payload}
+          onDone={() => { setActiveToolId(null); load(); }}
+          onBack={() => setActiveToolId(null)}
+        />
+      );
+    }
+    if (activeTool.tool_key === "activity-schedule") {
+      return (
+        <ActivityScheduleTool
           token={token!}
           assignmentToolId={activeTool.id}
           initial={activeTool.latest_submission?.payload}
