@@ -291,6 +291,12 @@ const AdminDashboard = () => {
               </TabsTrigger>
             )}
             {isAdmin && (
+              <TabsTrigger value="therapist-portal" className="gap-2">
+                <Stethoscope className="h-4 w-4" />
+                Therapist Portal
+              </TabsTrigger>
+            )}
+            {isAdmin && (
               <TabsTrigger value="specialists" className="gap-2">
                 <Stethoscope className="h-4 w-4" />
                 Specialists
