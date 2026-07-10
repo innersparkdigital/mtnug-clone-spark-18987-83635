@@ -28,6 +28,7 @@ const ChatLeadsTab = lazy(() => import('@/components/admin/ChatLeadsTab'));
 const WhispersTab = lazy(() => import('@/components/admin/WhispersTab'));
 const CrisisAlertsTab = lazy(() => import('@/components/admin/CrisisAlertsTab'));
 const TherapistsTab = lazy(() => import('@/components/admin/TherapistsTab'));
+const TherapistPortalAdminTab = lazy(() => import('@/components/admin/TherapistPortalAdminTab'));
 const SpecialistsTab = lazy(() => import('@/components/admin/SpecialistsTab'));
 const SiteSectionsTab = lazy(() => import('@/components/admin/SiteSectionsTab'));
 const FeedbackTab = lazy(() => import('@/components/admin/FeedbackTab'));
