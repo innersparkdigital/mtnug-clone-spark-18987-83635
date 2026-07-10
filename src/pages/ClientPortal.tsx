@@ -49,7 +49,7 @@ const ClientPortal = () => {
     if (!token) return;
     const { data, error } = await supabase.rpc("client_snapshot", { _token: token });
     if (error) console.error(error);
-    setSnapshot((data as Snapshot) ?? null);
+    setSnapshot((data as unknown as Snapshot) ?? null);
     setLoading(false);
   }, [token]);
 
