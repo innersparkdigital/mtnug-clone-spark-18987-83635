@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2, Stethoscope, LogOut } from "lucide-react";
+import { Loader2, Stethoscope, LogOut, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import ClientRoster from "@/components/therapist/ClientRoster";
 
@@ -21,13 +21,19 @@ interface TherapistAccount {
 }
 
 const TherapistPortal = () => {
-  const { user, loading, signOut } = useAuth();
+  const { user, loading, signIn, signOut } = useAuth();
   const navigate = useNavigate();
   const [account, setAccount] = useState<TherapistAccount | null>(null);
   const [checking, setChecking] = useState(true);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [saving, setSaving] = useState(false);
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+  const [signingIn, setSigningIn] = useState(false);
+  const [resetOpen, setResetOpen] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [resetSubmitting, setResetSubmitting] = useState(false);
 
   useEffect(() => {
     if (loading) return;
@@ -55,7 +61,118 @@ const TherapistPortal = () => {
     );
   }
 
-  if (!user) return <Navigate to="/auth?redirect=/therapist" replace />;
+  if (!user) {
+    const handleLogin = async (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!loginEmail || !loginPassword) return;
+      setSigningIn(true);
+      const { error } = await signIn(loginEmail.trim().toLowerCase(), loginPassword);
+      setSigningIn(false);
+      if (error) {
+        toast.error(error.message.includes("Invalid") ? "Invalid email or password" : error.message);
+        return;
+      }
+      toast.success("Welcome back");
+    };
+
+    const handleReset = async (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!resetEmail) return;
+      setResetSubmitting(true);
+      const { error } = await supabase.auth.resetPasswordForEmail(resetEmail.trim().toLowerCase(), {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      setResetSubmitting(false);
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
+      toast.success("If an account exists, a reset link has been sent.");
+      setResetOpen(false);
+      setResetEmail("");
+    };
+
+    return (
+      <div className="min-h-screen grid place-items-center p-4 bg-gradient-to-br from-primary/5 via-background to-primary/5">
+        <Card className="max-w-md w-full shadow-lg">
+          <CardHeader className="text-center">
+            <div className="mx-auto h-12 w-12 rounded-full bg-primary/10 grid place-items-center mb-3">
+              <Stethoscope className="h-6 w-6 text-primary" />
+            </div>
+            <CardTitle>Therapist Portal</CardTitle>
+            <CardDescription>
+              Sign in with the credentials sent to your email by InnerSpark admin.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {!resetOpen ? (
+              <form onSubmit={handleLogin} className="space-y-4">
+                <div>
+                  <Label htmlFor="t-email">Email</Label>
+                  <Input
+                    id="t-email"
+                    type="email"
+                    autoComplete="username"
+                    value={loginEmail}
+                    onChange={(e) => setLoginEmail(e.target.value)}
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="t-password">Password</Label>
+                  <Input
+                    id="t-password"
+                    type="password"
+                    autoComplete="current-password"
+                    value={loginPassword}
+                    onChange={(e) => setLoginPassword(e.target.value)}
+                    required
+                  />
+                </div>
+                <Button type="submit" className="w-full" disabled={signingIn}>
+                  {signingIn && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+                  Sign in to portal
+                </Button>
+                <div className="text-center">
+                  <button
+                    type="button"
+                    className="text-sm text-primary hover:underline"
+                    onClick={() => { setResetEmail(loginEmail); setResetOpen(true); }}
+                  >
+                    Forgot password?
+                  </button>
+                </div>
+                <p className="text-xs text-muted-foreground text-center flex items-center justify-center gap-1 pt-2 border-t">
+                  <ShieldCheck className="h-3 w-3" />
+                  Clinician-only. No public sign-ups.
+                </p>
+              </form>
+            ) : (
+              <form onSubmit={handleReset} className="space-y-4">
+                <div>
+                  <Label htmlFor="t-reset">Enter your therapist email</Label>
+                  <Input
+                    id="t-reset"
+                    type="email"
+                    value={resetEmail}
+                    onChange={(e) => setResetEmail(e.target.value)}
+                    required
+                  />
+                </div>
+                <Button type="submit" className="w-full" disabled={resetSubmitting}>
+                  {resetSubmitting && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+                  Send reset link
+                </Button>
+                <Button type="button" variant="ghost" className="w-full" onClick={() => setResetOpen(false)}>
+                  Back to sign in
+                </Button>
+              </form>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   if (!account) {
     return (
