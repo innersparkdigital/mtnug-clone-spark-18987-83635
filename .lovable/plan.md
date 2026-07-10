@@ -1,76 +1,77 @@
-# Therapist Client Assignment & Progress Tracking
+# Phase 2 — Client Assignment & Client Portal
 
-Big feature — I'll build it in phases on top of the existing app (Lovable Cloud + React + Supabase). Nothing existing gets rebuilt; this is additive.
+Big feature. To keep this shippable and safe (per your Reagan-approval note on the Safety Check-in), I'll break Phase 2 into three sub-phases and land them one message each. This plan covers all three so you can approve the whole shape now.
 
-## Scope confirmation
+## Sub-phase 2A — Foundation (ships first)
 
-Before I start, two quick calls I'll make unless you say otherwise:
+**Database (migration)**
 
-1. **Client accounts:** clients access their assignment via a unique tokenized link + a lightweight passcode (name + password on first visit). This satisfies "does not require existing account" and keeps data private under RLS.
-2. **SMS alerts:** safety alerts go out by **email + WhatsApp deep-link to Reagan/therapist immediately**; Africa's Talking SMS will be wired in Phase 4 once you confirm you want us to enable the AT connector and provide credentials.
-3. **Domain:** `dashboard.innersparkafrica.com` copy is in the email; you'll point that subdomain to the site separately. Login lives at `/auth` today.
+- Extend `assignment_tools` to store per-tool config: `tool_key`, `title` (therapist override), `therapist_note`, `due_date`, `config jsonb` (e.g. homework steps, PHQ-9 variant, goal steps, activity grid template).
+- Extend `tool_submissions` with `submission_type` (`draft` | `final`), `mood_score`, `screening_score`, `screening_severity`, `safety_flag bool`, `payload jsonb`, `client_note`. Auto-save writes drafts; submit flips to final.
+- New table `safety_alerts` (already scaffolded — add `severity` `low`|`medium`|`red`, `crisis_message_shown bool`, `resolved_by`, `resolved_at`).
+- RPC `save_tool_submission(_token, _tool_id, _payload, _final)` — SECURITY DEFINER, token-scoped, no direct anon writes to tables.
+- RPC `client_snapshot(_token)` — returns client + therapist + active assignment + tools + latest submissions in one call.
+- RLS: token access strictly through the two RPCs. Direct table access remains therapist/admin only. GRANTs on every new/changed table for `authenticated` + `service_role`.
 
-Say the word if you want any of these adjusted.
+**Therapist portal — assignment builder** (`/therapist`)
 
-## Data model (new tables)
+- Client roster: add-client form (name, email, phone, presenting concern) → generates `access_token`, shows a copy-link + "Send invite" button.
+- "New assignment" wizard on a client:
+  1. Pick tools from the 12 (checkboxes with descriptions).
+  2. Per-tool config panel (homework tasks, goal steps, PHQ-9/GAD-7/PCL-5 selector, activity template, etc.).
+  3. Personal note (rich text) + due date defaults.
+  4. Review + send. Emails the client via `send-transactional-email` with the `client-assignment-invite` template (I'll add it).
 
-- `therapist_profiles` — links `auth.users` → therapist record (name, email, phone, specialisation, `must_change_password`, `is_active`).
-- `therapist_clients` — client roster per therapist (name, email, phone, presenting concern, `access_token uuid`, `passcode_hash`).
-- `client_assignments` — one per active assignment (therapist_id, client_id, personal_note, created_at, tools jsonb[]).
-- `assignment_tools` — one row per selected tool per assignment (tool_key, config e.g. homework text + due date, status).
-- `tool_submissions` — client responses (assignment_tool_id, payload jsonb, submitted_at, mood_score, screening_score, safety_flag bool).
-- `safety_alerts` — fired on risky safety check-in (client_id, therapist_id, payload, notified_at, resolved).
-- `client_activity` — last_seen per client for 7-day inactivity report.
+**Client portal** (`/my-progress/:token`)
 
-Full RLS: therapist sees only their clients; client (via edge function using token) sees only their assignment; admin sees all via `has_role`. GRANTs to `authenticated` + `service_role` on every table. Anon read only via the token-based edge function, never direct table access.
+- Full-screen, app-shell layout (same treatment as Whisper — `fixed inset-0`, safe-area padded, no site chrome).
+- First visit: passcode set (min 6 chars), stored hashed via RPC. Later visits: passcode required.
+- 30-min idle timeout, auto-lock back to passcode.
+- Warm welcome header: client first name, therapist name, personal note, tool cards (assigned only).
+- Persistent quiet footer on every screen: **Need support now? 📞 0800 212 121 (free) or open Amani in the app.**
+- Auto-save every 30s to `tool_submissions` as draft; explicit "Save" flips to final and timestamps.
 
-## Backend (edge functions)
+**Build-order override**: I'll ship Sub-phase 2A with **Tool 8 (Session Reflection) and Tool 12 (Safety Check-in)** first, exactly as you specified. Reagan sign-off gate applied — Tool 12 wording ships as you wrote it, and I'll flag it in the release note for his review before we announce it to clients.
 
-- `admin-create-therapist` — creates auth user, generates temp password, inserts therapist_profile with `must_change_password=true`, sends welcome email via existing `send-transactional-email` (new template `therapist-welcome`).
-- `therapist-create-assignment` — validates therapist owns the client, creates assignment + tools, generates client link, sends email (new template `client-assignment-invite`).
-- `client-portal` — token-scoped fetch/save for the client-facing page (no auth required beyond token + optional passcode).
-- `fire-safety-alert` — triggered by submission with risk indicators; sends email to Reagan + assigned therapist and logs to `safety_alerts`. SMS via Africa's Talking added in Phase 4.
-- `generate-presession-summary` — cron 12h before next appointment (deferred to Phase 4).
+## Sub-phase 2B — Core CBT tools
 
-## Frontend
+Ships next message after 2A is approved.
 
-**Admin (extends existing AdminDashboard):**
-- New tab "Therapists" — list, create modal (name/email/phone/specialisation), activate/deactivate, reassign clients.
-- New tab "Assignments Overview" — total active assignments, per-therapist completion, safety flags 24h, 7-day inactivity list.
+- Tool 1 — Thought Recording Worksheet (6 steps, emotion dropdown + intensity slider, before/after rating).
+- Tool 2 — Homework Tracker (therapist-set tasks, status toggle, per-task reflection, blockers field).
+- Tool 3 — Emotion & Trigger Diary (multi-select emotions with per-emotion intensity, situation → thought → behaviour → coping → outcome).
 
-**Therapist dashboard (new area `/therapist`):**
-- Forced password change on first login when `must_change_password=true`.
-- Client list → client detail → "Create Assignment" checklist of the 14 tools with per-tool config (homework text, due date), personal note field, copy-link button.
-- Progress view per client: tool status ticks, submission viewer, mood trend chart, PHQ-9/GAD-7/PCL-5 score trends, safety flag banner.
+## Sub-phase 2C — Remaining tools + screening + safety wiring
 
-**Client portal `/my-progress/:token`:**
-- Warm welcome screen exactly as you wrote (client name, therapist name, tool cards, personal note, crisis resources).
-- Passcode set on first visit → stored hashed; subsequent visits require passcode.
-- Renders only assigned tools as friendly forms; autosave; submit; timestamped.
-- Fully mobile-first, safe-area padded, no site chrome (same treatment as Whisper).
+- Tool 4 — Activity Scheduling (Mon–Sun × Morning/Afternoon/Evening grid, per-slot status + note, weekly reflection).
+- Tool 5 — Event/Situation Scoring (0–100 slider with auto severity label, per-situation history line graph via recharts).
+- Tool 6 — Goal Setting & Tracking (therapist-defined goal + steps, client tick + notes, blockers).
+- Tool 7 — Relaxation Toolbox (audio card w/ play + helpfulness rating, written technique card, affirmation card with paced reveal). Audio files stored in `content-media` bucket.
+- Tool 9 — PHQ-9 / GAD-7 / PCL-5 (validated items, one question per screen, progress bar, plain-language result, recharts trend). **Clinical thresholds** → PHQ-9 ≥15, GAD-7 ≥15, PCL-5 ≥33 auto-fires alert.
+- Tool 10 — Strengths & Gratitude Journal.
+- Tool 11 — Self-Care Tracker (sleep hours + quality, water, exercise, medication, mood emoji).
 
-**Tool components (14):**
-Thought record, activity scheduling, event scoring, goals, homework, emotion/trigger diary, relaxation, session reflection, safety check-in (triggers alert), PHQ-9, GAD-7, PCL-5, gratitude/strengths, self-care tracker. Each is a small controlled form saving to `tool_submissions`.
+**Safety-alert wiring (finalised in 2C)**
 
-## Emails (new transactional templates)
+- Tool 12 answers or a low mood on Tool 11 → new edge function `fire-safety-alert` inserts into `safety_alerts` and emails Reagan + assigned therapist via `send-transactional-email` with a new `safety-alert-clinical` template.
+- WhatsApp deep-link included in the email body (`https://wa.me/<therapist_phone>?text=...`).
+- Africa's Talking SMS deferred to Phase 4 as previously agreed; if you want SMS sooner, say the word and I'll ask you to add the AT connector before 2C ships.
+- Red alerts hide all other tools in the client portal until an admin/therapist clears `resolved` via the admin UI.
 
-- `therapist-welcome` — Email 1 copy, InnerSpark branded, temp password inline.
-- `client-assignment-invite` — Email 2 copy, list of assigned tool names, unique link, crisis footer.
-- `safety-alert-therapist` / `safety-alert-clinical-director` — internal alerts.
+## Technical details
 
-## Session timeouts
+- Auto-save uses debounced RPC call (500ms after last edit + 30s heartbeat) that upserts on `(assignment_tool_id, submission_type='draft')`.
+- Screening scoring lives client-side for immediate feedback but is re-computed server-side inside `save_tool_submission` for trust; the `severity` and `safety_flag` fields are authoritative from the server.
+- Charts use `recharts` (already in the project).
+- Client portal is React Router route `/my-progress/:token` registered in `App.tsx`; no auth guard, all access via token + passcode RPC.
+- Emails: two new templates (`client-assignment-invite`, `safety-alert-clinical`) registered in `registry.ts`.
 
-- Client portal: 30 min idle timeout (localStorage timestamp check).
-- Therapist/admin: rely on Supabase session refresh; add explicit sign-out after 8h/4h idle via `AuthContext` timer.
+## Out of scope this phase (per your notes)
 
-## Build order (phases, one message each unless small)
+- Africa's Talking SMS → Phase 4.
+- Pre-session summary cron → Phase 4.
+- Admin oversight analytics tab → Phase 5.
 
-1. **Phase 1** — DB schema + admin "Add Therapist" + welcome email + forced password change.
-2. **Phase 2** — Therapist client roster + assignment creation + unique link + client welcome screen with the 14 tools rendered as forms + client email.
-3. **Phase 3** — Submissions viewer on therapist dashboard, mood/screening trends.
-4. **Phase 4** — Safety alert system (email + WhatsApp now, Africa's Talking SMS once credentials are in), pre-session summary cron.
-5. **Phase 5** — Admin oversight tab (completion rates, 24h flags, 7-day inactivity).
+## What I need from you
 
-## What I need from you to proceed
-
-Confirm the three scope calls at the top, then I'll ship Phase 1 (migration + admin UI + welcome email) in the next message.
+Approve this plan and I'll ship **Sub-phase 2A** in the next message (schema + RPCs + assignment builder + client portal shell + Tool 8 + Tool 12). Then confirm 2A visually, and I'll roll straight into 2B and 2C.
