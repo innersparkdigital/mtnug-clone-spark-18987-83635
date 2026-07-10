@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2, Stethoscope, LogOut, Users } from "lucide-react";
+import { Loader2, Stethoscope, LogOut } from "lucide-react";
 import { toast } from "sonner";
 import ClientRoster from "@/components/therapist/ClientRoster";
 
