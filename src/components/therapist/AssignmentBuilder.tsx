@@ -113,9 +113,12 @@ const AssignmentBuilder = ({ client, therapistName, onDone }: Props) => {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
-          <div className="flex items-center gap-2 p-2 rounded-lg border bg-muted/50 text-xs break-all">
-            {portalUrl}
-          </div>
+          <input
+            readOnly
+            value={portalUrl}
+            onFocus={(e) => e.currentTarget.select()}
+            className="w-full p-2 rounded-lg border bg-muted/50 text-xs break-all font-mono select-all"
+          />
           <div className="flex flex-wrap gap-2">
             <Button onClick={sendInvite} disabled={!client.email}>
               <Mail className="h-4 w-4 mr-2" /> Email the invite
