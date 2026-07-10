@@ -10,6 +10,9 @@ import { toast } from "sonner";
 import QuietFooter from "@/components/client-portal/QuietFooter";
 import SessionReflectionTool from "@/components/client-portal/SessionReflectionTool";
 import SafetyCheckInTool from "@/components/client-portal/SafetyCheckInTool";
+import ThoughtRecordTool from "@/components/client-portal/ThoughtRecordTool";
+import HomeworkTool from "@/components/client-portal/HomeworkTool";
+import EmotionDiaryTool from "@/components/client-portal/EmotionDiaryTool";
 import ToolStub from "@/components/client-portal/ToolStub";
 import { getTool } from "@/lib/wellbeingToolsCatalog";
 
@@ -187,6 +190,40 @@ const ClientPortal = () => {
         <SafetyCheckInTool
           token={token!}
           assignmentToolId={activeTool.id}
+          onDone={() => { setActiveToolId(null); load(); }}
+          onBack={() => setActiveToolId(null)}
+        />
+      );
+    }
+    if (activeTool.tool_key === "thought-record") {
+      return (
+        <ThoughtRecordTool
+          token={token!}
+          assignmentToolId={activeTool.id}
+          initial={activeTool.latest_submission?.payload}
+          onDone={() => { setActiveToolId(null); load(); }}
+          onBack={() => setActiveToolId(null)}
+        />
+      );
+    }
+    if (activeTool.tool_key === "homework") {
+      return (
+        <HomeworkTool
+          token={token!}
+          assignmentToolId={activeTool.id}
+          config={activeTool.config || {}}
+          initial={activeTool.latest_submission?.payload}
+          onDone={() => { setActiveToolId(null); load(); }}
+          onBack={() => setActiveToolId(null)}
+        />
+      );
+    }
+    if (activeTool.tool_key === "emotion-diary") {
+      return (
+        <EmotionDiaryTool
+          token={token!}
+          assignmentToolId={activeTool.id}
+          initial={activeTool.latest_submission?.payload}
           onDone={() => { setActiveToolId(null); load(); }}
           onBack={() => setActiveToolId(null)}
         />
