@@ -149,6 +149,9 @@ const AdminDashboard = lazy(
 const AdminFinance = lazy(
   () => import(/* webpackChunkName: "admin" */ "./pages/AdminFinance"),
 );
+const TherapistPortal = lazy(
+  () => import(/* webpackChunkName: "therapist-portal" */ "./pages/TherapistPortal"),
+);
 const MindCheckAnalytics = lazy(
   () => import(/* webpackChunkName: "admin" */ "./pages/MindCheckAnalytics"),
 );
@@ -365,6 +368,7 @@ const App = () => (
                   element={<AdminDashboard />}
                 />
                 <Route path="/admin/finance" element={<AdminFinance />} />
+                <Route path="/therapist" element={<TherapistPortal />} />
                 <Route path="/learning/:courseId" element={<CourseDetail />} />
                 <Route
                   path="/learning/:courseId/certificate"

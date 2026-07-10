@@ -28,6 +28,7 @@ const ChatLeadsTab = lazy(() => import('@/components/admin/ChatLeadsTab'));
 const WhispersTab = lazy(() => import('@/components/admin/WhispersTab'));
 const CrisisAlertsTab = lazy(() => import('@/components/admin/CrisisAlertsTab'));
 const TherapistsTab = lazy(() => import('@/components/admin/TherapistsTab'));
+const TherapistPortalAdminTab = lazy(() => import('@/components/admin/TherapistPortalAdminTab'));
 const SpecialistsTab = lazy(() => import('@/components/admin/SpecialistsTab'));
 const SiteSectionsTab = lazy(() => import('@/components/admin/SiteSectionsTab'));
 const FeedbackTab = lazy(() => import('@/components/admin/FeedbackTab'));
@@ -287,6 +288,12 @@ const AdminDashboard = () => {
               <TabsTrigger value="therapists" className="gap-2">
                 <Stethoscope className="h-4 w-4" />
                 Therapists
+              </TabsTrigger>
+            )}
+            {isAdmin && (
+              <TabsTrigger value="therapist-portal" className="gap-2">
+                <Stethoscope className="h-4 w-4" />
+                Therapist Portal
               </TabsTrigger>
             )}
             {isAdmin && (
@@ -710,6 +717,11 @@ const AdminDashboard = () => {
           {isAdmin && (
             <TabsContent value="therapists">
               <Suspense fallback={<TabFallback />}><TherapistsTab /></Suspense>
+            </TabsContent>
+          )}
+          {isAdmin && (
+            <TabsContent value="therapist-portal">
+              <Suspense fallback={<TabFallback />}><TherapistPortalAdminTab /></Suspense>
             </TabsContent>
           )}
           {isAdmin && (
