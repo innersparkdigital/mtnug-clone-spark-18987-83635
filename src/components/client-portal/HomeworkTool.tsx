@@ -43,7 +43,7 @@ const HomeworkTool = ({ token, assignmentToolId, config, initial, onDone, onBack
   useEffect(() => {
     const t = window.setTimeout(() => {
       supabase.rpc("save_tool_submission", {
-        _token: token, _assignment_tool_id: assignmentToolId, _payload: payload, _final: false,
+        _token: token, _assignment_tool_id: assignmentToolId, _payload: payload as any, _final: false,
       });
     }, 15000);
     return () => window.clearTimeout(t);
@@ -60,7 +60,7 @@ const HomeworkTool = ({ token, assignmentToolId, config, initial, onDone, onBack
   const submit = async () => {
     setSaving(true);
     const { error } = await supabase.rpc("save_tool_submission", {
-      _token: token, _assignment_tool_id: assignmentToolId, _payload: payload, _final: true,
+      _token: token, _assignment_tool_id: assignmentToolId, _payload: payload as any, _final: true,
     });
     setSaving(false);
     if (error) return toast.error(error.message);
