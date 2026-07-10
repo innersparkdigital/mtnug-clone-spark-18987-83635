@@ -241,8 +241,11 @@ export type Database = {
           assignment_id: string
           config: Json
           created_at: string
+          due_date: string | null
           id: string
           status: string
+          therapist_note: string | null
+          title: string | null
           tool_key: string
           updated_at: string
         }
@@ -250,8 +253,11 @@ export type Database = {
           assignment_id: string
           config?: Json
           created_at?: string
+          due_date?: string | null
           id?: string
           status?: string
+          therapist_note?: string | null
+          title?: string | null
           tool_key: string
           updated_at?: string
         }
@@ -259,8 +265,11 @@ export type Database = {
           assignment_id?: string
           config?: Json
           created_at?: string
+          due_date?: string | null
           id?: string
           status?: string
+          therapist_note?: string | null
+          title?: string | null
           tool_key?: string
           updated_at?: string
         }
@@ -2221,33 +2230,42 @@ export type Database = {
         Row: {
           client_id: string
           created_at: string
+          crisis_message_shown: boolean
           id: string
           notified_at: string
           payload: Json
           resolved: boolean
           resolved_at: string | null
+          resolved_by: string | null
+          severity: string
           submission_id: string | null
           therapist_id: string
         }
         Insert: {
           client_id: string
           created_at?: string
+          crisis_message_shown?: boolean
           id?: string
           notified_at?: string
           payload?: Json
           resolved?: boolean
           resolved_at?: string | null
+          resolved_by?: string | null
+          severity?: string
           submission_id?: string | null
           therapist_id: string
         }
         Update: {
           client_id?: string
           created_at?: string
+          crisis_message_shown?: boolean
           id?: string
           notified_at?: string
           payload?: Json
           resolved?: boolean
           resolved_at?: string | null
+          resolved_by?: string | null
+          severity?: string
           submission_id?: string | null
           therapist_id?: string
         }
@@ -2769,7 +2787,10 @@ export type Database = {
           payload: Json
           safety_flag: boolean
           screening_score: number | null
+          screening_severity: string | null
+          submission_type: string
           submitted_at: string
+          updated_at: string
         }
         Insert: {
           assignment_tool_id: string
@@ -2779,7 +2800,10 @@ export type Database = {
           payload?: Json
           safety_flag?: boolean
           screening_score?: number | null
+          screening_severity?: string | null
+          submission_type?: string
           submitted_at?: string
+          updated_at?: string
         }
         Update: {
           assignment_tool_id?: string
@@ -2789,7 +2813,10 @@ export type Database = {
           payload?: Json
           safety_flag?: boolean
           screening_score?: number | null
+          screening_severity?: string | null
+          submission_type?: string
           submitted_at?: string
+          updated_at?: string
         }
         Relationships: [
           {
@@ -3145,9 +3172,14 @@ export type Database = {
         Args: { tables_to_clear: string[] }
         Returns: Json
       }
+      client_snapshot: { Args: { _token: string }; Returns: Json }
       complete_employee_screening: {
         Args: { _employee_id: string; _gender?: string }
         Returns: boolean
+      }
+      create_client_assignment: {
+        Args: { _client_id: string; _personal_note: string; _tools: Json }
+        Returns: string
       }
       delete_email: {
         Args: { message_id: number; queue_name: string }
@@ -3233,8 +3265,29 @@ export type Database = {
         }
         Returns: string
       }
+      save_tool_submission: {
+        Args: {
+          _assignment_tool_id: string
+          _final: boolean
+          _mood_score?: number
+          _payload: Json
+          _safety_flag?: boolean
+          _screening_score?: number
+          _screening_severity?: string
+          _token: string
+        }
+        Returns: Json
+      }
+      set_client_passcode: {
+        Args: { _passcode: string; _token: string }
+        Returns: boolean
+      }
       slugify_company_name: { Args: { _name: string }; Returns: string }
       sync_form_emails_to_subscribers: { Args: never; Returns: Json }
+      verify_client_passcode: {
+        Args: { _passcode: string; _token: string }
+        Returns: boolean
+      }
     }
     Enums: {
       app_role:
