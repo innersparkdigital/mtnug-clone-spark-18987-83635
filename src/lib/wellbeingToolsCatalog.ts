@@ -43,7 +43,7 @@ export const WELLBEING_TOOLS: WellbeingTool[] = [
     short: "Plan your week and see what lifted your mood.",
     description:
       "A simple Mon–Sun grid with morning, afternoon, and evening slots to plan and reflect on activities.",
-    status: "coming-soon",
+    status: "ready",
     category: "core",
   },
   {
@@ -87,7 +87,7 @@ export const WELLBEING_TOOLS: WellbeingTool[] = [
     name: "Wellbeing check (PHQ-9)",
     short: "Short questionnaire on how you've been feeling.",
     description: "Validated 9-question mood check-in reviewed by your therapist.",
-    status: "coming-soon",
+    status: "ready",
     category: "screening",
   },
   {
@@ -95,7 +95,7 @@ export const WELLBEING_TOOLS: WellbeingTool[] = [
     name: "Wellbeing check (GAD-7)",
     short: "Short questionnaire on anxiety over the last two weeks.",
     description: "Validated 7-question anxiety check-in reviewed by your therapist.",
-    status: "coming-soon",
+    status: "ready",
     category: "screening",
   },
   {
@@ -103,7 +103,7 @@ export const WELLBEING_TOOLS: WellbeingTool[] = [
     name: "Strengths and gratitude journal",
     short: "Notice what went well and what you did well.",
     description: "Under two minutes. Builds resilience over time.",
-    status: "coming-soon",
+    status: "ready",
     category: "core",
   },
   {
@@ -111,7 +111,7 @@ export const WELLBEING_TOOLS: WellbeingTool[] = [
     name: "Self-care tracker",
     short: "Sleep, water, movement, and mood in one place.",
     description: "Daily basics that affect mental health more than most people realise.",
-    status: "coming-soon",
+    status: "ready",
     category: "core",
   },
   {
