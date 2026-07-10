@@ -236,6 +236,44 @@ export type Database = {
         }
         Relationships: []
       }
+      assignment_tools: {
+        Row: {
+          assignment_id: string
+          config: Json
+          created_at: string
+          id: string
+          status: string
+          tool_key: string
+          updated_at: string
+        }
+        Insert: {
+          assignment_id: string
+          config?: Json
+          created_at?: string
+          id?: string
+          status?: string
+          tool_key: string
+          updated_at?: string
+        }
+        Update: {
+          assignment_id?: string
+          config?: Json
+          created_at?: string
+          id?: string
+          status?: string
+          tool_key?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assignment_tools_assignment_id_fkey"
+            columns: ["assignment_id"]
+            isOneToOne: false
+            referencedRelation: "client_assignments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       blog_posts: {
         Row: {
           author: string | null
@@ -589,6 +627,51 @@ export type Database = {
           user_agent?: string | null
         }
         Relationships: []
+      }
+      client_assignments: {
+        Row: {
+          client_id: string
+          created_at: string
+          id: string
+          is_active: boolean
+          personal_note: string | null
+          therapist_id: string
+          updated_at: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          personal_note?: string | null
+          therapist_id: string
+          updated_at?: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          personal_note?: string | null
+          therapist_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_assignments_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "therapist_clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "client_assignments_therapist_id_fkey"
+            columns: ["therapist_id"]
+            isOneToOne: false
+            referencedRelation: "therapist_accounts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       commission_claim_items: {
         Row: {
@@ -2134,6 +2217,64 @@ export type Database = {
         }
         Relationships: []
       }
+      safety_alerts: {
+        Row: {
+          client_id: string
+          created_at: string
+          id: string
+          notified_at: string
+          payload: Json
+          resolved: boolean
+          resolved_at: string | null
+          submission_id: string | null
+          therapist_id: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          id?: string
+          notified_at?: string
+          payload?: Json
+          resolved?: boolean
+          resolved_at?: string | null
+          submission_id?: string | null
+          therapist_id: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          id?: string
+          notified_at?: string
+          payload?: Json
+          resolved?: boolean
+          resolved_at?: string | null
+          submission_id?: string | null
+          therapist_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "safety_alerts_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "therapist_clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "safety_alerts_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "tool_submissions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "safety_alerts_therapist_id_fkey"
+            columns: ["therapist_id"]
+            isOneToOne: false
+            referencedRelation: "therapist_accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       session_feedback: {
         Row: {
           client_consented_to_display: boolean
@@ -2449,6 +2590,95 @@ export type Database = {
         }
         Relationships: []
       }
+      therapist_accounts: {
+        Row: {
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          is_active: boolean
+          must_change_password: boolean
+          phone: string | null
+          specialisation: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          is_active?: boolean
+          must_change_password?: boolean
+          phone?: string | null
+          specialisation?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          is_active?: boolean
+          must_change_password?: boolean
+          phone?: string | null
+          specialisation?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      therapist_clients: {
+        Row: {
+          access_token: string
+          created_at: string
+          email: string | null
+          full_name: string
+          id: string
+          last_seen_at: string | null
+          passcode_hash: string | null
+          phone: string | null
+          presenting_concern: string | null
+          therapist_id: string
+          updated_at: string
+        }
+        Insert: {
+          access_token?: string
+          created_at?: string
+          email?: string | null
+          full_name: string
+          id?: string
+          last_seen_at?: string | null
+          passcode_hash?: string | null
+          phone?: string | null
+          presenting_concern?: string | null
+          therapist_id: string
+          updated_at?: string
+        }
+        Update: {
+          access_token?: string
+          created_at?: string
+          email?: string | null
+          full_name?: string
+          id?: string
+          last_seen_at?: string | null
+          passcode_hash?: string | null
+          phone?: string | null
+          presenting_concern?: string | null
+          therapist_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "therapist_clients_therapist_id_fkey"
+            columns: ["therapist_id"]
+            isOneToOne: false
+            referencedRelation: "therapist_accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       therapists: {
         Row: {
           availability: string[]
@@ -2529,6 +2759,54 @@ export type Database = {
           years_experience?: number | null
         }
         Relationships: []
+      }
+      tool_submissions: {
+        Row: {
+          assignment_tool_id: string
+          client_id: string
+          id: string
+          mood_score: number | null
+          payload: Json
+          safety_flag: boolean
+          screening_score: number | null
+          submitted_at: string
+        }
+        Insert: {
+          assignment_tool_id: string
+          client_id: string
+          id?: string
+          mood_score?: number | null
+          payload?: Json
+          safety_flag?: boolean
+          screening_score?: number | null
+          submitted_at?: string
+        }
+        Update: {
+          assignment_tool_id?: string
+          client_id?: string
+          id?: string
+          mood_score?: number | null
+          payload?: Json
+          safety_flag?: boolean
+          screening_score?: number | null
+          submitted_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tool_submissions_assignment_tool_id_fkey"
+            columns: ["assignment_tool_id"]
+            isOneToOne: false
+            referencedRelation: "assignment_tools"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tool_submissions_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "therapist_clients"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       training_registrations: {
         Row: {
@@ -2882,6 +3160,7 @@ export type Database = {
       }
       get_campaign_by_slug: { Args: { _slug: string }; Returns: Json }
       get_campaign_completion: { Args: { _company_id: string }; Returns: Json }
+      get_client_by_token: { Args: { _token: string }; Returns: Json }
       get_doctor_email_by_phone: { Args: { _phone: string }; Returns: string }
       get_public_testimonials: {
         Args: { _limit?: number; _market?: string }
@@ -2911,6 +3190,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_client_therapist: { Args: { _client_id: string }; Returns: boolean }
       lock_campaign_slug: { Args: { _slug: string }; Returns: undefined }
       log_referral_click: {
         Args: { _ip_hash?: string; _slug: string; _user_agent?: string }
