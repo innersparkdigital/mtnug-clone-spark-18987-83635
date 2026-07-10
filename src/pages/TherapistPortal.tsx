@@ -30,7 +30,11 @@ const TherapistPortal = () => {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    if (loading || !user) return;
+    if (loading) return;
+    if (!user) {
+      setChecking(false);
+      return;
+    }
     (async () => {
       const { data, error } = await supabase
         .from("therapist_accounts")
