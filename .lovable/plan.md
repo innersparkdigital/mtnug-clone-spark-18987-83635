@@ -1,87 +1,76 @@
+# Therapist Client Assignment & Progress Tracking
 
-This is a large two-part build. I'll implement it in a single coordinated pass, but flagging scope so you can confirm before I start.
+Big feature — I'll build it in phases on top of the existing app (Lovable Cloud + React + Supabase). Nothing existing gets rebuilt; this is additive.
 
-## Part 1 — Kenya Homepage (/kenya)
+## Scope confirmation
 
-**New route `/kenya`** — a dedicated Kenya-market homepage with KES pricing and M-Pesa instructions. Reuses existing Header/Footer with a "Kenya" badge added beside the logo when on this route.
+Before I start, two quick calls I'll make unless you say otherwise:
 
-Sections built (all per spec):
-1. Hero (Spark Blue, two-column, two CTAs → `/book?market=kenya` and `/check/kenya`)
-2. Warmth orange stripe (4px #F2994A)
-3. Trust strip (4 pills)
-4. Problem section (1 in 4 Kenyans stat, Kenya Mental Health Policy source)
-5. How It Works (3 numbered steps, M-Pesa *840# instructions in step 2)
-6. Services (2×2 grid — Individual, Free Check, Support Groups, Corporate)
-7. Therapist preview (pulls 3 therapists tagged `kenya: true`, falls back to top 3)
-8. Pricing (KES 2,600 / KES 9,600 / Free, full M-Pesa payment box)
-9. Testimonials (pulls 5-star session_feedback with `client_consented_to_display=true`, falls back to 3 placeholder Kenya cards)
-10. Final CTA (Deep Night, warmth stripes top/bottom)
-11. Footer additions (Serving East Africa, Kenya WhatsApp line, M-Pesa instructions)
+1. **Client accounts:** clients access their assignment via a unique tokenized link + a lightweight passcode (name + password on first visit). This satisfies "does not require existing account" and keeps data private under RLS.
+2. **SMS alerts:** safety alerts go out by **email + WhatsApp deep-link to Reagan/therapist immediately**; Africa's Talking SMS will be wired in Phase 4 once you confirm you want us to enable the AT connector and provide credentials.
+3. **Domain:** `dashboard.innersparkafrica.com` copy is in the email; you'll point that subdomain to the site separately. Login lives at `/auth` today.
 
-**SEO** — page title, meta description, Kenya-targeted keywords (online therapy Kenya, therapist Nairobi, counselling Kenya, M-Pesa therapy, mental health Kenya, depression therapist Kenya, anxiety counsellor Nairobi, online psychologist Mombasa Kisumu, EAP Kenya, Kiswahili therapy), canonical, JSON-LD LocalBusiness + FAQPage.
+Say the word if you want any of these adjusted.
 
-**Shared page tweaks (minimal):**
-- `/check/kenya` — new public WHO-5 page (no employer context, EN/Kiswahili selector, results CTA → `/book?market=kenya`)
-- `/book` flow — when `?market=kenya` OR phone starts with +254: show "KES 2,600" / "KES 9,600", M-Pesa as first payment method, pre-filter Kenya therapists
-- `/specialists` — new "Kenya" filter chip; therapists with `kenya=true` shown first
-- Index.tsx — geo-detection banner (Kenya timezone or sw-KE / ke locale), dismissable to sessionStorage `ke_banner_dismissed`
+## Data model (new tables)
 
-**DB additions for Part 1:**
-- `specialists.kenya boolean default false`
-- `session_feedback.client_consented_to_display boolean default false`
-- `session_feedback.client_display_name text`
+- `therapist_profiles` — links `auth.users` → therapist record (name, email, phone, specialisation, `must_change_password`, `is_active`).
+- `therapist_clients` — client roster per therapist (name, email, phone, presenting concern, `access_token uuid`, `passcode_hash`).
+- `client_assignments` — one per active assignment (therapist_id, client_id, personal_note, created_at, tools jsonb[]).
+- `assignment_tools` — one row per selected tool per assignment (tool_key, config e.g. homework text + due date, status).
+- `tool_submissions` — client responses (assignment_tool_id, payload jsonb, submitted_at, mood_score, screening_score, safety_flag bool).
+- `safety_alerts` — fired on risky safety check-in (client_id, therapist_id, payload, notified_at, resolved).
+- `client_activity` — last_seen per client for 7-day inactivity report.
 
----
+Full RLS: therapist sees only their clients; client (via edge function using token) sees only their assignment; admin sees all via `has_role`. GRANTs to `authenticated` + `service_role` on every table. Anon read only via the token-based edge function, never direct table access.
 
-## Part 2 — Referral Link System
+## Backend (edge functions)
 
-**New tables:**
-- `referral_links` — slug (unique), referrer_name/phone/email, market, link_type, discount_amount_kes, reward_type, reward_value, custom_message, is_active, notes
-- `referral_clicks` — referral_link_id, clicked_at, ip_hash, user_agent, converted, booking_id
-- `referral_conversions` — referral_link_id, booking_id, session_amount_kes, discount_applied, reward_issued
+- `admin-create-therapist` — creates auth user, generates temp password, inserts therapist_profile with `must_change_password=true`, sends welcome email via existing `send-transactional-email` (new template `therapist-welcome`).
+- `therapist-create-assignment` — validates therapist owns the client, creates assignment + tools, generates client link, sends email (new template `client-assignment-invite`).
+- `client-portal` — token-scoped fetch/save for the client-facing page (no auth required beyond token + optional passcode).
+- `fire-safety-alert` — triggered by submission with risk indicators; sends email to Reagan + assigned therapist and logs to `safety_alerts`. SMS via Africa's Talking added in Phase 4.
+- `generate-presession-summary` — cron 12h before next appointment (deferred to Phase 4).
 
-RLS: admin-only for management; public can INSERT clicks via edge function; public SELECT only on active links by slug via SECURITY DEFINER RPC `get_referral_link_by_slug`.
+## Frontend
 
-**New public route `/kenya/ref/:slug`** — logs click via RPC, sets `innerspark_ref` cookie (30-day), redirects to `/kenya`. If inactive, shows "expired link" page.
+**Admin (extends existing AdminDashboard):**
+- New tab "Therapists" — list, create modal (name/email/phone/specialisation), activate/deactivate, reassign clients.
+- New tab "Assignments Overview" — total active assignments, per-therapist completion, safety flags 24h, 7-day inactivity list.
 
-**Referral banner** on `/kenya` — reads cookie, shows green personalized banner with custom_message or default; dismissable for session only.
+**Therapist dashboard (new area `/therapist`):**
+- Forced password change on first login when `must_change_password=true`.
+- Client list → client detail → "Create Assignment" checklist of the 14 tools with per-tool config (homework text, due date), personal note field, copy-link button.
+- Progress view per client: tool status ticks, submission viewer, mood trend chart, PHQ-9/GAD-7/PCL-5 score trends, safety flag banner.
 
-**Booking integration** — on booking submission, if cookie present, call `record_referral_conversion` RPC to link booking, apply discount, mark click converted, queue reward.
+**Client portal `/my-progress/:token`:**
+- Warm welcome screen exactly as you wrote (client name, therapist name, tool cards, personal note, crisis resources).
+- Passcode set on first visit → stored hashed; subsequent visits require passcode.
+- Renders only assigned tools as friendly forms; autosave; submit; timestamped.
+- Fully mobile-first, safe-area padded, no site chrome (same treatment as Whisper).
 
-**Admin "Referral Links" tab** in `AdminDashboard`:
-- 4 metric cards (active links, clicks, conversions, conv. rate)
-- Filters (market, link type, date range)
-- "+ Create referral link" modal (all spec fields, slug auto-gen + uniqueness check)
-- Links table (referrer, market, slug+copy, clicks, bookings, conv%, pending rewards, pause toggle, actions)
-- Detail view (perf metrics, Recharts timeline, clicks table, conversions table, rewards panel with "Mark as issued")
-- Share panel — 4 pre-formatted templates (WhatsApp DM, WhatsApp Group, WhatsApp Status, LinkedIn) with copy buttons
-- Bulk CSV create (template download, preview, batch insert)
+**Tool components (14):**
+Thought record, activity scheduling, event scoring, goals, homework, emotion/trigger diary, relaxation, session reflection, safety check-in (triggers alert), PHQ-9, GAD-7, PCL-5, gratitude/strengths, self-care tracker. Each is a small controlled form saving to `tool_submissions`.
 
-**Notifications** — edge function `notify-referral-conversion` sends WhatsApp-formatted message via existing email/notification pipeline to referrer + admin on conversion, and to referrer when reward issued.
+## Emails (new transactional templates)
 
----
+- `therapist-welcome` — Email 1 copy, InnerSpark branded, temp password inline.
+- `client-assignment-invite` — Email 2 copy, list of assigned tool names, unique link, crisis footer.
+- `safety-alert-therapist` / `safety-alert-clinical-director` — internal alerts.
 
-## Scope notes & assumptions
+## Session timeouts
 
-- **Pricing inconsistency in your spec**: hero says "From KES 2,600", Final CTA button says "KES 1,700", Banner default says "KES [1700 - discount]". I'll standardize on **KES 2,600 base** with discount math: `displayed = 2600 - discount_amount_kes` (default discount 200 → KES 2,400 referred). The Final CTA button will read "Book my first session — from KES 2,600". Please correct if you want a different base.
-- M-Pesa instructions use the existing Airtel number you provided (0740 616 404 / Innerspark Recovery Ltd) per spec.
-- Therapist `kenya` tag will default to `false`; you'll need to flip the flag on specific therapists from admin (I'll add a checkbox in the specialist edit form). Until tagged, the preview falls back to top 3 specialists.
-- Booking flow KES override is **display-only** on the form. PesaPal still charges in UGX (75,000) since the M-Pesa flow is manual via *840#. I'll add a clear note: "Pay via M-Pesa using *840# — see instructions" and skip auto-PesaPal for Kenya bookings, switching to "Confirm booking → we'll send M-Pesa instructions on WhatsApp".
-- WhatsApp notifications use the existing `send-resend-email` style edge function pattern (no Twilio integration) — referrer gets an email if email provided, otherwise the admin gets the notification to manually WhatsApp them. (Adding outbound WhatsApp would require a new provider; not in scope here.)
-- Geo-banner only on `/` (Index.tsx) — not on every page.
-- I will NOT touch existing booking/payment processing logic, the WHO-5 scoring, admin dashboard structure, or any other existing page beyond what's listed.
+- Client portal: 30 min idle timeout (localStorage timestamp check).
+- Therapist/admin: rely on Supabase session refresh; add explicit sign-out after 8h/4h idle via `AuthContext` timer.
 
----
+## Build order (phases, one message each unless small)
 
-## Execution order
+1. **Phase 1** — DB schema + admin "Add Therapist" + welcome email + forced password change.
+2. **Phase 2** — Therapist client roster + assignment creation + unique link + client welcome screen with the 14 tools rendered as forms + client email.
+3. **Phase 3** — Submissions viewer on therapist dashboard, mood/screening trends.
+4. **Phase 4** — Safety alert system (email + WhatsApp now, Africa's Talking SMS once credentials are in), pre-session summary cron.
+5. **Phase 5** — Admin oversight tab (completion rates, 24h flags, 7-day inactivity).
 
-1. Migration: add columns to `specialists` + `session_feedback`, create 3 referral tables + RPCs + RLS
-2. Build `/kenya` page + Kenya badge in Header + Footer additions
-3. Build `/check/kenya` page
-4. Build `/kenya/ref/:slug` redirect page + referral banner + cookie helper
-5. Tweak `/book` and `/specialists` for Kenya market
-6. Add geo-banner to Index
-7. Build `FeedbackTab`-style `ReferralLinksTab` + integrate into AdminDashboard
-8. Add notification edge function
+## What I need from you to proceed
 
-Reply **"go"** to proceed, or send corrections (especially the **KES 2,600 vs 1,700** price question) and I'll adjust before building.
+Confirm the three scope calls at the top, then I'll ship Phase 1 (migration + admin UI + welcome email) in the next message.
