@@ -9,6 +9,8 @@ import { Label } from "@/components/ui/label";
 import { Loader2, Stethoscope, LogOut, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import ClientRoster from "@/components/therapist/ClientRoster";
+import { CalmThemeRoot } from "@/contexts/CalmThemeContext";
+import CalmThemeToggle from "@/components/CalmThemeToggle";
 
 interface TherapistAccount {
   id: string;
@@ -273,7 +275,7 @@ const TherapistPortal = () => {
   }
 
   return (
-    <div className="min-h-screen bg-muted/20">
+    <CalmThemeRoot className="min-h-screen bg-background">
       <header className="border-b bg-background">
         <div className="max-w-5xl mx-auto flex items-center justify-between p-4">
           <div className="flex items-center gap-2">
@@ -285,15 +287,18 @@ const TherapistPortal = () => {
               </div>
             </div>
           </div>
-          <Button variant="ghost" size="sm" onClick={() => signOut()}>
-            <LogOut className="h-4 w-4 mr-2" /> Sign out
-          </Button>
+          <div className="flex items-center gap-2">
+            <CalmThemeToggle />
+            <Button variant="ghost" size="sm" onClick={() => signOut()}>
+              <LogOut className="h-4 w-4 mr-2" /> Sign out
+            </Button>
+          </div>
         </div>
       </header>
       <main className="max-w-5xl mx-auto p-6 space-y-6">
         <ClientRoster therapistId={account.id} therapistName={account.full_name} />
       </main>
-    </div>
+    </CalmThemeRoot>
   );
 };
 
