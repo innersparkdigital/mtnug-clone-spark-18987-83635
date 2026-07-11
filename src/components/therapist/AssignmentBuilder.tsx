@@ -10,6 +10,7 @@ import { WELLBEING_TOOLS } from "@/lib/wellbeingToolsCatalog";
 import { copyToClipboard } from "@/lib/copyToClipboard";
 import { toast } from "sonner";
 import { Loader2, Copy, Mail } from "lucide-react";
+import ScheduleFields, { defaultSchedule, ScheduleValue } from "./ScheduleFields";
 
 interface Client {
   id: string;
@@ -28,11 +29,12 @@ interface ToolConfig {
   therapist_note: string;
   due_date: string;
   tasks?: string;
+  schedule: ScheduleValue;
 }
 
 const AssignmentBuilder = ({ client, therapistName, onDone }: Props) => {
   const [selected, setSelected] = useState<Record<string, ToolConfig>>({
-    "session-reflection": { therapist_note: "", due_date: "" },
+    "session-reflection": { therapist_note: "", due_date: "", schedule: defaultSchedule() },
   });
   const [personalNote, setPersonalNote] = useState("");
   const [saving, setSaving] = useState(false);
@@ -47,7 +49,7 @@ const AssignmentBuilder = ({ client, therapistName, onDone }: Props) => {
     setSelected((prev) => {
       const copy = { ...prev };
       if (copy[key]) delete copy[key];
-      else copy[key] = { therapist_note: "", due_date: "" };
+      else copy[key] = { therapist_note: "", due_date: "", schedule: defaultSchedule() };
       return copy;
     });
   };
@@ -68,9 +70,35 @@ const AssignmentBuilder = ({ client, therapistName, onDone }: Props) => {
       _personal_note: personalNote || null,
       _tools: tools as any,
     });
+    if (error) { setSaving(false); return toast.error(error.message); }
+    const assignmentId = data as unknown as string;
+
+    // Re-fetch inserted tool ids so we can attach schedules to the right rows.
+    const { data: toolRows, error: toolErr } = await supabase
+      .from("assignment_tools")
+      .select("id, tool_key")
+      .eq("assignment_id", assignmentId);
+
+    if (!toolErr && toolRows) {
+      for (const key of keys) {
+        const sched = selected[key].schedule;
+        if (!sched || sched.frequency === "once") continue;
+        const row = (toolRows as any[]).find((r) => r.tool_key === key);
+        if (!row) continue;
+        const freqMap: Record<string, string> = { daily: "daily", weekly: "weekly", custom: "custom" };
+        await supabase.rpc("create_assignment_schedule" as any, {
+          _assignment_tool_id: row.id,
+          _frequency: freqMap[sched.frequency],
+          _days_of_week: sched.frequency === "daily" ? [] : sched.days_of_week,
+          _time_of_day: sched.time_of_day || null,
+          _start_date: sched.start_date || new Date().toISOString().slice(0, 10),
+          _end_date: sched.end_date || null,
+        });
+      }
+    }
+
     setSaving(false);
-    if (error) return toast.error(error.message);
-    setSavedAssignmentId(data as unknown as string);
+    setSavedAssignmentId(assignmentId);
     toast.success("Assignment created.");
   };
 
@@ -207,6 +235,10 @@ const AssignmentBuilder = ({ client, therapistName, onDone }: Props) => {
                         className="mt-1"
                       />
                     </div>
+                    <ScheduleFields
+                      value={selected[tool.key].schedule}
+                      onChange={(v) => setSelected((p) => ({ ...p, [tool.key]: { ...p[tool.key], schedule: v } }))}
+                    />
                   </div>
                 )}
               </div>

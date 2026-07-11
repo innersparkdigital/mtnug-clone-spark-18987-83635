@@ -7,6 +7,7 @@ import { lazy, Suspense } from "react";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { AssessmentProvider } from "@/contexts/AssessmentContext";
+import { CalmThemeProvider } from "@/contexts/CalmThemeContext";
 // Keep Index eager — it's the LCP/landing route. Everything else is lazy
 // so visitors download only the JS for the page they actually open.
 import Index from "./pages/Index";
@@ -282,6 +283,7 @@ const App = () => (
     <AuthProvider>
       <LanguageProvider>
         <AssessmentProvider>
+          <CalmThemeProvider>
           <TooltipProvider>
             <Toaster />
             <Sonner />
@@ -703,6 +705,7 @@ const App = () => (
               </Suspense>
             </BrowserRouter>
           </TooltipProvider>
+          </CalmThemeProvider>
         </AssessmentProvider>
       </LanguageProvider>
     </AuthProvider>

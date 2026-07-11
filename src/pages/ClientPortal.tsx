@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2, Lock, ChevronRight, CheckCircle2 } from "lucide-react";
+import { Loader2, Lock, Quote } from "lucide-react";
 import { toast } from "sonner";
 import QuietFooter from "@/components/client-portal/QuietFooter";
 import SessionReflectionTool from "@/components/client-portal/SessionReflectionTool";
@@ -19,30 +19,63 @@ import SelfCareTool from "@/components/client-portal/SelfCareTool";
 import ActivityScheduleTool from "@/components/client-portal/ActivityScheduleTool";
 import ToolStub from "@/components/client-portal/ToolStub";
 import { getTool } from "@/lib/wellbeingToolsCatalog";
+import { CalmThemeRoot } from "@/contexts/CalmThemeContext";
+import CalmThemeToggle from "@/components/CalmThemeToggle";
+import GreetingBlock from "@/components/client-portal/GreetingBlock";
+import WeekStrip, { toIso, useWeekWindow } from "@/components/client-portal/WeekStrip";
+import ClientToolCard from "@/components/client-portal/ClientToolCard";
+import { summarizeSchedule } from "@/components/therapist/ScheduleFields";
+
+interface Schedule {
+  id: string;
+  frequency: "one_time" | "daily" | "weekly" | "custom";
+  days_of_week: number[];
+  time_of_day: string | null;
+  start_date: string;
+  end_date: string | null;
+}
+
+interface AssignedTool {
+  id: string;
+  tool_key: string;
+  title: string | null;
+  therapist_note: string | null;
+  due_date: string | null;
+  config: any;
+  status: string;
+  latest_submission?: any;
+  schedule?: Schedule | null;
+  completed_dates?: string[]; // ISO date strings
+}
 
 interface Snapshot {
   client: { id: string; full_name: string; has_passcode: boolean };
   therapist: { full_name: string };
+  today: string;
   assignment: null | {
     id: string;
     personal_note: string | null;
-    tools: Array<{
-      id: string;
-      tool_key: string;
-      title: string | null;
-      therapist_note: string | null;
-      due_date: string | null;
-      config: any;
-      status: string;
-      latest_submission?: any;
-    }>;
+    tools: AssignedTool[];
   };
   has_red_alert?: boolean;
 }
 
 const IDLE_MS = 30 * 60 * 1000;
 
-const ClientPortal = () => {
+const scheduleMatchesDate = (s: Schedule | null | undefined, iso: string): boolean => {
+  if (!s) return false;
+  if (s.start_date > iso) return false;
+  if (s.end_date && s.end_date < iso) return false;
+  const dow = new Date(iso + "T12:00:00").getDay();
+  if (s.frequency === "daily") return true;
+  if (s.frequency === "one_time") return s.start_date === iso;
+  if (s.frequency === "weekly" || s.frequency === "custom") {
+    return s.days_of_week?.includes(dow) ?? false;
+  }
+  return false;
+};
+
+const ClientPortalInner = () => {
   const { token } = useParams<{ token: string }>();
   const [snapshot, setSnapshot] = useState<Snapshot | null>(null);
   const [loading, setLoading] = useState(true);
@@ -51,14 +84,18 @@ const ClientPortal = () => {
   const [confirmPasscode, setConfirmPasscode] = useState("");
   const [busy, setBusy] = useState(false);
   const [activeToolId, setActiveToolId] = useState<string | null>(null);
+  const [selectedIso, setSelectedIso] = useState<string>("");
+  const [view, setView] = useState<"today" | "all">("today");
 
   const load = useCallback(async () => {
     if (!token) return;
     const { data, error } = await supabase.rpc("client_snapshot", { _token: token });
     if (error) console.error(error);
-    setSnapshot((data as unknown as Snapshot) ?? null);
+    const snap = (data as unknown as Snapshot) ?? null;
+    setSnapshot(snap);
+    if (snap?.today && !selectedIso) setSelectedIso(snap.today);
     setLoading(false);
-  }, [token]);
+  }, [token, selectedIso]);
 
   useEffect(() => { load(); }, [load]);
 
@@ -82,6 +119,90 @@ const ClientPortal = () => {
     };
   }, [unlocked]);
 
+  const today = useMemo(() => new Date(), []);
+  const weekDates = useWeekWindow(today);
+  const tools = snapshot?.assignment?.tools ?? [];
+  const todayIso = snapshot?.today ?? toIso(today);
+
+  const isCompletedOn = (t: AssignedTool, iso: string) =>
+    (t.completed_dates || []).includes(iso);
+
+  const weekDays = useMemo(() => {
+    return weekDates.map((d) => {
+      const iso = toIso(d);
+      const scheduled = tools.filter((t) => scheduleMatchesDate(t.schedule, iso));
+      const completed = scheduled.filter((t) => isCompletedOn(t, iso));
+      return {
+        date: d,
+        isoDate: iso,
+        scheduledCount: scheduled.length,
+        completedCount: completed.length,
+        isToday: iso === todayIso,
+      };
+    });
+  }, [weekDates, tools, todayIso]);
+
+  const hasAnySchedule = tools.some((t) => t.schedule && t.schedule.frequency !== "one_time");
+
+  const dayTools = useMemo(() => {
+    if (view === "all") return tools;
+    const iso = selectedIso || todayIso;
+    // Today view: scheduled for this day, OR (no schedule at all) if viewing today
+    return tools.filter((t) => {
+      if (t.schedule) return scheduleMatchesDate(t.schedule, iso);
+      // Unscheduled tools appear only when the selected day is today
+      return iso === todayIso;
+    });
+  }, [tools, view, selectedIso, todayIso]);
+
+  const catchupTools = useMemo(() => {
+    // Tools scheduled in the last 3 days (excluding today) that weren't completed on that day
+    if (view !== "today" || selectedIso !== todayIso) return [] as AssignedTool[];
+    const result: AssignedTool[] = [];
+    const today = new Date(todayIso + "T12:00:00");
+    for (let i = 1; i <= 3; i++) {
+      const d = new Date(today);
+      d.setDate(d.getDate() - i);
+      const iso = toIso(d);
+      tools.forEach((t) => {
+        if (scheduleMatchesDate(t.schedule, iso) && !isCompletedOn(t, iso) && !result.find((r) => r.id === t.id)) {
+          result.push(t);
+        }
+      });
+    }
+    return result;
+  }, [tools, view, selectedIso, todayIso]);
+
+  const activeTool = useMemo(
+    () => tools.find((t) => t.id === activeToolId) || null,
+    [tools, activeToolId],
+  );
+
+  if (loading) {
+    return (
+      <div className="fixed inset-0 grid place-items-center bg-background">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!snapshot) {
+    return (
+      <div className="fixed inset-0 grid place-items-center bg-background p-6">
+        <Card className="max-w-md w-full card-calm">
+          <CardHeader>
+            <CardTitle>This link isn't valid</CardTitle>
+            <CardDescription>
+              This private space couldn't be found. Please check the link your therapist sent you, or contact info@innersparkafrica.com.
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      </div>
+    );
+  }
+
+  const firstName = snapshot.client.full_name.split(" ")[0];
+
   const setPasscodeFn = async () => {
     if (passcode.length < 6) return toast.error("Passcode must be at least 6 characters.");
     if (passcode !== confirmPasscode) return toast.error("Passcodes don't match.");
@@ -102,53 +223,24 @@ const ClientPortal = () => {
     setUnlocked(true);
   };
 
-  const activeTool = useMemo(
-    () => snapshot?.assignment?.tools.find((t) => t.id === activeToolId) || null,
-    [snapshot, activeToolId],
-  );
-
-  if (loading) {
-    return (
-      <div className="fixed inset-0 grid place-items-center bg-background">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
-
-  if (!snapshot) {
-    return (
-      <div className="fixed inset-0 grid place-items-center bg-background p-6">
-        <Card className="max-w-md w-full">
-          <CardHeader>
-            <CardTitle>This link isn't valid</CardTitle>
-            <CardDescription>
-              This private space couldn't be found. Please check the link your therapist sent you, or contact info@innersparkafrica.com.
-            </CardDescription>
-          </CardHeader>
-        </Card>
-      </div>
-    );
-  }
-
-  const firstName = snapshot.client.full_name.split(" ")[0];
-
   if (!unlocked) {
     return (
-      <div className="fixed inset-0 overflow-y-auto bg-gradient-to-b from-primary/5 to-background p-4 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
+      <div className="fixed inset-0 overflow-y-auto bg-background p-4 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
+        <div className="absolute top-3 right-3"><CalmThemeToggle /></div>
         <div className="min-h-full flex items-center justify-center py-8">
-          <Card className="max-w-md w-full">
-            <CardHeader className="text-center">
+          <div className="max-w-md w-full card-calm p-6 fade-in-calm">
+            <div className="text-center">
               <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 grid place-items-center mb-3">
                 <Lock className="h-6 w-6 text-primary" />
               </div>
-              <CardTitle>Hi {firstName} 💙</CardTitle>
-              <CardDescription>
+              <h1 className="text-xl font-semibold">Hi {firstName}</h1>
+              <p className="text-sm text-muted-foreground mt-1">
                 {snapshot.client.has_passcode
                   ? "This is your private space. Please enter your passcode."
                   : "This is your private space. Set a passcode so only you can open it."}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3">
+              </p>
+            </div>
+            <div className="space-y-3 mt-6">
               <div>
                 <Label>{snapshot.client.has_passcode ? "Passcode" : "Choose a passcode (min 6 characters)"}</Label>
                 <Input type="password" value={passcode} onChange={(e) => setPasscode(e.target.value)} autoFocus />
@@ -168,8 +260,8 @@ const ClientPortal = () => {
                 {snapshot.client.has_passcode ? "Open my space" : "Set passcode & continue"}
               </Button>
               <QuietFooter />
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -178,199 +270,153 @@ const ClientPortal = () => {
   const renderActiveTool = () => {
     if (!activeTool) return null;
     const meta = getTool(activeTool.tool_key);
-    if (activeTool.tool_key === "session-reflection") {
-      return (
-        <SessionReflectionTool
-          token={token!}
-          assignmentToolId={activeTool.id}
-          initial={activeTool.latest_submission?.payload}
-          onDone={() => { setActiveToolId(null); load(); }}
-          onBack={() => setActiveToolId(null)}
-        />
-      );
+    const done = () => { setActiveToolId(null); load(); };
+    const back = () => setActiveToolId(null);
+    const common = { token: token!, assignmentToolId: activeTool.id, onDone: done, onBack: back };
+    switch (activeTool.tool_key) {
+      case "session-reflection":
+        return <SessionReflectionTool {...common} initial={activeTool.latest_submission?.payload} />;
+      case "safety-checkin":
+        return <SafetyCheckInTool {...common} />;
+      case "thought-record":
+        return <ThoughtRecordTool {...common} initial={activeTool.latest_submission?.payload} />;
+      case "homework":
+        return <HomeworkTool {...common} config={activeTool.config || {}} initial={activeTool.latest_submission?.payload} />;
+      case "emotion-diary":
+        return <EmotionDiaryTool {...common} initial={activeTool.latest_submission?.payload} />;
+      case "screening-phq9":
+      case "screening-gad7":
+        return <ScreeningTool variant={activeTool.tool_key === "screening-phq9" ? "phq9" : "gad7"} {...common} />;
+      case "gratitude":
+        return <GratitudeTool {...common} initial={activeTool.latest_submission?.payload} />;
+      case "self-care":
+        return <SelfCareTool {...common} initial={activeTool.latest_submission?.payload} />;
+      case "activity-schedule":
+        return <ActivityScheduleTool {...common} initial={activeTool.latest_submission?.payload} />;
+      default:
+        return (
+          <ToolStub
+            toolName={activeTool.title || meta?.name || activeTool.tool_key}
+            description={meta?.description || ""}
+            onBack={back}
+          />
+        );
     }
-    if (activeTool.tool_key === "safety-checkin") {
-      return (
-        <SafetyCheckInTool
-          token={token!}
-          assignmentToolId={activeTool.id}
-          onDone={() => { setActiveToolId(null); load(); }}
-          onBack={() => setActiveToolId(null)}
-        />
-      );
-    }
-    if (activeTool.tool_key === "thought-record") {
-      return (
-        <ThoughtRecordTool
-          token={token!}
-          assignmentToolId={activeTool.id}
-          initial={activeTool.latest_submission?.payload}
-          onDone={() => { setActiveToolId(null); load(); }}
-          onBack={() => setActiveToolId(null)}
-        />
-      );
-    }
-    if (activeTool.tool_key === "homework") {
-      return (
-        <HomeworkTool
-          token={token!}
-          assignmentToolId={activeTool.id}
-          config={activeTool.config || {}}
-          initial={activeTool.latest_submission?.payload}
-          onDone={() => { setActiveToolId(null); load(); }}
-          onBack={() => setActiveToolId(null)}
-        />
-      );
-    }
-    if (activeTool.tool_key === "emotion-diary") {
-      return (
-        <EmotionDiaryTool
-          token={token!}
-          assignmentToolId={activeTool.id}
-          initial={activeTool.latest_submission?.payload}
-          onDone={() => { setActiveToolId(null); load(); }}
-          onBack={() => setActiveToolId(null)}
-        />
-      );
-    }
-    if (activeTool.tool_key === "screening-phq9" || activeTool.tool_key === "screening-gad7") {
-      return (
-        <ScreeningTool
-          variant={activeTool.tool_key === "screening-phq9" ? "phq9" : "gad7"}
-          token={token!}
-          assignmentToolId={activeTool.id}
-          onDone={() => { setActiveToolId(null); load(); }}
-          onBack={() => setActiveToolId(null)}
-        />
-      );
-    }
-    if (activeTool.tool_key === "gratitude") {
-      return (
-        <GratitudeTool
-          token={token!}
-          assignmentToolId={activeTool.id}
-          initial={activeTool.latest_submission?.payload}
-          onDone={() => { setActiveToolId(null); load(); }}
-          onBack={() => setActiveToolId(null)}
-        />
-      );
-    }
-    if (activeTool.tool_key === "self-care") {
-      return (
-        <SelfCareTool
-          token={token!}
-          assignmentToolId={activeTool.id}
-          initial={activeTool.latest_submission?.payload}
-          onDone={() => { setActiveToolId(null); load(); }}
-          onBack={() => setActiveToolId(null)}
-        />
-      );
-    }
-    if (activeTool.tool_key === "activity-schedule") {
-      return (
-        <ActivityScheduleTool
-          token={token!}
-          assignmentToolId={activeTool.id}
-          initial={activeTool.latest_submission?.payload}
-          onDone={() => { setActiveToolId(null); load(); }}
-          onBack={() => setActiveToolId(null)}
-        />
-      );
-    }
-    return (
-      <ToolStub
-        toolName={activeTool.title || meta?.name || activeTool.tool_key}
-        description={meta?.description || ""}
-        onBack={() => setActiveToolId(null)}
-      />
-    );
   };
 
+  const toolCardData = (t: AssignedTool) => ({
+    id: t.id,
+    tool_key: t.tool_key,
+    title: t.title,
+    therapist_note: t.therapist_note,
+    due_date: t.due_date,
+    status: t.status,
+    completedToday: isCompletedOn(t, selectedIso || todayIso),
+    scheduleLabel: summarizeSchedule(t.schedule
+      ? { ...t.schedule, frequency: t.schedule.frequency === "one_time" ? "once" : t.schedule.frequency, time_of_day: t.schedule.time_of_day || "", start_date: t.schedule.start_date, end_date: t.schedule.end_date || "" }
+      : null),
+  });
+
   return (
-    <div className="fixed inset-0 overflow-y-auto bg-gradient-to-b from-primary/5 to-background pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
+    <div className="fixed inset-0 overflow-y-auto bg-background pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
       <div className="max-w-2xl mx-auto p-4 sm:p-6">
-        <div className="mb-6">
-          <div className="text-sm text-muted-foreground">Welcome back,</div>
-          <h1 className="text-2xl sm:text-3xl font-semibold">{firstName} 💙</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Your space, put together by {snapshot.therapist.full_name}.
-          </p>
+        <div className="flex justify-end mb-2">
+          <CalmThemeToggle />
         </div>
 
+        <GreetingBlock fullName={snapshot.client.full_name} therapistName={snapshot.therapist.full_name} />
+
         {snapshot.has_red_alert && !activeTool && (
-          <Card className="border-destructive bg-destructive/5 mb-4">
-            <CardContent className="p-4 text-sm">
-              Your therapist has been alerted and is reaching out to you. If you need someone right now, please call{" "}
-              <a href="tel:0800212121" className="text-destructive font-semibold underline">0800 212 121</a> — free, 24/7.
-              You matter. 💙
-            </CardContent>
-          </Card>
+          <div className="mt-6 rounded-2xl border border-destructive/40 bg-destructive/5 p-4 text-sm leading-relaxed">
+            Your therapist has been alerted and is reaching out to you. If you need someone right now, please call{" "}
+            <a href="tel:0800212121" className="text-destructive font-semibold underline">0800 212 121</a> — free, 24/7.
+            You matter. 💙
+          </div>
         )}
 
         {activeTool ? (
-          renderActiveTool()
+          <div className="mt-6">{renderActiveTool()}</div>
         ) : (
           <>
             {snapshot.assignment?.personal_note && (
-              <Card className="mb-4 border-l-4 border-l-primary bg-primary/5">
-                <CardContent className="p-4">
-                  <div className="text-xs uppercase tracking-wide text-muted-foreground mb-1">
-                    A note from {snapshot.therapist.full_name}
+              <div className="mt-8 card-calm p-4 bg-primary/5 border-primary/20">
+                <div className="flex gap-3">
+                  <Quote className="h-4 w-4 text-primary/70 shrink-0 mt-1" />
+                  <div>
+                    <p className="text-sm italic leading-relaxed">{snapshot.assignment.personal_note}</p>
+                    <p className="text-xs text-muted-foreground mt-2">— {snapshot.therapist.full_name}</p>
                   </div>
-                  <p className="text-sm italic leading-relaxed">{snapshot.assignment.personal_note}</p>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             )}
 
-            {!snapshot.assignment || snapshot.assignment.tools.length === 0 ? (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Nothing to do right now</CardTitle>
-                  <CardDescription>
-                    Your therapist hasn't set any exercises yet. They'll appear here after your next session.
-                  </CardDescription>
-                </CardHeader>
-              </Card>
-            ) : (
-              <div className="space-y-3">
-                {snapshot.assignment.tools.map((t) => {
-                  const meta = getTool(t.tool_key);
-                  const done = t.status === "completed";
-                  return (
+            {hasAnySchedule && (
+              <div className="mt-8">
+                <div className="flex items-center justify-between mb-3">
+                  <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">This week</h2>
+                  <div className="inline-flex rounded-full border border-border p-0.5 bg-card text-xs">
                     <button
-                      key={t.id}
-                      onClick={() => setActiveToolId(t.id)}
-                      className="w-full text-left"
+                      onClick={() => { setView("today"); setSelectedIso(todayIso); }}
+                      className={`px-3 py-1 rounded-full transition-colors ${view === "today" ? "bg-primary text-primary-foreground" : "text-muted-foreground"}`}
                     >
-                      <Card className="hover:border-primary/40 transition-colors">
-                        <CardContent className="p-4 flex items-start gap-3">
-                          <div className="w-10 h-10 rounded-lg bg-primary/10 grid place-items-center shrink-0">
-                            {done ? (
-                              <CheckCircle2 className="h-5 w-5 text-primary" />
-                            ) : (
-                              <span className="text-primary font-semibold text-sm">→</span>
-                            )}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <div className="font-medium">{t.title || meta?.name || t.tool_key}</div>
-                              {done && <span className="text-[11px] px-1.5 py-0.5 rounded bg-primary/10 text-primary">Completed</span>}
-                              {t.due_date && !done && (
-                                <span className="text-[11px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
-                                  Due {new Date(t.due_date).toLocaleDateString()}
-                                </span>
-                              )}
-                            </div>
-                            <div className="text-xs text-muted-foreground mt-0.5">
-                              {t.therapist_note || meta?.short || ""}
-                            </div>
-                          </div>
-                          <ChevronRight className="h-5 w-5 text-muted-foreground shrink-0 mt-2" />
-                        </CardContent>
-                      </Card>
+                      Today
                     </button>
-                  );
-                })}
+                    <button
+                      onClick={() => setView("all")}
+                      className={`px-3 py-1 rounded-full transition-colors ${view === "all" ? "bg-primary text-primary-foreground" : "text-muted-foreground"}`}
+                    >
+                      All tools
+                    </button>
+                  </div>
+                </div>
+                {view === "today" && (
+                  <WeekStrip
+                    days={weekDays}
+                    selectedIso={selectedIso || todayIso}
+                    onSelect={setSelectedIso}
+                  />
+                )}
+              </div>
+            )}
+
+            {!snapshot.assignment || tools.length === 0 ? (
+              <div className="mt-8 card-calm p-6 text-center">
+                <p className="font-medium">Nothing to do right now</p>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Your therapist hasn't set any exercises yet. They'll appear here after your next session.
+                </p>
+              </div>
+            ) : (
+              <div className="mt-6 space-y-3">
+                {dayTools.length === 0 ? (
+                  <div className="card-calm p-6 text-center text-sm text-muted-foreground">
+                    Nothing scheduled for this day. Take the day easy — or tap "All tools" to explore.
+                  </div>
+                ) : (
+                  dayTools.map((t) => (
+                    <ClientToolCard key={t.id} tool={toolCardData(t)} onOpen={() => setActiveToolId(t.id)} />
+                  ))
+                )}
+              </div>
+            )}
+
+            {catchupTools.length > 0 && (
+              <div className="mt-10">
+                <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-3">
+                  Whenever you're ready
+                </h2>
+                <p className="text-xs text-muted-foreground mb-3 leading-relaxed">
+                  A few things from the last couple of days — no rush, and no pressure to catch up.
+                </p>
+                <div className="space-y-3 opacity-90">
+                  {catchupTools.map((t) => (
+                    <ClientToolCard
+                      key={"catch-" + t.id}
+                      tool={{ ...toolCardData(t), completedToday: false, scheduleLabel: "Missed" }}
+                      onOpen={() => setActiveToolId(t.id)}
+                    />
+                  ))}
+                </div>
               </div>
             )}
           </>
@@ -381,5 +427,11 @@ const ClientPortal = () => {
     </div>
   );
 };
+
+const ClientPortal = () => (
+  <CalmThemeRoot className="min-h-screen">
+    <ClientPortalInner />
+  </CalmThemeRoot>
+);
 
 export default ClientPortal;
