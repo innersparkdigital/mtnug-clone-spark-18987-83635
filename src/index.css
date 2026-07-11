@@ -203,3 +203,128 @@ All colors MUST be HSL.
     transform-style: preserve-3d;
   }
 }
+
+/* ============================================================
+   Calm dashboard theme (scoped) — muted indigo + warm off-white
+   Applied only to elements wrapped in `.calm-theme`, so the
+   marketing site keeps its existing brand tokens untouched.
+   ============================================================ */
+@layer base {
+  .calm-theme {
+    --background: 40 33% 98%;         /* #FAF9F7 warm off-white */
+    --foreground: 240 20% 14%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 240 20% 14%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 20% 14%;
+
+    --primary: 232 30% 56%;           /* #6B6FB5 muted indigo */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 35 24% 94%;          /* warm neutral surface */
+    --secondary-foreground: 240 20% 14%;
+
+    --muted: 35 24% 94%;
+    --muted-foreground: 240 8% 42%;
+
+    --accent: 232 40% 94%;
+    --accent-foreground: 232 40% 30%;
+
+    --destructive: 4 68% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 30 15% 90%;
+    --input: 30 15% 90%;
+    --ring: 232 30% 56%;
+
+    --surface-warm: 36 36% 96%;       /* warm cream, for financial panel */
+    --surface-cool: 232 40% 97%;
+
+    --shadow-soft: 0 1px 2px hsla(240 20% 12% / 0.04), 0 4px 16px hsla(240 20% 12% / 0.05);
+    --shadow-lift: 0 2px 4px hsla(240 20% 12% / 0.05), 0 12px 28px hsla(240 20% 12% / 0.08);
+    --ease-calm: cubic-bezier(0.22, 1, 0.36, 1);
+    --dur-calm: 220ms;
+
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
+
+  .calm-theme.calm-dark {
+    --background: 240 8% 10%;         /* warm charcoal, not pure black */
+    --foreground: 40 20% 96%;
+
+    --card: 240 8% 14%;
+    --card-foreground: 40 20% 96%;
+
+    --popover: 240 8% 14%;
+    --popover-foreground: 40 20% 96%;
+
+    --primary: 232 45% 72%;           /* desaturated indigo, no glare */
+    --primary-foreground: 240 20% 12%;
+
+    --secondary: 240 6% 18%;
+    --secondary-foreground: 40 20% 96%;
+
+    --muted: 240 6% 18%;
+    --muted-foreground: 40 10% 68%;
+
+    --accent: 232 30% 22%;
+    --accent-foreground: 40 20% 96%;
+
+    --destructive: 4 55% 55%;
+    --destructive-foreground: 40 20% 96%;
+
+    --border: 240 6% 22%;
+    --input: 240 6% 22%;
+    --ring: 232 45% 72%;
+
+    --surface-warm: 30 8% 14%;
+    --surface-cool: 232 12% 16%;
+
+    --shadow-soft: 0 1px 2px rgba(0,0,0,0.35), 0 6px 20px rgba(0,0,0,0.4);
+    --shadow-lift: 0 4px 10px rgba(0,0,0,0.45), 0 16px 34px rgba(0,0,0,0.5);
+  }
+}
+
+@layer components {
+  .calm-theme .card-calm {
+    background: hsl(var(--card));
+    color: hsl(var(--card-foreground));
+    border: 1px solid hsl(var(--border));
+    border-radius: 16px;
+    box-shadow: var(--shadow-soft);
+    transition: transform var(--dur-calm) var(--ease-calm),
+                box-shadow var(--dur-calm) var(--ease-calm);
+  }
+  .calm-theme .hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lift);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .calm-theme .hover-lift:hover { transform: none; }
+  }
+
+  .calm-theme .surface-warm { background-color: hsl(var(--surface-warm)); }
+  .calm-theme .surface-cool { background-color: hsl(var(--surface-cool)); }
+
+  .calm-theme .fade-in-calm {
+    animation: calm-fade-in var(--dur-calm) var(--ease-calm) both;
+  }
+  .calm-theme .stagger-item {
+    animation: calm-fade-in var(--dur-calm) var(--ease-calm) both;
+  }
+  .calm-theme .stagger-item:nth-child(1) { animation-delay: 40ms; }
+  .calm-theme .stagger-item:nth-child(2) { animation-delay: 80ms; }
+  .calm-theme .stagger-item:nth-child(3) { animation-delay: 120ms; }
+  .calm-theme .stagger-item:nth-child(4) { animation-delay: 160ms; }
+  .calm-theme .stagger-item:nth-child(5) { animation-delay: 200ms; }
+  .calm-theme .stagger-item:nth-child(6) { animation-delay: 240ms; }
+  .calm-theme .stagger-item:nth-child(n+7) { animation-delay: 280ms; }
+}
+
+@keyframes calm-fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
