@@ -236,6 +236,63 @@ export type Database = {
         }
         Relationships: []
       }
+      assignment_schedules: {
+        Row: {
+          assignment_tool_id: string
+          client_id: string
+          created_at: string
+          days_of_week: number[]
+          end_date: string | null
+          frequency: string
+          id: string
+          start_date: string
+          time_of_day: string | null
+          timezone: string
+          updated_at: string
+        }
+        Insert: {
+          assignment_tool_id: string
+          client_id: string
+          created_at?: string
+          days_of_week?: number[]
+          end_date?: string | null
+          frequency: string
+          id?: string
+          start_date?: string
+          time_of_day?: string | null
+          timezone?: string
+          updated_at?: string
+        }
+        Update: {
+          assignment_tool_id?: string
+          client_id?: string
+          created_at?: string
+          days_of_week?: number[]
+          end_date?: string | null
+          frequency?: string
+          id?: string
+          start_date?: string
+          time_of_day?: string | null
+          timezone?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assignment_schedules_assignment_tool_id_fkey"
+            columns: ["assignment_tool_id"]
+            isOneToOne: false
+            referencedRelation: "assignment_tools"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assignment_schedules_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "therapist_clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       assignment_tools: {
         Row: {
           assignment_id: string
@@ -3177,10 +3234,22 @@ export type Database = {
         Args: { _employee_id: string; _gender?: string }
         Returns: boolean
       }
+      create_assignment_schedule: {
+        Args: {
+          _assignment_tool_id: string
+          _days_of_week: number[]
+          _end_date: string
+          _frequency: string
+          _start_date: string
+          _time_of_day: string
+        }
+        Returns: string
+      }
       create_client_assignment: {
         Args: { _client_id: string; _personal_note: string; _tools: Json }
         Returns: string
       }
+      delete_assignment_schedule: { Args: { _id: string }; Returns: boolean }
       delete_email: {
         Args: { message_id: number; queue_name: string }
         Returns: boolean
@@ -3284,6 +3353,7 @@ export type Database = {
       }
       slugify_company_name: { Args: { _name: string }; Returns: string }
       sync_form_emails_to_subscribers: { Args: never; Returns: Json }
+      therapist_client_overview: { Args: never; Returns: Json }
       verify_client_passcode: {
         Args: { _passcode: string; _token: string }
         Returns: boolean
