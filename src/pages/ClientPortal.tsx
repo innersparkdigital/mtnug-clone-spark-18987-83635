@@ -18,6 +18,8 @@ import GratitudeTool from "@/components/client-portal/GratitudeTool";
 import SelfCareTool from "@/components/client-portal/SelfCareTool";
 import ActivityScheduleTool from "@/components/client-portal/ActivityScheduleTool";
 import ToolStub from "@/components/client-portal/ToolStub";
+import ProgressAnalytics from "@/components/client-portal/ProgressAnalytics";
+import MilestoneTimeline from "@/components/client-portal/MilestoneTimeline";
 import { getTool } from "@/lib/wellbeingToolsCatalog";
 import { CalmThemeRoot } from "@/contexts/CalmThemeContext";
 import CalmThemeToggle from "@/components/CalmThemeToggle";
@@ -420,10 +422,10 @@ const ClientPortalInner = () => {
               </div>
             )}
 
-            <ProgressAnalytics tools={tools} clientFirstName={snapshot.client.full_name.split(" ")[0]} />
+            <ProgressAnalytics tools={tools as any} clientFirstName={snapshot.client.full_name.split(" ")[0]} />
             <MilestoneTimeline
-              tools={tools}
-              assignmentCreatedAt={snapshot.assignment?.created_at}
+              tools={tools as any}
+              assignmentCreatedAt={(snapshot.assignment as any)?.created_at}
               clientFirstName={snapshot.client.full_name.split(" ")[0]}
             />
           </>
