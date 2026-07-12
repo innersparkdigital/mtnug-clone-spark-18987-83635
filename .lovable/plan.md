@@ -1,128 +1,95 @@
-# Therapist & Client dashboards — calm redesign + recurring scheduling
+# Therapist + Client Dashboard UI/UX Overhaul
 
-Muted indigo accent, warm off-white base, dark mode toggle, plus a new "assign this tool on a recurring schedule" feature that surfaces as a daily calendar in the client's space and a weekly adherence preview for the therapist.
+Improve the existing `/therapist` and `/my-progress/[token]` dashboards. This is a redesign on top of the current data model — no schema changes required (we already have `assignment_schedules`, `tool_submissions`, `safety_alerts`, and the `client_snapshot` + `therapist_client_overview` RPCs).
 
----
+## 1. Design system (both dashboards)
 
-## Stage 1 — Global design tokens (foundation)
+Extend the existing `.calm-theme` tokens in `src/index.css` to match the exact palette:
 
-**`src/index.css`** — new palette:
+- Light: bg `#F8F9FF`, surface `#FFFFFF`, primary `#3B4FD4`, navy `#0F1035`, success `#2E7D5E`, amber `#D97706`, danger `#C0392B`, text `#1A1A2E` / `#555555`, border `#E5E7EB`.
+- Dark: bg `#0D0F1A`, surface `#1A1D2E`, primary `#5B6EE8`, text `#F1F5F9` / `#94A3B8`, borders `rgba(255,255,255,0.08)`.
+- Card standard: `border-radius: 16px`, `padding: 20px 24px`, shadow `0 2px 16px rgba(59,79,212,0.07)`, hover lift `translateY(-2px)` + `0 6px 24px rgba(59,79,212,0.14)`, 0.25s ease.
+- Typography: Inter (already imported alongside Plus Jakarta) — use Inter 600/700 headings, 400 body, 500 labels with `letter-spacing: 0.02em`.
+- Dark toggle already exists (`CalmThemeToggle`) — keep floating top-right, persist via existing localStorage.
 
-- Light: warm off-white base (`--background: 40 33% 98%` ≈ #FAF9F7), warm neutral cards (`--card: 0 0% 100%`), muted-indigo primary (`--primary: 232 30% 56%` ≈ #6B6FB5), deeper indigo hover (#3F4A8A), soft warm border (`--border: 30 15% 90%`).
-- Dark: warm charcoal (`--background: 240 8% 10%` ≈ #16161B, not pure black), slightly-elevated card (`--card: 240 8% 14%`), desaturated indigo primary (`--primary: 232 35% 68%`) so it doesn't glare, WCAG-AA text contrast.
-- New shadow tokens: `--shadow-soft` (`0 1px 2px rgba(20,20,30,0.04), 0 4px 16px rgba(20,20,30,0.06)`) and `--shadow-lift` (used on hover).
-- New motion tokens: `--ease-calm: cubic-bezier(0.22, 1, 0.36, 1)`, `--dur-calm: 200ms`.
-- Utility `.card-calm` — replaces the raw shadcn card border/box on the two dashboards only, so the rest of the site is unaffected.
-- Utility `.hover-lift` — `translateY(-2px)` + shadow bump on hover, respects `prefers-reduced-motion`.
+Add utility classes: `.stat-card`, `.stat-accent-blue|teal|green|red`, `.gradient-header`, `.milestone-card`.
 
-**`tailwind.config.ts`** — add `card-calm`, `surface-warm`, `surface-cool` background tokens mapped to the CSS variables so the redesigned components stay in the token system.
+## 2. Therapist dashboard (`/therapist`)
 
-**`src/contexts/ThemeContext.tsx`** (new) — light/dark/system, persisted in `localStorage` under `innerspark-theme`, applies `.dark` on `<html>`. Small, no dependency. Wired into `App.tsx` above the router.
+Update `TherapistPortal.tsx` and `components/therapist/ClientRoster.tsx`.
 
-**`src/components/ThemeToggle.tsx`** (new) — sun/moon icon button, mounted in the therapist header and the client `/my-progress` header only (does not touch the marketing site).
+**Welcome header** — gradient `linear-gradient(135deg,#3B4FD4,#0F1035)` with dynamic greeting: `Good morning, {name}. You have {sessionsToday} sessions today and {newSubmissions} clients with new submissions.` Compute from `therapist_client_overview` (submissions in last 24h).
 
----
+**Stat row** (4 cards, left border-accent 4px):
+1. Total active clients
+2. Sessions this month (count of `tool_submissions` — placeholder proxy)
+3. Homework completion rate (completed / assigned this month) with small SVG ring
+4. Safety flags this week (red when >0)
 
-## Stage 2 — Client dashboard ("My Space") redesign
+**Client grid** (2-col desktop, 1-col mobile): each card shows avatar initials, name + presenting concern, last submission date, 7-day mood sparkline (Chart.js line, no axes), homework badge (`2/3 done` colored), risk dot (red/amber/green: red = open safety alert or PHQ-9 severe; amber = overdue tools; green = otherwise), `View full analysis` button. Sort red → amber → green.
 
-Rewrite `src/pages/ClientPortal.tsx` around three sections:
+**Client detail panel** — new file `components/therapist/ClientDetailPanel.tsx`, right-slide `Sheet` (shadcn), 5 tabs:
+- **Overview**: identity + risk badge + key numbers + auto-generated pre-session summary paragraph.
+- **Tool responses**: per-tool renderers reading from `tool_submissions.payload`:
+  - Thought record table
+  - Emotion diary horizontal timeline
+  - Homework checklist with expandable reflections
+  - PHQ-9 / GAD-7 heat map (CSS grid, dates × questions, green→red)
+  - Goals progress bars
+  - Event scoring line chart
+- **Mood trend**: Chart.js line, 30/60/90 toggle, 7-day moving average, session date verticals.
+- **Screening scores**: PHQ-9, GAD-7, PCL-5 line charts with severity zone backgrounds.
+- **Assign & schedule**: reuse existing `AssignmentBuilder` + `ScheduleFields`, add reminder time + "Show on client calendar" toggle.
 
-1. **Greeting block** — time-of-day salutation (Good morning / afternoon / evening) + first name + a rotating short line from a small `CLIENT_ENCOURAGEMENTS` array (7–10 lines, seeded by `new Date().getDay()` so it's stable within the day). Never mentions overdue items. Language check: only warm, opt-in phrasing.
-2. **Today strip** (Mon–Sun week bar, today highlighted with a filled indigo pill, other days with soft dots showing tool count). Tapping a day filters the tool list below to that day. Rendered from the new `assignment_schedules` table (see Stage 4). If no schedules exist yet, the strip is hidden and the flow degrades gracefully to the current list.
-3. **Tool cards** — new `ClientToolCard` component. Each card: tool-specific Lucide icon in a soft indigo tile, title, one-line description, optional therapist note as a quoted subline, due-date chip only when a real due date is set (soft amber only if overdue by >24h), completed state = faded card + subtle check + "Done today" text (no badge/streak). Uses `.card-calm` + `.hover-lift`.
-4. **Therapist note card** — warmer treatment: `bg-primary/8`, small quote-mark icon top-left, italic body, "— {therapist name}" attribution line.
-5. **Catch-up section** — soft, collapsible, appears only when there are missed scheduled items from the last 3 days. Header: "Whenever you're ready". Same card styling, no red, no counters. Auto-hides after 3 days.
-6. **Library tab** — segmented control at the top: `Today` / `All tools`. `All tools` shows every assigned tool (current behaviour, unfiltered).
-7. **Motion** — page fade-in 200ms, cards stagger 40ms via CSS `animation-delay`, no bouncing.
+## 3. Client dashboard (`/my-progress/[token]`)
 
----
+Update `pages/ClientPortal.tsx` using existing `GreetingBlock`, `WeekStrip`, `ClientToolCard`.
 
-## Stage 3 — Therapist dashboard redesign
+**Greeting**: time-of-day + task-aware copy per spec (already partially in `clientEncouragements.ts` — extend for task-aware branch).
 
-Rewrite `src/components/therapist/ClientRoster.tsx` and `src/pages/TherapistPortal.tsx`:
+**Today's task calendar**: keep `WeekStrip`, when a day is tapped show task cards with tool icon, due time, status pill (Not started / In progress / Completed), est. time ("About 3 minutes" from tool metadata), Begin button.
 
-1. **Header** — greeting ("Good afternoon, Dr. …"), `ThemeToggle`, sign-out.
-2. **"Needs attention" strip** — top of the page, appears only when at least one exists: clients with overdue scheduled tools OR unresolved safety alerts OR no activity in 7+ days. Each entry is a small pill-card with the client's first name + reason + "Open →". Soft amber background, never red unless there is an unresolved safety alert.
-3. **Stat cards row** — 5 cards using existing `Total / Contacted / Booked / Completed / Paid` numbers but restyled as `.card-calm` with a small Lucide icon + a subtle "vs last week" delta arrow (`ArrowUp`/`ArrowDown`/`Minus`) computed from data already loaded. Icons: `Users`, `MessageCircle`, `CalendarCheck`, `CheckCircle2`, `Wallet`.
-4. **Commission panel** — visually separated: `bg-surface-warm` (a warm cream in light, subtly-warmer charcoal in dark), left-border accent, its own heading "Financial". Same content as today, just visually pulled apart from the client area.
-5. **Client cards** — replaces the current row list. Each client is a `.card-calm` showing: name, contact chip, status line (`3 tools active · 1 overdue` computed from `assignment_tools` + `assignment_schedules`), last-activity relative time. Two actions on the right: `Copy link` (secondary/ghost) and `New assignment` (primary — visually dominant, indigo). A small 7-day compact adherence preview (7 dots, filled = completed on that day) sits under the name; hover shows a tooltip per day.
-6. **Motion** — page fade + stagger identical to client side.
+**My Progress** (new `components/client-portal/ProgressAnalytics.tsx`):
+- Mood trend 30-day line with gradient fill + auto sentence.
+- Homework completion ring (animated fill from 0).
+- Gentle check-in card ("You have checked in 8 times this month…") — no streak scolding.
+- Latest PHQ-9 / GAD-7 with warm delta sentence.
+- Goal progress bars.
 
----
+**My Journey** (new `components/client-portal/MilestoneTimeline.tsx`): vertical timeline of milestones derived client-side from submissions (first session, first check-in, PHQ-9 threshold crossings, goals done, cumulative check-ins). Tap → open a share modal that renders a milestone card to canvas via `html2canvas` (already a dep from certificates) and offers download + `navigator.share`. Card contains only milestone text + date + InnerSpark logo + tagline.
 
-## Stage 4 — Recurring scheduling feature (end-to-end)
+## 4. Technical
 
-**New DB table** — `assignment_schedules`:
+- Charts: `chart.js` + `react-chartjs-2` (add deps).
+- Heat map: CSS grid, no library.
+- Animations: keep existing framer-motion; new fades ≤0.4s.
+- Dark mode: extend existing `.calm-theme` + `.calm-dark` variables — no separate stylesheets.
+- Mobile: verify at 360px, stacked layouts, sparklines 60px tall.
+- Privacy: RPCs already scope by therapist / token; share card only writes text + date to canvas.
+- Language: strip any streak-scold copy; use nudge-tone throughout.
 
+## Files touched
+
+```text
+src/index.css                                     tokens + card utilities
+src/pages/TherapistPortal.tsx                     header + stats + toggle placement
+src/components/therapist/ClientRoster.tsx         grid card redesign + risk sort
+src/components/therapist/ClientDetailPanel.tsx    NEW right-slide analytics
+src/components/therapist/tools/*.tsx              NEW per-tool renderers + heatmap
+src/components/therapist/MoodTrendChart.tsx       NEW
+src/components/therapist/ScreeningChart.tsx       NEW
+src/pages/ClientPortal.tsx                        wire progress + journey
+src/components/client-portal/ProgressAnalytics.tsx NEW
+src/components/client-portal/MilestoneTimeline.tsx NEW
+src/components/client-portal/ShareMilestoneCard.tsx NEW
+src/lib/clientEncouragements.ts                   task-aware branch
+package.json                                      + chart.js react-chartjs-2
 ```
-id                  uuid pk
-assignment_tool_id  uuid fk → assignment_tools (cascade)
-client_id           uuid fk → therapist_clients (cascade)
-frequency           text check in ('one_time','daily','weekly','custom')
-days_of_week        int[]           -- 0=Sun … 6=Sat, used when frequency='custom' or 'weekly'
-time_of_day         time            -- optional, e.g. 20:00 for "Evening reflection"
-start_date          date not null
-end_date            date            -- null = ongoing
-timezone            text default 'Africa/Nairobi'
-created_at, updated_at
-```
 
-- Grants for `authenticated` + `service_role` (no `anon` — always token- or auth-scoped).
-- RLS:
-  - Therapist can `SELECT/INSERT/UPDATE/DELETE` schedules for their own clients (via `is_client_therapist`).
-  - Anonymous client-portal reads go through a new `SECURITY DEFINER` RPC (`client_snapshot` gets extended, no direct table read).
-- `updated_at` trigger uses existing `update_updated_at_column()`.
+## Out of scope
 
-**New RPCs**:
+- No DB schema changes (existing tables cover it).
+- No new RPCs (existing `client_snapshot` + `therapist_client_overview` provide the data; anything extra is computed client-side from `tool_submissions`).
+- No changes to the marketing site theme — stays scoped under `.calm-theme`.
 
-- `create_assignment_schedule(_assignment_tool_id, _frequency, _days_of_week, _time_of_day, _start_date, _end_date)` — validates therapist ownership, inserts row.
-- `delete_assignment_schedule(_id)` — therapist-scoped.
-- `client_snapshot` extended to include `schedules` per tool AND a computed `today_tool_ids` + `catchup_tool_ids` array (last 3 days of missed scheduled instances, excluding items already completed today).
-
-**Therapist UI** — extend `AssignmentBuilder`:
-
-- After the existing per-tool config block, add a **"Schedule"** subsection:
-  - Radio: `Just once` (default, current behaviour — no schedule row created) / `Daily` / `Weekly` (pick weekdays) / `Custom` (day-picker).
-  - Optional `Time of day` (`<input type="time">`).
-  - `Start date` (defaults to today) / `End date` (blank = ongoing).
-- On save, after `create_client_assignment` succeeds, iterate over selected tools and, for any with a non-`once` schedule, call `create_assignment_schedule` for the newly-created `assignment_tool_id`. The RPC returns tool IDs so we can map.
-
-**Client UI** — driven by the extended `client_snapshot`:
-
-- Week strip reads `schedules` + submission history to compute per-day status (`scheduled`, `completed`, `missed`).
-- "Today" filter uses `today_tool_ids`.
-- Catch-up section uses `catchup_tool_ids`.
-
-**Therapist adherence preview** — the 7-day dot strip on each client card is a lightweight aggregate: count of scheduled-and-completed vs scheduled-and-missed per day for the last 7 days, using the same RPC output (new RPC: `therapist_adherence_preview(_therapist_id)` returning `{ client_id, days: [{date, scheduled, completed}] }`).
-
----
-
-## What is intentionally NOT changed
-
-- Marketing site, blog, Kenya funnel, admin dashboard visuals — untouched. Tokens only apply where the new `.card-calm` / `.hover-lift` classes are used (client portal + therapist portal + `AssignmentBuilder`).
-- The 11 existing tool components (SessionReflectionTool, ThoughtRecordTool, etc.) are untouched — they inherit token colors automatically.
-- No new gamification, streaks, badges, or push nudges. Ever. Per the design principle.
-- Fonts unchanged (Plus Jakarta Sans + Inter is already warm enough).
-
----
-
-## Rough file map
-
-New: `src/contexts/ThemeContext.tsx`, `src/components/ThemeToggle.tsx`, `src/components/client-portal/WeekStrip.tsx`, `src/components/client-portal/ClientToolCard.tsx`, `src/components/client-portal/GreetingBlock.tsx`, `src/components/therapist/NeedsAttentionStrip.tsx`, `src/components/therapist/TherapistStatCards.tsx`, `src/components/therapist/ClientCard.tsx`, `src/components/therapist/ScheduleFields.tsx`, `src/lib/clientEncouragements.ts`, `src/lib/toolIcons.ts`.
-
-Modified: `src/index.css`, `tailwind.config.ts`, `src/App.tsx` (ThemeProvider), `src/pages/ClientPortal.tsx`, `src/pages/TherapistPortal.tsx`, `src/components/therapist/ClientRoster.tsx`, `src/components/therapist/AssignmentBuilder.tsx`.
-
-DB: 1 migration — `assignment_schedules` table + `create_assignment_schedule` / `delete_assignment_schedule` RPCs + extended `client_snapshot` + `therapist_adherence_preview`.
-
----
-
-## Order of operations when you approve
-
-1. Migration (schedules table + RPCs).
-2. Design tokens + ThemeContext + toggle.
-3. Client portal redesign consuming extended snapshot.
-4. Therapist portal redesign + adherence preview.
-5. Schedule fields inside the assignment builder.
-6. Manual smoke: create client → open builder → schedule daily + weekly + one-time → open client portal → verify week strip, today filter, catch-up, and completed states in both themes.
-
-Ready to build this exactly as scoped — say the word.
+Confirm and I'll build it in one pass.
