@@ -29,3 +29,20 @@ export const getGreeting = (name: string, date = new Date()) => {
   const first = (name || "").split(" ")[0] || "there";
   return `${part}, ${first}`;
 };
+
+/** Time-of-day + task-aware tagline shown at the top of the client dashboard. */
+export const getGreetingSubtitle = (opts: {
+  tasksToday: number;
+  nextToolLabel?: string | null;
+  date?: Date;
+}): string => {
+  const date = opts.date ?? new Date();
+  const h = date.getHours();
+  if (opts.tasksToday > 0) {
+    if (opts.nextToolLabel) return `You have ${opts.nextToolLabel} scheduled for today. Tap to begin whenever you're ready.`;
+    return `You have ${opts.tasksToday} thing${opts.tasksToday === 1 ? "" : "s"} scheduled for today. No rush.`;
+  }
+  if (h < 12) return "A new day, a new chance to check in. 💙";
+  if (h < 17) return "How is your day going so far?";
+  return "You showed up today. That matters. 💙";
+};
