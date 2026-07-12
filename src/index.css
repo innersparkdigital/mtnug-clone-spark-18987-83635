@@ -211,80 +211,87 @@ All colors MUST be HSL.
    ============================================================ */
 @layer base {
   .calm-theme {
-    --background: 40 33% 98%;         /* #FAF9F7 warm off-white */
-    --foreground: 240 20% 14%;
+    /* #F8F9FF soft off-white w/ blue tint */
+    --background: 232 100% 98.5%;
+    --foreground: 240 28% 14%;         /* #1A1A2E */
 
     --card: 0 0% 100%;
-    --card-foreground: 240 20% 14%;
+    --card-foreground: 240 28% 14%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 240 20% 14%;
+    --popover-foreground: 240 28% 14%;
 
-    --primary: 232 30% 56%;           /* #6B6FB5 muted indigo */
+    --primary: 232 65% 53%;            /* #3B4FD4 InnerSpark blue */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 35 24% 94%;          /* warm neutral surface */
-    --secondary-foreground: 240 20% 14%;
+    --secondary: 232 60% 96%;
+    --secondary-foreground: 240 28% 14%;
 
-    --muted: 35 24% 94%;
-    --muted-foreground: 240 8% 42%;
+    --muted: 232 40% 96%;
+    --muted-foreground: 0 0% 33%;      /* #555555 */
 
     --accent: 232 40% 94%;
-    --accent-foreground: 232 40% 30%;
+    --accent-foreground: 232 65% 30%;
 
-    --destructive: 4 68% 55%;
+    --destructive: 6 66% 46%;          /* #C0392B */
     --destructive-foreground: 0 0% 100%;
 
-    --border: 30 15% 90%;
-    --input: 30 15% 90%;
-    --ring: 232 30% 56%;
+    --border: 220 13% 91%;             /* #E5E7EB */
+    --input: 220 13% 91%;
+    --ring: 232 65% 53%;
 
-    --surface-warm: 36 36% 96%;       /* warm cream, for financial panel */
+    --navy: 234 63% 13%;               /* #0F1035 */
+    --success: 152 46% 33%;            /* #2E7D5E */
+    --warn: 30 90% 44%;                /* #D97706 */
+    --danger: 6 66% 46%;               /* #C0392B */
+
+    --surface-warm: 36 36% 96%;
     --surface-cool: 232 40% 97%;
 
-    --shadow-soft: 0 1px 2px hsla(240 20% 12% / 0.04), 0 4px 16px hsla(240 20% 12% / 0.05);
-    --shadow-lift: 0 2px 4px hsla(240 20% 12% / 0.05), 0 12px 28px hsla(240 20% 12% / 0.08);
+    --shadow-soft: 0 2px 16px rgba(59,79,212,0.07);
+    --shadow-lift: 0 6px 24px rgba(59,79,212,0.14);
     --ease-calm: cubic-bezier(0.22, 1, 0.36, 1);
-    --dur-calm: 220ms;
+    --dur-calm: 250ms;
 
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
   }
 
   .calm-theme.calm-dark {
-    --background: 240 8% 10%;         /* warm charcoal, not pure black */
-    --foreground: 40 20% 96%;
+    --background: 231 33% 8%;          /* #0D0F1A */
+    --foreground: 210 40% 96%;         /* #F1F5F9 */
 
-    --card: 240 8% 14%;
-    --card-foreground: 40 20% 96%;
+    --card: 230 24% 14%;               /* #1A1D2E */
+    --card-foreground: 210 40% 96%;
 
-    --popover: 240 8% 14%;
-    --popover-foreground: 40 20% 96%;
+    --popover: 230 24% 14%;
+    --popover-foreground: 210 40% 96%;
 
-    --primary: 232 45% 72%;           /* desaturated indigo, no glare */
-    --primary-foreground: 240 20% 12%;
+    --primary: 230 74% 63%;            /* #5B6EE8 */
+    --primary-foreground: 231 33% 10%;
 
-    --secondary: 240 6% 18%;
-    --secondary-foreground: 40 20% 96%;
+    --secondary: 230 20% 18%;
+    --secondary-foreground: 210 40% 96%;
 
-    --muted: 240 6% 18%;
-    --muted-foreground: 40 10% 68%;
+    --muted: 230 20% 18%;
+    --muted-foreground: 215 20% 65%;   /* #94A3B8 */
 
     --accent: 232 30% 22%;
-    --accent-foreground: 40 20% 96%;
+    --accent-foreground: 210 40% 96%;
 
-    --destructive: 4 55% 55%;
-    --destructive-foreground: 40 20% 96%;
+    --destructive: 6 66% 55%;
+    --destructive-foreground: 210 40% 96%;
 
-    --border: 240 6% 22%;
-    --input: 240 6% 22%;
-    --ring: 232 45% 72%;
+    --border: 230 15% 22%;
+    --input: 230 15% 22%;
+    --ring: 230 74% 63%;
 
-    --surface-warm: 30 8% 14%;
-    --surface-cool: 232 12% 16%;
+    --surface-warm: 30 12% 16%;
+    --surface-cool: 232 20% 16%;
 
-    --shadow-soft: 0 1px 2px rgba(0,0,0,0.35), 0 6px 20px rgba(0,0,0,0.4);
-    --shadow-lift: 0 4px 10px rgba(0,0,0,0.45), 0 16px 34px rgba(0,0,0,0.5);
+    --shadow-soft: 0 1px 2px rgba(0,0,0,0.4), 0 6px 20px rgba(0,0,0,0.45);
+    --shadow-lift: 0 6px 24px rgba(91,110,232,0.25), 0 12px 32px rgba(0,0,0,0.5);
   }
 }
 
@@ -294,6 +301,7 @@ All colors MUST be HSL.
     color: hsl(var(--card-foreground));
     border: 1px solid hsl(var(--border));
     border-radius: 16px;
+    padding: 20px 24px;
     box-shadow: var(--shadow-soft);
     transition: transform var(--dur-calm) var(--ease-calm),
                 box-shadow var(--dur-calm) var(--ease-calm);
@@ -302,6 +310,31 @@ All colors MUST be HSL.
     transform: translateY(-2px);
     box-shadow: var(--shadow-lift);
   }
+  .calm-theme .gradient-header {
+    background: linear-gradient(135deg, #3B4FD4 0%, #0F1035 100%);
+    color: #ffffff;
+    border-radius: 20px;
+    padding: 28px 32px;
+    box-shadow: 0 8px 32px rgba(59,79,212,0.25);
+  }
+  .calm-theme .stat-card {
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    border-radius: 16px;
+    padding: 18px 20px;
+    box-shadow: var(--shadow-soft);
+    border-left: 4px solid hsl(var(--primary));
+    transition: transform var(--dur-calm) var(--ease-calm), box-shadow var(--dur-calm) var(--ease-calm);
+  }
+  .calm-theme .stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lift); }
+  .calm-theme .stat-card.accent-teal    { border-left-color: hsl(173 58% 39%); }
+  .calm-theme .stat-card.accent-green   { border-left-color: hsl(var(--success)); }
+  .calm-theme .stat-card.accent-amber   { border-left-color: hsl(var(--warn)); }
+  .calm-theme .stat-card.accent-danger  { border-left-color: hsl(var(--danger)); }
+  .calm-theme .risk-dot { width: 10px; height: 10px; border-radius: 999px; display: inline-block; }
+  .calm-theme .risk-dot.risk-red    { background: hsl(var(--danger)); box-shadow: 0 0 0 3px hsl(var(--danger) / 0.15); }
+  .calm-theme .risk-dot.risk-amber  { background: hsl(var(--warn));   box-shadow: 0 0 0 3px hsl(var(--warn) / 0.15); }
+  .calm-theme .risk-dot.risk-green  { background: hsl(var(--success));box-shadow: 0 0 0 3px hsl(var(--success) / 0.15); }
   @media (prefers-reduced-motion: reduce) {
     .calm-theme .hover-lift:hover { transform: none; }
   }
