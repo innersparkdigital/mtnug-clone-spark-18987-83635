@@ -419,6 +419,13 @@ const ClientPortalInner = () => {
                 </div>
               </div>
             )}
+
+            <ProgressAnalytics tools={tools} clientFirstName={snapshot.client.full_name.split(" ")[0]} />
+            <MilestoneTimeline
+              tools={tools}
+              assignmentCreatedAt={snapshot.assignment?.created_at}
+              clientFirstName={snapshot.client.full_name.split(" ")[0]}
+            />
           </>
         )}
 
