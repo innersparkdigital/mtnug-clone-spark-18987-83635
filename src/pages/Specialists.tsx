@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
+import ExpandedSeoSchema from "@/components/seo/ExpandedSeoSchema";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -511,7 +512,7 @@ const Specialists = () => {
           name="description"
           content="Browse licensed therapists in Uganda specialising in trauma, burnout, anxiety, depression, and relationships. Book online. Pay via MTN or Airtel."
         />
-        <meta name="keywords" content="therapist Uganda, therapist Kampala, licensed therapist Kampala, find a therapist Uganda, female therapist Uganda, male therapist Uganda, counsellor Kampala, psychologist Uganda online, trauma therapist Uganda, burnout therapist Kampala, relationship therapist Uganda, anxiety counselling Uganda, depression therapy Uganda" />
+        <meta name="keywords" content="therapist Uganda, therapist Kampala, licensed therapist Kampala, find a therapist Uganda, female therapist Uganda, male therapist Uganda, counsellor Kampala, psychologist Uganda online, trauma therapist Uganda, burnout therapist Kampala, relationship therapist Uganda, anxiety counselling Uganda, depression therapy Uganda, therapist for depression Uganda, therapist for anxiety Uganda, therapist for couples Uganda, therapist for suicidal thoughts Uganda, teen therapist Uganda, same day therapist Uganda, therapist available today Uganda, evening therapy sessions Uganda, weekend therapist Uganda, therapist Nairobi, licensed therapist Nairobi, female therapist Kenya, male therapist Kenya, private therapy Nairobi, trauma therapist Kenya, burnout therapist Nairobi, therapist South Sudan" />
         <link rel="canonical" href="https://www.innersparkafrica.com/specialists" />
         
         {/* Open Graph */}
@@ -567,6 +568,7 @@ const Specialists = () => {
           {JSON.stringify({"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How are Innerspark therapists vetted?","acceptedAnswer":{"@type":"Answer","text":"Every therapist undergoes credential verification, background checks, and an interview process. We confirm licences and qualifications before they can take clients."}},{"@type":"Question","name":"Can I choose my own therapist?","acceptedAnswer":{"@type":"Answer","text":"Yes. You can browse all our specialists, filter by specialty, language, and price, then request a specific therapist. We can also recommend the best match based on a free assessment."}},{"@type":"Question","name":"What if I want to switch therapists?","acceptedAnswer":{"@type":"Answer","text":"You can switch therapists at any time at no extra cost. Just message support and we'll help you transition smoothly."}},{"@type":"Question","name":"Do you have male and female therapists?","acceptedAnswer":{"@type":"Answer","text":"Yes. You can filter by gender and pick a therapist you feel most comfortable with."}}]})}
         </script>
       </Helmet>
+      <ExpandedSeoSchema region="africa" />
 
       <Header />
 
