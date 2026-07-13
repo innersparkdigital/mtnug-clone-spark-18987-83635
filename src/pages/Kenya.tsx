@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet";
+import ExpandedSeoSchema from "@/components/seo/ExpandedSeoSchema";
 import { Link, useSearchParams } from "react-router-dom";
 import { ShieldCheck, Lock, Smartphone, Clock, Heart, Users, Building2, User as UserIcon, X } from "lucide-react";
 import Header from "@/components/Header";
