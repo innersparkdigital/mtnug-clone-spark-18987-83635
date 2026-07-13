@@ -220,6 +220,8 @@ export default function Kenya() {
         })}</script>
       </Helmet>
 
+      <ExpandedSeoSchema region="kenya" />
+
       <Header />
 
       {/* HERO */}
