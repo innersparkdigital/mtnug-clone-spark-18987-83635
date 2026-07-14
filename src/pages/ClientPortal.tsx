@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, lazy, Suspense } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2, Lock, Quote } from "lucide-react";
+import { Loader2, Lock, Quote, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import QuietFooter from "@/components/client-portal/QuietFooter";
 import SessionReflectionTool from "@/components/client-portal/SessionReflectionTool";
@@ -18,8 +18,8 @@ import GratitudeTool from "@/components/client-portal/GratitudeTool";
 import SelfCareTool from "@/components/client-portal/SelfCareTool";
 import ActivityScheduleTool from "@/components/client-portal/ActivityScheduleTool";
 import ToolStub from "@/components/client-portal/ToolStub";
-import ProgressAnalytics from "@/components/client-portal/ProgressAnalytics";
-import MilestoneTimeline from "@/components/client-portal/MilestoneTimeline";
+const ProgressAnalytics = lazy(() => import("@/components/client-portal/ProgressAnalytics"));
+const MilestoneTimeline = lazy(() => import("@/components/client-portal/MilestoneTimeline"));
 import { getTool } from "@/lib/wellbeingToolsCatalog";
 import { CalmThemeRoot } from "@/contexts/CalmThemeContext";
 import CalmThemeToggle from "@/components/CalmThemeToggle";
@@ -149,12 +149,30 @@ const ClientPortalInner = () => {
   const dayTools = useMemo(() => {
     if (view === "all") return tools;
     const iso = selectedIso || todayIso;
-    // Today view: scheduled for this day, OR (no schedule at all) if viewing today
+    // Today view: scheduled for this day, OR (no schedule at all) if viewing today.
+    // Also hide anything already completed on the selected day — the celebration
+    // banner acknowledges completed work instead.
     return tools.filter((t) => {
+      if (isCompletedOn(t, iso)) return false;
       if (t.schedule) return scheduleMatchesDate(t.schedule, iso);
-      // Unscheduled tools appear only when the selected day is today
       return iso === todayIso;
     });
+  }, [tools, view, selectedIso, todayIso]);
+
+  // What did we complete on the currently viewed day?
+  const completedToday = useMemo(() => {
+    if (view === "all") return [] as AssignedTool[];
+    const iso = selectedIso || todayIso;
+    return tools.filter((t) => {
+      const eligible = t.schedule ? scheduleMatchesDate(t.schedule, iso) : iso === todayIso;
+      return eligible && isCompletedOn(t, iso);
+    });
+  }, [tools, view, selectedIso, todayIso]);
+
+  const scheduledToday = useMemo(() => {
+    if (view === "all") return 0;
+    const iso = selectedIso || todayIso;
+    return tools.filter((t) => (t.schedule ? scheduleMatchesDate(t.schedule, iso) : iso === todayIso)).length;
   }, [tools, view, selectedIso, todayIso]);
 
   const catchupTools = useMemo(() => {
@@ -272,7 +290,18 @@ const ClientPortalInner = () => {
   const renderActiveTool = () => {
     if (!activeTool) return null;
     const meta = getTool(activeTool.tool_key);
-    const done = () => { setActiveToolId(null); load(); };
+    const done = () => {
+      const name = (activeTool.title || meta?.name || "that").toString();
+      const messages = [
+        `Thank you for showing up for yourself, ${firstName}. "${name}" is done for today.`,
+        `${firstName}, that took courage. "${name}" is complete — your therapist will see this.`,
+        `Beautifully done, ${firstName}. One small step, and it counts.`,
+        `Saved. ${firstName}, be proud of the effort — not the outcome.`,
+      ];
+      toast.success(messages[Math.floor(Math.random() * messages.length)], { duration: 4500 });
+      setActiveToolId(null);
+      load();
+    };
     const back = () => setActiveToolId(null);
     const common = { token: token!, assignmentToolId: activeTool.id, onDone: done, onBack: back };
     switch (activeTool.tool_key) {
@@ -390,10 +419,50 @@ const ClientPortalInner = () => {
               </div>
             ) : (
               <div className="mt-6 space-y-3">
-                {dayTools.length === 0 ? (
-                  <div className="card-calm p-6 text-center text-sm text-muted-foreground">
-                    Nothing scheduled for this day. Take the day easy — or tap "All tools" to explore.
+                {/* Gratitude / celebration banner when things have been completed */}
+                {view === "today" && completedToday.length > 0 && (
+                  <div className="card-calm p-4 border-emerald-500/30 bg-emerald-500/5 fade-in-calm">
+                    <div className="flex items-start gap-3">
+                      <div className="h-10 w-10 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 grid place-items-center shrink-0">
+                        <Sparkles className="h-5 w-5" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="font-semibold text-sm">
+                          {completedToday.length === scheduledToday
+                            ? `You've completed everything for today, ${firstName}. That matters.`
+                            : `${completedToday.length} done today — proud of you, ${firstName}.`}
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                          {completedToday.length === scheduledToday
+                            ? "Rest is part of the work. Your therapist can see this progress and will be with you."
+                            : "Every small step counts. Come back when you're ready — no pressure."}
+                        </p>
+                        <div className="mt-2 flex flex-wrap gap-1.5">
+                          {completedToday.slice(0, 4).map((t) => (
+                            <span
+                              key={t.id}
+                              className="text-[11px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 line-through decoration-1"
+                            >
+                              {t.title || getTool(t.tool_key)?.name || t.tool_key}
+                            </span>
+                          ))}
+                          {completedToday.length > 4 && (
+                            <span className="text-[11px] text-muted-foreground">
+                              +{completedToday.length - 4} more
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
                   </div>
+                )}
+
+                {dayTools.length === 0 ? (
+                  completedToday.length === 0 && (
+                    <div className="card-calm p-6 text-center text-sm text-muted-foreground">
+                      Nothing scheduled for this day. Take the day easy — or tap "All tools" to explore.
+                    </div>
+                  )
                 ) : (
                   dayTools.map((t) => (
                     <ClientToolCard key={t.id} tool={toolCardData(t)} onOpen={() => setActiveToolId(t.id)} />
@@ -422,12 +491,14 @@ const ClientPortalInner = () => {
               </div>
             )}
 
-            <ProgressAnalytics tools={tools as any} clientFirstName={snapshot.client.full_name.split(" ")[0]} />
-            <MilestoneTimeline
-              tools={tools as any}
-              assignmentCreatedAt={(snapshot.assignment as any)?.created_at}
-              clientFirstName={snapshot.client.full_name.split(" ")[0]}
-            />
+            <Suspense fallback={<div className="mt-10 h-40 rounded-2xl bg-muted/30 animate-pulse" />}>
+              <ProgressAnalytics tools={tools as any} clientFirstName={snapshot.client.full_name.split(" ")[0]} />
+              <MilestoneTimeline
+                tools={tools as any}
+                assignmentCreatedAt={(snapshot.assignment as any)?.created_at}
+                clientFirstName={snapshot.client.full_name.split(" ")[0]}
+              />
+            </Suspense>
           </>
         )}
 

@@ -7,6 +7,24 @@ import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Loader2, RefreshCw, ExternalLink, Search } from "lucide-react";
 import { toast } from "sonner";
+import { FunctionsHttpError } from "@supabase/supabase-js";
+
+async function readInvokeError(error: unknown): Promise<string> {
+  if (error instanceof FunctionsHttpError) {
+    try {
+      const text = await error.context.text();
+      try {
+        const j = JSON.parse(text);
+        return j.error || j.message || text || error.message;
+      } catch {
+        return text || error.message;
+      }
+    } catch {
+      return error.message;
+    }
+  }
+  return (error as any)?.message || "Request failed";
+}
 
 type Row = { keys?: string[]; clicks: number; impressions: number; ctr: number; position: number };
 type Overview = {
@@ -43,7 +61,10 @@ export default function SearchConsoleTab() {
       const { data: res, error } = await supabase.functions.invoke("gsc-data", {
         body: { action: "overview", siteUrl, startDate, endDate, rowLimit: 25 },
       });
-      if (error) throw error;
+      if (error) {
+        const msg = await readInvokeError(error);
+        throw new Error(msg);
+      }
       if ((res as any)?.error) throw new Error((res as any).error);
       setData(res as Overview);
     } catch (e: any) {
@@ -61,7 +82,10 @@ export default function SearchConsoleTab() {
       const { data: res, error } = await supabase.functions.invoke("gsc-data", {
         body: { action: "inspect", url, siteUrl },
       });
-      if (error) throw error;
+      if (error) {
+        const msg = await readInvokeError(error);
+        throw new Error(msg);
+      }
       const status = (res as any)?.inspectionResult?.indexStatusResult?.verdict || "Inspection complete";
       const coverage = (res as any)?.inspectionResult?.indexStatusResult?.coverageState || "";
       toast.success(`${status}${coverage ? ` — ${coverage}` : ""}`);
