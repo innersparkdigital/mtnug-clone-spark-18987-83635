@@ -290,7 +290,18 @@ const ClientPortalInner = () => {
   const renderActiveTool = () => {
     if (!activeTool) return null;
     const meta = getTool(activeTool.tool_key);
-    const done = () => { setActiveToolId(null); load(); };
+    const done = () => {
+      const name = (activeTool.title || meta?.name || "that").toString();
+      const messages = [
+        `Thank you for showing up for yourself, ${firstName}. "${name}" is done for today.`,
+        `${firstName}, that took courage. "${name}" is complete — your therapist will see this.`,
+        `Beautifully done, ${firstName}. One small step, and it counts.`,
+        `Saved. ${firstName}, be proud of the effort — not the outcome.`,
+      ];
+      toast.success(messages[Math.floor(Math.random() * messages.length)], { duration: 4500 });
+      setActiveToolId(null);
+      load();
+    };
     const back = () => setActiveToolId(null);
     const common = { token: token!, assignmentToolId: activeTool.id, onDone: done, onBack: back };
     switch (activeTool.tool_key) {
