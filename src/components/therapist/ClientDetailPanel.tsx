@@ -292,8 +292,18 @@ const ClientDetailPanel = ({ open, onOpenChange, client, therapistName, onAssign
                           <HomeworkList list={list} />
                         ) : key === "emotion-diary" ? (
                           <EmotionTimeline list={list} />
+                        ) : key === "activity-schedule" ? (
+                          <ActivityScheduleView list={list} />
+                        ) : key === "gratitude" ? (
+                          <GratitudeView list={list} />
+                        ) : key === "self-care" ? (
+                          <SelfCareView list={list} />
+                        ) : key === "session-reflection" ? (
+                          <SessionReflectionView list={list} />
+                        ) : key === "safety-checkin" ? (
+                          <SafetyCheckInView list={list} />
                         ) : (
-                          <GenericList list={list} />
+                          <PrettyResponseList list={list} />
                         )}
                       </div>
                     ))}
