@@ -419,10 +419,50 @@ const ClientPortalInner = () => {
               </div>
             ) : (
               <div className="mt-6 space-y-3">
-                {dayTools.length === 0 ? (
-                  <div className="card-calm p-6 text-center text-sm text-muted-foreground">
-                    Nothing scheduled for this day. Take the day easy — or tap "All tools" to explore.
+                {/* Gratitude / celebration banner when things have been completed */}
+                {view === "today" && completedToday.length > 0 && (
+                  <div className="card-calm p-4 border-emerald-500/30 bg-emerald-500/5 fade-in-calm">
+                    <div className="flex items-start gap-3">
+                      <div className="h-10 w-10 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 grid place-items-center shrink-0">
+                        <Sparkles className="h-5 w-5" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="font-semibold text-sm">
+                          {completedToday.length === scheduledToday
+                            ? `You've completed everything for today, ${firstName}. That matters.`
+                            : `${completedToday.length} done today — proud of you, ${firstName}.`}
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                          {completedToday.length === scheduledToday
+                            ? "Rest is part of the work. Your therapist can see this progress and will be with you."
+                            : "Every small step counts. Come back when you're ready — no pressure."}
+                        </p>
+                        <div className="mt-2 flex flex-wrap gap-1.5">
+                          {completedToday.slice(0, 4).map((t) => (
+                            <span
+                              key={t.id}
+                              className="text-[11px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 line-through decoration-1"
+                            >
+                              {t.title || getTool(t.tool_key)?.name || t.tool_key}
+                            </span>
+                          ))}
+                          {completedToday.length > 4 && (
+                            <span className="text-[11px] text-muted-foreground">
+                              +{completedToday.length - 4} more
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
                   </div>
+                )}
+
+                {dayTools.length === 0 ? (
+                  completedToday.length === 0 && (
+                    <div className="card-calm p-6 text-center text-sm text-muted-foreground">
+                      Nothing scheduled for this day. Take the day easy — or tap "All tools" to explore.
+                    </div>
+                  )
                 ) : (
                   dayTools.map((t) => (
                     <ClientToolCard key={t.id} tool={toolCardData(t)} onOpen={() => setActiveToolId(t.id)} />
