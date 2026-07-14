@@ -486,17 +486,239 @@ const EmotionTimeline = ({ list }: { list: Submission[] }) => (
   </div>
 );
 
-const GenericList = ({ list }: { list: Submission[] }) => (
-  <div className="space-y-2">
+// -------- Pretty response renderers --------
+
+const humanize = (key: string) =>
+  key.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+
+const renderScalar = (v: any): React.ReactNode => {
+  if (v === null || v === undefined || v === "") return <span className="text-muted-foreground">—</span>;
+  if (typeof v === "boolean") return v ? "Yes" : "No";
+  if (typeof v === "number") return v.toString();
+  return String(v);
+};
+
+/** Recursive pretty renderer for arbitrary payloads (no raw JSON). */
+const PrettyValue = ({ value, depth = 0 }: { value: any; depth?: number }) => {
+  if (value === null || value === undefined || value === "") {
+    return <span className="text-muted-foreground text-sm">—</span>;
+  }
+  if (Array.isArray(value)) {
+    if (value.length === 0) return <span className="text-muted-foreground text-sm">—</span>;
+    const allScalar = value.every((v) => typeof v !== "object" || v === null);
+    if (allScalar) {
+      return (
+        <div className="flex flex-wrap gap-1.5">
+          {value.map((v, i) => (
+            <span key={i} className="text-xs px-2 py-0.5 rounded-full bg-muted text-foreground/80">
+              {renderScalar(v)}
+            </span>
+          ))}
+        </div>
+      );
+    }
+    return (
+      <ol className="space-y-2 list-none pl-0">
+        {value.map((v, i) => (
+          <li key={i} className="rounded-lg border border-border/60 bg-background/40 p-3">
+            <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">
+              Item {i + 1}
+            </div>
+            <PrettyValue value={v} depth={depth + 1} />
+          </li>
+        ))}
+      </ol>
+    );
+  }
+  if (typeof value === "object") {
+    const entries = Object.entries(value).filter(([, v]) => v !== null && v !== undefined && v !== "");
+    if (entries.length === 0) return <span className="text-muted-foreground text-sm">—</span>;
+    return (
+      <dl className="grid gap-2 sm:grid-cols-[max-content_1fr] gap-x-4">
+        {entries.map(([k, v]) => (
+          <div key={k} className="contents">
+            <dt className="text-xs uppercase tracking-wider text-muted-foreground pt-0.5">
+              {humanize(k)}
+            </dt>
+            <dd className="text-sm leading-relaxed break-words">
+              {typeof v === "object" ? <PrettyValue value={v} depth={depth + 1} /> : renderScalar(v)}
+            </dd>
+          </div>
+        ))}
+      </dl>
+    );
+  }
+  return <span className="text-sm">{renderScalar(value)}</span>;
+};
+
+const ResponseCard = ({
+  s,
+  children,
+  headerRight,
+}: {
+  s: Submission;
+  children: React.ReactNode;
+  headerRight?: React.ReactNode;
+}) => (
+  <div className="rounded-xl border border-border bg-card overflow-hidden">
+    <div className="flex items-center justify-between px-3 py-2 bg-muted/40 border-b border-border">
+      <div className="text-xs font-medium">{fmtDate(s.submitted_at)}</div>
+      <div className="text-[10px] text-muted-foreground flex items-center gap-2">
+        {s.mood_score != null && <span>Mood {s.mood_score}</span>}
+        {s.screening_score != null && <span>Score {s.screening_score}</span>}
+        {headerRight}
+      </div>
+    </div>
+    <div className="p-3">{children}</div>
+  </div>
+);
+
+const PrettyResponseList = ({ list }: { list: Submission[] }) => (
+  <div className="space-y-3">
     {list.map((s) => (
-      <details key={s.id} className="rounded-lg border border-border bg-card p-2">
-        <summary className="cursor-pointer text-xs text-muted-foreground">
-          {fmtDate(s.submitted_at)}
-          {s.screening_score != null && ` · Score ${s.screening_score}`}
-          {s.mood_score != null && ` · Mood ${s.mood_score}`}
-        </summary>
-        <pre className="text-xs whitespace-pre-wrap mt-2">{JSON.stringify(s.payload, null, 2)}</pre>
-      </details>
+      <ResponseCard key={s.id} s={s}>
+        <PrettyValue value={s.payload} />
+      </ResponseCard>
+    ))}
+  </div>
+);
+
+/** Activity schedule: payload.grid = { "Mon-Morning": { mood, activity }, ... } */
+const ActivityScheduleView = ({ list }: { list: Submission[] }) => {
+  const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const SLOTS = ["Morning", "Afternoon", "Evening"];
+  return (
+    <div className="space-y-3">
+      {list.map((s) => {
+        const grid = (s.payload?.grid || {}) as Record<string, { mood?: string; activity?: string }>;
+        const anyContent = Object.values(grid).some((c) => (c?.mood || c?.activity));
+        return (
+          <ResponseCard key={s.id} s={s}>
+            {!anyContent ? (
+              <div className="text-sm text-muted-foreground">Left blank.</div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs">
+                  <thead>
+                    <tr className="text-muted-foreground">
+                      <th className="text-left py-1.5 pr-2 font-medium"></th>
+                      {DAYS.map((d) => (
+                        <th key={d} className="text-left py-1.5 pr-2 font-medium">{d}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {SLOTS.map((slot) => (
+                      <tr key={slot} className="border-t border-border">
+                        <td className="py-2 pr-2 text-[10px] uppercase tracking-wider text-muted-foreground align-top">
+                          {slot}
+                        </td>
+                        {DAYS.map((d) => {
+                          const cell = grid[`${d}-${slot}`] || {};
+                          const hasContent = cell.activity || cell.mood;
+                          return (
+                            <td key={d + slot} className="py-2 pr-2 align-top">
+                              {hasContent ? (
+                                <div className="rounded-md bg-background/60 border border-border/60 p-1.5 min-w-[70px]">
+                                  {cell.activity && (
+                                    <div className="text-[11px] leading-tight break-words">{cell.activity}</div>
+                                  )}
+                                  {cell.mood && (
+                                    <div className="text-[10px] text-muted-foreground mt-0.5">
+                                      Mood: {cell.mood}
+                                    </div>
+                                  )}
+                                </div>
+                              ) : (
+                                <span className="text-muted-foreground/50">·</span>
+                              )}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </ResponseCard>
+        );
+      })}
+    </div>
+  );
+};
+
+const GratitudeView = ({ list }: { list: Submission[] }) => (
+  <div className="space-y-3">
+    {list.map((s) => {
+      const items: string[] = Array.isArray(s.payload?.items) ? s.payload.items :
+        [s.payload?.one, s.payload?.two, s.payload?.three].filter(Boolean);
+      return (
+        <ResponseCard key={s.id} s={s}>
+          {items.length === 0 ? (
+            <PrettyValue value={s.payload} />
+          ) : (
+            <ol className="space-y-1.5 text-sm list-decimal pl-5">
+              {items.map((it, i) => (
+                <li key={i} className="leading-relaxed">{it}</li>
+              ))}
+            </ol>
+          )}
+        </ResponseCard>
+      );
+    })}
+  </div>
+);
+
+const SelfCareView = ({ list }: { list: Submission[] }) => (
+  <div className="space-y-3">
+    {list.map((s) => {
+      const done: string[] = Array.isArray(s.payload?.done) ? s.payload.done : [];
+      return (
+        <ResponseCard key={s.id} s={s}>
+          {done.length > 0 && (
+            <div className="mb-2">
+              <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Practised</div>
+              <div className="flex flex-wrap gap-1.5">
+                {done.map((d, i) => (
+                  <span key={i} className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-300">
+                    {d}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+          <PrettyValue value={{ ...s.payload, done: undefined }} />
+        </ResponseCard>
+      );
+    })}
+  </div>
+);
+
+const SessionReflectionView = ({ list }: { list: Submission[] }) => (
+  <div className="space-y-3">
+    {list.map((s) => (
+      <ResponseCard key={s.id} s={s}>
+        <PrettyValue value={s.payload} />
+      </ResponseCard>
+    ))}
+  </div>
+);
+
+const SafetyCheckInView = ({ list }: { list: Submission[] }) => (
+  <div className="space-y-3">
+    {list.map((s) => (
+      <ResponseCard
+        key={s.id}
+        s={s}
+        headerRight={
+          s.safety_flag ? (
+            <span className="px-1.5 py-0.5 rounded bg-destructive/15 text-destructive font-semibold">Flag raised</span>
+          ) : null
+        }
+      >
+        <PrettyValue value={s.payload} />
+      </ResponseCard>
     ))}
   </div>
 );
