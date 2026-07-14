@@ -491,12 +491,14 @@ const ClientPortalInner = () => {
               </div>
             )}
 
-            <ProgressAnalytics tools={tools as any} clientFirstName={snapshot.client.full_name.split(" ")[0]} />
-            <MilestoneTimeline
-              tools={tools as any}
-              assignmentCreatedAt={(snapshot.assignment as any)?.created_at}
-              clientFirstName={snapshot.client.full_name.split(" ")[0]}
-            />
+            <Suspense fallback={<div className="mt-10 h-40 rounded-2xl bg-muted/30 animate-pulse" />}>
+              <ProgressAnalytics tools={tools as any} clientFirstName={snapshot.client.full_name.split(" ")[0]} />
+              <MilestoneTimeline
+                tools={tools as any}
+                assignmentCreatedAt={(snapshot.assignment as any)?.created_at}
+                clientFirstName={snapshot.client.full_name.split(" ")[0]}
+              />
+            </Suspense>
           </>
         )}
 
