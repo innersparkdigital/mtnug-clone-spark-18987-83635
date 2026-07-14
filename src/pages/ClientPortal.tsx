@@ -149,12 +149,30 @@ const ClientPortalInner = () => {
   const dayTools = useMemo(() => {
     if (view === "all") return tools;
     const iso = selectedIso || todayIso;
-    // Today view: scheduled for this day, OR (no schedule at all) if viewing today
+    // Today view: scheduled for this day, OR (no schedule at all) if viewing today.
+    // Also hide anything already completed on the selected day — the celebration
+    // banner acknowledges completed work instead.
     return tools.filter((t) => {
+      if (isCompletedOn(t, iso)) return false;
       if (t.schedule) return scheduleMatchesDate(t.schedule, iso);
-      // Unscheduled tools appear only when the selected day is today
       return iso === todayIso;
     });
+  }, [tools, view, selectedIso, todayIso]);
+
+  // What did we complete on the currently viewed day?
+  const completedToday = useMemo(() => {
+    if (view === "all") return [] as AssignedTool[];
+    const iso = selectedIso || todayIso;
+    return tools.filter((t) => {
+      const eligible = t.schedule ? scheduleMatchesDate(t.schedule, iso) : iso === todayIso;
+      return eligible && isCompletedOn(t, iso);
+    });
+  }, [tools, view, selectedIso, todayIso]);
+
+  const scheduledToday = useMemo(() => {
+    if (view === "all") return 0;
+    const iso = selectedIso || todayIso;
+    return tools.filter((t) => (t.schedule ? scheduleMatchesDate(t.schedule, iso) : iso === todayIso)).length;
   }, [tools, view, selectedIso, todayIso]);
 
   const catchupTools = useMemo(() => {
