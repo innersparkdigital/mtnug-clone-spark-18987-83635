@@ -12,10 +12,8 @@ interface Ctx {
 const CalmThemeContext = createContext<Ctx | null>(null);
 
 const initial = (): Theme => {
-  if (typeof window === "undefined") return "light";
-  const stored = window.localStorage.getItem(KEY) as Theme | null;
-  if (stored === "light" || stored === "dark") return stored;
-  return window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  // Locked to dark: dashboards permanently use the deep-blue calm theme.
+  return "dark";
 };
 
 export const CalmThemeProvider = ({ children }: { children: ReactNode }) => {
@@ -43,9 +41,9 @@ export const useCalmTheme = () => {
 
 /** Wraps a screen with the calm dashboard tokens. Adds `.calm-dark` when dark. */
 export const CalmThemeRoot = ({ children, className = "" }: { children: ReactNode; className?: string }) => {
-  const { theme } = useCalmTheme();
+  // Force calm-dark on every dashboard for a consistent deep-blue surface.
   return (
-    <div className={`calm-theme ${theme === "dark" ? "calm-dark" : ""} ${className}`}>
+    <div className={`calm-theme calm-dark ${className}`}>
       {children}
     </div>
   );
