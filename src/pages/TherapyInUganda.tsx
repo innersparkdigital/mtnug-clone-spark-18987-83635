@@ -49,8 +49,8 @@ const TherapyInUganda = () => {
   return (
     <>
       <Helmet>
-        <title>Therapy in Uganda | Online Counsellors in Kampala, Jinja, Mbarara | InnerSpark</title>
-        <meta name="description" content="Online therapy in Uganda from UGX 75,000. Licensed Ugandan counsellors for Kampala, Entebbe, Jinja, Mbarara & Gulu. WhatsApp video, voice & chat — book in 2 minutes." />
+        <title>Therapy in Uganda | Online Sessions in Kampala, Jinja, Mbarara | InnerSpark Africa</title>
+        <meta name="description" content="Licensed therapists across Uganda available for online sessions. Book via video, voice or chat. Evenings and weekends available. Pay via MTN or Airtel. Completely confidential." />
         <meta name="keywords" content="therapy in Uganda, therapist in Kampala, counsellor in Kampala, online therapy Uganda, psychologist Kampala, counselling Jinja, therapist Mbarara, therapy Gulu, mental health Uganda, online counselling Uganda, Luganda therapist, affordable therapy Uganda, depression therapist Uganda, anxiety counsellor Kampala, trauma therapy Gulu" />
         <link rel="canonical" href="https://www.innersparkafrica.com/therapy-in-uganda" />
         <meta property="og:title" content="Therapy in Uganda | Online Counsellors in Kampala, Jinja, Mbarara | InnerSpark" />

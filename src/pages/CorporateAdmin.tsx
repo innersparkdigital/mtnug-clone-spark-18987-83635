@@ -530,7 +530,10 @@ const CorporateAdmin = () => {
 
   return (
     <>
-      <Helmet><title>Corporate Wellbeing Admin | InnerSpark Africa</title></Helmet>
+      <Helmet>
+        <title>Corporate Wellbeing Admin | InnerSpark Africa</title>
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
       <Header />
       <div className="min-h-screen bg-muted/30 pt-4 pb-16">
         <div className="container mx-auto px-4 max-w-7xl">
