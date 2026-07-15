@@ -343,6 +343,7 @@ const ClientPortalInner = () => {
     due_date: t.due_date,
     status: t.status,
     completedToday: isCompletedOn(t, selectedIso || todayIso),
+    completed_dates: t.completed_dates,
     scheduleLabel: summarizeSchedule(t.schedule
       ? { ...t.schedule, frequency: t.schedule.frequency === "one_time" ? "once" : t.schedule.frequency, time_of_day: t.schedule.time_of_day || "", start_date: t.schedule.start_date, end_date: t.schedule.end_date || "" }
       : null),
