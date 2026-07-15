@@ -31,13 +31,33 @@ const FindTherapistKampalaPost = () => {
     mainEntity: [
       {
         "@type": "Question",
-        name: "Where can I find a therapist in Kampala?",
-        acceptedAnswer: { "@type": "Answer", text: "You can find a therapist in Kampala through online platforms like Innerspark Africa, Butabika National Referral Hospital, private clinics in Kololo and Nakasero, university counseling centers, and NGO-run mental health services." }
+        name: "How do I find a therapist in Kampala?",
+        acceptedAnswer: { "@type": "Answer", text: "You can find a licensed therapist in Kampala through InnerSpark Africa. Browse therapist profiles, choose one who matches your needs, and book a video or chat session from your phone. Pay via MTN Mobile Money or Airtel Money." }
       },
       {
         "@type": "Question",
-        name: "How do I choose the right therapist in Kampala?",
-        acceptedAnswer: { "@type": "Answer", text: "Look for licensed professionals with relevant specialization, check reviews and credentials, consider whether you prefer online or in-person sessions, and take advantage of free consultations to find the right fit." }
+        name: "How much does therapy cost in Uganda?",
+        acceptedAnswer: { "@type": "Answer", text: "Therapy in Uganda costs from UGX 30,000 for a chat consultation to UGX 75,000 for a full video session with a licensed therapist on InnerSpark Africa." }
+      },
+      {
+        "@type": "Question",
+        name: "Can I book a therapist online in Uganda?",
+        acceptedAnswer: { "@type": "Answer", text: "Yes. On InnerSpark Africa you can browse licensed therapists, choose a time, and confirm your session in about 2 minutes — entirely from your phone." }
+      },
+      {
+        "@type": "Question",
+        name: "Is therapy confidential in Uganda?",
+        acceptedAnswer: { "@type": "Answer", text: "Yes. Sessions on InnerSpark Africa are strictly confidential. Nothing is shared with family, employers, or insurers, and our therapists follow strict clinical confidentiality." }
+      },
+      {
+        "@type": "Question",
+        name: "How do I pay for therapy in Uganda using Mobile Money?",
+        acceptedAnswer: { "@type": "Answer", text: "InnerSpark Africa accepts MTN Mobile Money and Airtel Money. After you pick your therapist and time, you'll receive a payment prompt on your phone — confirm it and your session is booked." }
+      },
+      {
+        "@type": "Question",
+        name: "Is online therapy available in Uganda?",
+        acceptedAnswer: { "@type": "Answer", text: "Yes. InnerSpark Africa offers fully online therapy sessions via video call, voice call, and chat. Sessions are available in the evenings and on weekends to fit around your schedule." }
       }
     ]
   };
@@ -45,8 +65,8 @@ const FindTherapistKampalaPost = () => {
   return (
     <>
       <Helmet>
-        <title>Where to Find a Therapist in Kampala – Top 7 Options (2026) | Innerspark Africa</title>
-        <meta name="description" content="Looking for a therapist in Kampala? Discover 7 proven ways to find affordable, licensed mental health professionals in Uganda's capital. Book online today." />
+        <title>How to Find a Therapist in Kampala in 2026 | Book Online | InnerSpark Africa</title>
+        <meta name="description" content="7 ways to find a licensed therapist in Kampala — including how to book online from your phone, pay via Mobile Money, and keep it completely private. From UGX 30,000." />
         <link rel="canonical" href="https://www.innersparkafrica.com/blog/find-therapist-kampala" />
         <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>
         <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
