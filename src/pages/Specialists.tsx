@@ -507,10 +507,10 @@ const Specialists = () => {
   return (
     <>
       <Helmet>
-        <title>Therapists in Uganda | Licensed Counsellors in Kampala | InnerSpark Africa</title>
+        <title>Find a Therapist in Uganda | Licensed Counsellors in Kampala | InnerSpark Africa</title>
         <meta
           name="description"
-          content="Browse licensed therapists in Uganda specialising in trauma, burnout, anxiety, depression, and relationships. Book online. Pay via MTN or Airtel."
+          content="Browse licensed therapists in Uganda specialising in trauma, anxiety, depression, relationships and burnout. Book online. Available evenings. Pay via Mobile Money."
         />
         <meta name="keywords" content="therapist Uganda, therapist Kampala, licensed therapist Kampala, find a therapist Uganda, female therapist Uganda, male therapist Uganda, counsellor Kampala, psychologist Uganda online, trauma therapist Uganda, burnout therapist Kampala, relationship therapist Uganda, anxiety counselling Uganda, depression therapy Uganda, therapist for depression Uganda, therapist for anxiety Uganda, therapist for couples Uganda, therapist for suicidal thoughts Uganda, teen therapist Uganda, same day therapist Uganda, therapist available today Uganda, evening therapy sessions Uganda, weekend therapist Uganda, therapist Nairobi, licensed therapist Nairobi, female therapist Kenya, male therapist Kenya, private therapy Nairobi, trauma therapist Kenya, burnout therapist Nairobi, therapist South Sudan" />
         <link rel="canonical" href="https://www.innersparkafrica.com/specialists" />
