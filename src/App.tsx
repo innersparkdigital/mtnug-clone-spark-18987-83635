@@ -705,6 +705,11 @@ const App = () => (
                   element={<ThankYou type="download" />}
                 />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="/depression-therapy-uganda" element={<DepressionTherapyUganda />} />
+                <Route path="/anxiety-counselling-uganda" element={<AnxietyCounsellingUganda />} />
+                <Route path="/relationship-counselling-uganda" element={<RelationshipCounsellingUganda />} />
+                <Route path="/therapy-for-teens-uganda" element={<TherapyForTeensUganda />} />
+                <Route path="/trauma-therapy-uganda" element={<TraumaTherapyUganda />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
               </Suspense>
