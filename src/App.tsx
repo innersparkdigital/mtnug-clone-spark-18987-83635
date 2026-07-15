@@ -181,6 +181,11 @@ const PaymentSuccess = lazy(() => import("./pages/PaymentSuccess"));
 const PaymentCanceled = lazy(() => import("./pages/PaymentCanceled"));
 const TherapyInUganda = lazy(() => import("./pages/TherapyInUganda"));
 const TherapyInKampala = lazy(() => import("./pages/TherapyInKampala"));
+const DepressionTherapyUganda = lazy(() => import("./pages/DepressionTherapyUganda"));
+const AnxietyCounsellingUganda = lazy(() => import("./pages/AnxietyCounsellingUganda"));
+const RelationshipCounsellingUganda = lazy(() => import("./pages/RelationshipCounsellingUganda"));
+const TherapyForTeensUganda = lazy(() => import("./pages/TherapyForTeensUganda"));
+const TraumaTherapyUganda = lazy(() => import("./pages/TraumaTherapyUganda"));
 const TherapyCostUgandaPost = lazy(
   () => import("./pages/blog/TherapyCostUgandaPost"),
 );
