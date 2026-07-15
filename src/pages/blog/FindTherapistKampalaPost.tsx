@@ -91,6 +91,14 @@ const FindTherapistKampalaPost = () => {
             <img src={mentalHealthHeroImage} alt="Finding a therapist in Kampala" className="w-full rounded-xl aspect-video object-cover" />
           </header>
 
+          <div className="bg-primary/10 border border-primary/20 rounded-xl p-6 mb-10 flex flex-col md:flex-row items-center gap-4 md:justify-between">
+            <div>
+              <p className="font-semibold text-foreground">Ready to find your therapist?</p>
+              <p className="text-sm text-muted-foreground">Book a session on InnerSpark Africa in 2 minutes — from UGX 30,000.</p>
+            </div>
+            <Link to="/book-therapist"><Button size="lg" className="rounded-full">Book a Session</Button></Link>
+          </div>
+
           <div className="prose prose-lg max-w-none text-foreground">
             <p className="text-xl text-muted-foreground leading-relaxed">
               Finding the right therapist in Kampala can feel overwhelming. With growing awareness of mental health in Uganda, there are now more options than ever — from online platforms to private clinics. Here's your definitive guide.
