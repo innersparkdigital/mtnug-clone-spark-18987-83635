@@ -415,6 +415,7 @@ Deno.serve(async (req) => {
         .insert({
           anonymous_id: anonymous_id || crypto.randomUUID(),
           source_path: source_path || null,
+          page_context: pageContextFromPath(source_path),
           user_agent: req.headers.get("user-agent")?.slice(0, 500) || null,
         })
         .select("id")
