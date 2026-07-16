@@ -149,7 +149,7 @@ const AIChatWidget = () => {
         },
         body: JSON.stringify({
           messages: newMessages
-            .filter(m => !(m.role === "assistant" && m === WELCOME))
+            .filter((m, idx) => !(m.role === "assistant" && idx === 0))
             .map(m => ({ role: m.role, content: m.content })),
           session_id: sessionId,
           anonymous_id: getAnonId(),
