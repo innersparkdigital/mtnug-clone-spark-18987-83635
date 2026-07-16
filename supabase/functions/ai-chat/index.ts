@@ -320,6 +320,53 @@ function mergeTags(existing: string[] | null | undefined, incoming: string[]): s
   return Array.from(set).slice(0, 12);
 }
 
+// Parse hidden metadata markers the model emits, e.g.
+//   [qual: concern=work stress; format=chat; when=evening]
+//   [objection: pricing]
+//   [outcome: booked]
+// Returns cleaned reply text plus extracted fields.
+function parseAndStripMarkers(reply: string): {
+  clean: string;
+  qualification: Record<string, string> | null;
+  objection: string | null;
+  outcome: string | null;
+} {
+  let clean = reply;
+  let qualification: Record<string, string> | null = null;
+  let objection: string | null = null;
+  let outcome: string | null = null;
+
+  const qualMatch = clean.match(/\[qual:\s*([^\]]+)\]/i);
+  if (qualMatch) {
+    const parts = qualMatch[1].split(";").map((p) => p.trim()).filter(Boolean);
+    qualification = {};
+    for (const p of parts) {
+      const [k, v] = p.split("=").map((s) => s?.trim());
+      if (k && v) qualification[k.toLowerCase()] = v.toLowerCase();
+    }
+    clean = clean.replace(qualMatch[0], "");
+  }
+  const objMatch = clean.match(/\[objection:\s*([^\]]+)\]/i);
+  if (objMatch) { objection = objMatch[1].trim().toLowerCase(); clean = clean.replace(objMatch[0], ""); }
+  const outMatch = clean.match(/\[outcome:\s*([^\]]+)\]/i);
+  if (outMatch) { outcome = outMatch[1].trim().toLowerCase(); clean = clean.replace(outMatch[0], ""); }
+
+  return { clean: clean.replace(/\n{3,}/g, "\n\n").trim(), qualification, objection, outcome };
+}
+
+function pageContextFromPath(path: string | null | undefined): string {
+  if (!path) return "other";
+  const p = path.toLowerCase();
+  if (p === "/" || p === "") return "homepage";
+  if (p.startsWith("/for-business") || p.startsWith("/corporate")) return "corporate";
+  if (p.startsWith("/specialists") || p.startsWith("/book-therapist") || p.startsWith("/find-therapist")) return "specialists";
+  if (p.startsWith("/blog")) return "blog";
+  if (p.startsWith("/whisper")) return "whisper";
+  if (p.startsWith("/kenya")) return "kenya";
+  if (p.includes("therapy") || p.includes("counsel") || p.includes("mental")) return "service";
+  return "other";
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
