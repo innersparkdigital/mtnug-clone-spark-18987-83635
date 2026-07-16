@@ -20,6 +20,11 @@ interface ChatSession {
   escalated: boolean;
   created_at: string;
   updated_at: string;
+  qualification?: Record<string, string> | null;
+  pricing_response?: string | null;
+  booked_outcome?: string | null;
+  page_context?: string | null;
+  tags?: string[] | null;
 }
 
 interface ChatMessage {
@@ -104,7 +109,11 @@ const ChatAnalyticsTab = () => {
     const highRisk = sessions.filter((s) => s.high_risk_triggered).length;
     const escalated = sessions.filter((s) => s.escalated).length;
     const totalMessages = sessions.reduce((acc, s) => acc + (s.message_count || 0), 0);
-    return { totalSessions, highRisk, escalated, totalMessages };
+    const pricingObjections = sessions.filter((s) => s.pricing_response === 'pricing').length;
+    const bookedOutcomes = sessions.filter((s) => s.booked_outcome === 'booked').length;
+    const reminders = sessions.filter((s) => s.booked_outcome === 'reminder').length;
+    const whisperOutcomes = sessions.filter((s) => s.booked_outcome === 'whisper').length;
+    return { totalSessions, highRisk, escalated, totalMessages, pricingObjections, bookedOutcomes, reminders, whisperOutcomes };
   }, [sessions]);
 
   const eventTypeCounts = useMemo(() => {
@@ -167,6 +176,34 @@ const ChatAnalyticsTab = () => {
               </div>
               <AlertTriangle className="h-7 w-7 text-destructive opacity-70" />
             </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Amani lead funnel */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <Card>
+          <CardContent className="pt-6">
+            <p className="text-sm text-muted-foreground mb-1">Pricing objections</p>
+            <p className="text-2xl font-bold text-amber-600">{stats.pricingObjections}</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-6">
+            <p className="text-sm text-muted-foreground mb-1">Booked outcome</p>
+            <p className="text-2xl font-bold text-emerald-600">{stats.bookedOutcomes}</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-6">
+            <p className="text-sm text-muted-foreground mb-1">WhatsApp reminders</p>
+            <p className="text-2xl font-bold text-primary">{stats.reminders}</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-6">
+            <p className="text-sm text-muted-foreground mb-1">Referred to Whisper</p>
+            <p className="text-2xl font-bold">{stats.whisperOutcomes}</p>
           </CardContent>
         </Card>
       </div>
@@ -238,8 +275,11 @@ const ChatAnalyticsTab = () => {
                   <TableRow>
                     <TableHead className="w-12">#</TableHead>
                     <TableHead>Started</TableHead>
-                    <TableHead>Anon ID</TableHead>
-                    <TableHead>Source Path</TableHead>
+                    <TableHead>Page</TableHead>
+                    <TableHead>Concern</TableHead>
+                    <TableHead>Format</TableHead>
+                    <TableHead>When</TableHead>
+                    <TableHead>Outcome</TableHead>
                     <TableHead>Messages</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
@@ -252,8 +292,22 @@ const ChatAnalyticsTab = () => {
                       <TableCell className="text-xs">
                         {new Date(s.created_at).toLocaleString()}
                       </TableCell>
-                      <TableCell className="font-mono text-xs">{s.anonymous_id.slice(0, 12)}…</TableCell>
-                      <TableCell className="text-xs max-w-[200px] truncate">{s.source_path || '—'}</TableCell>
+                      <TableCell className="text-xs">
+                        <Badge variant="outline" className="text-[10px]">{s.page_context || 'other'}</Badge>
+                      </TableCell>
+                      <TableCell className="text-xs max-w-[160px] truncate">{s.qualification?.concern || '—'}</TableCell>
+                      <TableCell className="text-xs">{s.qualification?.format || '—'}</TableCell>
+                      <TableCell className="text-xs">{s.qualification?.when || '—'}</TableCell>
+                      <TableCell className="text-xs">
+                        {s.booked_outcome ? (
+                          <Badge className={`text-[10px] ${
+                            s.booked_outcome === 'booked' ? 'bg-emerald-600' :
+                            s.booked_outcome === 'reminder' ? 'bg-primary' :
+                            s.booked_outcome === 'whisper' ? 'bg-indigo-600' :
+                            'bg-muted text-foreground'
+                          }`}>{s.booked_outcome}</Badge>
+                        ) : (s.pricing_response === 'pricing' ? <Badge variant="outline" className="text-[10px] text-amber-600 border-amber-400">price obj.</Badge> : '—')}
+                      </TableCell>
                       <TableCell>{s.message_count}</TableCell>
                       <TableCell>
                         <div className="flex flex-wrap gap-1">
