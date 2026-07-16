@@ -15,10 +15,11 @@ type Msg = { role: "user" | "assistant"; content: string; flagged?: boolean; too
 type Chip = { label: string; target: string };
 
 const CHIPS_REGEX = /\[chips:\s*([^\]]+)\]\s*$/i;
+const HIDDEN_MARKERS_REGEX = /\[(qual|objection|outcome):\s*[^\]]+\]/gi;
 
 function parseChips(content: string): { text: string; chips: Chip[] } {
   const match = content.match(CHIPS_REGEX);
-  if (!match) return { text: content, chips: [] };
+  if (!match) return { text: content.replace(HIDDEN_MARKERS_REGEX, "").trim(), chips: [] };
   const raw = match[1];
   const chips: Chip[] = raw
     .split(",")
@@ -31,7 +32,7 @@ function parseChips(content: string): { text: string; chips: Chip[] } {
     })
     .filter((c): c is Chip => !!c)
     .slice(0, 4);
-  const text = content.replace(CHIPS_REGEX, "").trim();
+  const text = content.replace(CHIPS_REGEX, "").replace(HIDDEN_MARKERS_REGEX, "").trim();
   return { text, chips };
 }
 
@@ -43,6 +44,8 @@ const QUICK_REPLIES = [
 ];
 
 const ANON_KEY = "is_chat_anon_id";
+const AUTO_OPEN_KEY = "is_chat_auto_opened";
+const CLOSE_INTERCEPT_KEY = "is_chat_reminder_seen";
 
 function getAnonId(): string {
   let id = localStorage.getItem(ANON_KEY);
@@ -53,15 +56,43 @@ function getAnonId(): string {
   return id;
 }
 
-const WELCOME: Msg = {
-  role: "assistant",
-  content:
-    "Hey there 👋 I'm **Amani**, your wellness buddy from InnerSpark ✨\n\nWhat's on your mind today? I can help you book a therapist, take a free wellbeing check, or just chat through how you're feeling 💙",
-};
+function contextualWelcome(pathname: string): Msg {
+  const p = pathname.toLowerCase();
+  let content =
+    "Hey there 👋 I'm **Amani**, your wellness buddy from InnerSpark ✨\n\nWhat's been on your mind lately? I can help you find the right support, whether that's a therapist, a support group, or just talking things through 💙";
+  if (p.startsWith("/for-business") || p.startsWith("/corporate")) {
+    content = "Hi 👋 I'm **Amani**. Looking for mental health support for your team? I can help you set up a **free workplace screening** or connect you with our corporate wellness team. What size is your team?";
+  } else if (p.startsWith("/specialists") || p.startsWith("/find-therapist") || p.startsWith("/book-therapist")) {
+    content = "Hi 👋 I'm **Amani**. Would you like help choosing the right therapist for what you're going through? Tell me a little about what's happening and I'll match you 💙";
+  } else if (p.startsWith("/blog")) {
+    content = "Hi 👋 I'm **Amani**. Glad you're reading up on this. If any of it feels close to home, I can help you take the next step — a free wellbeing check, a support group, or a therapist. What's on your mind?";
+  } else if (p.startsWith("/whisper")) {
+    content = "Hi 💙 I'm **Amani**. Whisper is completely free and anonymous — a real therapist will reply within 24h. Want help drafting your Whisper, or would you rather book a proper session?";
+  } else if (p.startsWith("/kenya")) {
+    content = "Habari 👋 I'm **Amani**. I can help you book a Kenya-based therapist (video or chat), or connect you to a free wellbeing check. What's been going on for you?";
+  }
+  return { role: "assistant", content };
+}
+
+function autoOpenDelayMs(pathname: string): number | null {
+  const p = pathname.toLowerCase();
+  if (p === "/" || p === "") return 8000;
+  if (p.startsWith("/blog")) return 15000;
+  if (
+    p.startsWith("/for-business") || p.startsWith("/corporate") ||
+    p.startsWith("/specialists") || p.startsWith("/find-therapist") ||
+    p.startsWith("/book-therapist") || p.startsWith("/therapy-in") ||
+    p.includes("therapy") || p.includes("counsel") || p.startsWith("/kenya")
+  ) return 15000;
+  return null;
+}
 
 const AIChatWidget = () => {
   const [open, setOpen] = useState(false);
-  const [messages, setMessages] = useState<Msg[]>([WELCOME]);
+  const initialWelcome = typeof window !== "undefined"
+    ? contextualWelcome(window.location.pathname)
+    : { role: "assistant" as const, content: "" };
+  const [messages, setMessages] = useState<Msg[]>([initialWelcome]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -79,6 +110,10 @@ const AIChatWidget = () => {
   const [leadMsg, setLeadMsg] = useState("");
   const [leadSubmitting, setLeadSubmitting] = useState(false);
   const [leadError, setLeadError] = useState<string | null>(null);
+  const [showReminderPrompt, setShowReminderPrompt] = useState(false);
+  const [reminderPhone, setReminderPhone] = useState("");
+  const [reminderSubmitting, setReminderSubmitting] = useState(false);
+  const [reminderSubmitted, setReminderSubmitted] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -225,6 +260,63 @@ const AIChatWidget = () => {
     window.addEventListener("amani:open", openHandler);
     return () => window.removeEventListener("amani:open", openHandler);
   }, []);
+
+  // Auto-open with per-page delay, once per browser session.
+  useEffect(() => {
+    if (sessionStorage.getItem(AUTO_OPEN_KEY)) return;
+    const delay = autoOpenDelayMs(window.location.pathname);
+    if (delay == null) return;
+    const t = setTimeout(() => {
+      if (!open) {
+        sessionStorage.setItem(AUTO_OPEN_KEY, "1");
+        handleOpen();
+        trackEvent("ai_chat_auto_opened", { path: window.location.pathname });
+      }
+    }, delay);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Intercept close: if user is leaving without booking or leaving contact, offer a WhatsApp reminder ONCE.
+  const tryCloseWithIntercept = () => {
+    const userMsgs = messages.filter((m) => m.role === "user").length;
+    const alreadySeen = sessionStorage.getItem(CLOSE_INTERCEPT_KEY);
+    if (!leadSubmitted && !reminderSubmitted && !alreadySeen && userMsgs >= 1 && !highRisk) {
+      sessionStorage.setItem(CLOSE_INTERCEPT_KEY, "1");
+      setShowReminderPrompt(true);
+      logEvent("close_intercept_shown");
+      return;
+    }
+    setOpen(false);
+  };
+
+  const submitReminder = async () => {
+    const phone = reminderPhone.trim();
+    if (!/^[+\d][\d\s()-]{6,}$/.test(phone)) {
+      setLeadError("Please enter a valid phone number.");
+      return;
+    }
+    setReminderSubmitting(true);
+    setLeadError(null);
+    try {
+      await supabase.from("chat_leads").insert({
+        session_id: sessionId,
+        anonymous_id: getAnonId(),
+        phone,
+        intent: "whatsapp_reminder",
+        source_path: window.location.pathname,
+        message: "User asked for a WhatsApp reminder when ready.",
+      });
+      setReminderSubmitted(true);
+      logEvent("reminder_captured", { phone });
+      trackEvent("ai_chat_reminder_captured");
+      setTimeout(() => { setOpen(false); setShowReminderPrompt(false); }, 1400);
+    } catch (e) {
+      setLeadError(e instanceof Error ? e.message : "Couldn't save. Try again.");
+    } finally {
+      setReminderSubmitting(false);
+    }
+  };
 
   const handleCTA = (cta: string, path?: string) => {
     trackEvent("ai_chat_cta_click", { cta });
