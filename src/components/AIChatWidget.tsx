@@ -566,7 +566,7 @@ const AIChatWidget = () => {
                   </div>
                 </div>
               </div>
-              <button onClick={() => setOpen(false)} aria-label="Close chat" className="p-1 hover:bg-white/10 rounded flex-shrink-0">
+              <button onClick={tryCloseWithIntercept} aria-label="Close chat" className="p-1 hover:bg-white/10 rounded flex-shrink-0">
                 <X className="w-5 h-5" />
               </button>
             </div>
