@@ -639,12 +639,29 @@ Deno.serve(async (req) => {
         // Persist assistant reply + bump session count
         if (sid && fullReply) {
           try {
+            const parsed = parseAndStripMarkers(fullReply);
             await supabase.from("chat_messages").insert({
-              session_id: sid, role: "assistant", content: fullReply,
+              session_id: sid, role: "assistant", content: parsed.clean,
             });
-            await supabase.from("chat_sessions").update({
-              message_count: messages.length + 1, updated_at: new Date().toISOString(),
-            }).eq("id", sid);
+            // Merge new qualification data onto any prior qualification.
+            let qualUpdate: Record<string, unknown> | null = null;
+            if (parsed.qualification && Object.keys(parsed.qualification).length > 0) {
+              const { data: existing } = await supabase
+                .from("chat_sessions")
+                .select("qualification")
+                .eq("id", sid)
+                .maybeSingle();
+              const prev = (existing?.qualification as Record<string, unknown> | null) || {};
+              qualUpdate = { ...prev, ...parsed.qualification };
+            }
+            const updatePayload: Record<string, unknown> = {
+              message_count: messages.length + 1,
+              updated_at: new Date().toISOString(),
+            };
+            if (qualUpdate) updatePayload.qualification = qualUpdate;
+            if (parsed.objection) updatePayload.pricing_response = parsed.objection;
+            if (parsed.outcome) updatePayload.booked_outcome = parsed.outcome;
+            await supabase.from("chat_sessions").update(updatePayload).eq("id", sid);
           } catch (e) {
             console.error("persist reply failed", e);
           }
