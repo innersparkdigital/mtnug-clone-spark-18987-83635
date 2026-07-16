@@ -815,6 +815,46 @@ const AIChatWidget = () => {
               </div>
             )}
 
+            {/* Close-intercept: WhatsApp reminder */}
+            {showReminderPrompt && !reminderSubmitted && (
+              <div className="px-3 py-3 border-t border-border bg-primary/5 space-y-2">
+                <div className="text-xs font-bold text-foreground">
+                  Before you go 💙
+                </div>
+                <div className="text-xs text-muted-foreground leading-snug">
+                  Not ready today? Drop your WhatsApp and we'll send you one gentle reminder when you feel ready. No spam.
+                </div>
+                <input
+                  type="tel"
+                  placeholder="e.g. 0792 085 773"
+                  value={reminderPhone}
+                  onChange={(e) => setReminderPhone(e.target.value)}
+                  maxLength={30}
+                  className="w-full px-2.5 py-1.5 text-xs bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+                {leadError && <div className="text-[11px] text-red-600">{leadError}</div>}
+                <div className="flex gap-2">
+                  <Button onClick={submitReminder} disabled={reminderSubmitting} size="sm" className="flex-1 text-xs h-8">
+                    {reminderSubmitting ? <Loader2 className="w-3.5 h-3.5 animate-spin mr-1" /> : <Check className="w-3.5 h-3.5 mr-1" />}
+                    Yes, remind me
+                  </Button>
+                  <Button
+                    onClick={() => { setShowReminderPrompt(false); setOpen(false); }}
+                    size="sm"
+                    variant="ghost"
+                    className="text-xs h-8"
+                  >
+                    No thanks
+                  </Button>
+                </div>
+              </div>
+            )}
+            {reminderSubmitted && (
+              <div className="px-3 py-2 border-t border-border bg-emerald-50 text-xs text-emerald-900 flex items-center gap-2">
+                <Check className="w-4 h-4" /> Thanks — we'll send one gentle WhatsApp when you're ready. 💙
+              </div>
+            )}
+
             {/* Input */}
             <form
               onSubmit={(e) => { e.preventDefault(); sendMessage(input); }}
