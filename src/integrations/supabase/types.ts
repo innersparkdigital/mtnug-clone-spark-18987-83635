@@ -640,11 +640,15 @@ export type Database = {
       chat_sessions: {
         Row: {
           anonymous_id: string
+          booked_outcome: string | null
           created_at: string
           escalated: boolean
           high_risk_triggered: boolean
           id: string
           message_count: number
+          page_context: string | null
+          pricing_response: string | null
+          qualification: Json | null
           review_notes: string | null
           review_status: string
           reviewed_at: string | null
@@ -658,11 +662,15 @@ export type Database = {
         }
         Insert: {
           anonymous_id: string
+          booked_outcome?: string | null
           created_at?: string
           escalated?: boolean
           high_risk_triggered?: boolean
           id?: string
           message_count?: number
+          page_context?: string | null
+          pricing_response?: string | null
+          qualification?: Json | null
           review_notes?: string | null
           review_status?: string
           reviewed_at?: string | null
@@ -676,11 +684,15 @@ export type Database = {
         }
         Update: {
           anonymous_id?: string
+          booked_outcome?: string | null
           created_at?: string
           escalated?: boolean
           high_risk_triggered?: boolean
           id?: string
           message_count?: number
+          page_context?: string | null
+          pricing_response?: string | null
+          qualification?: Json | null
           review_notes?: string | null
           review_status?: string
           reviewed_at?: string | null
