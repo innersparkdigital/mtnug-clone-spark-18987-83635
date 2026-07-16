@@ -15,11 +15,43 @@ IDENTITY & LIMITS (NEVER BREAK):
 
 WHAT YOU HELP WITH:
 1. Explain InnerSpark services: online therapy (video/chat/phone), support groups, mental wellbeing screening, corporate wellness, doctor referrals.
-2. Pricing: Therapy session 75,000 UGX (~$22). Support groups 25,000 UGX. First wellbeing check is FREE.
+2. Pricing LADDER (use in this exact order when cost comes up):
+   • Full therapy session (video/voice): 75,000 UGX (~$22) — 60 min with a licensed therapist.
+   • Chat therapy: 30,000 UGX — text-based session with a real therapist.
+   • Support group: 25,000 UGX — small group, facilitated.
+   • Whisper (anonymous voice/text note, therapist replies within 24h): FREE — /whisper
+   • Wellbeing check (WHO-5, 37 mind-check tests): FREE.
 3. Booking: Guide users to "Book a Therapist" — the flow starts with a short pre-assessment then a booking form.
 4. Mental wellbeing screening: Direct users to /wellbeing-check (WHO-5, ~2 minutes, free) or /mind-check (37 specific tests).
 5. Basic non-clinical wellness tips: breathing (box breathing 4-4-4-4), grounding (5-4-3-2-1 senses), sleep hygiene, journaling.
 6. Contact: WhatsApp +256 792 085 773, email info@innersparkafrica.com.
+
+LEAD QUALIFICATION FLOW (do this before pushing a booking):
+Ask ONE question at a time, in this order, only if not yet answered:
+  Q1. "What's been going on for you lately?" (capture concern)
+  Q2. "What kind of support feels right — a video session, chat with a therapist, or a support group?" (capture format)
+  Q3. "When are you usually free — weekday evening, weekend, or during the day?" (capture availability)
+After all three are answered, recommend the best fit and offer to book.
+
+PRICING OBJECTION HANDLER:
+If the user says anything about cost being high, "too much", "can't afford", "expensive", or hesitates on 75,000 — IMMEDIATELY offer the full ladder:
+"Totally hear you 💙 We have options: chat therapy at 30,000 UGX, a support group at 25,000 UGX, or a free anonymous Whisper where a therapist replies within 24h. Which feels right?"
+Never let cost be the reason someone leaves without support.
+
+WHISPER FALLBACK (for hesitant/not-ready users):
+If the user seems unsure, scared, private, or says "not ready", offer:
+"No pressure at all. You can send a free anonymous voice or text note on /whisper and a real therapist will reply within 24 hours — no account, no name needed."
+
+WHATSAPP REMINDER CAPTURE:
+If the user is clearly not going to book right now (says "later", "will think", "not now"), gently ask:
+"Can I take your WhatsApp number so we can send you a gentle reminder when you're ready? No spam, just one message."
+
+HIDDEN METADATA MARKERS (VERY IMPORTANT — invisible to user, parsed by system):
+On lines where relevant, append after your visible reply (BEFORE the [chips:...] line) any of these on their own lines. Values must be short, lowercase:
+  [qual: concern=<one phrase>; format=<video|chat|group|unsure>; when=<weekday|evening|weekend|day|unknown>]
+  [objection: pricing]
+  [outcome: booked|whisper|reminder|group|assessment|dropped]
+Only emit a marker when the user's message clearly supports it. Never invent values. Never show these to the user.
 
 QUICK LINKS (suggest as plain URLs in your replies when relevant):
 - Book therapist: /book-therapist
@@ -27,6 +59,7 @@ QUICK LINKS (suggest as plain URLs in your replies when relevant):
 - Mind-check tests: /mind-check
 - Support groups: /support-groups
 - For business: /for-business
+- Whisper (free anonymous): /whisper
 - Contact: /contact
 
 SAFETY TRIAGE:
@@ -287,6 +320,53 @@ function mergeTags(existing: string[] | null | undefined, incoming: string[]): s
   return Array.from(set).slice(0, 12);
 }
 
+// Parse hidden metadata markers the model emits, e.g.
+//   [qual: concern=work stress; format=chat; when=evening]
+//   [objection: pricing]
+//   [outcome: booked]
+// Returns cleaned reply text plus extracted fields.
+function parseAndStripMarkers(reply: string): {
+  clean: string;
+  qualification: Record<string, string> | null;
+  objection: string | null;
+  outcome: string | null;
+} {
+  let clean = reply;
+  let qualification: Record<string, string> | null = null;
+  let objection: string | null = null;
+  let outcome: string | null = null;
+
+  const qualMatch = clean.match(/\[qual:\s*([^\]]+)\]/i);
+  if (qualMatch) {
+    const parts = qualMatch[1].split(";").map((p) => p.trim()).filter(Boolean);
+    qualification = {};
+    for (const p of parts) {
+      const [k, v] = p.split("=").map((s) => s?.trim());
+      if (k && v) qualification[k.toLowerCase()] = v.toLowerCase();
+    }
+    clean = clean.replace(qualMatch[0], "");
+  }
+  const objMatch = clean.match(/\[objection:\s*([^\]]+)\]/i);
+  if (objMatch) { objection = objMatch[1].trim().toLowerCase(); clean = clean.replace(objMatch[0], ""); }
+  const outMatch = clean.match(/\[outcome:\s*([^\]]+)\]/i);
+  if (outMatch) { outcome = outMatch[1].trim().toLowerCase(); clean = clean.replace(outMatch[0], ""); }
+
+  return { clean: clean.replace(/\n{3,}/g, "\n\n").trim(), qualification, objection, outcome };
+}
+
+function pageContextFromPath(path: string | null | undefined): string {
+  if (!path) return "other";
+  const p = path.toLowerCase();
+  if (p === "/" || p === "") return "homepage";
+  if (p.startsWith("/for-business") || p.startsWith("/corporate")) return "corporate";
+  if (p.startsWith("/specialists") || p.startsWith("/book-therapist") || p.startsWith("/find-therapist")) return "specialists";
+  if (p.startsWith("/blog")) return "blog";
+  if (p.startsWith("/whisper")) return "whisper";
+  if (p.startsWith("/kenya")) return "kenya";
+  if (p.includes("therapy") || p.includes("counsel") || p.includes("mental")) return "service";
+  return "other";
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
@@ -335,6 +415,7 @@ Deno.serve(async (req) => {
         .insert({
           anonymous_id: anonymous_id || crypto.randomUUID(),
           source_path: source_path || null,
+          page_context: pageContextFromPath(source_path),
           user_agent: req.headers.get("user-agent")?.slice(0, 500) || null,
         })
         .select("id")
@@ -558,12 +639,29 @@ Deno.serve(async (req) => {
         // Persist assistant reply + bump session count
         if (sid && fullReply) {
           try {
+            const parsed = parseAndStripMarkers(fullReply);
             await supabase.from("chat_messages").insert({
-              session_id: sid, role: "assistant", content: fullReply,
+              session_id: sid, role: "assistant", content: parsed.clean,
             });
-            await supabase.from("chat_sessions").update({
-              message_count: messages.length + 1, updated_at: new Date().toISOString(),
-            }).eq("id", sid);
+            // Merge new qualification data onto any prior qualification.
+            let qualUpdate: Record<string, unknown> | null = null;
+            if (parsed.qualification && Object.keys(parsed.qualification).length > 0) {
+              const { data: existing } = await supabase
+                .from("chat_sessions")
+                .select("qualification")
+                .eq("id", sid)
+                .maybeSingle();
+              const prev = (existing?.qualification as Record<string, unknown> | null) || {};
+              qualUpdate = { ...prev, ...parsed.qualification };
+            }
+            const updatePayload: Record<string, unknown> = {
+              message_count: messages.length + 1,
+              updated_at: new Date().toISOString(),
+            };
+            if (qualUpdate) updatePayload.qualification = qualUpdate;
+            if (parsed.objection) updatePayload.pricing_response = parsed.objection;
+            if (parsed.outcome) updatePayload.booked_outcome = parsed.outcome;
+            await supabase.from("chat_sessions").update(updatePayload).eq("id", sid);
           } catch (e) {
             console.error("persist reply failed", e);
           }
