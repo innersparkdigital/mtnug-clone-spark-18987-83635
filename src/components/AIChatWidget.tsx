@@ -36,11 +36,11 @@ function parseChips(content: string): { text: string; chips: Chip[] } {
   return { text, chips };
 }
 
+// Minimal starter chips — only shown before the first user message so the panel doesn't
+// feel cluttered. Amani surfaces contextual chips after each reply via the [chips:...] marker.
 const QUICK_REPLIES = [
-  { label: "📅 Book a session", text: "I'd like to book a therapy session" },
-  { label: "🧪 Check my wellbeing", text: "I want to check my mental wellbeing" },
-  { label: "💬 Learn about services", text: "Tell me about your services and pricing" },
-  { label: "🌿 I need calming tips", text: "Can you share a quick calming exercise?" },
+  { label: "Book a session", text: "I'd like to book a therapy session" },
+  { label: "Free check", text: "I want to check my mental wellbeing" },
 ];
 
 const ANON_KEY = "is_chat_anon_id";
