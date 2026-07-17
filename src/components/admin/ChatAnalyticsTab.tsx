@@ -48,6 +48,7 @@ const ChatAnalyticsTab = () => {
   const [loading, setLoading] = useState(true);
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [events, setEvents] = useState<ChatEvent[]>([]);
+  const [reminderStats, setReminderStats] = useState<{ pending: number; sent: number; failed: number; total: number }>({ pending: 0, sent: 0, failed: 0, total: 0 });
   const [search, setSearch] = useState('');
   const [riskFilter, setRiskFilter] = useState<'all' | 'high_risk' | 'escalated' | 'normal'>('all');
   const [selectedSession, setSelectedSession] = useState<ChatSession | null>(null);
@@ -57,12 +58,22 @@ const ChatAnalyticsTab = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [{ data: sess }, { data: ev }] = await Promise.all([
+      const [{ data: sess }, { data: ev }, { data: leads }] = await Promise.all([
         supabase.from('chat_sessions').select('*').order('created_at', { ascending: false }).limit(500),
         supabase.from('chat_events').select('*').order('created_at', { ascending: false }).limit(500),
+        supabase.from('chat_leads').select('delivery_status').eq('lead_intent', 'whatsapp_reminder').limit(1000),
       ]);
       setSessions((sess || []) as ChatSession[]);
       setEvents((ev || []) as ChatEvent[]);
+      const rs = { pending: 0, sent: 0, failed: 0, total: 0 };
+      (leads || []).forEach((l: any) => {
+        rs.total += 1;
+        const s = (l.delivery_status || 'pending') as string;
+        if (s === 'sent' || s === 'delivered') rs.sent += 1;
+        else if (s === 'failed') rs.failed += 1;
+        else rs.pending += 1;
+      });
+      setReminderStats(rs);
     } catch (e) {
       console.error('chat analytics fetch error', e);
     } finally {
