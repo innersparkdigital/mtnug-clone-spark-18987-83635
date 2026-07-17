@@ -219,6 +219,34 @@ const ChatAnalyticsTab = () => {
         </Card>
       </div>
 
+      {/* WhatsApp reminder delivery */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">WhatsApp reminder delivery</CardTitle>
+          <CardDescription>Automated 24h check-ins scheduled from the Amani widget</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div>
+              <p className="text-xs text-muted-foreground">Scheduled (total)</p>
+              <p className="text-2xl font-bold">{reminderStats.total}</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">Sent</p>
+              <p className="text-2xl font-bold text-emerald-600">{reminderStats.sent}</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">Pending</p>
+              <p className="text-2xl font-bold text-amber-600">{reminderStats.pending}</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">Failed</p>
+              <p className="text-2xl font-bold text-destructive">{reminderStats.failed}</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Event breakdown */}
       <Card>
         <CardHeader>
