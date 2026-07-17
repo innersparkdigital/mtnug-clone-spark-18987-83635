@@ -61,7 +61,7 @@ const ChatAnalyticsTab = () => {
       const [{ data: sess }, { data: ev }, { data: leads }] = await Promise.all([
         supabase.from('chat_sessions').select('*').order('created_at', { ascending: false }).limit(500),
         supabase.from('chat_events').select('*').order('created_at', { ascending: false }).limit(500),
-        supabase.from('chat_leads').select('delivery_status').eq('lead_intent', 'whatsapp_reminder').limit(1000),
+        (supabase.from('chat_leads') as any).select('delivery_status').eq('lead_intent', 'whatsapp_reminder').limit(1000),
       ]);
       setSessions((sess || []) as ChatSession[]);
       setEvents((ev || []) as ChatEvent[]);
