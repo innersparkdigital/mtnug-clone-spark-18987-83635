@@ -514,8 +514,34 @@ Deno.serve(async (req) => {
     }
 
     // Build conversation. We may run a non-streaming tool round first if the model decides to call tools.
+    // Live therapist directory (kept short) — grounds Amani so she can reference real people by name,
+    // specialty, language, and skills without needing a tool call for the first mention.
+    let therapistDirectory = "";
+    try {
+      const { data: specs } = await supabase
+        .from("specialists")
+        .select("name, type, specialties, languages, bio, price_per_hour, available_options, experience_years")
+        .eq("is_active", true)
+        .eq("kenya", false)
+        .limit(12);
+      if (specs && specs.length) {
+        therapistDirectory = "\n\n═══ INNERSPARK THERAPIST DIRECTORY (use these real names, never invent) ═══\n" +
+          (specs as Array<Record<string, unknown>>).map((s) => {
+            const name = s.name as string;
+            const title = s.type as string;
+            const yrs = s.experience_years as number;
+            const specs = ((s.specialties as string[]) || []).slice(0, 5).join(", ");
+            const langs = ((s.languages as string[]) || []).join(", ");
+            const modes = ((s.available_options as string[]) || []).join("/");
+            const bio = typeof s.bio === "string" ? (s.bio as string).slice(0, 140) : "";
+            return `• ${name} (${title}, ${yrs}y). Specialties: ${specs}. Languages: ${langs}. Modes: ${modes}. About: ${bio}`;
+          }).join("\n") +
+          "\nAlways call check_availability before quoting slots.";
+      }
+    } catch (e) { console.warn("therapist directory fetch failed", e); }
+
     const baseMessages: Array<Record<string, unknown>> = [
-      { role: "system", content: SYSTEM_PROMPT + CHIPS_INSTRUCTION + TOOLS_INSTRUCTION + LANGUAGE_INSTRUCTION },
+      { role: "system", content: SYSTEM_PROMPT + therapistDirectory + CHIPS_INSTRUCTION + TOOLS_INSTRUCTION + LANGUAGE_INSTRUCTION },
       ...messages.slice(-12),
     ];
 
