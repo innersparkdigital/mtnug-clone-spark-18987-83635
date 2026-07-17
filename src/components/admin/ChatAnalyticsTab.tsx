@@ -48,6 +48,7 @@ const ChatAnalyticsTab = () => {
   const [loading, setLoading] = useState(true);
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [events, setEvents] = useState<ChatEvent[]>([]);
+  const [reminderStats, setReminderStats] = useState<{ pending: number; sent: number; failed: number; total: number }>({ pending: 0, sent: 0, failed: 0, total: 0 });
   const [search, setSearch] = useState('');
   const [riskFilter, setRiskFilter] = useState<'all' | 'high_risk' | 'escalated' | 'normal'>('all');
   const [selectedSession, setSelectedSession] = useState<ChatSession | null>(null);
@@ -57,12 +58,22 @@ const ChatAnalyticsTab = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [{ data: sess }, { data: ev }] = await Promise.all([
+      const [{ data: sess }, { data: ev }, { data: leads }] = await Promise.all([
         supabase.from('chat_sessions').select('*').order('created_at', { ascending: false }).limit(500),
         supabase.from('chat_events').select('*').order('created_at', { ascending: false }).limit(500),
+        (supabase.from('chat_leads') as any).select('delivery_status').eq('lead_intent', 'whatsapp_reminder').limit(1000),
       ]);
       setSessions((sess || []) as ChatSession[]);
       setEvents((ev || []) as ChatEvent[]);
+      const rs = { pending: 0, sent: 0, failed: 0, total: 0 };
+      (leads || []).forEach((l: any) => {
+        rs.total += 1;
+        const s = (l.delivery_status || 'pending') as string;
+        if (s === 'sent' || s === 'delivered') rs.sent += 1;
+        else if (s === 'failed') rs.failed += 1;
+        else rs.pending += 1;
+      });
+      setReminderStats(rs);
     } catch (e) {
       console.error('chat analytics fetch error', e);
     } finally {
@@ -207,6 +218,34 @@ const ChatAnalyticsTab = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* WhatsApp reminder delivery */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">WhatsApp reminder delivery</CardTitle>
+          <CardDescription>Automated 24h check-ins scheduled from the Amani widget</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div>
+              <p className="text-xs text-muted-foreground">Scheduled (total)</p>
+              <p className="text-2xl font-bold">{reminderStats.total}</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">Sent</p>
+              <p className="text-2xl font-bold text-emerald-600">{reminderStats.sent}</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">Pending</p>
+              <p className="text-2xl font-bold text-amber-600">{reminderStats.pending}</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">Failed</p>
+              <p className="text-2xl font-bold text-destructive">{reminderStats.failed}</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Event breakdown */}
       <Card>

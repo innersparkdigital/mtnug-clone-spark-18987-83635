@@ -544,15 +544,21 @@ export type Database = {
         Row: {
           anonymous_id: string | null
           created_at: string
+          delivered_at: string | null
+          delivery_attempts: number
+          delivery_error: string | null
+          delivery_status: string
           email: string | null
           handled_at: string | null
           handled_by: string | null
           id: string
           intent: string | null
+          last_attempt_at: string | null
           message: string | null
           name: string | null
           notes: string | null
           phone: string | null
+          remind_at: string | null
           session_id: string | null
           source_path: string | null
           status: string
@@ -561,15 +567,21 @@ export type Database = {
         Insert: {
           anonymous_id?: string | null
           created_at?: string
+          delivered_at?: string | null
+          delivery_attempts?: number
+          delivery_error?: string | null
+          delivery_status?: string
           email?: string | null
           handled_at?: string | null
           handled_by?: string | null
           id?: string
           intent?: string | null
+          last_attempt_at?: string | null
           message?: string | null
           name?: string | null
           notes?: string | null
           phone?: string | null
+          remind_at?: string | null
           session_id?: string | null
           source_path?: string | null
           status?: string
@@ -578,15 +590,21 @@ export type Database = {
         Update: {
           anonymous_id?: string | null
           created_at?: string
+          delivered_at?: string | null
+          delivery_attempts?: number
+          delivery_error?: string | null
+          delivery_status?: string
           email?: string | null
           handled_at?: string | null
           handled_by?: string | null
           id?: string
           intent?: string | null
+          last_attempt_at?: string | null
           message?: string | null
           name?: string | null
           notes?: string | null
           phone?: string | null
+          remind_at?: string | null
           session_id?: string | null
           source_path?: string | null
           status?: string
