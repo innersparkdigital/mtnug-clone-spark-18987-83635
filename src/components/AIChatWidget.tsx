@@ -687,38 +687,21 @@ const AIChatWidget = () => {
               </div>
             )}
 
-            {/* Quick replies (only at start) */}
+            {/* Starter chips — only before the user's first message. After that, Amani's own
+                contextual [chips:...] appear inline with her reply, so we don't stack rows. */}
             {messages.length <= 1 && !loading && (
               <div className="px-3 py-2 border-t border-border flex flex-wrap gap-1.5 bg-background">
                 {QUICK_REPLIES.map((q) => (
                   <button
                     key={q.label}
                     onClick={() => sendMessage(q.text)}
-                    className="text-xs px-2.5 py-1.5 bg-muted hover:bg-primary hover:text-primary-foreground rounded-full transition-colors border border-border"
+                    className="text-xs px-3 py-1.5 bg-primary/10 hover:bg-primary hover:text-primary-foreground text-primary border border-primary/30 rounded-full transition-colors"
                   >
                     {q.label}
                   </button>
                 ))}
               </div>
             )}
-
-            {/* Persistent CTA row */}
-            <div className="px-3 py-2 border-t border-border flex gap-2 bg-background">
-              <Link
-                to="/book-therapist"
-                onClick={() => handleCTA("book_persistent")}
-                className="flex-1 text-center text-xs font-medium py-1.5 px-2 border border-primary text-primary rounded-full hover:bg-primary hover:text-primary-foreground"
-              >
-                Book a session
-              </Link>
-              <Link
-                to="/wellbeing-check"
-                onClick={() => handleCTA("wellbeing_persistent")}
-                className="flex-1 text-center text-xs font-medium py-1.5 px-2 border border-primary text-primary rounded-full hover:bg-primary hover:text-primary-foreground"
-              >
-                Free check
-              </Link>
-            </div>
 
             {/* Lead capture prompt / form */}
             {leadPromptShown && !leadPromptDismissed && !leadSubmitted && !showLeadForm && (
