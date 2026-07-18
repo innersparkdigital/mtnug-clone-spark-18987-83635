@@ -5,6 +5,7 @@ export interface WellbeingTool {
   description: string;
   status: "ready" | "coming-soon";
   category: "core" | "screening" | "safety";
+  bestFor?: string;
 }
 
 // Full 12-tool catalog. Tools shipped in Sub-phase 2A are marked "ready";
@@ -122,6 +123,46 @@ export const WELLBEING_TOOLS: WellbeingTool[] = [
       "Activates when you've been having a very hard time. Your therapist and clinical team are notified so you're never alone.",
     status: "ready",
     category: "safety",
+  },
+  {
+    key: "cognitive-reframing",
+    name: "Cognitive Reframing",
+    short: "Challenge an unhelpful thought and find a more balanced view.",
+    description:
+      "Builds on thought recording — focuses on the reframing step. Best from session 2 onwards.",
+    status: "ready",
+    category: "core",
+    bestFor: "Anxiety, depression, low self-esteem, trauma, relationships",
+  },
+  {
+    key: "life-skills",
+    name: "Life Skills Practice",
+    short: "Practice a real-life skill your therapist wants you to work on this week.",
+    description:
+      "Your therapist sets a specific skill (e.g. saying no, boundary-setting). You reflect on how it went.",
+    status: "ready",
+    category: "core",
+    bestFor: "Assertiveness, social anxiety, work stress, relationships",
+  },
+  {
+    key: "support-network",
+    name: "My Support Network",
+    short: "Map the people in your life who support you.",
+    description:
+      "Identify 3 trusted people, how they support you, and one small step to reconnect.",
+    status: "ready",
+    category: "core",
+    bestFor: "Loneliness, depression, grief, isolation",
+  },
+  {
+    key: "custom-questions",
+    name: "Custom questions",
+    short: "Questions written just for you by your therapist.",
+    description:
+      "Your therapist has some specific questions for you. Answer them honestly — there are no wrong answers.",
+    status: "ready",
+    category: "core",
+    bestFor: "Any bespoke tracking or check-in your therapist needs",
   },
 ];
 
