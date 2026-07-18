@@ -769,6 +769,48 @@ export type Database = {
           },
         ]
       }
+      client_reminder_log: {
+        Row: {
+          assignment_tool_id: string | null
+          client_id: string
+          id: string
+          kind: string
+          sent_at: string
+          sent_for_date: string
+        }
+        Insert: {
+          assignment_tool_id?: string | null
+          client_id: string
+          id?: string
+          kind: string
+          sent_at?: string
+          sent_for_date: string
+        }
+        Update: {
+          assignment_tool_id?: string | null
+          client_id?: string
+          id?: string
+          kind?: string
+          sent_at?: string
+          sent_for_date?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_reminder_log_assignment_tool_id_fkey"
+            columns: ["assignment_tool_id"]
+            isOneToOne: false
+            referencedRelation: "assignment_tools"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "client_reminder_log_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "therapist_clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       commission_claim_items: {
         Row: {
           amount: number
@@ -2635,6 +2677,61 @@ export type Database = {
         }
         Relationships: []
       }
+      submission_reactions: {
+        Row: {
+          client_id: string
+          created_at: string
+          emoji: string
+          id: string
+          note: string | null
+          seen_by_client: boolean
+          submission_id: string
+          therapist_id: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          emoji: string
+          id?: string
+          note?: string | null
+          seen_by_client?: boolean
+          submission_id: string
+          therapist_id: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          emoji?: string
+          id?: string
+          note?: string | null
+          seen_by_client?: boolean
+          submission_id?: string
+          therapist_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "submission_reactions_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "therapist_clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "submission_reactions_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "tool_submissions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "submission_reactions_therapist_id_fkey"
+            columns: ["therapist_id"]
+            isOneToOne: false
+            referencedRelation: "therapist_accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       suppressed_emails: {
         Row: {
           created_at: string
@@ -2777,6 +2874,78 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "therapist_clients_therapist_id_fkey"
+            columns: ["therapist_id"]
+            isOneToOne: false
+            referencedRelation: "therapist_accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      therapist_session_feedback: {
+        Row: {
+          client_id: string
+          created_at: string
+          duration: string
+          homework_given: boolean
+          homework_text: string | null
+          id: string
+          is_new_client: boolean
+          next_appt_booked: string
+          next_appt_date: string | null
+          next_appt_service: string | null
+          notes: string | null
+          progress_status: Database["public"]["Enums"]["session_progress_status"]
+          service_delivered: string
+          session_date: string
+          therapist_id: string
+          updated_at: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          duration: string
+          homework_given?: boolean
+          homework_text?: string | null
+          id?: string
+          is_new_client?: boolean
+          next_appt_booked?: string
+          next_appt_date?: string | null
+          next_appt_service?: string | null
+          notes?: string | null
+          progress_status?: Database["public"]["Enums"]["session_progress_status"]
+          service_delivered: string
+          session_date?: string
+          therapist_id: string
+          updated_at?: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          duration?: string
+          homework_given?: boolean
+          homework_text?: string | null
+          id?: string
+          is_new_client?: boolean
+          next_appt_booked?: string
+          next_appt_date?: string | null
+          next_appt_service?: string | null
+          notes?: string | null
+          progress_status?: Database["public"]["Enums"]["session_progress_status"]
+          service_delivered?: string
+          session_date?: string
+          therapist_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "therapist_session_feedback_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "therapist_clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "therapist_session_feedback_therapist_id_fkey"
             columns: ["therapist_id"]
             isOneToOne: false
             referencedRelation: "therapist_accounts"
@@ -3255,6 +3424,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      add_submission_reaction: {
+        Args: { _emoji: string; _note: string; _submission_id: string }
+        Returns: string
+      }
       clear_mindcheck_data: {
         Args: { tables_to_clear: string[] }
         Returns: Json
@@ -3292,6 +3465,7 @@ export type Database = {
       get_campaign_by_slug: { Args: { _slug: string }; Returns: Json }
       get_campaign_completion: { Args: { _company_id: string }; Returns: Json }
       get_client_by_token: { Args: { _token: string }; Returns: Json }
+      get_client_reactions_by_token: { Args: { _token: string }; Returns: Json }
       get_doctor_email_by_phone: { Args: { _phone: string }; Returns: string }
       get_public_testimonials: {
         Args: { _limit?: number; _market?: string }
@@ -3325,6 +3499,23 @@ export type Database = {
       lock_campaign_slug: { Args: { _slug: string }; Returns: undefined }
       log_referral_click: {
         Args: { _ip_hash?: string; _slug: string; _user_agent?: string }
+        Returns: string
+      }
+      log_session_feedback: {
+        Args: {
+          _client_id: string
+          _duration: string
+          _homework_given: boolean
+          _homework_text: string
+          _is_new_client: boolean
+          _next_appt_booked: string
+          _next_appt_date: string
+          _next_appt_service: string
+          _notes: string
+          _progress_status: Database["public"]["Enums"]["session_progress_status"]
+          _service_delivered: string
+          _session_date: string
+        }
         Returns: string
       }
       lookup_employee_by_code: { Args: { _code: string }; Returns: Json }
@@ -3397,6 +3588,12 @@ export type Database = {
         | "finance_admin"
         | "operations_admin"
         | "content_admin"
+      session_progress_status:
+        | "progressing_well"
+        | "steady"
+        | "needs_more_support"
+        | "at_risk"
+        | "crisis_activated"
       therapist_license_status: "verified" | "pending" | "suspended"
       therapist_platform_status: "active" | "inactive" | "suspended" | "removed"
     }
@@ -3533,6 +3730,13 @@ export const Constants = {
         "finance_admin",
         "operations_admin",
         "content_admin",
+      ],
+      session_progress_status: [
+        "progressing_well",
+        "steady",
+        "needs_more_support",
+        "at_risk",
+        "crisis_activated",
       ],
       therapist_license_status: ["verified", "pending", "suspended"],
       therapist_platform_status: ["active", "inactive", "suspended", "removed"],

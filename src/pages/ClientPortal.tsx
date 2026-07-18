@@ -18,6 +18,10 @@ import GratitudeTool from "@/components/client-portal/GratitudeTool";
 import SelfCareTool from "@/components/client-portal/SelfCareTool";
 import ActivityScheduleTool from "@/components/client-portal/ActivityScheduleTool";
 import ToolStub from "@/components/client-portal/ToolStub";
+import CognitiveReframingTool from "@/components/client-portal/CognitiveReframingTool";
+import LifeSkillsTool from "@/components/client-portal/LifeSkillsTool";
+import SupportNetworkTool from "@/components/client-portal/SupportNetworkTool";
+import CustomQuestionsTool from "@/components/client-portal/CustomQuestionsTool";
 const ProgressAnalytics = lazy(() => import("@/components/client-portal/ProgressAnalytics"));
 const MilestoneTimeline = lazy(() => import("@/components/client-portal/MilestoneTimeline"));
 import { getTool } from "@/lib/wellbeingToolsCatalog";
@@ -324,6 +328,14 @@ const ClientPortalInner = () => {
         return <SelfCareTool {...common} initial={activeTool.latest_submission?.payload} />;
       case "activity-schedule":
         return <ActivityScheduleTool {...common} initial={activeTool.latest_submission?.payload} />;
+      case "cognitive-reframing":
+        return <CognitiveReframingTool {...common} initial={activeTool.latest_submission?.payload} />;
+      case "life-skills":
+        return <LifeSkillsTool {...common} config={activeTool.config || {}} initial={activeTool.latest_submission?.payload} />;
+      case "support-network":
+        return <SupportNetworkTool {...common} initial={activeTool.latest_submission?.payload} />;
+      case "custom-questions":
+        return <CustomQuestionsTool {...common} config={activeTool.config || {}} initial={activeTool.latest_submission?.payload} />;
       default:
         return (
           <ToolStub
