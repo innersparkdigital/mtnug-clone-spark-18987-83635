@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import SessionFeedbackForm from "./SessionFeedbackForm";
 import { Loader2, AlertTriangle, TrendingDown, TrendingUp, Minus } from "lucide-react";
 import { Line } from "react-chartjs-2";
 import {
@@ -235,6 +236,7 @@ const ClientDetailPanel = ({ open, onOpenChange, client, therapistName, onAssign
               <TabsTrigger value="responses">Tool responses</TabsTrigger>
               <TabsTrigger value="mood">Mood trend</TabsTrigger>
               <TabsTrigger value="screening">Screening</TabsTrigger>
+              <TabsTrigger value="sessions">Sessions</TabsTrigger>
               <TabsTrigger value="assign">Assign</TabsTrigger>
             </TabsList>
 
@@ -335,6 +337,10 @@ const ClientDetailPanel = ({ open, onOpenChange, client, therapistName, onAssign
                   <TabsContent value="screening" className="mt-0 space-y-4">
                     <ScreeningCard title="PHQ-9 (depression)" list={phqSubs} color="hsl(6 66% 46%)" zones={[[0,4,"minimal"],[5,9,"mild"],[10,14,"moderate"],[15,19,"mod. severe"],[20,27,"severe"]]} />
                     <ScreeningCard title="GAD-7 (anxiety)"    list={gadSubs} color="hsl(30 90% 44%)"  zones={[[0,4,"minimal"],[5,9,"mild"],[10,14,"moderate"],[15,21,"severe"]]} />
+                  </TabsContent>
+
+                  <TabsContent value="sessions" className="mt-0">
+                    <SessionFeedbackForm clientId={client.id} />
                   </TabsContent>
 
                   <TabsContent value="assign" className="mt-0">
