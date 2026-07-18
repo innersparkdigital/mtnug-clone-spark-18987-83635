@@ -11,6 +11,7 @@ import { copyToClipboard } from "@/lib/copyToClipboard";
 import { toast } from "sonner";
 import { Loader2, Copy, Mail } from "lucide-react";
 import ScheduleFields, { defaultSchedule, ScheduleValue } from "./ScheduleFields";
+import CustomQuestionsEditor from "./CustomQuestionsEditor";
 
 interface Client {
   id: string;
