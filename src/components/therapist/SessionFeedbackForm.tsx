@@ -65,7 +65,7 @@ const SessionFeedbackForm = ({ clientId }: Props) => {
       _homework_given: homeworkGiven,
       _homework_text: homeworkText,
       _next_appt_booked: nextBooked,
-      _next_appt_date: nextDate || null as any,
+      _next_appt_date: nextDate || "",
       _next_appt_service: nextService,
     });
     setSaving(false);
