@@ -29,6 +29,17 @@ interface ToolConfig {
   therapist_note: string;
   due_date: string;
   tasks?: string;
+  skill?: string;
+  intro?: string;
+  questions?: {
+    id: string;
+    label: string;
+    type: "text" | "long_text" | "scale" | "yes_no" | "mcq";
+    options?: string[];
+    scale_min?: number;
+    scale_max?: number;
+    required?: boolean;
+  }[];
   schedule: ScheduleValue;
 }
 
@@ -63,7 +74,14 @@ const AssignmentBuilder = ({ client, therapistName, onDone }: Props) => {
       title: null,
       therapist_note: selected[k].therapist_note || null,
       due_date: selected[k].due_date || null,
-      config: k === "homework" && selected[k].tasks ? { tasks: selected[k].tasks } : {},
+      config:
+        k === "homework" && selected[k].tasks
+          ? { tasks: selected[k].tasks }
+          : k === "life-skills"
+            ? { skill: selected[k].skill || "" }
+            : k === "custom-questions"
+              ? { intro: selected[k].intro || "", questions: selected[k].questions || [] }
+              : {},
     }));
     const { data, error } = await supabase.rpc("create_client_assignment", {
       _client_id: client.id,
@@ -225,6 +243,29 @@ const AssignmentBuilder = ({ client, therapistName, onDone }: Props) => {
                           className="mt-1"
                         />
                       </div>
+                    )}
+                    {tool.key === "life-skills" && (
+                      <div>
+                        <Label className="text-xs">The skill for this week</Label>
+                        <Textarea
+                          rows={2}
+                          placeholder="e.g. Practice saying 'no' at least twice this week."
+                          value={selected[tool.key].skill || ""}
+                          onChange={(e) => setSelected((p) => ({ ...p, [tool.key]: { ...p[tool.key], skill: e.target.value } }))}
+                          className="mt-1"
+                        />
+                      </div>
+                    )}
+                    {tool.key === "custom-questions" && (
+                      <CustomQuestionsEditor
+                        intro={selected[tool.key].intro || ""}
+                        questions={selected[tool.key].questions || []}
+                        onIntroChange={(v) => setSelected((p) => ({ ...p, [tool.key]: { ...p[tool.key], intro: v } }))}
+                        onChange={(qs) => setSelected((p) => ({ ...p, [tool.key]: { ...p[tool.key], questions: qs } }))}
+                      />
+                    )}
+                    {tool.bestFor && (
+                      <div className="text-[11px] text-muted-foreground italic pt-1">Best for: {tool.bestFor}</div>
                     )}
                     <div>
                       <Label className="text-xs">Due date (optional)</Label>
