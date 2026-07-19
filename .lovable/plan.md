@@ -1,108 +1,101 @@
-## Therapist Portal Improvements — Implementation Plan
+# Admin Dashboard + Therapist Portal Wrap-up
 
-Five additive improvements to `/therapist` and `/my-progress/[token]`. Existing safety-alert flow (Reagan/Raymond) stays untouched — every new tool routes final submissions through the same `save_tool_submission` RPC that already fires safety alerts.
-
----
-
-### 1. Client calendar with daily tasks + Resend reminders
-
-**Client portal (`ClientPortal.tsx`)**
-- Replace flat task list with a `WeeklyCalendarView` component:
-  - 7-day grid (Mon–Sun), week nav arrows, "This week" reset
-  - Each cell renders `ClientToolCard`s scheduled that day, derived from `assignment_schedules` (existing table) expanded per-day
-  - Status pill: not started (grey) / in progress (blue) / completed (green ✓)
-  - Today's cards get `ring-2 ring-primary/50` glow
-  - Day header shows "Day complete 💙" when all cards done
-- Keep existing "unscheduled tasks" section below
-
-**Reminders (Resend)**
-- New edge function `send-client-reminders` (cron, every 15 min):
-  - Finds `assignment_schedules` rows where next occurrence is within 55–65 min and not yet reminded today (new table `client_reminder_log(assignment_tool_id, client_id, sent_for_date, kind)`)
-  - Sends "You have something waiting for you today 💙" via Resend to `therapist_clients.email`
-  - Deep-links to `/my-progress/[token]`
-- New edge function `send-weekly-summary` (cron, Sunday 18:00 Africa/Nairobi): one email per client with next 7 days of scheduled tasks
+This is additive. Nothing existing is removed. The safety check-in flow stays untouched. All new views use the existing Calm design system (deep-blue theme, 16px radius cards, Inter, InnerSpark blue `#3B4FD4`, dark mode toggle).
 
 ---
 
-### 2. Session feedback per client (therapist → admin)
+## Part A — Finish previous turn (Improvements 1 email reminders + calendar)
 
-**New table** `therapist_session_feedback` with fields from the Google Sheet: session_date, therapist_id, client_id, is_new_client, service_delivered, duration, homework_given, homework_text, progress_status (enum), next_appt_booked, next_appt_date, next_appt_service, notes. RLS: therapist owns their rows, admin reads all.
+### A1. Weekly calendar view on Client Portal
+- New `src/components/client-portal/WeeklyCalendarView.tsx`: 7-day strip + day detail with due tasks grouped by date, using existing `assignment_schedules` data. Replaces the flat list on `/my-progress/[id]`, keeps unscheduled tasks in a secondary section.
+- No change to submission or safety logic.
 
-**Therapist portal**
-- New "Session log" tab inside `ClientDetailPanel` with:
-  - "Log session" form (auto-fills therapist + client name)
-  - History table of prior sessions for this client
-- Roster: summary chip per client showing "Last session: X" and progress status color
-
-**Admin dashboard**
-- New tab `SessionFeedbackTab` with filters (therapist / date / progress status) and per-client summary cards (total sessions, last date, current status, next appt booked)
-
----
-
-### 3. Custom questions tool (recurring optional)
-
-- New tool key `custom-questions` in `WELLBEING_TOOLS`
-- `AssignmentBuilder`: when selected, therapist adds N questions with response type (text / scale 1-10 / yes-no / multiple choice with options); stored in `assignment_tools.config.questions`
-- Recurring via existing `assignment_schedules` (already supports weekly + days_of_week)
-- Client portal: renders form dynamically from config; submits through existing `save_tool_submission` (safety-alert path preserved)
-- Therapist view: `PrettyResponseList` extended to render custom-question submissions grouped per question with a mini trend line for scale/yes-no responses over time
-- Recurring reminder emails piggyback on Improvement 1's `send-client-reminders`
+### A2. Email reminders (Resend, already integrated)
+- New edge function `send-task-reminders/index.ts`:
+  - **Hourly**: sends "Your task is due today" email for assignments whose scheduled time falls in the next hour and haven't been completed.
+  - **Sunday 6pm**: sends a "Week ahead" summary listing the coming week's tasks.
+- Cron via `pg_cron` (hourly + weekly). Logs to existing `client_reminder_log` table.
 
 ---
 
-### 4. Therapist reactions + short encouragement note
+## Part B — Admin Improvement 1: UI restructure
 
-**New table** `submission_reactions(submission_id, therapist_id, emoji, note text ≤100, created_at)` with RLS: therapist writes own, client reads reactions on their submissions via token RPC.
+Reskin `src/pages/AdminDashboard.tsx` shell only (tabs stay):
 
-**Therapist**: reaction bar (💙 ⭐ 💪 🌟 🙏) + 100-char note field below each submission in `ClientDetailPanel`.
-
-**Client**: reactions rendered under each submission in a soft blue box: "[Therapist] reacted to your [tool] 💙" + optional note. On new reaction, edge function sends Resend email "Your therapist saw your work 💙".
-
-**RPC** `add_submission_reaction(_submission_id, _emoji, _note)` — SECURITY DEFINER, verifies therapist owns the client, enqueues email.
-
----
-
-### 5. Three new tools
-
-Added to `WELLBEING_TOOLS` catalog with icons and short descriptions; each is a new component under `src/components/client-portal/tools/`:
-
-- **CognitiveReframing.tsx** — 4 text fields + 1-10 scale ("how do you feel now")
-- **LifeSkillsPractice.tsx** — therapist sets skill in assignment config; client answers tried (yes/partly/no) + 3 text fields
-- **SupportNetwork.tsx** — 3 trusted people, support description, pulling-away field, reconnect step; next occurrence shows "how did the step go"
-
-All submit through `save_tool_submission` → safety flags still trigger Reagan/Raymond alerts unchanged.
-
-Applicability shown as small hint chips in `AssignmentBuilder` per tool ("Best for: anxiety, low self-esteem, trauma…").
+- Personalised header: "Good morning, {firstName} 👋 Here is your InnerSpark overview for today." (time-of-day aware).
+- 6 stat cards in 2 rows of 3 (spec said 8 items across 2 rows of 3 — we'll ship 6 as written and add the extra 2 as a third row):
+  1. Active clients · 2. Sessions this week · 3. Revenue this week (UGX)
+  4. Safety flags active (red if >0) · 5. Therapists active · 6. Homework completion %
+  7. New enquiries today · 8. Inactive clients 7d+ (amber)
+- Each card: left color border, icon top-left, big number, label, WoW trend arrow.
+- 4 large section cards below (Clients, Therapists, Session Logs, Analytics) each with a live one-liner ("3 clients need follow-up").
+- Reuse existing tabs — the cards just deep-link to them.
 
 ---
 
-### Technical section
+## Part C — Admin Improvement 2: Read-only client view
 
-**DB migrations (one file):**
-- `therapist_session_feedback` table + progress_status enum + RLS + GRANTs + updated_at trigger
-- `submission_reactions` table + RLS + GRANTs
-- `client_reminder_log` table (dedupe key: `(assignment_tool_id, sent_for_date, kind)` unique)
-- RPCs: `add_submission_reaction`, `log_session_feedback`, `get_client_reactions_by_token`
-- Extend `client_snapshot` RPC to return reactions per submission
-- Extend `WELLBEING_TOOLS` catalog
+New `src/components/admin/AdminClientsTab.tsx`:
+- Table across **all** clients (all therapists): name, therapist, concern, last submission, risk dot, homework %, next session, View.
+- Filters: therapist, risk level, last activity, concern. Quick "Show all Red flags" chip.
+- View opens `AdminClientDetailPanel.tsx` — a read-only wrapper around the existing `ClientDetailPanel` tabs (Overview, Submissions, Screening, Pre-Session, Schedule, Sessions). All edit/reaction/assign controls hidden via a `readOnly` prop.
+- New RPC `admin_list_all_clients()` (SECURITY DEFINER, admin-only) so admin bypasses per-therapist RLS safely.
 
-**Edge functions (new):**
-- `send-client-reminders` (cron */15 min) — Resend
-- `send-weekly-summary` (cron Sun 18:00) — Resend
-- Reactions email uses existing `send-transactional-email` with new template `client-reaction-notice`
+---
 
-**Cron:** two `cron.schedule` calls added (using `supabase--insert`, not migration, per instructions).
+## Part D — Admin Improvement 3: Session Logs dashboard
 
-**Files touched:**
-- `src/pages/ClientPortal.tsx` (calendar view)
-- `src/components/client-portal/WeeklyCalendarView.tsx` (new)
-- `src/components/client-portal/tools/{CognitiveReframing,LifeSkillsPractice,SupportNetwork,CustomQuestions}.tsx` (new)
-- `src/components/therapist/{AssignmentBuilder,ClientDetailPanel,SessionFeedbackForm,ReactionBar}.tsx`
-- `src/components/admin/SessionFeedbackTab.tsx` (new)
-- `src/lib/wellbeingToolsCatalog.ts`
-- `supabase/functions/send-client-reminders/`, `send-weekly-summary/` (new)
-- `supabase/functions/_shared/transactional-email-templates/{client-reminder,weekly-summary,client-reaction-notice}.tsx` (new)
+New `src/components/admin/SessionLogsTab.tsx`:
+- Real-time table via Supabase Realtime on `therapist_session_feedback`.
+- Columns per spec (timestamp, session date, therapist, client, new/returning, service, duration, progress, homework Y/N, next appt Y/N, next date, View).
+- 3 summary cards: sessions this month · % with next appt (retention) · crisis protocol count (red).
+- Filters: therapist, date range, progress status, next-appt booked.
+- **Crisis alert**: DB trigger on `therapist_session_feedback` insert — when `progress_status` in ('At risk','Crisis protocol activated'), invokes `send-crisis-alert` edge function → emails Reagan + Raymond via Resend and inserts into `safety_alerts`.
+- **Missing-logs Monday cron**: new edge function `send-missing-log-reminders` scheduled 8am Monday Africa/Nairobi. Compares bookings vs submitted logs, WhatsApp-message text is generated and admin gets a click-to-send list (we don't have programmatic outbound WhatsApp; we surface the pre-filled `wa.me` links in-dashboard + email Raymond the list). Explicit note in UI.
+- CSV export.
 
-**Safety invariant:** every new tool's client submission goes through `save_tool_submission` unchanged; safety_alert insertion logic and Reagan/Raymond notification remain the sole path — no new tool bypasses it.
+---
 
-Rollout order: DB migration → tool catalog + client components → therapist UI (reactions, session log, custom Qs) → calendar view → email templates + cron → admin tab.
+## Part E — Admin Improvement 4: Advanced features
+
+1. **Revenue tab** (`AdminRevenueTab.tsx`): Chart.js weekly bars + table per therapist (sessions, revenue, 15% commission, 85% earnings). CSV export. Data source: existing `payments` + `therapist_session_feedback`.
+2. **Therapist performance** (`TherapistPerformanceTab.tsx`): card grid, sortable by any metric (clients, sessions/mo, avg progress, homework rate, follow-up rate, retention).
+3. **Client journey timeline**: added as a new tab inside `AdminClientDetailPanel` — chronological merge of enquiries, sessions, submissions, screenings, safety flags.
+4. **Enquiries tab** (`EnquiriesTab.tsx`): unified feed of `chat_leads` (Amani), `contact_submissions`, WhatsApp callback requests. Columns per spec, source/outcome/date filters, conversion funnel summary at top.
+5. **Bulk WhatsApp outreach**: button in Clients tab → composer modal with pre-filled template, per-client personalisation, generates a list of `wa.me` deep-links (admin clicks each, or copies all). Logs sends to `client_reminder_log`.
+6. **CSV export**: shared `exportToCSV(rows, filename)` util wired into every tab's toolbar.
+
+---
+
+## Database migration (single file)
+
+- `admin_list_all_clients()` RPC (SECURITY DEFINER, admin-only).
+- Trigger `notify_admin_on_crisis_session()` on `therapist_session_feedback` after insert.
+- pg_cron schedules for hourly task reminders, Sunday summary, Monday missing-logs.
+- Extend `client_reminder_log` if needed (add `channel`, `kind`).
+
+## Edge functions
+
+- `send-task-reminders` (hourly + weekly modes)
+- `send-crisis-alert` (called by trigger via `pg_net`)
+- `send-missing-log-reminders` (Monday 8am)
+
+All use Resend (already configured, `RESEND_API_KEY` set) and the existing branded email templates.
+
+## What I'm **not** doing (out of scope / not supported)
+
+- Programmatic outbound WhatsApp send — InnerSpark uses `wa.me` deep-links, no WhatsApp Business API. Bulk outreach and missing-log reminders surface pre-filled links + email digests instead.
+- No changes to safety check-in tool.
+- No change to existing therapist edit permissions.
+
+## Order of execution
+
+1. DB migration (RPC + trigger + cron).
+2. Edge functions (task reminders, crisis alert, missing-log reminders).
+3. Calendar view on client portal.
+4. Admin dashboard shell restructure (stat cards + section cards).
+5. Read-only client view + admin detail panel.
+6. Session Logs tab.
+7. Revenue + Therapist Performance + Enquiries + Bulk outreach + CSV util.
+
+Reply **proceed** and I'll ship it in that order.
