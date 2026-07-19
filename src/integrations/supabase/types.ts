@@ -3428,6 +3428,12 @@ export type Database = {
         Args: { _emoji: string; _note: string; _submission_id: string }
         Returns: string
       }
+      admin_client_detail: { Args: { _client_id: string }; Returns: Json }
+      admin_list_all_clients: { Args: never; Returns: Json }
+      admin_list_enquiries: { Args: never; Returns: Json }
+      admin_list_session_logs: { Args: never; Returns: Json }
+      admin_overview_stats: { Args: never; Returns: Json }
+      admin_therapist_performance: { Args: never; Returns: Json }
       clear_mindcheck_data: {
         Args: { tables_to_clear: string[] }
         Returns: Json
