@@ -34,6 +34,11 @@ const SiteSectionsTab = lazy(() => import('@/components/admin/SiteSectionsTab'))
 const FeedbackTab = lazy(() => import('@/components/admin/FeedbackTab'));
 const KenyaReferralsTab = lazy(() => import('@/components/admin/KenyaReferralsTab'));
 const SearchConsoleTab = lazy(() => import('@/components/admin/SearchConsoleTab'));
+const AdminOverviewTab = lazy(() => import('@/components/admin/AdminOverviewTab'));
+const AdminClientsTab = lazy(() => import('@/components/admin/AdminClientsTab'));
+const AdminSessionLogsTab = lazy(() => import('@/components/admin/AdminSessionLogsTab'));
+const AdminEnquiriesTab = lazy(() => import('@/components/admin/AdminEnquiriesTab'));
+const AdminRevenueTab = lazy(() => import('@/components/admin/AdminRevenueTab'));
 
 const TabFallback = () => (
   <div className="flex items-center justify-center py-12">
@@ -63,7 +68,10 @@ import {
   MessageSquare,
   AlertOctagon,
   UserPlus,
-  Mic
+  Mic,
+  Home,
+  Inbox,
+  DollarSign
 } from 'lucide-react';
 import {
   ChartContainer,
@@ -77,6 +85,7 @@ const AdminDashboard = () => {
   const { isAdmin, loading: roleLoading } = useUserRole();
   const { hasPageAccess, loading: permLoading } = usePagePermissions();
   const { users, stats, loading: adminLoading } = useAdminDashboard();
+  const [activeTab, setActiveTab] = useState<string | undefined>(undefined);
 
   if (authLoading || roleLoading || permLoading || adminLoading) {
     return (
@@ -190,8 +199,42 @@ const AdminDashboard = () => {
           </p>
         </div>
 
-        <Tabs defaultValue={hasPageAccess('learning') ? 'learning' : hasPageAccess('registrations') ? 'registrations' : hasPageAccess('newsletter') ? 'newsletter' : hasPageAccess('referrals') ? 'referrals' : 'users'} className="space-y-6">
+        <Tabs
+          value={activeTab ?? (isAdmin ? 'overview' : hasPageAccess('learning') ? 'learning' : hasPageAccess('registrations') ? 'registrations' : hasPageAccess('newsletter') ? 'newsletter' : hasPageAccess('referrals') ? 'referrals' : 'users')}
+          onValueChange={setActiveTab}
+          className="space-y-6"
+        >
           <TabsList className="flex-wrap h-auto w-full justify-start gap-1 p-1">
+            {isAdmin && (
+              <TabsTrigger value="overview" className="gap-2">
+                <Home className="h-4 w-4" />
+                Overview
+              </TabsTrigger>
+            )}
+            {isAdmin && (
+              <TabsTrigger value="all-clients" className="gap-2">
+                <Users className="h-4 w-4" />
+                All Clients
+              </TabsTrigger>
+            )}
+            {isAdmin && (
+              <TabsTrigger value="session-logs" className="gap-2">
+                <Activity className="h-4 w-4" />
+                Session Logs
+              </TabsTrigger>
+            )}
+            {isAdmin && (
+              <TabsTrigger value="enquiries" className="gap-2">
+                <Inbox className="h-4 w-4" />
+                Enquiries
+              </TabsTrigger>
+            )}
+            {isAdmin && (
+              <TabsTrigger value="revenue" className="gap-2">
+                <DollarSign className="h-4 w-4" />
+                Revenue
+              </TabsTrigger>
+            )}
             {hasPageAccess('learning') && (
               <TabsTrigger value="learning" className="gap-2">
                 <GraduationCap className="h-4 w-4" />
@@ -327,6 +370,34 @@ const AdminDashboard = () => {
               </TabsTrigger>
             )}
           </TabsList>
+
+          {isAdmin && (
+            <TabsContent value="overview">
+              <Suspense fallback={<TabFallback />}>
+                <AdminOverviewTab onNavigate={(t) => setActiveTab(t)} />
+              </Suspense>
+            </TabsContent>
+          )}
+          {isAdmin && (
+            <TabsContent value="all-clients">
+              <Suspense fallback={<TabFallback />}><AdminClientsTab /></Suspense>
+            </TabsContent>
+          )}
+          {isAdmin && (
+            <TabsContent value="session-logs">
+              <Suspense fallback={<TabFallback />}><AdminSessionLogsTab /></Suspense>
+            </TabsContent>
+          )}
+          {isAdmin && (
+            <TabsContent value="enquiries">
+              <Suspense fallback={<TabFallback />}><AdminEnquiriesTab /></Suspense>
+            </TabsContent>
+          )}
+          {isAdmin && (
+            <TabsContent value="revenue">
+              <Suspense fallback={<TabFallback />}><AdminRevenueTab /></Suspense>
+            </TabsContent>
+          )}
 
           <TabsContent value="learning">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
