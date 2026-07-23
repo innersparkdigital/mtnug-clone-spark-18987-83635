@@ -31,3 +31,5 @@ project_id = "hnjpsvpudwwyzrrwzbpa"
     verify_jwt = false
   [functions.whisper-cta]
     verify_jwt = false
+  [functions.rss-feed]
+    verify_jwt = false

@@ -29,6 +29,9 @@ const CookiePolicy = lazy(() => import("./pages/CookiePolicy"));
 const AccountDeletion = lazy(() => import("./pages/AccountDeletion"));
 const Services = lazy(() => import("./pages/Services"));
 const About = lazy(() => import("./pages/About"));
+const AuthorRaymond = lazy(() => import("./pages/AuthorRaymond"));
+const Press = lazy(() => import("./pages/Press"));
+const Resources = lazy(() => import("./pages/Resources"));
 const Contact = lazy(() => import("./pages/Contact"));
 const TruckDriversPost = lazy(() => import("./pages/blog/TruckDriversPost"));
 const FoundersPost = lazy(() => import("./pages/blog/FoundersPost"));
@@ -348,6 +351,9 @@ const App = () => (
                 <Route path="/account-deletion" element={<AccountDeletion />} />
                 <Route path="/services" element={<Services />} />
                 <Route path="/about" element={<About />} />
+                <Route path="/about/raymond" element={<AuthorRaymond />} />
+                <Route path="/press" element={<Press />} />
+                <Route path="/resources" element={<Resources />} />
                 <Route path="/contact" element={<Contact />} />
                 {/* <Route path="/careers" element={<Careers />} /> */}
                 <Route path="/for-business" element={<ForBusiness />} />
