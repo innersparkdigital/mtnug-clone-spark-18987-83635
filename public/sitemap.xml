@@ -7,6 +7,26 @@
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
+
+  <!-- Authority & press pages -->
+  <url>
+    <loc>https://www.innersparkafrica.com/about/raymond</loc>
+    <lastmod>2026-07-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.innersparkafrica.com/press</loc>
+    <lastmod>2026-07-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.innersparkafrica.com/resources</loc>
+    <lastmod>2026-07-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
   
   <!-- Core Service Pages - High Priority -->
   <url>
