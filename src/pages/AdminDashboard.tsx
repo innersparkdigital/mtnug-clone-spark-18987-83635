@@ -827,6 +827,9 @@ const AdminDashboard = () => {
             <TabsContent value="search-console">
               <Suspense fallback={<TabFallback />}><SearchConsoleTab /></Suspense>
             </TabsContent>
+            <TabsContent value="backlinks">
+              <Suspense fallback={<TabFallback />}><BacklinksTab /></Suspense>
+            </TabsContent>
           )}
         </Tabs>
       </main>
