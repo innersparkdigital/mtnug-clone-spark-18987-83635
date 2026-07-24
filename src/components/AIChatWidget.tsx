@@ -813,7 +813,8 @@ const AIChatWidget = () => {
               <div className="px-3 py-3 border-t border-border bg-primary/5 space-y-2">
                 <div className="flex items-center justify-between">
                   <div className="text-xs font-bold text-foreground flex items-center gap-1.5">
-                    <UserPlus className="w-3.5 h-3.5 text-primary" /> Leave your details
+                    <UserPlus className="w-3.5 h-3.5 text-primary" />
+                    {leadStep === 1 ? "One quick step — your WhatsApp" : "Almost done — anything else? (optional)"}
                   </div>
                   <button
                     onClick={() => setShowLeadForm(false)}
@@ -823,52 +824,73 @@ const AIChatWidget = () => {
                     <X className="w-3.5 h-3.5" />
                   </button>
                 </div>
-                <input
-                  type="text"
-                  placeholder="Your name (optional)"
-                  value={leadName}
-                  onChange={(e) => setLeadName(e.target.value)}
-                  maxLength={120}
-                  className="w-full px-2.5 py-1.5 text-xs bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                />
-                <div className="flex gap-2">
-                  <input
-                    type="tel"
-                    placeholder="Phone (e.g. 0792 085 773)"
-                    value={leadPhone}
-                    onChange={(e) => setLeadPhone(e.target.value)}
-                    maxLength={30}
-                    className="flex-1 px-2.5 py-1.5 text-xs bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                  <input
-                    type="email"
-                    placeholder="Email"
-                    value={leadEmail}
-                    onChange={(e) => setLeadEmail(e.target.value)}
-                    maxLength={120}
-                    className="flex-1 px-2.5 py-1.5 text-xs bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                </div>
-                <textarea
-                  placeholder="What's on your mind? (optional)"
-                  value={leadMsg}
-                  onChange={(e) => setLeadMsg(e.target.value)}
-                  rows={2}
-                  maxLength={500}
-                  className="w-full px-2.5 py-1.5 text-xs bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary resize-none"
-                />
+                {leadStep === 1 ? (
+                  <>
+                    <input
+                      type="tel"
+                      autoFocus
+                      placeholder="WhatsApp e.g. 0792 085 773"
+                      value={leadPhone}
+                      onChange={(e) => setLeadPhone(e.target.value)}
+                      maxLength={30}
+                      className="w-full px-3 py-2.5 text-sm bg-background border border-primary/40 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                    />
+                    <p className="text-[10px] text-muted-foreground">
+                      We'll only WhatsApp you — no calls, no spam.
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <input
+                      type="text"
+                      placeholder="Your name (optional)"
+                      value={leadName}
+                      onChange={(e) => setLeadName(e.target.value)}
+                      maxLength={120}
+                      className="w-full px-2.5 py-1.5 text-xs bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                    />
+                    <input
+                      type="email"
+                      placeholder="Email (optional)"
+                      value={leadEmail}
+                      onChange={(e) => setLeadEmail(e.target.value)}
+                      maxLength={120}
+                      className="w-full px-2.5 py-1.5 text-xs bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                    />
+                    <textarea
+                      placeholder="Anything you'd like us to know? (optional)"
+                      value={leadMsg}
+                      onChange={(e) => setLeadMsg(e.target.value)}
+                      rows={2}
+                      maxLength={500}
+                      className="w-full px-2.5 py-1.5 text-xs bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+                    />
+                  </>
+                )}
                 {leadError && (
                   <div className="text-[11px] text-red-600">{leadError}</div>
                 )}
-                <Button
-                  onClick={submitLead}
-                  disabled={leadSubmitting}
-                  size="sm"
-                  className="w-full text-xs h-8"
-                >
-                  {leadSubmitting ? <Loader2 className="w-3.5 h-3.5 animate-spin mr-1" /> : <Check className="w-3.5 h-3.5 mr-1" />}
-                  Send my details
-                </Button>
+                <div className="flex gap-2">
+                  {leadStep === 2 && (
+                    <Button
+                      onClick={() => { setLeadSubmitted(true); setShowLeadForm(false); }}
+                      size="sm"
+                      variant="ghost"
+                      className="text-xs h-8"
+                    >
+                      Skip
+                    </Button>
+                  )}
+                  <Button
+                    onClick={submitLead}
+                    disabled={leadSubmitting}
+                    size="sm"
+                    className="flex-1 text-xs h-8"
+                  >
+                    {leadSubmitting ? <Loader2 className="w-3.5 h-3.5 animate-spin mr-1" /> : <Check className="w-3.5 h-3.5 mr-1" />}
+                    {leadStep === 1 ? "Save my WhatsApp" : "Finish"}
+                  </Button>
+                </div>
                 <p className="text-[10px] text-muted-foreground text-center">
                   Private. Used only by InnerSpark to follow up with you.
                 </p>
