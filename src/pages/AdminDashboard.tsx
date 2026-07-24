@@ -34,6 +34,7 @@ const SiteSectionsTab = lazy(() => import('@/components/admin/SiteSectionsTab'))
 const FeedbackTab = lazy(() => import('@/components/admin/FeedbackTab'));
 const KenyaReferralsTab = lazy(() => import('@/components/admin/KenyaReferralsTab'));
 const SearchConsoleTab = lazy(() => import('@/components/admin/SearchConsoleTab'));
+const BacklinksTab = lazy(() => import('@/components/admin/BacklinksTab'));
 const AdminOverviewTab = lazy(() => import('@/components/admin/AdminOverviewTab'));
 const AdminClientsTab = lazy(() => import('@/components/admin/AdminClientsTab'));
 const AdminSessionLogsTab = lazy(() => import('@/components/admin/AdminSessionLogsTab'));
@@ -367,6 +368,12 @@ const AdminDashboard = () => {
               <TabsTrigger value="search-console" className="gap-2">
                 <BarChart3 className="h-4 w-4" />
                 Search Console
+              </TabsTrigger>
+            )}
+            {isAdmin && (
+              <TabsTrigger value="backlinks" className="gap-2">
+                <Link2 className="h-4 w-4" />
+                Backlinks
               </TabsTrigger>
             )}
           </TabsList>
