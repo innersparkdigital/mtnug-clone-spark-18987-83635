@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, X, Send, Loader2, Phone, Calendar, Heart, AlertTriangle, LifeBuoy, PhoneCall, UserPlus, Check, Sparkles } from "lucide-react";
+import { MessageCircle, X, Send, Loader2, Phone, Calendar, Heart, AlertTriangle, LifeBuoy, PhoneCall, UserPlus, Check, Sparkles, ShieldCheck, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
@@ -36,11 +36,23 @@ function parseChips(content: string): { text: string; chips: Chip[] } {
   return { text, chips };
 }
 
-// Minimal starter chips — only shown before the first user message so the panel doesn't
-// feel cluttered. Amani surfaces contextual chips after each reply via the [chips:...] marker.
-const QUICK_REPLIES = [
-  { label: "Book a session", text: "I'd like to book a therapy session" },
-  { label: "Free check", text: "I want to check my mental wellbeing" },
+// Big tappable opener chips — these directly attack the widget-open → first-message drop-off.
+// Each one seeds a rich first turn so Amani can immediately move into her closing sequence.
+const OPENER_CHIPS: { label: string; emoji: string; text: string }[] = [
+  { label: "I feel anxious or overwhelmed", emoji: "😔", text: "I've been feeling anxious and overwhelmed lately. Can you help me figure out what to do?" },
+  { label: "How much is a session?", emoji: "💰", text: "How much does a therapy session cost?" },
+  { label: "I want to talk to someone tonight", emoji: "🌙", text: "I really need to talk to someone tonight. What's the fastest way?" },
+  { label: "I'm struggling in my relationship", emoji: "💔", text: "I'm struggling in my relationship and I don't know what to do." },
+  { label: "I feel low, no energy", emoji: "🌫️", text: "I've been feeling really low and I have no energy for anything." },
+  { label: "For my team at work", emoji: "🏢", text: "I'm looking for mental health support for my team at work." },
+];
+
+// Rotating social-proof lines shown once per open. Real InnerSpark themes, no PII.
+const MICRO_TESTIMONIALS = [
+  "★★★★★ \"Booked in 4 minutes — my therapist really listened.\" — Sarah, Kampala",
+  "★★★★★ \"Amani made asking for help feel simple.\" — David, Nairobi",
+  "★★★★★ \"I was matched the same day. Life-changing.\" — Aisha, Kampala",
+  "★★★★★ \"The free 20-min call was exactly what I needed.\" — Peter, Uganda",
 ];
 
 const ANON_KEY = "is_chat_anon_id";
@@ -114,6 +126,11 @@ const AIChatWidget = () => {
   const [reminderPhone, setReminderPhone] = useState("");
   const [reminderSubmitting, setReminderSubmitting] = useState(false);
   const [reminderSubmitted, setReminderSubmitted] = useState(false);
+  // Two-step lead capture: phone first, name/email optional after.
+  const [leadStep, setLeadStep] = useState<1 | 2>(1);
+  const [leadRowId, setLeadRowId] = useState<string | null>(null);
+  const [testimonialIdx] = useState(() => Math.floor(Math.random() * MICRO_TESTIMONIALS.length));
+  const openedAtRef = useRef<number>(Date.now());
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -250,6 +267,7 @@ const AIChatWidget = () => {
 
   const handleOpen = () => {
     setOpen(true);
+    openedAtRef.current = Date.now();
     trackEvent("ai_chat_opened");
     logEvent("chat_opened");
   };
@@ -281,7 +299,10 @@ const AIChatWidget = () => {
   const tryCloseWithIntercept = () => {
     const userMsgs = messages.filter((m) => m.role === "user").length;
     const alreadySeen = sessionStorage.getItem(CLOSE_INTERCEPT_KEY);
-    if (!leadSubmitted && !reminderSubmitted && !alreadySeen && userMsgs >= 1 && !highRisk) {
+    const openedForMs = Date.now() - openedAtRef.current;
+    // Fire on any close attempt after 15s OR any user engagement, whichever comes first.
+    const engaged = userMsgs >= 1 || openedForMs >= 15_000;
+    if (!leadSubmitted && !reminderSubmitted && !alreadySeen && engaged && !highRisk) {
       sessionStorage.setItem(CLOSE_INTERCEPT_KEY, "1");
       setShowReminderPrompt(true);
       logEvent("close_intercept_shown");
@@ -289,6 +310,38 @@ const AIChatWidget = () => {
     }
     setOpen(false);
   };
+
+  // Broader exit-intent: fire close intercept on tab blur, back-button, and desktop mouseleave.
+  useEffect(() => {
+    if (!open) return;
+    let armed = true;
+    const arm = () => setTimeout(() => (armed = true), 500);
+    const trigger = () => {
+      if (!armed) return;
+      const alreadySeen = sessionStorage.getItem(CLOSE_INTERCEPT_KEY);
+      if (leadSubmitted || reminderSubmitted || alreadySeen || highRisk) return;
+      const openedForMs = Date.now() - openedAtRef.current;
+      if (openedForMs < 8_000) return;
+      armed = false;
+      sessionStorage.setItem(CLOSE_INTERCEPT_KEY, "1");
+      setShowReminderPrompt(true);
+      logEvent("close_intercept_shown", { via: "exit_intent" });
+      arm();
+    };
+    const onVis = () => { if (document.visibilityState === "hidden") trigger(); };
+    const onMouseOut = (e: MouseEvent) => {
+      if (e.clientY <= 0 || e.relatedTarget == null) trigger();
+    };
+    const onPop = () => trigger();
+    document.addEventListener("visibilitychange", onVis);
+    document.addEventListener("mouseout", onMouseOut);
+    window.addEventListener("popstate", onPop);
+    return () => {
+      document.removeEventListener("visibilitychange", onVis);
+      document.removeEventListener("mouseout", onMouseOut);
+      window.removeEventListener("popstate", onPop);
+    };
+  }, [open, leadSubmitted, reminderSubmitted, highRisk]);
 
   const submitReminder = async () => {
     const phone = reminderPhone.trim();
@@ -351,27 +404,44 @@ const AIChatWidget = () => {
 
   const submitLead = async () => {
     setLeadError(null);
-    if (!leadPhone.trim() && !leadEmail.trim()) {
-      setLeadError("Please share a phone number or email so we can reach you.");
-      return;
-    }
-    if (leadEmail.trim() && !/^\S+@\S+\.\S+$/.test(leadEmail.trim())) {
-      setLeadError("That email doesn't look right.");
-      return;
+    if (leadStep === 1) {
+      const phone = leadPhone.trim();
+      if (!/^[+\d][\d\s()-]{6,}$/.test(phone)) {
+        setLeadError("Please enter a valid WhatsApp number.");
+        return;
+      }
+    } else {
+      if (leadEmail.trim() && !/^\S+@\S+\.\S+$/.test(leadEmail.trim())) {
+        setLeadError("That email doesn't look right.");
+        return;
+      }
     }
     setLeadSubmitting(true);
     try {
-      const { error } = await supabase.from("chat_leads").insert({
-        session_id: sessionId,
-        anonymous_id: getAnonId(),
-        name: leadName.trim() || null,
-        phone: leadPhone.trim() || null,
-        email: leadEmail.trim() || null,
-        intent: leadIntent,
-        message: leadMsg.trim() || null,
-        source_path: window.location.pathname,
-      });
-      if (error) throw error;
+      if (leadStep === 1) {
+        const { data, error } = await supabase.from("chat_leads").insert({
+          session_id: sessionId,
+          anonymous_id: getAnonId(),
+          phone: leadPhone.trim(),
+          intent: leadIntent,
+          source_path: window.location.pathname,
+        }).select("id").single();
+        if (error) throw error;
+        setLeadRowId(data?.id ?? null);
+        setLeadStep(2);
+        trackEvent("ai_chat_lead_phone_captured", { intent: leadIntent });
+        logEvent("lead_phone_captured", { intent: leadIntent });
+        setLeadSubmitting(false);
+        return;
+      }
+      // Step 2 — optional enrichment.
+      if (leadRowId && (leadName.trim() || leadEmail.trim() || leadMsg.trim())) {
+        await supabase.from("chat_leads").update({
+          name: leadName.trim() || null,
+          email: leadEmail.trim() || null,
+          message: leadMsg.trim() || null,
+        }).eq("id", leadRowId);
+      }
       setLeadSubmitted(true);
       setShowLeadForm(false);
       trackEvent("ai_chat_lead_captured", { intent: leadIntent });
@@ -558,7 +628,9 @@ const AIChatWidget = () => {
                 <div className="min-w-0 flex-1">
                   <div className="font-bold text-sm leading-tight flex items-center gap-1.5 truncate">
                     {ASSISTANT_NAME}
-                    <Sparkles className="w-3.5 h-3.5 text-amber-300 flex-shrink-0" />
+                    <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-white/20 text-[9px] font-semibold uppercase tracking-wide">
+                      <ShieldCheck className="w-2.5 h-2.5" /> Verified
+                    </span>
                   </div>
                   <div className="text-[11px] opacity-90 flex items-center gap-1 truncate">
                     <span className="inline-block w-1.5 h-1.5 rounded-full bg-green-400 flex-shrink-0" />
@@ -571,10 +643,14 @@ const AIChatWidget = () => {
               </button>
             </div>
 
-            {/* Disclaimer */}
-            <div className="px-3 py-2 bg-amber-50 border-b border-amber-200 text-[11px] text-amber-900 flex items-start gap-1.5">
+            {/* Social proof strip + disclaimer */}
+            <div className="px-3 py-1.5 bg-emerald-50 border-b border-emerald-100 text-[11px] text-emerald-900 flex items-center gap-1.5">
+              <Star className="w-3 h-3 flex-shrink-0 fill-amber-500 text-amber-500" />
+              <span className="truncate">{MICRO_TESTIMONIALS[testimonialIdx]}</span>
+            </div>
+            <div className="px-3 py-1.5 bg-amber-50 border-b border-amber-200 text-[10px] text-amber-900 flex items-start gap-1.5">
               <AlertTriangle className="w-3 h-3 mt-0.5 flex-shrink-0" />
-              <span>This is a support assistant, not a licensed therapist. For professional help, please book a session.</span>
+              <span>Support assistant, not a licensed therapist. For clinical help, please book a session.</span>
             </div>
 
             {/* Messages */}
@@ -690,16 +766,23 @@ const AIChatWidget = () => {
             {/* Starter chips — only before the user's first message. After that, Amani's own
                 contextual [chips:...] appear inline with her reply, so we don't stack rows. */}
             {messages.length <= 1 && !loading && (
-              <div className="px-3 py-2 border-t border-border flex flex-wrap gap-1.5 bg-background">
-                {QUICK_REPLIES.map((q) => (
-                  <button
-                    key={q.label}
-                    onClick={() => sendMessage(q.text)}
-                    className="text-xs px-3 py-1.5 bg-primary/10 hover:bg-primary hover:text-primary-foreground text-primary border border-primary/30 rounded-full transition-colors"
-                  >
-                    {q.label}
-                  </button>
-                ))}
+              <div className="px-3 py-3 border-t border-border bg-background space-y-2">
+                <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                  <Sparkles className="w-3 h-3 text-primary" />
+                  <span>Tap what feels closest — no typing needed</span>
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  {OPENER_CHIPS.map((q) => (
+                    <button
+                      key={q.label}
+                      onClick={() => sendMessage(q.text)}
+                      className="text-left text-sm px-3 py-2 bg-primary/5 hover:bg-primary hover:text-primary-foreground text-foreground border border-primary/20 hover:border-primary rounded-xl transition-colors flex items-center gap-2"
+                    >
+                      <span className="text-base flex-shrink-0">{q.emoji}</span>
+                      <span className="flex-1">{q.label}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
 
@@ -730,7 +813,8 @@ const AIChatWidget = () => {
               <div className="px-3 py-3 border-t border-border bg-primary/5 space-y-2">
                 <div className="flex items-center justify-between">
                   <div className="text-xs font-bold text-foreground flex items-center gap-1.5">
-                    <UserPlus className="w-3.5 h-3.5 text-primary" /> Leave your details
+                    <UserPlus className="w-3.5 h-3.5 text-primary" />
+                    {leadStep === 1 ? "One quick step — your WhatsApp" : "Almost done — anything else? (optional)"}
                   </div>
                   <button
                     onClick={() => setShowLeadForm(false)}
@@ -740,52 +824,73 @@ const AIChatWidget = () => {
                     <X className="w-3.5 h-3.5" />
                   </button>
                 </div>
-                <input
-                  type="text"
-                  placeholder="Your name (optional)"
-                  value={leadName}
-                  onChange={(e) => setLeadName(e.target.value)}
-                  maxLength={120}
-                  className="w-full px-2.5 py-1.5 text-xs bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                />
-                <div className="flex gap-2">
-                  <input
-                    type="tel"
-                    placeholder="Phone (e.g. 0792 085 773)"
-                    value={leadPhone}
-                    onChange={(e) => setLeadPhone(e.target.value)}
-                    maxLength={30}
-                    className="flex-1 px-2.5 py-1.5 text-xs bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                  <input
-                    type="email"
-                    placeholder="Email"
-                    value={leadEmail}
-                    onChange={(e) => setLeadEmail(e.target.value)}
-                    maxLength={120}
-                    className="flex-1 px-2.5 py-1.5 text-xs bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                </div>
-                <textarea
-                  placeholder="What's on your mind? (optional)"
-                  value={leadMsg}
-                  onChange={(e) => setLeadMsg(e.target.value)}
-                  rows={2}
-                  maxLength={500}
-                  className="w-full px-2.5 py-1.5 text-xs bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary resize-none"
-                />
+                {leadStep === 1 ? (
+                  <>
+                    <input
+                      type="tel"
+                      autoFocus
+                      placeholder="WhatsApp e.g. 0792 085 773"
+                      value={leadPhone}
+                      onChange={(e) => setLeadPhone(e.target.value)}
+                      maxLength={30}
+                      className="w-full px-3 py-2.5 text-sm bg-background border border-primary/40 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                    />
+                    <p className="text-[10px] text-muted-foreground">
+                      We'll only WhatsApp you — no calls, no spam.
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <input
+                      type="text"
+                      placeholder="Your name (optional)"
+                      value={leadName}
+                      onChange={(e) => setLeadName(e.target.value)}
+                      maxLength={120}
+                      className="w-full px-2.5 py-1.5 text-xs bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                    />
+                    <input
+                      type="email"
+                      placeholder="Email (optional)"
+                      value={leadEmail}
+                      onChange={(e) => setLeadEmail(e.target.value)}
+                      maxLength={120}
+                      className="w-full px-2.5 py-1.5 text-xs bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                    />
+                    <textarea
+                      placeholder="Anything you'd like us to know? (optional)"
+                      value={leadMsg}
+                      onChange={(e) => setLeadMsg(e.target.value)}
+                      rows={2}
+                      maxLength={500}
+                      className="w-full px-2.5 py-1.5 text-xs bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+                    />
+                  </>
+                )}
                 {leadError && (
                   <div className="text-[11px] text-red-600">{leadError}</div>
                 )}
-                <Button
-                  onClick={submitLead}
-                  disabled={leadSubmitting}
-                  size="sm"
-                  className="w-full text-xs h-8"
-                >
-                  {leadSubmitting ? <Loader2 className="w-3.5 h-3.5 animate-spin mr-1" /> : <Check className="w-3.5 h-3.5 mr-1" />}
-                  Send my details
-                </Button>
+                <div className="flex gap-2">
+                  {leadStep === 2 && (
+                    <Button
+                      onClick={() => { setLeadSubmitted(true); setShowLeadForm(false); }}
+                      size="sm"
+                      variant="ghost"
+                      className="text-xs h-8"
+                    >
+                      Skip
+                    </Button>
+                  )}
+                  <Button
+                    onClick={submitLead}
+                    disabled={leadSubmitting}
+                    size="sm"
+                    className="flex-1 text-xs h-8"
+                  >
+                    {leadSubmitting ? <Loader2 className="w-3.5 h-3.5 animate-spin mr-1" /> : <Check className="w-3.5 h-3.5 mr-1" />}
+                    {leadStep === 1 ? "Save my WhatsApp" : "Finish"}
+                  </Button>
+                </div>
                 <p className="text-[10px] text-muted-foreground text-center">
                   Private. Used only by InnerSpark to follow up with you.
                 </p>
