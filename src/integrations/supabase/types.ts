@@ -340,6 +340,72 @@ export type Database = {
           },
         ]
       }
+      backlinks: {
+        Row: {
+          acquired_date: string | null
+          anchor_text: string | null
+          category: string | null
+          contact_email: string | null
+          contact_name: string | null
+          created_at: string
+          created_by: string | null
+          domain_authority: number | null
+          id: string
+          is_live: boolean
+          last_checked_at: string | null
+          link_type: string
+          notes: string | null
+          outreach_date: string | null
+          source_domain: string
+          source_url: string
+          status: string
+          target_url: string
+          updated_at: string
+        }
+        Insert: {
+          acquired_date?: string | null
+          anchor_text?: string | null
+          category?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          created_at?: string
+          created_by?: string | null
+          domain_authority?: number | null
+          id?: string
+          is_live?: boolean
+          last_checked_at?: string | null
+          link_type?: string
+          notes?: string | null
+          outreach_date?: string | null
+          source_domain: string
+          source_url: string
+          status?: string
+          target_url: string
+          updated_at?: string
+        }
+        Update: {
+          acquired_date?: string | null
+          anchor_text?: string | null
+          category?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          created_at?: string
+          created_by?: string | null
+          domain_authority?: number | null
+          id?: string
+          is_live?: boolean
+          last_checked_at?: string | null
+          link_type?: string
+          notes?: string | null
+          outreach_date?: string | null
+          source_domain?: string
+          source_url?: string
+          status?: string
+          target_url?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       blog_posts: {
         Row: {
           author: string | null
