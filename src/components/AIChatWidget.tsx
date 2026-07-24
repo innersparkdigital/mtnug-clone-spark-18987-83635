@@ -760,16 +760,23 @@ const AIChatWidget = () => {
             {/* Starter chips — only before the user's first message. After that, Amani's own
                 contextual [chips:...] appear inline with her reply, so we don't stack rows. */}
             {messages.length <= 1 && !loading && (
-              <div className="px-3 py-2 border-t border-border flex flex-wrap gap-1.5 bg-background">
-                {QUICK_REPLIES.map((q) => (
-                  <button
-                    key={q.label}
-                    onClick={() => sendMessage(q.text)}
-                    className="text-xs px-3 py-1.5 bg-primary/10 hover:bg-primary hover:text-primary-foreground text-primary border border-primary/30 rounded-full transition-colors"
-                  >
-                    {q.label}
-                  </button>
-                ))}
+              <div className="px-3 py-3 border-t border-border bg-background space-y-2">
+                <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                  <Sparkles className="w-3 h-3 text-primary" />
+                  <span>Tap what feels closest — no typing needed</span>
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  {OPENER_CHIPS.map((q) => (
+                    <button
+                      key={q.label}
+                      onClick={() => sendMessage(q.text)}
+                      className="text-left text-sm px-3 py-2 bg-primary/5 hover:bg-primary hover:text-primary-foreground text-foreground border border-primary/20 hover:border-primary rounded-xl transition-colors flex items-center gap-2"
+                    >
+                      <span className="text-base flex-shrink-0">{q.emoji}</span>
+                      <span className="flex-1">{q.label}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
 
