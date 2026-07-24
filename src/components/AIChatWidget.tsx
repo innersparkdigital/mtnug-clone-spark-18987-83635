@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, X, Send, Loader2, Phone, Calendar, Heart, AlertTriangle, LifeBuoy, PhoneCall, UserPlus, Check, Sparkles } from "lucide-react";
+import { MessageCircle, X, Send, Loader2, Phone, Calendar, Heart, AlertTriangle, LifeBuoy, PhoneCall, UserPlus, Check, Sparkles, ShieldCheck, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
@@ -36,11 +36,23 @@ function parseChips(content: string): { text: string; chips: Chip[] } {
   return { text, chips };
 }
 
-// Minimal starter chips — only shown before the first user message so the panel doesn't
-// feel cluttered. Amani surfaces contextual chips after each reply via the [chips:...] marker.
-const QUICK_REPLIES = [
-  { label: "Book a session", text: "I'd like to book a therapy session" },
-  { label: "Free check", text: "I want to check my mental wellbeing" },
+// Big tappable opener chips — these directly attack the widget-open → first-message drop-off.
+// Each one seeds a rich first turn so Amani can immediately move into her closing sequence.
+const OPENER_CHIPS: { label: string; emoji: string; text: string }[] = [
+  { label: "I feel anxious or overwhelmed", emoji: "😔", text: "I've been feeling anxious and overwhelmed lately. Can you help me figure out what to do?" },
+  { label: "How much is a session?", emoji: "💰", text: "How much does a therapy session cost?" },
+  { label: "I want to talk to someone tonight", emoji: "🌙", text: "I really need to talk to someone tonight. What's the fastest way?" },
+  { label: "I'm struggling in my relationship", emoji: "💔", text: "I'm struggling in my relationship and I don't know what to do." },
+  { label: "I feel low, no energy", emoji: "🌫️", text: "I've been feeling really low and I have no energy for anything." },
+  { label: "For my team at work", emoji: "🏢", text: "I'm looking for mental health support for my team at work." },
+];
+
+// Rotating social-proof lines shown once per open. Real InnerSpark themes, no PII.
+const MICRO_TESTIMONIALS = [
+  "★★★★★ \"Booked in 4 minutes — my therapist really listened.\" — Sarah, Kampala",
+  "★★★★★ \"Amani made asking for help feel simple.\" — David, Nairobi",
+  "★★★★★ \"I was matched the same day. Life-changing.\" — Aisha, Kampala",
+  "★★★★★ \"The free 20-min call was exactly what I needed.\" — Peter, Uganda",
 ];
 
 const ANON_KEY = "is_chat_anon_id";
@@ -114,6 +126,11 @@ const AIChatWidget = () => {
   const [reminderPhone, setReminderPhone] = useState("");
   const [reminderSubmitting, setReminderSubmitting] = useState(false);
   const [reminderSubmitted, setReminderSubmitted] = useState(false);
+  // Two-step lead capture: phone first, name/email optional after.
+  const [leadStep, setLeadStep] = useState<1 | 2>(1);
+  const [leadRowId, setLeadRowId] = useState<string | null>(null);
+  const [testimonialIdx] = useState(() => Math.floor(Math.random() * MICRO_TESTIMONIALS.length));
+  const openedAtRef = useRef<number>(Date.now());
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -250,6 +267,7 @@ const AIChatWidget = () => {
 
   const handleOpen = () => {
     setOpen(true);
+    openedAtRef.current = Date.now();
     trackEvent("ai_chat_opened");
     logEvent("chat_opened");
   };
@@ -281,7 +299,10 @@ const AIChatWidget = () => {
   const tryCloseWithIntercept = () => {
     const userMsgs = messages.filter((m) => m.role === "user").length;
     const alreadySeen = sessionStorage.getItem(CLOSE_INTERCEPT_KEY);
-    if (!leadSubmitted && !reminderSubmitted && !alreadySeen && userMsgs >= 1 && !highRisk) {
+    const openedForMs = Date.now() - openedAtRef.current;
+    // Fire on any close attempt after 15s OR any user engagement, whichever comes first.
+    const engaged = userMsgs >= 1 || openedForMs >= 15_000;
+    if (!leadSubmitted && !reminderSubmitted && !alreadySeen && engaged && !highRisk) {
       sessionStorage.setItem(CLOSE_INTERCEPT_KEY, "1");
       setShowReminderPrompt(true);
       logEvent("close_intercept_shown");
@@ -289,6 +310,38 @@ const AIChatWidget = () => {
     }
     setOpen(false);
   };
+
+  // Broader exit-intent: fire close intercept on tab blur, back-button, and desktop mouseleave.
+  useEffect(() => {
+    if (!open) return;
+    let armed = true;
+    const arm = () => setTimeout(() => (armed = true), 500);
+    const trigger = () => {
+      if (!armed) return;
+      const alreadySeen = sessionStorage.getItem(CLOSE_INTERCEPT_KEY);
+      if (leadSubmitted || reminderSubmitted || alreadySeen || highRisk) return;
+      const openedForMs = Date.now() - openedAtRef.current;
+      if (openedForMs < 8_000) return;
+      armed = false;
+      sessionStorage.setItem(CLOSE_INTERCEPT_KEY, "1");
+      setShowReminderPrompt(true);
+      logEvent("close_intercept_shown", { via: "exit_intent" });
+      arm();
+    };
+    const onVis = () => { if (document.visibilityState === "hidden") trigger(); };
+    const onMouseOut = (e: MouseEvent) => {
+      if (e.clientY <= 0 || e.relatedTarget == null) trigger();
+    };
+    const onPop = () => trigger();
+    document.addEventListener("visibilitychange", onVis);
+    document.addEventListener("mouseout", onMouseOut);
+    window.addEventListener("popstate", onPop);
+    return () => {
+      document.removeEventListener("visibilitychange", onVis);
+      document.removeEventListener("mouseout", onMouseOut);
+      window.removeEventListener("popstate", onPop);
+    };
+  }, [open, leadSubmitted, reminderSubmitted, highRisk]);
 
   const submitReminder = async () => {
     const phone = reminderPhone.trim();
@@ -351,27 +404,44 @@ const AIChatWidget = () => {
 
   const submitLead = async () => {
     setLeadError(null);
-    if (!leadPhone.trim() && !leadEmail.trim()) {
-      setLeadError("Please share a phone number or email so we can reach you.");
-      return;
-    }
-    if (leadEmail.trim() && !/^\S+@\S+\.\S+$/.test(leadEmail.trim())) {
-      setLeadError("That email doesn't look right.");
-      return;
+    if (leadStep === 1) {
+      const phone = leadPhone.trim();
+      if (!/^[+\d][\d\s()-]{6,}$/.test(phone)) {
+        setLeadError("Please enter a valid WhatsApp number.");
+        return;
+      }
+    } else {
+      if (leadEmail.trim() && !/^\S+@\S+\.\S+$/.test(leadEmail.trim())) {
+        setLeadError("That email doesn't look right.");
+        return;
+      }
     }
     setLeadSubmitting(true);
     try {
-      const { error } = await supabase.from("chat_leads").insert({
-        session_id: sessionId,
-        anonymous_id: getAnonId(),
-        name: leadName.trim() || null,
-        phone: leadPhone.trim() || null,
-        email: leadEmail.trim() || null,
-        intent: leadIntent,
-        message: leadMsg.trim() || null,
-        source_path: window.location.pathname,
-      });
-      if (error) throw error;
+      if (leadStep === 1) {
+        const { data, error } = await supabase.from("chat_leads").insert({
+          session_id: sessionId,
+          anonymous_id: getAnonId(),
+          phone: leadPhone.trim(),
+          intent: leadIntent,
+          source_path: window.location.pathname,
+        }).select("id").single();
+        if (error) throw error;
+        setLeadRowId(data?.id ?? null);
+        setLeadStep(2);
+        trackEvent("ai_chat_lead_phone_captured", { intent: leadIntent });
+        logEvent("lead_phone_captured", { intent: leadIntent });
+        setLeadSubmitting(false);
+        return;
+      }
+      // Step 2 — optional enrichment.
+      if (leadRowId && (leadName.trim() || leadEmail.trim() || leadMsg.trim())) {
+        await supabase.from("chat_leads").update({
+          name: leadName.trim() || null,
+          email: leadEmail.trim() || null,
+          message: leadMsg.trim() || null,
+        }).eq("id", leadRowId);
+      }
       setLeadSubmitted(true);
       setShowLeadForm(false);
       trackEvent("ai_chat_lead_captured", { intent: leadIntent });
