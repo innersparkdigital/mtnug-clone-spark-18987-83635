@@ -628,7 +628,9 @@ const AIChatWidget = () => {
                 <div className="min-w-0 flex-1">
                   <div className="font-bold text-sm leading-tight flex items-center gap-1.5 truncate">
                     {ASSISTANT_NAME}
-                    <Sparkles className="w-3.5 h-3.5 text-amber-300 flex-shrink-0" />
+                    <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-white/20 text-[9px] font-semibold uppercase tracking-wide">
+                      <ShieldCheck className="w-2.5 h-2.5" /> Verified
+                    </span>
                   </div>
                   <div className="text-[11px] opacity-90 flex items-center gap-1 truncate">
                     <span className="inline-block w-1.5 h-1.5 rounded-full bg-green-400 flex-shrink-0" />
@@ -641,10 +643,14 @@ const AIChatWidget = () => {
               </button>
             </div>
 
-            {/* Disclaimer */}
-            <div className="px-3 py-2 bg-amber-50 border-b border-amber-200 text-[11px] text-amber-900 flex items-start gap-1.5">
+            {/* Social proof strip + disclaimer */}
+            <div className="px-3 py-1.5 bg-emerald-50 border-b border-emerald-100 text-[11px] text-emerald-900 flex items-center gap-1.5">
+              <Star className="w-3 h-3 flex-shrink-0 fill-amber-500 text-amber-500" />
+              <span className="truncate">{MICRO_TESTIMONIALS[testimonialIdx]}</span>
+            </div>
+            <div className="px-3 py-1.5 bg-amber-50 border-b border-amber-200 text-[10px] text-amber-900 flex items-start gap-1.5">
               <AlertTriangle className="w-3 h-3 mt-0.5 flex-shrink-0" />
-              <span>This is a support assistant, not a licensed therapist. For professional help, please book a session.</span>
+              <span>Support assistant, not a licensed therapist. For clinical help, please book a session.</span>
             </div>
 
             {/* Messages */}
