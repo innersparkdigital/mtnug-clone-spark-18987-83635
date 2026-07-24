@@ -72,7 +72,8 @@ import {
   Mic,
   Home,
   Inbox,
-  DollarSign
+  DollarSign,
+  Link2
 } from 'lucide-react';
 import {
   ChartContainer,
