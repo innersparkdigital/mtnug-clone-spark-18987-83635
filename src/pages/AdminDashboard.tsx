@@ -73,7 +73,8 @@ import {
   Home,
   Inbox,
   DollarSign,
-  Link2
+  Link2,
+  Globe
 } from 'lucide-react';
 import {
   ChartContainer,
