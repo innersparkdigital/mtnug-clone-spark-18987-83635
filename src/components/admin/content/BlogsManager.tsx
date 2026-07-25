@@ -28,12 +28,14 @@ interface BlogPost {
   scheduled_for: string | null;
   published_at: string | null;
   created_at: string;
+  meta_description: string | null;
+  meta_keywords: string | null;
 }
 
 const empty: Partial<BlogPost> = {
   slug: "", title: "", excerpt: "", content: "", category: "Mental Health",
   hero_image_url: "", author: "InnerSpark Team", read_time: "5 min read",
-  status: "draft", scheduled_for: null,
+  status: "draft", scheduled_for: null, meta_description: "", meta_keywords: "",
 };
 
 const BlogsManager = () => {
@@ -81,6 +83,8 @@ const BlogsManager = () => {
       scheduled_for: form.scheduled_for || null,
       published_at: status === "published" ? new Date().toISOString() : null,
       created_by: user?.id,
+      meta_description: form.meta_description?.trim() || null,
+      meta_keywords: form.meta_keywords?.trim() || null,
     };
     const { error } = form.id
       ? await supabase.from("blog_posts").update(payload).eq("id", form.id)
