@@ -416,6 +416,8 @@ export type Database = {
           excerpt: string | null
           hero_image_url: string | null
           id: string
+          meta_description: string | null
+          meta_keywords: string | null
           published_at: string | null
           read_time: string | null
           scheduled_for: string | null
@@ -433,6 +435,8 @@ export type Database = {
           excerpt?: string | null
           hero_image_url?: string | null
           id?: string
+          meta_description?: string | null
+          meta_keywords?: string | null
           published_at?: string | null
           read_time?: string | null
           scheduled_for?: string | null
@@ -450,6 +454,8 @@ export type Database = {
           excerpt?: string | null
           hero_image_url?: string | null
           id?: string
+          meta_description?: string | null
+          meta_keywords?: string | null
           published_at?: string | null
           read_time?: string | null
           scheduled_for?: string | null
@@ -2900,42 +2906,84 @@ export type Database = {
       therapist_clients: {
         Row: {
           access_token: string
+          amount_ugx: number | null
+          client_code: string | null
+          country: string | null
           created_at: string
+          duration_mins: number | null
           email: string | null
           full_name: string
           id: string
+          innerspark_share_ugx: number | null
           last_seen_at: string | null
+          last_session_date: string | null
+          next_session_date: string | null
+          paid_status: string | null
           passcode_hash: string | null
           phone: string | null
           presenting_concern: string | null
+          receipt_number: string | null
+          receipt_url: string | null
+          session_rating: number | null
+          session_type: string | null
           therapist_id: string
+          therapist_share_ugx: number | null
           updated_at: string
+          would_rebook: boolean | null
         }
         Insert: {
           access_token?: string
+          amount_ugx?: number | null
+          client_code?: string | null
+          country?: string | null
           created_at?: string
+          duration_mins?: number | null
           email?: string | null
           full_name: string
           id?: string
+          innerspark_share_ugx?: number | null
           last_seen_at?: string | null
+          last_session_date?: string | null
+          next_session_date?: string | null
+          paid_status?: string | null
           passcode_hash?: string | null
           phone?: string | null
           presenting_concern?: string | null
+          receipt_number?: string | null
+          receipt_url?: string | null
+          session_rating?: number | null
+          session_type?: string | null
           therapist_id: string
+          therapist_share_ugx?: number | null
           updated_at?: string
+          would_rebook?: boolean | null
         }
         Update: {
           access_token?: string
+          amount_ugx?: number | null
+          client_code?: string | null
+          country?: string | null
           created_at?: string
+          duration_mins?: number | null
           email?: string | null
           full_name?: string
           id?: string
+          innerspark_share_ugx?: number | null
           last_seen_at?: string | null
+          last_session_date?: string | null
+          next_session_date?: string | null
+          paid_status?: string | null
           passcode_hash?: string | null
           phone?: string | null
           presenting_concern?: string | null
+          receipt_number?: string | null
+          receipt_url?: string | null
+          session_rating?: number | null
+          session_type?: string | null
           therapist_id?: string
+          therapist_share_ugx?: number | null
           updated_at?: string
+          would_rebook?: boolean | null
         }
         Relationships: [
           {
@@ -3499,7 +3547,27 @@ export type Database = {
       admin_list_enquiries: { Args: never; Returns: Json }
       admin_list_session_logs: { Args: never; Returns: Json }
       admin_overview_stats: { Args: never; Returns: Json }
+      admin_revenue_by_session_type: { Args: never; Returns: Json }
       admin_therapist_performance: { Args: never; Returns: Json }
+      admin_update_client_tracker: {
+        Args: {
+          _amount_ugx?: number
+          _client_id: string
+          _country?: string
+          _duration_mins?: number
+          _innerspark_share_ugx?: number
+          _last_session_date?: string
+          _next_session_date?: string
+          _paid_status?: string
+          _receipt_number?: string
+          _receipt_url?: string
+          _session_rating?: number
+          _session_type?: string
+          _therapist_share_ugx?: number
+          _would_rebook?: boolean
+        }
+        Returns: boolean
+      }
       clear_mindcheck_data: {
         Args: { tables_to_clear: string[] }
         Returns: Json

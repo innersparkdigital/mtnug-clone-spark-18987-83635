@@ -28,12 +28,14 @@ interface BlogPost {
   scheduled_for: string | null;
   published_at: string | null;
   created_at: string;
+  meta_description: string | null;
+  meta_keywords: string | null;
 }
 
 const empty: Partial<BlogPost> = {
   slug: "", title: "", excerpt: "", content: "", category: "Mental Health",
   hero_image_url: "", author: "InnerSpark Team", read_time: "5 min read",
-  status: "draft", scheduled_for: null,
+  status: "draft", scheduled_for: null, meta_description: "", meta_keywords: "",
 };
 
 const BlogsManager = () => {
@@ -81,6 +83,8 @@ const BlogsManager = () => {
       scheduled_for: form.scheduled_for || null,
       published_at: status === "published" ? new Date().toISOString() : null,
       created_by: user?.id,
+      meta_description: form.meta_description?.trim() || null,
+      meta_keywords: form.meta_keywords?.trim() || null,
     };
     const { error } = form.id
       ? await supabase.from("blog_posts").update(payload).eq("id", form.id)
@@ -157,6 +161,28 @@ const BlogsManager = () => {
               <div><Label>Category</Label><Input value={form.category || ""} onChange={(e) => setForm({ ...form, category: e.target.value })} /></div>
             </div>
             <div><Label>Excerpt</Label><Textarea rows={2} value={form.excerpt || ""} onChange={(e) => setForm({ ...form, excerpt: e.target.value })} /></div>
+            <div className="rounded-lg border bg-muted/30 p-3 space-y-3">
+              <div>
+                <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">SEO — Meta description</Label>
+                <Textarea
+                  rows={2}
+                  maxLength={160}
+                  placeholder="What Google shows under the title in search results (max 160 chars)"
+                  value={form.meta_description || ""}
+                  onChange={(e) => setForm({ ...form, meta_description: e.target.value })}
+                />
+                <p className="text-[11px] text-muted-foreground mt-1">{(form.meta_description || "").length}/160 characters</p>
+              </div>
+              <div>
+                <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">SEO — Target keywords</Label>
+                <Input
+                  placeholder="anxiety therapy uganda, online counselling kampala, mental health support"
+                  value={form.meta_keywords || ""}
+                  onChange={(e) => setForm({ ...form, meta_keywords: e.target.value })}
+                />
+                <p className="text-[11px] text-muted-foreground mt-1">Comma-separated. Helps Google understand what searches this post should rank for.</p>
+              </div>
+            </div>
             <div>
               <Label>Hero Image</Label>
               <div className="flex gap-2 items-center">

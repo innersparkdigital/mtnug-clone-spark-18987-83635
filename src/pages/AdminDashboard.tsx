@@ -73,7 +73,8 @@ import {
   Home,
   Inbox,
   DollarSign,
-  Link2
+  Link2,
+  Globe
 } from 'lucide-react';
 import {
   ChartContainer,
@@ -361,8 +362,8 @@ const AdminDashboard = () => {
             )}
             {isAdmin && (
               <TabsTrigger value="kenya-referrals" className="gap-2">
-                <span aria-hidden>🇰🇪</span>
-                Kenya Referrals
+                <Globe className="h-4 w-4" />
+                Traffic & Referrals
               </TabsTrigger>
             )}
             {isAdmin && (
