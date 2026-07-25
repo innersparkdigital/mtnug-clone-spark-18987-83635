@@ -11,6 +11,8 @@ interface Post {
   slug: string; title: string; excerpt: string | null; content: string;
   category: string | null; hero_image_url: string | null; author: string | null;
   read_time: string | null; published_at: string | null; created_at: string;
+  meta_description?: string | null;
+  meta_keywords?: string | null;
 }
 
 const CmsBlogPost = () => {
@@ -34,17 +36,24 @@ const CmsBlogPost = () => {
 
   const date = post.published_at || post.created_at;
   const url = `https://www.innersparkafrica.com/blog/${post.slug}`;
+  const description = post.meta_description || post.excerpt || post.title;
 
   return (
     <>
       <Helmet>
         <title>{post.title} | InnerSpark Africa</title>
-        <meta name="description" content={post.excerpt || post.title} />
+        <meta name="description" content={description} />
+        {post.meta_keywords && <meta name="keywords" content={post.meta_keywords} />}
         <link rel="canonical" href={url} />
         <meta property="og:title" content={post.title} />
-        <meta property="og:description" content={post.excerpt || ""} />
+        <meta property="og:description" content={description} />
         {post.hero_image_url && <meta property="og:image" content={post.hero_image_url} />}
         <meta property="og:type" content="article" />
+        <meta property="og:url" content={url} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={post.title} />
+        <meta name="twitter:description" content={description} />
+        {post.hero_image_url && <meta name="twitter:image" content={post.hero_image_url} />}
       </Helmet>
       <Header />
       <main>

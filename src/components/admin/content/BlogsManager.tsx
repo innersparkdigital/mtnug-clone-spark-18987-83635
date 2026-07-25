@@ -161,6 +161,28 @@ const BlogsManager = () => {
               <div><Label>Category</Label><Input value={form.category || ""} onChange={(e) => setForm({ ...form, category: e.target.value })} /></div>
             </div>
             <div><Label>Excerpt</Label><Textarea rows={2} value={form.excerpt || ""} onChange={(e) => setForm({ ...form, excerpt: e.target.value })} /></div>
+            <div className="rounded-lg border bg-muted/30 p-3 space-y-3">
+              <div>
+                <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">SEO — Meta description</Label>
+                <Textarea
+                  rows={2}
+                  maxLength={160}
+                  placeholder="What Google shows under the title in search results (max 160 chars)"
+                  value={form.meta_description || ""}
+                  onChange={(e) => setForm({ ...form, meta_description: e.target.value })}
+                />
+                <p className="text-[11px] text-muted-foreground mt-1">{(form.meta_description || "").length}/160 characters</p>
+              </div>
+              <div>
+                <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">SEO — Target keywords</Label>
+                <Input
+                  placeholder="anxiety therapy uganda, online counselling kampala, mental health support"
+                  value={form.meta_keywords || ""}
+                  onChange={(e) => setForm({ ...form, meta_keywords: e.target.value })}
+                />
+                <p className="text-[11px] text-muted-foreground mt-1">Comma-separated. Helps Google understand what searches this post should rank for.</p>
+              </div>
+            </div>
             <div>
               <Label>Hero Image</Label>
               <div className="flex gap-2 items-center">
