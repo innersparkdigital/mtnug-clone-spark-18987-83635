@@ -6,9 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Loader2, AlertOctagon, Download, Eye } from "lucide-react";
+import { Loader2, AlertOctagon, Download, Eye, Receipt, Save, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
 import AdminClientDetailDialog from "./AdminClientDetailDialog";
+import { buildReceiptPdf, makeReceiptNumber } from "@/lib/receiptPdf";
 
 interface Row {
   id: string;
@@ -26,7 +27,23 @@ interface Row {
   open_alerts: number;
   last_submission_at: string | null;
   next_session_date: string | null;
+  client_code: string | null;
+  country: string | null;
+  session_type: string | null;
+  duration_mins: number | null;
+  session_rating: number | null;
+  would_rebook: boolean | null;
+  amount_ugx: number | null;
+  therapist_share_ugx: number | null;
+  innerspark_share_ugx: number | null;
+  paid_status: string | null;
+  receipt_number: string | null;
+  receipt_url: string | null;
+  last_session_date: string | null;
 }
+
+const fmtUGX = (n: number | null) => (n ? `UGX ${Math.round(Number(n)).toLocaleString()}` : "—");
+const SESSION_TYPES = ["individual", "couples", "teen", "group", "corporate"];
 
 const riskLevel = (r: Row): "high" | "medium" | "low" => {
   if (r.open_alerts > 0) return "high";
@@ -44,6 +61,9 @@ const AdminClientsTab = () => {
   const [therapistFilter, setTherapistFilter] = useState<string>("all");
   const [riskFilter, setRiskFilter] = useState<string>("all");
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [edits, setEdits] = useState<Record<string, Partial<Row>>>({});
+  const [savingId, setSavingId] = useState<string | null>(null);
+  const [receiptId, setReceiptId] = useState<string | null>(null);
 
   const load = async () => {
     setLoading(true);
@@ -74,13 +94,99 @@ const AdminClientsTab = () => {
     });
   }, [rows, search, therapistFilter, riskFilter]);
 
+  const val = <K extends keyof Row>(r: Row, k: K): Row[K] =>
+    (edits[r.id] && k in edits[r.id]! ? (edits[r.id] as Row)[k] : r[k]);
+
+  const setVal = (id: string, k: keyof Row, v: any) =>
+    setEdits((e) => ({ ...e, [id]: { ...e[id], [k]: v } }));
+
+  const saveRow = async (r: Row) => {
+    setSavingId(r.id);
+    const e = edits[r.id] || {};
+    const amount = Number(val(r, "amount_ugx") || 0);
+    const therapistShare = e.therapist_share_ugx ?? r.therapist_share_ugx ?? (amount ? Math.round(amount * 0.6) : null);
+    const { error } = await supabase.rpc("admin_update_client_tracker" as any, {
+      _client_id: r.id,
+      _session_type: val(r, "session_type") ?? null,
+      _duration_mins: val(r, "duration_mins") ? Number(val(r, "duration_mins")) : null,
+      _session_rating: val(r, "session_rating") ? Number(val(r, "session_rating")) : null,
+      _next_session_date: val(r, "next_session_date") || null,
+      _would_rebook: val(r, "would_rebook") ?? null,
+      _amount_ugx: amount || null,
+      _therapist_share_ugx: therapistShare,
+      _innerspark_share_ugx: amount ? amount - Number(therapistShare || 0) : null,
+      _paid_status: val(r, "paid_status") ?? null,
+      _last_session_date: val(r, "last_session_date") || null,
+      _country: val(r, "country") ?? null,
+      _receipt_number: r.receipt_number,
+      _receipt_url: r.receipt_url,
+    });
+    setSavingId(null);
+    if (error) return toast.error(error.message);
+    toast.success("Session saved · finance updated");
+    setEdits((prev) => { const n = { ...prev }; delete n[r.id]; return n; });
+    load();
+  };
+
+  const generateReceipt = async (r: Row) => {
+    const amount = Number(val(r, "amount_ugx") || 0);
+    if (!amount) return toast.error("Add the session amount first.");
+    setReceiptId(r.id);
+    const receiptNumber = r.receipt_number || makeReceiptNumber();
+    const { doc, base64 } = buildReceiptPdf({
+      receiptNumber,
+      clientName: r.full_name,
+      clientCode: r.client_code,
+      clientPhone: r.phone,
+      clientEmail: r.email,
+      therapistName: r.therapist_name,
+      sessionDate: (val(r, "last_session_date") as string) || new Date().toISOString().slice(0, 10),
+      sessionType: val(r, "session_type") as string,
+      durationMins: val(r, "duration_mins") as number,
+      amountUgx: amount,
+      paidStatus: (val(r, "paid_status") as string) || "paid",
+    });
+    doc.save(`${receiptNumber}.pdf`);
+
+    const { data, error } = await supabase.functions.invoke("send-receipt-email", {
+      body: {
+        recipient_email: r.email,
+        recipient_name: r.full_name,
+        pdf_base64: base64,
+        receipt_number: receiptNumber,
+        amount_ugx: amount,
+        session_type: val(r, "session_type"),
+        session_date: val(r, "last_session_date"),
+        client_id: r.id,
+        send_email: !!r.email,
+      },
+    });
+    setReceiptId(null);
+    if (error) return toast.error(error.message);
+
+    const url = (data as any)?.receipt_url as string | undefined;
+    if (url && r.phone) {
+      const msg = encodeURIComponent(
+        `Hi ${r.full_name.split(" ")[0]}, here is your InnerSpark receipt ${receiptNumber} for ${fmtUGX(amount)}: ${url}`,
+      );
+      window.open(`https://wa.me/${r.phone.replace(/[^0-9]/g, "")}?text=${msg}`, "_blank");
+    } else if (url) {
+      await navigator.clipboard.writeText(url).catch(() => {});
+      toast.success("Receipt link copied");
+    }
+    toast.success(r.email ? "Receipt generated and emailed" : "Receipt generated");
+    load();
+  };
+
   const exportCsv = () => {
-    const header = ["Client", "Therapist", "Email", "Phone", "Concern", "Risk", "Active tools", "Completed tools", "Open alerts", "Last activity", "Next session"];
-    const lines = filtered.map((r) => [
-      r.full_name, r.therapist_name, r.email || "", r.phone || "", r.presenting_concern || "",
-      riskLevel(r), r.active_tools, r.completed_tools, r.open_alerts,
-      r.last_submission_at ? new Date(r.last_submission_at).toISOString() : "",
-      r.next_session_date || "",
+    const header = ["#", "Session Date", "Client Name", "Client Code", "Client Number", "Email", "Country", "Therapist Name", "Presenting Concern", "Session Type", "Duration (mins)", "Session Rating", "Next Session", "Would Rebook", "Amount UGX", "Therapist UGX", "InnerSpark UGX", "Paid", "Receipt No."];
+    const lines = filtered.map((r, i) => [
+      i + 1, r.last_session_date || "", r.full_name, r.client_code || "", r.phone || "", r.email || "",
+      r.country || "", r.therapist_name, r.presenting_concern || "", r.session_type || "",
+      r.duration_mins ?? "", r.session_rating ?? "", r.next_session_date || "",
+      r.would_rebook === null ? "" : r.would_rebook ? "Yes" : "No",
+      r.amount_ugx ?? "", r.therapist_share_ugx ?? "", r.innerspark_share_ugx ?? "",
+      r.paid_status || "", r.receipt_number || "",
     ]);
     const csv = [header, ...lines].map((row) => row.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n");
     const url = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
@@ -94,8 +200,8 @@ const AdminClientsTab = () => {
         <CardHeader className="pb-3">
           <div className="flex justify-between items-center flex-wrap gap-3">
             <div>
-              <CardTitle className="text-lg">All Clients</CardTitle>
-              <p className="text-xs text-muted-foreground mt-1">Read-only across every therapist ({filtered.length} of {rows.length})</p>
+              <CardTitle className="text-lg">Therapy Session Tracker</CardTitle>
+              <p className="text-xs text-muted-foreground mt-1">Every client across every therapist · edit inline, save to post income to Finance ({filtered.length} of {rows.length})</p>
             </div>
             <div className="flex gap-2">
               <Button variant="outline" size="sm" onClick={exportCsv}><Download className="h-4 w-4 mr-1" /> CSV</Button>
@@ -128,47 +234,96 @@ const AdminClientsTab = () => {
             <div className="flex justify-center py-12"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
           ) : (
             <div className="overflow-x-auto">
-              <Table>
+              <Table className="min-w-[1800px] text-xs">
                 <TableHeader>
                   <TableRow>
-                    <TableHead>#</TableHead>
-                    <TableHead>Client</TableHead>
-                    <TableHead>Therapist</TableHead>
-                    <TableHead>Concern</TableHead>
-                    <TableHead>Homework</TableHead>
-                    <TableHead>Risk</TableHead>
-                    <TableHead>Last activity</TableHead>
-                    <TableHead>Next session</TableHead>
-                    <TableHead></TableHead>
+                    {["#", "Session Date", "Client Name", "Client Code", "Client Number", "Email", "Country", "Therapist Name", "Presenting Concern", "Session Type", "Duration", "Rating", "Next Session", "Would Rebook", "Amount UGX", "Therapist UGX", "InnerSpark UGX", "Paid", "Risk", "Actions"].map((h) => (
+                      <TableHead key={h} className="whitespace-nowrap text-[11px]">{h}</TableHead>
+                    ))}
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filtered.map((r, i) => {
                     const risk = riskLevel(r);
+                    const dirty = !!edits[r.id];
+                    const amount = Number(val(r, "amount_ugx") || 0);
+                    const tShare = Number(val(r, "therapist_share_ugx") ?? (amount ? Math.round(amount * 0.6) : 0));
                     return (
-                      <TableRow key={r.id}>
-                        <TableCell className="text-xs text-muted-foreground">{i + 1}</TableCell>
+                      <TableRow key={r.id} className={dirty ? "bg-primary/5" : ""}>
+                        <TableCell className="text-muted-foreground">{i + 1}</TableCell>
                         <TableCell>
-                          <p className="font-medium">{r.full_name}</p>
-                          <p className="text-xs text-muted-foreground">{r.email || r.phone || "—"}</p>
+                          <Input type="date" className="h-8 w-[130px] text-xs" value={(val(r, "last_session_date") as string) || ""} onChange={(e) => setVal(r.id, "last_session_date", e.target.value)} />
                         </TableCell>
-                        <TableCell className="text-sm">{r.therapist_name}</TableCell>
-                        <TableCell className="text-xs max-w-[200px] truncate">{r.presenting_concern || "—"}</TableCell>
-                        <TableCell className="text-xs">{r.completed_tools}/{r.total_tools}</TableCell>
+                        <TableCell className="font-medium whitespace-nowrap">{r.full_name}</TableCell>
+                        <TableCell className="font-mono">{r.client_code || "—"}</TableCell>
+                        <TableCell className="whitespace-nowrap">{r.phone || "—"}</TableCell>
+                        <TableCell className="max-w-[160px] truncate">{r.email || "—"}</TableCell>
                         <TableCell>
-                          <Badge variant={risk === "high" ? "destructive" : risk === "medium" ? "outline" : "secondary"} className="text-xs">
+                          <Input className="h-8 w-[90px] text-xs" placeholder="Uganda" value={(val(r, "country") as string) || ""} onChange={(e) => setVal(r.id, "country", e.target.value)} />
+                        </TableCell>
+                        <TableCell className="whitespace-nowrap">{r.therapist_name}</TableCell>
+                        <TableCell className="max-w-[160px] truncate">{r.presenting_concern || "—"}</TableCell>
+                        <TableCell>
+                          <Select value={(val(r, "session_type") as string) || ""} onValueChange={(v) => setVal(r.id, "session_type", v)}>
+                            <SelectTrigger className="h-8 w-[120px] text-xs"><SelectValue placeholder="Type" /></SelectTrigger>
+                            <SelectContent>{SESSION_TYPES.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
+                          </Select>
+                        </TableCell>
+                        <TableCell>
+                          <Input type="number" className="h-8 w-[70px] text-xs" value={(val(r, "duration_mins") as number) ?? ""} onChange={(e) => setVal(r.id, "duration_mins", e.target.value)} />
+                        </TableCell>
+                        <TableCell>
+                          <Input type="number" min={1} max={5} className="h-8 w-[60px] text-xs" value={(val(r, "session_rating") as number) ?? ""} onChange={(e) => setVal(r.id, "session_rating", e.target.value)} />
+                        </TableCell>
+                        <TableCell>
+                          <Input type="date" className="h-8 w-[130px] text-xs" value={(val(r, "next_session_date") as string) || ""} onChange={(e) => setVal(r.id, "next_session_date", e.target.value)} />
+                        </TableCell>
+                        <TableCell>
+                          <Select value={val(r, "would_rebook") === null || val(r, "would_rebook") === undefined ? "" : val(r, "would_rebook") ? "yes" : "no"} onValueChange={(v) => setVal(r.id, "would_rebook", v === "yes")}>
+                            <SelectTrigger className="h-8 w-[80px] text-xs"><SelectValue placeholder="—" /></SelectTrigger>
+                            <SelectContent><SelectItem value="yes">Yes</SelectItem><SelectItem value="no">No</SelectItem></SelectContent>
+                          </Select>
+                        </TableCell>
+                        <TableCell>
+                          <Input type="number" className="h-8 w-[100px] text-xs" value={(val(r, "amount_ugx") as number) ?? ""} onChange={(e) => setVal(r.id, "amount_ugx", e.target.value)} />
+                        </TableCell>
+                        <TableCell>
+                          <Input type="number" className="h-8 w-[100px] text-xs" value={(val(r, "therapist_share_ugx") as number) ?? (amount ? Math.round(amount * 0.6) : "")} onChange={(e) => setVal(r.id, "therapist_share_ugx", e.target.value)} />
+                        </TableCell>
+                        <TableCell className="whitespace-nowrap">{amount ? fmtUGX(amount - tShare) : "—"}</TableCell>
+                        <TableCell>
+                          <Select value={(val(r, "paid_status") as string) || ""} onValueChange={(v) => setVal(r.id, "paid_status", v)}>
+                            <SelectTrigger className="h-8 w-[100px] text-xs"><SelectValue placeholder="—" /></SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="paid">Paid</SelectItem>
+                              <SelectItem value="pending">Pending</SelectItem>
+                              <SelectItem value="waived">Waived</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant={risk === "high" ? "destructive" : risk === "medium" ? "outline" : "secondary"} className="text-[10px]">
                             {r.open_alerts > 0 && <AlertOctagon className="h-3 w-3 mr-1" />}
                             {risk}
                           </Badge>
                         </TableCell>
-                        <TableCell className="text-xs">
-                          {r.last_submission_at ? new Date(r.last_submission_at).toLocaleDateString() : "—"}
-                        </TableCell>
-                        <TableCell className="text-xs">{r.next_session_date || "—"}</TableCell>
                         <TableCell>
-                          <Button size="sm" variant="ghost" onClick={() => setSelectedId(r.id)}>
-                            <Eye className="h-4 w-4" />
-                          </Button>
+                          <div className="flex gap-1">
+                            <Button size="sm" variant={dirty ? "default" : "ghost"} disabled={!dirty || savingId === r.id} onClick={() => saveRow(r)} title="Save session">
+                              {savingId === r.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+                            </Button>
+                            <Button size="sm" variant="ghost" disabled={receiptId === r.id} onClick={() => generateReceipt(r)} title="Generate receipt (email + WhatsApp)">
+                              {receiptId === r.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Receipt className="h-4 w-4" />}
+                            </Button>
+                            {r.receipt_url && (
+                              <Button size="sm" variant="ghost" title="Share receipt on WhatsApp" onClick={() => window.open(`https://wa.me/${(r.phone || "").replace(/[^0-9]/g, "")}?text=${encodeURIComponent(`Your InnerSpark receipt: ${r.receipt_url}`)}`, "_blank")}>
+                                <MessageCircle className="h-4 w-4" />
+                              </Button>
+                            )}
+                            <Button size="sm" variant="ghost" onClick={() => setSelectedId(r.id)} title="View client">
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                          </div>
                         </TableCell>
                       </TableRow>
                     );
