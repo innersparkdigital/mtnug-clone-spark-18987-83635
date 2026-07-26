@@ -31,11 +31,13 @@ const AdminOverviewTab = ({ onNavigate }: { onNavigate?: (tab: string) => void }
   const { user } = useAuth();
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [errMsg, setErrMsg] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
       const { data, error } = await supabase.rpc("admin_overview_stats" as any);
-      if (!error && data) setStats(data as Stats);
+      if (error) setErrMsg(error.message);
+      else if (data) setStats(data as Stats);
       setLoading(false);
     })();
   }, []);
@@ -47,7 +49,13 @@ const AdminOverviewTab = ({ onNavigate }: { onNavigate?: (tab: string) => void }
       </div>
     );
   }
-  if (!stats) return <p className="text-muted-foreground py-8 text-center">Unable to load overview.</p>;
+  if (!stats)
+    return (
+      <div className="py-10 text-center space-y-2">
+        <p className="text-muted-foreground">Unable to load overview.</p>
+        {errMsg && <p className="text-xs text-destructive">{errMsg}</p>}
+      </div>
+    );
 
   const firstName = (user?.user_metadata?.display_name || user?.email?.split("@")[0] || "Admin").split(" ")[0];
 

@@ -4,10 +4,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGrid } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGrid, PieChart, Pie, Cell, Legend } from "recharts";
 
 interface Payment { amount: number; payment_date: string; }
 interface Perf { id: string; full_name: string; is_active: boolean; total_clients: number; sessions_month: number; homework_given_count: number; next_appt_count: number; }
+interface TypeRow { session_type: string; sessions: number; total_ugx: number; therapist_ugx: number; innerspark_ugx: number; }
+interface Totals { total_ugx: number; therapist_ugx: number; innerspark_ugx: number; paid_ugx: number; unpaid_ugx: number; sessions: number; }
+
+const PIE_COLORS = ["#3B4FD4", "#0C447C", "#10b981", "#f59e0b", "#8b5cf6", "#ef4444"];
 
 const fmtUGX = (n: number) => `UGX ${Math.round(n).toLocaleString()}`;
 
@@ -15,16 +19,24 @@ const AdminRevenueTab = () => {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [perf, setPerf] = useState<Perf[]>([]);
   const [loading, setLoading] = useState(true);
+  const [byType, setByType] = useState<TypeRow[]>([]);
+  const [totals, setTotals] = useState<Totals | null>(null);
 
   useEffect(() => {
     (async () => {
       const since = new Date(Date.now() - 90 * 86400000).toISOString().slice(0, 10);
-      const [{ data: p, error: e1 }, { data: perfData, error: e2 }] = await Promise.all([
+      const [{ data: p, error: e1 }, { data: perfData, error: e2 }, { data: br, error: e3 }] = await Promise.all([
         supabase.from("payments").select("amount, payment_date").gte("payment_date", since),
         supabase.rpc("admin_therapist_performance" as any),
+        supabase.rpc("admin_revenue_by_session_type" as any),
       ]);
       if (e1) toast.error(e1.message);
       if (e2) toast.error(e2.message);
+      if (e3) toast.error(e3.message);
+      if (br) {
+        setByType(((br as any).by_type as TypeRow[]) || []);
+        setTotals((br as any).totals as Totals);
+      }
       setPayments((p as Payment[]) || []);
       setPerf((perfData as Perf[]) || []);
       setLoading(false);
@@ -56,6 +68,57 @@ const AdminRevenueTab = () => {
         <Card><CardContent className="pt-5 pb-4"><p className="text-xs text-muted-foreground">Payments recorded</p><p className="text-2xl font-bold mt-1">{payments.length}</p></CardContent></Card>
         <Card><CardContent className="pt-5 pb-4"><p className="text-xs text-muted-foreground">Active therapists</p><p className="text-2xl font-bold mt-1">{perf.filter((p) => p.is_active).length}</p></CardContent></Card>
       </div>
+
+      {totals && (
+        <>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <Card><CardContent className="pt-5 pb-4"><p className="text-xs text-muted-foreground">Session revenue (all time)</p><p className="text-xl font-bold mt-1">{fmtUGX(Number(totals.total_ugx))}</p></CardContent></Card>
+            <Card><CardContent className="pt-5 pb-4"><p className="text-xs text-muted-foreground">Therapist payouts</p><p className="text-xl font-bold mt-1">{fmtUGX(Number(totals.therapist_ugx))}</p></CardContent></Card>
+            <Card><CardContent className="pt-5 pb-4"><p className="text-xs text-muted-foreground">InnerSpark share</p><p className="text-xl font-bold mt-1 text-emerald-600">{fmtUGX(Number(totals.innerspark_ugx))}</p></CardContent></Card>
+            <Card><CardContent className="pt-5 pb-4"><p className="text-xs text-muted-foreground">Outstanding</p><p className="text-xl font-bold mt-1 text-amber-600">{fmtUGX(Number(totals.unpaid_ugx))}</p></CardContent></Card>
+          </div>
+
+          <Card>
+            <CardHeader><CardTitle className="text-lg">Revenue by session type</CardTitle></CardHeader>
+            <CardContent>
+              {byType.length === 0 ? (
+                <p className="text-center text-muted-foreground py-8 text-sm">No session revenue recorded yet.</p>
+              ) : (
+                <div className="grid md:grid-cols-2 gap-4 items-center">
+                  <div className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie data={byType} dataKey="total_ugx" nameKey="session_type" innerRadius={55} outerRadius={90} paddingAngle={3}>
+                          {byType.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
+                        </Pie>
+                        <Tooltip formatter={(v: number) => fmtUGX(Number(v))} />
+                        <Legend />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Type</TableHead><TableHead>Sessions</TableHead><TableHead>Revenue</TableHead><TableHead>InnerSpark</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {byType.map((t) => (
+                        <TableRow key={t.session_type}>
+                          <TableCell className="capitalize font-medium">{t.session_type}</TableCell>
+                          <TableCell>{t.sessions}</TableCell>
+                          <TableCell>{fmtUGX(Number(t.total_ugx))}</TableCell>
+                          <TableCell className="text-emerald-600">{fmtUGX(Number(t.innerspark_ugx))}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </>
+      )}
 
       <Card>
         <CardHeader><CardTitle className="text-lg">Weekly revenue (UGX)</CardTitle></CardHeader>
