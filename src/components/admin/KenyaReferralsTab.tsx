@@ -275,25 +275,32 @@ export default function KenyaReferralsTab() {
   };
 
   const shareTemplates = (l: RefLink) => {
-    const url = `${ORIGIN}/kenya/ref/${l.slug}`;
-    const discount = l.discount_amount_kes || 0;
-    const price = 2600 - discount;
+    const url = linkUrl(l);
+    const cur = l.currency || "KES";
+    const discount = l.discount_amount ?? l.discount_amount_kes ?? 0;
+    const base = countryCfg(l.country || "Uganda").sessionPrice;
+    const price = Math.max(0, base - discount);
+    const pct = l.reward_percent ?? 5;
     return [
       {
         label: "WhatsApp DM",
-        text: `Hi! I've been using InnerSpark for therapy and wanted to share. Use my link to get KES ${discount} off your first session (KES ${price}): ${url}`,
+        text: `Hi! I've been using InnerSpark for therapy and wanted to share. Use my link to get ${cur} ${discount.toLocaleString()} off your first session (${cur} ${price.toLocaleString()}): ${url}`,
       },
       {
         label: "WhatsApp Group",
-        text: `*Mental health support, made for Kenya* 🇰🇪\nAffordable online therapy, M-Pesa payment, private and confidential.\nGet KES ${discount} off your first session using this link:\n${url}`,
+        text: `*Mental health support you can afford*\nOnline therapy, private and confidential.\nGet ${cur} ${discount.toLocaleString()} off your first session using this link:\n${url}`,
       },
       {
         label: "WhatsApp Status",
-        text: `Therapy that works for Kenyans. From KES ${price} — pay via M-Pesa. ${url}`,
+        text: `Therapy that actually fits your life. From ${cur} ${price.toLocaleString()}. ${url}`,
       },
       {
         label: "LinkedIn",
-        text: `If you're navigating stress, burnout, or anxiety — InnerSpark offers affordable online therapy across Kenya. First session KES ${price} with this link: ${url}`,
+        text: `If you're navigating stress, burnout, or anxiety — InnerSpark offers affordable online therapy. First session ${cur} ${price.toLocaleString()} with this link: ${url}`,
+      },
+      {
+        label: "Refer-a-friend (after a paid session)",
+        text: `Thanks for your session today 💙 If you know 2 people going through something similar, share your personal link: ${url}\nWhen they book and pay, you get ${pct}% off your next session — every single time.`,
       },
     ];
   };
