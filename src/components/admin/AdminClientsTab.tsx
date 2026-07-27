@@ -293,6 +293,8 @@ const AdminClientsTab = () => {
               <p className="text-xs text-muted-foreground mt-1">Every client across every therapist · edit inline, save to post income to Finance ({filtered.length} of {rows.length})</p>
             </div>
             <div className="flex gap-2">
+              <Button size="sm" onClick={() => setAddOpen(true)}><Plus className="h-4 w-4 mr-1" /> Add client</Button>
+              <Button variant="outline" size="sm" onClick={exportExcel}><FileSpreadsheet className="h-4 w-4 mr-1" /> Excel</Button>
               <Button variant="outline" size="sm" onClick={exportCsv}><Download className="h-4 w-4 mr-1" /> CSV</Button>
               <Button variant="outline" size="sm" onClick={load}>Refresh</Button>
             </div>
@@ -326,13 +328,14 @@ const AdminClientsTab = () => {
               <Table className="min-w-[1800px] text-xs">
                 <TableHeader>
                   <TableRow>
-                    {["#", "Session Date", "Client Name", "Client Code", "Client Number", "Email", "Country", "Therapist Name", "Presenting Concern", "Session Type", "Duration", "Rating", "Next Session", "Would Rebook", "Amount UGX", "Therapist UGX", "InnerSpark UGX", "Paid", "Risk", "Actions"].map((h) => (
+                    {["#", "Session Date", "Client Name", "Client Code", "Client Number", "Email", "Country", "Therapist Name", "Presenting Concern", "Session Type", "Duration", "Rating", "Next Session", "Would Rebook", "Amount UGX", "Therapist UGX", "InnerSpark UGX", "Client Paid", "Therapist Paid", "Risk", "Actions"].map((h) => (
                       <TableHead key={h} className="whitespace-nowrap text-[11px]">{h}</TableHead>
                     ))}
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filtered.map((r, i) => {
+                  {pageRows.map((r, idx) => {
+                    const i = (page - 1) * pageSize + idx;
                     const risk = riskLevel(r);
                     const dirty = !!edits[r.id];
                     const amount = Number(val(r, "amount_ugx") || 0);
@@ -391,6 +394,18 @@ const AdminClientsTab = () => {
                           </Select>
                         </TableCell>
                         <TableCell>
+                          <div className="flex items-center gap-2">
+                            <Switch
+                              checked={!!r.therapist_paid}
+                              disabled={payingId === r.id}
+                              onCheckedChange={(v) => toggleTherapistPaid(r, v)}
+                            />
+                            <span className="text-[10px] text-muted-foreground whitespace-nowrap">
+                              {r.therapist_paid ? "Paid out" : "Unpaid"}
+                            </span>
+                          </div>
+                        </TableCell>
+                        <TableCell>
                           <Badge variant={risk === "high" ? "destructive" : risk === "medium" ? "outline" : "secondary"} className="text-[10px]">
                             {r.open_alerts > 0 && <AlertOctagon className="h-3 w-3 mr-1" />}
                             {risk}
@@ -404,6 +419,9 @@ const AdminClientsTab = () => {
                             <Button size="sm" variant="ghost" disabled={receiptId === r.id} onClick={() => generateReceipt(r)} title="Generate receipt (email + WhatsApp)">
                               {receiptId === r.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Receipt className="h-4 w-4" />}
                             </Button>
+                            <Button size="sm" variant="ghost" disabled={receiptId === r.id || !r.email} onClick={() => emailReceipt(r)} title="Email receipt to client">
+                              <Mail className="h-4 w-4" />
+                            </Button>
                             {r.receipt_url && (
                               <Button size="sm" variant="ghost" title="Share receipt on WhatsApp" onClick={() => window.open(`https://wa.me/${(r.phone || "").replace(/[^0-9]/g, "")}?text=${encodeURIComponent(`Your InnerSpark receipt: ${r.receipt_url}`)}`, "_blank")}>
                                 <MessageCircle className="h-4 w-4" />
@@ -411,6 +429,9 @@ const AdminClientsTab = () => {
                             )}
                             <Button size="sm" variant="ghost" onClick={() => setSelectedId(r.id)} title="View client">
                               <Eye className="h-4 w-4" />
+                            </Button>
+                            <Button size="sm" variant="ghost" className="text-destructive" onClick={() => setDeleteRow(r)} title="Delete client">
+                              <Trash2 className="h-4 w-4" />
                             </Button>
                           </div>
                         </TableCell>
@@ -422,8 +443,52 @@ const AdminClientsTab = () => {
               {filtered.length === 0 && <p className="text-center text-muted-foreground py-8 text-sm">No clients match these filters.</p>}
             </div>
           )}
+
+          {!loading && filtered.length > 0 && (
+            <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <span>
+                  Showing {(page - 1) * pageSize + 1}–{Math.min(page * pageSize, filtered.length)} of {filtered.length} entries
+                </span>
+                <Select value={String(pageSize)} onValueChange={(v) => setPageSize(Number(v))}>
+                  <SelectTrigger className="h-8 w-[110px] text-xs"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {[10, 25, 50, 100].map((n) => <SelectItem key={n} value={String(n)}>{n} / page</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button size="sm" variant="outline" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                <span className="text-xs">Page {page} of {totalPages}</span>
+                <Button size="sm" variant="outline" disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)}>
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
+
+      <AddClientDialog open={addOpen} onOpenChange={setAddOpen} onCreated={load} />
+
+      <AlertDialog open={!!deleteRow} onOpenChange={(o) => !o && setDeleteRow(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete {deleteRow?.full_name}?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This permanently removes the client, their assignments and submissions. This cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction disabled={deleting} onClick={(e) => { e.preventDefault(); confirmDelete(); }}>
+              {deleting ? "Deleting…" : "Delete"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       <AdminClientDetailDialog clientId={selectedId} onClose={() => setSelectedId(null)} />
     </div>
