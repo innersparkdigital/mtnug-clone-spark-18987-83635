@@ -6,10 +6,17 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Loader2, AlertOctagon, Download, Eye, Receipt, Save, MessageCircle } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Loader2, AlertOctagon, Download, Eye, Receipt, Save, MessageCircle, Plus, Trash2, Mail, FileSpreadsheet, ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 import AdminClientDetailDialog from "./AdminClientDetailDialog";
+import AddClientDialog from "./AddClientDialog";
 import { buildReceiptPdf, makeReceiptNumber } from "@/lib/receiptPdf";
+import * as XLSX from "xlsx";
 
 interface Row {
   id: string;
@@ -40,6 +47,9 @@ interface Row {
   receipt_number: string | null;
   receipt_url: string | null;
   last_session_date: string | null;
+  therapist_paid: boolean | null;
+  therapist_paid_at: string | null;
+  receipt_sent_at: string | null;
 }
 
 const fmtUGX = (n: number | null) => (n ? `UGX ${Math.round(Number(n)).toLocaleString()}` : "—");
@@ -64,6 +74,12 @@ const AdminClientsTab = () => {
   const [edits, setEdits] = useState<Record<string, Partial<Row>>>({});
   const [savingId, setSavingId] = useState<string | null>(null);
   const [receiptId, setReceiptId] = useState<string | null>(null);
+  const [addOpen, setAddOpen] = useState(false);
+  const [deleteRow, setDeleteRow] = useState<Row | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const [payingId, setPayingId] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(25);
 
   const load = async () => {
     setLoading(true);
@@ -93,6 +109,14 @@ const AdminClientsTab = () => {
       );
     });
   }, [rows, search, therapistFilter, riskFilter]);
+
+  useEffect(() => { setPage(1); }, [search, therapistFilter, riskFilter, pageSize]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+  const pageRows = useMemo(
+    () => filtered.slice((page - 1) * pageSize, page * pageSize),
+    [filtered, page, pageSize],
+  );
 
   const val = <K extends keyof Row>(r: Row, k: K): Row[K] =>
     (edits[r.id] && k in edits[r.id]! ? (edits[r.id] as Row)[k] : r[k]);
@@ -124,16 +148,24 @@ const AdminClientsTab = () => {
     setSavingId(null);
     if (error) return toast.error(error.message);
     toast.success("Session saved · finance updated");
+    const nowPaid = (val(r, "paid_status") as string) === "paid";
+    const wasPaid = r.paid_status === "paid";
     setEdits((prev) => { const n = { ...prev }; delete n[r.id]; return n; });
+    if (nowPaid && !wasPaid && r.email) {
+      await emailReceipt({ ...r, ...e, paid_status: "paid" } as Row, { silent: false, whatsapp: false, download: false });
+    }
     load();
   };
 
-  const generateReceipt = async (r: Row) => {
+  const buildAndSend = async (
+    r: Row,
+    opts: { whatsapp: boolean; download: boolean; silent?: boolean },
+  ) => {
     const amount = Number(val(r, "amount_ugx") || 0);
     if (!amount) return toast.error("Add the session amount first.");
     setReceiptId(r.id);
     const receiptNumber = r.receipt_number || makeReceiptNumber();
-    const { doc, base64 } = buildReceiptPdf({
+    const { doc, base64 } = await buildReceiptPdf({
       receiptNumber,
       clientName: r.full_name,
       clientCode: r.client_code,
@@ -146,7 +178,7 @@ const AdminClientsTab = () => {
       amountUgx: amount,
       paidStatus: (val(r, "paid_status") as string) || "paid",
     });
-    doc.save(`${receiptNumber}.pdf`);
+    if (opts.download) doc.save(`${receiptNumber}.pdf`);
 
     const { data, error } = await supabase.functions.invoke("send-receipt-email", {
       body: {
@@ -164,18 +196,75 @@ const AdminClientsTab = () => {
     setReceiptId(null);
     if (error) return toast.error(error.message);
 
-    const url = (data as any)?.receipt_url as string | undefined;
-    if (url && r.phone) {
+    const url = ((data as any)?.signed_url || (data as any)?.receipt_url) as string | undefined;
+    if (opts.whatsapp && url && r.phone) {
       const msg = encodeURIComponent(
         `Hi ${r.full_name.split(" ")[0]}, here is your InnerSpark receipt ${receiptNumber} for ${fmtUGX(amount)}: ${url}`,
       );
       window.open(`https://wa.me/${r.phone.replace(/[^0-9]/g, "")}?text=${msg}`, "_blank");
-    } else if (url) {
+    } else if (opts.whatsapp && url) {
       await navigator.clipboard.writeText(url).catch(() => {});
       toast.success("Receipt link copied");
     }
-    toast.success(r.email ? "Receipt generated and emailed" : "Receipt generated");
+    if (!opts.silent) toast.success(r.email ? "Receipt generated and emailed" : "Receipt generated");
     load();
+  };
+
+  const generateReceipt = (r: Row) => buildAndSend(r, { whatsapp: true, download: true });
+  const emailReceipt = (r: Row, o?: { silent?: boolean; whatsapp?: boolean; download?: boolean }) => {
+    if (!r.email) return toast.error("This client has no email address.");
+    return buildAndSend(r, { whatsapp: o?.whatsapp ?? false, download: o?.download ?? false, silent: o?.silent });
+  };
+
+  const toggleTherapistPaid = async (r: Row, paid: boolean) => {
+    setPayingId(r.id);
+    const { error } = await supabase.rpc("admin_set_therapist_paid" as any, { _client_id: r.id, _paid: paid });
+    setPayingId(null);
+    if (error) return toast.error(error.message);
+    toast.success(paid ? "Therapist payout recorded in Finance (cash out)" : "Payout reversed — expense removed");
+    load();
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteRow) return;
+    setDeleting(true);
+    const { error } = await supabase.rpc("admin_delete_client" as any, { _client_id: deleteRow.id });
+    setDeleting(false);
+    setDeleteRow(null);
+    if (error) return toast.error(error.message);
+    toast.success("Client deleted");
+    load();
+  };
+
+  const sheetRows = () =>
+    filtered.map((r, i) => ({
+      "#": i + 1,
+      "Session Date": r.last_session_date || "",
+      "Client Name": r.full_name,
+      "Client Code": r.client_code || "",
+      "Client Number": r.phone || "",
+      Email: r.email || "",
+      Country: r.country || "",
+      "Therapist Name": r.therapist_name,
+      "Presenting Concern": r.presenting_concern || "",
+      "Session Type": r.session_type || "",
+      "Duration (mins)": r.duration_mins ?? "",
+      "Session Rating": r.session_rating ?? "",
+      "Next Session": r.next_session_date || "",
+      "Would Rebook": r.would_rebook === null ? "" : r.would_rebook ? "Yes" : "No",
+      "Amount UGX": r.amount_ugx ?? "",
+      "Therapist UGX": r.therapist_share_ugx ?? "",
+      "InnerSpark UGX": r.innerspark_share_ugx ?? "",
+      "Client Paid": r.paid_status || "",
+      "Therapist Paid": r.therapist_paid ? "Yes" : "No",
+      "Receipt No.": r.receipt_number || "",
+    }));
+
+  const exportExcel = () => {
+    const ws = XLSX.utils.json_to_sheet(sheetRows());
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Sessions");
+    XLSX.writeFile(wb, `therapy-session-tracker-${new Date().toISOString().slice(0, 10)}.xlsx`);
   };
 
   const exportCsv = () => {
@@ -204,6 +293,8 @@ const AdminClientsTab = () => {
               <p className="text-xs text-muted-foreground mt-1">Every client across every therapist · edit inline, save to post income to Finance ({filtered.length} of {rows.length})</p>
             </div>
             <div className="flex gap-2">
+              <Button size="sm" onClick={() => setAddOpen(true)}><Plus className="h-4 w-4 mr-1" /> Add client</Button>
+              <Button variant="outline" size="sm" onClick={exportExcel}><FileSpreadsheet className="h-4 w-4 mr-1" /> Excel</Button>
               <Button variant="outline" size="sm" onClick={exportCsv}><Download className="h-4 w-4 mr-1" /> CSV</Button>
               <Button variant="outline" size="sm" onClick={load}>Refresh</Button>
             </div>
@@ -237,13 +328,14 @@ const AdminClientsTab = () => {
               <Table className="min-w-[1800px] text-xs">
                 <TableHeader>
                   <TableRow>
-                    {["#", "Session Date", "Client Name", "Client Code", "Client Number", "Email", "Country", "Therapist Name", "Presenting Concern", "Session Type", "Duration", "Rating", "Next Session", "Would Rebook", "Amount UGX", "Therapist UGX", "InnerSpark UGX", "Paid", "Risk", "Actions"].map((h) => (
+                    {["#", "Session Date", "Client Name", "Client Code", "Client Number", "Email", "Country", "Therapist Name", "Presenting Concern", "Session Type", "Duration", "Rating", "Next Session", "Would Rebook", "Amount UGX", "Therapist UGX", "InnerSpark UGX", "Client Paid", "Therapist Paid", "Risk", "Actions"].map((h) => (
                       <TableHead key={h} className="whitespace-nowrap text-[11px]">{h}</TableHead>
                     ))}
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filtered.map((r, i) => {
+                  {pageRows.map((r, idx) => {
+                    const i = (page - 1) * pageSize + idx;
                     const risk = riskLevel(r);
                     const dirty = !!edits[r.id];
                     const amount = Number(val(r, "amount_ugx") || 0);
@@ -302,6 +394,18 @@ const AdminClientsTab = () => {
                           </Select>
                         </TableCell>
                         <TableCell>
+                          <div className="flex items-center gap-2">
+                            <Switch
+                              checked={!!r.therapist_paid}
+                              disabled={payingId === r.id}
+                              onCheckedChange={(v) => toggleTherapistPaid(r, v)}
+                            />
+                            <span className="text-[10px] text-muted-foreground whitespace-nowrap">
+                              {r.therapist_paid ? "Paid out" : "Unpaid"}
+                            </span>
+                          </div>
+                        </TableCell>
+                        <TableCell>
                           <Badge variant={risk === "high" ? "destructive" : risk === "medium" ? "outline" : "secondary"} className="text-[10px]">
                             {r.open_alerts > 0 && <AlertOctagon className="h-3 w-3 mr-1" />}
                             {risk}
@@ -315,6 +419,9 @@ const AdminClientsTab = () => {
                             <Button size="sm" variant="ghost" disabled={receiptId === r.id} onClick={() => generateReceipt(r)} title="Generate receipt (email + WhatsApp)">
                               {receiptId === r.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Receipt className="h-4 w-4" />}
                             </Button>
+                            <Button size="sm" variant="ghost" disabled={receiptId === r.id || !r.email} onClick={() => emailReceipt(r)} title="Email receipt to client">
+                              <Mail className="h-4 w-4" />
+                            </Button>
                             {r.receipt_url && (
                               <Button size="sm" variant="ghost" title="Share receipt on WhatsApp" onClick={() => window.open(`https://wa.me/${(r.phone || "").replace(/[^0-9]/g, "")}?text=${encodeURIComponent(`Your InnerSpark receipt: ${r.receipt_url}`)}`, "_blank")}>
                                 <MessageCircle className="h-4 w-4" />
@@ -322,6 +429,9 @@ const AdminClientsTab = () => {
                             )}
                             <Button size="sm" variant="ghost" onClick={() => setSelectedId(r.id)} title="View client">
                               <Eye className="h-4 w-4" />
+                            </Button>
+                            <Button size="sm" variant="ghost" className="text-destructive" onClick={() => setDeleteRow(r)} title="Delete client">
+                              <Trash2 className="h-4 w-4" />
                             </Button>
                           </div>
                         </TableCell>
@@ -333,8 +443,52 @@ const AdminClientsTab = () => {
               {filtered.length === 0 && <p className="text-center text-muted-foreground py-8 text-sm">No clients match these filters.</p>}
             </div>
           )}
+
+          {!loading && filtered.length > 0 && (
+            <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <span>
+                  Showing {(page - 1) * pageSize + 1}–{Math.min(page * pageSize, filtered.length)} of {filtered.length} entries
+                </span>
+                <Select value={String(pageSize)} onValueChange={(v) => setPageSize(Number(v))}>
+                  <SelectTrigger className="h-8 w-[110px] text-xs"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {[10, 25, 50, 100].map((n) => <SelectItem key={n} value={String(n)}>{n} / page</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button size="sm" variant="outline" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                <span className="text-xs">Page {page} of {totalPages}</span>
+                <Button size="sm" variant="outline" disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)}>
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
+
+      <AddClientDialog open={addOpen} onOpenChange={setAddOpen} onCreated={load} />
+
+      <AlertDialog open={!!deleteRow} onOpenChange={(o) => !o && setDeleteRow(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete {deleteRow?.full_name}?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This permanently removes the client, their assignments and submissions. This cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction disabled={deleting} onClick={(e) => { e.preventDefault(); confirmDelete(); }}>
+              {deleting ? "Deleting…" : "Delete"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       <AdminClientDetailDialog clientId={selectedId} onClose={() => setSelectedId(null)} />
     </div>

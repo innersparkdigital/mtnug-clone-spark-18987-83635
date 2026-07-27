@@ -23,6 +23,10 @@ type RefLink = {
   link_type: string;
   is_active: boolean;
   discount_amount_kes: number;
+  discount_amount: number;
+  country: string;
+  currency: string;
+  reward_percent: number;
   reward_type: string | null;
   reward_value: number | null;
   custom_message: string | null;
@@ -35,9 +39,14 @@ type Conv = {
   referral_link_id: string;
   client_name: string | null;
   client_phone: string | null;
+  client_email: string | null;
   session_amount_kes: number | null;
   discount_applied: number | null;
   reward_issued: boolean;
+  stage: string | null;
+  reward_amount: number | null;
+  reward_currency: string | null;
+  stages_notified: string[] | null;
   converted_at: string;
 };
 
@@ -62,10 +71,33 @@ const normalizeMarket = (value: string) => {
   const key = value.toLowerCase().trim();
   if (["ke", "kenya", "nairobi"].includes(key)) return "ke";
   if (["ug", "uganda", "kampala"].includes(key)) return "ug";
-  return "ke";
+  return "ug";
 };
 
+export const COUNTRY_OPTIONS = [
+  { country: "Uganda", market: "ug", currency: "UGX", discount: 10000, sessionPrice: 75000 },
+  { country: "Kenya", market: "ke", currency: "KES", discount: 200, sessionPrice: 2600 },
+  { country: "Tanzania", market: "ug", currency: "TZS", discount: 5000, sessionPrice: 50000 },
+  { country: "Rwanda", market: "ug", currency: "RWF", discount: 2000, sessionPrice: 25000 },
+  { country: "Nigeria", market: "ug", currency: "NGN", discount: 2000, sessionPrice: 25000 },
+  { country: "Other / International", market: "ug", currency: "USD", discount: 5, sessionPrice: 22 },
+];
+
+const countryCfg = (name: string) =>
+  COUNTRY_OPTIONS.find((c) => c.country === name) || COUNTRY_OPTIONS[0];
+
+const STAGES = [
+  { key: "contacted", label: "Contacted us" },
+  { key: "booked", label: "Booked a session" },
+  { key: "paid", label: "Paid" },
+  { key: "reward_ready", label: "Reward ready to claim" },
+  { key: "reward_claimed", label: "Reward claimed" },
+];
+
 const ORIGIN = typeof window !== "undefined" ? window.location.origin : "https://www.innersparkafrica.com";
+
+const linkUrl = (l: { slug: string; market?: string }) =>
+  `${ORIGIN}${l.market === "ke" ? "/kenya" : ""}/ref/${l.slug}`;
 
 export default function KenyaReferralsTab() {
   const { toast } = useToast();
@@ -84,29 +116,33 @@ export default function KenyaReferralsTab() {
     referrer_email: "",
     slug: "",
     slug_touched: false,
-    discount_amount_kes: 200,
+    country: "Uganda",
+    discount_amount: 10000,
+    reward_percent: 5,
     reward_type: "cash",
-    reward_value: 500,
+    reward_value: 0,
     link_type: "client",
     custom_message: "",
     message_touched: false,
     notes: "",
   });
+  const cfg = countryCfg(form.country);
 
   // Auto-generate slug + custom message from referrer name / discount unless user edited them
   useEffect(() => {
     setForm((f) => {
+      const c = countryCfg(f.country);
       const next = { ...f };
       if (!f.slug_touched && f.referrer_name.trim()) {
         next.slug = slugify(f.referrer_name);
       }
       if (!f.message_touched && f.referrer_name.trim()) {
         const first = f.referrer_name.trim().split(/\s+/)[0];
-        next.custom_message = `${first} sent you — enjoy KES ${f.discount_amount_kes || 0} off your first InnerSpark therapy session. Book in 2 minutes, pay via M-Pesa.`;
+        next.custom_message = `${first} sent you — enjoy ${c.currency} ${(f.discount_amount || 0).toLocaleString()} off your first InnerSpark therapy session. Book in 2 minutes.`;
       }
       return next;
     });
-  }, [form.referrer_name, form.discount_amount_kes, form.slug_touched, form.message_touched]);
+  }, [form.referrer_name, form.discount_amount, form.country, form.slug_touched, form.message_touched]);
 
   const fetchAll = async () => {
     setLoading(true);
@@ -196,15 +232,19 @@ export default function KenyaReferralsTab() {
       referrer_name: form.referrer_name,
       referrer_phone: form.referrer_phone || null,
       referrer_email: form.referrer_email || null,
-      market: normalizeMarket("ke"),
+      market: normalizeMarket(cfg.market),
+      country: form.country,
+      currency: cfg.currency,
+      discount_amount: form.discount_amount,
+      reward_percent: form.reward_percent,
       link_type: normalizeLinkType(form.link_type),
       is_active: true,
-      discount_amount_kes: form.discount_amount_kes,
+      discount_amount_kes: form.discount_amount,
       reward_type: form.reward_type,
       reward_value: form.reward_value,
       custom_message: form.custom_message || null,
       notes: form.notes || null,
-    });
+    } as any);
     setSaving(false);
     if (error) { toast({ title: "Failed to create", description: error.message, variant: "destructive" }); return; }
     toast({ title: "Referral link created", description: `/${slug}` });
@@ -229,31 +269,59 @@ export default function KenyaReferralsTab() {
     fetchAll();
   };
 
+  const setStage = async (c: Conv, stage: string, notify = true) => {
+    const { error } = await supabase.rpc("admin_set_referral_stage" as any, {
+      _conversion_id: c.id,
+      _stage: stage,
+    });
+    if (error) { toast({ title: error.message, variant: "destructive" }); return; }
+    if (notify) {
+      const { error: mailErr } = await supabase.functions.invoke("send-referral-update", {
+        body: { conversion_id: c.id, stage },
+      });
+      toast(
+        mailErr
+          ? { title: "Stage updated — email not sent", description: mailErr.message, variant: "destructive" }
+          : { title: "Stage updated · referrer emailed" },
+      );
+    } else {
+      toast({ title: "Stage updated" });
+    }
+    fetchAll();
+  };
+
   const copyText = (text: string, label = "Copied") => {
     navigator.clipboard.writeText(text);
     toast({ title: label });
   };
 
   const shareTemplates = (l: RefLink) => {
-    const url = `${ORIGIN}/kenya/ref/${l.slug}`;
-    const discount = l.discount_amount_kes || 0;
-    const price = 2600 - discount;
+    const url = linkUrl(l);
+    const cur = l.currency || "KES";
+    const discount = l.discount_amount ?? l.discount_amount_kes ?? 0;
+    const base = countryCfg(l.country || "Uganda").sessionPrice;
+    const price = Math.max(0, base - discount);
+    const pct = l.reward_percent ?? 5;
     return [
       {
         label: "WhatsApp DM",
-        text: `Hi! I've been using InnerSpark for therapy and wanted to share. Use my link to get KES ${discount} off your first session (KES ${price}): ${url}`,
+        text: `Hi! I've been using InnerSpark for therapy and wanted to share. Use my link to get ${cur} ${discount.toLocaleString()} off your first session (${cur} ${price.toLocaleString()}): ${url}`,
       },
       {
         label: "WhatsApp Group",
-        text: `*Mental health support, made for Kenya* 🇰🇪\nAffordable online therapy, M-Pesa payment, private and confidential.\nGet KES ${discount} off your first session using this link:\n${url}`,
+        text: `*Mental health support you can afford*\nOnline therapy, private and confidential.\nGet ${cur} ${discount.toLocaleString()} off your first session using this link:\n${url}`,
       },
       {
         label: "WhatsApp Status",
-        text: `Therapy that works for Kenyans. From KES ${price} — pay via M-Pesa. ${url}`,
+        text: `Therapy that actually fits your life. From ${cur} ${price.toLocaleString()}. ${url}`,
       },
       {
         label: "LinkedIn",
-        text: `If you're navigating stress, burnout, or anxiety — InnerSpark offers affordable online therapy across Kenya. First session KES ${price} with this link: ${url}`,
+        text: `If you're navigating stress, burnout, or anxiety — InnerSpark offers affordable online therapy. First session ${cur} ${price.toLocaleString()} with this link: ${url}`,
+      },
+      {
+        label: "Refer-a-friend (after a paid session)",
+        text: `Thanks for your session today 💙 If you know 2 people going through something similar, share your personal link: ${url}\nWhen they book and pay, you get ${pct}% off your next session — every single time.`,
       },
     ];
   };
@@ -267,7 +335,7 @@ export default function KenyaReferralsTab() {
       {/* Kenya page visit analytics */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="flex items-center gap-2"><Globe className="h-5 w-5" /> Kenya Page Visits</CardTitle>
+          <CardTitle className="flex items-center gap-2"><Globe className="h-5 w-5" /> Referral Landing Page Visits</CardTitle>
           <Badge variant="secondary">{visitStats.total.toLocaleString()} total</Badge>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -333,7 +401,7 @@ export default function KenyaReferralsTab() {
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>Kenya Referral Links</CardTitle>
+          <CardTitle>Referral Links</CardTitle>
           <Button onClick={() => setOpen(true)} size="sm"><Plus className="h-4 w-4 mr-1" /> New Link</Button>
         </CardHeader>
         <CardContent>
@@ -344,7 +412,9 @@ export default function KenyaReferralsTab() {
                   <TableHead>#</TableHead>
                   <TableHead>Referrer</TableHead>
                   <TableHead>Slug</TableHead>
+                  <TableHead>Country</TableHead>
                   <TableHead>Discount</TableHead>
+                  <TableHead>Reward</TableHead>
                   <TableHead>Clicks</TableHead>
                   <TableHead>Conv.</TableHead>
                   <TableHead>Pending</TableHead>
@@ -354,11 +424,11 @@ export default function KenyaReferralsTab() {
               </TableHeader>
               <TableBody>
                 {links.length === 0 && (
-                  <TableRow><TableCell colSpan={9} className="text-center text-muted-foreground py-8">No links yet. Create one to start tracking.</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={11} className="text-center text-muted-foreground py-8">No links yet. Create one to start tracking.</TableCell></TableRow>
                 )}
                 {links.map((l, i) => {
                   const p = perLink[l.id] || { clicks: 0, conv: 0, pending: 0 };
-                  const url = `${ORIGIN}/kenya/ref/${l.slug}`;
+                  const url = linkUrl(l);
                   return (
                     <TableRow key={l.id}>
                       <TableCell>{i + 1}</TableCell>
@@ -372,7 +442,9 @@ export default function KenyaReferralsTab() {
                           <Button size="icon" variant="ghost" onClick={() => copyText(url, "Link copied")}><Copy className="h-3 w-3" /></Button>
                         </div>
                       </TableCell>
-                      <TableCell>KES {l.discount_amount_kes}</TableCell>
+                      <TableCell className="whitespace-nowrap">{l.country || (l.market === "ke" ? "Kenya" : "Uganda")}</TableCell>
+                      <TableCell className="whitespace-nowrap">{l.currency || "KES"} {(l.discount_amount ?? l.discount_amount_kes ?? 0).toLocaleString()}</TableCell>
+                      <TableCell className="whitespace-nowrap">{l.reward_value ? `${l.currency || "KES"} ${l.reward_value.toLocaleString()}` : `${l.reward_percent ?? 5}%`}</TableCell>
                       <TableCell>{p.clicks}</TableCell>
                       <TableCell>{p.conv}</TableCell>
                       <TableCell>{p.pending > 0 ? <Badge variant="secondary">{p.pending}</Badge> : "—"}</TableCell>
@@ -391,9 +463,9 @@ export default function KenyaReferralsTab() {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-lg max-h-[90vh] flex flex-col p-0">
           <DialogHeader className="px-6 pt-6">
-            <DialogTitle>Create Kenya referral link</DialogTitle>
+            <DialogTitle>Create referral link</DialogTitle>
             <DialogDescription>
-              Generate a Kenya booking referral link with automatic slug and message text.
+              Generate a country-aware booking referral link with automatic slug, discount and reward text.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-3 overflow-y-auto px-6 py-4 flex-1">
@@ -408,10 +480,34 @@ export default function KenyaReferralsTab() {
             <div>
               <Label>Custom slug (auto)</Label>
               <Input value={form.slug} onChange={(e) => setForm({ ...form, slug: slugify(e.target.value), slug_touched: true })} placeholder="auto-generated from name" />
-              <p className="text-xs text-muted-foreground mt-1">Final link: {ORIGIN}/kenya/ref/{form.slug || "…"}-xxxx</p>
+              <p className="text-xs text-muted-foreground mt-1">Final link: {ORIGIN}{cfg.market === "ke" ? "/kenya" : ""}/ref/{form.slug || "…"}-xxxx</p>
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <div><Label>Discount (KES)</Label><Input type="number" value={form.discount_amount_kes} onChange={(e) => setForm({ ...form, discount_amount_kes: Number(e.target.value) })} /></div>
+              <div>
+                <Label>Country</Label>
+                <Select
+                  value={form.country}
+                  onValueChange={(v) => {
+                    const c = countryCfg(v);
+                    setForm({ ...form, country: v, discount_amount: c.discount, reward_value: 0 });
+                  }}
+                >
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {COUNTRY_OPTIONS.map((c) => <SelectItem key={c.country} value={c.country}>{c.country} ({c.currency})</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label>Reward % of next session</Label>
+                <Input type="number" value={form.reward_percent} onChange={(e) => setForm({ ...form, reward_percent: Number(e.target.value) })} />
+                <p className="text-xs text-muted-foreground mt-1">
+                  ≈ {cfg.currency} {Math.round((cfg.sessionPrice * (form.reward_percent || 0)) / 100).toLocaleString()} per paying referral
+                </p>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div><Label>Discount ({cfg.currency})</Label><Input type="number" value={form.discount_amount} onChange={(e) => setForm({ ...form, discount_amount: Number(e.target.value) })} /></div>
               <div>
                 <Label>Link type</Label>
                 <Select value={normalizeLinkType(form.link_type)} onValueChange={(v) => setForm({ ...form, link_type: normalizeLinkType(v) })}>
@@ -437,7 +533,7 @@ export default function KenyaReferralsTab() {
                   </SelectContent>
                 </Select>
               </div>
-              <div><Label>Reward value (KES)</Label><Input type="number" value={form.reward_value} onChange={(e) => setForm({ ...form, reward_value: Number(e.target.value) })} /></div>
+              <div><Label>Fixed reward value ({cfg.currency}) — optional</Label><Input type="number" value={form.reward_value} onChange={(e) => setForm({ ...form, reward_value: Number(e.target.value) })} placeholder="0 = use % of session" /></div>
             </div>
             <div>
               <Label>Custom message (auto, shown on Kenya page)</Label>
@@ -463,12 +559,13 @@ export default function KenyaReferralsTab() {
                   <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs">
                     <div><span className="text-muted-foreground">Phone:</span> {detail.referrer_phone || "—"}</div>
                     <div><span className="text-muted-foreground">Email:</span> {detail.referrer_email || "—"}</div>
-                    <div><span className="text-muted-foreground">Discount:</span> KES {detail.discount_amount_kes}</div>
-                    <div><span className="text-muted-foreground">Reward:</span> {detail.reward_type || "—"} {detail.reward_value ? `(${detail.reward_value})` : ""}</div>
+                    <div><span className="text-muted-foreground">Country:</span> {detail.country || "—"}</div>
+                    <div><span className="text-muted-foreground">Discount:</span> {detail.currency || "KES"} {(detail.discount_amount ?? detail.discount_amount_kes ?? 0).toLocaleString()}</div>
+                    <div><span className="text-muted-foreground">Reward:</span> {detail.reward_value ? `${detail.currency} ${detail.reward_value}` : `${detail.reward_percent ?? 5}% of next session`}</div>
                   </div>
                   <div className="flex items-center gap-2 pt-1">
-                    <code className="text-xs break-all">{ORIGIN}/kenya/ref/{detail.slug}</code>
-                    <Button size="icon" variant="ghost" onClick={() => copyText(`${ORIGIN}/kenya/ref/${detail.slug}`, "Link copied")}><Copy className="h-3 w-3" /></Button>
+                    <code className="text-xs break-all">{linkUrl(detail)}</code>
+                    <Button size="icon" variant="ghost" onClick={() => copyText(linkUrl(detail), "Link copied")}><Copy className="h-3 w-3" /></Button>
                   </div>
                 </div>
 
@@ -495,20 +592,32 @@ export default function KenyaReferralsTab() {
 
                 <div>
                   <h4 className="font-semibold mb-2">Conversions</h4>
+                  <p className="text-xs text-muted-foreground mb-2">
+                    Move each referred client through the journey. Every stage change emails {detail.referrer_name} an update —
+                    contacted → booked → paid → reward ready → claimed.
+                  </p>
                   <Table>
-                    <TableHeader><TableRow><TableHead>Client</TableHead><TableHead>When</TableHead><TableHead>Amount</TableHead><TableHead>Reward</TableHead><TableHead></TableHead></TableRow></TableHeader>
+                    <TableHeader><TableRow><TableHead>Client</TableHead><TableHead>When</TableHead><TableHead>Amount</TableHead><TableHead>Stage</TableHead><TableHead>Reward</TableHead><TableHead></TableHead></TableRow></TableHeader>
                     <TableBody>
                       {convs.filter((c) => c.referral_link_id === detail.id).map((c) => (
                         <TableRow key={c.id}>
                           <TableCell>{c.client_name || "—"}<div className="text-xs text-muted-foreground">{c.client_phone || ""}</div></TableCell>
                           <TableCell className="text-xs">{new Date(c.converted_at).toLocaleString()}</TableCell>
-                          <TableCell>KES {c.session_amount_kes ?? 0}</TableCell>
+                          <TableCell>{detail.currency || "KES"} {(c.session_amount_kes ?? 0).toLocaleString()}</TableCell>
+                          <TableCell>
+                            <Select value={c.stage || "contacted"} onValueChange={(v) => setStage(c, v)}>
+                              <SelectTrigger className="h-8 w-[150px] text-xs"><SelectValue /></SelectTrigger>
+                              <SelectContent>
+                                {STAGES.map((s) => <SelectItem key={s.key} value={s.key}>{s.label}</SelectItem>)}
+                              </SelectContent>
+                            </Select>
+                          </TableCell>
                           <TableCell>{c.reward_issued ? <Badge>Issued</Badge> : <Badge variant="secondary">Pending</Badge>}</TableCell>
                           <TableCell>{!c.reward_issued && <Button size="sm" variant="outline" onClick={() => issueReward(c)}>Mark issued</Button>}</TableCell>
                         </TableRow>
                       ))}
                       {convs.filter((c) => c.referral_link_id === detail.id).length === 0 && (
-                        <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-4">
+                        <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-4">
                           No conversions yet. A conversion appears here when someone books a session after clicking this referral link.
                         </TableCell></TableRow>
                       )}

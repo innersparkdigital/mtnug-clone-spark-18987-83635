@@ -2318,6 +2318,7 @@ export type Database = {
         Row: {
           booking_id: string | null
           booking_reference: string | null
+          client_email: string | null
           client_name: string | null
           client_phone: string | null
           converted_at: string
@@ -2325,14 +2326,20 @@ export type Database = {
           id: string
           notes: string | null
           referral_link_id: string
+          reward_amount: number
+          reward_currency: string
           reward_issued: boolean
           reward_issued_at: string | null
           reward_issued_by: string | null
           session_amount_kes: number
+          stage: string
+          stage_updated_at: string
+          stages_notified: string[]
         }
         Insert: {
           booking_id?: string | null
           booking_reference?: string | null
+          client_email?: string | null
           client_name?: string | null
           client_phone?: string | null
           converted_at?: string
@@ -2340,14 +2347,20 @@ export type Database = {
           id?: string
           notes?: string | null
           referral_link_id: string
+          reward_amount?: number
+          reward_currency?: string
           reward_issued?: boolean
           reward_issued_at?: string | null
           reward_issued_by?: string | null
           session_amount_kes?: number
+          stage?: string
+          stage_updated_at?: string
+          stages_notified?: string[]
         }
         Update: {
           booking_id?: string | null
           booking_reference?: string | null
+          client_email?: string | null
           client_name?: string | null
           client_phone?: string | null
           converted_at?: string
@@ -2355,10 +2368,15 @@ export type Database = {
           id?: string
           notes?: string | null
           referral_link_id?: string
+          reward_amount?: number
+          reward_currency?: string
           reward_issued?: boolean
           reward_issued_at?: string | null
           reward_issued_by?: string | null
           session_amount_kes?: number
+          stage?: string
+          stage_updated_at?: string
+          stages_notified?: string[]
         }
         Relationships: [
           {
@@ -2372,9 +2390,12 @@ export type Database = {
       }
       referral_links: {
         Row: {
+          country: string
           created_at: string
           created_by: string | null
+          currency: string
           custom_message: string | null
+          discount_amount: number
           discount_amount_kes: number
           id: string
           is_active: boolean
@@ -2383,16 +2404,20 @@ export type Database = {
           notes: string | null
           referrer_email: string | null
           referrer_name: string
-          referrer_phone: string
+          referrer_phone: string | null
+          reward_percent: number
           reward_type: string
           reward_value: number
           slug: string
           updated_at: string
         }
         Insert: {
+          country?: string
           created_at?: string
           created_by?: string | null
+          currency?: string
           custom_message?: string | null
+          discount_amount?: number
           discount_amount_kes?: number
           id?: string
           is_active?: boolean
@@ -2401,16 +2426,20 @@ export type Database = {
           notes?: string | null
           referrer_email?: string | null
           referrer_name: string
-          referrer_phone: string
+          referrer_phone?: string | null
+          reward_percent?: number
           reward_type?: string
           reward_value?: number
           slug: string
           updated_at?: string
         }
         Update: {
+          country?: string
           created_at?: string
           created_by?: string | null
+          currency?: string
           custom_message?: string | null
+          discount_amount?: number
           discount_amount_kes?: number
           id?: string
           is_active?: boolean
@@ -2419,7 +2448,8 @@ export type Database = {
           notes?: string | null
           referrer_email?: string | null
           referrer_name?: string
-          referrer_phone?: string
+          referrer_phone?: string | null
+          reward_percent?: number
           reward_type?: string
           reward_value?: number
           slug?: string
@@ -2923,10 +2953,14 @@ export type Database = {
           phone: string | null
           presenting_concern: string | null
           receipt_number: string | null
+          receipt_sent_at: string | null
           receipt_url: string | null
           session_rating: number | null
           session_type: string | null
           therapist_id: string
+          therapist_paid: boolean
+          therapist_paid_at: string | null
+          therapist_payout_expense_id: string | null
           therapist_share_ugx: number | null
           updated_at: string
           would_rebook: boolean | null
@@ -2950,10 +2984,14 @@ export type Database = {
           phone?: string | null
           presenting_concern?: string | null
           receipt_number?: string | null
+          receipt_sent_at?: string | null
           receipt_url?: string | null
           session_rating?: number | null
           session_type?: string | null
           therapist_id: string
+          therapist_paid?: boolean
+          therapist_paid_at?: string | null
+          therapist_payout_expense_id?: string | null
           therapist_share_ugx?: number | null
           updated_at?: string
           would_rebook?: boolean | null
@@ -2977,10 +3015,14 @@ export type Database = {
           phone?: string | null
           presenting_concern?: string | null
           receipt_number?: string | null
+          receipt_sent_at?: string | null
           receipt_url?: string | null
           session_rating?: number | null
           session_type?: string | null
           therapist_id?: string
+          therapist_paid?: boolean
+          therapist_paid_at?: string | null
+          therapist_payout_expense_id?: string | null
           therapist_share_ugx?: number | null
           updated_at?: string
           would_rebook?: boolean | null
@@ -3543,11 +3585,40 @@ export type Database = {
         Returns: string
       }
       admin_client_detail: { Args: { _client_id: string }; Returns: Json }
+      admin_create_client: {
+        Args: {
+          _amount_ugx?: number
+          _country?: string
+          _duration_mins?: number
+          _email?: string
+          _full_name: string
+          _last_session_date?: string
+          _next_session_date?: string
+          _paid_status?: string
+          _phone?: string
+          _presenting_concern?: string
+          _session_rating?: number
+          _session_type?: string
+          _therapist_id: string
+          _therapist_share_ugx?: number
+          _would_rebook?: boolean
+        }
+        Returns: string
+      }
+      admin_delete_client: { Args: { _client_id: string }; Returns: boolean }
       admin_list_all_clients: { Args: never; Returns: Json }
       admin_list_enquiries: { Args: never; Returns: Json }
       admin_list_session_logs: { Args: never; Returns: Json }
       admin_overview_stats: { Args: never; Returns: Json }
       admin_revenue_by_session_type: { Args: never; Returns: Json }
+      admin_set_referral_stage: {
+        Args: { _conversion_id: string; _stage: string }
+        Returns: Json
+      }
+      admin_set_therapist_paid: {
+        Args: { _client_id: string; _paid: boolean }
+        Returns: Json
+      }
       admin_therapist_performance: { Args: never; Returns: Json }
       admin_update_client_tracker: {
         Args: {

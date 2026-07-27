@@ -19,24 +19,52 @@ export const makeReceiptNumber = () =>
 
 const money = (n: number) => `UGX ${Math.round(n || 0).toLocaleString()}`;
 
+const LOGO_URL = "/innerspark-logo.png";
+let logoCache: string | null | undefined;
+
+async function loadLogo(): Promise<string | null> {
+  if (logoCache !== undefined) return logoCache;
+  try {
+    const res = await fetch(LOGO_URL);
+    const blob = await res.blob();
+    logoCache = await new Promise<string>((resolve, reject) => {
+      const fr = new FileReader();
+      fr.onload = () => resolve(fr.result as string);
+      fr.onerror = reject;
+      fr.readAsDataURL(blob);
+    });
+  } catch {
+    logoCache = null;
+  }
+  return logoCache;
+}
+
 /** Builds a SafeBoda-style narrow digital receipt and returns { doc, base64 }. */
-export function buildReceiptPdf(d: ReceiptData) {
+export async function buildReceiptPdf(d: ReceiptData) {
   const doc = new jsPDF({ unit: "mm", format: [80, 170] });
   const W = 80;
   const c = W / 2;
   let y = 12;
 
   doc.setFillColor(12, 68, 124);
-  doc.rect(0, 0, W, 22, "F");
+  doc.rect(0, 0, W, 30, "F");
+  const logo = await loadLogo();
+  if (logo) {
+    try {
+      doc.addImage(logo, "PNG", c - 6, 4, 12, 12);
+    } catch {
+      /* ignore malformed logo */
+    }
+  }
   doc.setTextColor(255, 255, 255);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(13);
-  doc.text("InnerSpark Africa", c, 10, { align: "center" });
+  doc.text("InnerSpark Africa", c, 22, { align: "center" });
   doc.setFont("helvetica", "normal");
   doc.setFontSize(7.5);
-  doc.text("Therapy & Wellbeing · Payment Receipt", c, 16, { align: "center" });
+  doc.text("Therapy & Wellbeing · Payment Receipt", c, 27, { align: "center" });
 
-  y = 30;
+  y = 38;
   doc.setTextColor(20, 20, 20);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(16);
