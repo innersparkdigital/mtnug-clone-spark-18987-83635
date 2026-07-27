@@ -23,6 +23,10 @@ type RefLink = {
   link_type: string;
   is_active: boolean;
   discount_amount_kes: number;
+  discount_amount: number;
+  country: string;
+  currency: string;
+  reward_percent: number;
   reward_type: string | null;
   reward_value: number | null;
   custom_message: string | null;
@@ -35,9 +39,14 @@ type Conv = {
   referral_link_id: string;
   client_name: string | null;
   client_phone: string | null;
+  client_email: string | null;
   session_amount_kes: number | null;
   discount_applied: number | null;
   reward_issued: boolean;
+  stage: string | null;
+  reward_amount: number | null;
+  reward_currency: string | null;
+  stages_notified: string[] | null;
   converted_at: string;
 };
 
@@ -62,8 +71,28 @@ const normalizeMarket = (value: string) => {
   const key = value.toLowerCase().trim();
   if (["ke", "kenya", "nairobi"].includes(key)) return "ke";
   if (["ug", "uganda", "kampala"].includes(key)) return "ug";
-  return "ke";
+  return "ug";
 };
+
+export const COUNTRY_OPTIONS = [
+  { country: "Uganda", market: "ug", currency: "UGX", discount: 10000, sessionPrice: 75000 },
+  { country: "Kenya", market: "ke", currency: "KES", discount: 200, sessionPrice: 2600 },
+  { country: "Tanzania", market: "ug", currency: "TZS", discount: 5000, sessionPrice: 50000 },
+  { country: "Rwanda", market: "ug", currency: "RWF", discount: 2000, sessionPrice: 25000 },
+  { country: "Nigeria", market: "ug", currency: "NGN", discount: 2000, sessionPrice: 25000 },
+  { country: "Other / International", market: "ug", currency: "USD", discount: 5, sessionPrice: 22 },
+];
+
+const countryCfg = (name: string) =>
+  COUNTRY_OPTIONS.find((c) => c.country === name) || COUNTRY_OPTIONS[0];
+
+const STAGES = [
+  { key: "contacted", label: "Contacted us" },
+  { key: "booked", label: "Booked a session" },
+  { key: "paid", label: "Paid" },
+  { key: "reward_ready", label: "Reward ready to claim" },
+  { key: "reward_claimed", label: "Reward claimed" },
+];
 
 const ORIGIN = typeof window !== "undefined" ? window.location.origin : "https://www.innersparkafrica.com";
 
@@ -84,29 +113,33 @@ export default function KenyaReferralsTab() {
     referrer_email: "",
     slug: "",
     slug_touched: false,
-    discount_amount_kes: 200,
+    country: "Uganda",
+    discount_amount: 10000,
+    reward_percent: 5,
     reward_type: "cash",
-    reward_value: 500,
+    reward_value: 0,
     link_type: "client",
     custom_message: "",
     message_touched: false,
     notes: "",
   });
+  const cfg = countryCfg(form.country);
 
   // Auto-generate slug + custom message from referrer name / discount unless user edited them
   useEffect(() => {
     setForm((f) => {
+      const c = countryCfg(f.country);
       const next = { ...f };
       if (!f.slug_touched && f.referrer_name.trim()) {
         next.slug = slugify(f.referrer_name);
       }
       if (!f.message_touched && f.referrer_name.trim()) {
         const first = f.referrer_name.trim().split(/\s+/)[0];
-        next.custom_message = `${first} sent you — enjoy KES ${f.discount_amount_kes || 0} off your first InnerSpark therapy session. Book in 2 minutes, pay via M-Pesa.`;
+        next.custom_message = `${first} sent you — enjoy ${c.currency} ${(f.discount_amount || 0).toLocaleString()} off your first InnerSpark therapy session. Book in 2 minutes.`;
       }
       return next;
     });
-  }, [form.referrer_name, form.discount_amount_kes, form.slug_touched, form.message_touched]);
+  }, [form.referrer_name, form.discount_amount, form.country, form.slug_touched, form.message_touched]);
 
   const fetchAll = async () => {
     setLoading(true);
@@ -196,15 +229,19 @@ export default function KenyaReferralsTab() {
       referrer_name: form.referrer_name,
       referrer_phone: form.referrer_phone || null,
       referrer_email: form.referrer_email || null,
-      market: normalizeMarket("ke"),
+      market: normalizeMarket(cfg.market),
+      country: form.country,
+      currency: cfg.currency,
+      discount_amount: form.discount_amount,
+      reward_percent: form.reward_percent,
       link_type: normalizeLinkType(form.link_type),
       is_active: true,
-      discount_amount_kes: form.discount_amount_kes,
+      discount_amount_kes: form.discount_amount,
       reward_type: form.reward_type,
       reward_value: form.reward_value,
       custom_message: form.custom_message || null,
       notes: form.notes || null,
-    });
+    } as any);
     setSaving(false);
     if (error) { toast({ title: "Failed to create", description: error.message, variant: "destructive" }); return; }
     toast({ title: "Referral link created", description: `/${slug}` });
