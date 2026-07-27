@@ -463,9 +463,9 @@ export default function KenyaReferralsTab() {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-lg max-h-[90vh] flex flex-col p-0">
           <DialogHeader className="px-6 pt-6">
-            <DialogTitle>Create Kenya referral link</DialogTitle>
+            <DialogTitle>Create referral link</DialogTitle>
             <DialogDescription>
-              Generate a Kenya booking referral link with automatic slug and message text.
+              Generate a country-aware booking referral link with automatic slug, discount and reward text.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-3 overflow-y-auto px-6 py-4 flex-1">
@@ -559,12 +559,13 @@ export default function KenyaReferralsTab() {
                   <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs">
                     <div><span className="text-muted-foreground">Phone:</span> {detail.referrer_phone || "—"}</div>
                     <div><span className="text-muted-foreground">Email:</span> {detail.referrer_email || "—"}</div>
-                    <div><span className="text-muted-foreground">Discount:</span> KES {detail.discount_amount_kes}</div>
-                    <div><span className="text-muted-foreground">Reward:</span> {detail.reward_type || "—"} {detail.reward_value ? `(${detail.reward_value})` : ""}</div>
+                    <div><span className="text-muted-foreground">Country:</span> {detail.country || "—"}</div>
+                    <div><span className="text-muted-foreground">Discount:</span> {detail.currency || "KES"} {(detail.discount_amount ?? detail.discount_amount_kes ?? 0).toLocaleString()}</div>
+                    <div><span className="text-muted-foreground">Reward:</span> {detail.reward_value ? `${detail.currency} ${detail.reward_value}` : `${detail.reward_percent ?? 5}% of next session`}</div>
                   </div>
                   <div className="flex items-center gap-2 pt-1">
-                    <code className="text-xs break-all">{ORIGIN}/kenya/ref/{detail.slug}</code>
-                    <Button size="icon" variant="ghost" onClick={() => copyText(`${ORIGIN}/kenya/ref/${detail.slug}`, "Link copied")}><Copy className="h-3 w-3" /></Button>
+                    <code className="text-xs break-all">{linkUrl(detail)}</code>
+                    <Button size="icon" variant="ghost" onClick={() => copyText(linkUrl(detail), "Link copied")}><Copy className="h-3 w-3" /></Button>
                   </div>
                 </div>
 
@@ -591,20 +592,32 @@ export default function KenyaReferralsTab() {
 
                 <div>
                   <h4 className="font-semibold mb-2">Conversions</h4>
+                  <p className="text-xs text-muted-foreground mb-2">
+                    Move each referred client through the journey. Every stage change emails {detail.referrer_name} an update —
+                    contacted → booked → paid → reward ready → claimed.
+                  </p>
                   <Table>
-                    <TableHeader><TableRow><TableHead>Client</TableHead><TableHead>When</TableHead><TableHead>Amount</TableHead><TableHead>Reward</TableHead><TableHead></TableHead></TableRow></TableHeader>
+                    <TableHeader><TableRow><TableHead>Client</TableHead><TableHead>When</TableHead><TableHead>Amount</TableHead><TableHead>Stage</TableHead><TableHead>Reward</TableHead><TableHead></TableHead></TableRow></TableHeader>
                     <TableBody>
                       {convs.filter((c) => c.referral_link_id === detail.id).map((c) => (
                         <TableRow key={c.id}>
                           <TableCell>{c.client_name || "—"}<div className="text-xs text-muted-foreground">{c.client_phone || ""}</div></TableCell>
                           <TableCell className="text-xs">{new Date(c.converted_at).toLocaleString()}</TableCell>
-                          <TableCell>KES {c.session_amount_kes ?? 0}</TableCell>
+                          <TableCell>{detail.currency || "KES"} {(c.session_amount_kes ?? 0).toLocaleString()}</TableCell>
+                          <TableCell>
+                            <Select value={c.stage || "contacted"} onValueChange={(v) => setStage(c, v)}>
+                              <SelectTrigger className="h-8 w-[150px] text-xs"><SelectValue /></SelectTrigger>
+                              <SelectContent>
+                                {STAGES.map((s) => <SelectItem key={s.key} value={s.key}>{s.label}</SelectItem>)}
+                              </SelectContent>
+                            </Select>
+                          </TableCell>
                           <TableCell>{c.reward_issued ? <Badge>Issued</Badge> : <Badge variant="secondary">Pending</Badge>}</TableCell>
                           <TableCell>{!c.reward_issued && <Button size="sm" variant="outline" onClick={() => issueReward(c)}>Mark issued</Button>}</TableCell>
                         </TableRow>
                       ))}
                       {convs.filter((c) => c.referral_link_id === detail.id).length === 0 && (
-                        <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-4">
+                        <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-4">
                           No conversions yet. A conversion appears here when someone books a session after clicking this referral link.
                         </TableCell></TableRow>
                       )}
