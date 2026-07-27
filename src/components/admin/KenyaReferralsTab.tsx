@@ -269,6 +269,27 @@ export default function KenyaReferralsTab() {
     fetchAll();
   };
 
+  const setStage = async (c: Conv, stage: string, notify = true) => {
+    const { error } = await supabase.rpc("admin_set_referral_stage" as any, {
+      _conversion_id: c.id,
+      _stage: stage,
+    });
+    if (error) { toast({ title: error.message, variant: "destructive" }); return; }
+    if (notify) {
+      const { error: mailErr } = await supabase.functions.invoke("send-referral-update", {
+        body: { conversion_id: c.id, stage },
+      });
+      toast(
+        mailErr
+          ? { title: "Stage updated — email not sent", description: mailErr.message, variant: "destructive" }
+          : { title: "Stage updated · referrer emailed" },
+      );
+    } else {
+      toast({ title: "Stage updated" });
+    }
+    fetchAll();
+  };
+
   const copyText = (text: string, label = "Copied") => {
     navigator.clipboard.writeText(text);
     toast({ title: label });
