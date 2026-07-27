@@ -304,7 +304,7 @@ export default function KenyaReferralsTab() {
       {/* Kenya page visit analytics */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="flex items-center gap-2"><Globe className="h-5 w-5" /> Kenya Page Visits</CardTitle>
+          <CardTitle className="flex items-center gap-2"><Globe className="h-5 w-5" /> Referral Landing Page Visits</CardTitle>
           <Badge variant="secondary">{visitStats.total.toLocaleString()} total</Badge>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -370,7 +370,7 @@ export default function KenyaReferralsTab() {
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>Kenya Referral Links</CardTitle>
+          <CardTitle>Referral Links</CardTitle>
           <Button onClick={() => setOpen(true)} size="sm"><Plus className="h-4 w-4 mr-1" /> New Link</Button>
         </CardHeader>
         <CardContent>
@@ -381,7 +381,9 @@ export default function KenyaReferralsTab() {
                   <TableHead>#</TableHead>
                   <TableHead>Referrer</TableHead>
                   <TableHead>Slug</TableHead>
+                  <TableHead>Country</TableHead>
                   <TableHead>Discount</TableHead>
+                  <TableHead>Reward</TableHead>
                   <TableHead>Clicks</TableHead>
                   <TableHead>Conv.</TableHead>
                   <TableHead>Pending</TableHead>
@@ -391,11 +393,11 @@ export default function KenyaReferralsTab() {
               </TableHeader>
               <TableBody>
                 {links.length === 0 && (
-                  <TableRow><TableCell colSpan={9} className="text-center text-muted-foreground py-8">No links yet. Create one to start tracking.</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={11} className="text-center text-muted-foreground py-8">No links yet. Create one to start tracking.</TableCell></TableRow>
                 )}
                 {links.map((l, i) => {
                   const p = perLink[l.id] || { clicks: 0, conv: 0, pending: 0 };
-                  const url = `${ORIGIN}/kenya/ref/${l.slug}`;
+                  const url = linkUrl(l);
                   return (
                     <TableRow key={l.id}>
                       <TableCell>{i + 1}</TableCell>
@@ -409,7 +411,9 @@ export default function KenyaReferralsTab() {
                           <Button size="icon" variant="ghost" onClick={() => copyText(url, "Link copied")}><Copy className="h-3 w-3" /></Button>
                         </div>
                       </TableCell>
-                      <TableCell>KES {l.discount_amount_kes}</TableCell>
+                      <TableCell className="whitespace-nowrap">{l.country || (l.market === "ke" ? "Kenya" : "Uganda")}</TableCell>
+                      <TableCell className="whitespace-nowrap">{l.currency || "KES"} {(l.discount_amount ?? l.discount_amount_kes ?? 0).toLocaleString()}</TableCell>
+                      <TableCell className="whitespace-nowrap">{l.reward_value ? `${l.currency || "KES"} ${l.reward_value.toLocaleString()}` : `${l.reward_percent ?? 5}%`}</TableCell>
                       <TableCell>{p.clicks}</TableCell>
                       <TableCell>{p.conv}</TableCell>
                       <TableCell>{p.pending > 0 ? <Badge variant="secondary">{p.pending}</Badge> : "—"}</TableCell>
