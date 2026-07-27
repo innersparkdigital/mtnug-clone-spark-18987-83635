@@ -96,6 +96,9 @@ const STAGES = [
 
 const ORIGIN = typeof window !== "undefined" ? window.location.origin : "https://www.innersparkafrica.com";
 
+const linkUrl = (l: { slug: string; market?: string }) =>
+  `${ORIGIN}${l.market === "ke" ? "/kenya" : ""}/ref/${l.slug}`;
+
 export default function KenyaReferralsTab() {
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
