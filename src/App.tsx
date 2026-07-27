@@ -680,6 +680,7 @@ const App = () => (
                   path="/kenya/ref/:slug"
                   element={<KenyaReferralRedirect />}
                 />
+                <Route path="/ref/:slug" element={<KenyaReferralRedirect />} />
                 <Route path="/check/kenya" element={<KenyaCheck />} />
                 {/* Thank You / Conversion Tracking pages */}
                 <Route

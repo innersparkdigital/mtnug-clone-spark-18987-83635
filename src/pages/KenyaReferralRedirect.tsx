@@ -8,10 +8,11 @@ export default function KenyaReferralRedirect() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const [expired, setExpired] = useState(false);
+  const [home, setHome] = useState("/");
 
   useEffect(() => {
     if (!slug) {
-      navigate("/kenya", { replace: true });
+      navigate("/", { replace: true });
       return;
     }
     (async () => {
@@ -20,6 +21,8 @@ export default function KenyaReferralRedirect() {
         setExpired(true);
         return;
       }
+      const dest = (data as any).market === "ke" ? "/kenya" : "/";
+      setHome(dest);
       // log click (best-effort)
       try {
         await supabase.rpc("log_referral_click", {
@@ -29,7 +32,7 @@ export default function KenyaReferralRedirect() {
         });
       } catch {}
       setReferralCookie(slug);
-      navigate("/kenya", { replace: true });
+      navigate(dest, { replace: true });
     })();
   }, [slug, navigate]);
 
@@ -40,8 +43,8 @@ export default function KenyaReferralRedirect() {
         <div className="max-w-md bg-white rounded-2xl p-8 shadow-sm">
           <h1 className="text-2xl font-bold text-gray-900">This referral link has expired.</h1>
           <p className="text-sm text-gray-600 mt-3">The person who shared this link may have updated it. You can still access InnerSpark Africa directly:</p>
-          <Link to="/kenya" className="inline-flex mt-6 font-medium text-white rounded-lg px-6 py-3" style={{ background: "#3B4FD4" }}>
-            Visit innersparkafrica.com/kenya →
+          <Link to={home} className="inline-flex mt-6 font-medium text-white rounded-lg px-6 py-3" style={{ background: "#3B4FD4" }}>
+            Visit InnerSpark Africa →
           </Link>
         </div>
       </div>
