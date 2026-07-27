@@ -445,10 +445,34 @@ export default function KenyaReferralsTab() {
             <div>
               <Label>Custom slug (auto)</Label>
               <Input value={form.slug} onChange={(e) => setForm({ ...form, slug: slugify(e.target.value), slug_touched: true })} placeholder="auto-generated from name" />
-              <p className="text-xs text-muted-foreground mt-1">Final link: {ORIGIN}/kenya/ref/{form.slug || "…"}-xxxx</p>
+              <p className="text-xs text-muted-foreground mt-1">Final link: {ORIGIN}{cfg.market === "ke" ? "/kenya" : ""}/ref/{form.slug || "…"}-xxxx</p>
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <div><Label>Discount (KES)</Label><Input type="number" value={form.discount_amount_kes} onChange={(e) => setForm({ ...form, discount_amount_kes: Number(e.target.value) })} /></div>
+              <div>
+                <Label>Country</Label>
+                <Select
+                  value={form.country}
+                  onValueChange={(v) => {
+                    const c = countryCfg(v);
+                    setForm({ ...form, country: v, discount_amount: c.discount, reward_value: 0 });
+                  }}
+                >
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {COUNTRY_OPTIONS.map((c) => <SelectItem key={c.country} value={c.country}>{c.country} ({c.currency})</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label>Reward % of next session</Label>
+                <Input type="number" value={form.reward_percent} onChange={(e) => setForm({ ...form, reward_percent: Number(e.target.value) })} />
+                <p className="text-xs text-muted-foreground mt-1">
+                  ≈ {cfg.currency} {Math.round((cfg.sessionPrice * (form.reward_percent || 0)) / 100).toLocaleString()} per paying referral
+                </p>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div><Label>Discount ({cfg.currency})</Label><Input type="number" value={form.discount_amount} onChange={(e) => setForm({ ...form, discount_amount: Number(e.target.value) })} /></div>
               <div>
                 <Label>Link type</Label>
                 <Select value={normalizeLinkType(form.link_type)} onValueChange={(v) => setForm({ ...form, link_type: normalizeLinkType(v) })}>
@@ -474,7 +498,7 @@ export default function KenyaReferralsTab() {
                   </SelectContent>
                 </Select>
               </div>
-              <div><Label>Reward value (KES)</Label><Input type="number" value={form.reward_value} onChange={(e) => setForm({ ...form, reward_value: Number(e.target.value) })} /></div>
+              <div><Label>Fixed reward value ({cfg.currency}) — optional</Label><Input type="number" value={form.reward_value} onChange={(e) => setForm({ ...form, reward_value: Number(e.target.value) })} placeholder="0 = use % of session" /></div>
             </div>
             <div>
               <Label>Custom message (auto, shown on Kenya page)</Label>
