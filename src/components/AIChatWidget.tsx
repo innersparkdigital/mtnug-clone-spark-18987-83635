@@ -7,6 +7,7 @@ import ReactMarkdown from "react-markdown";
 import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/analytics";
 import amaniAvatar from "@/assets/amani-avatar.jpg";
+import AmaniInlineForm, { type FormKind } from "@/components/chat/AmaniInlineForm";
 
 const ASSISTANT_NAME = "Amani";
 const ASSISTANT_ROLE = "Care Assistant";
@@ -46,6 +47,12 @@ const OPENER_CHIPS: { label: string; emoji: string; text: string }[] = [
   { label: "I feel low, no energy", emoji: "🌫️", text: "I've been feeling really low and I have no energy for anything." },
   { label: "For my team at work", emoji: "🏢", text: "I'm looking for mental health support for my team at work." },
 ];
+
+const FORM_TARGETS: Record<string, FormKind> = {
+  "form:freecall": "freecall",
+  "form:chat": "chat",
+  "form:group": "group",
+};
 
 // Rotating social-proof lines shown once per open. Real InnerSpark themes, no PII.
 const MICRO_TESTIMONIALS = [
