@@ -197,6 +197,27 @@ const AmaniAI = () => (
           </Button>
         </div>
       </section>
+
+      {/* Internal links — helps Google surface Amani alongside our core services */}
+      <section className="py-12 border-t">
+        <div className="container mx-auto px-4 max-w-4xl">
+          <h2 className="text-2xl font-bold mb-5">Explore more mental health support</h2>
+          <div className="grid sm:grid-cols-2 gap-3 text-sm">
+            {[
+              { to: "/book-therapist", label: "Book a licensed therapist in Uganda" },
+              { to: "/wellbeing-check", label: "Free 3-minute wellbeing check (WHO-5)" },
+              { to: "/mind-check", label: "Free mental health screening tests" },
+              { to: "/support-groups", label: "Join a peer support group" },
+              { to: "/whisper", label: "Send an anonymous Whisper to a therapist" },
+              { to: "/blog/meet-amani-ai-mental-wellness-uganda", label: "Read: Meet Amani, built for Uganda" },
+            ].map((l) => (
+              <Link key={l.to} to={l.to} className="p-4 rounded-xl border bg-card hover:border-primary transition-colors">
+                {l.label}
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
     </main>
     <AppDownload />
     <Footer />
