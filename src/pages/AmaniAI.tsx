@@ -73,7 +73,7 @@ const AmaniAI = () => (
     <Helmet>
       <title>{TITLE}</title>
       <meta name="description" content={DESC} />
-      <meta name="keywords" content="Amani AI, mental health chatbot Uganda, AI therapist Africa, free mental wellness chatbot, online therapy chatbot Uganda, mental health AI assistant" />
+      <meta name="keywords" content="Amani AI, Amani AI Uganda, InnerSpark Amani, mental health chatbot Uganda, AI therapist Africa, free AI counsellor Uganda, free mental wellness chatbot, online therapy chatbot Uganda, mental health AI assistant Kampala, AI mental health support Kenya, talk to AI about anxiety, free therapy chat Uganda" />
       <link rel="canonical" href={URL} />
       <meta property="og:title" content={TITLE} />
       <meta property="og:description" content={DESC} />
@@ -81,6 +81,8 @@ const AmaniAI = () => (
       <meta property="og:url" content={URL} />
       <script type="application/ld+json">{JSON.stringify(softwareSchema)}</script>
       <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+      <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
+      <script type="application/ld+json">{JSON.stringify(howToSchema)}</script>
     </Helmet>
     <Header />
     <main>
