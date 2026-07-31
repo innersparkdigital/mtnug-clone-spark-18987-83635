@@ -1,55 +1,124 @@
 import { useState } from "react";
-import { Loader2, Check, X, Calendar, MessageSquare, Users } from "lucide-react";
+import { Loader2, Check, X, Calendar, MessageSquare, Users, Video, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/analytics";
 
-export type FormKind = "freecall" | "chat" | "group";
+export type FormKind = "freecall" | "chat" | "video" | "group";
 
 const WHATSAPP = "256792085773";
+export const IOTEC_PAY_URL = "https://pay.iotec.io/p/innerspark";
+const AIRTEL_NUMBER = "0740 616 404";
+const UGX_PER_USD = 3400;
 
-const CONFIG: Record<FormKind, { title: string; blurb: string; Icon: typeof Calendar; intent: string; needsSlot: boolean }> = {
+const usd = (ugx: number) => `$${Math.round(ugx / UGX_PER_USD)}`;
+const money = (ugx: number) => (ugx === 0 ? "Free" : `UGX ${ugx.toLocaleString()} (~${usd(ugx)})`);
+
+type Cfg = {
+  title: string;
+  blurb: string;
+  Icon: typeof Calendar;
+  intent: string;
+  needsSlot: boolean;
+  priceUgx: number;
+  duration: string;
+  tag: string;
+};
+
+const CONFIG: Record<FormKind, Cfg> = {
   freecall: {
-    title: "Book your free 20-minute call",
-    blurb: "With Janet, our intake therapist. No payment, no commitment.",
+    title: "Book for me a free 20-minute call",
+    blurb: "With Jannet, our intake counsellor. No payment, no commitment.",
     Icon: Calendar,
-    intent: "free_call",
+    intent: "free-call",
     needsSlot: true,
+    priceUgx: 0,
+    duration: "20 minutes",
+    tag: "free-call",
+  },
+  video: {
+    title: "Book an individual video session",
+    blurb: "60 minutes, one-on-one video with a licensed therapist.",
+    Icon: Video,
+    intent: "video_session",
+    needsSlot: true,
+    priceUgx: 75000,
+    duration: "60 minutes",
+    tag: "video-session",
   },
   chat: {
-    title: "Book a chat consultation",
-    blurb: "Text-based session with a licensed therapist — 30,000 UGX.",
+    title: "Book chat-based therapy",
+    blurb: "1 hour of text-based therapy with a licensed therapist.",
     Icon: MessageSquare,
-    intent: "chat_consultation",
+    intent: "chat_therapy",
     needsSlot: true,
+    priceUgx: 30000,
+    duration: "1 hour",
+    tag: "chat-therapy",
   },
   group: {
     title: "Join a support group",
-    blurb: "Small peer group led by a therapist — 25,000 UGX.",
+    blurb: "Small peer group led by a therapist.",
     Icon: Users,
     intent: "support_group",
     needsSlot: false,
+    priceUgx: 25000,
+    duration: "Weekly, 90 minutes",
+    tag: "support-group",
   },
 };
 
-const CONCERNS = ["Anxiety / stress", "Low mood", "Relationships", "Work / burnout", "Grief or loss", "Something else"];
+const CONCERNS = [
+  "Anxiety / stress",
+  "Depression / low mood",
+  "Relationships or marriage",
+  "Work, burnout or career",
+  "Grief or loss",
+  "Trauma or abuse",
+  "Addiction or substance use",
+  "Teen / child support",
+  "Self-esteem & personal growth",
+  "Something else",
+];
+
+const GROUPS = [
+  "Depression Support Group",
+  "Anxiety Management Group",
+  "Grief & Loss Support",
+  "Addiction Recovery Group",
+  "Stress Management Circle",
+  "Healthy Relationships Group",
+  "Trauma Survivors Support",
+  "New Parents Support",
+];
+
+const inputCls =
+  "w-full px-2.5 py-2 text-xs bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary";
 
 interface Props {
   kind: FormKind;
   sessionId: string | null;
   anonymousId: string;
+  therapistName?: string | null;
   onClose: () => void;
   onSubmitted: (kind: FormKind) => void;
 }
 
-const AmaniInlineForm = ({ kind, sessionId, anonymousId, onClose, onSubmitted }: Props) => {
+const AmaniInlineForm = ({ kind, sessionId, anonymousId, therapistName, onClose, onSubmitted }: Props) => {
   const cfg = CONFIG[kind];
+  const therapist = kind === "freecall" ? "Jannet (intake counsellor)" : therapistName || "";
+  const isPaid = cfg.priceUgx > 0;
+
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [concern, setConcern] = useState(CONCERNS[0]);
+  const [distress, setDistress] = useState("5");
+  const [group, setGroup] = useState(GROUPS[0]);
+  const [payMethod, setPayMethod] = useState<"online" | "manual">("online");
+  const [txnId, setTxnId] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
@@ -65,14 +134,20 @@ const AmaniInlineForm = ({ kind, sessionId, anonymousId, onClose, onSubmitted }:
 
     setBusy(true);
     const lines = [
-      `*${cfg.title}* (via Amani)`,
+      `*${cfg.title}* [${cfg.tag}] (via Amani)`,
       `Name: ${name.trim()}`,
       `WhatsApp: ${phone.trim()}`,
       email.trim() ? `Email: ${email.trim()}` : null,
-      `Main concern: ${concern}`,
+      kind === "group" ? `Group: ${group}` : `Main concern: ${concern}`,
+      `Distress right now: ${distress}/10`,
+      `Session: ${cfg.duration} — ${money(cfg.priceUgx)}`,
       cfg.needsSlot ? `Preferred: ${date} at ${time}` : null,
-      kind === "freecall" ? "Therapist: Janet (intake)" : null,
-    ].filter(Boolean).join("\n");
+      therapist ? `Therapist: ${therapist}` : null,
+      isPaid ? `Payment: ${payMethod === "online" ? `Online (${IOTEC_PAY_URL})` : `Manual — Airtel Money ${AIRTEL_NUMBER}`}` : null,
+      isPaid && txnId.trim() ? `Transaction ID: ${txnId.trim()}` : null,
+    ]
+      .filter(Boolean)
+      .join("\n");
 
     try {
       await supabase.from("chat_leads").insert({
@@ -85,24 +160,43 @@ const AmaniInlineForm = ({ kind, sessionId, anonymousId, onClose, onSubmitted }:
         source_path: window.location.pathname,
         message: lines,
       });
-      supabase.functions.invoke("notify-chat-event", {
-        body: {
-          kind: "new_lead",
-          session_id: sessionId,
-          anonymous_id: anonymousId,
-          source_path: window.location.pathname,
-          name: name.trim(),
-          phone: phone.trim(),
-          email: email.trim() || undefined,
-          intent: cfg.intent,
-          message: lines,
-        },
-      }).catch((e) => console.warn("notify-chat-event failed", e));
+      supabase.functions
+        .invoke("notify-chat-event", {
+          body: {
+            kind: "new_lead",
+            session_id: sessionId,
+            anonymous_id: anonymousId,
+            source_path: window.location.pathname,
+            name: name.trim(),
+            phone: phone.trim(),
+            email: email.trim() || undefined,
+            intent: cfg.intent,
+            message: lines,
+          },
+        })
+        .catch((e) => console.warn("notify-chat-event failed", e));
+
+      if (email.trim()) {
+        supabase.functions
+          .invoke("send-transactional-email", {
+            body: {
+              templateName: "contact-confirmation",
+              recipientEmail: email.trim(),
+              idempotencyKey: `amani-${cfg.tag}-${Date.now()}-${email.trim()}`,
+              templateData: {
+                name: name.trim(),
+                subject: cfg.title,
+                message: lines.replace(/\*/g, ""),
+              },
+            },
+          })
+          .catch((e) => console.warn("confirmation email failed", e));
+      }
     } catch (e) {
       console.warn("lead save failed", e);
     }
 
-    trackEvent("amani_form_submitted", { kind });
+    trackEvent("amani_form_submitted", { kind, pay: isPaid ? payMethod : "free" });
     setBusy(false);
     setDone(true);
     onSubmitted(kind);
@@ -111,14 +205,17 @@ const AmaniInlineForm = ({ kind, sessionId, anonymousId, onClose, onSubmitted }:
 
   if (done) {
     return (
-      <div className="px-3 py-2 border-t border-border bg-emerald-50 text-xs text-emerald-900 flex items-center gap-2">
-        <Check className="w-4 h-4 flex-shrink-0" /> Sent to our team on WhatsApp — they'll confirm shortly. 💙
+      <div className="px-3 py-2 border-t border-border bg-emerald-50 text-xs text-emerald-900 flex items-start gap-2">
+        <Check className="w-4 h-4 flex-shrink-0 mt-0.5" />
+        <span>
+          Sent to our team on WhatsApp{email.trim() ? " and emailed to you" : ""} — they'll confirm your time shortly. 💙
+        </span>
       </div>
     );
   }
 
   return (
-    <div className="px-3 py-3 border-t border-border bg-primary/5 space-y-2 max-h-[45vh] overflow-y-auto">
+    <div className="px-3 py-3 border-t border-border bg-primary/5 space-y-2 max-h-[52vh] overflow-y-auto">
       <div className="flex items-start justify-between gap-2">
         <div className="text-xs font-bold text-foreground flex items-center gap-1.5">
           <cfg.Icon className="w-3.5 h-3.5 text-primary" /> {cfg.title}
@@ -128,24 +225,79 @@ const AmaniInlineForm = ({ kind, sessionId, anonymousId, onClose, onSubmitted }:
         </button>
       </div>
       <p className="text-[11px] text-muted-foreground">{cfg.blurb}</p>
+      <div className="text-[11px] font-semibold text-primary bg-primary/10 rounded-lg px-2 py-1.5">
+        {cfg.duration} · {money(cfg.priceUgx)}
+        {therapist ? ` · with ${therapist}` : ""}
+      </div>
 
-      <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" maxLength={120}
-        className="w-full px-2.5 py-2 text-xs bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
-      <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="WhatsApp e.g. 0792 085 773" maxLength={30}
-        className="w-full px-2.5 py-2 text-xs bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
-      <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email (optional)" maxLength={120}
-        className="w-full px-2.5 py-2 text-xs bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
-      <select value={concern} onChange={(e) => setConcern(e.target.value)}
-        className="w-full px-2.5 py-2 text-xs bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-        {CONCERNS.map((c) => <option key={c} value={c}>{c}</option>)}
-      </select>
+      <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" maxLength={120} className={inputCls} />
+      <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="WhatsApp e.g. 0792 085 773" maxLength={30} className={inputCls} />
+      <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email (for your confirmation)" maxLength={120} className={inputCls} />
+
+      {kind === "group" ? (
+        <select value={group} onChange={(e) => setGroup(e.target.value)} className={inputCls}>
+          {GROUPS.map((g) => (
+            <option key={g} value={g}>{g}</option>
+          ))}
+        </select>
+      ) : (
+        <select value={concern} onChange={(e) => setConcern(e.target.value)} className={inputCls}>
+          {CONCERNS.map((c) => (
+            <option key={c} value={c}>{c}</option>
+          ))}
+        </select>
+      )}
+
+      <label className="block text-[11px] text-muted-foreground">
+        How heavy does it feel right now? <span className="font-semibold text-foreground">{distress}/10</span>
+        <input type="range" min={1} max={10} value={distress} onChange={(e) => setDistress(e.target.value)} className="w-full accent-primary mt-1" />
+      </label>
 
       {cfg.needsSlot && (
         <div className="grid grid-cols-2 gap-2">
-          <input type="date" value={date} min={today} onChange={(e) => setDate(e.target.value)}
-            className="px-2.5 py-2 text-xs bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
-          <input type="time" value={time} onChange={(e) => setTime(e.target.value)}
-            className="px-2.5 py-2 text-xs bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
+          <input type="date" value={date} min={today} onChange={(e) => setDate(e.target.value)} className={inputCls} />
+          <input type="time" value={time} onChange={(e) => setTime(e.target.value)} className={inputCls} />
+        </div>
+      )}
+
+      {isPaid && (
+        <div className="space-y-2 rounded-lg border border-border bg-background p-2">
+          <div className="text-[11px] font-semibold text-foreground">Would you like to pay online or manually?</div>
+          <div className="grid grid-cols-2 gap-2">
+            {(["online", "manual"] as const).map((m) => (
+              <button
+                key={m}
+                type="button"
+                onClick={() => setPayMethod(m)}
+                className={`text-[11px] py-1.5 rounded-lg border transition-colors ${
+                  payMethod === m ? "bg-primary text-primary-foreground border-primary" : "bg-muted/40 border-border text-foreground"
+                }`}
+              >
+                {m === "online" ? "Pay online" : "Pay manually"}
+              </button>
+            ))}
+          </div>
+          {payMethod === "online" ? (
+            <a
+              href={IOTEC_PAY_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-1.5 text-[11px] font-semibold text-primary underline"
+            >
+              Open secure payment page <ExternalLink className="w-3 h-3" />
+            </a>
+          ) : (
+            <p className="text-[11px] text-muted-foreground leading-snug">
+              Airtel Money: <span className="font-semibold text-foreground">{AIRTEL_NUMBER}</span> (InnerSpark Africa). Outside Uganda? Use M-Pesa "Send Money Abroad" to the same number.
+            </p>
+          )}
+          <input
+            value={txnId}
+            onChange={(e) => setTxnId(e.target.value)}
+            placeholder="Transaction ID (if you've already paid)"
+            maxLength={60}
+            className={inputCls}
+          />
         </div>
       )}
 

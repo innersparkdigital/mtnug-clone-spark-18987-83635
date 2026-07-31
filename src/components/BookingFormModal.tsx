@@ -69,10 +69,17 @@ const REASON_OPTIONS = [
   "I want to improve myself but don't know where to start",
 ];
 
-const COMMUNICATION_OPTIONS = [
-  "Mostly via messaging",
-  "Mostly via phone or video sessions",
-  "Not sure yet (decide later)",
+const UGX_PER_USD = 3400;
+const usd = (ugx: number) => `$${Math.round(ugx / UGX_PER_USD)}`;
+
+const IOTEC_PAY_URL = "https://pay.iotec.io/p/innerspark";
+const AIRTEL_NUMBER = "0740 616 404";
+
+type SessionFormat = "video" | "chat";
+
+const SESSION_FORMATS: { id: SessionFormat; title: string; detail: string; ugx: number }[] = [
+  { id: "video", title: "Individual video session", detail: "60 minutes, face-to-face on video", ugx: 75000 },
+  { id: "chat", title: "Chat-based therapy", detail: "1 hour, text only with a licensed therapist", ugx: 30000 },
 ];
 
 const SUPPORT_GROUPS = [
@@ -91,7 +98,9 @@ interface IntakeData {
   gender: string;
   age: string;
   reasons: string[];
-  communication: string;
+  sessionFormat: SessionFormat | "";
+  payMethod: "online" | "manual" | "";
+  txnId: string;
   name: string;
   email: string;
   phone: string;
@@ -102,7 +111,9 @@ const initialIntake: IntakeData = {
   gender: "",
   age: "",
   reasons: [],
-  communication: "",
+  sessionFormat: "",
+  payMethod: "",
+  txnId: "",
   name: "",
   email: "",
   phone: "",
@@ -137,14 +148,19 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
     [location.pathname]
   );
 
-  const therapyPriceLabel = isKenya ? "KES 2,600 / session" : "UGX 75,000 / session";
-  const groupPriceLabel = isKenya ? "KES 1,000 / week" : "UGX 25,000 / week";
+  const therapyPriceLabel = isKenya ? "KES 2,600 (~$20) / session" : `UGX 75,000 (~${usd(75000)}) / session`;
+  const groupPriceLabel = isKenya ? "KES 1,000 (~$8) / week" : `UGX 25,000 (~${usd(25000)}) / week`;
+
+  const selectedFormat = SESSION_FORMATS.find((f) => f.id === data.sessionFormat);
 
   const priceLabel = useMemo(() => {
     if (isGroup) return groupPriceLabel;
     if (isConsultation) return "FREE Consultation";
+    if (selectedFormat) return `UGX ${selectedFormat.ugx.toLocaleString()} (~${usd(selectedFormat.ugx)}) · ${selectedFormat.detail}`;
     return therapyPriceLabel;
-  }, [isGroup, isConsultation, therapyPriceLabel, groupPriceLabel]);
+  }, [isGroup, isConsultation, therapyPriceLabel, groupPriceLabel, selectedFormat]);
+
+  const needsPayment = !isGroup && !isConsultation;
 
   const headerTitle = isGroup
     ? "Join a Support Group"
@@ -161,11 +177,11 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
       case 1: return !!data.gender;
       case 2: return !!data.age;
       case 3: return data.reasons.length > 0;
-      case 4: return !!data.communication;
-      case 5: return !!(data.name.trim() && data.phone.trim() && data.email.trim());
+      case 4: return !!data.sessionFormat;
+      case 5: return !!(data.name.trim() && data.phone.trim() && data.email.trim() && (!needsPayment || data.payMethod));
       default: return false;
     }
-  }, [step, data, isGroup, groupName]);
+  }, [step, data, isGroup, groupName, needsPayment]);
 
   const toggleReason = (r: string) => {
     setData((d) => ({
@@ -195,8 +211,12 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
       `*Gender:* ${data.gender}\n` +
       `*Age:* ${data.age}\n` +
       `*Reasons:* ${data.reasons.join("; ")}\n` +
-      `*Communication preference:* ${data.communication}\n\n` +
-      `*Pricing:* ${priceLabel}`
+      `*Session format:* ${selectedFormat ? `${selectedFormat.title} — ${selectedFormat.detail}` : "—"}\n\n` +
+      `*Pricing:* ${priceLabel}` +
+      (needsPayment
+        ? `\n*Payment:* ${data.payMethod === "online" ? `Online (${IOTEC_PAY_URL})` : `Manual — Airtel Money ${AIRTEL_NUMBER}`}` +
+          (data.txnId.trim() ? `\n*Transaction ID:* ${data.txnId.trim()}` : "")
+        : "")
     );
   };
 
@@ -397,20 +417,24 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
       case 4:
         return (
           <div className="space-y-3">
-            <h3 className="text-lg font-semibold text-foreground">How do you prefer to communicate with your therapist?</h3>
+            <h3 className="text-lg font-semibold text-foreground">How would you like your sessions to happen?</h3>
             <div className="space-y-2">
-              {COMMUNICATION_OPTIONS.map((c) => (
+              {SESSION_FORMATS.map((f) => (
                 <button
-                  key={c}
+                  key={f.id}
                   type="button"
-                  onClick={() => setData((d) => ({ ...d, communication: c }))}
-                  className={`w-full rounded-full py-3 px-5 text-left transition-all ${
-                    data.communication === c
-                      ? "bg-primary text-primary-foreground font-semibold"
-                      : "bg-primary/10 text-foreground hover:bg-primary/20"
+                  onClick={() => setData((d) => ({ ...d, sessionFormat: f.id }))}
+                  className={`w-full rounded-xl border py-3 px-4 text-left transition-all ${
+                    data.sessionFormat === f.id
+                      ? "border-primary bg-primary/10"
+                      : "border-border hover:bg-muted/50"
                   }`}
                 >
-                  {c}
+                  <div className="font-semibold text-foreground">{f.title}</div>
+                  <div className="text-xs text-muted-foreground">{f.detail}</div>
+                  <div className="text-xs font-semibold text-primary mt-1">
+                    UGX {f.ugx.toLocaleString()} (~{usd(f.ugx)})
+                  </div>
                 </button>
               ))}
             </div>
@@ -425,6 +449,50 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
               <span className="text-foreground">{priceLabel}</span>
             </div>
             <ContactFields data={data} setData={setData} />
+            {needsPayment && (
+              <div className="space-y-2 rounded-xl border border-border p-3">
+                <Label>Would you like to pay online or manually?</Label>
+                <div className="grid grid-cols-2 gap-2">
+                  {(["online", "manual"] as const).map((m) => (
+                    <button
+                      key={m}
+                      type="button"
+                      onClick={() => setData((d) => ({ ...d, payMethod: m }))}
+                      className={`rounded-lg border py-2 text-sm transition-colors ${
+                        data.payMethod === m
+                          ? "bg-primary text-primary-foreground border-primary font-semibold"
+                          : "border-border hover:bg-muted/50"
+                      }`}
+                    >
+                      {m === "online" ? "Pay online" : "Pay manually"}
+                    </button>
+                  ))}
+                </div>
+                {data.payMethod === "online" && (
+                  <a
+                    href={IOTEC_PAY_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-sm font-semibold text-primary underline"
+                  >
+                    Open the secure payment page
+                  </a>
+                )}
+                {data.payMethod === "manual" && (
+                  <p className="text-xs text-muted-foreground">
+                    Airtel Money: <span className="font-semibold text-foreground">{AIRTEL_NUMBER}</span> (InnerSpark Africa).
+                    Outside Uganda? Use M-Pesa "Send Money Abroad" to the same number.
+                  </p>
+                )}
+                {data.payMethod && (
+                  <Input
+                    placeholder="Transaction ID (if you've already paid)"
+                    value={data.txnId}
+                    onChange={(e) => setData((d) => ({ ...d, txnId: e.target.value }))}
+                  />
+                )}
+              </div>
+            )}
           </div>
         );
       default:

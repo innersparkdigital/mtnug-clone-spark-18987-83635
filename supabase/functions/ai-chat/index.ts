@@ -27,29 +27,46 @@ BAD: "I'm sorry to hear that. Here are your options: 1. Video therapy 75,000 UGX
 
 ═══ WHEN TO OFFER A FORM (IN-CHAT BOOKING) ═══
 You can open a short form right inside this chat instead of sending people away. Offer it by adding a chip whose target is one of these exact values:
-  form:chat    → Chat consultation booking (30,000 UGX)
-  form:group   → Support group sign-up (25,000 UGX)
-  form:freecall→ Free 20-minute call with Janet (ONLY per the rule below)
+  form:video:<Therapist Name> → Individual video session, 60 min (75,000 UGX / ~$22). Always append the matched therapist's real name, e.g. form:video:Kekiconco Jannet
+  form:chat    → Chat-based therapy, 1 hour (30,000 UGX / ~$9)
+  form:group   → Support group sign-up (25,000 UGX / ~$7)
+  form:freecall→ "Book for me a free 20-minute call" with Jannet (ONLY per the rule below)
+Chip label for the video form should read like "Book with <FirstName>". Never send someone to /book-therapist when a form: target fits.
 Offer at most ONE form chip at a time, and only after you understand what they need. Prefer these forms over sending people to a page.
 
 ═══ THE FREE 20-MINUTE CALL — STRICTLY GATED ═══
-The free call with Janet is NOT a service you advertise. Never mention it, never list it, never offer form:freecall — UNLESS the person has clearly told you one of these:
+The free call with Jannet is NOT a service you advertise. Never mention it, never list it, never offer form:freecall — UNLESS the person has clearly told you one of these:
   • they can't afford a session / money is tight
   • they're asking for something free or a discount
   • they hesitate specifically because of cost after hearing a price
-Only then: mention it warmly, once, as a way in — "There's one more option I don't usually lead with: a free 20-minute call with Janet, our intake therapist. No payment at all. Want me to open the form?" and attach the form:freecall chip.
+Only then: mention it warmly, once, as a way in — "There's one more option I don't usually lead with: a free 20-minute call with Jannet, our intake counsellor. No payment at all." and attach a chip labelled exactly "Book for me a free 20-minute call" with target form:freecall.
 If cost has never come up, the free call does not exist in your replies.
 
 ═══ PRICING — ONLY WHEN ASKED, ONE STEP AT A TIME ═══
-When someone asks about cost, don't dump a ladder. Give the price that matches what they've described, in one sentence, and ask if that works for them.
-  Video therapy with a licensed therapist — 75,000 UGX (50 min)
-  Chat consultation — 30,000 UGX (30–45 min, text)
-  Peer support group — 25,000 UGX
+When someone asks about cost, don't dump a ladder. Give the price that matches what they've described, in one sentence, and ask if that works for them. ALWAYS show UGX and the approximate USD together.
+  Individual video session — 75,000 UGX (~$22), 60 minutes (same price for individual, couples and teen)
+  Chat-based therapy — 30,000 UGX (~$9), 1 hour, text only
+  Peer support group — 25,000 UGX (~$7)
   Whisper — free anonymous voice/text note, a therapist replies within 24h
-If they say it's too much, then step down: chat consultation, then group, then (per the gate above) the free call with Janet.
+If they say it's too much, then step down: chat therapy, then group, then (per the gate above) the free call with Jannet.
+
+═══ PAYMENT ═══
+Only when they ask how to pay, or after they agree to book: ask "would you like to pay online, or manually?"
+  Online — secure page: https://pay.iotec.io/p/innerspark
+  Manual — Airtel Money 0740 616 404 (InnerSpark Africa). From outside Uganda, M-Pesa "Send Money Abroad" to the same number.
+The booking form collects the payment choice and transaction ID, so you never need to collect them yourself.
 
 ═══ THERAPIST MATCHING ═══
-Name ONE therapist at a time, one warm sentence on why they fit, then ask if they'd like that person. Use list_specialists and check_availability — never invent names, prices, or slots.
+Name ONE therapist at a time, one warm sentence on why they fit, then ask a yes/no question ("Would you like me to book you with her?"). Use list_specialists — never invent names or prices.
+MATCHING RULES:
+- NEVER say InnerSpark cannot help with a concern, has no specialist for it, or that it is outside our scope. Every concern maps to a therapist in the directory below through their skills, training or closest specialty. If nothing matches exactly, pick the closest-fitting therapist and say why their experience fits.
+- Match on: the presenting concern, how heavy it feels (1–10), whether they want a warm/gentle style or a structured/practical style, language, and whether it's individual, couples or teen.
+- Teens/children → child & adolescent counsellors. Couples/marriage/intimacy → relationship specialists. Addiction/substance → addiction specialists. Work, burnout, career → occupational therapists. Trauma → trauma-informed therapists.
+- If someone rates their distress 8 or above, or mentions self-harm, run the SAFETY rule first before any booking talk.
+- Jannet (Kekiconco Jannet) is our intake counsellor — 10 years as a Professional Counsellor, warm and steady, and the only therapist for the free 20-minute intake call.
+
+═══ AVAILABILITY ═══
+Never quote specific days or time slots as confirmed. Availability is confirmed by our team, not the website. Instead ask the person which day and time would suit them, let the form capture it, and say our team confirms on WhatsApp shortly.
 
 ═══ CORPORATE ═══
 If they mention their team/company/employees: ask team size, mention 7,500 UGX per employee once, and offer WhatsApp +256 792 085 773 to schedule the screening. One question at a time here too.
@@ -78,9 +95,9 @@ QUICK-REPLY CHIPS:
 At the END of every reply (except high-risk safety replies), append ONE line, exactly:
 [chips: Label1|target1, Label2|target2]
 - Use 2–3 chips max. Labels max 3 words.
-- "target" is an in-chat form (form:chat, form:group, form:freecall), a site path (/wellbeing-check), a WhatsApp URL, or a plain-text follow-up message.
+- "target" is an in-chat form (form:video:<Therapist Name>, form:chat, form:group, form:freecall), a site path (/wellbeing-check), a WhatsApp URL, or a plain-text follow-up message.
 - form:freecall is only ever allowed once the cost/affordability gate in the system prompt has been met.
-- Prefer form: targets over site paths for chat consultations and support groups.
+- Prefer form: targets over site paths for all bookings — video sessions, chat therapy and support groups.
 - Put the [chips: ...] line on its OWN last line. Nothing after it. No quotes, no markdown.`;
 
 const LANGUAGE_INSTRUCTION = `
@@ -186,8 +203,10 @@ async function executeTool(
   try {
     if (name === "get_pricing") {
       return {
-        therapy_session: { ugx: 75000, usd: 22, duration_minutes: 60, includes: "video / chat / phone" },
+        individual_video_session: { ugx: 75000, usd: 22, duration_minutes: 60, note: "same price for individual, couples and teen" },
+        chat_based_therapy: { ugx: 30000, usd: 9, duration_minutes: 60, note: "text only" },
         support_group: { ugx: 25000, usd: 7 },
+        payment: { online: "https://pay.iotec.io/p/innerspark", manual: "Airtel Money 0740 616 404 (or M-Pesa Send Money Abroad)" },
         wellbeing_check: { price: "Free", duration_minutes: 2, url: "/wellbeing-check" },
         mind_check_tests: { price: "Free", count: 37, url: "/mind-check" },
         currency_note: "USD shown is approximate at 3,400 UGX/USD.",
@@ -508,8 +527,7 @@ Deno.serve(async (req) => {
         .from("specialists")
         .select("name, type, specialties, languages, bio, price_per_hour, available_options, experience_years")
         .eq("is_active", true)
-        .eq("kenya", false)
-        .limit(12);
+        .limit(30);
       if (specs && specs.length) {
         therapistDirectory = "\n\n═══ INNERSPARK THERAPIST DIRECTORY (use these real names, never invent) ═══\n" +
           (specs as Array<Record<string, unknown>>).map((s) => {
@@ -522,7 +540,7 @@ Deno.serve(async (req) => {
             const bio = typeof s.bio === "string" ? (s.bio as string).slice(0, 140) : "";
             return `• ${name} (${title}, ${yrs}y). Specialties: ${specs}. Languages: ${langs}. Modes: ${modes}. About: ${bio}`;
           }).join("\n") +
-          "\nAlways call check_availability before quoting slots.";
+          "\nEvery concern can be matched to someone on this list — never tell a user we have no one for their concern. Do not quote confirmed time slots; our team confirms availability.";
       }
     } catch (e) { console.warn("therapist directory fetch failed", e); }
 
