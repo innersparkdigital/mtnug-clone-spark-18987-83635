@@ -78,17 +78,17 @@ function getAnonId(): string {
 function contextualWelcome(pathname: string): Msg {
   const p = pathname.toLowerCase();
   let content =
-    "Hey there 👋 I'm **Amani**, your wellness buddy from InnerSpark ✨\n\nWhat's been on your mind lately? I can help you find the right support, whether that's a therapist, a support group, or just talking things through 💙";
+    "Hi, I'm Amani from InnerSpark 👋\n\nWhat's been going on for you lately?";
   if (p.startsWith("/for-business") || p.startsWith("/corporate")) {
-    content = "Hi 👋 I'm **Amani**. Looking for mental health support for your team? I can help you set up a **free workplace screening** or connect you with our corporate wellness team. What size is your team?";
+    content = "Hi, I'm Amani 👋 Looking for support for your team? How many people are we talking about?";
   } else if (p.startsWith("/specialists") || p.startsWith("/find-therapist") || p.startsWith("/book-therapist")) {
-    content = "Hi 👋 I'm **Amani**. Would you like help choosing the right therapist for what you're going through? Tell me a little about what's happening and I'll match you 💙";
+    content = "Hi, I'm Amani 👋 I can help you pick the right therapist. What's been happening for you?";
   } else if (p.startsWith("/blog")) {
-    content = "Hi 👋 I'm **Amani**. Glad you're reading up on this. If any of it feels close to home, I can help you take the next step — a free wellbeing check, a support group, or a therapist. What's on your mind?";
+    content = "Hi, I'm Amani 👋 If any of this feels close to home, I'm here. What's on your mind?";
   } else if (p.startsWith("/whisper")) {
-    content = "Hi 💙 I'm **Amani**. Whisper is completely free and anonymous — a real therapist will reply within 24h. Want help drafting your Whisper, or would you rather book a proper session?";
+    content = "Hi, I'm Amani 💙 Whisper is free and anonymous. What would you like to share?";
   } else if (p.startsWith("/kenya")) {
-    content = "Habari 👋 I'm **Amani**. I can help you book a Kenya-based therapist (video or chat), or connect you to a free wellbeing check. What's been going on for you?";
+    content = "Habari, I'm Amani 👋 What's been going on for you lately?";
   }
   return { role: "assistant", content };
 }
