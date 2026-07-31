@@ -136,6 +136,7 @@ const AIChatWidget = () => {
   // Two-step lead capture: phone first, name/email optional after.
   const [leadStep, setLeadStep] = useState<1 | 2>(1);
   const [leadRowId, setLeadRowId] = useState<string | null>(null);
+  const [activeForm, setActiveForm] = useState<FormKind | null>(null);
   const [testimonialIdx] = useState(() => Math.floor(Math.random() * MICRO_TESTIMONIALS.length));
   const openedAtRef = useRef<number>(Date.now());
   const scrollRef = useRef<HTMLDivElement>(null);
