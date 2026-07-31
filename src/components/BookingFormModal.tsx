@@ -417,20 +417,24 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
       case 4:
         return (
           <div className="space-y-3">
-            <h3 className="text-lg font-semibold text-foreground">How do you prefer to communicate with your therapist?</h3>
+            <h3 className="text-lg font-semibold text-foreground">How would you like your sessions to happen?</h3>
             <div className="space-y-2">
-              {COMMUNICATION_OPTIONS.map((c) => (
+              {SESSION_FORMATS.map((f) => (
                 <button
-                  key={c}
+                  key={f.id}
                   type="button"
-                  onClick={() => setData((d) => ({ ...d, communication: c }))}
-                  className={`w-full rounded-full py-3 px-5 text-left transition-all ${
-                    data.communication === c
-                      ? "bg-primary text-primary-foreground font-semibold"
-                      : "bg-primary/10 text-foreground hover:bg-primary/20"
+                  onClick={() => setData((d) => ({ ...d, sessionFormat: f.id }))}
+                  className={`w-full rounded-xl border py-3 px-4 text-left transition-all ${
+                    data.sessionFormat === f.id
+                      ? "border-primary bg-primary/10"
+                      : "border-border hover:bg-muted/50"
                   }`}
                 >
-                  {c}
+                  <div className="font-semibold text-foreground">{f.title}</div>
+                  <div className="text-xs text-muted-foreground">{f.detail}</div>
+                  <div className="text-xs font-semibold text-primary mt-1">
+                    UGX {f.ugx.toLocaleString()} (~{usd(f.ugx)})
+                  </div>
                 </button>
               ))}
             </div>
@@ -445,6 +449,50 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
               <span className="text-foreground">{priceLabel}</span>
             </div>
             <ContactFields data={data} setData={setData} />
+            {needsPayment && (
+              <div className="space-y-2 rounded-xl border border-border p-3">
+                <Label>Would you like to pay online or manually?</Label>
+                <div className="grid grid-cols-2 gap-2">
+                  {(["online", "manual"] as const).map((m) => (
+                    <button
+                      key={m}
+                      type="button"
+                      onClick={() => setData((d) => ({ ...d, payMethod: m }))}
+                      className={`rounded-lg border py-2 text-sm transition-colors ${
+                        data.payMethod === m
+                          ? "bg-primary text-primary-foreground border-primary font-semibold"
+                          : "border-border hover:bg-muted/50"
+                      }`}
+                    >
+                      {m === "online" ? "Pay online" : "Pay manually"}
+                    </button>
+                  ))}
+                </div>
+                {data.payMethod === "online" && (
+                  <a
+                    href={IOTEC_PAY_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-sm font-semibold text-primary underline"
+                  >
+                    Open the secure payment page
+                  </a>
+                )}
+                {data.payMethod === "manual" && (
+                  <p className="text-xs text-muted-foreground">
+                    Airtel Money: <span className="font-semibold text-foreground">{AIRTEL_NUMBER}</span> (InnerSpark Africa).
+                    Outside Uganda? Use M-Pesa "Send Money Abroad" to the same number.
+                  </p>
+                )}
+                {data.payMethod && (
+                  <Input
+                    placeholder="Transaction ID (if you've already paid)"
+                    value={data.txnId}
+                    onChange={(e) => setData((d) => ({ ...d, txnId: e.target.value }))}
+                  />
+                )}
+              </div>
+            )}
           </div>
         );
       default:
