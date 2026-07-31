@@ -95,9 +95,9 @@ QUICK-REPLY CHIPS:
 At the END of every reply (except high-risk safety replies), append ONE line, exactly:
 [chips: Label1|target1, Label2|target2]
 - Use 2–3 chips max. Labels max 3 words.
-- "target" is an in-chat form (form:chat, form:group, form:freecall), a site path (/wellbeing-check), a WhatsApp URL, or a plain-text follow-up message.
+- "target" is an in-chat form (form:video:<Therapist Name>, form:chat, form:group, form:freecall), a site path (/wellbeing-check), a WhatsApp URL, or a plain-text follow-up message.
 - form:freecall is only ever allowed once the cost/affordability gate in the system prompt has been met.
-- Prefer form: targets over site paths for chat consultations and support groups.
+- Prefer form: targets over site paths for all bookings — video sessions, chat therapy and support groups.
 - Put the [chips: ...] line on its OWN last line. Nothing after it. No quotes, no markdown.`;
 
 const LANGUAGE_INSTRUCTION = `
@@ -203,8 +203,10 @@ async function executeTool(
   try {
     if (name === "get_pricing") {
       return {
-        therapy_session: { ugx: 75000, usd: 22, duration_minutes: 60, includes: "video / chat / phone" },
+        individual_video_session: { ugx: 75000, usd: 22, duration_minutes: 60, note: "same price for individual, couples and teen" },
+        chat_based_therapy: { ugx: 30000, usd: 9, duration_minutes: 60, note: "text only" },
         support_group: { ugx: 25000, usd: 7 },
+        payment: { online: "https://pay.iotec.io/p/innerspark", manual: "Airtel Money 0740 616 404 (or M-Pesa Send Money Abroad)" },
         wellbeing_check: { price: "Free", duration_minutes: 2, url: "/wellbeing-check" },
         mind_check_tests: { price: "Free", count: 37, url: "/mind-check" },
         currency_note: "USD shown is approximate at 3,400 UGX/USD.",
@@ -525,8 +527,7 @@ Deno.serve(async (req) => {
         .from("specialists")
         .select("name, type, specialties, languages, bio, price_per_hour, available_options, experience_years")
         .eq("is_active", true)
-        .eq("kenya", false)
-        .limit(12);
+        .limit(30);
       if (specs && specs.length) {
         therapistDirectory = "\n\n═══ INNERSPARK THERAPIST DIRECTORY (use these real names, never invent) ═══\n" +
           (specs as Array<Record<string, unknown>>).map((s) => {
@@ -539,7 +540,7 @@ Deno.serve(async (req) => {
             const bio = typeof s.bio === "string" ? (s.bio as string).slice(0, 140) : "";
             return `• ${name} (${title}, ${yrs}y). Specialties: ${specs}. Languages: ${langs}. Modes: ${modes}. About: ${bio}`;
           }).join("\n") +
-          "\nAlways call check_availability before quoting slots.";
+          "\nEvery concern can be matched to someone on this list — never tell a user we have no one for their concern. Do not quote confirmed time slots; our team confirms availability.";
       }
     } catch (e) { console.warn("therapist directory fetch failed", e); }
 
