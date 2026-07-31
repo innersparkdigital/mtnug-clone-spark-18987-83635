@@ -7,6 +7,7 @@ import ReactMarkdown from "react-markdown";
 import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/analytics";
 import amaniAvatar from "@/assets/amani-avatar.jpg";
+import AmaniInlineForm, { type FormKind } from "@/components/chat/AmaniInlineForm";
 
 const ASSISTANT_NAME = "Amani";
 const ASSISTANT_ROLE = "Care Assistant";
@@ -47,6 +48,12 @@ const OPENER_CHIPS: { label: string; emoji: string; text: string }[] = [
   { label: "For my team at work", emoji: "🏢", text: "I'm looking for mental health support for my team at work." },
 ];
 
+const FORM_TARGETS: Record<string, FormKind> = {
+  "form:freecall": "freecall",
+  "form:chat": "chat",
+  "form:group": "group",
+};
+
 // Rotating social-proof lines shown once per open. Real InnerSpark themes, no PII.
 const MICRO_TESTIMONIALS = [
   "★★★★★ \"Booked in 4 minutes — my therapist really listened.\" — Sarah, Kampala",
@@ -71,17 +78,17 @@ function getAnonId(): string {
 function contextualWelcome(pathname: string): Msg {
   const p = pathname.toLowerCase();
   let content =
-    "Hey there 👋 I'm **Amani**, your wellness buddy from InnerSpark ✨\n\nWhat's been on your mind lately? I can help you find the right support, whether that's a therapist, a support group, or just talking things through 💙";
+    "Hi, I'm Amani from InnerSpark 👋\n\nWhat's been going on for you lately?";
   if (p.startsWith("/for-business") || p.startsWith("/corporate")) {
-    content = "Hi 👋 I'm **Amani**. Looking for mental health support for your team? I can help you set up a **free workplace screening** or connect you with our corporate wellness team. What size is your team?";
+    content = "Hi, I'm Amani 👋 Looking for support for your team? How many people are we talking about?";
   } else if (p.startsWith("/specialists") || p.startsWith("/find-therapist") || p.startsWith("/book-therapist")) {
-    content = "Hi 👋 I'm **Amani**. Would you like help choosing the right therapist for what you're going through? Tell me a little about what's happening and I'll match you 💙";
+    content = "Hi, I'm Amani 👋 I can help you pick the right therapist. What's been happening for you?";
   } else if (p.startsWith("/blog")) {
-    content = "Hi 👋 I'm **Amani**. Glad you're reading up on this. If any of it feels close to home, I can help you take the next step — a free wellbeing check, a support group, or a therapist. What's on your mind?";
+    content = "Hi, I'm Amani 👋 If any of this feels close to home, I'm here. What's on your mind?";
   } else if (p.startsWith("/whisper")) {
-    content = "Hi 💙 I'm **Amani**. Whisper is completely free and anonymous — a real therapist will reply within 24h. Want help drafting your Whisper, or would you rather book a proper session?";
+    content = "Hi, I'm Amani 💙 Whisper is free and anonymous. What would you like to share?";
   } else if (p.startsWith("/kenya")) {
-    content = "Habari 👋 I'm **Amani**. I can help you book a Kenya-based therapist (video or chat), or connect you to a free wellbeing check. What's been going on for you?";
+    content = "Habari, I'm Amani 👋 What's been going on for you lately?";
   }
   return { role: "assistant", content };
 }
@@ -129,6 +136,7 @@ const AIChatWidget = () => {
   // Two-step lead capture: phone first, name/email optional after.
   const [leadStep, setLeadStep] = useState<1 | 2>(1);
   const [leadRowId, setLeadRowId] = useState<string | null>(null);
+  const [activeForm, setActiveForm] = useState<FormKind | null>(null);
   const [testimonialIdx] = useState(() => Math.floor(Math.random() * MICRO_TESTIMONIALS.length));
   const openedAtRef = useRef<number>(Date.now());
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -686,6 +694,18 @@ const AIChatWidget = () => {
                         {chips.map((c, idx) => {
                           const isUrl = c.target.startsWith("http");
                           const isPath = c.target.startsWith("/");
+                          const formKind = FORM_TARGETS[c.target.toLowerCase().trim()];
+                          if (formKind) {
+                            return (
+                              <button
+                                key={idx}
+                                onClick={() => { handleCTA("inline_chip_form", c.target); setActiveForm(formKind); }}
+                                className="text-xs px-2.5 py-1.5 bg-primary text-primary-foreground border border-primary rounded-full hover:opacity-90 transition-colors"
+                              >
+                                {c.label}
+                              </button>
+                            );
+                          }
                           if (isUrl) {
                             return (
                               <a
@@ -941,6 +961,24 @@ const AIChatWidget = () => {
               <div className="px-3 py-2 border-t border-border bg-emerald-50 text-xs text-emerald-900 flex items-center gap-2">
                 <Check className="w-4 h-4" /> Thanks — we'll send one gentle WhatsApp when you're ready. 💙
               </div>
+            )}
+
+            {/* Inline booking forms (free call / chat consultation / support group) */}
+            {activeForm && (
+              <AmaniInlineForm
+                kind={activeForm}
+                sessionId={sessionId}
+                anonymousId={getAnonId()}
+                onClose={() => setActiveForm(null)}
+                onSubmitted={(k) => {
+                  setLeadSubmitted(true);
+                  logEvent("inline_form_submitted", { kind: k });
+                  setMessages((prev) => [...prev, {
+                    role: "assistant",
+                    content: "Perfect — I've sent that to our team on WhatsApp. They'll confirm your time shortly. Anything else on your mind?",
+                  }]);
+                }}
+              />
             )}
 
             {/* Input */}

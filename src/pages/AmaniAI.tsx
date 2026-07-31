@@ -39,6 +39,28 @@ const faqSchema = {
   mainEntity: faqs.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
 };
 
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: "https://www.innersparkafrica.com/" },
+    { "@type": "ListItem", position: 2, name: "Amani AI", item: URL },
+  ],
+};
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  name: "How to chat with Amani AI for free mental health support",
+  description: "Start a free, private conversation with Amani, InnerSpark Africa's AI mental wellness companion.",
+  totalTime: "PT2M",
+  step: [
+    { "@type": "HowToStep", name: "Open the chat", text: "Tap the blue Amani chat bubble at the bottom-right of any InnerSpark page." },
+    { "@type": "HowToStep", name: "Say what's on your mind", text: "Type how you're feeling — a single sentence is enough to begin." },
+    { "@type": "HowToStep", name: "Get your next step", text: "Amani listens, shares coping ideas, and can book a licensed Ugandan therapist for you." },
+  ],
+};
+
 const openAmani = () => {
   // The global AIChatWidget listens on the document for this event in supported builds;
   // as a graceful fallback we scroll the user to the bottom-right where the bubble lives.
@@ -51,7 +73,7 @@ const AmaniAI = () => (
     <Helmet>
       <title>{TITLE}</title>
       <meta name="description" content={DESC} />
-      <meta name="keywords" content="Amani AI, mental health chatbot Uganda, AI therapist Africa, free mental wellness chatbot, online therapy chatbot Uganda, mental health AI assistant" />
+      <meta name="keywords" content="Amani AI, Amani AI Uganda, InnerSpark Amani, mental health chatbot Uganda, AI therapist Africa, free AI counsellor Uganda, free mental wellness chatbot, online therapy chatbot Uganda, mental health AI assistant Kampala, AI mental health support Kenya, talk to AI about anxiety, free therapy chat Uganda" />
       <link rel="canonical" href={URL} />
       <meta property="og:title" content={TITLE} />
       <meta property="og:description" content={DESC} />
@@ -59,6 +81,8 @@ const AmaniAI = () => (
       <meta property="og:url" content={URL} />
       <script type="application/ld+json">{JSON.stringify(softwareSchema)}</script>
       <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+      <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
+      <script type="application/ld+json">{JSON.stringify(howToSchema)}</script>
     </Helmet>
     <Header />
     <main>
@@ -171,6 +195,27 @@ const AmaniAI = () => (
           <Button size="lg" variant="secondary" className="rounded-full" onClick={openAmani}>
             <MessageCircle className="w-5 h-5 mr-2" /> Open Amani chat
           </Button>
+        </div>
+      </section>
+
+      {/* Internal links — helps Google surface Amani alongside our core services */}
+      <section className="py-12 border-t">
+        <div className="container mx-auto px-4 max-w-4xl">
+          <h2 className="text-2xl font-bold mb-5">Explore more mental health support</h2>
+          <div className="grid sm:grid-cols-2 gap-3 text-sm">
+            {[
+              { to: "/book-therapist", label: "Book a licensed therapist in Uganda" },
+              { to: "/wellbeing-check", label: "Free 3-minute wellbeing check (WHO-5)" },
+              { to: "/mind-check", label: "Free mental health screening tests" },
+              { to: "/support-groups", label: "Join a peer support group" },
+              { to: "/whisper", label: "Send an anonymous Whisper to a therapist" },
+              { to: "/blog/meet-amani-ai-mental-wellness-uganda", label: "Read: Meet Amani, built for Uganda" },
+            ].map((l) => (
+              <Link key={l.to} to={l.to} className="p-4 rounded-xl border bg-card hover:border-primary transition-colors">
+                {l.label}
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
     </main>
