@@ -694,6 +694,18 @@ const AIChatWidget = () => {
                         {chips.map((c, idx) => {
                           const isUrl = c.target.startsWith("http");
                           const isPath = c.target.startsWith("/");
+                          const formKind = FORM_TARGETS[c.target.toLowerCase().trim()];
+                          if (formKind) {
+                            return (
+                              <button
+                                key={idx}
+                                onClick={() => { handleCTA("inline_chip_form", c.target); setActiveForm(formKind); }}
+                                className="text-xs px-2.5 py-1.5 bg-primary text-primary-foreground border border-primary rounded-full hover:opacity-90 transition-colors"
+                              >
+                                {c.label}
+                              </button>
+                            );
+                          }
                           if (isUrl) {
                             return (
                               <a
