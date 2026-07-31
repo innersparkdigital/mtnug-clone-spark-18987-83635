@@ -963,12 +963,29 @@ const AIChatWidget = () => {
               </div>
             )}
 
+            {/* Inline booking forms (free call / chat consultation / support group) */}
+            {activeForm && (
+              <AmaniInlineForm
+                kind={activeForm}
+                sessionId={sessionId}
+                anonymousId={getAnonId()}
+                onClose={() => setActiveForm(null)}
+                onSubmitted={(k) => {
+                  setLeadSubmitted(true);
+                  logEvent("inline_form_submitted", { kind: k });
+                  setMessages((prev) => [...prev, {
+                    role: "assistant",
+                    content: "Perfect — I've sent that to our team on WhatsApp. They'll confirm your time shortly. Anything else on your mind?",
+                  }]);
+                }}
+              />
+            )}
+
             {/* Input */}
             <form
               onSubmit={(e) => { e.preventDefault(); sendMessage(input); }}
               className="px-3 py-2 border-t border-border flex gap-2 bg-background"
             >
-              {null}
               <input
                 type="text"
                 value={input}
