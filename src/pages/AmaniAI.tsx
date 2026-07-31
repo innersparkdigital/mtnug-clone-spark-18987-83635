@@ -39,6 +39,28 @@ const faqSchema = {
   mainEntity: faqs.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
 };
 
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: "https://www.innersparkafrica.com/" },
+    { "@type": "ListItem", position: 2, name: "Amani AI", item: URL },
+  ],
+};
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  name: "How to chat with Amani AI for free mental health support",
+  description: "Start a free, private conversation with Amani, InnerSpark Africa's AI mental wellness companion.",
+  totalTime: "PT2M",
+  step: [
+    { "@type": "HowToStep", name: "Open the chat", text: "Tap the blue Amani chat bubble at the bottom-right of any InnerSpark page." },
+    { "@type": "HowToStep", name: "Say what's on your mind", text: "Type how you're feeling — a single sentence is enough to begin." },
+    { "@type": "HowToStep", name: "Get your next step", text: "Amani listens, shares coping ideas, and can book a licensed Ugandan therapist for you." },
+  ],
+};
+
 const openAmani = () => {
   // The global AIChatWidget listens on the document for this event in supported builds;
   // as a graceful fallback we scroll the user to the bottom-right where the bubble lives.
