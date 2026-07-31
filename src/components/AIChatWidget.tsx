@@ -152,6 +152,7 @@ const AIChatWidget = () => {
   const [leadStep, setLeadStep] = useState<1 | 2>(1);
   const [leadRowId, setLeadRowId] = useState<string | null>(null);
   const [activeForm, setActiveForm] = useState<FormKind | null>(null);
+  const [activeFormTherapist, setActiveFormTherapist] = useState<string | null>(null);
   const [testimonialIdx] = useState(() => Math.floor(Math.random() * MICRO_TESTIMONIALS.length));
   const openedAtRef = useRef<number>(Date.now());
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -709,12 +710,16 @@ const AIChatWidget = () => {
                         {chips.map((c, idx) => {
                           const isUrl = c.target.startsWith("http");
                           const isPath = c.target.startsWith("/");
-                          const formKind = FORM_TARGETS[c.target.toLowerCase().trim()];
-                          if (formKind) {
+                          const formTarget = parseFormTarget(c.target);
+                          if (formTarget) {
                             return (
                               <button
                                 key={idx}
-                                onClick={() => { handleCTA("inline_chip_form", c.target); setActiveForm(formKind); }}
+                                onClick={() => {
+                                  handleCTA("inline_chip_form", c.target);
+                                  setActiveFormTherapist(formTarget.therapist);
+                                  setActiveForm(formTarget.kind);
+                                }}
                                 className="text-xs px-2.5 py-1.5 bg-primary text-primary-foreground border border-primary rounded-full hover:opacity-90 transition-colors"
                               >
                                 {c.label}
@@ -801,11 +806,7 @@ const AIChatWidget = () => {
             {/* Starter chips — only before the user's first message. After that, Amani's own
                 contextual [chips:...] appear inline with her reply, so we don't stack rows. */}
             {messages.length <= 1 && !loading && (
-              <div className="px-3 py-3 border-t border-border bg-background space-y-2">
-                <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-                  <Sparkles className="w-3 h-3 text-primary" />
-                  <span>Tap what feels closest — no typing needed</span>
-                </div>
+              <div className="px-3 py-3 border-t border-border bg-background">
                 <div className="flex flex-col gap-1.5">
                   {OPENER_CHIPS.map((q) => (
                     <button
@@ -984,7 +985,8 @@ const AIChatWidget = () => {
                 kind={activeForm}
                 sessionId={sessionId}
                 anonymousId={getAnonId()}
-                onClose={() => setActiveForm(null)}
+                therapistName={activeFormTherapist}
+                onClose={() => { setActiveForm(null); setActiveFormTherapist(null); }}
                 onSubmitted={(k) => {
                   setLeadSubmitted(true);
                   logEvent("inline_form_submitted", { kind: k });
