@@ -69,10 +69,17 @@ const REASON_OPTIONS = [
   "I want to improve myself but don't know where to start",
 ];
 
-const COMMUNICATION_OPTIONS = [
-  "Mostly via messaging",
-  "Mostly via phone or video sessions",
-  "Not sure yet (decide later)",
+const UGX_PER_USD = 3400;
+const usd = (ugx: number) => `$${Math.round(ugx / UGX_PER_USD)}`;
+
+const IOTEC_PAY_URL = "https://pay.iotec.io/p/innerspark";
+const AIRTEL_NUMBER = "0740 616 404";
+
+type SessionFormat = "video" | "chat";
+
+const SESSION_FORMATS: { id: SessionFormat; title: string; detail: string; ugx: number }[] = [
+  { id: "video", title: "Individual video session", detail: "60 minutes, face-to-face on video", ugx: 75000 },
+  { id: "chat", title: "Chat-based therapy", detail: "1 hour, text only with a licensed therapist", ugx: 30000 },
 ];
 
 const SUPPORT_GROUPS = [
@@ -91,7 +98,9 @@ interface IntakeData {
   gender: string;
   age: string;
   reasons: string[];
-  communication: string;
+  sessionFormat: SessionFormat | "";
+  payMethod: "online" | "manual" | "";
+  txnId: string;
   name: string;
   email: string;
   phone: string;
@@ -102,7 +111,9 @@ const initialIntake: IntakeData = {
   gender: "",
   age: "",
   reasons: [],
-  communication: "",
+  sessionFormat: "",
+  payMethod: "",
+  txnId: "",
   name: "",
   email: "",
   phone: "",
@@ -137,14 +148,19 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
     [location.pathname]
   );
 
-  const therapyPriceLabel = isKenya ? "KES 2,600 / session" : "UGX 75,000 / session";
-  const groupPriceLabel = isKenya ? "KES 1,000 / week" : "UGX 25,000 / week";
+  const therapyPriceLabel = isKenya ? "KES 2,600 (~$20) / session" : `UGX 75,000 (~${usd(75000)}) / session`;
+  const groupPriceLabel = isKenya ? "KES 1,000 (~$8) / week" : `UGX 25,000 (~${usd(25000)}) / week`;
+
+  const selectedFormat = SESSION_FORMATS.find((f) => f.id === data.sessionFormat);
 
   const priceLabel = useMemo(() => {
     if (isGroup) return groupPriceLabel;
     if (isConsultation) return "FREE Consultation";
+    if (selectedFormat) return `UGX ${selectedFormat.ugx.toLocaleString()} (~${usd(selectedFormat.ugx)}) · ${selectedFormat.detail}`;
     return therapyPriceLabel;
-  }, [isGroup, isConsultation, therapyPriceLabel, groupPriceLabel]);
+  }, [isGroup, isConsultation, therapyPriceLabel, groupPriceLabel, selectedFormat]);
+
+  const needsPayment = !isGroup && !isConsultation;
 
   const headerTitle = isGroup
     ? "Join a Support Group"
@@ -161,11 +177,11 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
       case 1: return !!data.gender;
       case 2: return !!data.age;
       case 3: return data.reasons.length > 0;
-      case 4: return !!data.communication;
-      case 5: return !!(data.name.trim() && data.phone.trim() && data.email.trim());
+      case 4: return !!data.sessionFormat;
+      case 5: return !!(data.name.trim() && data.phone.trim() && data.email.trim() && (!needsPayment || data.payMethod));
       default: return false;
     }
-  }, [step, data, isGroup, groupName]);
+  }, [step, data, isGroup, groupName, needsPayment]);
 
   const toggleReason = (r: string) => {
     setData((d) => ({
@@ -195,8 +211,12 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
       `*Gender:* ${data.gender}\n` +
       `*Age:* ${data.age}\n` +
       `*Reasons:* ${data.reasons.join("; ")}\n` +
-      `*Communication preference:* ${data.communication}\n\n` +
-      `*Pricing:* ${priceLabel}`
+      `*Session format:* ${selectedFormat ? `${selectedFormat.title} — ${selectedFormat.detail}` : "—"}\n\n` +
+      `*Pricing:* ${priceLabel}` +
+      (needsPayment
+        ? `\n*Payment:* ${data.payMethod === "online" ? `Online (${IOTEC_PAY_URL})` : `Manual — Airtel Money ${AIRTEL_NUMBER}`}` +
+          (data.txnId.trim() ? `\n*Transaction ID:* ${data.txnId.trim()}` : "")
+        : "")
     );
   };
 
