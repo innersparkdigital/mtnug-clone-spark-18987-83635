@@ -52,7 +52,22 @@ const FORM_TARGETS: Record<string, FormKind> = {
   "form:freecall": "freecall",
   "form:chat": "chat",
   "form:group": "group",
+  "form:video": "video",
+  "form:therapist": "video",
 };
+
+// Chip targets may carry a therapist name, e.g. "form:video:Kekiconco Jannet".
+function parseFormTarget(target: string): { kind: FormKind; therapist: string | null } | null {
+  const raw = target.trim();
+  const lower = raw.toLowerCase();
+  if (!lower.startsWith("form:")) return null;
+  const parts = raw.split(":");
+  const key = `form:${(parts[1] || "").toLowerCase().trim()}`;
+  const kind = FORM_TARGETS[key];
+  if (!kind) return null;
+  const therapist = parts.slice(2).join(":").trim();
+  return { kind, therapist: therapist || null };
+}
 
 // Rotating social-proof lines shown once per open. Real InnerSpark themes, no PII.
 const MICRO_TESTIMONIALS = [
@@ -78,17 +93,17 @@ function getAnonId(): string {
 function contextualWelcome(pathname: string): Msg {
   const p = pathname.toLowerCase();
   let content =
-    "Hi, I'm Amani from InnerSpark 👋\n\nWhat's been going on for you lately?";
+    "Hi, I'm Amani from InnerSpark 👋 This is a judgment-free space — whatever you share stays private.\n\nWhat may I call you?";
   if (p.startsWith("/for-business") || p.startsWith("/corporate")) {
     content = "Hi, I'm Amani 👋 Looking for support for your team? How many people are we talking about?";
   } else if (p.startsWith("/specialists") || p.startsWith("/find-therapist") || p.startsWith("/book-therapist")) {
-    content = "Hi, I'm Amani 👋 I can help you pick the right therapist. What's been happening for you?";
+    content = "Hi, I'm Amani 👋 I can help you pick the right therapist. What may I call you?";
   } else if (p.startsWith("/blog")) {
     content = "Hi, I'm Amani 👋 If any of this feels close to home, I'm here. What's on your mind?";
   } else if (p.startsWith("/whisper")) {
     content = "Hi, I'm Amani 💙 Whisper is free and anonymous. What would you like to share?";
   } else if (p.startsWith("/kenya")) {
-    content = "Habari, I'm Amani 👋 What's been going on for you lately?";
+    content = "Habari, I'm Amani 👋 This is a judgment-free space. What may I call you?";
   }
   return { role: "assistant", content };
 }
