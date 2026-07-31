@@ -968,6 +968,7 @@ const AIChatWidget = () => {
               onSubmit={(e) => { e.preventDefault(); sendMessage(input); }}
               className="px-3 py-2 border-t border-border flex gap-2 bg-background"
             >
+              {null}
               <input
                 type="text"
                 value={input}
