@@ -8,6 +8,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/analytics";
 import amaniAvatar from "@/assets/amani-avatar.jpg";
 import AmaniInlineForm, { type FormKind } from "@/components/chat/AmaniInlineForm";
+import BookingFormModal from "@/components/BookingFormModal";
+import { useBookingFlow } from "@/hooks/useBookingFlow";
 
 const ASSISTANT_NAME = "Amani";
 const ASSISTANT_ROLE = "Care Assistant";
@@ -36,17 +38,6 @@ function parseChips(content: string): { text: string; chips: Chip[] } {
   const text = content.replace(CHIPS_REGEX, "").replace(HIDDEN_MARKERS_REGEX, "").trim();
   return { text, chips };
 }
-
-// Big tappable opener chips — these directly attack the widget-open → first-message drop-off.
-// Each one seeds a rich first turn so Amani can immediately move into her closing sequence.
-const OPENER_CHIPS: { label: string; emoji: string; text: string }[] = [
-  { label: "I feel anxious or overwhelmed", emoji: "😔", text: "I've been feeling anxious and overwhelmed lately. Can you help me figure out what to do?" },
-  { label: "How much is a session?", emoji: "💰", text: "How much does a therapy session cost?" },
-  { label: "I want to talk to someone tonight", emoji: "🌙", text: "I really need to talk to someone tonight. What's the fastest way?" },
-  { label: "I'm struggling in my relationship", emoji: "💔", text: "I'm struggling in my relationship and I don't know what to do." },
-  { label: "I feel low, no energy", emoji: "🌫️", text: "I've been feeling really low and I have no energy for anything." },
-  { label: "For my team at work", emoji: "🏢", text: "I'm looking for mental health support for my team at work." },
-];
 
 const FORM_TARGETS: Record<string, FormKind> = {
   "form:chat": "chat",
@@ -95,17 +86,17 @@ function getAnonId(): string {
 function contextualWelcome(pathname: string): Msg {
   const p = pathname.toLowerCase();
   let content =
-    "Hi, I'm Amani from InnerSpark 👋 This is a judgment-free space — whatever you share stays private.\n\nWhat may I call you?";
+    "Hi, I'm Amani from InnerSpark 👋 This is a judgment-free space — whatever you share stays private.\n\nWhat may I know your name so I can make this conversation feel more personal?";
   if (p.startsWith("/for-business") || p.startsWith("/corporate")) {
     content = "Hi, I'm Amani 👋 Looking for support for your team? How many people are we talking about?";
   } else if (p.startsWith("/specialists") || p.startsWith("/find-therapist") || p.startsWith("/book-therapist")) {
-    content = "Hi, I'm Amani 👋 I can help you pick the right therapist. What may I call you?";
+    content = "Hi, I'm Amani 👋 I can help you pick the right therapist. Before anything else — what shall I call you? I want this to feel like a real conversation, not a form.";
   } else if (p.startsWith("/blog")) {
-    content = "Hi, I'm Amani 👋 If any of this feels close to home, I'm here. What's on your mind?";
+    content = "Hi there 💚 Welcome to InnerSpark Africa — a safe space where you can speak freely without judgment. I'm Amani and I'm here to help. What's your name?";
   } else if (p.startsWith("/whisper")) {
     content = "Hi, I'm Amani 💙 Whisper is free and anonymous. What would you like to share?";
   } else if (p.startsWith("/kenya")) {
-    content = "Habari, I'm Amani 👋 This is a judgment-free space. What may I call you?";
+    content = "Habari, I'm Amani 👋 This is a judgment-free space where you can speak freely. What shall I call you?";
   }
   return { role: "assistant", content };
 }
@@ -125,6 +116,7 @@ function autoOpenDelayMs(pathname: string): number | null {
 
 const AIChatWidget = () => {
   const [open, setOpen] = useState(false);
+  const { startBooking, closeFlow, isBookingFormOpen, actionType } = useBookingFlow();
   const initialWelcome = typeof window !== "undefined"
     ? contextualWelcome(window.location.pathname)
     : { role: "assistant" as const, content: "" };
@@ -609,13 +601,13 @@ const AIChatWidget = () => {
                     <span className="text-xs font-normal opacity-90">(0800-21-21-21)</span>
                   </a>
 
-                  <Link
-                    to="/book-therapist"
-                    onClick={() => { handleCTA("crisis_book"); setOpen(false); }}
+                  <button
+                    type="button"
+                    onClick={() => { handleCTA("crisis_book"); setOpen(false); startBooking(); }}
                     className="flex items-center justify-center gap-2 w-full bg-primary hover:opacity-90 text-primary-foreground font-bold py-4 rounded-xl shadow-lg text-base"
                   >
                     <Calendar className="w-5 h-5" /> Book a Therapist Today
-                  </Link>
+                  </button>
 
                   <div className="bg-white/70 border border-red-200 rounded-xl p-3 text-xs text-red-900 leading-relaxed">
                     <div className="font-semibold mb-1">While you wait — try this 60-second breath:</div>
@@ -742,6 +734,17 @@ const AIChatWidget = () => {
                               </a>
                             );
                           }
+                          if (isPath && /^\/(book-therapist|find-therapist)/i.test(c.target)) {
+                            return (
+                              <button
+                                key={idx}
+                                onClick={() => { handleCTA("inline_chip_booking", c.target); setOpen(false); startBooking(); }}
+                                className="text-xs px-2.5 py-1.5 bg-primary/10 hover:bg-primary hover:text-primary-foreground text-primary border border-primary/30 rounded-full transition-colors"
+                              >
+                                {c.label}
+                              </button>
+                            );
+                          }
                           if (isPath) {
                             return (
                               <Link
@@ -794,32 +797,13 @@ const AIChatWidget = () => {
                   >
                     <Phone className="w-3.5 h-3.5" /> WhatsApp Now
                   </a>
-                  <Link
-                    to="/book-therapist"
-                    onClick={() => { handleCTA("book_emergency"); setOpen(false); }}
+                  <button
+                    type="button"
+                    onClick={() => { handleCTA("book_emergency"); setOpen(false); startBooking(); }}
                     className="flex-1 flex items-center justify-center gap-1.5 bg-primary text-primary-foreground text-xs font-bold py-2 rounded-lg"
                   >
                     <Calendar className="w-3.5 h-3.5" /> Book Therapist
-                  </Link>
-                </div>
-              </div>
-            )}
-
-            {/* Starter chips — only before the user's first message. After that, Amani's own
-                contextual [chips:...] appear inline with her reply, so we don't stack rows. */}
-            {messages.length <= 1 && !loading && (
-              <div className="px-3 py-3 border-t border-border bg-background">
-                <div className="flex flex-col gap-1.5">
-                  {OPENER_CHIPS.map((q) => (
-                    <button
-                      key={q.label}
-                      onClick={() => sendMessage(q.text)}
-                      className="text-left text-sm px-3 py-2 bg-primary/5 hover:bg-primary hover:text-primary-foreground text-foreground border border-primary/20 hover:border-primary rounded-xl transition-colors flex items-center gap-2"
-                    >
-                      <span className="text-base flex-shrink-0">{q.emoji}</span>
-                      <span className="flex-1">{q.label}</span>
-                    </button>
-                  ))}
+                  </button>
                 </div>
               </div>
             )}
@@ -1023,6 +1007,8 @@ const AIChatWidget = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <BookingFormModal isOpen={isBookingFormOpen} onClose={closeFlow} formType={actionType} />
     </>
   );
 };

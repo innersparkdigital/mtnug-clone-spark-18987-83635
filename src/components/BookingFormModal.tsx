@@ -44,10 +44,10 @@ interface BookingFormModalProps {
 
 type TherapyType = "individual" | "couples" | "teen";
 
-const THERAPY_OPTIONS: { id: TherapyType; title: string; subtitle: string; icon: any; color: string }[] = [
-  { id: "individual", title: "Individual", subtitle: "For myself", icon: User, color: "from-emerald-500 to-emerald-600" },
-  { id: "couples", title: "Couples", subtitle: "For me and my partner", icon: Heart, color: "from-sky-500 to-sky-600" },
-  { id: "teen", title: "Teen", subtitle: "For my child", icon: Users, color: "from-amber-500 to-amber-600" },
+const THERAPY_OPTIONS: { id: TherapyType; title: string; subtitle: string; icon: any; color: string; ugx: number }[] = [
+  { id: "individual", title: "Individual", subtitle: "For myself", icon: User, color: "from-emerald-500 to-emerald-600", ugx: 75000 },
+  { id: "couples", title: "Couples", subtitle: "For me and my partner", icon: Heart, color: "from-sky-500 to-sky-600", ugx: 120000 },
+  { id: "teen", title: "Teen", subtitle: "For my child", icon: Users, color: "from-amber-500 to-amber-600", ugx: 75000 },
 ];
 
 const GENDER_OPTIONS = ["Woman", "Man", "Non-binary", "Prefer not to say"];
@@ -342,7 +342,9 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
                     <div className="text-lg font-bold">{opt.title}</div>
                     <div className="text-xs opacity-90 mb-2">{opt.subtitle}</div>
                     <div className="text-xs font-semibold bg-white/20 rounded px-2 py-1 inline-block">
-                      {therapyPriceLabel}
+                      {isKenya
+                        ? therapyPriceLabel
+                        : `UGX ${opt.ugx.toLocaleString()} (~${usd(opt.ugx)}) / session`}
                     </div>
                     {selected && (
                       <CheckCircle className="absolute top-2 right-2 h-5 w-5" />

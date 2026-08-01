@@ -82,6 +82,13 @@ const GROUPS = [
   "New Parents Support",
 ];
 
+const GENDER_PREFS = ["No preference", "Female therapist", "Male therapist"];
+const SUPPORT_STYLES = [
+  { value: "Warm and gentle — someone who listens", label: "💚 Warm and gentle" },
+  { value: "Structured — practical tools and exercises", label: "📋 Structured" },
+  { value: "A mix of both", label: "↔️ A mix of both" },
+];
+
 const inputCls =
   "w-full px-2.5 py-2 text-xs bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary";
 
@@ -106,6 +113,10 @@ const AmaniInlineForm = ({ kind, sessionId, anonymousId, therapistName, onClose,
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [concern, setConcern] = useState(CONCERNS[0]);
+  const [concernOther, setConcernOther] = useState("");
+  const [genderPref, setGenderPref] = useState(GENDER_PREFS[0]);
+  const [supportStyle, setSupportStyle] = useState(SUPPORT_STYLES[2].value);
+  const [therapyHistory, setTherapyHistory] = useState("");
   const [distress, setDistress] = useState("5");
   const [group, setGroup] = useState(GROUPS[0]);
   const [payMethod, setPayMethod] = useState<"online" | "manual">("online");
@@ -122,15 +133,21 @@ const AmaniInlineForm = ({ kind, sessionId, anonymousId, therapistName, onClose,
     if (!/^[+\d][\d\s()-]{6,}$/.test(phone.trim())) return setError("Please enter a valid WhatsApp number.");
     if (email.trim() && !/^\S+@\S+\.\S+$/.test(email.trim())) return setError("That email doesn't look right.");
     if (cfg.needsSlot && (!date || !time)) return setError("Please pick a date and time that suits you.");
+    if (kind !== "group" && concern === "Something else" && concernOther.trim().length < 3)
+      return setError("Please tell us briefly what's going on.");
 
     setBusy(true);
+    const concernText = concern === "Something else" ? `Something else — ${concernOther.trim()}` : concern;
     const lines = [
       `*${cfg.title}* [${cfg.tag}] (via Amani)`,
       `Name: ${name.trim()}`,
       `WhatsApp: ${phone.trim()}`,
       email.trim() ? `Email: ${email.trim()}` : null,
-      kind === "group" ? `Group: ${group}` : `Main concern: ${concern}`,
+      kind === "group" ? `Group: ${group}` : `Main concern: ${concernText}`,
       `Distress right now: ${distress}/10`,
+      `Therapist preference: ${genderPref}`,
+      `Preferred support style: ${supportStyle}`,
+      therapyHistory.trim() ? `Therapy before: ${therapyHistory.trim()}` : `Therapy before: not stated`,
       `Session: ${cfg.duration} — ${money(cfg.priceUgx)}`,
       cfg.needsSlot ? `Preferred: ${date} at ${time}` : null,
       therapist ? `Therapist: ${therapist}` : null,
@@ -232,11 +249,23 @@ const AmaniInlineForm = ({ kind, sessionId, anonymousId, therapistName, onClose,
           ))}
         </select>
       ) : (
-        <select value={concern} onChange={(e) => setConcern(e.target.value)} className={inputCls}>
-          {CONCERNS.map((c) => (
-            <option key={c} value={c}>{c}</option>
-          ))}
-        </select>
+        <>
+          <select value={concern} onChange={(e) => setConcern(e.target.value)} className={inputCls}>
+            {CONCERNS.map((c) => (
+              <option key={c} value={c}>{c}</option>
+            ))}
+          </select>
+          {concern === "Something else" && (
+            <textarea
+              value={concernOther}
+              onChange={(e) => setConcernOther(e.target.value)}
+              placeholder="Tell us in your own words what's going on"
+              rows={2}
+              maxLength={400}
+              className={inputCls}
+            />
+          )}
+        </>
       )}
 
       <label className="block text-[11px] text-muted-foreground">
@@ -250,6 +279,41 @@ const AmaniInlineForm = ({ kind, sessionId, anonymousId, therapistName, onClose,
           <input type="time" value={time} onChange={(e) => setTime(e.target.value)} className={inputCls} />
         </div>
       )}
+
+      <div className="space-y-2 rounded-lg border border-border bg-background p-2">
+        <div className="text-[11px] font-semibold text-foreground">About your therapist preference</div>
+        <label className="block text-[11px] text-muted-foreground">
+          Do you prefer a male or female therapist?
+          <select value={genderPref} onChange={(e) => setGenderPref(e.target.value)} className={`${inputCls} mt-1`}>
+            {GENDER_PREFS.map((g) => (
+              <option key={g} value={g}>{g}</option>
+            ))}
+          </select>
+        </label>
+        <div className="text-[11px] text-muted-foreground">What kind of support feels right for you?</div>
+        <div className="grid grid-cols-3 gap-1.5">
+          {SUPPORT_STYLES.map((s) => (
+            <button
+              key={s.value}
+              type="button"
+              onClick={() => setSupportStyle(s.value)}
+              className={`text-[10px] py-1.5 px-1 rounded-lg border transition-colors ${
+                supportStyle === s.value ? "bg-primary text-primary-foreground border-primary" : "bg-muted/40 border-border text-foreground"
+              }`}
+            >
+              {s.label}
+            </button>
+          ))}
+        </div>
+        <textarea
+          value={therapyHistory}
+          onChange={(e) => setTherapyHistory(e.target.value)}
+          placeholder="Have you done therapy before? What worked or didn't work?"
+          rows={2}
+          maxLength={400}
+          className={inputCls}
+        />
+      </div>
 
       {isPaid && (
         <div className="space-y-2 rounded-lg border border-border bg-background p-2">
