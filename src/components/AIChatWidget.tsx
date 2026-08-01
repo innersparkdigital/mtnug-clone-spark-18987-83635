@@ -734,6 +734,17 @@ const AIChatWidget = () => {
                               </a>
                             );
                           }
+                          if (isPath && /^\/(book-therapist|find-therapist)/i.test(c.target)) {
+                            return (
+                              <button
+                                key={idx}
+                                onClick={() => { handleCTA("inline_chip_booking", c.target); setOpen(false); startBooking(); }}
+                                className="text-xs px-2.5 py-1.5 bg-primary/10 hover:bg-primary hover:text-primary-foreground text-primary border border-primary/30 rounded-full transition-colors"
+                              >
+                                {c.label}
+                              </button>
+                            );
+                          }
                           if (isPath) {
                             return (
                               <Link
