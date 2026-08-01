@@ -249,11 +249,23 @@ const AmaniInlineForm = ({ kind, sessionId, anonymousId, therapistName, onClose,
           ))}
         </select>
       ) : (
-        <select value={concern} onChange={(e) => setConcern(e.target.value)} className={inputCls}>
-          {CONCERNS.map((c) => (
-            <option key={c} value={c}>{c}</option>
-          ))}
-        </select>
+        <>
+          <select value={concern} onChange={(e) => setConcern(e.target.value)} className={inputCls}>
+            {CONCERNS.map((c) => (
+              <option key={c} value={c}>{c}</option>
+            ))}
+          </select>
+          {concern === "Something else" && (
+            <textarea
+              value={concernOther}
+              onChange={(e) => setConcernOther(e.target.value)}
+              placeholder="Tell us in your own words what's going on"
+              rows={2}
+              maxLength={400}
+              className={inputCls}
+            />
+          )}
+        </>
       )}
 
       <label className="block text-[11px] text-muted-foreground">
@@ -267,6 +279,41 @@ const AmaniInlineForm = ({ kind, sessionId, anonymousId, therapistName, onClose,
           <input type="time" value={time} onChange={(e) => setTime(e.target.value)} className={inputCls} />
         </div>
       )}
+
+      <div className="space-y-2 rounded-lg border border-border bg-background p-2">
+        <div className="text-[11px] font-semibold text-foreground">About your therapist preference</div>
+        <label className="block text-[11px] text-muted-foreground">
+          Do you prefer a male or female therapist?
+          <select value={genderPref} onChange={(e) => setGenderPref(e.target.value)} className={`${inputCls} mt-1`}>
+            {GENDER_PREFS.map((g) => (
+              <option key={g} value={g}>{g}</option>
+            ))}
+          </select>
+        </label>
+        <div className="text-[11px] text-muted-foreground">What kind of support feels right for you?</div>
+        <div className="grid grid-cols-3 gap-1.5">
+          {SUPPORT_STYLES.map((s) => (
+            <button
+              key={s.value}
+              type="button"
+              onClick={() => setSupportStyle(s.value)}
+              className={`text-[10px] py-1.5 px-1 rounded-lg border transition-colors ${
+                supportStyle === s.value ? "bg-primary text-primary-foreground border-primary" : "bg-muted/40 border-border text-foreground"
+              }`}
+            >
+              {s.label}
+            </button>
+          ))}
+        </div>
+        <textarea
+          value={therapyHistory}
+          onChange={(e) => setTherapyHistory(e.target.value)}
+          placeholder="Have you done therapy before? What worked or didn't work?"
+          rows={2}
+          maxLength={400}
+          className={inputCls}
+        />
+      </div>
 
       {isPaid && (
         <div className="space-y-2 rounded-lg border border-border bg-background p-2">
