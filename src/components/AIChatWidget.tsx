@@ -37,17 +37,6 @@ function parseChips(content: string): { text: string; chips: Chip[] } {
   return { text, chips };
 }
 
-// Big tappable opener chips — these directly attack the widget-open → first-message drop-off.
-// Each one seeds a rich first turn so Amani can immediately move into her closing sequence.
-const OPENER_CHIPS: { label: string; emoji: string; text: string }[] = [
-  { label: "I feel anxious or overwhelmed", emoji: "😔", text: "I've been feeling anxious and overwhelmed lately. Can you help me figure out what to do?" },
-  { label: "How much is a session?", emoji: "💰", text: "How much does a therapy session cost?" },
-  { label: "I want to talk to someone tonight", emoji: "🌙", text: "I really need to talk to someone tonight. What's the fastest way?" },
-  { label: "I'm struggling in my relationship", emoji: "💔", text: "I'm struggling in my relationship and I don't know what to do." },
-  { label: "I feel low, no energy", emoji: "🌫️", text: "I've been feeling really low and I have no energy for anything." },
-  { label: "For my team at work", emoji: "🏢", text: "I'm looking for mental health support for my team at work." },
-];
-
 const FORM_TARGETS: Record<string, FormKind> = {
   "form:chat": "chat",
   "form:group": "group",
