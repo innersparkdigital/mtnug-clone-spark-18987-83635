@@ -213,26 +213,49 @@ Please confirm availability. Thank you!`;
   useEffect(() => {
     if (id) {
       fetchSpecialist();
-      fetchReviews();
-      fetchAvailability();
-      fetchCertificates();
     }
   }, [id]);
 
   const fetchSpecialist = async () => {
+    if (!id) return;
+    // The URL param can be a UUID (legacy links) or an SEO-friendly name slug.
+    if (isUuid(id)) {
+      const { data, error } = await supabase
+        .from("specialists")
+        .select("*")
+        .eq("id", id)
+        .maybeSingle();
+      if (error) console.error("Error fetching specialist:", error);
+      if (data) {
+        setSpecialist(data);
+        setSpecialistId(data.id);
+        // Rewrite to the readable name URL for visibility in search results.
+        navigate(specialistPath(data), { replace: true });
+      }
+      setLoading(false);
+      return;
+    }
+
     const { data, error } = await supabase
       .from("specialists")
       .select("*")
-      .eq("id", id)
-      .maybeSingle();
-
-    if (error) {
-      console.error("Error fetching specialist:", error);
-    } else {
-      setSpecialist(data);
+      .eq("is_active", true);
+    if (error) console.error("Error fetching specialist:", error);
+    const match = (data || []).find((s) => matchesSpecialistParam(id, s.name));
+    if (match) {
+      setSpecialist(match);
+      setSpecialistId(match.id);
     }
     setLoading(false);
   };
+
+  useEffect(() => {
+    if (specialistId) {
+      fetchReviews();
+      fetchAvailability();
+      fetchCertificates();
+    }
+  }, [specialistId]);
 
   const fetchReviews = async () => {
     const { data, error } = await supabase
