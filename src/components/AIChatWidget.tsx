@@ -84,17 +84,17 @@ function getAnonId(): string {
 function contextualWelcome(pathname: string): Msg {
   const p = pathname.toLowerCase();
   let content =
-    "Hi, I'm Amani from InnerSpark 👋 This is a judgment-free space — whatever you share stays private.\n\nWhat may I call you?";
+    "Hi, I'm Amani from InnerSpark 👋 This is a judgment-free space — whatever you share stays private.\n\nWhat may I know your name so I can make this conversation feel more personal?";
   if (p.startsWith("/for-business") || p.startsWith("/corporate")) {
     content = "Hi, I'm Amani 👋 Looking for support for your team? How many people are we talking about?";
   } else if (p.startsWith("/specialists") || p.startsWith("/find-therapist") || p.startsWith("/book-therapist")) {
-    content = "Hi, I'm Amani 👋 I can help you pick the right therapist. What may I call you?";
+    content = "Hi, I'm Amani 👋 I can help you pick the right therapist. Before anything else — what shall I call you? I want this to feel like a real conversation, not a form.";
   } else if (p.startsWith("/blog")) {
-    content = "Hi, I'm Amani 👋 If any of this feels close to home, I'm here. What's on your mind?";
+    content = "Hi there 💚 Welcome to InnerSpark Africa — a safe space where you can speak freely without judgment. I'm Amani and I'm here to help. What's your name?";
   } else if (p.startsWith("/whisper")) {
     content = "Hi, I'm Amani 💙 Whisper is free and anonymous. What would you like to share?";
   } else if (p.startsWith("/kenya")) {
-    content = "Habari, I'm Amani 👋 This is a judgment-free space. What may I call you?";
+    content = "Habari, I'm Amani 👋 This is a judgment-free space where you can speak freely. What shall I call you?";
   }
   return { role: "assistant", content };
 }
