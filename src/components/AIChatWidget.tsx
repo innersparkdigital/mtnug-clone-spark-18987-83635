@@ -116,6 +116,7 @@ function autoOpenDelayMs(pathname: string): number | null {
 
 const AIChatWidget = () => {
   const [open, setOpen] = useState(false);
+  const { startBooking, closeFlow, isBookingFormOpen, actionType } = useBookingFlow();
   const initialWelcome = typeof window !== "undefined"
     ? contextualWelcome(window.location.pathname)
     : { role: "assistant" as const, content: "" };
