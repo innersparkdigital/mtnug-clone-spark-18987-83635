@@ -600,13 +600,13 @@ const AIChatWidget = () => {
                     <span className="text-xs font-normal opacity-90">(0800-21-21-21)</span>
                   </a>
 
-                  <Link
-                    to="/book-therapist"
-                    onClick={() => { handleCTA("crisis_book"); setOpen(false); }}
+                  <button
+                    type="button"
+                    onClick={() => { handleCTA("crisis_book"); setOpen(false); startBooking(); }}
                     className="flex items-center justify-center gap-2 w-full bg-primary hover:opacity-90 text-primary-foreground font-bold py-4 rounded-xl shadow-lg text-base"
                   >
                     <Calendar className="w-5 h-5" /> Book a Therapist Today
-                  </Link>
+                  </button>
 
                   <div className="bg-white/70 border border-red-200 rounded-xl p-3 text-xs text-red-900 leading-relaxed">
                     <div className="font-semibold mb-1">While you wait — try this 60-second breath:</div>
