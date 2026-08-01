@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/analytics";
 
-export type FormKind = "freecall" | "chat" | "video" | "group";
+export type FormKind = "chat" | "video" | "group";
 
 const WHATSAPP = "256792085773";
 export const IOTEC_PAY_URL = "https://pay.iotec.io/p/innerspark";
@@ -26,16 +26,6 @@ type Cfg = {
 };
 
 const CONFIG: Record<FormKind, Cfg> = {
-  freecall: {
-    title: "Book for me a free 20-minute call",
-    blurb: "With Jannet, our intake counsellor. No payment, no commitment.",
-    Icon: Calendar,
-    intent: "free-call",
-    needsSlot: true,
-    priceUgx: 0,
-    duration: "20 minutes",
-    tag: "free-call",
-  },
   video: {
     title: "Book an individual video session",
     blurb: "60 minutes, one-on-one video with a licensed therapist.",
@@ -48,7 +38,7 @@ const CONFIG: Record<FormKind, Cfg> = {
   },
   chat: {
     title: "Book chat-based therapy",
-    blurb: "1 hour of text-based therapy with a licensed therapist.",
+    blurb: "1 hour of text-based therapy. Our team matches you with the right therapist.",
     Icon: MessageSquare,
     intent: "chat_therapy",
     needsSlot: true,
@@ -58,7 +48,7 @@ const CONFIG: Record<FormKind, Cfg> = {
   },
   group: {
     title: "Join a support group",
-    blurb: "Small peer group led by a therapist.",
+    blurb: "Small peer group led by a therapist. Our team places you in the right group.",
     Icon: Users,
     intent: "support_group",
     needsSlot: false,
@@ -106,7 +96,8 @@ interface Props {
 
 const AmaniInlineForm = ({ kind, sessionId, anonymousId, therapistName, onClose, onSubmitted }: Props) => {
   const cfg = CONFIG[kind];
-  const therapist = kind === "freecall" ? "Jannet (intake counsellor)" : therapistName || "";
+  // Chat therapy and support groups are matched by our admin team, not in-chat.
+  const therapist = kind === "video" ? therapistName || "" : "";
   const isPaid = cfg.priceUgx > 0;
 
   const [name, setName] = useState("");
@@ -288,7 +279,7 @@ const AmaniInlineForm = ({ kind, sessionId, anonymousId, therapistName, onClose,
             </a>
           ) : (
             <p className="text-[11px] text-muted-foreground leading-snug">
-              Airtel Money: <span className="font-semibold text-foreground">{AIRTEL_NUMBER}</span> (InnerSpark Africa). Outside Uganda? Use M-Pesa "Send Money Abroad" to the same number.
+              Airtel Money: <span className="font-semibold text-foreground">{AIRTEL_NUMBER}</span> (InnerSpark Recovery Ltd). Outside Uganda? Use M-Pesa "Send Money Abroad" to the same number.
             </p>
           )}
           <input

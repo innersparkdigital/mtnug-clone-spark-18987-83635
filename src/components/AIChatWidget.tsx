@@ -49,7 +49,6 @@ const OPENER_CHIPS: { label: string; emoji: string; text: string }[] = [
 ];
 
 const FORM_TARGETS: Record<string, FormKind> = {
-  "form:freecall": "freecall",
   "form:chat": "chat",
   "form:group": "group",
   "form:video": "video",
@@ -74,7 +73,7 @@ const MICRO_TESTIMONIALS = [
   "★★★★★ \"Booked in 4 minutes — my therapist really listened.\" — Sarah, Kampala",
   "★★★★★ \"Amani made asking for help feel simple.\" — David, Nairobi",
   "★★★★★ \"I was matched the same day. Life-changing.\" — Aisha, Kampala",
-  "★★★★★ \"The free 20-min call was exactly what I needed.\" — Peter, Uganda",
+  "★★★★★ \"Chat therapy fit my budget and my schedule.\" — Peter, Uganda",
 ];
 
 const ANON_KEY = "is_chat_anon_id";
