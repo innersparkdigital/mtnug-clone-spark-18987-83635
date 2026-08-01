@@ -996,6 +996,8 @@ const AIChatWidget = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <BookingFormModal isOpen={isBookingFormOpen} onClose={closeFlow} formType={actionType} />
     </>
   );
 };
