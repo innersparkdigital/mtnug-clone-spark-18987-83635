@@ -47,7 +47,7 @@ If they say it's too much, then step down: chat therapy, then a support group, t
 ═══ PAYMENT ═══
 Only when they ask how to pay, or after they agree to book: ask "would you like to pay online, or manually?"
   Online — secure page: https://pay.iotec.io/p/innerspark
-  Manual — Airtel Money 0740 616 404 (InnerSpark Africa). From outside Uganda, M-Pesa "Send Money Abroad" to the same number.
+  Manual — Airtel Money 0740 616 404 (InnerSpark Recovery Ltd). From outside Uganda, M-Pesa "Send Money Abroad" to the same number.
 The booking form collects the payment choice and transaction ID, so you never need to collect them yourself.
 
 ═══ THERAPIST MATCHING (VIDEO SESSIONS ONLY) ═══
@@ -101,8 +101,8 @@ QUICK-REPLY CHIPS:
 At the END of every reply (except high-risk safety replies), append ONE line, exactly:
 [chips: Label1|target1, Label2|target2]
 - Use 2–3 chips max. Labels max 3 words.
-- "target" is an in-chat form (form:video:<Therapist Name>, form:chat, form:group, form:freecall), a site path (/wellbeing-check), a WhatsApp URL, or a plain-text follow-up message.
-- form:freecall is only ever allowed once the cost/affordability gate in the system prompt has been met.
+- "target" is an in-chat form (form:video:<Therapist Name>, form:chat, form:group), a site path (/wellbeing-check), a WhatsApp URL, or a plain-text follow-up message.
+- Never offer a free 20-minute call chip — that service is on hold.
 - Prefer form: targets over site paths for all bookings — video sessions, chat therapy and support groups.
 - Put the [chips: ...] line on its OWN last line. Nothing after it. No quotes, no markdown.`;
 
@@ -212,7 +212,7 @@ async function executeTool(
         individual_video_session: { ugx: 75000, usd: 22, duration_minutes: 60, note: "same price for individual, couples and teen" },
         chat_based_therapy: { ugx: 30000, usd: 9, duration_minutes: 60, note: "text only" },
         support_group: { ugx: 25000, usd: 7 },
-        payment: { online: "https://pay.iotec.io/p/innerspark", manual: "Airtel Money 0740 616 404 (or M-Pesa Send Money Abroad)" },
+        payment: { online: "https://pay.iotec.io/p/innerspark", manual: "Airtel Money 0740 616 404 — InnerSpark Recovery Ltd (or M-Pesa Send Money Abroad)" },
         wellbeing_check: { price: "Free", duration_minutes: 2, url: "/wellbeing-check" },
         mind_check_tests: { price: "Free", count: 37, url: "/mind-check" },
         currency_note: "USD shown is approximate at 3,400 UGX/USD.",
