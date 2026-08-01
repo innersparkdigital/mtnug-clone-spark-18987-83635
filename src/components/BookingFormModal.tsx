@@ -44,10 +44,10 @@ interface BookingFormModalProps {
 
 type TherapyType = "individual" | "couples" | "teen";
 
-const THERAPY_OPTIONS: { id: TherapyType; title: string; subtitle: string; icon: any; color: string }[] = [
-  { id: "individual", title: "Individual", subtitle: "For myself", icon: User, color: "from-emerald-500 to-emerald-600" },
-  { id: "couples", title: "Couples", subtitle: "For me and my partner", icon: Heart, color: "from-sky-500 to-sky-600" },
-  { id: "teen", title: "Teen", subtitle: "For my child", icon: Users, color: "from-amber-500 to-amber-600" },
+const THERAPY_OPTIONS: { id: TherapyType; title: string; subtitle: string; icon: any; color: string; ugx: number }[] = [
+  { id: "individual", title: "Individual", subtitle: "For myself", icon: User, color: "from-emerald-500 to-emerald-600", ugx: 75000 },
+  { id: "couples", title: "Couples", subtitle: "For me and my partner", icon: Heart, color: "from-sky-500 to-sky-600", ugx: 120000 },
+  { id: "teen", title: "Teen", subtitle: "For my child", icon: Users, color: "from-amber-500 to-amber-600", ugx: 75000 },
 ];
 
 const GENDER_OPTIONS = ["Woman", "Man", "Non-binary", "Prefer not to say"];
