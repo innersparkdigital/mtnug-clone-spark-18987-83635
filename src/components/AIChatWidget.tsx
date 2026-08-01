@@ -8,6 +8,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/analytics";
 import amaniAvatar from "@/assets/amani-avatar.jpg";
 import AmaniInlineForm, { type FormKind } from "@/components/chat/AmaniInlineForm";
+import BookingFormModal from "@/components/BookingFormModal";
+import { useBookingFlow } from "@/hooks/useBookingFlow";
 
 const ASSISTANT_NAME = "Amani";
 const ASSISTANT_ROLE = "Care Assistant";
