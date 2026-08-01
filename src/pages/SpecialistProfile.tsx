@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react";
+import { isUuid, matchesSpecialistParam, specialistPath } from "@/lib/specialistSlug";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import Header from "@/components/Header";
@@ -138,6 +139,7 @@ const SpecialistProfile = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [specialist, setSpecialist] = useState<Specialist | null>(null);
+  const [specialistId, setSpecialistId] = useState<string | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [availability, setAvailability] = useState<Availability[]>([]);
   const [certificates, setCertificates] = useState<Certificate[]>([]);
@@ -212,32 +214,55 @@ Please confirm availability. Thank you!`;
   useEffect(() => {
     if (id) {
       fetchSpecialist();
-      fetchReviews();
-      fetchAvailability();
-      fetchCertificates();
     }
   }, [id]);
 
   const fetchSpecialist = async () => {
+    if (!id) return;
+    // The URL param can be a UUID (legacy links) or an SEO-friendly name slug.
+    if (isUuid(id)) {
+      const { data, error } = await supabase
+        .from("specialists")
+        .select("*")
+        .eq("id", id)
+        .maybeSingle();
+      if (error) console.error("Error fetching specialist:", error);
+      if (data) {
+        setSpecialist(data);
+        setSpecialistId(data.id);
+        // Rewrite to the readable name URL for visibility in search results.
+        navigate(specialistPath(data), { replace: true });
+      }
+      setLoading(false);
+      return;
+    }
+
     const { data, error } = await supabase
       .from("specialists")
       .select("*")
-      .eq("id", id)
-      .maybeSingle();
-
-    if (error) {
-      console.error("Error fetching specialist:", error);
-    } else {
-      setSpecialist(data);
+      .eq("is_active", true);
+    if (error) console.error("Error fetching specialist:", error);
+    const match = (data || []).find((s) => matchesSpecialistParam(id, s.name));
+    if (match) {
+      setSpecialist(match);
+      setSpecialistId(match.id);
     }
     setLoading(false);
   };
+
+  useEffect(() => {
+    if (specialistId) {
+      fetchReviews();
+      fetchAvailability();
+      fetchCertificates();
+    }
+  }, [specialistId]);
 
   const fetchReviews = async () => {
     const { data, error } = await supabase
       .from("specialist_reviews")
       .select("*")
-      .eq("specialist_id", id)
+      .eq("specialist_id", specialistId)
       .order("created_at", { ascending: false });
 
     if (!error && data) {
@@ -249,7 +274,7 @@ Please confirm availability. Thank you!`;
     const { data, error } = await supabase
       .from("specialist_availability")
       .select("*")
-      .eq("specialist_id", id)
+      .eq("specialist_id", specialistId)
       .order("day_of_week", { ascending: true });
 
     if (!error && data) {
@@ -261,7 +286,7 @@ Please confirm availability. Thank you!`;
     const { data, error } = await supabase
       .from("specialist_certificates")
       .select("*")
-      .eq("specialist_id", id)
+      .eq("specialist_id", specialistId)
       .order("created_at", { ascending: true });
 
     if (!error && data) {
@@ -278,7 +303,7 @@ Please confirm availability. Thank you!`;
 
     setSubmittingReview(true);
     const { error } = await supabase.from("specialist_reviews").insert({
-      specialist_id: id,
+      specialist_id: specialistId,
       reviewer_name: reviewForm.name,
       rating: reviewForm.rating,
       comment: reviewForm.comment || null,

@@ -49,7 +49,6 @@ const OPENER_CHIPS: { label: string; emoji: string; text: string }[] = [
 ];
 
 const FORM_TARGETS: Record<string, FormKind> = {
-  "form:freecall": "freecall",
   "form:chat": "chat",
   "form:group": "group",
   "form:video": "video",
@@ -60,6 +59,9 @@ const FORM_TARGETS: Record<string, FormKind> = {
 function parseFormTarget(target: string): { kind: FormKind; therapist: string | null } | null {
   const raw = target.trim();
   const lower = raw.toLowerCase();
+  // Site paths for groups / chat therapy should open the in-chat form, not navigate away.
+  if (lower.startsWith("/support-group")) return { kind: "group", therapist: null };
+  if (lower.startsWith("/chat-therapy")) return { kind: "chat", therapist: null };
   if (!lower.startsWith("form:")) return null;
   const parts = raw.split(":");
   const key = `form:${(parts[1] || "").toLowerCase().trim()}`;
@@ -74,7 +76,7 @@ const MICRO_TESTIMONIALS = [
   "★★★★★ \"Booked in 4 minutes — my therapist really listened.\" — Sarah, Kampala",
   "★★★★★ \"Amani made asking for help feel simple.\" — David, Nairobi",
   "★★★★★ \"I was matched the same day. Life-changing.\" — Aisha, Kampala",
-  "★★★★★ \"The free 20-min call was exactly what I needed.\" — Peter, Uganda",
+  "★★★★★ \"Chat therapy fit my budget and my schedule.\" — Peter, Uganda",
 ];
 
 const ANON_KEY = "is_chat_anon_id";

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { specialistPath } from "@/lib/specialistSlug";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -217,7 +218,7 @@ const TherapistRecommendationCard = ({
               Continue Booking
               <ArrowRight className="w-4 h-4" />
             </Button>
-            <Link to={`/specialists/${therapist.id}`} className="flex-1">
+            <Link to={specialistPath(therapist)} className="flex-1">
               <Button variant="outline" className="w-full">
                 View Profile
               </Button>
