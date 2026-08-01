@@ -138,6 +138,7 @@ const SpecialistProfile = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [specialist, setSpecialist] = useState<Specialist | null>(null);
+  const [specialistId, setSpecialistId] = useState<string | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [availability, setAvailability] = useState<Availability[]>([]);
   const [certificates, setCertificates] = useState<Certificate[]>([]);
