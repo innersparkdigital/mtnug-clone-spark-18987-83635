@@ -794,25 +794,6 @@ const AIChatWidget = () => {
               </div>
             )}
 
-            {/* Starter chips — only before the user's first message. After that, Amani's own
-                contextual [chips:...] appear inline with her reply, so we don't stack rows. */}
-            {messages.length <= 1 && !loading && (
-              <div className="px-3 py-3 border-t border-border bg-background">
-                <div className="flex flex-col gap-1.5">
-                  {OPENER_CHIPS.map((q) => (
-                    <button
-                      key={q.label}
-                      onClick={() => sendMessage(q.text)}
-                      className="text-left text-sm px-3 py-2 bg-primary/5 hover:bg-primary hover:text-primary-foreground text-foreground border border-primary/20 hover:border-primary rounded-xl transition-colors flex items-center gap-2"
-                    >
-                      <span className="text-base flex-shrink-0">{q.emoji}</span>
-                      <span className="flex-1">{q.label}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
             {/* Lead capture prompt / form */}
             {leadPromptShown && !leadPromptDismissed && !leadSubmitted && !showLeadForm && (
               <div className="px-3 py-2 border-t border-border bg-primary/5 flex items-center gap-2">
