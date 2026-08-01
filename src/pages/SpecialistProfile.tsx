@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react";
+import { isUuid, matchesSpecialistParam, specialistPath } from "@/lib/specialistSlug";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import Header from "@/components/Header";
@@ -261,7 +262,7 @@ Please confirm availability. Thank you!`;
     const { data, error } = await supabase
       .from("specialist_reviews")
       .select("*")
-      .eq("specialist_id", id)
+      .eq("specialist_id", specialistId)
       .order("created_at", { ascending: false });
 
     if (!error && data) {
@@ -273,7 +274,7 @@ Please confirm availability. Thank you!`;
     const { data, error } = await supabase
       .from("specialist_availability")
       .select("*")
-      .eq("specialist_id", id)
+      .eq("specialist_id", specialistId)
       .order("day_of_week", { ascending: true });
 
     if (!error && data) {
@@ -285,7 +286,7 @@ Please confirm availability. Thank you!`;
     const { data, error } = await supabase
       .from("specialist_certificates")
       .select("*")
-      .eq("specialist_id", id)
+      .eq("specialist_id", specialistId)
       .order("created_at", { ascending: true });
 
     if (!error && data) {
@@ -302,7 +303,7 @@ Please confirm availability. Thank you!`;
 
     setSubmittingReview(true);
     const { error } = await supabase.from("specialist_reviews").insert({
-      specialist_id: id,
+      specialist_id: specialistId,
       reviewer_name: reviewForm.name,
       rating: reviewForm.rating,
       comment: reviewForm.comment || null,
