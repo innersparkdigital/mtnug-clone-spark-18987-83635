@@ -59,6 +59,9 @@ const FORM_TARGETS: Record<string, FormKind> = {
 function parseFormTarget(target: string): { kind: FormKind; therapist: string | null } | null {
   const raw = target.trim();
   const lower = raw.toLowerCase();
+  // Site paths for groups / chat therapy should open the in-chat form, not navigate away.
+  if (lower.startsWith("/support-group")) return { kind: "group", therapist: null };
+  if (lower.startsWith("/chat-therapy")) return { kind: "chat", therapist: null };
   if (!lower.startsWith("form:")) return null;
   const parts = raw.split(":");
   const key = `form:${(parts[1] || "").toLowerCase().trim()}`;
