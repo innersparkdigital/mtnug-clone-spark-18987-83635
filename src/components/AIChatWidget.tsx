@@ -785,13 +785,13 @@ const AIChatWidget = () => {
                   >
                     <Phone className="w-3.5 h-3.5" /> WhatsApp Now
                   </a>
-                  <Link
-                    to="/book-therapist"
-                    onClick={() => { handleCTA("book_emergency"); setOpen(false); }}
+                  <button
+                    type="button"
+                    onClick={() => { handleCTA("book_emergency"); setOpen(false); startBooking(); }}
                     className="flex-1 flex items-center justify-center gap-1.5 bg-primary text-primary-foreground text-xs font-bold py-2 rounded-lg"
                   >
                     <Calendar className="w-3.5 h-3.5" /> Book Therapist
-                  </Link>
+                  </button>
                 </div>
               </div>
             )}
