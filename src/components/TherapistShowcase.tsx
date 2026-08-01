@@ -5,6 +5,7 @@ import { useRef } from "react";
 import ScrollReveal, { Parallax, ScaleOnScroll } from "@/components/ScrollReveal";
 
 // Import specialist images
+import { specialistPath } from "@/lib/specialistSlug";
 import juliusKizito from "@/assets/specialists/julius-kizito.png";
 import nassuunaMargret from "@/assets/specialists/nassuuna-margret.jpg";
 import atwiiinePriscilla from "@/assets/specialists/atwiine-priscilla.jpg";
@@ -84,7 +85,7 @@ const TherapistShowcase = () => {
             {therapists.map((therapist, index) => (
               <Link
                 key={therapist.name}
-                to={`/specialists/${therapist.id}`}
+                to={specialistPath(therapist)}
               >
                 <motion.div
                   initial={{ opacity: 0, y: 80, rotate: therapist.rotation }}
