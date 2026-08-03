@@ -65,8 +65,8 @@ const FindTherapistKampalaPost = () => {
   return (
     <>
       <Helmet>
-        <title>How to Find a Therapist in Kampala in 2026 | Book Online | InnerSpark Africa</title>
-        <meta name="description" content="7 ways to find a licensed therapist in Kampala — including how to book online from your phone, pay via Mobile Money, and keep it completely private. From UGX 30,000." />
+        <title>Find a Therapist in Kampala — Book Today from UGX 30,000</title>
+        <meta name="description" content="12 licensed Ugandan therapists. Video, voice or chat. Pay by MTN or Airtel Money. First session bookable in 2 minutes — completely private." />
         <link rel="canonical" href="https://www.innersparkafrica.com/blog/find-therapist-kampala" />
         <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>
         <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
