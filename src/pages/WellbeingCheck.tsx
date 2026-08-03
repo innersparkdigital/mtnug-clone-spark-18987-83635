@@ -87,8 +87,8 @@ const WellbeingCheck = () => {
   return (
     <>
       <Helmet>
-        <title>Free WHO-5 Wellbeing Check Uganda | 2-Min Mental Health Test</title>
-        <meta name="description" content="Take a free 2-minute WHO-5 mental wellbeing check for Uganda. Private results, no account. Find out if you should talk to a Ugandan therapist." />
+        <title>Free 2-Minute Mental Health Check (WHO-5) — Uganda</title>
+        <meta name="description" content="Know where your mental health stands in 2 minutes. Free WHO-5 check, private results, no account. Talk to a Ugandan therapist from UGX 30,000 if you need to." />
         <meta name="keywords" content="WHO-5 Uganda, wellbeing check Uganda, free mental health test Uganda, mental health screening Kampala, depression test Uganda, anxiety test Uganda, am I depressed Uganda, online therapy Uganda" />
         <link rel="canonical" href="https://www.innersparkafrica.com/wellbeing-check" />
         <meta property="og:title" content="Free WHO-5 Wellbeing Check Uganda | InnerSpark Africa" />
