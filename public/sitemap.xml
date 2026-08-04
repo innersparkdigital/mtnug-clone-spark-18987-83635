@@ -42,25 +42,7 @@
     <priority>0.98</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/mental-health-support</loc>
-    <lastmod>2026-02-04</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.95</priority>
-  </url>
-  <url>
-    <loc>https://www.innersparkafrica.com/video-therapy</loc>
-    <lastmod>2026-02-04</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.95</priority>
-  </url>
-  <url>
     <loc>https://www.innersparkafrica.com/chat-therapy</loc>
-    <lastmod>2026-02-04</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.95</priority>
-  </url>
-  <url>
-    <loc>https://www.innersparkafrica.com/virtual-therapy</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
@@ -741,6 +723,26 @@
   <url>
     <loc>https://www.innersparkafrica.com/trauma-therapy-uganda</loc>
     <lastmod>2026-07-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.innersparkafrica.com/psychiatrist-kampala</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.innersparkafrica.com/counselling-services-uganda</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.innersparkafrica.com/marriage-counselling-kampala</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.innersparkafrica.com/therapist-near-me-kampala</loc>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>

@@ -409,18 +409,28 @@ export type Database = {
       blog_posts: {
         Row: {
           author: string | null
+          canonical_url: string | null
           category: string | null
           content: string
           created_at: string
           created_by: string | null
           excerpt: string | null
+          faqs: Json
           hero_image_url: string | null
           id: string
+          last_updated_at: string | null
           meta_description: string | null
           meta_keywords: string | null
+          meta_title: string | null
+          og_description: string | null
+          og_image_url: string | null
+          og_title: string | null
           published_at: string | null
           read_time: string | null
+          redirect_from_slug: string | null
+          related_service_url: string | null
           scheduled_for: string | null
+          schema_type: string
           slug: string
           status: string
           title: string
@@ -428,18 +438,28 @@ export type Database = {
         }
         Insert: {
           author?: string | null
+          canonical_url?: string | null
           category?: string | null
           content?: string
           created_at?: string
           created_by?: string | null
           excerpt?: string | null
+          faqs?: Json
           hero_image_url?: string | null
           id?: string
+          last_updated_at?: string | null
           meta_description?: string | null
           meta_keywords?: string | null
+          meta_title?: string | null
+          og_description?: string | null
+          og_image_url?: string | null
+          og_title?: string | null
           published_at?: string | null
           read_time?: string | null
+          redirect_from_slug?: string | null
+          related_service_url?: string | null
           scheduled_for?: string | null
+          schema_type?: string
           slug: string
           status?: string
           title: string
@@ -447,18 +467,28 @@ export type Database = {
         }
         Update: {
           author?: string | null
+          canonical_url?: string | null
           category?: string | null
           content?: string
           created_at?: string
           created_by?: string | null
           excerpt?: string | null
+          faqs?: Json
           hero_image_url?: string | null
           id?: string
+          last_updated_at?: string | null
           meta_description?: string | null
           meta_keywords?: string | null
+          meta_title?: string | null
+          og_description?: string | null
+          og_image_url?: string | null
+          og_title?: string | null
           published_at?: string | null
           read_time?: string | null
+          redirect_from_slug?: string | null
+          related_service_url?: string | null
           scheduled_for?: string | null
+          schema_type?: string
           slug?: string
           status?: string
           title?: string

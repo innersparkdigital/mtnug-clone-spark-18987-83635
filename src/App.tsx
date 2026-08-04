@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import PrivateRouteNoIndex from "./components/seo/PrivateRouteNoIndex";
 import { lazy, Suspense } from "react";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { AuthProvider } from "@/contexts/AuthContext";
@@ -12,7 +13,6 @@ import { CalmThemeProvider } from "@/contexts/CalmThemeContext";
 // so visitors download only the JS for the page they actually open.
 import Index from "./pages/Index";
 const NotFound = lazy(() => import("./pages/NotFound"));
-const VirtualTherapy = lazy(() => import("./pages/VirtualTherapy"));
 const SupportGroups = lazy(() => import("./pages/SupportGroups"));
 const ChatSessions = lazy(() => import("./pages/ChatSessions"));
 const MoodCheckIn = lazy(() => import("./pages/MoodCheckIn"));
@@ -166,8 +166,6 @@ const Auth = lazy(() => import("./pages/Auth"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const OnlineTherapy = lazy(() => import("./pages/OnlineTherapy"));
 const BookTherapist = lazy(() => import("./pages/BookTherapist"));
-const MentalHealthSupport = lazy(() => import("./pages/MentalHealthSupport"));
-const VideoTherapy = lazy(() => import("./pages/VideoTherapy"));
 const ChatTherapy = lazy(() => import("./pages/ChatTherapy"));
 const AppComingSoon = lazy(() => import("./pages/AppComingSoon"));
 const WellbeingCheck = lazy(() => import("./pages/WellbeingCheck"));
@@ -185,6 +183,10 @@ const PaymentCanceled = lazy(() => import("./pages/PaymentCanceled"));
 const TherapyInUganda = lazy(() => import("./pages/TherapyInUganda"));
 const TherapyInKampala = lazy(() => import("./pages/TherapyInKampala"));
 const DepressionTherapyUganda = lazy(() => import("./pages/DepressionTherapyUganda"));
+const PsychiatristKampala = lazy(() => import("./pages/PsychiatristKampala"));
+const CounsellingServicesUganda = lazy(() => import("./pages/CounsellingServicesUganda"));
+const MarriageCounsellingKampala = lazy(() => import("./pages/MarriageCounsellingKampala"));
+const TherapistNearMeKampala = lazy(() => import("./pages/TherapistNearMeKampala"));
 const AnxietyCounsellingUganda = lazy(() => import("./pages/AnxietyCounsellingUganda"));
 const RelationshipCounsellingUganda = lazy(() => import("./pages/RelationshipCounsellingUganda"));
 const TherapyForTeensUganda = lazy(() => import("./pages/TherapyForTeensUganda"));
@@ -298,6 +300,7 @@ const App = () => (
             <BrowserRouter>
               <ScrollToTop />
               <RoutePrefetcher />
+              <PrivateRouteNoIndex />
               <AIChatWidget />
               <WhisperFloatingWidget />
               <Suspense fallback={<RouteFallback />}>
@@ -305,15 +308,16 @@ const App = () => (
                 <Route path="/" element={<Index />} />
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
-                <Route path="/virtual-therapy" element={<VirtualTherapy />} />
+                {/* Consolidated into /online-therapy to stop keyword cannibalisation */}
+                <Route path="/virtual-therapy" element={<Navigate to="/online-therapy" replace />} />
                 {/* SEO Landing Pages */}
                 <Route path="/online-therapy" element={<OnlineTherapy />} />
                 <Route path="/book-therapist" element={<BookTherapist />} />
                 <Route
                   path="/mental-health-support"
-                  element={<MentalHealthSupport />}
+                  element={<Navigate to="/online-therapy" replace />}
                 />
-                <Route path="/video-therapy" element={<VideoTherapy />} />
+                <Route path="/video-therapy" element={<Navigate to="/online-therapy" replace />} />
                 <Route path="/chat-therapy" element={<ChatTherapy />} />
                 <Route path="/app-coming-soon" element={<AppComingSoon />} />
                 <Route path="/payment-success" element={<PaymentSuccess />} />
@@ -717,6 +721,10 @@ const App = () => (
                 <Route path="/relationship-counselling-uganda" element={<RelationshipCounsellingUganda />} />
                 <Route path="/therapy-for-teens-uganda" element={<TherapyForTeensUganda />} />
                 <Route path="/trauma-therapy-uganda" element={<TraumaTherapyUganda />} />
+                <Route path="/psychiatrist-kampala" element={<PsychiatristKampala />} />
+                <Route path="/counselling-services-uganda" element={<CounsellingServicesUganda />} />
+                <Route path="/marriage-counselling-kampala" element={<MarriageCounsellingKampala />} />
+                <Route path="/therapist-near-me-kampala" element={<TherapistNearMeKampala />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
               </Suspense>

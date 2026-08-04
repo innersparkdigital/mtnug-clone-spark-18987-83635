@@ -49,7 +49,21 @@ export interface BlogPostData {
 
 const SITE = "https://www.innersparkafrica.com";
 const LOGO = `${SITE}/innerspark-logo.png`;
+const DEFAULT_OG = `${SITE}/og-image.jpg`;
 const WA_NUMBER = "256792085773";
+
+/** Hands the reader over to booking inside the opening of every article. */
+function BookHandoff() {
+  return (
+    <p className="text-muted-foreground mb-6 leading-relaxed">
+      If you would rather talk to someone than read on,{" "}
+      <Link to="/book-therapist" className="text-primary font-semibold underline underline-offset-4">
+        book a session with a licensed Ugandan therapist
+      </Link>{" "}
+      — video, voice or chat from UGX 30,000, bookable in about two minutes.
+    </p>
+  );
+}
 
 function renderBlock(b: BlogBlock, i: number) {
   switch (b.type) {
@@ -153,7 +167,7 @@ const BlogPostLayout = ({ data }: { data: BlogPostData }) => {
     "@type": "BlogPosting",
     headline: data.title,
     description: data.metaDescription,
-    image: LOGO,
+    image: data.heroImage || DEFAULT_OG,
     author: { "@type": "Organization", name: "Innerspark Africa", url: SITE },
     publisher: { "@type": "Organization", name: "Innerspark Africa", logo: { "@type": "ImageObject", url: LOGO } },
     datePublished: data.isoDate,
@@ -194,15 +208,18 @@ const BlogPostLayout = ({ data }: { data: BlogPostData }) => {
         <meta property="og:description" content={data.metaDescription} />
         <meta property="og:type" content="article" />
         <meta property="og:url" content={url} />
-        <meta property="og:image" content={data.heroImage} />
+        <meta property="og:image" content={data.heroImage || DEFAULT_OG} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
         <meta property="article:published_time" content={data.isoDate} />
+        <meta property="article:modified_time" content={data.modified || data.isoDate} />
         <meta property="article:author" content="Innerspark Africa" />
         <meta property="article:section" content={data.category} />
         {data.keywords.slice(0, 4).map((k) => <meta key={k} property="article:tag" content={k} />)}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={data.metaTitle} />
         <meta name="twitter:description" content={data.metaDescription} />
-        <meta name="twitter:image" content={data.heroImage} />
+        <meta name="twitter:image" content={data.heroImage || DEFAULT_OG} />
         <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>
         {faqSchema && <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>}
         <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
@@ -245,7 +262,13 @@ const BlogPostLayout = ({ data }: { data: BlogPostData }) => {
                 {data.sections.map((s, i) => (
                   <section key={i} className="mb-12">
                     <h2 className="text-3xl font-bold text-foreground mb-6">{s.title}</h2>
-                    {s.blocks.map(renderBlock)}
+                    {s.blocks.map((b, bi) => (
+                      <div key={bi} className="contents">
+                        {renderBlock(b, bi)}
+                        {i === 0 && bi === 1 ? <BookHandoff /> : null}
+                      </div>
+                    ))}
+                    {i === 0 && s.blocks.length < 2 ? <BookHandoff /> : null}
                   </section>
                 ))}
 
