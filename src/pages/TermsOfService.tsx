@@ -1,9 +1,15 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import PageSeo from "@/components/seo/PageSeo";
 
 const TermsOfService = () => {
   return (
     <div className="min-h-screen bg-background">
+      <PageSeo
+        path="/terms-of-service"
+        title="Terms of Service | InnerSpark Africa"
+        description="The terms governing your use of InnerSpark Africa's online therapy, assessment and wellbeing services in Uganda and East Africa."
+      />
       <Header />
       <main className="container mx-auto px-4 py-16 max-w-4xl">
         <h1 className="text-4xl font-bold mb-8 text-primary">Terms of Service</h1>

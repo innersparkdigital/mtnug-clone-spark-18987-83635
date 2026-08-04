@@ -14,6 +14,8 @@ import { toast } from "sonner";
 import { uploadContentMedia, slugify } from "./uploadMedia";
 import RichTextEditor from "./RichTextEditor";
 
+interface FaqItem { question: string; answer: string }
+
 interface BlogPost {
   id: string;
   slug: string;
@@ -30,12 +32,39 @@ interface BlogPost {
   created_at: string;
   meta_description: string | null;
   meta_keywords: string | null;
+  meta_title: string | null;
+  canonical_url: string | null;
+  og_title: string | null;
+  og_description: string | null;
+  og_image_url: string | null;
+  faqs: FaqItem[] | null;
+  related_service_url: string | null;
+  schema_type: string | null;
+  last_updated_at: string | null;
+  redirect_from_slug: string | null;
 }
+
+const SERVICE_PAGES = [
+  "/book-therapist",
+  "/online-therapy",
+  "/chat-therapy",
+  "/specialists",
+  "/mind-check",
+  "/wellbeing-check",
+  "/support-groups",
+  "/psychiatrist-kampala",
+  "/counselling-services-uganda",
+  "/marriage-counselling-kampala",
+  "/therapist-near-me-kampala",
+];
 
 const empty: Partial<BlogPost> = {
   slug: "", title: "", excerpt: "", content: "", category: "Mental Health",
   hero_image_url: "", author: "InnerSpark Team", read_time: "5 min read",
   status: "draft", scheduled_for: null, meta_description: "", meta_keywords: "",
+  meta_title: "", canonical_url: "", og_title: "", og_description: "", og_image_url: "",
+  faqs: [], related_service_url: "/book-therapist", schema_type: "Article",
+  last_updated_at: null, redirect_from_slug: "",
 };
 
 const BlogsManager = () => {
@@ -51,14 +80,25 @@ const BlogsManager = () => {
     setLoading(true);
     const { data, error } = await supabase.from("blog_posts").select("*").order("created_at", { ascending: false });
     if (error) toast.error(error.message);
-    else setPosts(data as BlogPost[]);
+    else setPosts(data as unknown as BlogPost[]);
     setLoading(false);
   };
 
   useEffect(() => { fetchPosts(); }, []);
 
   const openNew = () => { setForm(empty); setOpen(true); };
-  const openEdit = (p: BlogPost) => { setForm(p); setOpen(true); };
+  const openEdit = (p: BlogPost) => {
+    setForm({ ...p, faqs: Array.isArray(p.faqs) ? p.faqs : [] });
+    setOpen(true);
+  };
+
+  const faqList: FaqItem[] = Array.isArray(form.faqs) ? form.faqs : [];
+  const setFaq = (i: number, patch: Partial<FaqItem>) => {
+    const next = faqList.map((f, idx) => (idx === i ? { ...f, ...patch } : f));
+    setForm({ ...form, faqs: next });
+  };
+  const addFaq = () => setForm({ ...form, faqs: [...faqList, { question: "", answer: "" }] });
+  const removeFaq = (i: number) => setForm({ ...form, faqs: faqList.filter((_, idx) => idx !== i) });
 
   const handleImage = async (file: File) => {
     setUploading(true);
@@ -85,6 +125,16 @@ const BlogsManager = () => {
       created_by: user?.id,
       meta_description: form.meta_description?.trim() || null,
       meta_keywords: form.meta_keywords?.trim() || null,
+      meta_title: form.meta_title?.trim() || null,
+      canonical_url: form.canonical_url?.trim() || `https://www.innersparkafrica.com/blog/${slug}`,
+      og_title: form.og_title?.trim() || null,
+      og_description: form.og_description?.trim() || null,
+      og_image_url: form.og_image_url?.trim() || null,
+      faqs: faqList.filter((f) => f.question.trim() && f.answer.trim()),
+      related_service_url: form.related_service_url?.trim() || null,
+      schema_type: form.schema_type || "Article",
+      last_updated_at: form.last_updated_at || new Date().toISOString(),
+      redirect_from_slug: form.redirect_from_slug?.trim() || null,
     };
     const { error } = form.id
       ? await supabase.from("blog_posts").update(payload).eq("id", form.id)
@@ -153,7 +203,7 @@ const BlogsManager = () => {
           <DialogHeader><DialogTitle>{form.id ? "Edit" : "New"} Blog Post</DialogTitle></DialogHeader>
           <div className="space-y-3">
             <div>
-              <Label>Title *</Label>
+              <Label>Title * <span className="text-xs font-normal text-muted-foreground">(on-page headline / H1)</span></Label>
               <Input value={form.title || ""} onChange={(e) => setForm({ ...form, title: e.target.value, slug: form.id ? form.slug : slugify(e.target.value) })} />
             </div>
             <div className="grid grid-cols-2 gap-3">
@@ -162,6 +212,16 @@ const BlogsManager = () => {
             </div>
             <div><Label>Excerpt</Label><Textarea rows={2} value={form.excerpt || ""} onChange={(e) => setForm({ ...form, excerpt: e.target.value })} /></div>
             <div className="rounded-lg border bg-muted/30 p-3 space-y-3">
+              <div>
+                <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">SEO — Meta title</Label>
+                <Input
+                  maxLength={70}
+                  placeholder="What Google shows as the clickable headline (under 60 chars)"
+                  value={form.meta_title || ""}
+                  onChange={(e) => setForm({ ...form, meta_title: e.target.value })}
+                />
+                <p className="text-[11px] text-muted-foreground mt-1">{(form.meta_title || "").length}/60 recommended. Leave blank to use the Title.</p>
+              </div>
               <div>
                 <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">SEO — Meta description</Label>
                 <Textarea
@@ -182,7 +242,64 @@ const BlogsManager = () => {
                 />
                 <p className="text-[11px] text-muted-foreground mt-1">Comma-separated. Helps Google understand what searches this post should rank for.</p>
               </div>
+              <div>
+                <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Canonical URL</Label>
+                <Input
+                  placeholder={`https://www.innersparkafrica.com/blog/${form.slug || "your-slug"}`}
+                  value={form.canonical_url || ""}
+                  onChange={(e) => setForm({ ...form, canonical_url: e.target.value })}
+                />
+                <p className="text-[11px] text-muted-foreground mt-1">Auto-filled from the slug when left blank.</p>
+              </div>
             </div>
+
+            <div className="rounded-lg border bg-muted/30 p-3 space-y-3">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Open Graph / social preview</p>
+              <div><Label>OG title</Label><Input placeholder="Defaults to the SEO title" value={form.og_title || ""} onChange={(e) => setForm({ ...form, og_title: e.target.value })} /></div>
+              <div><Label>OG description</Label><Textarea rows={2} placeholder="Defaults to the meta description" value={form.og_description || ""} onChange={(e) => setForm({ ...form, og_description: e.target.value })} /></div>
+              <div><Label>OG image URL (1200×630)</Label><Input placeholder="Defaults to the hero image" value={form.og_image_url || ""} onChange={(e) => setForm({ ...form, og_image_url: e.target.value })} /></div>
+            </div>
+
+            <div className="rounded-lg border bg-muted/30 p-3 space-y-3">
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">FAQ block (Google rich snippets)</p>
+                <Button size="sm" variant="outline" onClick={addFaq} className="gap-1"><Plus className="h-3 w-3" /> Add question</Button>
+              </div>
+              {faqList.length === 0 && <p className="text-[11px] text-muted-foreground">No questions yet. Three to five well-written FAQs often win a rich result.</p>}
+              {faqList.map((f, i) => (
+                <div key={i} className="rounded-md border bg-background p-3 space-y-2">
+                  <div className="flex gap-2">
+                    <Input placeholder="Question" value={f.question} onChange={(e) => setFaq(i, { question: e.target.value })} />
+                    <Button size="sm" variant="ghost" onClick={() => removeFaq(i)}><Trash2 className="h-3 w-3 text-destructive" /></Button>
+                  </div>
+                  <Textarea rows={2} placeholder="Answer" value={f.answer} onChange={(e) => setFaq(i, { answer: e.target.value })} />
+                </div>
+              ))}
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label>Related service page</Label>
+                <Select value={form.related_service_url || ""} onValueChange={(v) => setForm({ ...form, related_service_url: v })}>
+                  <SelectTrigger><SelectValue placeholder="Choose a page" /></SelectTrigger>
+                  <SelectContent>
+                    {SERVICE_PAGES.map((p) => <SelectItem key={p} value={p}>{p}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label>Schema type</Label>
+                <Select value={form.schema_type || "Article"} onValueChange={(v) => setForm({ ...form, schema_type: v })}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Article">Article</SelectItem>
+                    <SelectItem value="FAQ">FAQ</SelectItem>
+                    <SelectItem value="HowTo">HowTo</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
             <div>
               <Label>Hero Image</Label>
               <div className="flex gap-2 items-center">
@@ -194,6 +311,22 @@ const BlogsManager = () => {
             <div className="grid grid-cols-2 gap-3">
               <div><Label>Author</Label><Input value={form.author || ""} onChange={(e) => setForm({ ...form, author: e.target.value })} /></div>
               <div><Label>Read time</Label><Input value={form.read_time || ""} onChange={(e) => setForm({ ...form, read_time: e.target.value })} placeholder="5 min read" /></div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label>Last updated date</Label>
+                <Input
+                  type="datetime-local"
+                  value={form.last_updated_at?.slice(0, 16) || ""}
+                  onChange={(e) => setForm({ ...form, last_updated_at: e.target.value ? new Date(e.target.value).toISOString() : null })}
+                />
+                <p className="text-[11px] text-muted-foreground mt-1">Separate from the publish date. Set when you meaningfully revise the post.</p>
+              </div>
+              <div>
+                <Label>Redirect from old slug</Label>
+                <Input placeholder="old-slug-that-changed" value={form.redirect_from_slug || ""} onChange={(e) => setForm({ ...form, redirect_from_slug: e.target.value })} />
+                <p className="text-[11px] text-muted-foreground mt-1">Visitors hitting the old URL land on this post instead of a 404.</p>
+              </div>
             </div>
             <div>
               <Label>Content</Label>

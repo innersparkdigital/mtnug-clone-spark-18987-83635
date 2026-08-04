@@ -20,12 +20,16 @@ export interface ConditionLandingProps {
   bodySections: { heading: string; paragraphs: string[]; bullets?: string[] }[];
   faqs: ConditionFAQ[];
   serviceName: string;
+  /** Optional page-specific 1200x630 social image. */
+  ogImage?: string;
 }
 
 const BASE = "https://www.innersparkafrica.com";
+const DEFAULT_OG = `${BASE}/og-image.jpg`;
 
 export default function ConditionLandingPage(props: ConditionLandingProps) {
   const url = `${BASE}/${props.slug}`;
+  const ogImage = props.ogImage || DEFAULT_OG;
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -64,9 +68,13 @@ export default function ConditionLandingPage(props: ConditionLandingProps) {
         <meta property="og:description" content={props.metaDescription} />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={url} />
+        <meta property="og:image" content={ogImage} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={props.title} />
         <meta name="twitter:description" content={props.metaDescription} />
+        <meta name="twitter:image" content={ogImage} />
         <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
         <script type="application/ld+json">{JSON.stringify(serviceSchema)}</script>
       </Helmet>
