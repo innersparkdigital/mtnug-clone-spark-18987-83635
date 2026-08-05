@@ -13,6 +13,7 @@ import { Loader2, Plus, Pencil, Trash2, Upload, Eye } from "lucide-react";
 import { toast } from "sonner";
 import { uploadContentMedia, slugify } from "./uploadMedia";
 import RichTextEditor from "./RichTextEditor";
+import { BLOG_BODY_TEMPLATE } from "./blogTemplate";
 
 interface FaqItem { question: string; answer: string }
 
@@ -329,7 +330,21 @@ const BlogsManager = () => {
               </div>
             </div>
             <div>
-              <Label>Content</Label>
+              <div className="flex items-center justify-between gap-2">
+                <Label>Content</Label>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    const hasBody = (form.content || "").replace(/<[^>]*>/g, "").trim().length > 0;
+                    if (hasBody && !confirm("Append the standard InnerSpark blog structure to the current content?")) return;
+                    setForm((f) => ({ ...f, content: hasBody ? `${f.content}\n${BLOG_BODY_TEMPLATE}` : BLOG_BODY_TEMPLATE }));
+                  }}
+                >
+                  Insert standard structure
+                </Button>
+              </div>
               <RichTextEditor
                 value={form.content || ""}
                 onChange={(html) => setForm({ ...form, content: html })}
