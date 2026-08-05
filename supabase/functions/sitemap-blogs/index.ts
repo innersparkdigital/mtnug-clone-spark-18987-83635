@@ -2,7 +2,7 @@
 // admin "New Post" button are discoverable by Google without a redeploy.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
-const SITE = "https://www.innersparkafrica.com";
+const SITE = "https://mtnug-clone-spark-18987-83635.lovable.app";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {

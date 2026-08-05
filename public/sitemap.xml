@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <!-- Homepage -->
   <url>
-    <loc>https://www.innersparkafrica.com/</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
@@ -10,19 +10,19 @@
 
   <!-- Authority & press pages -->
   <url>
-    <loc>https://www.innersparkafrica.com/about/raymond</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/about/raymond</loc>
     <lastmod>2026-07-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/press</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/press</loc>
     <lastmod>2026-07-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/resources</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/resources</loc>
     <lastmod>2026-07-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -30,50 +30,50 @@
   
   <!-- Core Service Pages - High Priority -->
   <url>
-    <loc>https://www.innersparkafrica.com/online-therapy</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/online-therapy</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.98</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/book-therapist</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/book-therapist</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.98</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/chat-therapy</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/chat-therapy</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/specialists</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/specialists</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.95</priority>
   </url>
   <!-- Note: /find-therapist redirects to /specialists - removed to avoid duplicate -->
   <url>
-    <loc>https://www.innersparkafrica.com/support-groups</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/support-groups</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/services</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/services</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/about</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/about</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/emergency-support</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/emergency-support</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
@@ -81,7 +81,7 @@
   
   <!-- WHO-5 Wellbeing Check - Primary Entry -->
   <url>
-    <loc>https://www.innersparkafrica.com/wellbeing-check</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/wellbeing-check</loc>
     <lastmod>2026-03-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
@@ -89,266 +89,266 @@
 
   <!-- Mind Check / Mental Health Tests - High Priority for Traffic -->
   <url>
-    <loc>https://www.innersparkafrica.com/mind-check</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/mind-check</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/mind-check/depression</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/mind-check/depression</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/mind-check/anxiety</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/mind-check/anxiety</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/mind-check/ptsd</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/mind-check/ptsd</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/mind-check/adult-adhd</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/mind-check/adult-adhd</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/mind-check/postpartum</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/mind-check/postpartum</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/mind-check/mania</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/mind-check/mania</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/mind-check/npd</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/mind-check/npd</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/mind-check/bpd</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/mind-check/bpd</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/mind-check/gambling-addiction</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/mind-check/gambling-addiction</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/mind-check/stress</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/mind-check/stress</loc>
     <lastmod>2026-03-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/mind-check/social-anxiety</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/mind-check/social-anxiety</loc>
     <lastmod>2026-03-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/mind-check/bipolar</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/mind-check/bipolar</loc>
     <lastmod>2026-03-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/mind-check/ocd</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/mind-check/ocd</loc>
     <lastmod>2026-03-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/mind-check/sleep-disorder</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/mind-check/sleep-disorder</loc>
     <lastmod>2026-03-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/mind-check/relationship-health</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/mind-check/relationship-health</loc>
     <lastmod>2026-03-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/mind-check/job-burnout</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/mind-check/job-burnout</loc>
     <lastmod>2026-03-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/mind-check/grief</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/mind-check/grief</loc>
     <lastmod>2026-03-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/mind-check/imposter-syndrome</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/mind-check/imposter-syndrome</loc>
     <lastmod>2026-03-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/mind-check/agoraphobia</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/mind-check/agoraphobia</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/mind-check/binge-eating</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/mind-check/binge-eating</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/mind-check/did</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/mind-check/did</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/mind-check/eating-disorder</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/mind-check/eating-disorder</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/mind-check/empathy-deficit</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/mind-check/empathy-deficit</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/mind-check/gender-dysphoria</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/mind-check/gender-dysphoria</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/mind-check/hoarding</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/mind-check/hoarding</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/mind-check/internet-addiction</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/mind-check/internet-addiction</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/mind-check/job-satisfaction</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/mind-check/job-satisfaction</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/mind-check/panic-disorder</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/mind-check/panic-disorder</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/mind-check/psychosis</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/mind-check/psychosis</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/mind-check/sad</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/mind-check/sad</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/mind-check/schizophrenia</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/mind-check/schizophrenia</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/mind-check/separation-anxiety</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/mind-check/separation-anxiety</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/mind-check/sex-addiction</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/mind-check/sex-addiction</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/mind-check/sociopath</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/mind-check/sociopath</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/mind-check/toxic-workplace</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/mind-check/toxic-workplace</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/mind-check/video-game-addiction</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/mind-check/video-game-addiction</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/mind-check/work-life-balance</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/mind-check/work-life-balance</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <!-- Blog Section - High Priority for SEO Traffic -->
   <url>
-    <loc>https://www.innersparkafrica.com/blog</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/blog</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/blog/how-to-find-a-therapist</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/blog/how-to-find-a-therapist</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/blog/signs-of-depression</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/blog/signs-of-depression</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/blog/anxiety-symptoms</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/blog/anxiety-symptoms</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/blog/how-to-handle-stress</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/blog/how-to-handle-stress</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/blog/how-to-stop-a-panic-attack</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/blog/how-to-stop-a-panic-attack</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/blog/how-to-manage-anxiety</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/blog/how-to-manage-anxiety</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/blog/how-to-deal-with-depression</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/blog/how-to-deal-with-depression</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/blog/what-is-mental-health</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/blog/what-is-mental-health</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
@@ -356,31 +356,31 @@
   
   <!-- Buying-Intent Blog Posts -->
   <url>
-    <loc>https://www.innersparkafrica.com/blog/therapy-cost-uganda</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/blog/therapy-cost-uganda</loc>
     <lastmod>2026-02-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/blog/find-therapist-kampala</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/blog/find-therapist-kampala</loc>
     <lastmod>2026-02-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/blog/online-therapy-effective-africa</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/blog/online-therapy-effective-africa</loc>
     <lastmod>2026-02-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/blog/signs-you-need-a-therapist</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/blog/signs-you-need-a-therapist</loc>
     <lastmod>2026-02-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/blog/student-therapy-uganda</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/blog/student-therapy-uganda</loc>
     <lastmod>2026-02-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
@@ -388,19 +388,19 @@
   
   <!-- TOFU Blog Posts -->
   <url>
-    <loc>https://www.innersparkafrica.com/blog/what-is-therapy</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/blog/what-is-therapy</loc>
     <lastmod>2026-02-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/blog/benefits-of-therapy</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/blog/benefits-of-therapy</loc>
     <lastmod>2026-02-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/blog/types-of-therapy</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/blog/types-of-therapy</loc>
     <lastmod>2026-02-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
@@ -408,55 +408,55 @@
   
   <!-- Events & Training Section -->
   <url>
-    <loc>https://www.innersparkafrica.com/events-training</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/events-training</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/events-training/founders-mindset-training</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/events-training/founders-mindset-training</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/events-training/miic-wellness-innovation</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/events-training/miic-wellness-innovation</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/events-training/truck-drivers-retirement-training</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/events-training/truck-drivers-retirement-training</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/events-training/world-mental-health-day-2024</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/events-training/world-mental-health-day-2024</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/events-training/uict-mental-health-training</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/events-training/uict-mental-health-training</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/events-training/mtn-internship-anxiety</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/events-training/mtn-internship-anxiety</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/events-training/children-mental-health-awareness</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/events-training/children-mental-health-awareness</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/events-training/uict-wellness-activity-day</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/events-training/uict-wellness-activity-day</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -464,13 +464,13 @@
   
   <!-- Learning Hub -->
   <url>
-    <loc>https://www.innersparkafrica.com/learning</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/learning</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/learning/digital-mental-health</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/learning/digital-mental-health</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
@@ -478,43 +478,43 @@
   
   <!-- Other Important Pages -->
   <url>
-    <loc>https://www.innersparkafrica.com/contact</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/contact</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/donate-therapy</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/donate-therapy</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/for-business</loc>
-    <lastmod>2026-02-04</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.75</priority>
-  </url>
-  <url>
-    <loc>https://www.innersparkafrica.com/for-professionals</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/for-business</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/mood-check-in</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/for-professionals</loc>
+    <lastmod>2026-02-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/mood-check-in</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/meditations</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/meditations</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/chat-sessions</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/chat-sessions</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -522,25 +522,25 @@
   
   <!-- Location SEO Pages -->
   <url>
-    <loc>https://www.innersparkafrica.com/therapy-in-uganda</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/therapy-in-uganda</loc>
     <lastmod>2026-02-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/therapy-in-kampala</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/therapy-in-kampala</loc>
     <lastmod>2026-02-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/kenya</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/kenya</loc>
     <lastmod>2026-05-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/check/kenya</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/check/kenya</loc>
     <lastmod>2026-05-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
@@ -548,19 +548,19 @@
   
   <!-- Legal Pages -->
   <url>
-    <loc>https://www.innersparkafrica.com/privacy-policy</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/privacy-policy</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/terms-of-service</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/terms-of-service</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/cookie-policy</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/cookie-policy</loc>
     <lastmod>2026-02-04</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
@@ -568,128 +568,128 @@
 
   <!-- New Long-tail Uganda Blog Posts (2026-05) -->
   <url>
-    <loc>https://www.innersparkafrica.com/blog/cost-of-therapy-in-kampala-2026</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/blog/cost-of-therapy-in-kampala-2026</loc>
     <lastmod>2026-05-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/blog/best-therapist-for-anxiety-in-uganda</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/blog/best-therapist-for-anxiety-in-uganda</loc>
     <lastmod>2026-05-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/blog/online-vs-in-person-therapy-uganda</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/blog/online-vs-in-person-therapy-uganda</loc>
     <lastmod>2026-05-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/blog/affordable-online-counselling-uganda</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/blog/affordable-online-counselling-uganda</loc>
     <lastmod>2026-05-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/blog/how-to-find-psychologist-in-kampala</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/blog/how-to-find-psychologist-in-kampala</loc>
     <lastmod>2026-05-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/blog/mental-health-support-students-uganda</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/blog/mental-health-support-students-uganda</loc>
     <lastmod>2026-05-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/blog/workplace-burnout-uganda</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/blog/workplace-burnout-uganda</loc>
     <lastmod>2026-05-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/blog/talk-to-boss-mental-health-uganda</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/blog/talk-to-boss-mental-health-uganda</loc>
     <lastmod>2026-05-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/blog/kampala-professionals-online-therapy</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/blog/kampala-professionals-online-therapy</loc>
     <lastmod>2026-05-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/blog/men-therapy-uganda</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/blog/men-therapy-uganda</loc>
     <lastmod>2026-05-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/blog/burnout-kampala-professionals</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/blog/burnout-kampala-professionals</loc>
     <lastmod>2026-05-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/blog/relationship-counselling-uganda-online</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/blog/relationship-counselling-uganda-online</loc>
     <lastmod>2026-05-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/blog/uganda-workplace-mental-health-crisis</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/blog/uganda-workplace-mental-health-crisis</loc>
     <lastmod>2026-05-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/blog/innerspark-africa-review</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/blog/innerspark-africa-review</loc>
     <lastmod>2026-05-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/blog/spark-framework-mental-wellbeing</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/blog/spark-framework-mental-wellbeing</loc>
     <lastmod>2026-05-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <!-- Amani AI + Whisper organic push -->
   <url>
-    <loc>https://www.innersparkafrica.com/amani-ai</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/amani-ai</loc>
     <lastmod>2026-06-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/whisper</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/whisper</loc>
     <lastmod>2026-06-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/blog/meet-amani-ai-mental-wellness-uganda</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/blog/meet-amani-ai-mental-wellness-uganda</loc>
     <lastmod>2026-06-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/blog/whisper-anonymous-therapy-uganda</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/blog/whisper-anonymous-therapy-uganda</loc>
     <lastmod>2026-06-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/blog/find-a-therapist-in-uganda</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/blog/find-a-therapist-in-uganda</loc>
     <lastmod>2026-06-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/blog/corporate-wellbeing-screening-uganda</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/blog/corporate-wellbeing-screening-uganda</loc>
     <lastmod>2026-06-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
@@ -697,95 +697,95 @@
 
   <!-- New Condition Landing Pages (2026-07) -->
   <url>
-    <loc>https://www.innersparkafrica.com/depression-therapy-uganda</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/depression-therapy-uganda</loc>
     <lastmod>2026-07-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/anxiety-counselling-uganda</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/anxiety-counselling-uganda</loc>
     <lastmod>2026-07-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/relationship-counselling-uganda</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/relationship-counselling-uganda</loc>
     <lastmod>2026-07-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/therapy-for-teens-uganda</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/therapy-for-teens-uganda</loc>
     <lastmod>2026-07-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/trauma-therapy-uganda</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/trauma-therapy-uganda</loc>
     <lastmod>2026-07-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/psychiatrist-kampala</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/psychiatrist-kampala</loc>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/counselling-services-uganda</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/counselling-services-uganda</loc>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/marriage-counselling-kampala</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/marriage-counselling-kampala</loc>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/therapist-near-me-kampala</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/therapist-near-me-kampala</loc>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <!-- Global / country & segment landing pages -->
   <url>
-    <loc>https://www.innersparkafrica.com/online-therapy-africa</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/online-therapy-africa</loc>
     <lastmod>2026-08-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/online-therapy-diaspora</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/online-therapy-diaspora</loc>
     <lastmod>2026-08-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/therapy-for-executives</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/therapy-for-executives</loc>
     <lastmod>2026-08-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/therapy-for-students-africa</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/therapy-for-students-africa</loc>
     <lastmod>2026-08-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/online-therapy-nigeria</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/online-therapy-nigeria</loc>
     <lastmod>2026-08-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/online-therapy-ghana</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/online-therapy-ghana</loc>
     <lastmod>2026-08-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/online-therapy-south-africa</loc>
+    <loc>https://mtnug-clone-spark-18987-83635.lovable.app/online-therapy-south-africa</loc>
     <lastmod>2026-08-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
