@@ -11,7 +11,7 @@ const FoundersPost = () => {
     <div className="min-h-screen bg-background">
       <Header />
       <ArticleSchema
-        headline="Shaping the Founder&#39;s Mindset at the National ICT Innovation Hub"
+        headline="Shaping the Founder's Mindset at the National ICT Innovation Hub"
         description="Inside Innerspark's founder mindset training at Uganda's National ICT Innovation Hub: resilience, burnout prevention and healthy leadership."
         path="/events-training/founders-mindset-training"
         datePublished="2024-09-01"
