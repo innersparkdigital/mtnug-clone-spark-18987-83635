@@ -725,6 +725,14 @@ const App = () => (
                 <Route path="/counselling-services-uganda" element={<CounsellingServicesUganda />} />
                 <Route path="/marriage-counselling-kampala" element={<MarriageCounsellingKampala />} />
                 <Route path="/therapist-near-me-kampala" element={<TherapistNearMeKampala />} />
+                {/* Global / country & segment landing pages */}
+                <Route path="/online-therapy-africa" element={<GlobalLanding slug="online-therapy-africa" />} />
+                <Route path="/online-therapy-diaspora" element={<GlobalLanding slug="online-therapy-diaspora" />} />
+                <Route path="/therapy-for-executives" element={<GlobalLanding slug="therapy-for-executives" />} />
+                <Route path="/therapy-for-students-africa" element={<GlobalLanding slug="therapy-for-students-africa" />} />
+                <Route path="/online-therapy-nigeria" element={<GlobalLanding slug="online-therapy-nigeria" />} />
+                <Route path="/online-therapy-ghana" element={<GlobalLanding slug="online-therapy-ghana" />} />
+                <Route path="/online-therapy-south-africa" element={<GlobalLanding slug="online-therapy-south-africa" />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
               </Suspense>
