@@ -94,9 +94,9 @@ const CookieConsent = () => {
               <p className="text-sm text-muted-foreground">
                 We use cookies and similar technologies to provide the necessary site functionality, 
                 and improve your experience on our website. By clicking the "Accept All Cookies" button, 
-                you consent to our use of cookies for all purposes. Learn more in our{" "}
+                you consent to our use of cookies for all purposes.{" "}
                 <Link to="/cookie-policy" className="text-primary hover:underline">
-                  Cookie Policy
+                  Read our Cookie Policy
                 </Link>.
               </p>
             </div>

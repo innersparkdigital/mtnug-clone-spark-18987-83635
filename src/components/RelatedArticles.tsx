@@ -46,7 +46,7 @@ const RelatedArticles = ({ currentSlug, maxArticles = 3 }: RelatedArticlesProps)
                 {article.title}
               </h3>
               <span className="inline-flex items-center text-sm text-primary mt-3 font-medium">
-                Read More <ArrowRight className="h-3 w-3 ml-1" />
+                Read {article.title} <ArrowRight className="h-3 w-3 ml-1" />
               </span>
             </Link>
           ))}

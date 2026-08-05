@@ -207,7 +207,7 @@ const TherapistRecommendationCard = ({
               ))}
               {therapist.specialties.length > 3 && (
                 <Badge variant="outline" className="text-xs">
-                  +{therapist.specialties.length - 3} more
+                  +{therapist.specialties.length - 3} additional specialties
                 </Badge>
               )}
             </div>
