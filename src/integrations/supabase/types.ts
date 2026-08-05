@@ -2968,6 +2968,7 @@ export type Database = {
           access_token: string
           amount_ugx: number | null
           client_code: string | null
+          client_type: string
           country: string | null
           created_at: string
           duration_mins: number | null
@@ -2999,6 +3000,7 @@ export type Database = {
           access_token?: string
           amount_ugx?: number | null
           client_code?: string | null
+          client_type?: string
           country?: string | null
           created_at?: string
           duration_mins?: number | null
@@ -3030,6 +3032,7 @@ export type Database = {
           access_token?: string
           amount_ugx?: number | null
           client_code?: string | null
+          client_type?: string
           country?: string | null
           created_at?: string
           duration_mins?: number | null
@@ -3615,26 +3618,48 @@ export type Database = {
         Returns: string
       }
       admin_client_detail: { Args: { _client_id: string }; Returns: Json }
-      admin_create_client: {
-        Args: {
-          _amount_ugx?: number
-          _country?: string
-          _duration_mins?: number
-          _email?: string
-          _full_name: string
-          _last_session_date?: string
-          _next_session_date?: string
-          _paid_status?: string
-          _phone?: string
-          _presenting_concern?: string
-          _session_rating?: number
-          _session_type?: string
-          _therapist_id: string
-          _therapist_share_ugx?: number
-          _would_rebook?: boolean
-        }
-        Returns: string
-      }
+      admin_create_client:
+        | {
+            Args: {
+              _amount_ugx?: number
+              _country?: string
+              _duration_mins?: number
+              _email?: string
+              _full_name: string
+              _last_session_date?: string
+              _next_session_date?: string
+              _paid_status?: string
+              _phone?: string
+              _presenting_concern?: string
+              _session_rating?: number
+              _session_type?: string
+              _therapist_id: string
+              _therapist_share_ugx?: number
+              _would_rebook?: boolean
+            }
+            Returns: string
+          }
+        | {
+            Args: {
+              _amount_ugx?: number
+              _client_type?: string
+              _country?: string
+              _duration_mins?: number
+              _email?: string
+              _full_name: string
+              _last_session_date?: string
+              _next_session_date?: string
+              _paid_status?: string
+              _phone?: string
+              _presenting_concern?: string
+              _session_rating?: number
+              _session_type?: string
+              _therapist_id: string
+              _therapist_share_ugx?: number
+              _would_rebook?: boolean
+            }
+            Returns: string
+          }
       admin_delete_client: { Args: { _client_id: string }; Returns: boolean }
       admin_list_all_clients: { Args: never; Returns: Json }
       admin_list_enquiries: { Args: never; Returns: Json }
