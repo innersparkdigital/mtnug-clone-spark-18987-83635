@@ -28,6 +28,7 @@ const empty = {
   paid_status: "pending",
   session_rating: "",
   would_rebook: "",
+  client_type: "new",
 };
 
 const AddClientDialog = ({
@@ -56,7 +57,9 @@ const AddClientDialog = ({
   const set = (k: keyof typeof empty, v: string) => setForm((f) => ({ ...f, [k]: v }));
 
   const amount = Number(form.amount_ugx || 0);
-  const tShare = form.therapist_share_ugx ? Number(form.therapist_share_ugx) : amount ? Math.round(amount * 0.6) : 0;
+  // InnerSpark keeps 15%, the therapist earns 85% unless an override is typed in.
+  const tShare = form.therapist_share_ugx ? Number(form.therapist_share_ugx) : amount ? Math.round(amount * 0.85) : 0;
+  const innerspark = amount ? amount - tShare : 0;
 
   const submit = async () => {
     if (!form.full_name.trim()) return toast.error("Client name is required");
@@ -78,6 +81,7 @@ const AddClientDialog = ({
       _paid_status: form.paid_status || null,
       _session_rating: form.session_rating ? Number(form.session_rating) : null,
       _would_rebook: form.would_rebook === "" ? null : form.would_rebook === "yes",
+      _client_type: form.client_type,
     });
     setSaving(false);
     if (error) return toast.error(error.message);
@@ -126,6 +130,16 @@ const AddClientDialog = ({
               <SelectContent>{SESSION_TYPES.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
             </Select>
           </div>
+          <div>
+            <Label>Client type</Label>
+            <Select value={form.client_type} onValueChange={(v) => set("client_type", v)}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="new">New client</SelectItem>
+                <SelectItem value="returning">Returning client</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
           <div className="md:col-span-2">
             <Label>Presenting concern</Label>
             <Textarea rows={2} value={form.presenting_concern} onChange={(e) => set("presenting_concern", e.target.value)} />
@@ -137,7 +151,12 @@ const AddClientDialog = ({
           <div><Label>Amount (UGX)</Label><Input type="number" value={form.amount_ugx} onChange={(e) => set("amount_ugx", e.target.value)} placeholder="75000" /></div>
           <div>
             <Label>Therapist share (UGX)</Label>
-            <Input type="number" value={form.therapist_share_ugx} onChange={(e) => set("therapist_share_ugx", e.target.value)} placeholder={amount ? String(Math.round(amount * 0.6)) : "auto 60%"} />
+            <Input type="number" value={form.therapist_share_ugx} onChange={(e) => set("therapist_share_ugx", e.target.value)} placeholder={amount ? String(Math.round(amount * 0.85)) : "auto 85%"} />
+            {amount > 0 && (
+              <p className="text-xs text-muted-foreground mt-1">
+                Therapist 85%: UGX {tShare.toLocaleString()} · InnerSpark 15%: UGX {innerspark.toLocaleString()}
+              </p>
+            )}
           </div>
           <div>
             <Label>Payment status</Label>
