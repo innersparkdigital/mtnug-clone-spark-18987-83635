@@ -304,6 +304,7 @@ const App = () => (
               <PrivateRouteNoIndex />
               <AIChatWidget />
               <WhisperFloatingWidget />
+              <GlobalBookingModal />
               <Suspense fallback={<RouteFallback />}>
               <Routes>
                 <Route path="/" element={<Index />} />
