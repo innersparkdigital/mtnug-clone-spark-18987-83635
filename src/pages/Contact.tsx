@@ -43,7 +43,7 @@ const breadcrumbSchema = {
 };
 
 const defaultTexts = {
-  heroTitle: "Let's Get Doing for Tomorrow, Today",
+  heroTitle: "Contact InnerSpark Africa",
   heroDesc: "Reach out to us for inquiries, support, or partnership opportunities. We're here to help you on your mental wellness journey.",
   chatWhatsApp: "Chat with Us on WhatsApp",
   phoneContact: "Phone Contact",
