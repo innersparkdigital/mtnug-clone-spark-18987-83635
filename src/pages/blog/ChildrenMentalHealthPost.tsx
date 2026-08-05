@@ -4,11 +4,20 @@ import AppDownload from "@/components/AppDownload";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import childrenMentalHealthImage from "@/assets/children-mental-health.jpg";
+import ArticleSchema from "@/components/seo/ArticleSchema";
 
 const ChildrenMentalHealthPost = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      <ArticleSchema
+        headline="Innerspark Brings Mental Health Awareness to Children at Full Gospel Primary School, Nsambya CDC"
+        description="How Innerspark delivered child-friendly mental health awareness to pupils at Full Gospel Primary School, Nsambya CDC, in Kampala."
+        path="/events-training/children-mental-health-awareness"
+        datePublished="2025-08-09"
+        image={childrenMentalHealthImage}
+        section="Press"
+      />
       
       <article className="pt-32 pb-16">
         <div className="container mx-auto px-4">

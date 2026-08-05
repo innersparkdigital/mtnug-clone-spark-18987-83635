@@ -4,11 +4,20 @@ import AppDownload from "@/components/AppDownload";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import foundersMindsetImage from "@/assets/founders-mindset-training.png";
+import ArticleSchema from "@/components/seo/ArticleSchema";
 
 const FoundersPost = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      <ArticleSchema
+        headline="Shaping the Founder's Mindset at the National ICT Innovation Hub"
+        description="Inside Innerspark's founder mindset training at Uganda's National ICT Innovation Hub: resilience, burnout prevention and healthy leadership."
+        path="/events-training/founders-mindset-training"
+        datePublished="2024-09-01"
+        image={foundersMindsetImage}
+        section="Press"
+      />
       
       <article className="pt-32 pb-16">
         <div className="container mx-auto px-4">

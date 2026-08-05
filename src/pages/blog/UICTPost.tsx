@@ -4,11 +4,20 @@ import AppDownload from "@/components/AppDownload";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import uictImage from "@/assets/uict-training.png";
+import ArticleSchema from "@/components/seo/ArticleSchema";
 
 const UICTPost = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      <ArticleSchema
+        headline="Mental Health Awareness Training – Uganda Institute of Communication Technology (UICT)"
+        description="Innerspark's mental health awareness training at UICT equipped students and staff with practical coping and help-seeking skills."
+        path="/events-training/uict-mental-health-training"
+        datePublished="2025-03-19"
+        image={uictImage}
+        section="Press"
+      />
       
       <article className="pt-32 pb-16">
         <div className="container mx-auto px-4">
