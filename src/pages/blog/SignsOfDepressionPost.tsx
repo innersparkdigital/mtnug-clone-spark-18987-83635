@@ -134,14 +134,14 @@ const SignsOfDepressionPost = () => {
   return (
     <>
       <Helmet>
-        <title>10 Warning Signs of Depression You Shouldn't Ignore | Innerspark Africa</title>
-        <meta name="description" content="Learn to recognize the common signs and symptoms of depression. Persistent sadness, fatigue, sleep changes, and loss of interest are key warning signs. Know when to seek professional help." />
+        <title>10 Warning Signs of Depression | InnerSpark</title>
+        <meta name="description" content="Recognise the common signs and symptoms of depression, how long they last, what makes them serious and where to get help in Africa." />
         <meta name="keywords" content="signs of depression, depression symptoms, am I depressed, warning signs depression, how to know if you're depressed, depression warning signs, symptoms of depression, depression signs to watch for, early signs of depression, clinical depression symptoms" />
         <link rel="canonical" href="https://www.innersparkafrica.com/blog/signs-of-depression" />
         
         {/* Open Graph */}
-        <meta property="og:title" content="10 Warning Signs of Depression You Shouldn't Ignore" />
-        <meta property="og:description" content="Learn to recognize the common signs of depression. Early detection leads to faster recovery. Know what to look for." />
+        <meta property="og:title" content="10 Warning Signs of Depression | InnerSpark" />
+        <meta property="og:description" content="Recognise the common signs and symptoms of depression, how long they last, what makes them serious and where to get help in Africa." />
         <meta property="og:type" content="article" />
         <meta property="og:url" content="https://www.innersparkafrica.com/blog/signs-of-depression" />
         <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />

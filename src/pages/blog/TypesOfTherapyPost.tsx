@@ -95,7 +95,7 @@ const TypesOfTherapyPost = () => {
   return (
     <>
       <Helmet>
-        <title>Types of Therapy Explained: Which One Is Right for You? | Innerspark Africa</title>
+        <title>Types of Therapy Explained | InnerSpark Africa</title>
         <meta name="description" content="CBT, psychodynamic, trauma therapy, couples counseling — which type of therapy is right for you? A clear guide to the most common therapy approaches." />
         <link rel="canonical" href="https://www.innersparkafrica.com/blog/types-of-therapy" />
         <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>

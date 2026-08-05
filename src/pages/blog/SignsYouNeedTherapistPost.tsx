@@ -45,7 +45,7 @@ const SignsYouNeedTherapistPost = () => {
   return (
     <>
       <Helmet>
-        <title>8 Signs You Need a Therapist – When to Seek Help | Innerspark Africa</title>
+        <title>8 Signs You Need a Therapist | InnerSpark</title>
         <meta name="description" content="Not sure if you need therapy? Here are 8 clear signs it's time to talk to a professional. Learn when to seek help and how to take the first step." />
         <link rel="canonical" href="https://www.innersparkafrica.com/blog/signs-you-need-a-therapist" />
         <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>

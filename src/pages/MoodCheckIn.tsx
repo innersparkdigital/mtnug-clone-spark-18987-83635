@@ -9,12 +9,12 @@ const MoodCheckIn = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Mood Check-In & Journaling | Track Mental Wellness | Innerspark Africa</title>
+        <title>Mood Check-In & Journaling | InnerSpark Africa</title>
         <meta name="description" content="Track your daily mood and build emotional awareness with Innerspark's mood check-in and journaling tools. Understand patterns and improve your mental wellness." />
         <meta name="keywords" content="mood tracking, mental health journal, emotional wellness, mood diary, mental health app Africa, wellness tracking" />
         <link rel="canonical" href="https://www.innersparkafrica.com/mood-check-in" />
         <meta property="og:url" content="https://www.innersparkafrica.com/mood-check-in" />
-        <meta property="og:title" content="Mood Check-In & Journaling | Innerspark Africa" />
+        <meta property="og:title" content="Mood Check-In & Journaling | InnerSpark Africa" />
         <meta property="og:description" content="Track your daily mood and build emotional awareness with journaling tools." />
         <meta property="og:type" content="website" />
         <script type="application/ld+json">

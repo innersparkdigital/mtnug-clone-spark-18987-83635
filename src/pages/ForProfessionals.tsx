@@ -178,13 +178,13 @@ const ForProfessionals = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Join InnerSpark's Therapist Network — Reach Clients Across Africa | InnerSpark Africa</title>
-        <meta name="description" content="Are you a licensed therapist, counsellor, or psychologist? Join InnerSpark Africa's growing network. No monthly fees. Earn 65–75% of session fees. Apply in 10 minutes." />
+        <title>Join Our Therapist Network | InnerSpark Africa</title>
+        <meta name="description" content="Are you a licensed therapist or psychologist? Join InnerSpark Africa to reach clients across Africa, set your hours and get paid reliably." />
         <meta name="keywords" content="therapist network, join therapist platform, online counseling jobs, mental health professionals Africa, therapy practice online" />
         <link rel="canonical" href="https://www.innersparkafrica.com/for-professionals" />
         <meta property="og:url" content="https://www.innersparkafrica.com/for-professionals" />
-        <meta property="og:title" content="For Professionals | Join Innerspark" />
-        <meta property="og:description" content="Join Innerspark's network of therapists and counselors in Africa." />
+        <meta property="og:title" content="Join Our Therapist Network | InnerSpark Africa" />
+        <meta property="og:description" content="Are you a licensed therapist or psychologist? Join InnerSpark Africa to reach clients across Africa, set your hours and get paid reliably." />
         <meta property="og:type" content="website" />
       </Helmet>
       <Header />

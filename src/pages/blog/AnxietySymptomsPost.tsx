@@ -124,14 +124,14 @@ const AnxietySymptomsPost = () => {
   return (
     <>
       <Helmet>
-        <title>Anxiety Symptoms: How to Recognize Signs of Anxiety Disorder | Innerspark</title>
-        <meta name="description" content="Learn the physical, emotional, and behavioral symptoms of anxiety. Recognize the signs of anxiety disorder including racing heart, excessive worry, and difficulty sleeping. Know when to seek help." />
+        <title>Anxiety Symptoms: How to Recognise the Signs</title>
+        <meta name="description" content="Learn the physical, emotional and behavioural symptoms of anxiety, when it becomes a disorder, and the steps to get help that works." />
         <meta name="keywords" content="anxiety symptoms, signs of anxiety, do I have anxiety, anxiety disorder symptoms, physical symptoms of anxiety, anxiety signs, what does anxiety feel like, anxiety symptoms checklist, generalized anxiety symptoms, panic attack symptoms, anxiety warning signs" />
         <link rel="canonical" href="https://www.innersparkafrica.com/blog/anxiety-symptoms" />
         
         {/* Open Graph */}
-        <meta property="og:title" content="Anxiety Symptoms: Recognize the Signs of Anxiety Disorder" />
-        <meta property="og:description" content="Learn to identify physical, emotional, and behavioral symptoms of anxiety. Know when normal worry becomes an anxiety disorder." />
+        <meta property="og:title" content="Anxiety Symptoms: How to Recognise the Signs" />
+        <meta property="og:description" content="Learn the physical, emotional and behavioural symptoms of anxiety, when it becomes a disorder, and the steps to get help that works." />
         <meta property="og:type" content="article" />
         <meta property="og:url" content="https://www.innersparkafrica.com/blog/anxiety-symptoms" />
         <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />

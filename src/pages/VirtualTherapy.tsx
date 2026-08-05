@@ -123,14 +123,14 @@ const VirtualTherapy = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Virtual Counselling Online | Talk to a Licensed Counsellor Now | Innerspark Africa</title>
-        <meta name="description" content="Affordable virtual counselling with licensed therapists. Same-day video, chat & phone sessions for anxiety, depression, stress & relationship help. Available across Uganda, Kenya, Tanzania & Africa." />
+        <title>Virtual Counselling Online | InnerSpark Africa</title>
+        <meta name="description" content="Affordable virtual counselling with licensed therapists. Same-day video, voice or chat sessions for anxiety, stress and depression." />
         <meta name="keywords" content="virtual counselling, online therapy, talk to therapist online, talk to therapist now, teletherapy, therapy app, counseling online services, anxiety help online, depression support online, stress management therapy, relationship counseling online, emotional support online, therapist available now, instant therapy session, same day therapy, affordable therapy online, low cost counseling, cheap therapy online, budget mental health support, video therapy session, chat therapy, phone therapy, messaging therapy, licensed therapist online, certified counselor online, best online therapy, therapist in Uganda online, counseling services Kenya online, therapy services Tanzania, African online therapy" />
         <link rel="canonical" href="https://www.innersparkafrica.com/virtual-therapy" />
         
         {/* Open Graph */}
-        <meta property="og:title" content="Virtual Therapy - Talk to a Therapist Today | Innerspark" />
-        <meta property="og:description" content="Connect with licensed therapists for virtual therapy. Get professional mental health support from home. Video, voice, or chat sessions available. Book today!" />
+        <meta property="og:title" content="Virtual Counselling Online | InnerSpark Africa" />
+        <meta property="og:description" content="Affordable virtual counselling with licensed therapists. Same-day video, voice or chat sessions for anxiety, stress and depression." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.innersparkafrica.com/virtual-therapy" />
         <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />

@@ -49,12 +49,12 @@ const TherapyInUganda = () => {
   return (
     <>
       <Helmet>
-        <title>Therapy in Uganda | Online Sessions in Kampala, Jinja, Mbarara | InnerSpark Africa</title>
-        <meta name="description" content="Licensed therapists across Uganda available for online sessions. Book via video, voice or chat. Evenings and weekends available. Pay via MTN or Airtel. Completely confidential." />
+        <title>Therapy in Uganda | Online Sessions Nationwide</title>
+        <meta name="description" content="Licensed therapists across Uganda for online sessions from Kampala to Jinja and Mbarara. Book by video, voice or chat in minutes." />
         <meta name="keywords" content="therapy in Uganda, therapist in Kampala, counsellor in Kampala, online therapy Uganda, psychologist Kampala, counselling Jinja, therapist Mbarara, therapy Gulu, mental health Uganda, online counselling Uganda, Luganda therapist, affordable therapy Uganda, depression therapist Uganda, anxiety counsellor Kampala, trauma therapy Gulu" />
         <link rel="canonical" href="https://www.innersparkafrica.com/therapy-in-uganda" />
-        <meta property="og:title" content="Therapy in Uganda | Online Counsellors in Kampala, Jinja, Mbarara | InnerSpark" />
-        <meta property="og:description" content="Licensed Ugandan therapists. WhatsApp video, voice & chat from UGX 75,000. Serving Kampala, Entebbe, Jinja, Mbarara & Gulu." />
+        <meta property="og:title" content="Therapy in Uganda | Online Sessions Nationwide" />
+        <meta property="og:description" content="Licensed therapists across Uganda for online sessions from Kampala to Jinja and Mbarara. Book by video, voice or chat in minutes." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.innersparkafrica.com/therapy-in-uganda" />
         <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />

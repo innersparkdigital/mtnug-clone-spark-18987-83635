@@ -127,14 +127,14 @@ const SupportGroups = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Mental Health Support Groups in Africa | Peer Support | Innerspark</title>
-        <meta name="description" content="Join mental health support groups in Africa. Professionally moderated peer support for depression, anxiety, grief, addiction & more. Safe, confidential group sessions. Connect with others who understand." />
+        <title>Mental Health Support Groups | InnerSpark</title>
+        <meta name="description" content="Join professionally moderated online support groups for anxiety, depression, grief and addiction recovery. Affordable peer support in Africa." />
         <meta name="keywords" content="mental health support groups, peer support groups, group therapy Africa, depression support group, anxiety support group, grief support group, addiction support group, online support groups, mental health community, therapy groups, support circle, mental wellness groups, emotional support group, recovery groups" />
         <link rel="canonical" href="https://www.innersparkafrica.com/support-groups" />
         
         {/* Open Graph */}
-        <meta property="og:title" content="Mental Health Support Groups | Peer Support | Innerspark Africa" />
-        <meta property="og:description" content="Join professionally moderated mental health support groups. Safe spaces to share, heal, and connect with others facing similar challenges." />
+        <meta property="og:title" content="Mental Health Support Groups | InnerSpark" />
+        <meta property="og:description" content="Join professionally moderated online support groups for anxiety, depression, grief and addiction recovery. Affordable peer support in Africa." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.innersparkafrica.com/support-groups" />
         <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />

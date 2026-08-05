@@ -132,13 +132,13 @@ const Learning = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Helmet>
-        <title>Learning Hub | Innerspark Africa - Workplace Mental Health Courses</title>
-        <meta name="description" content="Build healthy workplace mental health with Innerspark Africa's Learning Hub. Access courses for career transitions, workplace wellness, and leadership mental health training." />
+        <title>Learning Hub | Workplace Mental Health Courses</title>
+        <meta name="description" content="Short, practical workplace mental health courses from InnerSpark Africa. Build healthier teams with certificates on completion." />
         <meta name="keywords" content="workplace mental health courses, career transition training, leadership mental health, employee wellness, HR mental health training Africa" />
         <link rel="canonical" href="https://www.innersparkafrica.com/learning" />
         <meta property="og:url" content="https://www.innersparkafrica.com/learning" />
-        <meta property="og:title" content="Learning Hub | Workplace Mental Health Courses | Innerspark Africa" />
-        <meta property="og:description" content="Access workplace mental health courses for career transitions, employee wellness, and leadership training." />
+        <meta property="og:title" content="Learning Hub | Workplace Mental Health Courses" />
+        <meta property="og:description" content="Short, practical workplace mental health courses from InnerSpark Africa. Build healthier teams with certificates on completion." />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Learning Hub | Innerspark Africa" />

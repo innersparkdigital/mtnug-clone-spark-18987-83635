@@ -187,13 +187,13 @@ const ForBusiness = () => {
   return (
     <>
       <Helmet>
-        <title>Corporate Mental Health & EAP Solutions for East African Businesses | InnerSpark Africa</title>
-        <meta name="description" content="Protect your team's mental health with InnerSpark's corporate EAP. Screening, S.P.A.R.K training, and 24/7 digital support from UGX 150,000 per employee per year." />
+        <title>Corporate Mental Health & EAP | InnerSpark</title>
+        <meta name="description" content="Protect your team's mental health with InnerSpark's corporate EAP: screening, counselling and training for East African employers." />
         <meta name="keywords" content="employee mental health screening, workplace wellbeing assessment, staff mental health check, corporate mental health screening, employee wellbeing survey, workplace mental health audit, corporate wellness program, employee wellness program, workplace mental health program, corporate mental health services, employee assistance program, workplace wellbeing program, EAP programs Uganda, corporate therapy, business mental health Africa, workplace mental health Kenya, employee wellbeing Tanzania" />
         <link rel="canonical" href="https://www.innersparkafrica.com/for-business" />
         <meta property="og:url" content="https://www.innersparkafrica.com/for-business" />
-        <meta property="og:title" content="Innerspark for Business | Corporate Mental Health Solutions" />
-        <meta property="og:description" content="Transform your workplace with corporate mental health programs." />
+        <meta property="og:title" content="Corporate Mental Health & EAP | InnerSpark" />
+        <meta property="og:description" content="Protect your team's mental health with InnerSpark's corporate EAP: screening, counselling and training for East African employers." />
         <meta property="og:type" content="website" />
         <script type="application/ld+json">
           {JSON.stringify({

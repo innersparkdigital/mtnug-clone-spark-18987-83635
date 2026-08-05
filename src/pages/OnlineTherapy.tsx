@@ -92,12 +92,12 @@ const OnlineTherapy = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Online Therapy Uganda | Private Video & Chat Sessions | InnerSpark Africa</title>
+        <title>Online Therapy Uganda | Video & Chat Sessions</title>
         <meta name="description" content="Licensed therapists available via video call, voice call or chat. Sessions from UGX 75,000. Pay via Mobile Money. Completely confidential. Book today." />
         <meta name="keywords" content="online therapy Uganda, teletherapy Uganda, virtual therapy Uganda, therapy via WhatsApp Uganda, therapy from home Uganda, anonymous therapy Uganda, private therapy Kampala, confidential counselling Kampala, video therapy Uganda, voice call therapy Uganda, chat therapy Uganda, therapy for professionals Uganda, men mental health Uganda" />
         <link rel="canonical" href="https://www.innersparkafrica.com/online-therapy" />
         
-        <meta property="og:title" content="Online Therapy - Talk to a Therapist Today | Innerspark" />
+        <meta property="og:title" content="Online Therapy Uganda | Video & Chat Sessions" />
         <meta property="og:description" content="Book a licensed therapist online. Get professional mental health support today via video, voice, or chat. Start your healing journey now." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.innersparkafrica.com/online-therapy" />

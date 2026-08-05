@@ -216,11 +216,11 @@ function WhisperRecorder() {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Whisper — Free Private Therapist Reply on WhatsApp | InnerSpark</title>
+        <title>Whisper | Free Private Therapist Reply</title>
         <meta name="description" content="Whisper a voice note. A licensed Ugandan therapist replies privately on WhatsApp within 24 hours — free, no signup. Email reply also available." />
         <meta name="keywords" content="WhatsApp therapy Uganda, private therapist reply, voice therapy Africa, Whisper InnerSpark, free mental health support" />
         <link rel="canonical" href="https://www.innersparkafrica.com/whisper" />
-        <meta property="og:title" content="Whisper — Private Therapist Reply on WhatsApp in 24h" />
+        <meta property="og:title" content="Whisper | Free Private Therapist Reply" />
         <meta property="og:description" content="Too heavy to type? Whisper it. A real licensed Ugandan therapist replies privately on WhatsApp within 24 hours — free." />
         <meta property="og:url" content="https://www.innersparkafrica.com/whisper" />
         <meta property="og:type" content="website" />

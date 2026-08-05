@@ -9,12 +9,12 @@ const FindTherapist = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Find a Licensed Therapist Online | Talk to a Certified Counselor Now | Innerspark Africa</title>
-        <meta name="description" content="Find and book a licensed therapist online today. Browse certified counselors by specialty, language and availability. Affordable video, chat & phone therapy across Uganda, Kenya, Tanzania & Africa." />
+        <title>Find a Licensed Therapist Online | InnerSpark</title>
+        <meta name="description" content="Browse certified counsellors by specialty, language and price. Book a licensed therapist online today for video, voice or chat sessions." />
         <meta name="keywords" content="find a therapist online, licensed therapist online, certified counselor online, professional therapist, best online therapy, talk to therapist now, therapist available now, instant therapy session, affordable therapy online, low cost counseling, video therapy session, chat therapy, phone therapy, therapist in Uganda online, counseling services Kenya online, therapy services Tanzania, African online therapy" />
         <link rel="canonical" href="https://www.innersparkafrica.com/find-therapist" />
-        <meta property="og:title" content="Find a Licensed Therapist Online | Innerspark Africa" />
-        <meta property="og:description" content="Browse certified counselors and book a therapy session today. Video, chat & phone therapy across Uganda, Kenya & Tanzania." />
+        <meta property="og:title" content="Find a Licensed Therapist Online | InnerSpark" />
+        <meta property="og:description" content="Browse certified counsellors by specialty, language and price. Book a licensed therapist online today for video, voice or chat sessions." />
         <meta property="og:url" content="https://www.innersparkafrica.com/find-therapist" />
         <meta property="og:type" content="website" />
       </Helmet>
