@@ -3,7 +3,7 @@
 import { writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 
-const BASE_URL = "https://www.innersparkafrica.com";
+const BASE_URL = "https://mtnug-clone-spark-18987-83635.lovable.app";
 const SUPABASE_URL =
   process.env.VITE_SUPABASE_URL || "https://hnjpsvpudwwyzrrwzbpa.supabase.co";
 const SUPABASE_KEY =
