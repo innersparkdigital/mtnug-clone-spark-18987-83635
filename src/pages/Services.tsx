@@ -77,7 +77,7 @@ const breadcrumbSchema = {
 };
 
 const defaultTexts = {
-  heroTitle: "Mental Health Support That Fits Your Life",
+  heroTitle: "Our Mental Health Services",
   heroDesc: "Understand your mental health first, then get the right support. At Innerspark Africa, we make therapy, community support, and wellness resources accessible anytime, anywhere.",
   bookSession: "Book a Session",
   joinSupportGroup: "Join a Support Group",
