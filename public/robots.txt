@@ -79,6 +79,7 @@ Allow: /whisper
 
 # Sitemaps
 Sitemap: https://www.innersparkafrica.com/sitemap.xml
+Sitemap: https://hnjpsvpudwwyzrrwzbpa.supabase.co/functions/v1/sitemap-blogs
 
 # Host
 Host: https://www.innersparkafrica.com
