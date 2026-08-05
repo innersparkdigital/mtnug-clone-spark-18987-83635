@@ -33,3 +33,5 @@ project_id = "hnjpsvpudwwyzrrwzbpa"
     verify_jwt = false
   [functions.rss-feed]
     verify_jwt = false
+  [functions.sitemap-blogs]
+    verify_jwt = false
