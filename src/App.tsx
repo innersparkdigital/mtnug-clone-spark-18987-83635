@@ -269,6 +269,7 @@ const CorporateServiceRequest = lazy(
 const Whisper = lazy(() => import("./pages/Whisper"));
 const SessionFeedback = lazy(() => import("./pages/SessionFeedback"));
 const Kenya = lazy(() => import("./pages/Kenya"));
+const GlobalLanding = lazy(() => import("./pages/global/GlobalLanding"));
 const KenyaCheck = lazy(() => import("./pages/KenyaCheck"));
 const KenyaReferralRedirect = lazy(
   () => import("./pages/KenyaReferralRedirect"),
