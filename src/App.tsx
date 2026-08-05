@@ -140,6 +140,7 @@ const SpecialistProfile = lazy(() => import("./pages/SpecialistProfile"));
 import ScrollToTop from "./components/ScrollToTop";
 import AIChatWidget from "./components/AIChatWidget";
 import WhisperFloatingWidget from "./components/WhisperFloatingWidget";
+import GlobalBookingModal from "./components/GlobalBookingModal";
 import RoutePrefetcher from "./components/RoutePrefetcher";
 const Learning = lazy(() => import("./pages/Learning"));
 const CourseDetail = lazy(() => import("./pages/CourseDetail"));
