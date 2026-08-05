@@ -531,6 +531,26 @@ const Specialists = () => {
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            "name": "Therapist Directory - Innerspark Africa",
+            "description": "A directory of licensed therapists, counselors and psychologists you can book online with Innerspark Africa.",
+            "url": "https://www.innersparkafrica.com/specialists",
+            "isPartOf": {
+              "@type": "WebSite",
+              "name": "Innerspark Africa",
+              "url": "https://www.innersparkafrica.com"
+            },
+            "about": { "@type": "Thing", "name": "Mental health therapy" },
+            "mainEntity": {
+              "@type": "ItemList",
+              "name": "Licensed mental health professionals",
+              "itemListOrder": "https://schema.org/ItemListUnordered"
+            }
+          })}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
             "@type": "MedicalWebPage",
             "name": "Find a Therapist Online - Mental Health Professionals Directory",
             "description": "Browse and book sessions with licensed therapists, counselors, and psychologists. Available globally.",
