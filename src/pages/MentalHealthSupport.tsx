@@ -65,13 +65,13 @@ const MentalHealthSupport = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Mental Health Support - Get Help Now | Online Therapy & Support | Innerspark</title>
-        <meta name="description" content="Get professional mental health support online. 24/7 access to licensed therapists, support groups, and crisis help. You don't have to struggle alone. Get help today!" />
+        <title>Mental Health Support Online | InnerSpark</title>
+        <meta name="description" content="Get professional mental health support online. Licensed therapists for anxiety, depression and stress, available by video, voice or chat." />
         <meta name="keywords" content="mental health support, mental health help, online mental health support, get mental health help, mental health services, emotional support, therapy support, mental wellness, psychological support, mental health care, crisis support, mental health resources" />
         <link rel="canonical" href="https://www.innersparkafrica.com/mental-health-support" />
         
-        <meta property="og:title" content="Mental Health Support - Get Help Now | Innerspark" />
-        <meta property="og:description" content="Get professional mental health support online. 24/7 access to licensed therapists and crisis support. You're not alone." />
+        <meta property="og:title" content="Mental Health Support Online | InnerSpark" />
+        <meta property="og:description" content="Get professional mental health support online. Licensed therapists for anxiety, depression and stress, available by video, voice or chat." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.innersparkafrica.com/mental-health-support" />
         <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />

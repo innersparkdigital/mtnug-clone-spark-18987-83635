@@ -11,12 +11,12 @@ const TherapyInKampala = () => {
   return (
     <>
       <Helmet>
-        <title>Therapy in Kampala – Find a Therapist Near You | Innerspark Africa</title>
-        <meta name="description" content="Find a therapist in Kampala. Online & in-person therapy for depression, anxiety, trauma & stress. Licensed Kampala-based counsellors. Sessions from UGX 50,000. Book now." />
+        <title>Therapy in Kampala | Find a Therapist Near You</title>
+        <meta name="description" content="Find a therapist in Kampala for depression, anxiety, trauma and couples counselling. Online or in-person sessions, booked in minutes." />
         <meta name="keywords" content="therapy in Kampala, therapist Kampala, counsellor Kampala, psychologist Kampala, mental health Kampala, counselling near me Kampala, therapy near me Uganda" />
         <link rel="canonical" href="https://www.innersparkafrica.com/therapy-in-kampala" />
-        <meta property="og:title" content="Therapy in Kampala – Find a Therapist Near You | Innerspark" />
-        <meta property="og:description" content="Find a therapist in Kampala. Online therapy for depression, anxiety, trauma & stress. Book now." />
+        <meta property="og:title" content="Therapy in Kampala | Find a Therapist Near You" />
+        <meta property="og:description" content="Find a therapist in Kampala for depression, anxiety, trauma and couples counselling. Online or in-person sessions, booked in minutes." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.innersparkafrica.com/therapy-in-kampala" />
         <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />

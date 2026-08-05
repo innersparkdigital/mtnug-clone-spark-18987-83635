@@ -95,13 +95,13 @@ const groups: Group[] = [
 const Resources = () => (
   <div className="min-h-screen bg-background">
     <Helmet>
-      <title>Mental Health Resources — Uganda, Kenya & Global | InnerSpark Africa</title>
+      <title>Mental Health Resources | InnerSpark Africa</title>
       <meta
         name="description"
         content="Curated mental-health resources for Uganda, Kenya and Africa — government helplines, professional bodies, WHO guidance and free InnerSpark tools."
       />
       <link rel="canonical" href="https://www.innersparkafrica.com/resources" />
-      <meta property="og:title" content="Mental Health Resources — InnerSpark Africa" />
+      <meta property="og:title" content="Mental Health Resources | InnerSpark Africa" />
       <meta
         property="og:description"
         content="Trusted mental-health links for Uganda, Kenya and the world, plus free InnerSpark tools."

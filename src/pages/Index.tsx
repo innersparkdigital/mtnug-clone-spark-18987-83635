@@ -43,10 +43,10 @@ const Index = () => {
   return (
     <>
       <Helmet>
-        <title>Online Therapy in Uganda | Book a Licensed Therapist Today | InnerSpark Africa</title>
-        <meta name="description" content="Talk to a licensed therapist from your phone. Video, voice or chat sessions from UGX 30,000. Pay via MTN or Airtel Money. Private, confidential, no clinic visits. Book in 2 minutes." />
-        <meta property="og:title" content="Online Therapy in Uganda | Book a Licensed Therapist Today | InnerSpark Africa" />
-        <meta property="og:description" content="Talk to a licensed therapist from your phone. Video, voice or chat sessions from UGX 30,000. Pay via MTN or Airtel Money. Private, confidential." />
+        <title>Online Therapy Uganda from UGX 30,000 | InnerSpark</title>
+        <meta name="description" content="Talk to a licensed Ugandan therapist by video, voice or chat from UGX 30,000. Pay via MTN or Airtel Money. Private and bookable in 2 minutes." />
+        <meta property="og:title" content="Online Therapy Uganda from UGX 30,000 | InnerSpark" />
+        <meta property="og:description" content="Talk to a licensed Ugandan therapist by video, voice or chat from UGX 30,000. Pay via MTN or Airtel Money. Private and bookable in 2 minutes." />
         <meta name="keywords" content="online therapy Uganda, therapist Uganda, therapist Kampala, counsellor Kampala, online counselling Uganda, teletherapy Uganda, private therapy Kampala, confidential therapy Kampala, mental health Uganda, therapy for professionals Uganda, burnout therapy Uganda, anonymous therapy Uganda, corporate mental health Uganda, WHO-5 Uganda, therapist for depression Uganda, therapist for anxiety Uganda, therapist for trauma Uganda, therapist for couples Uganda, therapist for suicidal thoughts Uganda, chat therapy Uganda 30000, affordable chat therapy Uganda, therapy via WhatsApp chat Uganda, evening therapy sessions Uganda, Sunday therapy sessions Uganda, weekend therapist Uganda, same day therapist Uganda, urgent therapy Uganda, emergency counselling Uganda, teen therapist Uganda, therapy for teenagers Kampala, youth mental health Uganda, therapy for students Uganda, online therapy South Sudan, therapist South Sudan, mental health support South Sudan, online counselling East Africa" />
         <link rel="canonical" href="https://www.innersparkafrica.com/" />
       </Helmet>

@@ -105,14 +105,14 @@ const MentalHealthPost = () => {
   return (
     <>
       <Helmet>
-        <title>What Is Mental Health? Conditions, Warning Signs & How to Improve Your Well-Being | Innerspark Africa</title>
-        <meta name="description" content="Discover what mental health really means, common mental health conditions, early warning signs, and practical ways to improve emotional well-being. Learn when to seek help and how to recognize if you may have a mental health problem." />
+        <title>What Is Mental Health? Signs & How to Improve</title>
+        <meta name="description" content="What mental health really means, common conditions, early warning signs and simple daily steps to protect and improve your wellbeing." />
         <meta name="keywords" content="mental health, mental wellness, mental health conditions, anxiety, depression, PTSD, bipolar disorder, ADHD, warning signs, emotional well-being" />
         <link rel="canonical" href="https://www.innersparkafrica.com/blog/what-is-mental-health" />
         
         {/* Open Graph */}
-        <meta property="og:title" content="What Is Mental Health? A Complete Guide to Conditions, Warning Signs & Everyday Wellness" />
-        <meta property="og:description" content="Mental health influences how we think, feel, and act every day. This guide explains what mental health is, common conditions, early warning signs, and proven tools to strengthen your emotional well-being." />
+        <meta property="og:title" content="What Is Mental Health? Signs & How to Improve" />
+        <meta property="og:description" content="What mental health really means, common conditions, early warning signs and simple daily steps to protect and improve your wellbeing." />
         <meta property="og:type" content="article" />
         <meta property="og:url" content="https://www.innersparkafrica.com/blog/what-is-mental-health" />
         <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />

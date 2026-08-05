@@ -48,14 +48,14 @@ const AppComingSoon = () => {
   return (
     <>
       <Helmet>
-        <title>Download InnerSpark App | Mental Health & Therapy App for Africa</title>
+        <title>Download the InnerSpark Therapy App | Africa</title>
         <meta
           name="description"
           content="The InnerSpark mental health app is now live on Google Play and the Apple App Store. Book therapy, track mood, join support groups. Built for Uganda & Africa."
         />
         <meta name="keywords" content="innerspark app download, mental health app Uganda, therapy app Africa, mood tracker app, online counseling app, google play, app store" />
         <link rel="canonical" href="https://www.innersparkafrica.com/app-coming-soon" />
-        <meta property="og:title" content="Download InnerSpark App — Now Live on Google Play & App Store" />
+        <meta property="og:title" content="Download the InnerSpark Therapy App | Africa" />
         <meta property="og:description" content="Mental health support in your pocket. Book therapy, track mood, join groups. Available on iOS & Android." />
         <meta property="og:url" content="https://www.innersparkafrica.com/app-coming-soon" />
         <meta property="og:type" content="website" />

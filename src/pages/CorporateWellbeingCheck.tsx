@@ -407,7 +407,7 @@ const CorporateWellbeingCheck = () => {
   return (
     <>
       <Helmet>
-        <title>Corporate Wellbeing Screening — Enter Your Access Code | InnerSpark Africa</title>
+        <title>Corporate Wellbeing Screening | InnerSpark</title>
         <meta name="description" content="InnerSpark's corporate mental health screening tool. Enter your access code to complete your confidential wellbeing check." />
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>

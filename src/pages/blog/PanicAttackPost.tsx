@@ -106,14 +106,14 @@ const PanicAttackPost = () => {
   return (
     <>
       <Helmet>
-        <title>How Do I Stop a Panic Attack? Proven Grounding & Breathing Tools | Innerspark Africa</title>
-        <meta name="description" content="Learn how to stop or reduce the intensity of a panic attack using grounding techniques, sensory tools, and expert-backed breathing exercises. Practical steps to regain calm quickly." />
+        <title>How Do I Stop a Panic Attack? Proven Tools</title>
+        <meta name="description" content="Learn how to stop or ease a panic attack with grounding and breathing tools you can use in minutes, plus when to get professional help." />
         <meta name="keywords" content="panic attack, stop panic attack, grounding techniques, breathing exercises, anxiety relief, mental health, calm down fast, panic disorder" />
         <link rel="canonical" href="https://www.innersparkafrica.com/blog/how-to-stop-a-panic-attack" />
         
         {/* Open Graph */}
-        <meta property="og:title" content="How Do I Stop a Panic Attack? Simple, Fast Techniques to Regain Control" />
-        <meta property="og:description" content="Panic attacks can feel terrifying, but with the right tools, you can ease their intensity and return to balance." />
+        <meta property="og:title" content="How Do I Stop a Panic Attack? Proven Tools" />
+        <meta property="og:description" content="Learn how to stop or ease a panic attack with grounding and breathing tools you can use in minutes, plus when to get professional help." />
         <meta property="og:type" content="article" />
         <meta property="og:url" content="https://www.innersparkafrica.com/blog/how-to-stop-a-panic-attack" />
         <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />

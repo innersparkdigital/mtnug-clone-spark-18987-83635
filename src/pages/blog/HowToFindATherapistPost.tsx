@@ -142,14 +142,14 @@ const HowToFindATherapistPost = () => {
   return (
     <>
       <Helmet>
-        <title>How to Find a Therapist: Complete Guide | Choosing the Right Mental Health Professional</title>
-        <meta name="description" content="Learn how to find the right therapist for your needs. Step-by-step guide to choosing a mental health professional, questions to ask, what to expect, and how to make your first appointment." />
+        <title>How to Find a Therapist: A Complete Guide</title>
+        <meta name="description" content="A step-by-step guide to finding the right therapist: what to look for, questions to ask, costs to expect and how to start your first session." />
         <meta name="keywords" content="how to find a therapist, find a therapist near me, how to choose a therapist, finding the right therapist, therapist search, mental health professional, how to get a therapist, first therapy appointment, therapy for beginners, affordable therapist, online therapist" />
         <link rel="canonical" href="https://www.innersparkafrica.com/blog/how-to-find-a-therapist" />
         
         {/* Open Graph */}
-        <meta property="og:title" content="How to Find a Therapist: Complete Guide" />
-        <meta property="og:description" content="Step-by-step guide to finding the right therapist. Learn what to look for and how to make your first appointment." />
+        <meta property="og:title" content="How to Find a Therapist: A Complete Guide" />
+        <meta property="og:description" content="A step-by-step guide to finding the right therapist: what to look for, questions to ask, costs to expect and how to start your first session." />
         <meta property="og:type" content="article" />
         <meta property="og:url" content="https://www.innersparkafrica.com/blog/how-to-find-a-therapist" />
         <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />

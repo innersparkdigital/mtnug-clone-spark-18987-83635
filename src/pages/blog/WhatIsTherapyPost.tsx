@@ -55,7 +55,7 @@ const WhatIsTherapyPost = () => {
   return (
     <>
       <Helmet>
-        <title>What Is Therapy? How It Works & Why It Helps | Innerspark Africa</title>
+        <title>What Is Therapy? How It Works & Why It Helps</title>
         <meta name="description" content="What is therapy and how does it work? A beginner-friendly guide explaining types of therapy, what happens in sessions, and how therapy can improve your life." />
         <link rel="canonical" href="https://www.innersparkafrica.com/blog/what-is-therapy" />
         <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>

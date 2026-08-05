@@ -158,12 +158,12 @@ export default function Kenya() {
   return (
     <div className="min-h-screen bg-white">
       <Helmet>
-        <title>Online Therapy in Kenya | African Therapists | InnerSpark Africa</title>
-        <meta name="description" content="Online therapy in Kenya with licensed African therapists. WhatsApp video, voice or chat sessions from KES 2,600. Pay via M-Pesa. Book in 2 minutes — completely private." />
+        <title>Online Therapy in Kenya | InnerSpark Africa</title>
+        <meta name="description" content="Online therapy in Kenya with licensed African therapists. Video, voice or chat from KES 2,600, paid via M-Pesa. Book in 2 minutes, fully private." />
         <meta name="keywords" content={seoKeywords} />
         <link rel="canonical" href="https://www.innersparkafrica.com/kenya" />
         <meta property="og:title" content="Online Therapy in Kenya | InnerSpark Africa" />
-        <meta property="og:description" content="Licensed African therapists. WhatsApp & video sessions from KES 2,600. Pay via M-Pesa. Built for Nairobi, Mombasa, Kisumu and beyond." />
+        <meta property="og:description" content="Online therapy in Kenya with licensed African therapists. Video, voice or chat from KES 2,600, paid via M-Pesa. Book in 2 minutes, fully private." />
         <meta property="og:url" content="https://www.innersparkafrica.com/kenya" />
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org",

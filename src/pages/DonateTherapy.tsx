@@ -122,12 +122,12 @@ const DonateTherapy = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Donate Therapy — Fund Mental Health Support in Africa | InnerSpark Africa</title>
+        <title>Donate Therapy | Fund Mental Health in Africa</title>
         <meta name="description" content="Donate a therapy session to someone who can't afford mental health care. Starting from UGX 30,000 / ~$8. 100% of donations go directly to therapy access." />
         <meta name="keywords" content="donate therapy, mental health donation, therapy fund Africa, support mental health, charity therapy, community mental health" />
         <link rel="canonical" href="https://www.innersparkafrica.com/donate-therapy" />
         <meta property="og:url" content="https://www.innersparkafrica.com/donate-therapy" />
-        <meta property="og:title" content="Donate Therapy | Innerspark Africa" />
+        <meta property="og:title" content="Donate Therapy | Fund Mental Health in Africa" />
         <meta property="og:description" content="Help someone access mental health care through our community therapy fund." />
         <meta property="og:type" content="website" />
         <script type="application/ld+json">

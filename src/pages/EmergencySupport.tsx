@@ -9,12 +9,12 @@ const EmergencySupport = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Emergency Mental Health Support | Crisis Help | Innerspark Africa</title>
+        <title>Emergency Mental Health Support | InnerSpark</title>
         <meta name="description" content="Get immediate mental health crisis support. Access 24/7 emergency counseling and crisis intervention services in Africa. You are not alone." />
         <meta name="keywords" content="mental health crisis, emergency support, crisis counseling, suicide prevention, mental health emergency Africa, crisis hotline" />
         <link rel="canonical" href="https://www.innersparkafrica.com/emergency-support" />
         <meta property="og:url" content="https://www.innersparkafrica.com/emergency-support" />
-        <meta property="og:title" content="Emergency Mental Health Support | Innerspark Africa" />
+        <meta property="og:title" content="Emergency Mental Health Support | InnerSpark" />
         <meta property="og:description" content="Get immediate mental health crisis support and 24/7 emergency counseling." />
         <meta property="og:type" content="website" />
         <script type="application/ld+json">

@@ -65,13 +65,13 @@ const ChatTherapy = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Chat Therapy & Messaging Therapy | Text a Licensed Therapist Now | Innerspark Africa</title>
-        <meta name="description" content="Affordable chat therapy & messaging therapy with licensed counselors. Talk to a therapist now via secure text for anxiety help, depression support & stress management. Same-day across Uganda, Kenya & Tanzania." />
+        <title>Chat Therapy | Text a Licensed Therapist</title>
+        <meta name="description" content="Affordable chat therapy with licensed counsellors. Message a therapist from your phone for anxiety, stress or depression. From UGX 30,000." />
         <meta name="keywords" content="chat therapy, messaging therapy, text therapy, online therapy, virtual counselling, talk to therapist online, talk to therapist now, teletherapy, anxiety help online, depression support online, stress management therapy, relationship counseling online, emotional support online, therapist available now, instant therapy session, same day therapy, affordable therapy online, low cost counseling, cheap therapy online, licensed therapist online, certified counselor online, best online therapy, therapist in Uganda online, counseling services Kenya online, therapy services Tanzania, African online therapy" />
         <link rel="canonical" href="https://www.innersparkafrica.com/chat-therapy" />
         
-        <meta property="og:title" content="Chat Therapy - Text with a Therapist | Innerspark" />
-        <meta property="og:description" content="Get therapy through secure text messaging. Chat with a licensed therapist anytime. Private and convenient." />
+        <meta property="og:title" content="Chat Therapy | Text a Licensed Therapist" />
+        <meta property="og:description" content="Affordable chat therapy with licensed counsellors. Message a therapist from your phone for anxiety, stress or depression. From UGX 30,000." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.innersparkafrica.com/chat-therapy" />
         <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />

@@ -161,7 +161,7 @@ const MindCheck = () => {
   return (
     <>
       <Helmet>
-        <title>Free Mental Health Tests Online | Depression, Anxiety, ADHD Screening | Innerspark</title>
+        <title>Free Mental Health Tests Online | InnerSpark</title>
         <meta 
           name="description" 
           content="Take free online mental health tests for depression, anxiety, ADHD, PTSD, bipolar, OCD & more. Get instant, confidential results. Clinically-based screening tools to understand your mental health symptoms." 
@@ -170,7 +170,7 @@ const MindCheck = () => {
         <link rel="canonical" href="https://www.innersparkafrica.com/mind-check" />
         
         {/* Open Graph */}
-        <meta property="og:title" content="Free Mental Health Tests | Depression, Anxiety, ADHD Screening" />
+        <meta property="og:title" content="Free Mental Health Tests Online | InnerSpark" />
         <meta property="og:description" content="Take free, confidential mental health screening tests. Get instant results for depression, anxiety, ADHD, PTSD, and 30+ other conditions." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.innersparkafrica.com/mind-check" />

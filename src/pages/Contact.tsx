@@ -165,14 +165,14 @@ const Contact = () => {
   return (
     <>
       <Helmet>
-        <title>Contact Innerspark Africa | Mental Health Support & Inquiries</title>
-        <meta name="description" content="Contact Innerspark Africa for mental health support, therapy bookings, or partnership inquiries. Reach us via WhatsApp, phone, or email. Located at National ICT Innovation Hub, Kampala, Uganda." />
+        <title>Contact InnerSpark Africa | Get Support</title>
+        <meta name="description" content="Contact InnerSpark Africa for therapy bookings, corporate wellness or partnerships. Call, WhatsApp or email us — we reply within one working day." />
         <meta name="keywords" content="contact Innerspark Africa, mental health support Uganda, therapy booking, counseling inquiries, mental health helpline Uganda, therapy contact, Kampala mental health, WhatsApp therapy booking" />
         <link rel="canonical" href="https://www.innersparkafrica.com/contact" />
         
         {/* Open Graph */}
-        <meta property="og:title" content="Contact Innerspark Africa | Mental Health Support" />
-        <meta property="og:description" content="Get in touch with Innerspark Africa for mental health support, therapy bookings, or partnership opportunities." />
+        <meta property="og:title" content="Contact InnerSpark Africa | Get Support" />
+        <meta property="og:description" content="Contact InnerSpark Africa for therapy bookings, corporate wellness or partnerships. Call, WhatsApp or email us — we reply within one working day." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.innersparkafrica.com/contact" />
         <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />

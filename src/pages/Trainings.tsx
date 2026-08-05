@@ -231,7 +231,7 @@ const Trainings = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Trainings | InnerSpark Africa – Wellness Workshops & Sessions</title>
+        <title>Trainings | Wellness Workshops & Sessions</title>
         <meta name="description" content="Browse and register for InnerSpark Africa's upcoming wellness trainings, workshops, and mental health sessions." />
         <link rel="canonical" href="https://www.innersparkafrica.com/events-training/trainings" />
       </Helmet>

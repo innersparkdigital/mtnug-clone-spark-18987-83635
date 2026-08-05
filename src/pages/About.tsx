@@ -80,14 +80,14 @@ const About = () => {
   return (
     <>
       <Helmet>
-        <title>About Innerspark Africa | Online Therapy Platform | Our Mission</title>
-        <meta name="description" content="Learn about Innerspark Africa, the leading online therapy platform. Our mission is to make therapy accessible, affordable, and stigma-free globally. Meet our team and discover our vision for mental wellness." />
+        <title>About InnerSpark Africa | Our Mission & Team</title>
+        <meta name="description" content="Meet the team behind InnerSpark Africa. Licensed therapists making online mental health care affordable and private across Africa." />
         <meta name="keywords" content="about Innerspark Africa, online therapy platform, mental health mission, accessible therapy, affordable counseling, mental health startup, teletherapy platform, digital mental wellness" />
         <link rel="canonical" href="https://www.innersparkafrica.com/about" />
         
         {/* Open Graph */}
-        <meta property="og:title" content="About Innerspark Africa | Online Therapy Platform" />
-        <meta property="og:description" content="Innerspark Africa is a digital mental wellness platform making professional mental health care affordable and accessible globally." />
+        <meta property="og:title" content="About InnerSpark Africa | Our Mission & Team" />
+        <meta property="og:description" content="Meet the team behind InnerSpark Africa. Licensed therapists making online mental health care affordable and private across Africa." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.innersparkafrica.com/about" />
         <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />

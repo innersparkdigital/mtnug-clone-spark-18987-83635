@@ -106,14 +106,14 @@ const HowToHandleStressPost = () => {
   return (
     <>
       <Helmet>
-        <title>How Should I Handle Stress? Simple Strategies to Manage Everyday Stress | Innerspark Africa</title>
-        <meta name="description" content="Discover how to handle stress with practical, expert-approved tools. Learn the difference between controllable and uncontrollable stress and explore simple strategies to stay calm and grounded." />
+        <title>How Should I Handle Stress? An Easy Guide</title>
+        <meta name="description" content="Practical, expert-backed ways to handle stress today: quick calming tools, daily habits and clear signs it is time to talk to a therapist." />
         <meta name="keywords" content="how to handle stress, stress management, stress relief, anxiety management, coping with stress, mental health tips, grounding techniques, box breathing" />
         <link rel="canonical" href="https://www.innersparkafrica.com/blog/how-to-handle-stress" />
         
         {/* Open Graph */}
-        <meta property="og:title" content="How Should I Handle Stress? Expert-Backed Guide to Feeling Calmer" />
-        <meta property="og:description" content="Stress doesn't have to run the show. Learn how to understand your stress and manage it using simple tools backed by mental health experts." />
+        <meta property="og:title" content="How Should I Handle Stress? An Easy Guide" />
+        <meta property="og:description" content="Practical, expert-backed ways to handle stress today: quick calming tools, daily habits and clear signs it is time to talk to a therapist." />
         <meta property="og:type" content="article" />
         <meta property="og:url" content="https://www.innersparkafrica.com/blog/how-to-handle-stress" />
         <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />

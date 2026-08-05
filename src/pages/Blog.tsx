@@ -318,14 +318,14 @@ const Blog = () => {
   return (
     <>
       <Helmet>
-        <title>Mental Health Blog Uganda | Therapy Tips, Depression & Anxiety Help | Innerspark Africa</title>
-        <meta name="description" content="Read expert mental health articles on depression, anxiety, stress, trauma, relationship problems & therapy in Uganda. Practical tips from licensed therapists. Free resources for emotional wellness." />
+        <title>Mental Health Blog Uganda | InnerSpark Africa</title>
+        <meta name="description" content="Expert articles on depression, anxiety, stress and relationships, written by licensed African therapists. Practical tips you can use today." />
         <meta name="keywords" content="mental health blog Uganda, therapy tips, depression help Uganda, anxiety help Africa, stress management tips, trauma recovery, relationship counseling advice, online therapy blog, mental wellness Africa, therapist advice Uganda, how to deal with depression, panic attack help, marriage counseling tips, loneliness help, overthinking solutions, sadness therapy" />
         <link rel="canonical" href="https://www.innersparkafrica.com/blog" />
         
         {/* Open Graph */}
-        <meta property="og:title" content="Mental Health Blog | Expert Therapy Tips & Resources | Innerspark Africa" />
-        <meta property="og:description" content="Expert-backed mental health articles on depression, anxiety, stress, trauma & relationships from licensed therapists in Uganda." />
+        <meta property="og:title" content="Mental Health Blog Uganda | InnerSpark Africa" />
+        <meta property="og:description" content="Expert articles on depression, anxiety, stress and relationships, written by licensed African therapists. Practical tips you can use today." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.innersparkafrica.com/blog" />
         <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />

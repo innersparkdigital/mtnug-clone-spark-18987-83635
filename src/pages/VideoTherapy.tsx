@@ -65,13 +65,13 @@ const VideoTherapy = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Video Therapy Sessions | Face-to-Face Online Therapy with Licensed Therapists | Innerspark Africa</title>
-        <meta name="description" content="Affordable video therapy sessions with licensed therapists. Same-day face-to-face online therapy for anxiety, depression & stress across Uganda, Kenya, Tanzania & Africa. Book a video session now." />
+        <title>Video Therapy Sessions | InnerSpark Africa</title>
+        <meta name="description" content="Face-to-face online video therapy with licensed therapists. Same-day appointments for anxiety, depression and relationships." />
         <meta name="keywords" content="video therapy session, video therapy, online therapy, virtual counselling, talk to therapist online, talk to therapist now, teletherapy, anxiety help online, depression support online, stress management therapy, relationship counseling online, emotional support online, therapist available now, instant therapy session, same day therapy, affordable therapy online, low cost counseling, cheap therapy online, chat therapy, phone therapy, messaging therapy, licensed therapist online, certified counselor online, best online therapy, therapist in Uganda online, counseling services Kenya online, therapy services Tanzania, African online therapy" />
         <link rel="canonical" href="https://www.innersparkafrica.com/video-therapy" />
         
-        <meta property="og:title" content="Video Therapy Sessions - Face-to-Face Online | Innerspark" />
-        <meta property="og:description" content="Face-to-face video therapy with licensed therapists. Secure, private sessions from anywhere. Book today!" />
+        <meta property="og:title" content="Video Therapy Sessions | InnerSpark Africa" />
+        <meta property="og:description" content="Face-to-face online video therapy with licensed therapists. Same-day appointments for anxiety, depression and relationships." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.innersparkafrica.com/video-therapy" />
         <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />

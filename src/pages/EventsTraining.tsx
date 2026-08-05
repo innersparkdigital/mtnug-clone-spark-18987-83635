@@ -133,13 +133,13 @@ const EventsTraining = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Events & Training | Mental Health Workshops | Innerspark Africa</title>
-        <meta name="description" content="Explore Innerspark's mental health events, corporate training programs, and community wellness initiatives across Africa. Learn from our workshops and awareness sessions." />
+        <title>Events & Training | InnerSpark Africa</title>
+        <meta name="description" content="Mental health workshops, corporate training and community events across Uganda and East Africa. See upcoming dates and register online." />
         <meta name="keywords" content="mental health events, corporate training, wellness workshops Africa, mental health awareness, community programs Uganda" />
         <link rel="canonical" href="https://www.innersparkafrica.com/events-training" />
         <meta property="og:url" content="https://www.innersparkafrica.com/events-training" />
-        <meta property="og:title" content="Events & Training | Innerspark Africa" />
-        <meta property="og:description" content="Explore Innerspark's mental health events and corporate training programs." />
+        <meta property="og:title" content="Events & Training | InnerSpark Africa" />
+        <meta property="og:description" content="Mental health workshops, corporate training and community events across Uganda and East Africa. See upcoming dates and register online." />
         <meta property="og:type" content="website" />
       </Helmet>
       <Header />

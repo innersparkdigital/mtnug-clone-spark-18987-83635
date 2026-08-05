@@ -49,11 +49,11 @@ export default function KenyaCheck() {
   return (
     <>
       <Helmet>
-        <title>Free Mental Health Check Kenya | WHO-5 Wellbeing Screening | InnerSpark Africa</title>
+        <title>Free Mental Health Check Kenya | WHO-5 Test</title>
         <meta name="description" content="Take InnerSpark's free 3-minute WHO-5 mental health check for Kenya. Private results, no account needed. Find out if you need to talk to a therapist." />
         <meta name="keywords" content="mental health check Kenya, wellbeing screening Kenya, free mental health test Kenya, WHO-5 Kenya, free therapy assessment Kenya, how do I know if I need therapy Kenya, mental health screening Nairobi, anxiety test Kenya, depression test Kenya" />
         <link rel="canonical" href="https://www.innersparkafrica.com/check/kenya" />
-        <meta property="og:title" content="Free Mental Health Check Kenya | InnerSpark Africa" />
+        <meta property="og:title" content="Free Mental Health Check Kenya | WHO-5 Test" />
         <meta property="og:description" content="3-minute WHO-5 wellbeing screening for Kenyans. Private results. No account needed." />
         <meta property="og:url" content="https://www.innersparkafrica.com/check/kenya" />
         <meta property="og:type" content="website" />

@@ -78,13 +78,13 @@ const BookTherapist = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Book a Therapist Online | Same-Day Therapy with Licensed Counselors | Innerspark Africa</title>
-        <meta name="description" content="Book a licensed therapist online in minutes. Same-day therapy appointments via video, chat or phone. Affordable rates from UGX 50,000. Available across Uganda, Kenya, Tanzania & Africa." />
+        <title>Book a Therapist Online | InnerSpark Africa</title>
+        <meta name="description" content="Book a licensed therapist in minutes. Same-day video, voice or chat sessions from UGX 30,000. Pay by Mobile Money. Private and confidential." />
         <meta name="keywords" content="book therapist online, book therapy session, schedule therapy appointment, same day therapy, instant therapy session, therapist available now, talk to therapist now, online therapy, virtual counselling, teletherapy, anxiety help online, depression support online, stress management therapy, relationship counseling online, emotional support online, urgent mental health help, affordable therapy online, low cost counseling, cheap therapy online, video therapy session, chat therapy, phone therapy, messaging therapy, licensed therapist online, certified counselor online, best online therapy, therapist in Uganda online, counseling services Kenya online, therapy services Tanzania, African online therapy, therapist for depression Uganda, therapist for anxiety Uganda, therapist for trauma Uganda, therapist for couples Uganda, therapy for teenagers Kampala, chat therapy Uganda 30000, affordable chat therapy Uganda, evening therapy sessions Uganda, Sunday therapy sessions Uganda, weekend therapist Uganda, same day therapist Uganda, urgent therapy Uganda, emergency counselling Uganda, therapist available today Uganda, online therapy Kenya, therapist Nairobi, private therapy Nairobi, therapy via WhatsApp Kenya, therapy that accepts M-Pesa Kenya, online therapy South Sudan, therapist South Sudan" />
         <link rel="canonical" href="https://www.innersparkafrica.com/book-therapist" />
         
-        <meta property="og:title" content="Book a Therapist Online | Schedule Therapy Today" />
-        <meta property="og:description" content="Book a licensed therapist online in minutes. Same-day appointments available. Start your healing journey now." />
+        <meta property="og:title" content="Book a Therapist Online | InnerSpark Africa" />
+        <meta property="og:description" content="Book a licensed therapist in minutes. Same-day video, voice or chat sessions from UGX 30,000. Pay by Mobile Money. Private and confidential." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.innersparkafrica.com/book-therapist" />
         <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
