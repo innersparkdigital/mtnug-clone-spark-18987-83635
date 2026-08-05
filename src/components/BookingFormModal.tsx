@@ -488,6 +488,8 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
                 )}
                 {data.payMethod && (
                   <Input
+                    id="booking-txn-id"
+                    aria-label="Transaction ID"
                     placeholder="Transaction ID (if you've already paid)"
                     value={data.txnId}
                     onChange={(e) => setData((d) => ({ ...d, txnId: e.target.value }))}
@@ -584,10 +586,11 @@ const ContactFields = ({
 }) => (
   <div className="space-y-3">
     <div>
-      <Label>Full name</Label>
+      <Label htmlFor="booking-name">Full name</Label>
       <div className="relative mt-1.5">
         <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
+          id="booking-name"
           className="pl-10"
           placeholder="Your name"
           value={data.name}
@@ -596,10 +599,11 @@ const ContactFields = ({
       </div>
     </div>
     <div>
-      <Label>Phone number</Label>
+      <Label htmlFor="booking-phone">Phone number</Label>
       <div className="relative mt-1.5">
         <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
+          id="booking-phone"
           className="pl-10"
           placeholder="+256 7XX XXX XXX"
           value={data.phone}
@@ -608,10 +612,11 @@ const ContactFields = ({
       </div>
     </div>
     <div>
-      <Label>Email address</Label>
+      <Label htmlFor="booking-email">Email address</Label>
       <div className="relative mt-1.5">
         <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
+          id="booking-email"
           type="email"
           className="pl-10"
           placeholder="you@example.com"

@@ -319,7 +319,7 @@ const SpecialistCard = ({ specialist, isVerified, onBookClick }: SpecialistCardP
             ))}
             {specialist.specialties.length > 4 && (
               <Badge variant="outline" className="text-xs">
-                +{specialist.specialties.length - 4} more
+                +{specialist.specialties.length - 4} additional specialties
               </Badge>
             )}
           </div>
@@ -642,8 +642,13 @@ const Specialists = () => {
             {/* Search and Country Filter */}
             <div className="flex flex-col md:flex-row md:items-center gap-4 mb-6">
               <div className="relative flex-1 max-w-md">
+                <Label htmlFor="specialist-search" className="sr-only">
+                  Search specialists by name or specialty
+                </Label>
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
+                  id="specialist-search"
+                  aria-label="Search specialists by name or specialty"
                   placeholder="Search by name or specialty..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
