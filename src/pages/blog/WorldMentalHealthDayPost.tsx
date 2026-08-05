@@ -4,11 +4,20 @@ import AppDownload from "@/components/AppDownload";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import worldMentalHealthImage from "@/assets/world-mental-health-day.png";
+import ArticleSchema from "@/components/seo/ArticleSchema";
 
 const WorldMentalHealthDayPost = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      <ArticleSchema
+        headline="World Mental Health Day Workshop: Prioritizing Workplace Mental Health"
+        description="Innerspark's World Mental Health Day workshop on building psychologically safe, productive workplaces in Uganda."
+        path="/events-training/world-mental-health-day-2024"
+        datePublished="2024-10-08"
+        image={worldMentalHealthImage}
+        section="Press"
+      />
       
       <article className="pt-32 pb-16">
         <div className="container mx-auto px-4">

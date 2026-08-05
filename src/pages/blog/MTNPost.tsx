@@ -4,11 +4,20 @@ import AppDownload from "@/components/AppDownload";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import mtnImage from "@/assets/mtn-internship.png";
+import ArticleSchema from "@/components/seo/ArticleSchema";
 
 const MTNPost = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      <ArticleSchema
+        headline="Managing Anxiety During Internship – MTN Uganda"
+        description="Innerspark trained 50 MTN Uganda Career ACE interns on recognising anxiety triggers and building resilience at work."
+        path="/events-training/mtn-internship-anxiety"
+        datePublished="2025-07-11"
+        image={mtnImage}
+        section="Press"
+      />
       
       <article className="pt-32 pb-16">
         <div className="container mx-auto px-4">

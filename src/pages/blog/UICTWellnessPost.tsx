@@ -3,11 +3,20 @@ import Footer from "@/components/Footer";
 import AppDownload from "@/components/AppDownload";
 import { Calendar, MapPin, Users } from "lucide-react";
 import uictWellnessImage from "@/assets/uict-wellness-activity.jpg";
+import ArticleSchema from "@/components/seo/ArticleSchema";
 
 const UICTWellnessPost = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      <ArticleSchema
+        headline="UICT Wellness Activity Day – Mental Health Is in the Palm of Your Hands"
+        description="Highlights from UICT Wellness Activity Day, where Innerspark ran interactive sessions on stress, self-care and campus mental health."
+        path="/events-training/uict-wellness-activity-day"
+        datePublished="2025-05-01"
+        image={uictWellnessImage}
+        section="Press"
+      />
       
       <article className="pt-32 pb-16">
         <div className="container mx-auto px-4 max-w-4xl">

@@ -4,11 +4,20 @@ import AppDownload from "@/components/AppDownload";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import miicImage from "@/assets/miic-mental-health.png";
+import ArticleSchema from "@/components/seo/ArticleSchema";
 
 const MIICPost = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      <ArticleSchema
+        headline="Fostering Wellness in Innovation: Innerspark Conducts Mental Health Awareness Session at MIIC"
+        description="Innerspark's mental health awareness session at MIIC helped innovators manage pressure, stress and burnout while building products."
+        path="/events-training/miic-wellness-innovation"
+        datePublished="2025-08-01"
+        image={miicImage}
+        section="Press"
+      />
       
       <article className="pt-32 pb-16">
         <div className="container mx-auto px-4">

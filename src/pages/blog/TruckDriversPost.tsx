@@ -4,11 +4,20 @@ import AppDownload from "@/components/AppDownload";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import truckDriversImage from "@/assets/truck-drivers-training.png";
+import ArticleSchema from "@/components/seo/ArticleSchema";
 
 const TruckDriversPost = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      <ArticleSchema
+        headline="Preparing Truck Drivers for Life Beyond the Road: A Journey of Empowerment and Transition"
+        description="How Innerspark supported long-haul truck drivers through retirement planning, identity change and emotional wellbeing."
+        path="/events-training/truck-drivers-retirement-training"
+        datePublished="2024-07-01"
+        image={truckDriversImage}
+        section="Press"
+      />
       
       <article className="pt-32 pb-16">
         <div className="container mx-auto px-4">
