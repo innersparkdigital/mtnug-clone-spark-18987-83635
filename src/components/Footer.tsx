@@ -128,6 +128,30 @@ const Footer = () => {
           </div>
         </div>
 
+        {/* Where we work — global reach link cluster */}
+        <nav aria-label="Where we work" className="mb-8 border-t border-border pt-6">
+          <h4 className="font-display text-base font-semibold mb-3">Where we work</h4>
+          <ul className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-muted-foreground">
+            {[
+              { to: "/online-therapy-africa", label: "Online therapy in Africa" },
+              { to: "/online-therapy-diaspora", label: "Therapy for Africans abroad" },
+              { to: "/online-therapy-nigeria", label: "Therapy in Nigeria" },
+              { to: "/online-therapy-ghana", label: "Therapy in Ghana" },
+              { to: "/online-therapy-south-africa", label: "Therapy in South Africa" },
+              { to: "/kenya", label: "Therapy in Kenya" },
+              { to: "/therapy-in-uganda", label: "Therapy in Uganda" },
+              { to: "/therapy-for-executives", label: "Therapy for executives & leaders" },
+              { to: "/therapy-for-students-africa", label: "Therapy for students" },
+            ].map((l) => (
+              <li key={l.to}>
+                <Link to={l.to} className="hover:text-primary transition-colors">
+                  {l.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
         {/* Brand block + crisis line */}
         <div className="border-t border-border pt-6 mb-6 grid gap-4 md:grid-cols-2 items-center">
           <div>
