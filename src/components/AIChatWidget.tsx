@@ -83,20 +83,38 @@ function getAnonId(): string {
   return id;
 }
 
+function getTimeGreeting(now = new Date()): string {
+  const hour = now.getHours();
+  if (hour >= 5 && hour < 12) return "Good morning";
+  if (hour >= 12 && hour < 18) return "Good afternoon";
+  if (hour >= 18 && hour < 22) return "Good evening";
+  return "Good evening";
+}
+
+function getDayNote(now = new Date()): string {
+  const day = now.getDay();
+  const isWeekend = day === 0 || day === 6;
+  if (isWeekend) {
+    return "I hope you're having a restful weekend.";
+  }
+  return "I hope your day is going okay so far.";
+}
+
 function contextualWelcome(pathname: string): Msg {
   const p = pathname.toLowerCase();
-  let content =
-    "Hi, I'm Amani from InnerSpark 👋 This is a judgment-free space — whatever you share stays private.\n\nMay I know your name so I can make this conversation feel more personal?";
+  const greeting = getTimeGreeting();
+  const dayNote = getDayNote();
+  let content = `${greeting} — I'm Amani from InnerSpark 👋 This is a judgment-free space, and whatever you share stays private.\n\n${dayNote} May I know your name so I can make this conversation feel more personal?`;
   if (p.startsWith("/for-business") || p.startsWith("/corporate")) {
-    content = "Hi, I'm Amani 👋 Looking for support for your team? How many people are we talking about?";
+    content = `${greeting} — I'm Amani 👋 Looking for support for your team? How many people are we talking about?`;
   } else if (p.startsWith("/specialists") || p.startsWith("/find-therapist") || p.startsWith("/book-therapist")) {
-    content = "Hi, I'm Amani 👋 I can help you pick the right therapist. Before anything else — what shall I call you? I want this to feel like a real conversation, not a form.";
+    content = `${greeting} — I'm Amani 👋 I can help you pick the right therapist. Before anything else — what shall I call you? I want this to feel like a real conversation, not a form.`;
   } else if (p.startsWith("/blog")) {
-    content = "Hi there 💚 Welcome to InnerSpark Africa — a safe space where you can speak freely without judgment. I'm Amani and I'm here to help. What's your name?";
+    content = `${greeting} 💚 Welcome to InnerSpark Africa — a safe space where you can speak freely without judgment. I'm Amani and I'm here to help. What's your name?`;
   } else if (p.startsWith("/whisper")) {
-    content = "Hi, I'm Amani 💙 Whisper is free and anonymous. What would you like to share?";
+    content = `${greeting} — I'm Amani 💙 Whisper is free and anonymous. What would you like to share?`;
   } else if (p.startsWith("/kenya")) {
-    content = "Habari, I'm Amani 👋 This is a judgment-free space where you can speak freely. What shall I call you?";
+    content = `Habari, ${greeting.toLowerCase()} — I'm Amani 👋 This is a judgment-free space where you can speak freely. What shall I call you?`;
   }
   return { role: "assistant", content };
 }
