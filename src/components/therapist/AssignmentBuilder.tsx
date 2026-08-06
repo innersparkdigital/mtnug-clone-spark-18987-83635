@@ -8,6 +8,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { WELLBEING_TOOLS } from "@/lib/wellbeingToolsCatalog";
 import { copyToClipboard } from "@/lib/copyToClipboard";
+import { buildClientPortalUrl } from "@/lib/clientPortalLink";
+import ToolPreviewDialog from "./ToolPreviewDialog";
 import { toast } from "sonner";
 import { Loader2, Copy, Mail } from "lucide-react";
 import ScheduleFields, { defaultSchedule, ScheduleValue } from "./ScheduleFields";
@@ -53,8 +55,8 @@ const AssignmentBuilder = ({ client, therapistName, onDone }: Props) => {
   const [savedAssignmentId, setSavedAssignmentId] = useState<string | null>(null);
 
   const portalUrl = useMemo(
-    () => `${window.location.origin}/my-progress/${client.access_token}`,
-    [client.access_token],
+    () => buildClientPortalUrl(client.full_name, client.access_token),
+    [client.full_name, client.access_token],
   );
 
   const toggle = (key: string) => {
@@ -220,6 +222,9 @@ const AssignmentBuilder = ({ client, therapistName, onDone }: Props) => {
                       )}
                     </div>
                     <div className="text-xs text-muted-foreground mt-0.5">{tool.short}</div>
+                  </div>
+                  <div onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}>
+                    <ToolPreviewDialog toolKey={tool.key} />
                   </div>
                 </label>
                 {isOn && (

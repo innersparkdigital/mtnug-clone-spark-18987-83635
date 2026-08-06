@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2, Phone, ShieldAlert } from "lucide-react";
 import { toast } from "sonner";
+import { SUPPORT_PHONE_DISPLAY, SUPPORT_PHONE_TEL } from "@/lib/supportContact";
 
 type Answer = "no" | "passed" | "still";
 
@@ -60,8 +61,8 @@ const SafetyCheckInTool = ({ token, assignmentToolId, onDone, onBack }: Props) =
           <p className="text-sm text-muted-foreground">
             If you ever need to talk to someone right now, the Uganda Crisis Line is free and available 24/7.
           </p>
-          <a href="tel:0800212121" className="inline-flex items-center gap-2 mt-3 text-primary hover:underline text-sm">
-            <Phone className="h-4 w-4" /> 0800 212 121
+          <a href={SUPPORT_PHONE_TEL} className="inline-flex items-center gap-2 mt-3 text-primary hover:underline text-sm">
+            <Phone className="h-4 w-4" /> {SUPPORT_PHONE_DISPLAY}
           </a>
           <div className="mt-6"><Button onClick={onDone}>Back to my space</Button></div>
         </CardContent>
@@ -79,8 +80,8 @@ const SafetyCheckInTool = ({ token, assignmentToolId, onDone, onBack }: Props) =
         <CardContent className="space-y-3">
           <div className="rounded-lg bg-white border p-4">
             <div className="text-sm font-medium mb-1">If they come back, please reach out immediately</div>
-            <a href="tel:0800212121" className="inline-flex items-center gap-2 text-primary text-lg font-semibold">
-              <Phone className="h-5 w-5" /> 0800 212 121
+            <a href={SUPPORT_PHONE_TEL} className="inline-flex items-center gap-2 text-primary text-lg font-semibold">
+              <Phone className="h-5 w-5" /> {SUPPORT_PHONE_DISPLAY}
             </a>
             <p className="text-xs text-muted-foreground mt-1">Uganda Crisis Line — free, confidential, 24/7</p>
           </div>
@@ -109,11 +110,11 @@ const SafetyCheckInTool = ({ token, assignmentToolId, onDone, onBack }: Props) =
         </CardHeader>
         <CardContent className="space-y-4">
           <a
-            href="tel:0800212121"
+            href={SUPPORT_PHONE_TEL}
             className="block rounded-xl bg-destructive text-destructive-foreground text-center p-6 shadow-lg"
           >
             <div className="flex items-center justify-center gap-2 text-lg font-semibold">
-              <Phone className="h-5 w-5" /> Call 0800 212 121 now
+              <Phone className="h-5 w-5" /> Call {SUPPORT_PHONE_DISPLAY} now
             </div>
             <div className="text-sm opacity-90 mt-1">Uganda Crisis Line — free, confidential, available now</div>
           </a>

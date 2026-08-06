@@ -393,6 +393,7 @@ const App = () => (
                 <Route path="/admin/finance" element={<AdminFinance />} />
                 <Route path="/therapist" element={<TherapistPortal />} />
                 <Route path="/my-progress/:token" element={<ClientPortal />} />
+                <Route path="/my-progress/:slug/:token" element={<ClientPortal />} />
                 <Route path="/learning/:courseId" element={<CourseDetail />} />
                 <Route
                   path="/learning/:courseId/certificate"

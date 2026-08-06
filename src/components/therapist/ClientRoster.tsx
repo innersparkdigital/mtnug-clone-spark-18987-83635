@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { toast } from "sonner";
 import { Loader2, UserPlus, Copy, AlertCircle, Users, CalendarCheck, ShieldAlert, Activity } from "lucide-react";
 import { copyToClipboard } from "@/lib/copyToClipboard";
+import { buildClientPortalUrl } from "@/lib/clientPortalLink";
 import MiniSparkline from "./MiniSparkline";
 import ClientDetailPanel from "./ClientDetailPanel";
 
@@ -145,7 +146,7 @@ const ClientRoster = ({ therapistId, therapistName }: Props) => {
   };
 
   const copyLink = async (c: Client) => {
-    const url = `${window.location.origin}/my-progress/${c.access_token}`;
+    const url = buildClientPortalUrl(c.full_name, c.access_token);
     const ok = await copyToClipboard(url);
     if (ok) toast.success("Private link copied");
     else toast.error("Couldn't copy — please copy manually.");
