@@ -86,7 +86,7 @@ function getAnonId(): string {
 function contextualWelcome(pathname: string): Msg {
   const p = pathname.toLowerCase();
   let content =
-    "Hi, I'm Amani from InnerSpark 👋 This is a judgment-free space — whatever you share stays private.\n\nWhat may I know your name so I can make this conversation feel more personal?";
+    "Hi, I'm Amani from InnerSpark 👋 This is a judgment-free space — whatever you share stays private.\n\nMay I know your name so I can make this conversation feel more personal?";
   if (p.startsWith("/for-business") || p.startsWith("/corporate")) {
     content = "Hi, I'm Amani 👋 Looking for support for your team? How many people are we talking about?";
   } else if (p.startsWith("/specialists") || p.startsWith("/find-therapist") || p.startsWith("/book-therapist")) {
