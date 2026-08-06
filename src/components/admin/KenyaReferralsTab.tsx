@@ -127,6 +127,7 @@ export default function KenyaReferralsTab() {
     reward_type: "cash",
     reward_value: 0,
     link_type: "client",
+    reward_kind: "client_discount",
     custom_message: "",
     message_touched: false,
     notes: "",
@@ -243,6 +244,7 @@ export default function KenyaReferralsTab() {
       discount_amount: form.discount_amount,
       reward_percent: form.reward_percent,
       link_type: normalizeLinkType(form.link_type),
+      reward_kind: normalizeRewardKind(form.reward_kind),
       is_active: true,
       discount_amount_kes: form.discount_amount,
       reward_type: form.reward_type,
@@ -524,6 +526,19 @@ export default function KenyaReferralsTab() {
                   </SelectContent>
                 </Select>
               </div>
+            </div>
+            <div>
+              <Label>Reward kind</Label>
+              <Select value={normalizeRewardKind(form.reward_kind)} onValueChange={(v) => setForm({ ...form, reward_kind: normalizeRewardKind(v) })}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="client_discount">Paid client — discount on their next session</SelectItem>
+                  <SelectItem value="public_partner">Public link — anyone earns per paid client</SelectItem>
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground mt-1">
+                Rewards appear in the Referrer Rewards list for your approval once the referred client pays.
+              </p>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
