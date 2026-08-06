@@ -13,7 +13,7 @@ import SafetyCheckInTool from "@/components/client-portal/SafetyCheckInTool";
 import ThoughtRecordTool from "@/components/client-portal/ThoughtRecordTool";
 import HomeworkTool from "@/components/client-portal/HomeworkTool";
 import EmotionDiaryTool from "@/components/client-portal/EmotionDiaryTool";
-import ScreeningTool from "@/components/client-portal/ScreeningTool";
+import ScaleTool from "@/components/client-portal/ScaleTool";
 import GratitudeTool from "@/components/client-portal/GratitudeTool";
 import SelfCareTool from "@/components/client-portal/SelfCareTool";
 import ActivityScheduleTool from "@/components/client-portal/ActivityScheduleTool";
@@ -25,6 +25,8 @@ import CustomQuestionsTool from "@/components/client-portal/CustomQuestionsTool"
 const ProgressAnalytics = lazy(() => import("@/components/client-portal/ProgressAnalytics"));
 const MilestoneTimeline = lazy(() => import("@/components/client-portal/MilestoneTimeline"));
 import { getTool } from "@/lib/wellbeingToolsCatalog";
+import { getScale } from "@/lib/screeningScales";
+import { SUPPORT_PHONE_DISPLAY, SUPPORT_PHONE_TEL } from "@/lib/supportContact";
 import { CalmThemeRoot } from "@/contexts/CalmThemeContext";
 import CalmThemeToggle from "@/components/CalmThemeToggle";
 import GreetingBlock from "@/components/client-portal/GreetingBlock";
@@ -308,6 +310,8 @@ const ClientPortalInner = () => {
     };
     const back = () => setActiveToolId(null);
     const common = { token: token!, assignmentToolId: activeTool.id, onDone: done, onBack: back };
+    const scale = getScale(activeTool.tool_key);
+    if (scale) return <ScaleTool scale={scale} {...common} />;
     switch (activeTool.tool_key) {
       case "session-reflection":
         return <SessionReflectionTool {...common} initial={activeTool.latest_submission?.payload} />;
@@ -319,9 +323,7 @@ const ClientPortalInner = () => {
         return <HomeworkTool {...common} config={activeTool.config || {}} initial={activeTool.latest_submission?.payload} />;
       case "emotion-diary":
         return <EmotionDiaryTool {...common} initial={activeTool.latest_submission?.payload} />;
-      case "screening-phq9":
-      case "screening-gad7":
-        return <ScreeningTool variant={activeTool.tool_key === "screening-phq9" ? "phq9" : "gad7"} {...common} />;
+
       case "gratitude":
         return <GratitudeTool {...common} initial={activeTool.latest_submission?.payload} />;
       case "self-care":
@@ -373,7 +375,7 @@ const ClientPortalInner = () => {
         {snapshot.has_red_alert && !activeTool && (
           <div className="mt-6 rounded-2xl border border-destructive/40 bg-destructive/5 p-4 text-sm leading-relaxed">
             Your therapist has been alerted and is reaching out to you. If you need someone right now, please call{" "}
-            <a href="tel:0800212121" className="text-destructive font-semibold underline">0800 212 121</a> — free, 24/7.
+            <a href={SUPPORT_PHONE_TEL} className="text-destructive font-semibold underline">{SUPPORT_PHONE_DISPLAY}</a> — call or WhatsApp.
             You matter. 💙
           </div>
         )}
