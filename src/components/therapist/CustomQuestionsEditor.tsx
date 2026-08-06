@@ -3,16 +3,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Plus, Trash2 } from "lucide-react";
+import { maxPointsFor, maxScoreForSet, type ScoredQuestion } from "@/lib/questionScoring";
 
-export type EditorQuestion = {
-  id: string;
-  label: string;
-  type: "text" | "long_text" | "scale" | "yes_no" | "mcq";
-  options?: string[];
-  scale_min?: number;
-  scale_max?: number;
-  required?: boolean;
-};
+export type EditorQuestion = ScoredQuestion;
 
 interface Props {
   intro: string;
@@ -31,6 +24,9 @@ const CustomQuestionsEditor = ({ intro, questions, onIntroChange, onChange }: Pr
     onChange(questions.map((q) => (q.id === id ? { ...q, ...patch } : q)));
 
   const remove = (id: string) => onChange(questions.filter((q) => q.id !== id));
+
+  const setMax = maxScoreForSet(questions);
+  const canScore = (t: EditorQuestion["type"]) => t === "scale" || t === "yes_no" || t === "mcq";
 
   return (
     <div className="space-y-3">
@@ -83,6 +79,19 @@ const CustomQuestionsEditor = ({ intro, questions, onIntroChange, onChange }: Pr
               />
               Required
             </label>
+            {canScore(q.type) && (
+              <label className="text-xs flex items-center gap-1">
+                <input
+                  type="checkbox"
+                  checked={!!q.scored}
+                  onChange={(e) => update(q.id, { scored: e.target.checked })}
+                />
+                Score this answer
+              </label>
+            )}
+            {q.scored && canScore(q.type) && (
+              <span className="text-[11px] text-muted-foreground">max {maxPointsFor(q)} pts</span>
+            )}
           </div>
           {q.type === "scale" && (
             <div className="flex gap-2">
@@ -103,22 +112,58 @@ const CustomQuestionsEditor = ({ intro, questions, onIntroChange, onChange }: Pr
             </div>
           )}
           {q.type === "mcq" && (
-            <Input
-              value={(q.options || []).join(", ")}
-              onChange={(e) =>
-                update(q.id, {
-                  options: e.target.value.split(",").map((s) => s.trim()).filter(Boolean),
-                })
-              }
-              placeholder="Option 1, Option 2, Option 3"
-            />
+            <div className="space-y-2">
+              <Input
+                value={(q.options || []).join(", ")}
+                onChange={(e) =>
+                  update(q.id, {
+                    options: e.target.value.split(",").map((s) => s.trim()).filter(Boolean),
+                  })
+                }
+                placeholder="Option 1, Option 2, Option 3"
+              />
+              {q.scored && (q.options || []).length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {(q.options || []).map((opt, i) => (
+                    <div key={opt + i} className="flex items-center gap-1">
+                      <span className="text-[11px] text-muted-foreground max-w-[110px] truncate">{opt}</span>
+                      <Input
+                        type="number"
+                        className="w-16 h-8"
+                        value={q.option_scores?.[i] ?? i}
+                        onChange={(e) => {
+                          const scores = (q.options || []).map((_, j) => q.option_scores?.[j] ?? j);
+                          scores[i] = Number(e.target.value);
+                          update(q.id, { option_scores: scores });
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+          {q.type === "yes_no" && q.scored && (
+            <div className="flex gap-2 items-center">
+              <span className="text-[11px] text-muted-foreground">Yes</span>
+              <Input type="number" className="w-16 h-8" value={q.yes_score ?? 1}
+                onChange={(e) => update(q.id, { yes_score: Number(e.target.value) })} />
+              <span className="text-[11px] text-muted-foreground">No</span>
+              <Input type="number" className="w-16 h-8" value={q.no_score ?? 0}
+                onChange={(e) => update(q.id, { no_score: Number(e.target.value) })} />
+            </div>
           )}
         </div>
       ))}
 
-      <Button type="button" variant="outline" size="sm" onClick={add}>
-        <Plus className="h-3.5 w-3.5 mr-1" /> Add question
-      </Button>
+      <div className="flex items-center gap-3 flex-wrap">
+        <Button type="button" variant="outline" size="sm" onClick={add}>
+          <Plus className="h-3.5 w-3.5 mr-1" /> Add question
+        </Button>
+        {setMax > 0 && (
+          <span className="text-xs text-muted-foreground">Total possible score: <strong>{setMax}</strong></span>
+        )}
+      </div>
     </div>
   );
 };
