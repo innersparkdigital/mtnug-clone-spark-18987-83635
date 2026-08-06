@@ -345,6 +345,15 @@ const ClientRoster = ({ therapistId, therapistName }: Props) => {
         therapistName={therapistName}
         onAssignmentSaved={() => { setDetailOpen(false); load(); }}
       />
+
+      <div className="pt-2 border-t">
+        <QuestionBankManager
+          therapistId={therapistId}
+          sets={questionBank.sets}
+          loading={questionBank.loading}
+          reload={questionBank.reload}
+        />
+      </div>
     </div>
   );
 };
