@@ -138,11 +138,13 @@ const AssignmentBuilder = ({ client, therapistName, onDone }: Props) => {
       .eq("assignment_id", assignmentId);
 
     if (!toolErr && toolRows) {
+      const pool = [...(toolRows as any[])];
       for (const key of keys) {
         const sched = selected[key].schedule;
         if (!sched || sched.frequency === "once") continue;
         const wantedKey = selected[key].question_set_id ? "custom-questions" : key;
-        const row = (toolRows as any[]).find((r) => r.tool_key === wantedKey);
+        const idx = pool.findIndex((r) => r.tool_key === wantedKey);
+        const row = idx >= 0 ? pool.splice(idx, 1)[0] : null;
         if (!row) continue;
         const freqMap: Record<string, string> = { daily: "daily", weekly: "weekly", custom: "custom" };
         await supabase.rpc("create_assignment_schedule" as any, {
