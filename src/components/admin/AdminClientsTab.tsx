@@ -50,6 +50,7 @@ interface Row {
   therapist_paid: boolean | null;
   therapist_paid_at: string | null;
   receipt_sent_at: string | null;
+  client_type: string | null;
 }
 
 const fmtUGX = (n: number | null) => (n ? `UGX ${Math.round(Number(n)).toLocaleString()}` : "—");
@@ -112,6 +113,11 @@ const AdminClientsTab = () => {
 
   useEffect(() => { setPage(1); }, [search, therapistFilter, riskFilter, pageSize]);
 
+  const counts = useMemo(() => ({
+    newClients: filtered.filter((r) => (r.client_type || "new") !== "returning").length,
+    returning: filtered.filter((r) => r.client_type === "returning").length,
+  }), [filtered]);
+
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
   const pageRows = useMemo(
     () => filtered.slice((page - 1) * pageSize, page * pageSize),
@@ -144,6 +150,7 @@ const AdminClientsTab = () => {
       _country: val(r, "country") ?? null,
       _receipt_number: r.receipt_number,
       _receipt_url: r.receipt_url,
+      _client_type: val(r, "client_type") ?? null,
     });
     setSavingId(null);
     if (error) return toast.error(error.message);
@@ -242,6 +249,7 @@ const AdminClientsTab = () => {
       "Session Date": r.last_session_date || "",
       "Client Name": r.full_name,
       "Client Code": r.client_code || "",
+      "Client Type": r.client_type || "new",
       "Client Number": r.phone || "",
       Email: r.email || "",
       Country: r.country || "",
@@ -268,9 +276,9 @@ const AdminClientsTab = () => {
   };
 
   const exportCsv = () => {
-    const header = ["#", "Session Date", "Client Name", "Client Code", "Client Number", "Email", "Country", "Therapist Name", "Presenting Concern", "Session Type", "Duration (mins)", "Session Rating", "Next Session", "Would Rebook", "Amount UGX", "Therapist UGX", "InnerSpark UGX", "Paid", "Receipt No."];
+    const header = ["#", "Session Date", "Client Name", "Client Code", "Client Type", "Client Number", "Email", "Country", "Therapist Name", "Presenting Concern", "Session Type", "Duration (mins)", "Session Rating", "Next Session", "Would Rebook", "Amount UGX", "Therapist UGX", "InnerSpark UGX", "Paid", "Receipt No."];
     const lines = filtered.map((r, i) => [
-      i + 1, r.last_session_date || "", r.full_name, r.client_code || "", r.phone || "", r.email || "",
+      i + 1, r.last_session_date || "", r.full_name, r.client_code || "", r.client_type || "new", r.phone || "", r.email || "",
       r.country || "", r.therapist_name, r.presenting_concern || "", r.session_type || "",
       r.duration_mins ?? "", r.session_rating ?? "", r.next_session_date || "",
       r.would_rebook === null ? "" : r.would_rebook ? "Yes" : "No",
@@ -291,6 +299,10 @@ const AdminClientsTab = () => {
             <div>
               <CardTitle className="text-lg">Therapy Session Tracker</CardTitle>
               <p className="text-xs text-muted-foreground mt-1">Every client across every therapist · edit inline, save to post income to Finance ({filtered.length} of {rows.length})</p>
+              <div className="flex gap-2 mt-2 flex-wrap">
+                <Badge variant="secondary" className="text-[11px]">New clients: {counts.newClients}</Badge>
+                <Badge variant="secondary" className="text-[11px]">Returning clients: {counts.returning}</Badge>
+              </div>
             </div>
             <div className="flex gap-2">
               <Button size="sm" onClick={() => setAddOpen(true)}><Plus className="h-4 w-4 mr-1" /> Add client</Button>
@@ -328,7 +340,7 @@ const AdminClientsTab = () => {
               <Table className="min-w-[1800px] text-xs">
                 <TableHeader>
                   <TableRow>
-                    {["#", "Session Date", "Client Name", "Client Code", "Client Number", "Email", "Country", "Therapist Name", "Presenting Concern", "Session Type", "Duration", "Rating", "Next Session", "Would Rebook", "Amount UGX", "Therapist UGX", "InnerSpark UGX", "Client Paid", "Therapist Paid", "Risk", "Actions"].map((h) => (
+                    {["#", "Session Date", "Client Name", "Client Code", "Client Type", "Client Number", "Email", "Country", "Therapist Name", "Presenting Concern", "Session Type", "Duration", "Rating", "Next Session", "Would Rebook", "Amount UGX", "Therapist UGX", "InnerSpark UGX", "Client Paid", "Therapist Paid", "Risk", "Actions"].map((h) => (
                       <TableHead key={h} className="whitespace-nowrap text-[11px]">{h}</TableHead>
                     ))}
                   </TableRow>
@@ -348,6 +360,15 @@ const AdminClientsTab = () => {
                         </TableCell>
                         <TableCell className="font-medium whitespace-nowrap">{r.full_name}</TableCell>
                         <TableCell className="font-mono">{r.client_code || "—"}</TableCell>
+                        <TableCell>
+                          <Select value={(val(r, "client_type") as string) || "new"} onValueChange={(v) => setVal(r.id, "client_type", v)}>
+                            <SelectTrigger className="h-8 w-[110px] text-xs"><SelectValue /></SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="new">New</SelectItem>
+                              <SelectItem value="returning">Returning</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </TableCell>
                         <TableCell className="whitespace-nowrap">{r.phone || "—"}</TableCell>
                         <TableCell className="max-w-[160px] truncate">{r.email || "—"}</TableCell>
                         <TableCell>
