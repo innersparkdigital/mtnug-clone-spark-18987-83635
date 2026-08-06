@@ -10,6 +10,7 @@ import { copyToClipboard } from "@/lib/copyToClipboard";
 import { buildClientPortalUrl } from "@/lib/clientPortalLink";
 import MiniSparkline from "./MiniSparkline";
 import ClientDetailPanel from "./ClientDetailPanel";
+import QuestionBankManager, { useQuestionSets } from "./QuestionBankManager";
 
 interface Client {
   id: string;
@@ -153,6 +154,7 @@ const ClientRoster = ({ therapistId, therapistName }: Props) => {
   };
 
   const openDetail = (c: Client) => { setDetailFor(c); setDetailOpen(true); };
+  const questionBank = useQuestionSets();
 
   return (
     <div className="space-y-6">
@@ -343,6 +345,15 @@ const ClientRoster = ({ therapistId, therapistName }: Props) => {
         therapistName={therapistName}
         onAssignmentSaved={() => { setDetailOpen(false); load(); }}
       />
+
+      <div className="pt-2 border-t">
+        <QuestionBankManager
+          therapistId={therapistId}
+          sets={questionBank.sets}
+          loading={questionBank.loading}
+          reload={questionBank.reload}
+        />
+      </div>
     </div>
   );
 };

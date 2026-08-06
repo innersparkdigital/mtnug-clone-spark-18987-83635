@@ -14,6 +14,8 @@ import { toast } from "sonner";
 import { Loader2, Copy, Mail } from "lucide-react";
 import ScheduleFields, { defaultSchedule, ScheduleValue } from "./ScheduleFields";
 import CustomQuestionsEditor from "./CustomQuestionsEditor";
+import { useQuestionSets, type QuestionSet } from "./QuestionBankManager";
+import { maxScoreForSet } from "@/lib/questionScoring";
 
 interface Client {
   id: string;
@@ -34,6 +36,10 @@ interface ToolConfig {
   tasks?: string;
   skill?: string;
   intro?: string;
+  question_set_id?: string;
+  set_title?: string;
+  scoring_enabled?: boolean;
+  max_score?: number;
   questions?: {
     id: string;
     label: string;
@@ -53,6 +59,8 @@ const AssignmentBuilder = ({ client, therapistName, onDone }: Props) => {
   const [personalNote, setPersonalNote] = useState("");
   const [saving, setSaving] = useState(false);
   const [savedAssignmentId, setSavedAssignmentId] = useState<string | null>(null);
+  const { sets, loading: setsLoading } = useQuestionSets();
+  const activeSets = sets.filter((s) => s.is_active);
 
   const portalUrl = useMemo(
     () => buildClientPortalUrl(client.full_name, client.access_token),
@@ -68,17 +76,46 @@ const AssignmentBuilder = ({ client, therapistName, onDone }: Props) => {
     });
   };
 
+  const toggleSet = (s: QuestionSet) => {
+    const key = `set:${s.id}`;
+    setSelected((prev) => {
+      const copy = { ...prev };
+      if (copy[key]) delete copy[key];
+      else
+        copy[key] = {
+          therapist_note: "",
+          due_date: "",
+          schedule: defaultSchedule(),
+          intro: s.intro || "",
+          questions: (s.questions || []) as ToolConfig["questions"],
+          question_set_id: s.id,
+          set_title: s.title,
+          scoring_enabled: s.scoring_enabled,
+          max_score: s.max_score ?? maxScoreForSet(s.questions || []),
+        };
+      return copy;
+    });
+  };
+
   const submit = async () => {
     const keys = Object.keys(selected);
     if (keys.length === 0) return toast.error("Select at least one tool.");
     setSaving(true);
     const tools = keys.map((k) => ({
-      tool_key: k,
-      title: null,
+      tool_key: selected[k].question_set_id ? "custom-questions" : k,
+      title: selected[k].set_title || null,
       therapist_note: selected[k].therapist_note || null,
       due_date: selected[k].due_date || null,
       config:
-        k === "homework" && selected[k].tasks
+        selected[k].question_set_id
+          ? {
+              question_set_id: selected[k].question_set_id,
+              intro: selected[k].intro || "",
+              questions: selected[k].questions || [],
+              scoring_enabled: !!selected[k].scoring_enabled,
+              max_score: selected[k].max_score ?? null,
+            }
+          : k === "homework" && selected[k].tasks
           ? { tasks: selected[k].tasks }
           : k === "life-skills"
             ? { skill: selected[k].skill || "" }
@@ -101,10 +138,13 @@ const AssignmentBuilder = ({ client, therapistName, onDone }: Props) => {
       .eq("assignment_id", assignmentId);
 
     if (!toolErr && toolRows) {
+      const pool = [...(toolRows as any[])];
       for (const key of keys) {
         const sched = selected[key].schedule;
         if (!sched || sched.frequency === "once") continue;
-        const row = (toolRows as any[]).find((r) => r.tool_key === key);
+        const wantedKey = selected[key].question_set_id ? "custom-questions" : key;
+        const idx = pool.findIndex((r) => r.tool_key === wantedKey);
+        const row = idx >= 0 ? pool.splice(idx, 1)[0] : null;
         if (!row) continue;
         const freqMap: Record<string, string> = { daily: "daily", weekly: "weekly", custom: "custom" };
         await supabase.rpc("create_assignment_schedule" as any, {
@@ -125,7 +165,9 @@ const AssignmentBuilder = ({ client, therapistName, onDone }: Props) => {
 
   const sendInvite = async () => {
     if (!client.email) return toast.error("This client has no email on file.");
-    const toolNames = Object.keys(selected).map((k) => WELLBEING_TOOLS.find((t) => t.key === k)?.name || k);
+    const toolNames = Object.keys(selected).map(
+      (k) => selected[k].set_title || WELLBEING_TOOLS.find((t) => t.key === k)?.name || k,
+    );
     const { data, error } = await supabase.functions.invoke("send-transactional-email", {
       body: {
         templateName: "client-assignment-invite",
@@ -205,6 +247,79 @@ const AssignmentBuilder = ({ client, therapistName, onDone }: Props) => {
 
         <div className="space-y-2">
           <Label>Tools</Label>
+        </div>
+
+        <div className="space-y-2">
+          <Label>Your question sets</Label>
+          {setsLoading ? (
+            <div className="text-xs text-muted-foreground">Loading your question bank…</div>
+          ) : activeSets.length === 0 ? (
+            <p className="text-xs text-muted-foreground">
+              No saved question sets yet. Create them in the Question bank on your dashboard.
+            </p>
+          ) : (
+            activeSets.map((s) => {
+              const key = `set:${s.id}`;
+              const isOn = !!selected[key];
+              return (
+                <div key={key} className={`rounded-lg border p-3 ${isOn ? "border-primary/50 bg-primary/5" : ""}`}>
+                  <label className="flex items-start gap-3 cursor-pointer">
+                    <Checkbox checked={isOn} onCheckedChange={() => toggleSet(s)} className="mt-1" />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-medium">{s.title}</span>
+                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground uppercase">
+                          {(s.questions || []).length} questions
+                        </span>
+                        {s.scoring_enabled && (
+                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-primary/10 text-primary uppercase">
+                            Scored · max {s.max_score ?? maxScoreForSet(s.questions || [])}
+                          </span>
+                        )}
+                      </div>
+                      {s.description && <div className="text-xs text-muted-foreground mt-0.5">{s.description}</div>}
+                      {s.responses > 0 && (
+                        <div className="text-[11px] text-muted-foreground mt-0.5">
+                          {s.responses} response{s.responses === 1 ? "" : "s"} so far
+                          {s.avg_score !== null ? ` · avg score ${s.avg_score}` : ""}
+                        </div>
+                      )}
+                    </div>
+                  </label>
+                  {isOn && (
+                    <div className="mt-3 pl-8 space-y-2">
+                      <div>
+                        <Label className="text-xs">Note for this set (optional)</Label>
+                        <Textarea
+                          rows={2}
+                          value={selected[key].therapist_note}
+                          onChange={(e) => setSelected((p) => ({ ...p, [key]: { ...p[key], therapist_note: e.target.value } }))}
+                          className="mt-1"
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-xs">Due date (optional)</Label>
+                        <Input
+                          type="date"
+                          value={selected[key].due_date}
+                          onChange={(e) => setSelected((p) => ({ ...p, [key]: { ...p[key], due_date: e.target.value } }))}
+                          className="mt-1"
+                        />
+                      </div>
+                      <ScheduleFields
+                        value={selected[key].schedule}
+                        onChange={(v) => setSelected((p) => ({ ...p, [key]: { ...p[key], schedule: v } }))}
+                      />
+                    </div>
+                  )}
+                </div>
+              );
+            })
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <Label>Standard tools</Label>
           {WELLBEING_TOOLS.map((tool) => {
             const isOn = !!selected[tool.key];
             return (

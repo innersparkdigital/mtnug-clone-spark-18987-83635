@@ -3145,6 +3145,56 @@ export type Database = {
           },
         ]
       }
+      therapist_question_sets: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          intro: string | null
+          is_active: boolean
+          max_score: number | null
+          questions: Json
+          scoring_enabled: boolean
+          therapist_id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          intro?: string | null
+          is_active?: boolean
+          max_score?: number | null
+          questions?: Json
+          scoring_enabled?: boolean
+          therapist_id: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          intro?: string | null
+          is_active?: boolean
+          max_score?: number | null
+          questions?: Json
+          scoring_enabled?: boolean
+          therapist_id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "therapist_question_sets_therapist_id_fkey"
+            columns: ["therapist_id"]
+            isOneToOne: false
+            referencedRelation: "therapist_accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       therapist_session_feedback: {
         Row: {
           client_id: string
@@ -3927,6 +3977,7 @@ export type Database = {
       slugify_company_name: { Args: { _name: string }; Returns: string }
       sync_form_emails_to_subscribers: { Args: never; Returns: Json }
       therapist_client_overview: { Args: never; Returns: Json }
+      therapist_question_set_stats: { Args: never; Returns: Json }
       verify_client_passcode: {
         Args: { _passcode: string; _token: string }
         Returns: boolean

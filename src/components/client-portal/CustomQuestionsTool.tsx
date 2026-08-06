@@ -8,21 +8,14 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { maxScoreForSet, totalScore, type ScoredQuestion } from "@/lib/questionScoring";
 
-export type CustomQuestion = {
-  id: string;
-  label: string;
-  type: "text" | "long_text" | "scale" | "yes_no" | "mcq";
-  options?: string[]; // for mcq
-  scale_min?: number;
-  scale_max?: number;
-  required?: boolean;
-};
+export type CustomQuestion = ScoredQuestion;
 
 interface Props {
   token: string;
   assignmentToolId: string;
-  config?: { questions?: CustomQuestion[]; intro?: string };
+  config?: { questions?: CustomQuestion[]; intro?: string; scoring_enabled?: boolean; max_score?: number };
   initial?: any;
   onDone: () => void;
   onBack: () => void;
@@ -42,11 +35,18 @@ const CustomQuestionsTool = ({ token, assignmentToolId, config, initial, onDone,
       }
     }
     setSaving(true);
+    const score = totalScore(questions, answers);
     const { error } = await supabase.rpc("save_tool_submission", {
       _token: token,
       _assignment_tool_id: assignmentToolId,
-      _payload: { answers, questions },
+      _payload: {
+        answers,
+        questions,
+        score,
+        max_score: score !== null ? maxScoreForSet(questions) : null,
+      },
       _final: true,
+      ...(score !== null ? { _screening_score: score } : {}),
     });
     setSaving(false);
     if (error) return toast.error(error.message);
