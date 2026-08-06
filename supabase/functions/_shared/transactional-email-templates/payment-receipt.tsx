@@ -18,6 +18,9 @@ interface PaymentReceiptProps {
   merchantReference?: string
   paymentDate?: string
   receiptNumber?: string
+  therapistName?: string
+  sessionFormat?: string
+  preferredDate?: string
 }
 
 const PaymentReceiptEmail = ({
@@ -29,6 +32,9 @@ const PaymentReceiptEmail = ({
   merchantReference = '',
   paymentDate,
   receiptNumber,
+  therapistName,
+  sessionFormat,
+  preferredDate,
 }: PaymentReceiptProps) => {
   const displayDate = paymentDate || new Date().toLocaleDateString('en-UG', { year: 'numeric', month: 'long', day: 'numeric' })
   const displayReceipt = receiptNumber || merchantReference || 'N/A'
@@ -69,6 +75,39 @@ const PaymentReceiptEmail = ({
                 <Text style={fieldValue}>{paymentMethod}</Text>
               </Column>
             </Row>
+
+            {therapistName && (
+              <Row>
+                <Column style={labelCol}>
+                  <Text style={fieldLabel}>Therapist</Text>
+                </Column>
+                <Column style={valueCol}>
+                  <Text style={fieldValue}>{therapistName}</Text>
+                </Column>
+              </Row>
+            )}
+
+            {sessionFormat && (
+              <Row>
+                <Column style={labelCol}>
+                  <Text style={fieldLabel}>Session format</Text>
+                </Column>
+                <Column style={valueCol}>
+                  <Text style={fieldValue}>{sessionFormat}</Text>
+                </Column>
+              </Row>
+            )}
+
+            {preferredDate && (
+              <Row>
+                <Column style={labelCol}>
+                  <Text style={fieldLabel}>Preferred time</Text>
+                </Column>
+                <Column style={valueCol}>
+                  <Text style={fieldValue}>{preferredDate}</Text>
+                </Column>
+              </Row>
+            )}
 
             {merchantReference && (
               <Row>
@@ -113,11 +152,22 @@ const PaymentReceiptEmail = ({
 
           {/* Thank you message */}
           <Text style={thankYou}>
-            {name ? `Thank you, ${name}!` : 'Thank you!'} Your payment has been received. Our team will contact you on WhatsApp to confirm your session details.
+            {name ? `Thank you, ${name}!` : 'Thank you!'} Your payment has been received and your session is confirmed.
           </Text>
 
+          <Section style={nextCard}>
+            <Text style={nextHeading}>What happens next</Text>
+            <Text style={nextStep}><strong>1.</strong> Our care team reaches out on WhatsApp within a few hours to confirm your exact session time.</Text>
+            <Text style={nextStep}><strong>2.</strong> You receive a private session link (or group details) before your appointment.</Text>
+            <Text style={nextStep}><strong>3.</strong> A reminder arrives 2 days and 1 day before your session.</Text>
+          </Section>
+
+          <Section style={ctaWrap}>
+            <Button href="https://wa.me/256792085773" style={ctaBtn}>Chat with us on WhatsApp</Button>
+          </Section>
+
           <Text style={text}>
-            If you have any questions, reach us on WhatsApp at <strong>+256 792 085 773</strong> or email <strong>info@innersparkafrica.com</strong>.
+            Questions or need to reschedule? Reach us on WhatsApp at <strong>+256 792 085 773</strong>, call <strong>+256 740 616 404</strong>, or email <strong>info@innersparkafrica.com</strong>. Please keep this receipt for your records.
           </Text>
 
           <Hr style={hr} />
@@ -148,6 +198,9 @@ export const template = {
     merchantReference: 'INS-1712345678-abc123',
     paymentDate: 'April 14, 2026',
     receiptNumber: 'INS-1712345678-abc123',
+    therapistName: 'Janet N.',
+    sessionFormat: 'Video session (50 mins)',
+    preferredDate: 'Tuesday, 3:00 PM',
   },
 } satisfies TemplateEntry
 
@@ -176,3 +229,17 @@ const thankYou = { fontSize: '15px', color: '#333333', lineHeight: '1.6', margin
 const text = { fontSize: '14px', color: '#555555', lineHeight: '1.6', margin: '0 25px 20px' }
 const hr = { borderColor: '#e5e5e5', margin: '16px 25px' }
 const footer = { fontSize: '13px', color: '#999999', margin: '0 25px 16px', lineHeight: '1.5' }
+const nextCard = { backgroundColor: '#f4f6fd', borderRadius: '8px', padding: '18px 20px', margin: '0 25px 20px' }
+const nextHeading = { fontSize: '15px', fontWeight: 'bold' as const, color: PRIMARY_COLOR, margin: '0 0 10px' }
+const nextStep = { fontSize: '14px', color: '#444444', lineHeight: '1.6', margin: '0 0 8px' }
+const ctaWrap = { textAlign: 'center' as const, margin: '0 25px 24px' }
+const ctaBtn = {
+  backgroundColor: PRIMARY_COLOR,
+  color: '#ffffff',
+  fontSize: '15px',
+  fontWeight: 'bold' as const,
+  padding: '12px 26px',
+  borderRadius: '8px',
+  textDecoration: 'none',
+  display: 'inline-block',
+}
