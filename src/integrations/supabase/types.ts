@@ -3679,6 +3679,7 @@ export type Database = {
         Args: {
           _amount_ugx?: number
           _client_id: string
+          _client_type?: string
           _country?: string
           _duration_mins?: number
           _innerspark_share_ugx?: number
