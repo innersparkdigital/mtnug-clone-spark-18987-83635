@@ -125,6 +125,11 @@ const PaymentSuccess = () => {
               merchantReference: booking.merchantReference,
               paymentDate: new Date().toLocaleDateString("en-UG", { year: "numeric", month: "long", day: "numeric" }),
               receiptNumber: booking.merchantReference,
+              therapistName: booking.selectedSpecialist?.name || undefined,
+              sessionFormat: booking.formType === "group" ? (booking.formData.groupType || "Support group") : booking.description,
+              preferredDate: [booking.formData.preferredDay, booking.formData.preferredTime]
+                .filter(Boolean)
+                .join(", ") || undefined,
             },
           },
         });
