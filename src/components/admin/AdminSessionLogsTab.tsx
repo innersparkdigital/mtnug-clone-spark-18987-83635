@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Loader2, AlertOctagon, Download } from "lucide-react";
 import { toast } from "sonner";
+import { withTimeout } from "@/lib/rpcTimeout";
 
 interface Log {
   id: string;
@@ -34,6 +35,7 @@ const CRISIS_STATUSES = new Set(["at_risk", "crisis_protocol_activated"]);
 const AdminSessionLogsTab = () => {
   const [logs, setLogs] = useState<Log[]>([]);
   const [loading, setLoading] = useState(true);
+  const [errMsg, setErrMsg] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [therapistFilter, setTherapistFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -41,9 +43,18 @@ const AdminSessionLogsTab = () => {
 
   const load = async () => {
     setLoading(true);
-    const { data, error } = await supabase.rpc("admin_list_session_logs" as any);
-    if (error) toast.error(error.message);
-    setLogs((data as Log[]) || []);
+    setErrMsg(null);
+    const { data, error } = await withTimeout<any>(
+      supabase.rpc("admin_list_session_logs" as any),
+      20000,
+      "Loading session logs",
+    );
+    if (error) {
+      setErrMsg(error.message);
+      toast.error(error.message);
+    } else {
+      setLogs((data as Log[]) || []);
+    }
     setLoading(false);
   };
   useEffect(() => { load(); }, []);
