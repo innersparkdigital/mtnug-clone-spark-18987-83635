@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { withTimeout } from "@/lib/rpcTimeout";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGrid, PieChart, Pie, Cell, Legend } from "recharts";
 
 interface Payment { amount: number; payment_date: string; }
@@ -21,27 +23,32 @@ const AdminRevenueTab = () => {
   const [loading, setLoading] = useState(true);
   const [byType, setByType] = useState<TypeRow[]>([]);
   const [totals, setTotals] = useState<Totals | null>(null);
+  const [errMsg, setErrMsg] = useState<string | null>(null);
 
-  useEffect(() => {
-    (async () => {
-      const since = new Date(Date.now() - 90 * 86400000).toISOString().slice(0, 10);
-      const [{ data: p, error: e1 }, { data: perfData, error: e2 }, { data: br, error: e3 }] = await Promise.all([
-        supabase.from("payments").select("amount, payment_date").gte("payment_date", since),
-        supabase.rpc("admin_therapist_performance" as any),
-        supabase.rpc("admin_revenue_by_session_type" as any),
-      ]);
-      if (e1) toast.error(e1.message);
-      if (e2) toast.error(e2.message);
-      if (e3) toast.error(e3.message);
-      if (br) {
-        setByType(((br as any).by_type as TypeRow[]) || []);
-        setTotals((br as any).totals as Totals);
-      }
-      setPayments((p as Payment[]) || []);
-      setPerf((perfData as Perf[]) || []);
-      setLoading(false);
-    })();
-  }, []);
+  const load = async () => {
+    setLoading(true);
+    setErrMsg(null);
+    const since = new Date(Date.now() - 90 * 86400000).toISOString().slice(0, 10);
+    const [{ data: p, error: e1 }, { data: perfData, error: e2 }, { data: br, error: e3 }] = await Promise.all([
+      withTimeout<any>(supabase.from("payments").select("amount, payment_date").gte("payment_date", since), 20000, "Loading payments"),
+      withTimeout<any>(supabase.rpc("admin_therapist_performance" as any), 20000, "Loading therapist performance"),
+      withTimeout<any>(supabase.rpc("admin_revenue_by_session_type" as any), 20000, "Loading revenue breakdown"),
+    ]);
+    const firstErr = e1 || e2 || e3;
+    if (firstErr) {
+      setErrMsg(firstErr.message);
+      toast.error(firstErr.message);
+    }
+    if (br) {
+      setByType(((br as any).by_type as TypeRow[]) || []);
+      setTotals((br as any).totals as Totals);
+    }
+    setPayments((p as Payment[]) || []);
+    setPerf((perfData as Perf[]) || []);
+    setLoading(false);
+  };
+
+  useEffect(() => { load(); }, []);
 
   const weekly = useMemo(() => {
     const buckets = new Map<string, number>();
@@ -59,6 +66,15 @@ const AdminRevenueTab = () => {
 
   if (loading) {
     return <div className="flex justify-center py-16"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>;
+  }
+
+  if (errMsg && !totals && payments.length === 0) {
+    return (
+      <div className="py-16 text-center space-y-3">
+        <p className="text-sm text-destructive">{errMsg}</p>
+        <Button variant="outline" size="sm" onClick={load}>Retry</Button>
+      </div>
+    );
   }
 
   return (

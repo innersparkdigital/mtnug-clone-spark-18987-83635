@@ -2,10 +2,14 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent } from "@/components/ui/card";
-import { Loader2, Users, Calendar, DollarSign, AlertOctagon, Stethoscope, CheckCircle, Inbox, Moon, TrendingUp, Activity } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Loader2, Users, Calendar, DollarSign, AlertOctagon, Stethoscope, CheckCircle, Inbox, Moon, TrendingUp, Activity, UserPlus, Repeat } from "lucide-react";
+import { withTimeout } from "@/lib/rpcTimeout";
 
 interface Stats {
   active_clients: number;
+  new_clients: number;
+  returning_clients: number;
   sessions_this_week: number;
   sessions_last_week: number;
   revenue_this_week_ugx: number;
@@ -33,14 +37,20 @@ const AdminOverviewTab = ({ onNavigate }: { onNavigate?: (tab: string) => void }
   const [loading, setLoading] = useState(true);
   const [errMsg, setErrMsg] = useState<string | null>(null);
 
-  useEffect(() => {
-    (async () => {
-      const { data, error } = await supabase.rpc("admin_overview_stats" as any);
-      if (error) setErrMsg(error.message);
-      else if (data) setStats(data as Stats);
-      setLoading(false);
-    })();
-  }, []);
+  const load = async () => {
+    setLoading(true);
+    setErrMsg(null);
+    const { data, error } = await withTimeout<any>(
+      supabase.rpc("admin_overview_stats" as any),
+      20000,
+      "Loading overview",
+    );
+    if (error) setErrMsg(error.message);
+    else if (data) setStats(data as Stats);
+    setLoading(false);
+  };
+
+  useEffect(() => { load(); }, []);
 
   if (loading) {
     return (
@@ -54,6 +64,7 @@ const AdminOverviewTab = ({ onNavigate }: { onNavigate?: (tab: string) => void }
       <div className="py-10 text-center space-y-2">
         <p className="text-muted-foreground">Unable to load overview.</p>
         {errMsg && <p className="text-xs text-destructive">{errMsg}</p>}
+        <Button variant="outline" size="sm" onClick={load}>Retry</Button>
       </div>
     );
 
@@ -61,6 +72,8 @@ const AdminOverviewTab = ({ onNavigate }: { onNavigate?: (tab: string) => void }
 
   const cards = [
     { label: "Active Clients", value: stats.active_clients, icon: Users, color: "text-blue-600 bg-blue-500/10" },
+    { label: "New Clients", value: stats.new_clients ?? 0, icon: UserPlus, color: "text-sky-600 bg-sky-500/10" },
+    { label: "Returning Clients", value: stats.returning_clients ?? 0, icon: Repeat, color: "text-fuchsia-600 bg-fuchsia-500/10" },
     { label: "Sessions This Week", value: stats.sessions_this_week, sub: `${trend(stats.sessions_this_week, stats.sessions_last_week)} vs last week`, icon: Calendar, color: "text-indigo-600 bg-indigo-500/10" },
     { label: "Revenue This Week", value: fmtUGX(stats.revenue_this_week_ugx), sub: `${trend(stats.revenue_this_week_ugx, stats.revenue_last_week_ugx)} vs last week`, icon: DollarSign, color: "text-emerald-600 bg-emerald-500/10" },
     { label: "Open Safety Flags", value: stats.open_safety_flags, icon: AlertOctagon, color: "text-red-600 bg-red-500/10", urgent: stats.open_safety_flags > 0 },

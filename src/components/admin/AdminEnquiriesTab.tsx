@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Loader2, Download, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
+import { withTimeout } from "@/lib/rpcTimeout";
 
 interface Enquiry {
   id: string;
@@ -33,15 +34,25 @@ const cleanPhone = (p: string | null) => (p || "").replace(/[^\d+]/g, "");
 const AdminEnquiriesTab = () => {
   const [rows, setRows] = useState<Enquiry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [errMsg, setErrMsg] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [source, setSource] = useState("all");
   const [period, setPeriod] = useState("30");
 
   const load = async () => {
     setLoading(true);
-    const { data, error } = await supabase.rpc("admin_list_enquiries" as any);
-    if (error) toast.error(error.message);
-    setRows((data as Enquiry[]) || []);
+    setErrMsg(null);
+    const { data, error } = await withTimeout<any>(
+      supabase.rpc("admin_list_enquiries" as any),
+      20000,
+      "Loading enquiries",
+    );
+    if (error) {
+      setErrMsg(error.message);
+      toast.error(error.message);
+    } else {
+      setRows((data as Enquiry[]) || []);
+    }
     setLoading(false);
   };
   useEffect(() => { load(); }, []);
@@ -131,6 +142,11 @@ const AdminEnquiriesTab = () => {
 
           {loading ? (
             <div className="flex justify-center py-12"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
+          ) : errMsg ? (
+            <div className="py-12 text-center space-y-3">
+              <p className="text-sm text-destructive">{errMsg}</p>
+              <Button variant="outline" size="sm" onClick={load}>Retry</Button>
+            </div>
           ) : (
             <div className="overflow-x-auto">
               <Table>
