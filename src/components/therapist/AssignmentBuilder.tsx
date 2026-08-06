@@ -247,6 +247,79 @@ const AssignmentBuilder = ({ client, therapistName, onDone }: Props) => {
 
         <div className="space-y-2">
           <Label>Tools</Label>
+        </div>
+
+        <div className="space-y-2">
+          <Label>Your question sets</Label>
+          {setsLoading ? (
+            <div className="text-xs text-muted-foreground">Loading your question bank…</div>
+          ) : activeSets.length === 0 ? (
+            <p className="text-xs text-muted-foreground">
+              No saved question sets yet. Create them in the Question bank on your dashboard.
+            </p>
+          ) : (
+            activeSets.map((s) => {
+              const key = `set:${s.id}`;
+              const isOn = !!selected[key];
+              return (
+                <div key={key} className={`rounded-lg border p-3 ${isOn ? "border-primary/50 bg-primary/5" : ""}`}>
+                  <label className="flex items-start gap-3 cursor-pointer">
+                    <Checkbox checked={isOn} onCheckedChange={() => toggleSet(s)} className="mt-1" />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-medium">{s.title}</span>
+                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground uppercase">
+                          {(s.questions || []).length} questions
+                        </span>
+                        {s.scoring_enabled && (
+                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-primary/10 text-primary uppercase">
+                            Scored · max {s.max_score ?? maxScoreForSet(s.questions || [])}
+                          </span>
+                        )}
+                      </div>
+                      {s.description && <div className="text-xs text-muted-foreground mt-0.5">{s.description}</div>}
+                      {s.responses > 0 && (
+                        <div className="text-[11px] text-muted-foreground mt-0.5">
+                          {s.responses} response{s.responses === 1 ? "" : "s"} so far
+                          {s.avg_score !== null ? ` · avg score ${s.avg_score}` : ""}
+                        </div>
+                      )}
+                    </div>
+                  </label>
+                  {isOn && (
+                    <div className="mt-3 pl-8 space-y-2">
+                      <div>
+                        <Label className="text-xs">Note for this set (optional)</Label>
+                        <Textarea
+                          rows={2}
+                          value={selected[key].therapist_note}
+                          onChange={(e) => setSelected((p) => ({ ...p, [key]: { ...p[key], therapist_note: e.target.value } }))}
+                          className="mt-1"
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-xs">Due date (optional)</Label>
+                        <Input
+                          type="date"
+                          value={selected[key].due_date}
+                          onChange={(e) => setSelected((p) => ({ ...p, [key]: { ...p[key], due_date: e.target.value } }))}
+                          className="mt-1"
+                        />
+                      </div>
+                      <ScheduleFields
+                        value={selected[key].schedule}
+                        onChange={(v) => setSelected((p) => ({ ...p, [key]: { ...p[key], schedule: v } }))}
+                      />
+                    </div>
+                  )}
+                </div>
+              );
+            })
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <Label>Standard tools</Label>
           {WELLBEING_TOOLS.map((tool) => {
             const isOn = !!selected[tool.key];
             return (
