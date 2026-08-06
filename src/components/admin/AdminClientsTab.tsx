@@ -50,6 +50,7 @@ interface Row {
   therapist_paid: boolean | null;
   therapist_paid_at: string | null;
   receipt_sent_at: string | null;
+  client_type: string | null;
 }
 
 const fmtUGX = (n: number | null) => (n ? `UGX ${Math.round(Number(n)).toLocaleString()}` : "—");
@@ -144,6 +145,7 @@ const AdminClientsTab = () => {
       _country: val(r, "country") ?? null,
       _receipt_number: r.receipt_number,
       _receipt_url: r.receipt_url,
+      _client_type: val(r, "client_type") ?? null,
     });
     setSavingId(null);
     if (error) return toast.error(error.message);
@@ -242,6 +244,7 @@ const AdminClientsTab = () => {
       "Session Date": r.last_session_date || "",
       "Client Name": r.full_name,
       "Client Code": r.client_code || "",
+      "Client Type": r.client_type || "new",
       "Client Number": r.phone || "",
       Email: r.email || "",
       Country: r.country || "",
