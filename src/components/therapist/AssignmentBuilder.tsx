@@ -14,6 +14,8 @@ import { toast } from "sonner";
 import { Loader2, Copy, Mail } from "lucide-react";
 import ScheduleFields, { defaultSchedule, ScheduleValue } from "./ScheduleFields";
 import CustomQuestionsEditor from "./CustomQuestionsEditor";
+import { useQuestionSets, type QuestionSet } from "./QuestionBankManager";
+import { maxScoreForSet } from "@/lib/questionScoring";
 
 interface Client {
   id: string;
@@ -34,6 +36,10 @@ interface ToolConfig {
   tasks?: string;
   skill?: string;
   intro?: string;
+  question_set_id?: string;
+  set_title?: string;
+  scoring_enabled?: boolean;
+  max_score?: number;
   questions?: {
     id: string;
     label: string;
@@ -53,6 +59,8 @@ const AssignmentBuilder = ({ client, therapistName, onDone }: Props) => {
   const [personalNote, setPersonalNote] = useState("");
   const [saving, setSaving] = useState(false);
   const [savedAssignmentId, setSavedAssignmentId] = useState<string | null>(null);
+  const { sets, loading: setsLoading } = useQuestionSets();
+  const activeSets = sets.filter((s) => s.is_active);
 
   const portalUrl = useMemo(
     () => buildClientPortalUrl(client.full_name, client.access_token),
@@ -68,17 +76,46 @@ const AssignmentBuilder = ({ client, therapistName, onDone }: Props) => {
     });
   };
 
+  const toggleSet = (s: QuestionSet) => {
+    const key = `set:${s.id}`;
+    setSelected((prev) => {
+      const copy = { ...prev };
+      if (copy[key]) delete copy[key];
+      else
+        copy[key] = {
+          therapist_note: "",
+          due_date: "",
+          schedule: defaultSchedule(),
+          intro: s.intro || "",
+          questions: (s.questions || []) as ToolConfig["questions"],
+          question_set_id: s.id,
+          set_title: s.title,
+          scoring_enabled: s.scoring_enabled,
+          max_score: s.max_score ?? maxScoreForSet(s.questions || []),
+        };
+      return copy;
+    });
+  };
+
   const submit = async () => {
     const keys = Object.keys(selected);
     if (keys.length === 0) return toast.error("Select at least one tool.");
     setSaving(true);
     const tools = keys.map((k) => ({
-      tool_key: k,
-      title: null,
+      tool_key: selected[k].question_set_id ? "custom-questions" : k,
+      title: selected[k].set_title || null,
       therapist_note: selected[k].therapist_note || null,
       due_date: selected[k].due_date || null,
       config:
-        k === "homework" && selected[k].tasks
+        selected[k].question_set_id
+          ? {
+              question_set_id: selected[k].question_set_id,
+              intro: selected[k].intro || "",
+              questions: selected[k].questions || [],
+              scoring_enabled: !!selected[k].scoring_enabled,
+              max_score: selected[k].max_score ?? null,
+            }
+          : k === "homework" && selected[k].tasks
           ? { tasks: selected[k].tasks }
           : k === "life-skills"
             ? { skill: selected[k].skill || "" }
@@ -104,7 +141,8 @@ const AssignmentBuilder = ({ client, therapistName, onDone }: Props) => {
       for (const key of keys) {
         const sched = selected[key].schedule;
         if (!sched || sched.frequency === "once") continue;
-        const row = (toolRows as any[]).find((r) => r.tool_key === key);
+        const wantedKey = selected[key].question_set_id ? "custom-questions" : key;
+        const row = (toolRows as any[]).find((r) => r.tool_key === wantedKey);
         if (!row) continue;
         const freqMap: Record<string, string> = { daily: "daily", weekly: "weekly", custom: "custom" };
         await supabase.rpc("create_assignment_schedule" as any, {
@@ -125,7 +163,9 @@ const AssignmentBuilder = ({ client, therapistName, onDone }: Props) => {
 
   const sendInvite = async () => {
     if (!client.email) return toast.error("This client has no email on file.");
-    const toolNames = Object.keys(selected).map((k) => WELLBEING_TOOLS.find((t) => t.key === k)?.name || k);
+    const toolNames = Object.keys(selected).map(
+      (k) => selected[k].set_title || WELLBEING_TOOLS.find((t) => t.key === k)?.name || k,
+    );
     const { data, error } = await supabase.functions.invoke("send-transactional-email", {
       body: {
         templateName: "client-assignment-invite",
