@@ -14,10 +14,11 @@ interface Props {
 }
 
 const PROGRESS: { value: string; label: string }[] = [
-  { value: "improving", label: "Improving" },
-  { value: "stable", label: "Stable" },
-  { value: "worsening", label: "Worsening" },
-  { value: "in_crisis", label: "In crisis" },
+  { value: "progressing_well", label: "Progressing well" },
+  { value: "steady", label: "Steady" },
+  { value: "needs_more_support", label: "Needs more support" },
+  { value: "at_risk", label: "At risk" },
+  { value: "crisis_activated", label: "Crisis activated" },
 ];
 
 const SessionFeedbackForm = ({ clientId }: Props) => {
@@ -29,7 +30,7 @@ const SessionFeedbackForm = ({ clientId }: Props) => {
   const [duration, setDuration] = useState("50 min");
   const [service, setService] = useState("Individual therapy");
   const [isNew, setIsNew] = useState(false);
-  const [progress, setProgress] = useState("stable");
+  const [progress, setProgress] = useState("steady");
   const [notes, setNotes] = useState("");
   const [homeworkGiven, setHomeworkGiven] = useState(false);
   const [homeworkText, setHomeworkText] = useState("");
