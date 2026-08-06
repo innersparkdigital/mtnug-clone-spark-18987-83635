@@ -406,6 +406,8 @@ export default function KenyaReferralsTab() {
         <Stat icon={<Gift className="h-4 w-4" />} label="Pending Rewards" value={stats.pendingRewards} />
       </div>
 
+      <ReferralRewardsCard />
+
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>Referral Links</CardTitle>
