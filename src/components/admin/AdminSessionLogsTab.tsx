@@ -155,6 +155,11 @@ const AdminSessionLogsTab = () => {
 
           {loading ? (
             <div className="flex justify-center py-12"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
+          ) : errMsg ? (
+            <div className="py-12 text-center space-y-3">
+              <p className="text-sm text-destructive">{errMsg}</p>
+              <Button variant="outline" size="sm" onClick={load}>Retry</Button>
+            </div>
           ) : (
             <div className="overflow-x-auto">
               <Table>
