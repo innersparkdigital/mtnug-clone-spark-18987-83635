@@ -68,7 +68,8 @@ const ClientAssignmentInvite = ({
         <Hr style={hr} />
         <Text style={crisis}>
           <strong>Need support right now?</strong><br />
-          📞 Uganda Crisis Line: 0800 212 121 (free, confidential, 24/7)
+          💬 WhatsApp InnerSpark: +256 792 085 773<br />
+          📞 Call: +256 792 085 773 or +256 740 616 404 (confidential)
         </Text>
 
         <Text style={footer}>
