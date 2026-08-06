@@ -2435,6 +2435,7 @@ export type Database = {
           referrer_email: string | null
           referrer_name: string
           referrer_phone: string | null
+          reward_kind: string
           reward_percent: number
           reward_type: string
           reward_value: number
@@ -2457,6 +2458,7 @@ export type Database = {
           referrer_email?: string | null
           referrer_name: string
           referrer_phone?: string | null
+          reward_kind?: string
           reward_percent?: number
           reward_type?: string
           reward_value?: number
@@ -2479,6 +2481,7 @@ export type Database = {
           referrer_email?: string | null
           referrer_name?: string
           referrer_phone?: string | null
+          reward_kind?: string
           reward_percent?: number
           reward_type?: string
           reward_value?: number
@@ -2486,6 +2489,78 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      referral_rewards: {
+        Row: {
+          amount: number
+          approved_at: string | null
+          approved_by: string | null
+          conversion_id: string | null
+          created_at: string
+          currency: string
+          id: string
+          notes: string | null
+          redeemed_at: string | null
+          referral_link_id: string
+          referrer_email: string | null
+          referrer_name: string | null
+          referrer_phone: string | null
+          reward_kind: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount?: number
+          approved_at?: string | null
+          approved_by?: string | null
+          conversion_id?: string | null
+          created_at?: string
+          currency?: string
+          id?: string
+          notes?: string | null
+          redeemed_at?: string | null
+          referral_link_id: string
+          referrer_email?: string | null
+          referrer_name?: string | null
+          referrer_phone?: string | null
+          reward_kind?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          approved_at?: string | null
+          approved_by?: string | null
+          conversion_id?: string | null
+          created_at?: string
+          currency?: string
+          id?: string
+          notes?: string | null
+          redeemed_at?: string | null
+          referral_link_id?: string
+          referrer_email?: string | null
+          referrer_name?: string | null
+          referrer_phone?: string | null
+          reward_kind?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referral_rewards_conversion_id_fkey"
+            columns: ["conversion_id"]
+            isOneToOne: false
+            referencedRelation: "referral_conversions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referral_rewards_referral_link_id_fkey"
+            columns: ["referral_link_id"]
+            isOneToOne: false
+            referencedRelation: "referral_links"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       safety_alerts: {
         Row: {
@@ -3663,9 +3738,19 @@ export type Database = {
       admin_delete_client: { Args: { _client_id: string }; Returns: boolean }
       admin_list_all_clients: { Args: never; Returns: Json }
       admin_list_enquiries: { Args: never; Returns: Json }
+      admin_list_referral_rewards: { Args: never; Returns: Json }
       admin_list_session_logs: { Args: never; Returns: Json }
       admin_overview_stats: { Args: never; Returns: Json }
       admin_revenue_by_session_type: { Args: never; Returns: Json }
+      admin_set_referral_reward_status: {
+        Args: {
+          _amount?: number
+          _notes?: string
+          _reward_id: string
+          _status: string
+        }
+        Returns: Json
+      }
       admin_set_referral_stage: {
         Args: { _conversion_id: string; _stage: string }
         Returns: Json
