@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Copy, Plus, Link2, MousePointerClick, CheckCircle2, Gift, Loader2, Eye, Globe } from "lucide-react";
+import ReferralRewardsCard from "./ReferralRewardsCard";
 
 type RefLink = {
   id: string;
@@ -21,6 +22,7 @@ type RefLink = {
   referrer_email: string | null;
   market: string;
   link_type: string;
+  reward_kind?: string | null;
   is_active: boolean;
   discount_amount_kes: number;
   discount_amount: number;
@@ -66,6 +68,9 @@ const slugify = (s: string) =>
 
 const normalizeLinkType = (value: string) =>
   ["client", "corporate", "therapist"].includes(value) ? value : "client";
+
+const normalizeRewardKind = (value: string) =>
+  value === "public_partner" ? "public_partner" : "client_discount";
 
 const normalizeMarket = (value: string) => {
   const key = value.toLowerCase().trim();
