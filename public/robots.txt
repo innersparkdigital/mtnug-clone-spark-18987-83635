@@ -148,9 +148,9 @@ Allow: /amani-ai
 Allow: /whisper
 
 # Sitemaps
-Sitemap: https://mtnug-clone-spark-18987-83635.lovable.app/sitemap-index.xml
-Sitemap: https://mtnug-clone-spark-18987-83635.lovable.app/sitemap.xml
-Sitemap: https://mtnug-clone-spark-18987-83635.lovable.app/sitemap-blogs.xml
+Sitemap: https://www.innersparkafrica.com/sitemap-index.xml
+Sitemap: https://www.innersparkafrica.com/sitemap.xml
+Sitemap: https://www.innersparkafrica.com/sitemap-blogs.xml
 
 # Host
-Host: https://mtnug-clone-spark-18987-83635.lovable.app
+Host: https://www.innersparkafrica.com
