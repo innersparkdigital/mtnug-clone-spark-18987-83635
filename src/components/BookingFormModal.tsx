@@ -44,10 +44,10 @@ interface BookingFormModalProps {
 
 type TherapyType = "individual" | "couples" | "teen";
 
-const THERAPY_OPTIONS: { id: TherapyType; title: string; subtitle: string; icon: any; color: string; ugx: number }[] = [
-  { id: "individual", title: "Individual", subtitle: "For myself", icon: User, color: "from-emerald-500 to-emerald-600", ugx: 75000 },
-  { id: "couples", title: "Couples", subtitle: "For me and my partner", icon: Heart, color: "from-sky-500 to-sky-600", ugx: 120000 },
-  { id: "teen", title: "Teen", subtitle: "For my child", icon: Users, color: "from-amber-500 to-amber-600", ugx: 75000 },
+const THERAPY_OPTIONS: { id: TherapyType; title: string; subtitle: string; icon: any; color: string; ugx: number; fromUgx: number }[] = [
+  { id: "individual", title: "Individual", subtitle: "For myself", icon: User, color: "from-emerald-500 to-emerald-600", ugx: 75000, fromUgx: 30000 },
+  { id: "couples", title: "Couples", subtitle: "For me and my partner", icon: Heart, color: "from-sky-500 to-sky-600", ugx: 120000, fromUgx: 120000 },
+  { id: "teen", title: "Teen", subtitle: "For my child", icon: Users, color: "from-amber-500 to-amber-600", ugx: 75000, fromUgx: 30000 },
 ];
 
 const GENDER_OPTIONS = ["Woman", "Man", "Non-binary", "Prefer not to say"];
@@ -77,9 +77,9 @@ const AIRTEL_NUMBER = "0740 616 404";
 
 type SessionFormat = "video" | "chat";
 
-const SESSION_FORMATS: { id: SessionFormat; title: string; detail: string; ugx: number }[] = [
+const SESSION_FORMATS: { id: SessionFormat; title: string; detail: string; ugx: number; badge?: string }[] = [
+  { id: "chat", title: "Chat-based therapy", detail: "1 hour, text only with a licensed therapist", ugx: 30000, badge: "Most affordable" },
   { id: "video", title: "Individual video session", detail: "60 minutes, face-to-face on video", ugx: 75000 },
-  { id: "chat", title: "Chat-based therapy", detail: "1 hour, text only with a licensed therapist", ugx: 30000 },
 ];
 
 const SUPPORT_GROUPS = [
@@ -148,7 +148,9 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
     [location.pathname]
   );
 
-  const therapyPriceLabel = isKenya ? "KES 2,600 (~$20) / session" : `UGX 75,000 (~${usd(75000)}) / session`;
+  const therapyPriceLabel = isKenya
+    ? "from KES 1,000 / session"
+    : `from UGX 30,000 (~${usd(30000)}) / session`;
   const groupPriceLabel = isKenya ? "KES 1,000 (~$8) / week" : `UGX 25,000 (~${usd(25000)}) / week`;
 
   const selectedFormat = SESSION_FORMATS.find((f) => f.id === data.sessionFormat);
@@ -344,7 +346,7 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
                     <div className="text-xs font-semibold bg-white/20 rounded px-2 py-1 inline-block">
                       {isKenya
                         ? therapyPriceLabel
-                        : `UGX ${opt.ugx.toLocaleString()} (~${usd(opt.ugx)}) / session`}
+                        : `from UGX ${opt.fromUgx.toLocaleString()} (~${usd(opt.fromUgx)}) / session`}
                     </div>
                     {selected && (
                       <CheckCircle className="absolute top-2 right-2 h-5 w-5" />
