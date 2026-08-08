@@ -434,7 +434,14 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
                       : "border-border hover:bg-muted/50"
                   }`}
                 >
-                  <div className="font-semibold text-foreground">{f.title}</div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold text-foreground">{f.title}</span>
+                    {f.badge && (
+                      <span className="text-[10px] font-bold uppercase tracking-wide bg-primary/15 text-primary rounded-full px-2 py-0.5">
+                        {f.badge}
+                      </span>
+                    )}
+                  </div>
                   <div className="text-xs text-muted-foreground">{f.detail}</div>
                   <div className="text-xs font-semibold text-primary mt-1">
                     UGX {f.ugx.toLocaleString()} (~{usd(f.ugx)})
