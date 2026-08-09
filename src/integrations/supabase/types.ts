@@ -3868,6 +3868,13 @@ export type Database = {
       get_campaign_completion: { Args: { _company_id: string }; Returns: Json }
       get_client_by_token: { Args: { _token: string }; Returns: Json }
       get_client_reactions_by_token: { Args: { _token: string }; Returns: Json }
+      get_company_public: {
+        Args: { p_company_id: string }
+        Returns: {
+          name: string
+          slug: string
+        }[]
+      }
       get_doctor_email_by_phone: { Args: { _phone: string }; Returns: string }
       get_public_testimonials: {
         Args: { _limit?: number; _market?: string }
@@ -3978,6 +3985,42 @@ export type Database = {
       sync_form_emails_to_subscribers: { Args: never; Returns: Json }
       therapist_client_overview: { Args: never; Returns: Json }
       therapist_question_set_stats: { Args: never; Returns: Json }
+      track_assessment_abandonment: {
+        Args: { p_session_id: string }
+        Returns: undefined
+      }
+      track_assessment_completion: {
+        Args: {
+          p_max_score: number
+          p_score: number
+          p_session_id: string
+          p_severity_level: string
+          p_total_questions: number
+        }
+        Returns: undefined
+      }
+      track_assessment_progress: {
+        Args: { p_last_question: number; p_session_id: string }
+        Returns: undefined
+      }
+      track_who5_abandonment: {
+        Args: { p_session_id: string }
+        Returns: undefined
+      }
+      track_who5_completion: {
+        Args: {
+          p_percentage_score: number
+          p_raw_score: number
+          p_session_id: string
+          p_time_taken_seconds: number
+          p_wellbeing_level: string
+        }
+        Returns: undefined
+      }
+      track_who5_progress: {
+        Args: { p_last_question: number; p_session_id: string }
+        Returns: undefined
+      }
       verify_client_passcode: {
         Args: { _passcode: string; _token: string }
         Returns: boolean
