@@ -220,7 +220,7 @@ const CorporateWellbeingCheck = () => {
 
       // Fetch company name and screening history in parallel
       const [companyRes, historyRes] = await Promise.all([
-        supabase.from('corporate_companies').select('name, slug').eq('id', data.company_id).single(),
+        supabase.rpc('get_company_public', { p_company_id: data.company_id }).single() as any,
         supabase.from('corporate_screenings').select('id, completed_at, total_score, who5_percentage, wellbeing_category').eq('employee_id', data.id).order('completed_at', { ascending: false }),
       ]);
 
@@ -272,7 +272,7 @@ const CorporateWellbeingCheck = () => {
       setAccessCode(cleaned);
 
       const [companyRes, historyRes] = await Promise.all([
-        supabase.from('corporate_companies').select('name, slug').eq('id', data.company_id).single(),
+        supabase.rpc('get_company_public', { p_company_id: data.company_id }).single() as any,
         supabase.from('corporate_screenings').select('id, completed_at, total_score, who5_percentage, wellbeing_category').eq('employee_id', data.id).order('completed_at', { ascending: false }),
       ]);
 

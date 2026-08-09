@@ -74,32 +74,28 @@ export const useAssessmentTracking = (testType: string, totalQuestions: number) 
 
   const trackProgress = useCallback((questionIndex: number) => {
     if (!sessionIdRef.current) return;
-    supabase.from('assessment_sessions')
-      .update({ last_question_reached: questionIndex + 1 } as any)
-      .eq('session_id', sessionIdRef.current)
-      .then(() => {});
+    (supabase.rpc as any)('track_assessment_progress', {
+      p_session_id: sessionIdRef.current,
+      p_last_question: questionIndex + 1,
+    }).then(() => {});
   }, []);
 
   const trackCompletion = useCallback((score: number, maxScore: number, severityLevel: string) => {
     if (!sessionIdRef.current) return;
-    supabase.from('assessment_sessions')
-      .update({
-        completed_at: new Date().toISOString(),
-        score,
-        max_score: maxScore,
-        severity_level: severityLevel,
-        last_question_reached: totalQuestions,
-      } as any)
-      .eq('session_id', sessionIdRef.current)
-      .then(() => {});
+    (supabase.rpc as any)('track_assessment_completion', {
+      p_session_id: sessionIdRef.current,
+      p_score: score,
+      p_max_score: maxScore,
+      p_severity_level: severityLevel,
+      p_total_questions: totalQuestions,
+    }).then(() => {});
   }, [totalQuestions]);
 
   const trackAbandonment = useCallback(() => {
     if (!sessionIdRef.current) return;
-    supabase.from('assessment_sessions')
-      .update({ abandoned_at: new Date().toISOString() } as any)
-      .eq('session_id', sessionIdRef.current)
-      .then(() => {});
+    (supabase.rpc as any)('track_assessment_abandonment', {
+      p_session_id: sessionIdRef.current,
+    }).then(() => {});
   }, []);
 
   const submitEmail = useCallback(async (email: string, severityLevel: string, score: number, maxScore?: number) => {
