@@ -47,34 +47,29 @@ export const useWho5Tracking = () => {
 
   const trackProgress = useCallback((questionIndex: number) => {
     if (!sessionIdRef.current) return;
-    supabase.from('who5_sessions')
-      .update({ last_question_reached: questionIndex + 1 } as any)
-      .eq('session_id', sessionIdRef.current)
-      .then(() => {});
+    (supabase.rpc as any)('track_who5_progress', {
+      p_session_id: sessionIdRef.current,
+      p_last_question: questionIndex + 1,
+    }).then(() => {});
   }, []);
 
   const trackCompletion = useCallback((rawScore: number, percentageScore: number, wellbeingLevel: string) => {
     if (!sessionIdRef.current) return;
     const timeTaken = Math.round((Date.now() - startTimeRef.current) / 1000);
-    supabase.from('who5_sessions')
-      .update({
-        completed_at: new Date().toISOString(),
-        raw_score: rawScore,
-        percentage_score: percentageScore,
-        wellbeing_level: wellbeingLevel,
-        time_taken_seconds: timeTaken,
-        last_question_reached: 5,
-      } as any)
-      .eq('session_id', sessionIdRef.current)
-      .then(() => {});
+    (supabase.rpc as any)('track_who5_completion', {
+      p_session_id: sessionIdRef.current,
+      p_raw_score: rawScore,
+      p_percentage_score: percentageScore,
+      p_wellbeing_level: wellbeingLevel,
+      p_time_taken_seconds: timeTaken,
+    }).then(() => {});
   }, []);
 
   const trackAbandonment = useCallback(() => {
     if (!sessionIdRef.current) return;
-    supabase.from('who5_sessions')
-      .update({ abandoned_at: new Date().toISOString() } as any)
-      .eq('session_id', sessionIdRef.current)
-      .then(() => {});
+    (supabase.rpc as any)('track_who5_abandonment', {
+      p_session_id: sessionIdRef.current,
+    }).then(() => {});
   }, []);
 
   const trackCtaClick = useCallback((ctaType: string) => {
