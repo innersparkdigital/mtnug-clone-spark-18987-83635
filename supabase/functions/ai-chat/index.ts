@@ -561,7 +561,7 @@ Deno.serve(async (req) => {
                   Authorization: `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`,
                 },
                 body: JSON.stringify({
-                  kind: "lead",
+                  kind: "new_lead",
                   session_id: sid,
                   anonymous_id,
                   source_path,
