@@ -524,6 +524,57 @@ Deno.serve(async (req) => {
       }
     }
 
+    // Warm-lead capture: if the visitor typed a WhatsApp number anywhere in chat,
+    // log it immediately so a partially-completed booking is never lost.
+    // Never runs for conversations that have shown crisis language.
+    if (sid && risk === "none") {
+      const phone = extractPhone(userText);
+      if (phone) {
+        try {
+          const { data: sess } = await supabase
+            .from("chat_sessions")
+            .select("high_risk_triggered")
+            .eq("id", sid)
+            .maybeSingle();
+          if (!sess?.high_risk_triggered) {
+            const { data: existing } = await supabase
+              .from("chat_leads")
+              .select("id")
+              .eq("session_id", sid)
+              .limit(1);
+            if (!existing || existing.length === 0) {
+              await supabase.from("chat_leads").insert({
+                session_id: sid,
+                anonymous_id: anonymous_id || null,
+                phone,
+                intent: "warm_lead_chat",
+                message: userText.slice(0, 500),
+                source_path: source_path || null,
+              });
+              await supabase.from("chat_events").insert({
+                session_id: sid, event_type: "warm_lead_captured",
+              });
+              fetch(`${Deno.env.get("SUPABASE_URL")}/functions/v1/notify-chat-event`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`,
+                },
+                body: JSON.stringify({
+                  kind: "lead",
+                  session_id: sid,
+                  anonymous_id,
+                  source_path,
+                  phone,
+                  trigger_message: userText,
+                }),
+              }).catch((e) => console.warn("lead notify failed:", e));
+            }
+          }
+        } catch (e) { console.warn("warm lead capture failed", e); }
+      }
+    }
+
     // High-risk: bypass model with fixed safety reply
     if (risk === "high") {
       const safetyReply = "I'm really concerned about what you're sharing, and I want you to be safe. Please reach out to someone right now — you don't have to go through this alone. Tap the WhatsApp button below to talk to a real person at InnerSpark immediately, or call the Uganda Mental Health helpline at **0800-21-21-21** (Butabika). If you are in immediate danger, please contact emergency services.\n\n*Luganda:* Nkweraliikiriddeko nnyo. Nkusaba okoze ku WhatsApp wammanga oba okukubira essimu ku **0800-21-21-21**.\n\n*Swahili:* Nina wasiwasi sana kuhusu unachoshiriki. Tafadhali bonyeza WhatsApp hapa chini au piga simu **0800-21-21-21**.";
