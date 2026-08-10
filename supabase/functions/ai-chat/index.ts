@@ -86,7 +86,15 @@ Never quote specific days or time slots as confirmed. Availability is confirmed 
 If they mention their team/company/employees: ask team size, mention 7,500 UGX per employee once, and offer WhatsApp +256 792 085 773 to schedule the screening. One question at a time here too.
 
 ═══ LEAD CAPTURE ═══
-Before the conversation fades, try to land ONE of: an in-chat form, a WhatsApp number for a gentle reminder, or a Whisper. Ask for it conversationally, once, never twice in a row.
+NUMBER FIRST. The moment someone shows clear booking intent — they agree to book, ask "how do I book", ask you to remind them, say "later/tomorrow", pick a therapist, or dig into pricing — ask for their WhatsApp number BEFORE anything else, in the same warm, low-friction tone you used to ask their name:
+"Before I do that, what's the best WhatsApp number to reach you on so our team can confirm?"
+Rules:
+- NEVER promise a reminder, a follow-up, a call back, or "our team will reach you" before you have the number. Get the number, then promise.
+- Ask once. If they decline, deflect, or ignore it, drop it completely: "That's completely fine — it's there whenever you're ready." Then carry on with the conversation naturally. Never ask a second time.
+- Once they give a number, thank them warmly, confirm our team will reach them on WhatsApp, and only THEN offer the next step (the in-chat form or the booking page).
+- You can also share the full booking form at https://www.innersparkafrica.com/book-therapist for anyone who prefers to fill it in themselves — it captures everything our team needs.
+- After the number, still try to land ONE of: an in-chat form, the booking page, or a Whisper. Conversationally, once, never twice in a row.
+- CRISIS OVERRIDE (non-negotiable): if there is ANY sign of self-harm, suicidal thoughts, or crisis language — now or earlier in this conversation — do not ask for a number, do not mention booking, pricing, forms, reminders or follow-up at all. Safety resources only. Lead capture stays switched off for the rest of that conversation.
 
 ═══ SAFETY (NON-NEGOTIABLE) ═══
 HIGH RISK (suicide, self-harm, "want to die"): stop everything and reply only: "I'm really concerned about what you're sharing, and I want you to be safe. Please reach out right now — tap the WhatsApp button below or call 0800-21-21-21 (Butabika). If you're in immediate danger, contact emergency services."
@@ -317,6 +325,21 @@ function detectRisk(text: string): "high" | "distress" | "none" {
   return "none";
 }
 
+// Pulls a usable WhatsApp number out of free text so a warm lead is never lost,
+// even when the visitor never opens the booking form.
+const PHONE_PATTERN = /(?:\+?\d[\d\s().-]{7,17}\d)/g;
+function extractPhone(text: string): string | null {
+  const candidates = text.match(PHONE_PATTERN) || [];
+  for (const raw of candidates) {
+    const digits = raw.replace(/\D/g, "");
+    // Reject prices/years/scores: real numbers here are 9-13 digits.
+    if (digits.length < 9 || digits.length > 13) continue;
+    if (/^0+$/.test(digits)) continue;
+    return raw.trim();
+  }
+  return null;
+}
+
 // Lightweight topic tagger. Runs on every user message and merges into session.tags.
 const TOPIC_PATTERNS: Array<{ tag: string; patterns: RegExp[] }> = [
   { tag: "anxiety", patterns: [/\banxi/i, /\bworry/i, /\bworried\b/i, /\bpanic\b/i, /\bnervous\b/i, /\boverthink/i, /\bstress(ed)?\b/i, /\bafraid\b/i, /\bfear/i] },
@@ -498,6 +521,57 @@ Deno.serve(async (req) => {
         await supabase.from("chat_events").insert({
           session_id: sid, event_type: "distress_detected",
         });
+      }
+    }
+
+    // Warm-lead capture: if the visitor typed a WhatsApp number anywhere in chat,
+    // log it immediately so a partially-completed booking is never lost.
+    // Never runs for conversations that have shown crisis language.
+    if (sid && risk === "none") {
+      const phone = extractPhone(userText);
+      if (phone) {
+        try {
+          const { data: sess } = await supabase
+            .from("chat_sessions")
+            .select("high_risk_triggered")
+            .eq("id", sid)
+            .maybeSingle();
+          if (!sess?.high_risk_triggered) {
+            const { data: existing } = await supabase
+              .from("chat_leads")
+              .select("id")
+              .eq("session_id", sid)
+              .limit(1);
+            if (!existing || existing.length === 0) {
+              await supabase.from("chat_leads").insert({
+                session_id: sid,
+                anonymous_id: anonymous_id || null,
+                phone,
+                intent: "warm_lead_chat",
+                message: userText.slice(0, 500),
+                source_path: source_path || null,
+              });
+              await supabase.from("chat_events").insert({
+                session_id: sid, event_type: "warm_lead_captured",
+              });
+              fetch(`${Deno.env.get("SUPABASE_URL")}/functions/v1/notify-chat-event`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`,
+                },
+                body: JSON.stringify({
+                  kind: "new_lead",
+                  session_id: sid,
+                  anonymous_id,
+                  source_path,
+                  phone,
+                  trigger_message: userText,
+                }),
+              }).catch((e) => console.warn("lead notify failed:", e));
+            }
+          }
+        } catch (e) { console.warn("warm lead capture failed", e); }
       }
     }
 
