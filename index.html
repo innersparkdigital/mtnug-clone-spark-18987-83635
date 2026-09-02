@@ -454,8 +454,7 @@
     }
     </script>
 
-    <!-- Google Analytics 4 -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CPL2J7D1TQ"></script>
+    <!-- Google Analytics 4 + Google Ads — queued immediately, network request deferred -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
@@ -490,15 +489,40 @@
 
       gtag('js', new Date());
       gtag('config', 'G-CPL2J7D1TQ');
+      gtag('config', 'AW-11330697005');
+
+      // Load the tag library only after first paint / interaction so it never
+      // competes with the render-critical work (FCP/LCP on mobile).
+      (function () {
+        var loaded = false;
+        function loadGtag() {
+          if (loaded) return;
+          loaded = true;
+          var s = document.createElement('script');
+          s.async = true;
+          s.src = 'https://www.googletagmanager.com/gtag/js?id=G-CPL2J7D1TQ';
+          document.head.appendChild(s);
+          var a = document.createElement('script');
+          a.async = true;
+          a.src = 'https://www.googletagmanager.com/gtag/js?id=AW-11330697005';
+          document.head.appendChild(a);
+          ['pointerdown', 'keydown', 'touchstart', 'scroll'].forEach(function (ev) {
+            window.removeEventListener(ev, loadGtag, { passive: true });
+          });
+        }
+        ['pointerdown', 'keydown', 'touchstart', 'scroll'].forEach(function (ev) {
+          window.addEventListener(ev, loadGtag, { passive: true, once: true });
+        });
+        window.addEventListener('load', function () {
+          if ('requestIdleCallback' in window) {
+            requestIdleCallback(loadGtag, { timeout: 4000 });
+          } else {
+            setTimeout(loadGtag, 2500);
+          }
+        });
+      })();
     </script>
 
-    <!-- Google Ads Conversion Tracking (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-11330697005"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('config', 'AW-11330697005');
-    </script>
   </head>
 
   <body>
