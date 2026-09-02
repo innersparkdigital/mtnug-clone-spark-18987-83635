@@ -305,9 +305,14 @@ const App = () => (
               <ScrollToTop />
               <RoutePrefetcher />
               <PrivateRouteNoIndex />
-              <AIChatWidget />
-              <WhisperFloatingWidget />
-              <GlobalBookingModal />
+              <Suspense fallback={null}>
+                <DeferredMount>
+                  <AIChatWidget />
+                  <WhisperFloatingWidget />
+                </DeferredMount>
+                <GlobalBookingModal />
+              </Suspense>
+
               <Suspense fallback={<RouteFallback />}>
               <Routes>
                 <Route path="/" element={<Index />} />
