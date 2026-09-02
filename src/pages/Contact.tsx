@@ -175,7 +175,7 @@ const Contact = () => {
         <meta property="og:description" content="Contact InnerSpark Africa for therapy bookings, corporate wellness or partnerships. Call, WhatsApp or email us — we reply within one working day." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.innersparkafrica.com/contact" />
-        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
+        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.webp" />
         
         {/* Twitter */}
         <meta name="twitter:card" content="summary" />

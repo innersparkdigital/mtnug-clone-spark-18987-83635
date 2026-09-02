@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Heart, ArrowRight, Shield, ChevronDown } from 'lucide-react';
 import { motion } from 'framer-motion';
-import logo from '@/assets/innerspark-logo.png';
+import logo from '@/assets/innerspark-logo.webp';
 
 interface WellbeingHeroProps {
   onStart: () => void;

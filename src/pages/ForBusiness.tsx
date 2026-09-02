@@ -14,7 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import B2BScreeningBookingSection from "@/components/business/B2BScreeningBookingSection";
 import { PricingTable, ROICalculator, SparkFramework, OnboardingTimeline, CaseStudies, TrustBadges, ProposalRequestForm } from "@/components/business/BusinessSections";
 import { useLanguage } from "@/contexts/LanguageContext";
-import corporateWellnessImage from "@/assets/for-business-hero-new.png";
+import corporateWellnessImage from "@/assets/for-business-hero-new.webp";
 import markhLogo from "@/assets/partners/markh.png";
 import nationalIctLogo from "@/assets/partners/national-ict-hub-new.png";
 import uictLogo from "@/assets/partners/uict.png";

@@ -8,13 +8,13 @@ import { Link } from "react-router-dom";
 import { Heart, Target, Eye, Users, Zap, Shield, Globe } from "lucide-react";
 import { T } from "@/components/Translate";
 import ScrollReveal, { StaggerContainer, StaggerItem, TextReveal } from "@/components/ScrollReveal";
-import aboutHero from "@/assets/about-hero-new.png";
+import aboutHero from "@/assets/about-hero-new.webp";
 import talemwaRaymond from "@/assets/talemwa-raymond.jpg";
-import hellenAturo from "@/assets/hellen-aturo.jpg";
+import hellenAturo from "@/assets/hellen-aturo.webp";
 import mutebiReagan from "@/assets/mutebi-reagan.jpg";
 import jamesNiwamanya from "@/assets/james-niwamanya.jpg";
-import carolineAchieng from "@/assets/caroline-achieng.png";
-import ademolaJamiu from "@/assets/ademola-jamiu.png";
+import carolineAchieng from "@/assets/caroline-achieng.webp";
+import ademolaJamiu from "@/assets/ademola-jamiu.webp";
 
 const About = () => {
   const organizationSchema = {
@@ -23,7 +23,7 @@ const About = () => {
     "name": "Innerspark Africa",
     "alternateName": "Innerspark",
     "url": "https://www.innersparkafrica.com",
-    "logo": "https://www.innersparkafrica.com/innerspark-logo.png",
+    "logo": "https://www.innersparkafrica.com/innerspark-logo.webp",
     "description": "Innerspark Africa is a digital mental wellness platform making professional mental health care affordable, accessible, and stigma-free globally.",
     "foundingDate": "2023",
     "areaServed": ["Worldwide", "Uganda", "Ghana", "Botswana", "Africa"],
@@ -90,7 +90,7 @@ const About = () => {
         <meta property="og:description" content="Meet the team behind InnerSpark Africa. Licensed therapists making online mental health care affordable and private across Africa." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.innersparkafrica.com/about" />
-        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
+        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.webp" />
         
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />

@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet";
 import { Link, useNavigate } from "react-router-dom";
 import { Lock } from "lucide-react";
 import { AnimatePresence } from "framer-motion";
-import logo from "@/assets/innerspark-logo.png";
+import logo from "@/assets/innerspark-logo.webp";
 import { useWho5Tracking } from "@/hooks/useWho5Tracking";
 import WellbeingHero from "@/components/wellbeing/WellbeingHero";
 import WellbeingTest from "@/components/wellbeing/WellbeingTest";

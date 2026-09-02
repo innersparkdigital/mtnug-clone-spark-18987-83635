@@ -114,7 +114,7 @@ export const CampaignBrandingHeader = ({ slug, language, onLanguageChange, showP
               <div className="bg-white/10 rounded-full px-3 py-1 text-white text-xs font-medium">{campaign.name}</div>
             )}
             <img
-              src="https://hnjpsvpudwwyzrrwzbpa.supabase.co/storage/v1/object/public/email-assets/innerspark-logo.png"
+              src="https://hnjpsvpudwwyzrrwzbpa.supabase.co/storage/v1/object/public/email-assets/innerspark-logo.webp"
               alt="InnerSpark Africa"
               style={{ height: 24, filter: 'brightness(0) invert(1)' }}
             />

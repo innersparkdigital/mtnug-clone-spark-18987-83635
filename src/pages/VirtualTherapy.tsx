@@ -133,7 +133,7 @@ const VirtualTherapy = () => {
         <meta property="og:description" content="Affordable virtual counselling with licensed therapists. Same-day video, voice or chat sessions for anxiety, stress and depression." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.innersparkafrica.com/virtual-therapy" />
-        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
+        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.webp" />
         
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />

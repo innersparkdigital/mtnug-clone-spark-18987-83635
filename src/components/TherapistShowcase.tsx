@@ -6,10 +6,10 @@ import ScrollReveal, { Parallax, ScaleOnScroll } from "@/components/ScrollReveal
 
 // Import specialist images
 import { specialistPath } from "@/lib/specialistSlug";
-import juliusKizito from "@/assets/specialists/julius-kizito.png";
+import juliusKizito from "@/assets/specialists/julius-kizito.webp";
 import nassuunaMargret from "@/assets/specialists/nassuuna-margret.jpg";
 import atwiiinePriscilla from "@/assets/specialists/atwiine-priscilla.jpg";
-import estherMurungi from "@/assets/specialists/esther-murungi.jpg";
+import estherMurungi from "@/assets/specialists/esther-murungi.webp";
 import atibunSimon from "@/assets/specialists/atibuni-simon.jpg";
 
 const therapists = [

@@ -137,7 +137,7 @@ const SupportGroups = () => {
         <meta property="og:description" content="Join professionally moderated online support groups for anxiety, depression, grief and addiction recovery. Affordable peer support in Africa." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.innersparkafrica.com/support-groups" />
-        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
+        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.webp" />
         
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />

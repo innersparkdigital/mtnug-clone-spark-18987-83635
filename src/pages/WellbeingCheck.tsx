@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { Lock } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import logo from '@/assets/innerspark-logo.png';
+import logo from '@/assets/innerspark-logo.webp';
 import { useWho5Tracking } from '@/hooks/useWho5Tracking';
 import { trackGadsWellbeingCompleted } from '@/lib/gadsTracking';
 import { AnimatePresence } from 'framer-motion';

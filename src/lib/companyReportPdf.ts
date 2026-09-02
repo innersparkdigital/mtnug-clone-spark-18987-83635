@@ -56,7 +56,7 @@ export async function generateCompanyReportPdf(d: CompanyReportData): Promise<Bl
   const margin = 15;
   let y = 0;
 
-  const LOGO = 'https://hnjpsvpudwwyzrrwzbpa.supabase.co/storage/v1/object/public/email-assets/innerspark-logo.png';
+  const LOGO = 'https://hnjpsvpudwwyzrrwzbpa.supabase.co/storage/v1/object/public/email-assets/innerspark-logo.webp';
   const FOOTER_BANNER = 'https://hnjpsvpudwwyzrrwzbpa.supabase.co/storage/v1/object/public/email-assets/email-footer-banner.png';
 
   const drawHeader = async () => {

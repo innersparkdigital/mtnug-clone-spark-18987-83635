@@ -13,13 +13,13 @@ import emergencyHelp from "@/assets/mockups/emergency-help.jpeg";
 import therapyFund from "@/assets/mockups/therapy-fund.jpeg";
 
 // Import persona images
-import personHome from "@/assets/personas/person-home.png";
+import personHome from "@/assets/personas/person-home.webp";
 import personTherapist from "@/assets/personas/person-therapist.png";
 import personBooking from "@/assets/personas/person-booking.png";
 import personGroups from "@/assets/personas/person-groups.png";
 import personPayment from "@/assets/personas/person-payment.png";
-import personDonate from "@/assets/personas/person-donate.png";
-import personEmergency from "@/assets/personas/person-emergency.png";
+import personDonate from "@/assets/personas/person-donate.webp";
+import personEmergency from "@/assets/personas/person-emergency.webp";
 
 interface Slide {
   image: string;

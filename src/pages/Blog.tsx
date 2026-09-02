@@ -12,11 +12,11 @@ import stressHeroImage from "@/assets/blog/stress-management-hero.jpg";
 import panicHeroImage from "@/assets/blog/panic-attack-hero.jpg";
 import depressionHeroImage from "@/assets/blog/depression-hero.jpg";
 import mentalHealthHeroImage from "@/assets/blog/mental-health-hero.jpg";
-import anxietyHeroImage from "@/assets/blog/anxiety-management-hero.jpg";
+import anxietyHeroImage from "@/assets/blog/anxiety-management-hero.webp";
 import therapyCostHero from "@/assets/blog/therapy-cost-hero.jpg";
 import burnoutHero from "@/assets/blog/workplace-burnout-uganda.jpg";
 import talkBossHero from "@/assets/blog/talk-to-boss-mental-health-uganda.jpg";
-import findTherapistKampalaHero from "@/assets/blog/find-therapist-kampala-hero.jpg";
+import findTherapistKampalaHero from "@/assets/blog/find-therapist-kampala-hero.webp";
 import onlineTherapyAfricaHero from "@/assets/blog/online-therapy-africa-hero.jpg";
 import signsNeedTherapistHero from "@/assets/blog/signs-need-therapist-hero.jpg";
 import studentTherapyHero from "@/assets/blog/student-therapy-hero.jpg";
@@ -328,7 +328,7 @@ const Blog = () => {
         <meta property="og:description" content="Expert articles on depression, anxiety, stress and relationships, written by licensed African therapists. Practical tips you can use today." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.innersparkafrica.com/blog" />
-        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
+        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.webp" />
         
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
@@ -352,7 +352,7 @@ const Blog = () => {
                   "url": "https://www.innersparkafrica.com",
                   "logo": {
                     "@type": "ImageObject",
-                    "url": "https://www.innersparkafrica.com/innerspark-logo.png"
+                    "url": "https://www.innersparkafrica.com/innerspark-logo.webp"
                   }
                 },
                 "blogPost": blogPosts.map(post => ({

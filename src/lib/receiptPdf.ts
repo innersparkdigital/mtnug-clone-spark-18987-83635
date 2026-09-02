@@ -19,7 +19,7 @@ export const makeReceiptNumber = () =>
 
 const money = (n: number) => `UGX ${Math.round(n || 0).toLocaleString()}`;
 
-const LOGO_URL = "/innerspark-logo.png";
+const LOGO_URL = "/innerspark-logo.webp";
 let logoCache: string | null | undefined;
 
 async function loadLogo(): Promise<string | null> {

@@ -149,7 +149,7 @@ export default function CampaignLanding() {
               </>
             ) : null}
             <img
-              src="https://hnjpsvpudwwyzrrwzbpa.supabase.co/storage/v1/object/public/email-assets/innerspark-logo.png"
+              src="https://hnjpsvpudwwyzrrwzbpa.supabase.co/storage/v1/object/public/email-assets/innerspark-logo.webp"
               alt="InnerSpark Africa"
               style={{ height: 32, filter: 'brightness(0) invert(1)' }}
             />
@@ -270,7 +270,7 @@ function BrandedPanel({ title, body, accentColor }: { title: string; body: strin
       <div className="max-w-md w-full">
         <header style={{ backgroundColor: SPARK_BLUE }} className="px-5 py-5 rounded-t-lg">
           <img
-            src="https://hnjpsvpudwwyzrrwzbpa.supabase.co/storage/v1/object/public/email-assets/innerspark-logo.png"
+            src="https://hnjpsvpudwwyzrrwzbpa.supabase.co/storage/v1/object/public/email-assets/innerspark-logo.webp"
             alt="InnerSpark Africa"
             style={{ height: 32, filter: 'brightness(0) invert(1)' }}
           />

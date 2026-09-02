@@ -74,7 +74,7 @@ const VideoTherapy = () => {
         <meta property="og:description" content="Face-to-face online video therapy with licensed therapists. Same-day appointments for anxiety, depression and relationships." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.innersparkafrica.com/video-therapy" />
-        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
+        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.webp" />
         
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Video Therapy Sessions | Innerspark" />

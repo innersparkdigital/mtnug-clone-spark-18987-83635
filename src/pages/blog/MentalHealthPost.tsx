@@ -14,7 +14,7 @@ const MentalHealthPost = () => {
     "@type": "BlogPosting",
     "headline": "What Is Mental Health? Conditions, Warning Signs & How to Improve Your Well-Being",
     "description": "Discover what mental health really means, common mental health conditions, early warning signs, and practical ways to improve emotional well-being. Learn when to seek help and how to recognize if you may have a mental health problem.",
-    "image": "https://www.innersparkafrica.com/innerspark-logo.png",
+    "image": "https://www.innersparkafrica.com/innerspark-logo.webp",
     "author": {
       "@type": "Organization",
       "name": "Innerspark Africa",
@@ -25,7 +25,7 @@ const MentalHealthPost = () => {
       "name": "Innerspark Africa",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://www.innersparkafrica.com/innerspark-logo.png"
+        "url": "https://www.innersparkafrica.com/innerspark-logo.webp"
       }
     },
     "datePublished": "2025-12-09",
@@ -115,7 +115,7 @@ const MentalHealthPost = () => {
         <meta property="og:description" content="What mental health really means, common conditions, early warning signs and simple daily steps to protect and improve your wellbeing." />
         <meta property="og:type" content="article" />
         <meta property="og:url" content="https://www.innersparkafrica.com/blog/what-is-mental-health" />
-        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
+        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.webp" />
         <meta property="article:published_time" content="2025-12-09" />
         <meta property="article:author" content="Innerspark Africa" />
         <meta property="article:section" content="Mental Health" />
@@ -127,7 +127,7 @@ const MentalHealthPost = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="What Is Mental Health? Conditions, Warning Signs & Well-Being" />
         <meta name="twitter:description" content="Learn what mental health means, common conditions, warning signs, and how to improve your well-being." />
-        <meta name="twitter:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
+        <meta name="twitter:image" content="https://www.innersparkafrica.com/innerspark-logo.webp" />
         
         {/* Schema.org */}
         <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>

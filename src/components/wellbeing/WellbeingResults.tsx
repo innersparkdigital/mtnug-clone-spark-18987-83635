@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Download, MessageCircle, Users, Brain, Lock } from 'lucide-react';
 import { motion } from 'framer-motion';
-import logo from '@/assets/innerspark-logo.png';
+import logo from '@/assets/innerspark-logo.webp';
 import ShareResults from './ShareResults';
 import CallbackForm from './CallbackForm';
 import { useState } from 'react';

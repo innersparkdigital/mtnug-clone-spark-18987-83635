@@ -9,14 +9,14 @@ import ScrollReveal, { StaggerContainer, StaggerItem } from "@/components/Scroll
 import PreAssessmentModal from "@/components/PreAssessmentModal";
 import BookingFormModal from "@/components/BookingFormModal";
 import { useBookingFlow } from "@/hooks/useBookingFlow";
-import servicesHero from "@/assets/mental-health-support-new.png";
-import virtualTherapy from "@/assets/virtual-therapy-service-new.png";
-import supportGroups from "@/assets/support-groups-service-new.png";
-import wellnessResources from "@/assets/wellness-resources-service-new.png";
+import servicesHero from "@/assets/mental-health-support-new.webp";
+import virtualTherapy from "@/assets/virtual-therapy-service-new.webp";
+import supportGroups from "@/assets/support-groups-service-new.webp";
+import wellnessResources from "@/assets/wellness-resources-service-new.webp";
 import corporateWellness from "@/assets/corporate-wellness-service-new.jpg";
 import chatConsultationImg from "@/assets/chat-consultation-service.jpg";
 import totTrainingImg from "@/assets/tot-training-service.jpg";
-import whisperImg from "@/assets/whisper-service.jpg";
+import whisperImg from "@/assets/whisper-service.webp";
 import mtnMomoLogo from "@/assets/payments/mtn-momo.png";
 import airtelMoneyLogo from "@/assets/payments/airtel-money.png";
 import mpesaLogo from "@/assets/payments/mpesa.png";
@@ -160,7 +160,7 @@ const Services = () => {
         <meta property="og:description" content="Online therapy from UGX 30,000, support groups, WHO-5 screening and corporate wellness programmes across Uganda and Africa." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.innersparkafrica.com/services" />
-        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
+        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.webp" />
         
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />

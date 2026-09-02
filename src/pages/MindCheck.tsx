@@ -174,7 +174,7 @@ const MindCheck = () => {
         <meta property="og:description" content="Take free, confidential mental health screening tests. Get instant results for depression, anxiety, ADHD, PTSD, and 30+ other conditions." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.innersparkafrica.com/mind-check" />
-        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
+        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.webp" />
         
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />

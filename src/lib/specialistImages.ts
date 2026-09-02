@@ -2,22 +2,22 @@
 // Images can be uploaded to the specialist-photos storage bucket and linked via image_url in database
 // This file provides fallback local images when available
 
-import giftNakayinga from "@/assets/specialists/gift-nakayinga.jpg";
+import giftNakayinga from "@/assets/specialists/gift-nakayinga.webp";
 import nanzigeJannet from "@/assets/specialists/nanzige-jannet.jpg";
-import mirembeNorah from "@/assets/specialists/mirembe-norah.jpg";
+import mirembeNorah from "@/assets/specialists/mirembe-norah.webp";
 import pamelaKanyange from "@/assets/specialists/pamela-kanyange.jpg";
-import juliusKizito from "@/assets/specialists/julius-kizito.png";
+import juliusKizito from "@/assets/specialists/julius-kizito.webp";
 import nassuunaMargret from "@/assets/specialists/nassuuna-margret.jpg";
-import winnieAnzaziJira from "@/assets/specialists/winnie-anzazi-jira.jpg";
+import winnieAnzaziJira from "@/assets/specialists/winnie-anzazi-jira.webp";
 import atwiiinePriscilla from "@/assets/specialists/atwiine-priscilla.jpg";
 import mubiruRashid from "@/assets/specialists/mubiru-rashid.jpg";
-import leonardOgugu from "@/assets/specialists/leonard-ogugu.jpg";
-import mbabaziJovia from "@/assets/specialists/mbabazi-jovia.jpg";
-import estherMurungi from "@/assets/specialists/esther-murungi.jpg";
+import leonardOgugu from "@/assets/specialists/leonard-ogugu.webp";
+import mbabaziJovia from "@/assets/specialists/mbabazi-jovia.webp";
+import estherMurungi from "@/assets/specialists/esther-murungi.webp";
 import zemeyiRita from "@/assets/specialists/zemeyi-rita.jpg";
-import florenceNakaweesa from "@/assets/specialists/florence-winfred-nakaweesa.jpg";
+import florenceNakaweesa from "@/assets/specialists/florence-winfred-nakaweesa.webp";
 import nabulyaImmaculate from "@/assets/specialists/nabulya-immaculate.jpg";
-import kekiconcoJannet from "@/assets/specialists/kekiconco-jannet.jpg";
+import kekiconcoJannet from "@/assets/specialists/kekiconco-jannet.webp";
 import abioMaryEvelyn from "@/assets/specialists/abio-mary-evelyn.jpg";
 import maryNicoleNgetich from "@/assets/specialists/mary-nicole-ngetich.jpg";
 import enockNyaanga from "@/assets/specialists/enock-nyaanga.jpg";
