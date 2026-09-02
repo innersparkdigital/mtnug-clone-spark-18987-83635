@@ -7,7 +7,7 @@ import {
 import { Link } from "react-router-dom";
 
 const services = [
-  { icon: Video, title: "Virtual Therapy", description: "One-on-one counseling with licensed therapists", link: "/virtual-therapy" },
+  { icon: Video, title: "Virtual Therapy", description: "One-on-one counseling with licensed therapists", link: "/online-therapy" },
   { icon: Users, title: "Support Groups", description: "Safe peer spaces for sharing and healing", link: "/support-groups" },
   { icon: MessageSquare, title: "Chat Sessions", description: "Private text-based emotional support", link: "/chat-sessions" },
   { icon: UserCheck, title: "Find a Therapist", description: "Browse qualified mental health professionals", link: "/find-therapist" },

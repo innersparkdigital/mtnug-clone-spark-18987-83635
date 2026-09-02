@@ -32,7 +32,7 @@ const slides = [
     title: "Your healing is completely confidential",
     subtitle: "Private, secure sessions with trusted professionals who respect your privacy.",
     cta: "Book a Session",
-    link: "/virtual-therapy"
+    link: "/online-therapy"
   },
   {
     image: heroSlide2,

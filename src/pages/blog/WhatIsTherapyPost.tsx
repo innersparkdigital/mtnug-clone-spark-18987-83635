@@ -159,7 +159,7 @@ const WhatIsTherapyPost = () => {
             <h2>How to Get Started</h2>
             <p>Getting started is easier than you think:</p>
             <ol>
-              <li><strong>Decide your format:</strong> <Link to="/virtual-therapy" className="text-primary hover:underline">Video therapy</Link>, voice calls, or <Link to="/chat-therapy" className="text-primary hover:underline">chat-based therapy</Link></li>
+              <li><strong>Decide your format:</strong> <Link to="/online-therapy" className="text-primary hover:underline">Video therapy</Link>, voice calls, or <Link to="/chat-therapy" className="text-primary hover:underline">chat-based therapy</Link></li>
               <li><strong>Find your therapist:</strong> <Link to="/specialists" className="text-primary hover:underline">Browse our licensed specialists</Link> and read their profiles</li>
               <li><strong>Book a session:</strong> Most therapists offer a free initial consultation</li>
               <li><strong>Show up:</strong> No preparation needed — just be yourself</li>
