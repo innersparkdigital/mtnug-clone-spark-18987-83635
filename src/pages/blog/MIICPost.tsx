@@ -3,7 +3,7 @@ import Footer from "@/components/Footer";
 import AppDownload from "@/components/AppDownload";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
-import miicImage from "@/assets/miic-mental-health.png";
+import miicImage from "@/assets/miic-mental-health.webp";
 import ArticleSchema from "@/components/seo/ArticleSchema";
 
 const MIICPost = () => {

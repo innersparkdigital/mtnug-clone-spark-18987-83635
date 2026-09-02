@@ -3,7 +3,7 @@ import Footer from "@/components/Footer";
 import AppDownload from "@/components/AppDownload";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
-import foundersMindsetImage from "@/assets/founders-mindset-training.png";
+import foundersMindsetImage from "@/assets/founders-mindset-training.webp";
 import ArticleSchema from "@/components/seo/ArticleSchema";
 
 const FoundersPost = () => {

@@ -218,7 +218,7 @@ const CourseCertificate = () => {
                     {/* Logo & Header */}
                     <div className="mb-6">
                       <img 
-                        src="/innerspark-logo.png" 
+                        src="/innerspark-logo.webp" 
                         alt="Innerspark Africa" 
                         className="h-12 mx-auto mb-2"
                       />

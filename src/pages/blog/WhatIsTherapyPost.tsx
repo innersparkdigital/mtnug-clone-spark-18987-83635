@@ -15,9 +15,9 @@ const WhatIsTherapyPost = () => {
     "@type": "BlogPosting",
     headline: "What Is Therapy? A Simple Guide to How It Works & Why It Helps",
     description: "Wondering what therapy actually is? This beginner-friendly guide explains how therapy works, what happens in a session, who it's for, and how it can change your life.",
-    image: "https://www.innersparkafrica.com/innerspark-logo.png",
+    image: "https://www.innersparkafrica.com/innerspark-logo.webp",
     author: { "@type": "Organization", name: "Innerspark Africa", url: "https://www.innersparkafrica.com" },
-    publisher: { "@type": "Organization", name: "Innerspark Africa", logo: { "@type": "ImageObject", url: "https://www.innersparkafrica.com/innerspark-logo.png" } },
+    publisher: { "@type": "Organization", name: "Innerspark Africa", logo: { "@type": "ImageObject", url: "https://www.innersparkafrica.com/innerspark-logo.webp" } },
     datePublished: "2026-02-22",
     dateModified: "2026-02-22",
     inLanguage: "en",
@@ -159,7 +159,7 @@ const WhatIsTherapyPost = () => {
             <h2>How to Get Started</h2>
             <p>Getting started is easier than you think:</p>
             <ol>
-              <li><strong>Decide your format:</strong> <Link to="/virtual-therapy" className="text-primary hover:underline">Video therapy</Link>, voice calls, or <Link to="/chat-therapy" className="text-primary hover:underline">chat-based therapy</Link></li>
+              <li><strong>Decide your format:</strong> <Link to="/online-therapy" className="text-primary hover:underline">Video therapy</Link>, voice calls, or <Link to="/chat-therapy" className="text-primary hover:underline">chat-based therapy</Link></li>
               <li><strong>Find your therapist:</strong> <Link to="/specialists" className="text-primary hover:underline">Browse our licensed specialists</Link> and read their profiles</li>
               <li><strong>Book a session:</strong> Most therapists offer a free initial consultation</li>
               <li><strong>Show up:</strong> No preparation needed — just be yourself</li>

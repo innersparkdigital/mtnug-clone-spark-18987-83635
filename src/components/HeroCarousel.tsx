@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroSlide1 from "@/assets/hero-slide-1.jpg";
-import heroSlide2 from "@/assets/hero-slide-2.jpg";
-import heroSlide3 from "@/assets/hero-slide-3.jpg";
+import heroSlide2 from "@/assets/hero-slide-2.webp";
+import heroSlide3 from "@/assets/hero-slide-3.webp";
 
 const slides = [
   {
@@ -32,7 +32,7 @@ const slides = [
     title: "Your healing is completely confidential",
     subtitle: "Private, secure sessions with trusted professionals who respect your privacy.",
     cta: "Book a Session",
-    link: "/virtual-therapy"
+    link: "/online-therapy"
   },
   {
     image: heroSlide2,

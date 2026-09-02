@@ -15,7 +15,7 @@ const PanicAttackPost = () => {
     "@type": "BlogPosting",
     "headline": "How Do I Stop a Panic Attack? Proven Grounding & Breathing Tools to Calm Down",
     "description": "Learn how to stop or reduce the intensity of a panic attack using grounding techniques, sensory tools, and expert-backed breathing exercises. Practical steps to regain calm quickly.",
-    "image": "https://www.innersparkafrica.com/innerspark-logo.png",
+    "image": "https://www.innersparkafrica.com/innerspark-logo.webp",
     "author": {
       "@type": "Organization",
       "name": "Innerspark Africa",
@@ -26,7 +26,7 @@ const PanicAttackPost = () => {
       "name": "Innerspark Africa",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://www.innersparkafrica.com/innerspark-logo.png"
+        "url": "https://www.innersparkafrica.com/innerspark-logo.webp"
       }
     },
     "datePublished": "2025-12-06",
@@ -116,7 +116,7 @@ const PanicAttackPost = () => {
         <meta property="og:description" content="Learn how to stop or ease a panic attack with grounding and breathing tools you can use in minutes, plus when to get professional help." />
         <meta property="og:type" content="article" />
         <meta property="og:url" content="https://www.innersparkafrica.com/blog/how-to-stop-a-panic-attack" />
-        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
+        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.webp" />
         <meta property="article:published_time" content="2025-12-06" />
         <meta property="article:author" content="Innerspark Africa" />
         <meta property="article:section" content="Mental Health" />
@@ -128,7 +128,7 @@ const PanicAttackPost = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="How Do I Stop a Panic Attack? Expert-Backed Tools" />
         <meta name="twitter:description" content="Learn practical techniques to stop or reduce the intensity of a panic attack." />
-        <meta name="twitter:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
+        <meta name="twitter:image" content="https://www.innersparkafrica.com/innerspark-logo.webp" />
         
         {/* Schema.org */}
         <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>

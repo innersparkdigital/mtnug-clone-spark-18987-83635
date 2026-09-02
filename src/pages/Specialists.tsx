@@ -520,7 +520,7 @@ const Specialists = () => {
         <meta property="og:description" content="Browse our network of licensed therapists, counselors & psychologists. Find the right mental health professional. Book online sessions today." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.innersparkafrica.com/specialists" />
-        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
+        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.webp" />
         
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />

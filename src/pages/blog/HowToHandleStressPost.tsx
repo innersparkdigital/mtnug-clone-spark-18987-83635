@@ -15,7 +15,7 @@ const HowToHandleStressPost = () => {
     "@type": "BlogPosting",
     "headline": "How Should I Handle Stress? Expert-Backed, Simple & Practical Ways to Regain Control",
     "description": "Discover how to handle stress with practical, expert-approved tools. Learn the difference between controllable and uncontrollable stress and explore simple strategies to stay calm and grounded.",
-    "image": "https://www.innersparkafrica.com/innerspark-logo.png",
+    "image": "https://www.innersparkafrica.com/innerspark-logo.webp",
     "author": {
       "@type": "Organization",
       "name": "Innerspark Africa",
@@ -26,7 +26,7 @@ const HowToHandleStressPost = () => {
       "name": "Innerspark Africa",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://www.innersparkafrica.com/innerspark-logo.png"
+        "url": "https://www.innersparkafrica.com/innerspark-logo.webp"
       }
     },
     "datePublished": "2025-12-03",
@@ -116,7 +116,7 @@ const HowToHandleStressPost = () => {
         <meta property="og:description" content="Practical, expert-backed ways to handle stress today: quick calming tools, daily habits and clear signs it is time to talk to a therapist." />
         <meta property="og:type" content="article" />
         <meta property="og:url" content="https://www.innersparkafrica.com/blog/how-to-handle-stress" />
-        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
+        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.webp" />
         <meta property="article:published_time" content="2025-12-03" />
         <meta property="article:author" content="Innerspark Africa" />
         <meta property="article:section" content="Stress Management" />
@@ -128,7 +128,7 @@ const HowToHandleStressPost = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="How Should I Handle Stress? Expert-Backed Guide" />
         <meta name="twitter:description" content="Learn practical, expert-approved tools to manage everyday stress." />
-        <meta name="twitter:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
+        <meta name="twitter:image" content="https://www.innersparkafrica.com/innerspark-logo.webp" />
         
         {/* Schema.org */}
         <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>

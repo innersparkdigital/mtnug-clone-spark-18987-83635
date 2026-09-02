@@ -8,27 +8,27 @@ import BookingFormModal from "./BookingFormModal";
 import { useBookingFlow } from "@/hooks/useBookingFlow";
 
 // Import phone mockup screen images
-import moodTrackerMockup from "@/assets/mockups/mood-tracker-screen.png";
-import dailyReflectionMockup from "@/assets/mockups/daily-reflection-screen.png";
-import bookAppointmentMockup from "@/assets/mockups/book-appointment-screen.png";
-import emergencyButtonMockup from "@/assets/mockups/emergency-screen.png";
-import therapyFundMockup from "@/assets/mockups/donate-therapy-screen.png";
+import moodTrackerMockup from "@/assets/mockups/mood-tracker-screen.webp";
+import dailyReflectionMockup from "@/assets/mockups/daily-reflection-screen.webp";
+import bookAppointmentMockup from "@/assets/mockups/book-appointment-screen.webp";
+import emergencyButtonMockup from "@/assets/mockups/emergency-screen.webp";
+import therapyFundMockup from "@/assets/mockups/donate-therapy-screen.webp";
 import supportGroupsMockup from "@/assets/mockups/support-groups-screen.png";
 import downloadAppMockup from "@/assets/mockups/download-app-screen.png";
-import findTherapistsMockup from "@/assets/mockups/find-therapist-screen.png";
-import chatSessionMockup from "@/assets/mockups/chat-consultation-screen.png";
-import privateCounsellingMockup from "@/assets/mockups/private-counselling-screen.png";
+import findTherapistsMockup from "@/assets/mockups/find-therapist-screen.webp";
+import chatSessionMockup from "@/assets/mockups/chat-consultation-screen.webp";
+import privateCounsellingMockup from "@/assets/mockups/private-counselling-screen.webp";
 
 // Import human photography for background cards
-import moodTrackingImage from "@/assets/personas/mood-tracking.jpg";
-import bookAppointmentImage from "@/assets/personas/book-appointment.jpg";
-import chatConsultationImage from "@/assets/personas/chat-consultation.jpg";
-import dailyReflectionImage from "@/assets/personas/daily-reflection.jpg";
+import moodTrackingImage from "@/assets/personas/mood-tracking.webp";
+import bookAppointmentImage from "@/assets/personas/book-appointment.webp";
+import chatConsultationImage from "@/assets/personas/chat-consultation.webp";
+import dailyReflectionImage from "@/assets/personas/daily-reflection.webp";
 import therapyFundImage from "@/assets/personas/therapy-fund.jpg";
-import privateCounsellingImage from "@/assets/personas/private-counselling.jpg";
-import findTherapistImage from "@/assets/personas/find-therapist.jpg";
-import downloadAppImage from "@/assets/personas/download-app.jpg";
-import supportGroupsImage from "@/assets/personas/support-groups.png";
+import privateCounsellingImage from "@/assets/personas/private-counselling.webp";
+import findTherapistImage from "@/assets/personas/find-therapist.webp";
+import downloadAppImage from "@/assets/personas/download-app.webp";
+import supportGroupsImage from "@/assets/personas/support-groups.webp";
 import emergencyImage from "@/assets/personas/emergency.jpg";
 
 const features = [

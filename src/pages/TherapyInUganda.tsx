@@ -57,7 +57,7 @@ const TherapyInUganda = () => {
         <meta property="og:description" content="Licensed therapists across Uganda for online sessions from Kampala to Jinja and Mbarara. Book by video, voice or chat in minutes." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.innersparkafrica.com/therapy-in-uganda" />
-        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
+        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.webp" />
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
@@ -66,7 +66,7 @@ const TherapyInUganda = () => {
             "description": "Licensed therapists providing affordable online therapy in Uganda.",
             "url": "https://www.innersparkafrica.com/therapy-in-uganda",
             "telephone": "+256792085773",
-            "image": "https://www.innersparkafrica.com/innerspark-logo.png",
+            "image": "https://www.innersparkafrica.com/innerspark-logo.webp",
             "priceRange": "UGX 30,000 - UGX 75,000",
             "currenciesAccepted": "UGX",
             "paymentAccepted": ["Mobile Money", "MTN MoMo", "Airtel Money", "PesaPal"],

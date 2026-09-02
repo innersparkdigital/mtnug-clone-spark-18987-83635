@@ -5,13 +5,13 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AppDownload from "@/components/AppDownload";
 import { Button } from "@/components/ui/button";
-import hero from "@/assets/blog/anxiety-management-hero.jpg";
+import hero from "@/assets/blog/anxiety-management-hero.webp";
 
 const SparkFrameworkPost = () => {
   const url = "https://www.innersparkafrica.com/blog/spark-framework-mental-wellbeing";
   const title = "The S.P.A.R.K Framework: A 5-Step Mental Wellbeing Routine Built for Ugandans";
   const desc = "InnerSpark's S.P.A.R.K framework — Sleep, Purpose, Activity, Relationships, Knowledge — gives Ugandan professionals a practical weekly routine for stronger mental health.";
-  const article = { "@context": "https://schema.org", "@type": "BlogPosting", headline: title, description: desc, image: "https://www.innersparkafrica.com/innerspark-logo.png", author: { "@type": "Organization", name: "Innerspark Africa" }, publisher: { "@type": "Organization", name: "Innerspark Africa", logo: { "@type": "ImageObject", url: "https://www.innersparkafrica.com/innerspark-logo.png" } }, datePublished: "2026-05-25", dateModified: "2026-05-25", inLanguage: "en", keywords: ["mental wellbeing framework Uganda","mental health routine Uganda","self-care Uganda","mental wellness Uganda","stress management Kampala"], mainEntityOfPage: { "@type": "WebPage", "@id": url } };
+  const article = { "@context": "https://schema.org", "@type": "BlogPosting", headline: title, description: desc, image: "https://www.innersparkafrica.com/innerspark-logo.webp", author: { "@type": "Organization", name: "Innerspark Africa" }, publisher: { "@type": "Organization", name: "Innerspark Africa", logo: { "@type": "ImageObject", url: "https://www.innersparkafrica.com/innerspark-logo.webp" } }, datePublished: "2026-05-25", dateModified: "2026-05-25", inLanguage: "en", keywords: ["mental wellbeing framework Uganda","mental health routine Uganda","self-care Uganda","mental wellness Uganda","stress management Kampala"], mainEntityOfPage: { "@type": "WebPage", "@id": url } };
   const faq = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: [
     { "@type": "Question", name: "What is the S.P.A.R.K framework?", acceptedAnswer: { "@type": "Answer", text: "S.P.A.R.K stands for Sleep, Purpose, Activity, Relationships and Knowledge — the five everyday habits that, in combination, protect long-term mental wellbeing. It is InnerSpark Africa's clinically-informed weekly check-in framework." } },
     { "@type": "Question", name: "Can S.P.A.R.K replace therapy?", acceptedAnswer: { "@type": "Answer", text: "No. It is a daily practice that supports mental wellbeing and helps you notice problems early. If two or more pillars stay broken for more than 2–3 weeks, that's a signal to speak to a licensed therapist." } },

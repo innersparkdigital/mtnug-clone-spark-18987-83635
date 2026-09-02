@@ -15,7 +15,7 @@ const SignsOfDepressionPost = () => {
     "@type": "BlogPosting",
     "headline": "10 Warning Signs of Depression You Shouldn't Ignore",
     "description": "Learn to recognize the common signs and symptoms of depression. Early detection can lead to faster recovery. Discover what to look for and when to seek help.",
-    "image": "https://www.innersparkafrica.com/innerspark-logo.png",
+    "image": "https://www.innersparkafrica.com/innerspark-logo.webp",
     "author": {
       "@type": "Organization",
       "name": "Innerspark Africa",
@@ -26,7 +26,7 @@ const SignsOfDepressionPost = () => {
       "name": "Innerspark Africa",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://www.innersparkafrica.com/innerspark-logo.png"
+        "url": "https://www.innersparkafrica.com/innerspark-logo.webp"
       }
     },
     "datePublished": "2026-01-12",
@@ -144,7 +144,7 @@ const SignsOfDepressionPost = () => {
         <meta property="og:description" content="Recognise the common signs and symptoms of depression, how long they last, what makes them serious and where to get help in Africa." />
         <meta property="og:type" content="article" />
         <meta property="og:url" content="https://www.innersparkafrica.com/blog/signs-of-depression" />
-        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
+        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.webp" />
         <meta property="article:published_time" content="2026-01-12" />
         <meta property="article:section" content="Depression" />
         

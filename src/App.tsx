@@ -138,10 +138,12 @@ const DoctorRefer = lazy(() => import("./pages/professionals/DoctorRefer"));
 const Specialists = lazy(() => import("./pages/Specialists"));
 const SpecialistProfile = lazy(() => import("./pages/SpecialistProfile"));
 import ScrollToTop from "./components/ScrollToTop";
-import AIChatWidget from "./components/AIChatWidget";
-import WhisperFloatingWidget from "./components/WhisperFloatingWidget";
-import GlobalBookingModal from "./components/GlobalBookingModal";
+const AIChatWidget = lazy(() => import("./components/AIChatWidget"));
+const WhisperFloatingWidget = lazy(() => import("./components/WhisperFloatingWidget"));
+const GlobalBookingModal = lazy(() => import("./components/GlobalBookingModal"));
+import DeferredMount from "./components/DeferredMount";
 import RoutePrefetcher from "./components/RoutePrefetcher";
+
 const Learning = lazy(() => import("./pages/Learning"));
 const CourseDetail = lazy(() => import("./pages/CourseDetail"));
 const LessonViewer = lazy(() => import("./pages/LessonViewer"));
@@ -303,9 +305,14 @@ const App = () => (
               <ScrollToTop />
               <RoutePrefetcher />
               <PrivateRouteNoIndex />
-              <AIChatWidget />
-              <WhisperFloatingWidget />
-              <GlobalBookingModal />
+              <Suspense fallback={null}>
+                <DeferredMount>
+                  <AIChatWidget />
+                  <WhisperFloatingWidget />
+                </DeferredMount>
+                <GlobalBookingModal />
+              </Suspense>
+
               <Suspense fallback={<RouteFallback />}>
               <Routes>
                 <Route path="/" element={<Index />} />

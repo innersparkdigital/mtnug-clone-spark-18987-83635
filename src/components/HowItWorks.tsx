@@ -3,10 +3,10 @@ import { ChevronLeft, ChevronRight, Video, MessageCircle, Calendar, Users } from
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { motion, AnimatePresence, useScroll, useTransform, useSpring } from "framer-motion";
-import videoSessionMockup from "@/assets/mockups/video-session-mockup.png";
-import chatSessionMockup from "@/assets/mockups/chat-session-new.png";
+import videoSessionMockup from "@/assets/mockups/video-session-mockup.webp";
+import chatSessionMockup from "@/assets/mockups/chat-session-new.webp";
 import supportGroupsMockup from "@/assets/mockups/support-groups-new.png";
-import appointmentMockup from "@/assets/mockups/find-therapists-new.png";
+import appointmentMockup from "@/assets/mockups/find-therapists-new.webp";
 
 const HowItWorks = () => {
   const [activeTab, setActiveTab] = useState(0);

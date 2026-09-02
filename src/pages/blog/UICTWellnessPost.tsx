@@ -2,7 +2,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AppDownload from "@/components/AppDownload";
 import { Calendar, MapPin, Users } from "lucide-react";
-import uictWellnessImage from "@/assets/uict-wellness-activity.jpg";
+import uictWellnessImage from "@/assets/uict-wellness-activity.webp";
 import ArticleSchema from "@/components/seo/ArticleSchema";
 
 const UICTWellnessPost = () => {

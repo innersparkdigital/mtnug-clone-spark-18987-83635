@@ -1,7 +1,7 @@
 import { Helmet } from "react-helmet";
 
 const SITE = "https://www.innersparkafrica.com";
-const LOGO = `${SITE}/innerspark-logo.png`;
+const LOGO = `${SITE}/innerspark-logo.webp`;
 
 export interface ArticleSchemaProps {
   headline: string;

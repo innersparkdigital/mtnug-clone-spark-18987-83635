@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { T } from "@/components/Translate";
-import promoBannerBg from "@/assets/hero-slide-2.jpg";
+import promoBannerBg from "@/assets/hero-slide-2.webp";
 
 const PromoBanner = () => {
   return (

@@ -51,7 +51,7 @@ const HowToFindATherapistPost = () => {
       "name": "Innerspark Africa",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://www.innersparkafrica.com/innerspark-logo.png"
+        "url": "https://www.innersparkafrica.com/innerspark-logo.webp"
       }
     },
     "inLanguage": "en"
@@ -152,7 +152,7 @@ const HowToFindATherapistPost = () => {
         <meta property="og:description" content="A step-by-step guide to finding the right therapist: what to look for, questions to ask, costs to expect and how to start your first session." />
         <meta property="og:type" content="article" />
         <meta property="og:url" content="https://www.innersparkafrica.com/blog/how-to-find-a-therapist" />
-        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
+        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.webp" />
         <meta property="article:published_time" content="2026-01-12" />
         <meta property="article:section" content="Therapy" />
         

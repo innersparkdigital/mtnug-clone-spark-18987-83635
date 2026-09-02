@@ -53,7 +53,7 @@ export default function ConditionLandingPage(props: ConditionLandingProps) {
       "@type": "Organization",
       name: "InnerSpark Africa",
       url: BASE,
-      logo: `${BASE}/innerspark-logo.png`,
+      logo: `${BASE}/innerspark-logo.webp`,
     },
   };
 

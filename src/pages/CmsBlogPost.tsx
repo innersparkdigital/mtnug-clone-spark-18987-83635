@@ -85,7 +85,7 @@ const CmsBlogPost = () => {
     publisher: {
       "@type": "Organization",
       name: "InnerSpark Africa",
-      logo: { "@type": "ImageObject", url: `${SITE}/innerspark-logo.png` },
+      logo: { "@type": "ImageObject", url: `${SITE}/innerspark-logo.webp` },
     },
   };
 

@@ -87,7 +87,7 @@ const BookTherapist = () => {
         <meta property="og:description" content="Book a licensed therapist in minutes. Same-day video, voice or chat sessions from UGX 30,000. Pay by Mobile Money. Private and confidential." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.innersparkafrica.com/book-therapist" />
-        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
+        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.webp" />
         
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Book a Therapist Online | Innerspark" />

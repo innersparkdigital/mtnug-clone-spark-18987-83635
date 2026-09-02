@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Menu, X, User, LogOut, Phone, MessageCircle, Shield, ChevronDown, ChevronRight, Heart, Users, Brain, GraduationCap, Building2, Stethoscope, FileText, Smartphone, MessagesSquare, ClipboardCheck, BookOpen, HandHeart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import logo from "@/assets/innerspark-logo.png";
+import logo from "@/assets/innerspark-logo.webp";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useIsKenyaVisitor } from "@/hooks/useIsKenyaVisitor";

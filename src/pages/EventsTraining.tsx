@@ -16,14 +16,14 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import truckDriversImage from "@/assets/truck-drivers-training.png";
-import foundersMindsetImage from "@/assets/founders-mindset-training.png";
+import truckDriversImage from "@/assets/truck-drivers-training.webp";
+import foundersMindsetImage from "@/assets/founders-mindset-training.webp";
 import childrenMentalHealthImage from "@/assets/children-mental-health.jpg";
-import miicImage from "@/assets/miic-mental-health.png";
-import mtnImage from "@/assets/mtn-internship.png";
-import worldMentalHealthImage from "@/assets/world-mental-health-day.png";
+import miicImage from "@/assets/miic-mental-health.webp";
+import mtnImage from "@/assets/mtn-internship.webp";
+import worldMentalHealthImage from "@/assets/world-mental-health-day.webp";
 import uictImage from "@/assets/uict-training.png";
-import uictWellnessImage from "@/assets/uict-wellness-activity.jpg";
+import uictWellnessImage from "@/assets/uict-wellness-activity.webp";
 
 const blogPosts = [
   {

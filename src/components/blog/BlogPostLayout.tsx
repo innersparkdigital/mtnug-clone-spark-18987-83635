@@ -48,7 +48,7 @@ export interface BlogPostData {
 }
 
 const SITE = "https://www.innersparkafrica.com";
-const LOGO = `${SITE}/innerspark-logo.png`;
+const LOGO = `${SITE}/innerspark-logo.webp`;
 const DEFAULT_OG = `${SITE}/og-image.jpg`;
 const WA_NUMBER = "256792085773";
 

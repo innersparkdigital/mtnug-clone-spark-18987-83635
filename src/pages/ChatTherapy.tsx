@@ -74,7 +74,7 @@ const ChatTherapy = () => {
         <meta property="og:description" content="Affordable chat therapy with licensed counsellors. Message a therapist from your phone for anxiety, stress or depression. From UGX 30,000." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.innersparkafrica.com/chat-therapy" />
-        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
+        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.webp" />
         
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Chat Therapy - Text with a Therapist" />

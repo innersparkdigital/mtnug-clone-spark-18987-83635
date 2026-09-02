@@ -39,16 +39,33 @@ const HeroSection = () => {
   const bRef = useRef<HTMLVideoElement | null>(null);
   const { startBooking, closeFlow, isBookingFormOpen, actionType } = useBookingFlow();
 
-  // Enable videos immediately on capable devices (no idle delay so mobile shows it too).
+  // Enable videos only once the page has painted, so the hero text (the LCP
+  // element) is never delayed by the background clip download.
   useEffect(() => {
     if (shouldDisableVideo()) return;
-    setVideoEnabled(true);
     setIsMobile(isMobileViewport());
     const mql = window.matchMedia("(max-width: 767px)");
     const onChange = (e: MediaQueryListEvent) => setIsMobile(e.matches);
     mql.addEventListener?.("change", onChange);
-    return () => mql.removeEventListener?.("change", onChange);
+
+    let idle: number | undefined;
+    let timer: number | undefined;
+    const enable = () => setVideoEnabled(true);
+    const schedule = () => {
+      const w = window as any;
+      if (typeof w.requestIdleCallback === "function") idle = w.requestIdleCallback(enable, { timeout: 3000 });
+      else timer = window.setTimeout(enable, 1200);
+    };
+    if (document.readyState === "complete") schedule();
+    else window.addEventListener("load", schedule, { once: true });
+
+    return () => {
+      mql.removeEventListener?.("change", onChange);
+      if (idle !== undefined) (window as any).cancelIdleCallback?.(idle);
+      if (timer !== undefined) window.clearTimeout(timer);
+    };
   }, []);
+
 
   // Rotate clips — fetch the next clip only ~1.5s before swapping (saves 1 video download upfront).
   useEffect(() => {

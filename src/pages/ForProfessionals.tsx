@@ -29,7 +29,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import professionalsHeroImage from "@/assets/professionals-hero.png";
+import professionalsHeroImage from "@/assets/professionals-hero.webp";
 
 const acceptedBodies = [
   { country: "Uganda", bodies: ["Uganda Counsellors & Psychotherapists Association (UCPA)", "Uganda Medical and Dental Practitioners Council (UMDPC)"] },

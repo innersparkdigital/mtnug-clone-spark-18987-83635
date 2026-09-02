@@ -74,7 +74,7 @@ export default function GlobalLandingPage(props: GlobalLandingProps) {
       "@type": "MedicalOrganization",
       name: "InnerSpark Africa",
       url: BASE,
-      logo: `${BASE}/innerspark-logo.png`,
+      logo: `${BASE}/innerspark-logo.webp`,
     },
     areaServed: props.areaServed.map((name) => ({ "@type": "Country", name })),
     availableChannel: [

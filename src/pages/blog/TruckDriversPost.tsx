@@ -3,7 +3,7 @@ import Footer from "@/components/Footer";
 import AppDownload from "@/components/AppDownload";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
-import truckDriversImage from "@/assets/truck-drivers-training.png";
+import truckDriversImage from "@/assets/truck-drivers-training.webp";
 import ArticleSchema from "@/components/seo/ArticleSchema";
 
 const TruckDriversPost = () => {

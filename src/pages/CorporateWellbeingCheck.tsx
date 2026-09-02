@@ -8,7 +8,7 @@ import { Progress } from '@/components/ui/progress';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import logo from '@/assets/innerspark-logo.png';
+import logo from '@/assets/innerspark-logo.webp';
 import { Checkbox } from '@/components/ui/checkbox';
 import EmployeeResultsBreakdown from '@/components/wellbeing/EmployeeResultsBreakdown';
 import { computeAnswers, computeAggregate, AnswerMap } from '@/lib/wellbeingIntelligence';

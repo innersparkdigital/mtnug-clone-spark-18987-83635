@@ -74,7 +74,7 @@ const MentalHealthSupport = () => {
         <meta property="og:description" content="Get professional mental health support online. Licensed therapists for anxiety, depression and stress, available by video, voice or chat." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.innersparkafrica.com/mental-health-support" />
-        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
+        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.webp" />
         
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Mental Health Support - Get Help Now" />

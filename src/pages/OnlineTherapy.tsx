@@ -101,7 +101,7 @@ const OnlineTherapy = () => {
         <meta property="og:description" content="Book a licensed therapist online. Get professional mental health support today via video, voice, or chat. Start your healing journey now." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.innersparkafrica.com/online-therapy" />
-        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
+        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.webp" />
         
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Online Therapy - Talk to a Therapist Today" />

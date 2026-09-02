@@ -19,7 +19,7 @@ const TherapyInKampala = () => {
         <meta property="og:description" content="Find a therapist in Kampala for depression, anxiety, trauma and couples counselling. Online or in-person sessions, booked in minutes." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.innersparkafrica.com/therapy-in-kampala" />
-        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
+        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.webp" />
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",

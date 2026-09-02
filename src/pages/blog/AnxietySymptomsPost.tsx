@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 import AppDownload from "@/components/AppDownload";
 import SocialShareButtons from "@/components/SocialShareButtons";
 import { Button } from "@/components/ui/button";
-import anxietyHeroImage from "@/assets/blog/anxiety-management-hero.jpg";
+import anxietyHeroImage from "@/assets/blog/anxiety-management-hero.webp";
 
 const AnxietySymptomsPost = () => {
   const articleSchema = {
@@ -15,7 +15,7 @@ const AnxietySymptomsPost = () => {
     "@type": "BlogPosting",
     "headline": "Anxiety Symptoms: How to Recognize if You Have Anxiety Disorder",
     "description": "Learn to identify the physical, emotional, and behavioral symptoms of anxiety. Understand the difference between normal worry and anxiety disorder.",
-    "image": "https://www.innersparkafrica.com/innerspark-logo.png",
+    "image": "https://www.innersparkafrica.com/innerspark-logo.webp",
     "author": {
       "@type": "Organization",
       "name": "Innerspark Africa",
@@ -26,7 +26,7 @@ const AnxietySymptomsPost = () => {
       "name": "Innerspark Africa",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://www.innersparkafrica.com/innerspark-logo.png"
+        "url": "https://www.innersparkafrica.com/innerspark-logo.webp"
       }
     },
     "datePublished": "2026-01-12",
@@ -134,7 +134,7 @@ const AnxietySymptomsPost = () => {
         <meta property="og:description" content="Learn the physical, emotional and behavioural symptoms of anxiety, when it becomes a disorder, and the steps to get help that works." />
         <meta property="og:type" content="article" />
         <meta property="og:url" content="https://www.innersparkafrica.com/blog/anxiety-symptoms" />
-        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.png" />
+        <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.webp" />
         <meta property="article:published_time" content="2026-01-12" />
         <meta property="article:section" content="Anxiety" />
         
