@@ -412,6 +412,16 @@ Please confirm availability. Thank you!`;
                   <Badge variant="secondary" className="capitalize">{specialist.type}</Badge>
                 </div>
 
+                <CredentialLine
+                  type={specialist.type}
+                  education={specialist.education}
+                  certifications={specialist.certifications}
+                  experienceYears={specialist.experience_years}
+                  className="mb-4 max-w-2xl"
+                />
+
+
+
                 <div className="flex flex-wrap items-center gap-4 text-muted-foreground mb-4">
                   <div className="flex items-center gap-1">
                     <Clock className="w-4 h-4" />
