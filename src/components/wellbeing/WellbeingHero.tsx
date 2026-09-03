@@ -57,7 +57,19 @@ const WellbeingHero = ({ onStart }: WellbeingHeroProps) => (
       <p className="text-muted-foreground text-sm leading-relaxed">
         The WHO-5 Well-Being Index is a short, internationally recognized questionnaire developed by the World Health Organization. It measures your subjective psychological well-being over the past two weeks with just 5 simple questions.
       </p>
+      <p className="text-xs text-muted-foreground mt-3">
+        Source:{" "}
+        <a
+          href="https://www.who.int/publications/i/item/WHO-EURO-1998-4234-43993-61990"
+          target="_blank"
+          rel="noopener noreferrer nofollow"
+          className="underline hover:text-foreground"
+        >
+          WHO (1998), Wellbeing Measures in Primary Health Care — the WHO-5 Well-Being Index
+        </a>
+      </p>
     </div>
+
 
     <div className="mt-6 text-xs text-muted-foreground space-y-1">
       <p>🔒 Your responses are private and confidential.</p>
