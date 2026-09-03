@@ -70,6 +70,12 @@ const Index = () => {
               <div className="flex-1">
                 <h2 className="text-lg font-bold text-foreground mb-1">How's Your Wellbeing? Take the WHO-5 Check</h2>
                 <p className="text-sm text-muted-foreground">A quick 5-question wellbeing check based on the WHO Well-Being Index. Takes under 1 minute.</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Source:{" "}
+                  <a href="https://www.psykiatri-regionh.dk/who-5/Pages/default.aspx" target="_blank" rel="noopener noreferrer nofollow" className="underline hover:text-foreground">
+                    WHO-5 Well-Being Index, WHO Regional Office for Europe
+                  </a>
+                </p>
               </div>
               <Link to="/wellbeing-check">
                 <Button className="bg-green-600 hover:bg-green-700 text-white rounded-full px-6">

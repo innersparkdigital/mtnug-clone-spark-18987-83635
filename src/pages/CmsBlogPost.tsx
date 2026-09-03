@@ -145,7 +145,7 @@ const CmsBlogPost = () => {
             <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-white/85">
               <span className="flex items-center gap-1.5"><Calendar className="h-4 w-4" />{new Date(date).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}</span>
               {post.read_time && <span className="flex items-center gap-1.5"><Clock className="h-4 w-4" />{post.read_time}</span>}
-              {post.author && <span>By {post.author}</span>}
+              <span>By {post.author || "InnerSpark Africa Clinical Team"}</span>
             </div>
           </div>
         </header>
