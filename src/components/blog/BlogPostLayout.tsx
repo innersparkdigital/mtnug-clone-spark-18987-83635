@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Calendar, Clock } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, UserCheck } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AppDownload from "@/components/AppDownload";
@@ -38,6 +38,10 @@ export interface BlogPostData {
   modified?: string;
   readTime: string;         // "8 min read"
   keywords: string[];
+  /** Named author byline. Defaults to the InnerSpark clinical editorial team. */
+  author?: string;
+  /** Optional clinical reviewer, e.g. "Reviewed by Mirembe Norah, Clinical Counselling Psychologist". */
+  reviewedBy?: { name: string; credential?: string };
   heroImage: string;
   heroAlt: string;
   sections: BlogSection[];
@@ -168,7 +172,18 @@ const BlogPostLayout = ({ data }: { data: BlogPostData }) => {
     headline: data.title,
     description: data.metaDescription,
     image: data.heroImage || DEFAULT_OG,
-    author: { "@type": "Organization", name: "Innerspark Africa", url: SITE },
+    author: data.author
+      ? { "@type": "Person", name: data.author }
+      : { "@type": "Organization", name: "Innerspark Africa Clinical Team", url: SITE },
+    ...(data.reviewedBy
+      ? {
+          reviewedBy: {
+            "@type": "Person",
+            name: data.reviewedBy.name,
+            ...(data.reviewedBy.credential ? { jobTitle: data.reviewedBy.credential } : {}),
+          },
+        }
+      : {}),
     publisher: { "@type": "Organization", name: "Innerspark Africa", logo: { "@type": "ImageObject", url: LOGO } },
     datePublished: data.isoDate,
     dateModified: data.modified || data.isoDate,
@@ -213,7 +228,7 @@ const BlogPostLayout = ({ data }: { data: BlogPostData }) => {
         <meta property="og:image:height" content="630" />
         <meta property="article:published_time" content={data.isoDate} />
         <meta property="article:modified_time" content={data.modified || data.isoDate} />
-        <meta property="article:author" content="Innerspark Africa" />
+        <meta property="article:author" content={data.author || "Innerspark Africa Clinical Team"} />
         <meta property="article:section" content={data.category} />
         {data.keywords.slice(0, 4).map((k) => <meta key={k} property="article:tag" content={k} />)}
         <meta name="twitter:card" content="summary_large_image" />
@@ -247,6 +262,15 @@ const BlogPostLayout = ({ data }: { data: BlogPostData }) => {
                 <div className="flex flex-wrap items-center gap-6 text-muted-foreground">
                   <span className="flex items-center gap-2"><Calendar className="h-5 w-5" /> {data.date}</span>
                   <span className="flex items-center gap-2"><Clock className="h-5 w-5" /> {data.readTime}</span>
+                  <span className="flex items-center gap-2">
+                    <UserCheck className="h-5 w-5" />
+                    <span>
+                      By {data.author || "InnerSpark Africa Clinical Team"}
+                      {data.reviewedBy && (
+                        <> &middot; Reviewed by {data.reviewedBy.name}{data.reviewedBy.credential ? `, ${data.reviewedBy.credential}` : ""}</>
+                      )}
+                    </span>
+                  </span>
                   <div className="ml-auto">
                     <SocialShareButtons url={url} title={data.title} description={data.metaDescription} />
                   </div>

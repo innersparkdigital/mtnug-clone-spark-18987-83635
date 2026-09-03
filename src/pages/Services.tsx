@@ -150,14 +150,14 @@ const Services = () => {
   return (
     <>
       <Helmet>
-        <title>Our Mental Health Services | InnerSpark Africa</title>
-        <meta name="description" content="Online therapy from UGX 30,000, support groups, WHO-5 screening and corporate wellness programmes across Uganda and Africa." />
+        <title>Mental Health &amp; Therapy Services Across Africa | InnerSpark</title>
+        <meta name="description" content="Online therapy from UGX 30,000, support groups, WHO-5 screening and corporate mental wellness programmes across Uganda and Africa. Book in 2 minutes." />
         <meta name="keywords" content="mental health services Africa, therapy services Uganda, online counseling services, support groups mental health, corporate wellness programs, employee assistance program, virtual therapy services, affordable mental health care, teletherapy services, wellness resources, mental health support, professional counseling" />
         <link rel="canonical" href="https://www.innersparkafrica.com/services" />
         
         {/* Open Graph */}
-        <meta property="og:title" content="Our Mental Health Services | InnerSpark Africa" />
-        <meta property="og:description" content="Online therapy from UGX 30,000, support groups, WHO-5 screening and corporate wellness programmes across Uganda and Africa." />
+        <meta property="og:title" content="Mental Health &amp; Therapy Services Across Africa | InnerSpark" />
+        <meta property="og:description" content="Online therapy from UGX 30,000, support groups, WHO-5 screening and corporate mental wellness programmes across Uganda and Africa. Book in 2 minutes." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.innersparkafrica.com/services" />
         <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.webp" />

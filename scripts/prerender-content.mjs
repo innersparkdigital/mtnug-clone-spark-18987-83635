@@ -26,9 +26,9 @@ export const GLOBAL_LINKS = [
 export const ROUTES = [
   {
     path: "/",
-    title: "Online Therapy Uganda from UGX 30,000 | InnerSpark",
+    title: "Mental Health Therapy Uganda from UGX 30,000 | InnerSpark",
     description:
-      "Talk to a licensed Ugandan therapist by video, voice or chat from UGX 30,000. Pay via MTN or Airtel Money. Private and bookable in 2 minutes.",
+      "Talk to a licensed Ugandan therapist by video, voice or chat from UGX 30,000. Private mental health and wellness support across Africa, bookable in 2 minutes.",
     h1: "Africa's Most Accessible Mental Wellness Platform",
     intro:
       "Connect with licensed African therapists via video, voice or chat. Sessions start from UGX 30,000 (about $8) and are available in Uganda, Kenya, Tanzania and beyond — confidential, judgement-free and bookable in about two minutes.",
@@ -53,9 +53,9 @@ export const ROUTES = [
   },
   {
     path: "/specialists",
-    title: "Licensed Therapists & Counsellors in Uganda | InnerSpark",
+    title: "Licensed Mental Health Therapists in Uganda | InnerSpark",
     description:
-      "Browse licensed Ugandan therapists, counsellors and psychologists. See specialities, languages and availability, then book a private session online.",
+      "Browse licensed Ugandan mental health therapists for anxiety, depression, trauma and relationships. Video, voice or chat from UGX 30,000. Book in 2 minutes.",
     h1: "Find Your Mental Health Professional",
     intro:
       "Every InnerSpark specialist is a licensed mental health professional. Browse their specialities, experience, languages and availability, then book a private session by video, voice or chat.",
@@ -76,9 +76,9 @@ export const ROUTES = [
   },
   {
     path: "/services",
-    title: "Therapy & Mental Health Services in Uganda | InnerSpark",
+    title: "Mental Health & Therapy Services Across Africa | InnerSpark",
     description:
-      "Individual, couples, teen and group therapy plus corporate wellbeing programmes. Licensed Ugandan therapists by video, voice or chat from UGX 30,000.",
+      "Individual, couples, teen and group therapy plus corporate mental wellness programmes. Licensed African therapists by video, voice or chat from UGX 30,000.",
     h1: "Mental Health Services for Individuals, Families and Organisations",
     intro:
       "InnerSpark Africa offers structured therapy and wellbeing services delivered online by licensed African mental health professionals — for individuals, couples, teenagers, support groups and workplaces.",
