@@ -1,3 +1,4 @@
+import CredentialLine from "@/components/seo/CredentialLine";
 import { useEffect, useState, useRef } from "react";
 import { isUuid, matchesSpecialistParam, specialistPath } from "@/lib/specialistSlug";
 import { useParams, Link, useNavigate } from "react-router-dom";
