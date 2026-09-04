@@ -1,3 +1,4 @@
+import ArticleByline from "@/components/blog/ArticleByline";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import RelatedArticles from "@/components/RelatedArticles";
@@ -195,6 +196,7 @@ const HowToFindATherapistPost = () => {
                   <Clock className="h-5 w-5" />
                   12 min read
                 </span>
+                  <ArticleByline />
               </div>
               <SocialShareButtons 
                 url="https://www.innersparkafrica.com/blog/how-to-find-a-therapist"
