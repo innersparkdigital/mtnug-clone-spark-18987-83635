@@ -1,3 +1,4 @@
+import ArticleByline from "@/components/blog/ArticleByline";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import RelatedArticles from "@/components/RelatedArticles";
@@ -116,7 +117,7 @@ const TypesOfTherapyPost = () => {
             <h1 className="text-3xl md:text-5xl font-bold text-foreground mt-4 mb-4">Types of Therapy Explained: Which One Is Right for You?</h1>
             <div className="flex items-center gap-4 text-sm text-muted-foreground mb-6">
               <span className="flex items-center gap-1"><Calendar className="h-4 w-4" /> February 22, 2026</span>
-              <span className="flex items-center gap-1"><Clock className="h-4 w-4" /> 12 min read</span>
+              <span className="flex items-center gap-1"><Clock className="h-4 w-4" /> 12 min read</span><ArticleByline className="text-sm" />
             </div>
             <img src={stressHeroImage} alt="Types of therapy explained" className="w-full rounded-xl aspect-video object-cover" />
           </header>

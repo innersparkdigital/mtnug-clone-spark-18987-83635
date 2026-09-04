@@ -1,3 +1,4 @@
+import ArticleByline from "@/components/blog/ArticleByline";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import RelatedArticles from "@/components/RelatedArticles";
@@ -171,6 +172,7 @@ const HowToHandleStressPost = () => {
                     <Clock className="h-5 w-5" />
                     8 min read
                   </span>
+                  <ArticleByline />
                   <div className="ml-auto">
                     <SocialShareButtons 
                       url="https://www.innersparkafrica.com/blog/how-to-handle-stress"
