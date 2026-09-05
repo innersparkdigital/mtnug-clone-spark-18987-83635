@@ -1,11 +1,21 @@
 import { useEffect, useState } from "react";
 import { useParams, Link, Navigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import { ArrowLeft, Calendar, Clock, Loader2 } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, Loader2, UserCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AppDownload from "@/components/AppDownload";
+import SocialShareButtons from "@/components/SocialShareButtons";
+import RelatedArticles from "@/components/RelatedArticles";
+import {
+  BookHandoff,
+  CrisisCallout,
+  FaqSection,
+  WhatYouLearn,
+  needsCrisisCallout,
+} from "@/components/blog/BlogCallouts";
+
 
 interface FaqItem { question: string; answer: string }
 
@@ -71,6 +81,9 @@ const CmsBlogPost = () => {
     ? (post.faqs as FaqItem[]).filter((f) => f?.question && f?.answer)
     : [];
   const modified = post.last_updated_at || date;
+  const showCrisis =
+    !/blog-crisis/.test(post.content) &&
+    needsCrisisCallout(post.title, post.category, description, post.meta_keywords);
 
   const articleSchema = {
     "@context": "https://schema.org",
@@ -145,7 +158,10 @@ const CmsBlogPost = () => {
             <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-white/85">
               <span className="flex items-center gap-1.5"><Calendar className="h-4 w-4" />{new Date(date).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}</span>
               {post.read_time && <span className="flex items-center gap-1.5"><Clock className="h-4 w-4" />{post.read_time}</span>}
-              <span>By {post.author || "InnerSpark Africa Clinical Team"}</span>
+              <span className="flex items-center gap-1.5"><UserCheck className="h-4 w-4" />By {post.author || "InnerSpark Africa Clinical Team"}</span>
+              <div className="ml-auto">
+                <SocialShareButtons url={url} title={post.title} description={description} />
+              </div>
             </div>
           </div>
         </header>
@@ -155,33 +171,21 @@ const CmsBlogPost = () => {
             <p className="text-xl text-foreground/80 leading-relaxed mb-6 font-light">{post.excerpt}</p>
           )}
 
+          {/* Same "What you'll learn" box every InnerSpark article opens with */}
+          <WhatYouLearn>{post.meta_description || post.excerpt || post.title}</WhatYouLearn>
+
           {/* Hand the reader over to booking before they scroll away */}
-          <p className="text-muted-foreground mb-8 leading-relaxed">
-            If you would rather talk to someone than read on,{" "}
-            <Link to="/book-therapist" className="text-primary font-semibold underline underline-offset-4">
-              book a session with a licensed Ugandan therapist
-            </Link>{" "}
-            — video, voice or chat from UGX 30,000, bookable in about two minutes.
-          </p>
+          <BookHandoff />
 
           <div
-            className="prose prose-lg max-w-none text-foreground prose-headings:text-foreground prose-headings:font-bold prose-headings:tracking-tight prose-p:leading-[1.8] prose-p:text-foreground/90 prose-a:text-primary prose-a:font-medium prose-img:rounded-xl prose-strong:text-foreground prose-li:leading-relaxed"
+            className="blog-body prose prose-lg max-w-none text-foreground prose-headings:text-foreground prose-headings:font-bold prose-headings:tracking-tight prose-p:leading-[1.8] prose-p:text-foreground/90 prose-a:text-primary prose-a:font-medium prose-img:rounded-xl prose-strong:text-foreground prose-li:leading-relaxed"
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
 
-          {faqs.length > 0 && (
-            <section className="mt-14">
-              <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-6">Frequently asked questions</h2>
-              <div className="space-y-4">
-                {faqs.map((f, i) => (
-                  <div key={i} className="rounded-xl border bg-card p-5">
-                    <h3 className="font-semibold text-foreground mb-2">{f.question}</h3>
-                    <p className="text-muted-foreground leading-relaxed">{f.answer}</p>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
+          {showCrisis && <CrisisCallout />}
+
+          <FaqSection items={faqs.map((f) => ({ q: f.question, a: f.answer }))} />
+
 
           <div className="mt-14 rounded-2xl bg-primary/5 border border-primary/15 p-6 md:p-8">
             <h2 className="text-xl md:text-2xl font-bold text-foreground mb-2">Ready to talk to someone?</h2>
@@ -201,6 +205,7 @@ const CmsBlogPost = () => {
           </div>
         </article>
       </main>
+      <RelatedArticles currentSlug={post.slug} />
       <AppDownload />
       <Footer />
     </>

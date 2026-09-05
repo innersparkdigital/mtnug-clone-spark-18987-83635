@@ -7,6 +7,17 @@ import Footer from "@/components/Footer";
 import AppDownload from "@/components/AppDownload";
 import SocialShareButtons from "@/components/SocialShareButtons";
 import RelatedArticles from "@/components/RelatedArticles";
+import {
+  BookHandoff,
+  CheckGrid,
+  CrisisCallout,
+  FaqSection,
+  InfoCallout,
+  NumberedSteps,
+  WhatYouLearn,
+  needsCrisisCallout,
+} from "@/components/blog/BlogCallouts";
+
 
 export type BlogBlock =
   | { type: "lead"; text: ReactNode }
@@ -14,6 +25,7 @@ export type BlogBlock =
   | { type: "h3"; text: string }
   | { type: "h4"; text: string }
   | { type: "callout"; label?: string; text: ReactNode }
+  | { type: "crisis"; text?: ReactNode }
   | { type: "highlight"; title?: string; items?: ReactNode[]; text?: ReactNode }
   | { type: "quote"; text: string; cite?: string }
   | { type: "list"; items: ReactNode[] }
@@ -44,6 +56,10 @@ export interface BlogPostData {
   reviewedBy?: { name: string; credential?: string };
   heroImage: string;
   heroAlt: string;
+  /** One short paragraph of key takeaways, shown in the "What you'll learn" box. */
+  whatYouLearn?: ReactNode;
+  /** Force-show or hide the crisis/safety box. Defaults to topic detection. */
+  crisisBox?: boolean;
   sections: BlogSection[];
   faqs: BlogFaq[];
   resources?: BlogResource[];
@@ -51,23 +67,11 @@ export interface BlogPostData {
   cta?: { heading: string; body: string; whatsappText: string };
 }
 
+
 const SITE = "https://www.innersparkafrica.com";
 const LOGO = `${SITE}/innerspark-logo.webp`;
 const DEFAULT_OG = `${SITE}/og-image.jpg`;
 const WA_NUMBER = "256792085773";
-
-/** Hands the reader over to booking inside the opening of every article. */
-function BookHandoff() {
-  return (
-    <p className="text-muted-foreground mb-6 leading-relaxed">
-      If you would rather talk to someone than read on,{" "}
-      <Link to="/book-therapist" className="text-primary font-semibold underline underline-offset-4">
-        book a session with a licensed Ugandan therapist
-      </Link>{" "}
-      — video, voice or chat from UGX 30,000, bookable in about two minutes.
-    </p>
-  );
-}
 
 function renderBlock(b: BlogBlock, i: number) {
   switch (b.type) {
@@ -80,13 +84,9 @@ function renderBlock(b: BlogBlock, i: number) {
     case "h4":
       return <h4 key={i} className="text-xl font-semibold text-foreground mt-6 mb-3">{b.text}</h4>;
     case "callout":
-      return (
-        <div key={i} className="bg-accent/50 border-l-4 border-primary p-6 rounded-r-lg my-8">
-          <p className="text-foreground font-medium text-lg mb-0">
-            {b.label && <strong>{b.label} </strong>}{b.text}
-          </p>
-        </div>
-      );
+      return <InfoCallout key={i} label={b.label}>{b.text}</InfoCallout>;
+    case "crisis":
+      return <CrisisCallout key={i}>{b.text}</CrisisCallout>;
     case "quote":
       return (
         <blockquote key={i} className="bg-primary/5 border-l-4 border-primary p-6 rounded-r-lg my-8 italic">
@@ -119,30 +119,9 @@ function renderBlock(b: BlogBlock, i: number) {
         </div>
       );
     case "numberedCards":
-      return (
-        <div key={i} className="bg-secondary p-6 rounded-xl my-8">
-          {b.title && <h4 className="text-xl font-semibold text-foreground mb-4">{b.title}</h4>}
-          <ul className="list-none space-y-3">
-            {b.items.map((it, j) => (
-              <li key={j} className="flex items-start gap-3">
-                <span className="bg-primary text-primary-foreground w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold shrink-0">{j + 1}</span>
-                <span className="text-muted-foreground">{it}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      );
+      return <NumberedSteps key={i} title={b.title} items={b.items} />;
     case "checkGrid":
-      return (
-        <div key={i} className="grid md:grid-cols-2 gap-4 my-8">
-          {b.items.map((it, j) => (
-            <div key={j} className="bg-accent/30 p-4 rounded-lg flex items-start gap-3">
-              <span className="text-primary text-xl">✓</span>
-              <span className="text-foreground">{it}</span>
-            </div>
-          ))}
-        </div>
-      );
+      return <CheckGrid key={i} items={b.items} />;
     case "iconGrid":
       return (
         <div key={i} className="grid sm:grid-cols-2 gap-4 my-8">
@@ -211,6 +190,12 @@ const BlogPostLayout = ({ data }: { data: BlogPostData }) => {
   };
 
   const waText = encodeURIComponent(data.cta?.whatsappText || `Hi, I just read your article "${data.title}" and would like to book a therapy session.`);
+
+  // Crisis-adjacent topics always carry the safety box, unless the post already has one.
+  const hasCrisisBlock = data.sections.some((s) => s.blocks.some((b) => b.type === "crisis"));
+  const showCrisis =
+    !hasCrisisBlock &&
+    (data.crisisBox ?? needsCrisisCallout(data.title, data.category, data.metaDescription, data.keywords.join(" ")));
 
   return (
     <>
@@ -289,27 +274,20 @@ const BlogPostLayout = ({ data }: { data: BlogPostData }) => {
                     {s.blocks.map((b, bi) => (
                       <div key={bi} className="contents">
                         {renderBlock(b, bi)}
+                        {i === 0 && bi === 0 ? (
+                          <WhatYouLearn>{data.whatYouLearn || data.metaDescription}</WhatYouLearn>
+                        ) : null}
                         {i === 0 && bi === 1 ? <BookHandoff /> : null}
                       </div>
                     ))}
                     {i === 0 && s.blocks.length < 2 ? <BookHandoff /> : null}
+                    {showCrisis && i === Math.min(1, data.sections.length - 1) ? <CrisisCallout /> : null}
                   </section>
                 ))}
 
                 {/* FAQ */}
-                {data.faqs.length > 0 && (
-                  <section className="mb-12">
-                    <h2 className="text-3xl font-bold text-foreground mb-6">Frequently Asked Questions</h2>
-                    <div className="space-y-6">
-                      {data.faqs.map((f, i) => (
-                        <div key={i} className="bg-accent/30 p-6 rounded-xl">
-                          <h3 className="text-xl font-semibold text-foreground mb-2">{f.q}</h3>
-                          <p className="text-muted-foreground mb-0">{f.a}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </section>
-                )}
+                <FaqSection items={data.faqs} />
+
 
                 {/* Resources */}
                 {data.resources && data.resources.length > 0 && (
