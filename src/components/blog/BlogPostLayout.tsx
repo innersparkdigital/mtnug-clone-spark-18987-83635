@@ -7,6 +7,17 @@ import Footer from "@/components/Footer";
 import AppDownload from "@/components/AppDownload";
 import SocialShareButtons from "@/components/SocialShareButtons";
 import RelatedArticles from "@/components/RelatedArticles";
+import {
+  BookHandoff,
+  CheckGrid,
+  CrisisCallout,
+  FaqSection,
+  InfoCallout,
+  NumberedSteps,
+  WhatYouLearn,
+  needsCrisisCallout,
+} from "@/components/blog/BlogCallouts";
+
 
 export type BlogBlock =
   | { type: "lead"; text: ReactNode }
