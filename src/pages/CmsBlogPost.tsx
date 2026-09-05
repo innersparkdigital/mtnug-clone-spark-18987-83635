@@ -1,11 +1,21 @@
 import { useEffect, useState } from "react";
 import { useParams, Link, Navigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import { ArrowLeft, Calendar, Clock, Loader2 } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, Loader2, UserCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AppDownload from "@/components/AppDownload";
+import SocialShareButtons from "@/components/SocialShareButtons";
+import RelatedArticles from "@/components/RelatedArticles";
+import {
+  BookHandoff,
+  CrisisCallout,
+  FaqSection,
+  WhatYouLearn,
+  needsCrisisCallout,
+} from "@/components/blog/BlogCallouts";
+
 
 interface FaqItem { question: string; answer: string }
 
