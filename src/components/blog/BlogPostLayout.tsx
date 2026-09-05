@@ -55,12 +55,17 @@ export interface BlogPostData {
   reviewedBy?: { name: string; credential?: string };
   heroImage: string;
   heroAlt: string;
+  /** One short paragraph of key takeaways, shown in the "What you'll learn" box. */
+  whatYouLearn?: ReactNode;
+  /** Force-show or hide the crisis/safety box. Defaults to topic detection. */
+  crisisBox?: boolean;
   sections: BlogSection[];
   faqs: BlogFaq[];
   resources?: BlogResource[];
   closing?: { headline: string; primary: string };
   cta?: { heading: string; body: string; whatsappText: string };
 }
+
 
 const SITE = "https://www.innersparkafrica.com";
 const LOGO = `${SITE}/innerspark-logo.webp`;
