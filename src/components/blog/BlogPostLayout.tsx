@@ -191,6 +191,12 @@ const BlogPostLayout = ({ data }: { data: BlogPostData }) => {
 
   const waText = encodeURIComponent(data.cta?.whatsappText || `Hi, I just read your article "${data.title}" and would like to book a therapy session.`);
 
+  // Crisis-adjacent topics always carry the safety box, unless the post already has one.
+  const hasCrisisBlock = data.sections.some((s) => s.blocks.some((b) => b.type === "crisis"));
+  const showCrisis =
+    !hasCrisisBlock &&
+    (data.crisisBox ?? needsCrisisCallout(data.title, data.category, data.metaDescription, data.keywords.join(" ")));
+
   return (
     <>
       <Helmet>
