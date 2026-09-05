@@ -121,8 +121,6 @@ function renderBlock(b: BlogBlock, i: number) {
       return <NumberedSteps key={i} title={b.title} items={b.items} />;
     case "checkGrid":
       return <CheckGrid key={i} items={b.items} />;
-
-      );
     case "iconGrid":
       return (
         <div key={i} className="grid sm:grid-cols-2 gap-4 my-8">
