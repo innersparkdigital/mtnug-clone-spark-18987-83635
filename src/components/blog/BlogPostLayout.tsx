@@ -72,19 +72,6 @@ const LOGO = `${SITE}/innerspark-logo.webp`;
 const DEFAULT_OG = `${SITE}/og-image.jpg`;
 const WA_NUMBER = "256792085773";
 
-/** Hands the reader over to booking inside the opening of every article. */
-function BookHandoff() {
-  return (
-    <p className="text-muted-foreground mb-6 leading-relaxed">
-      If you would rather talk to someone than read on,{" "}
-      <Link to="/book-therapist" className="text-primary font-semibold underline underline-offset-4">
-        book a session with a licensed Ugandan therapist
-      </Link>{" "}
-      — video, voice or chat from UGX 30,000, bookable in about two minutes.
-    </p>
-  );
-}
-
 function renderBlock(b: BlogBlock, i: number) {
   switch (b.type) {
     case "lead":
@@ -96,13 +83,9 @@ function renderBlock(b: BlogBlock, i: number) {
     case "h4":
       return <h4 key={i} className="text-xl font-semibold text-foreground mt-6 mb-3">{b.text}</h4>;
     case "callout":
-      return (
-        <div key={i} className="bg-accent/50 border-l-4 border-primary p-6 rounded-r-lg my-8">
-          <p className="text-foreground font-medium text-lg mb-0">
-            {b.label && <strong>{b.label} </strong>}{b.text}
-          </p>
-        </div>
-      );
+      return <InfoCallout key={i} label={b.label}>{b.text}</InfoCallout>;
+    case "crisis":
+      return <CrisisCallout key={i}>{b.text}</CrisisCallout>;
     case "quote":
       return (
         <blockquote key={i} className="bg-primary/5 border-l-4 border-primary p-6 rounded-r-lg my-8 italic">
@@ -135,29 +118,10 @@ function renderBlock(b: BlogBlock, i: number) {
         </div>
       );
     case "numberedCards":
-      return (
-        <div key={i} className="bg-secondary p-6 rounded-xl my-8">
-          {b.title && <h4 className="text-xl font-semibold text-foreground mb-4">{b.title}</h4>}
-          <ul className="list-none space-y-3">
-            {b.items.map((it, j) => (
-              <li key={j} className="flex items-start gap-3">
-                <span className="bg-primary text-primary-foreground w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold shrink-0">{j + 1}</span>
-                <span className="text-muted-foreground">{it}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      );
+      return <NumberedSteps key={i} title={b.title} items={b.items} />;
     case "checkGrid":
-      return (
-        <div key={i} className="grid md:grid-cols-2 gap-4 my-8">
-          {b.items.map((it, j) => (
-            <div key={j} className="bg-accent/30 p-4 rounded-lg flex items-start gap-3">
-              <span className="text-primary text-xl">✓</span>
-              <span className="text-foreground">{it}</span>
-            </div>
-          ))}
-        </div>
+      return <CheckGrid key={i} items={b.items} />;
+
       );
     case "iconGrid":
       return (
