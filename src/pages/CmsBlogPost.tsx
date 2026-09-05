@@ -205,6 +205,7 @@ const CmsBlogPost = () => {
           </div>
         </article>
       </main>
+      <RelatedArticles currentSlug={post.slug} />
       <AppDownload />
       <Footer />
     </>
