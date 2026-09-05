@@ -25,6 +25,7 @@ export type BlogBlock =
   | { type: "h3"; text: string }
   | { type: "h4"; text: string }
   | { type: "callout"; label?: string; text: ReactNode }
+  | { type: "crisis"; text?: ReactNode }
   | { type: "highlight"; title?: string; items?: ReactNode[]; text?: ReactNode }
   | { type: "quote"; text: string; cite?: string }
   | { type: "list"; items: ReactNode[] }
