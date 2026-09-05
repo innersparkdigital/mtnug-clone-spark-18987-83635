@@ -268,27 +268,20 @@ const BlogPostLayout = ({ data }: { data: BlogPostData }) => {
                     {s.blocks.map((b, bi) => (
                       <div key={bi} className="contents">
                         {renderBlock(b, bi)}
+                        {i === 0 && bi === 0 ? (
+                          <WhatYouLearn>{data.whatYouLearn || data.metaDescription}</WhatYouLearn>
+                        ) : null}
                         {i === 0 && bi === 1 ? <BookHandoff /> : null}
                       </div>
                     ))}
                     {i === 0 && s.blocks.length < 2 ? <BookHandoff /> : null}
+                    {showCrisis && i === Math.min(1, data.sections.length - 1) ? <CrisisCallout /> : null}
                   </section>
                 ))}
 
                 {/* FAQ */}
-                {data.faqs.length > 0 && (
-                  <section className="mb-12">
-                    <h2 className="text-3xl font-bold text-foreground mb-6">Frequently Asked Questions</h2>
-                    <div className="space-y-6">
-                      {data.faqs.map((f, i) => (
-                        <div key={i} className="bg-accent/30 p-6 rounded-xl">
-                          <h3 className="text-xl font-semibold text-foreground mb-2">{f.q}</h3>
-                          <p className="text-muted-foreground mb-0">{f.a}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </section>
-                )}
+                <FaqSection items={data.faqs} />
+
 
                 {/* Resources */}
                 {data.resources && data.resources.length > 0 && (
