@@ -81,6 +81,9 @@ const CmsBlogPost = () => {
     ? (post.faqs as FaqItem[]).filter((f) => f?.question && f?.answer)
     : [];
   const modified = post.last_updated_at || date;
+  const showCrisis =
+    !/blog-crisis/.test(post.content) &&
+    needsCrisisCallout(post.title, post.category, description, post.meta_keywords);
 
   const articleSchema = {
     "@context": "https://schema.org",
