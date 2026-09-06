@@ -544,8 +544,23 @@ const Specialists = () => {
             "mainEntity": {
               "@type": "ItemList",
               "name": "Licensed mental health professionals",
-              "itemListOrder": "https://schema.org/ItemListUnordered"
+              "itemListOrder": "https://schema.org/ItemListUnordered",
+              ...(specialists.length ? { "numberOfItems": specialists.length } : {}),
+              "itemListElement": specialists.map((s, i) => ({
+                "@type": "ListItem",
+                "position": i + 1,
+                "item": {
+                  "@type": "Person",
+                  "name": s.name,
+                  "url": `https://www.innersparkafrica.com${specialistPath(s)}`,
+                  ...(s.type ? { "jobTitle": s.type } : {}),
+                  ...(s.specialties?.length ? { "knowsAbout": s.specialties } : {}),
+                  ...(s.languages?.length ? { "knowsLanguage": s.languages } : {}),
+                  "worksFor": { "@type": "Organization", "name": "Innerspark Africa", "url": "https://www.innersparkafrica.com" }
+                }
+              }))
             }
+
           })}
         </script>
         <script type="application/ld+json">
