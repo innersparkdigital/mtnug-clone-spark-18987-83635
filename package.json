@@ -11,7 +11,7 @@
     "preview": "vite preview",
     "predev": "node scripts/generate-sitemap.mjs && node scripts/generate-blog-sitemap.mjs",
     "prebuild": "node scripts/generate-sitemap.mjs && node scripts/generate-blog-sitemap.mjs",
-    "postbuild": "node scripts/prerender.mjs"
+    "postbuild": "node scripts/prerender.mjs && node scripts/prerender-blogs.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
