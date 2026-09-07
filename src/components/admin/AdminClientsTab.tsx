@@ -409,6 +409,16 @@ const AdminClientsTab = () => {
                             </div>
                           </TableCell>
                           <TableCell>
+                            <div className="flex flex-col gap-0.5 w-[76px]">
+                              <RatingStars value={val(r, "session_rating") as number | null} />
+                              {val(r, "would_rebook") !== null && val(r, "would_rebook") !== undefined && (
+                                <span className="text-[10px] text-muted-foreground whitespace-nowrap">
+                                  {val(r, "would_rebook") ? "Would rebook" : "No rebook"}
+                                </span>
+                              )}
+                            </div>
+                          </TableCell>
+                          <TableCell>
                             <Badge variant={risk === "high" ? "destructive" : risk === "medium" ? "outline" : "secondary"} className="text-[10px]">
                               {r.open_alerts > 0 && <AlertOctagon className="h-3 w-3 mr-1" />}
                               {risk}
