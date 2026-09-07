@@ -457,15 +457,17 @@ const AIChatWidget = () => {
     setLeadSubmitting(true);
     try {
       if (leadStep === 1) {
-        const { data, error } = await supabase.from("chat_leads").insert({
-          session_id: sessionId,
-          anonymous_id: getAnonId(),
-          phone: leadPhone.trim(),
-          intent: leadIntent,
-          source_path: window.location.pathname,
-        }).select("id").single();
+        // Saved through an RPC: anonymous visitors can create a lead and get
+        // its id back without being able to read the leads table.
+        const { data, error } = await supabase.rpc("submit_chat_lead", {
+          _session_id: sessionId,
+          _anonymous_id: getAnonId(),
+          _phone: leadPhone.trim(),
+          _intent: leadIntent,
+          _source_path: window.location.pathname,
+        });
         if (error) throw error;
-        setLeadRowId(data?.id ?? null);
+        setLeadRowId((data as string) ?? null);
         setLeadStep(2);
         trackEvent("ai_chat_lead_phone_captured", { intent: leadIntent });
         logEvent("lead_phone_captured", { intent: leadIntent });
@@ -474,11 +476,12 @@ const AIChatWidget = () => {
       }
       // Step 2 — optional enrichment.
       if (leadRowId && (leadName.trim() || leadEmail.trim() || leadMsg.trim())) {
-        await supabase.from("chat_leads").update({
-          name: leadName.trim() || null,
-          email: leadEmail.trim() || null,
-          message: leadMsg.trim() || null,
-        }).eq("id", leadRowId);
+        await supabase.rpc("enrich_chat_lead", {
+          _id: leadRowId,
+          _name: leadName.trim() || null,
+          _email: leadEmail.trim() || null,
+          _message: leadMsg.trim() || null,
+        });
       }
       setLeadSubmitted(true);
       setShowLeadForm(false);
