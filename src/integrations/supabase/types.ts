@@ -3993,8 +3993,6 @@ export type Database = {
         Args: { _passcode: string; _token: string }
         Returns: boolean
       }
-      show_limit: { Args: never; Returns: number }
-      show_trgm: { Args: { "": string }; Returns: string[] }
       slugify_company_name: { Args: { _name: string }; Returns: string }
       submit_chat_lead: {
         Args: {
