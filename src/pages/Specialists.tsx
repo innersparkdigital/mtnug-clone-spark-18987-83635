@@ -881,7 +881,18 @@ const Specialists = () => {
                   ))}
                 </div>
 
-                {filteredSpecialists.length === 0 && (
+                {loadError && specialists.length === 0 && (
+                  <div className="text-center py-12">
+                    <p className="text-foreground font-medium mb-2">We couldn't load our therapist list just now.</p>
+                    <p className="text-muted-foreground mb-4">{loadError}</p>
+                    <div className="flex flex-wrap gap-3 justify-center">
+                      <Button onClick={() => setReloadKey((k) => k + 1)}>Try again</Button>
+                      <Link to="/book-therapist"><Button variant="outline">Book a session instead</Button></Link>
+                    </div>
+                  </div>
+                )}
+
+                {!loadError && filteredSpecialists.length === 0 && (
                   <div className="text-center py-12">
                     <p className="text-muted-foreground mb-4">No specialists found matching your criteria.</p>
                 <Button variant="outline" onClick={() => { setSelectedCategory("all"); setSearchQuery(""); setSelectedCountry(""); setSelectedLanguage(""); setSelectedPrice(""); }}>
