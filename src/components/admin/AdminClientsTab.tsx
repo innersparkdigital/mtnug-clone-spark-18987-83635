@@ -13,7 +13,7 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Loader2, AlertOctagon, Download, Eye, Receipt, Save, MessageCircle, Plus, Trash2, Mail, FileSpreadsheet, ChevronLeft, ChevronRight, ChevronDown, ChevronUp } from "lucide-react";
+import { Loader2, AlertOctagon, Download, Eye, Receipt, Save, MessageCircle, Plus, Trash2, Mail, FileSpreadsheet, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Calendar } from "lucide-react";
 import { toast } from "sonner";
 import AdminClientDetailDialog from "./AdminClientDetailDialog";
 import AddClientDialog from "./AddClientDialog";
@@ -342,7 +342,7 @@ const AdminClientsTab = () => {
               <Table className="min-w-[1050px] text-xs">
                 <TableHeader>
                   <TableRow className="bg-muted/50 hover:bg-muted/50">
-                    {["#", "Session date", "Client", "Therapist", "Session type", "Amount", "Payment", "Risk", ""].map((h, hi) => (
+                    {["#", "Date", "Client", "Therapist", "Session type", "Amount", "Payment", "Risk", ""].map((h, hi) => (
                       <TableHead key={hi} className="whitespace-nowrap text-[11px] h-9">{h}</TableHead>
                     ))}
                   </TableRow>
@@ -362,7 +362,15 @@ const AdminClientsTab = () => {
                         <TableRow className={dirty ? "bg-primary/5" : open ? "bg-muted/30" : undefined}>
                           <TableCell className="text-muted-foreground">{i + 1}</TableCell>
                           <TableCell>
-                            <Input type="date" className="h-8 w-[130px] text-xs" value={(val(r, "last_session_date") as string) || ""} onChange={(e) => setVal(r.id, "last_session_date", e.target.value)} />
+                            <div className="relative w-[110px]">
+                              <Calendar className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
+                              <Input
+                                type="date"
+                                className="h-8 w-[110px] text-xs pl-7 pr-1.5 [color-scheme:light] dark:[color-scheme:dark]"
+                                value={(val(r, "last_session_date") as string) || ""}
+                                onChange={(e) => setVal(r.id, "last_session_date", e.target.value)}
+                              />
+                            </div>
                           </TableCell>
                           <TableCell>
                             <div className="min-w-[170px]">
