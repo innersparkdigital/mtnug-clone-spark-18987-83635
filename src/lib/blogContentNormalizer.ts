@@ -142,7 +142,7 @@ export const normalizeBlogHtml = (input: string, opts: NormalizeOptions = {}): N
     out.push(`<p>${html}</p>`);
   };
 
-  Array.from(root.childNodes).forEach((node) => {
+  const walk = (nodes: ChildNode[]) => nodes.forEach((node) => {
     if (node.nodeType === Node.TEXT_NODE) {
       const text = cleanText(node.textContent || "");
       if (text) pushLine({ html: escapeHtml(text), text });
@@ -153,6 +153,11 @@ export const normalizeBlogHtml = (input: string, opts: NormalizeOptions = {}): N
     const tag = el.tagName;
 
     if (tag === "P") {
+      // A paragraph that wrongly wraps real blocks: unwrap and process inside.
+      if (el.querySelector("h1,h2,h3,h4,h5,h6,ul,ol,div,blockquote,figure,table")) {
+        walk(Array.from(el.childNodes));
+        return;
+      }
       paragraphLines(el).forEach(pushLine);
       return;
     }
@@ -167,6 +172,7 @@ export const normalizeBlogHtml = (input: string, opts: NormalizeOptions = {}): N
     const text = cleanText(el.textContent || "");
     if (text) pushLine({ html: inlineHtml(el) || escapeHtml(text), text });
   });
+  walk(Array.from(root.childNodes));
   flushAll();
 
   // ---- FAQ extraction -------------------------------------------------
