@@ -13,7 +13,8 @@ import { Loader2, Plus, Pencil, Trash2, Upload, Eye } from "lucide-react";
 import { toast } from "sonner";
 import { uploadContentMedia, slugify } from "./uploadMedia";
 import RichTextEditor from "./RichTextEditor";
-import { BLOG_BODY_TEMPLATE } from "./blogTemplate";
+import { BLOG_BODY_TEMPLATE, BLOG_SECTION_BLOCKS } from "./blogTemplate";
+import { normalizeBlogHtml, auditBlogBody } from "@/lib/blogContentNormalizer";
 
 interface FaqItem { question: string; answer: string }
 
@@ -100,6 +101,21 @@ const BlogsManager = () => {
   };
   const addFaq = () => setForm({ ...form, faqs: [...faqList, { question: "", answer: "" }] });
   const removeFaq = (i: number) => setForm({ ...form, faqs: faqList.filter((_, idx) => idx !== i) });
+
+  const bodyWarnings = auditBlogBody(form.content || "", faqList.filter((f) => f.question?.trim() && f.answer?.trim()).length);
+
+  /** Re-structure a post that was pasted in as flat paragraphs. */
+  const structurePost = () => {
+    const { html, faqs, changed } = normalizeBlogHtml(form.content || "");
+    if (!changed && !faqs.length) { toast.info("This post already looks structured"); return; }
+    const existing = faqList.filter((f) => f.question?.trim() && f.answer?.trim());
+    const merged = [...existing];
+    faqs.forEach((f) => {
+      if (!merged.some((e) => e.question.trim().toLowerCase() === f.question.trim().toLowerCase())) merged.push(f);
+    });
+    setForm((prev) => ({ ...prev, content: html, faqs: merged }));
+    toast.success(faqs.length ? `Structured — ${faqs.length} FAQ(s) moved to the FAQ builder` : "Post structured");
+  };
 
   const handleImage = async (file: File) => {
     setUploading(true);
