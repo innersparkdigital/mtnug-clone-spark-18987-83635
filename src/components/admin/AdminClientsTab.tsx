@@ -489,7 +489,7 @@ const AdminClientsTab = () => {
                                       <Input type="date" className="h-8 text-xs mt-1" value={(val(r, "next_session_date") as string) || ""} onChange={(e) => setVal(r.id, "next_session_date", e.target.value)} />
                                     </div>
                                     <div>
-                                      <Label className="text-[11px] text-muted-foreground">Rating (1–5)</Label>
+                                      <Label className="text-[11px] text-muted-foreground">Rating (1–5) · auto from client feedback</Label>
                                       <Input type="number" min={1} max={5} className="h-8 text-xs mt-1" value={(val(r, "session_rating") as number) ?? ""} onChange={(e) => setVal(r.id, "session_rating", e.target.value)} />
                                     </div>
                                     <div className="col-span-2">
