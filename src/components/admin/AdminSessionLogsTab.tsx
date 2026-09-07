@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Loader2, AlertOctagon, Download, Eye } from "lucide-react";
+import { Loader2, AlertOctagon, Download, Eye, ChevronDown, ChevronRight, Check, Minus } from "lucide-react";
 import { toast } from "sonner";
 import { withTimeout } from "@/lib/rpcTimeout";
 
@@ -33,7 +33,50 @@ interface Log {
   next_appt_service: string | null;
 }
 
+interface HomeworkTask {
+  id: string;
+  tool_key: string;
+  title: string | null;
+  therapist_note: string | null;
+  due_date: string | null;
+  status: string;
+  assigned_at: string;
+  submitted_at: string | null;
+  submission_type: string | null;
+  payload: Record<string, any> | null;
+  screening_score: number | null;
+  screening_severity: string | null;
+  mood_score: number | null;
+  safety_flag: boolean | null;
+}
+
 const CRISIS_STATUSES = new Set(["at_risk", "crisis_activated"]);
+
+const prettyKey = (k: string) =>
+  k.replace(/[-_]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+
+const prettyTool = (k: string) => prettyKey(k);
+
+/** Flatten a submission payload into question / answer rows, marking blanks as not done. */
+const answerRows = (payload: Record<string, any> | null | undefined) => {
+  const rows: { question: string; answer: string; done: boolean }[] = [];
+  const walk = (obj: any, prefix: string) => {
+    if (obj === null || obj === undefined) return;
+    if (Array.isArray(obj)) {
+      obj.forEach((v, i) => walk(v, `${prefix} ${i + 1}`.trim()));
+      return;
+    }
+    if (typeof obj === "object") {
+      Object.entries(obj).forEach(([k, v]) => walk(v, prefix ? `${prefix} — ${prettyKey(k)}` : prettyKey(k)));
+      return;
+    }
+    const answer = String(obj).trim();
+    const done = answer !== "" && answer !== "0";
+    rows.push({ question: prefix || "Response", answer, done });
+  };
+  walk(payload ?? {}, "");
+  return rows;
+};
 
 const AdminSessionLogsTab = () => {
   const [logs, setLogs] = useState<Log[]>([]);
@@ -42,8 +85,11 @@ const AdminSessionLogsTab = () => {
   const [search, setSearch] = useState("");
   const [therapistFilter, setTherapistFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [period, setPeriod] = useState("30");
+  const [period, setPeriod] = useState("all");
   const [detail, setDetail] = useState<Log | null>(null);
+  const [expanded, setExpanded] = useState<string | null>(null);
+  const [homework, setHomework] = useState<HomeworkTask[]>([]);
+  const [hwLoading, setHwLoading] = useState(false);
 
   const load = async () => {
     setLoading(true);
@@ -62,6 +108,20 @@ const AdminSessionLogsTab = () => {
     setLoading(false);
   };
   useEffect(() => { load(); }, []);
+
+  const openDetail = async (l: Log) => {
+    setDetail(l);
+    setHomework([]);
+    setHwLoading(true);
+    const { data, error } = await withTimeout<any>(
+      supabase.rpc("admin_client_homework" as any, { _client_id: l.client_id }),
+      20000,
+      "Loading homework",
+    );
+    if (error) toast.error(error.message);
+    else setHomework((data as HomeworkTask[]) || []);
+    setHwLoading(false);
+  };
 
   const therapists = useMemo(
     () => Array.from(new Map(logs.map((r) => [r.therapist_id, r.therapist_name])).entries()),
@@ -172,61 +232,89 @@ const AdminSessionLogsTab = () => {
               <Button variant="outline" size="sm" onClick={load}>Retry</Button>
             </div>
           ) : (
-            <div className="overflow-x-auto">
+            <div className="rounded-lg border overflow-hidden">
               <Table>
                 <TableHeader>
-                  <TableRow>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Therapist</TableHead>
-                    <TableHead>Client</TableHead>
-                    <TableHead>Service</TableHead>
-                    <TableHead>Duration</TableHead>
-                    <TableHead>Progress</TableHead>
-                    <TableHead className="min-w-[200px]">Homework</TableHead>
-                    <TableHead className="min-w-[150px]">Next session</TableHead>
-                    <TableHead className="min-w-[320px]">Notes</TableHead>
-                    <TableHead className="text-right">Full record</TableHead>
+                  <TableRow className="bg-muted/40">
+                    <TableHead className="w-8" />
+                    <TableHead className="w-[110px]">Date</TableHead>
+                    <TableHead className="min-w-[150px]">Client</TableHead>
+                    <TableHead className="min-w-[140px]">Therapist</TableHead>
+                    <TableHead className="min-w-[150px]">Session</TableHead>
+                    <TableHead className="min-w-[130px]">Progress</TableHead>
+                    <TableHead className="w-[110px]">Homework</TableHead>
+                    <TableHead className="min-w-[120px]">Next session</TableHead>
+                    <TableHead className="text-right w-[90px]">Details</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filtered.map((l) => (
-                    <TableRow key={l.id} className={CRISIS_STATUSES.has(l.progress_status) ? "bg-red-500/5" : ""}>
-                      <TableCell className="text-xs">{l.session_date}</TableCell>
-                      <TableCell className="text-sm">{l.therapist_name}</TableCell>
-                      <TableCell className="text-sm">
-                        {l.client_name}
-                        {l.is_new_client && <Badge variant="outline" className="ml-1 text-[10px]">NEW</Badge>}
-                      </TableCell>
-                      <TableCell className="text-xs">{l.service_delivered}</TableCell>
-                      <TableCell>
-                        <Badge variant={CRISIS_STATUSES.has(l.progress_status) ? "destructive" : "outline"} className="text-xs">
-                          {CRISIS_STATUSES.has(l.progress_status) && <AlertOctagon className="h-3 w-3 mr-1" />}
-                          {l.progress_status.replace(/_/g, " ")}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-xs whitespace-nowrap">{l.duration || "—"}</TableCell>
-                      <TableCell className="text-xs align-top">
-                        {l.homework_given ? (
-                          <span className="whitespace-pre-wrap break-words">
-                            {l.homework_text?.trim() || "Given"}
-                          </span>
-                        ) : "—"}
-                      </TableCell>
-                      <TableCell className="text-xs align-top">
-                        <span className="capitalize">{l.next_appt_booked || "—"}</span>
-                        {l.next_appt_date && <div className="text-muted-foreground">{l.next_appt_date}</div>}
-                        {l.next_appt_service && <div className="text-muted-foreground">{l.next_appt_service}</div>}
-                      </TableCell>
-                      <TableCell className="text-xs align-top">
-                        <span className="whitespace-pre-wrap break-words">{l.notes?.trim() || "—"}</span>
-                      </TableCell>
-                      <TableCell className="text-right align-top">
-                        <Button variant="ghost" size="sm" className="h-7 px-2" onClick={() => setDetail(l)}>
-                          <Eye className="h-3.5 w-3.5 mr-1" /> View
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                  {filtered.map((l) => {
+                    const crisis = CRISIS_STATUSES.has(l.progress_status);
+                    const isOpen = expanded === l.id;
+                    return (
+                      <>
+                        <TableRow key={l.id} className={crisis ? "bg-red-500/5 align-top" : "align-top"}>
+                          <TableCell className="pr-0">
+                            <button
+                              aria-label={isOpen ? "Hide notes" : "Show notes"}
+                              onClick={() => setExpanded(isOpen ? null : l.id)}
+                              className="text-muted-foreground hover:text-foreground"
+                            >
+                              {isOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                            </button>
+                          </TableCell>
+                          <TableCell className="text-xs whitespace-nowrap">{l.session_date}</TableCell>
+                          <TableCell className="text-sm">
+                            <div className="font-medium">{l.client_name}</div>
+                            <div className="text-[11px] text-muted-foreground">
+                              {l.is_new_client ? "New client" : "Returning"}
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-sm">{l.therapist_name}</TableCell>
+                          <TableCell className="text-xs">
+                            <div>{l.service_delivered}</div>
+                            <div className="text-muted-foreground">{l.duration || "—"}</div>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant={crisis ? "destructive" : "outline"} className="text-[11px] whitespace-nowrap">
+                              {crisis && <AlertOctagon className="h-3 w-3 mr-1" />}
+                              {l.progress_status.replace(/_/g, " ")}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-xs">
+                            {l.homework_given
+                              ? <Badge variant="secondary" className="text-[11px]">Given</Badge>
+                              : <span className="text-muted-foreground">None</span>}
+                          </TableCell>
+                          <TableCell className="text-xs">
+                            <span className="capitalize">{l.next_appt_booked || "—"}</span>
+                            {l.next_appt_date && <div className="text-muted-foreground">{l.next_appt_date}</div>}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <Button variant="ghost" size="sm" className="h-7 px-2" onClick={() => openDetail(l)}>
+                              <Eye className="h-3.5 w-3.5 mr-1" /> View
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                        {isOpen && (
+                          <TableRow key={`${l.id}-x`} className="bg-muted/20 hover:bg-muted/20">
+                            <TableCell />
+                            <TableCell colSpan={8} className="py-4">
+                              <div className="grid md:grid-cols-2 gap-4 max-w-4xl">
+                                <LongField label="Session notes" value={l.notes} />
+                                <LongField label="Homework given" value={l.homework_given ? (l.homework_text || "Given") : "None"} />
+                              </div>
+                              <p className="text-[11px] text-muted-foreground mt-2">
+                                Next session: {l.next_appt_booked || "—"}
+                                {l.next_appt_date ? ` · ${l.next_appt_date}` : ""}
+                                {l.next_appt_service ? ` · ${l.next_appt_service}` : ""}
+                              </p>
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </>
+                    );
+                  })}
                 </TableBody>
               </Table>
               {filtered.length === 0 && <p className="text-center text-muted-foreground py-8 text-sm">No logs match these filters.</p>}
@@ -236,12 +324,12 @@ const AdminSessionLogsTab = () => {
       </Card>
 
       <Dialog open={!!detail} onOpenChange={(o) => !o && setDetail(null)}>
-        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+        <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Session record</DialogTitle>
           </DialogHeader>
           {detail && (
-            <div className="space-y-4 text-sm">
+            <div className="space-y-5 text-sm">
               <div className="grid sm:grid-cols-2 gap-3">
                 <Field label="Session date" value={detail.session_date} />
                 <Field label="Logged at" value={new Date(detail.created_at).toLocaleString()} />
@@ -258,8 +346,72 @@ const AdminSessionLogsTab = () => {
                 <Field label="Next appointment date" value={detail.next_appt_date} />
                 <Field label="Next appointment service" value={detail.next_appt_service} />
               </div>
-              <LongField label="Homework details" value={detail.homework_text} />
+              <LongField label="Homework details (from this session)" value={detail.homework_text} />
               <LongField label="Session notes" value={detail.notes} />
+
+              <div>
+                <p className="text-xs text-muted-foreground mb-2">
+                  Assigned homework tasks for {detail.client_name} — question by question
+                </p>
+                {hwLoading ? (
+                  <div className="flex justify-center py-6"><Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /></div>
+                ) : homework.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">No homework tasks assigned to this client yet.</p>
+                ) : (
+                  <div className="space-y-3">
+                    {homework.map((t) => {
+                      const rows = answerRows(t.payload);
+                      const done = rows.filter((r) => r.done).length;
+                      const completed = !!t.submitted_at && t.submission_type === "final";
+                      return (
+                        <div key={t.id} className="rounded-md border">
+                          <div className="flex items-start justify-between gap-3 p-3 bg-muted/30">
+                            <div>
+                              <p className="font-medium">{t.title?.trim() || prettyTool(t.tool_key)}</p>
+                              <p className="text-[11px] text-muted-foreground">
+                                Assigned {new Date(t.assigned_at).toLocaleDateString()}
+                                {t.due_date ? ` · due ${t.due_date}` : ""}
+                                {t.submitted_at ? ` · submitted ${new Date(t.submitted_at).toLocaleDateString()}` : ""}
+                              </p>
+                              {t.therapist_note && <p className="text-[11px] text-muted-foreground mt-1">Note: {t.therapist_note}</p>}
+                            </div>
+                            <div className="text-right shrink-0 space-y-1">
+                              <Badge variant={completed ? "secondary" : t.submitted_at ? "outline" : "destructive"} className="text-[11px]">
+                                {completed ? "Completed" : t.submitted_at ? "In progress" : "Not started"}
+                              </Badge>
+                              {rows.length > 0 && (
+                                <p className="text-[11px] text-muted-foreground">{done}/{rows.length} answered</p>
+                              )}
+                            </div>
+                          </div>
+                          {rows.length > 0 && (
+                            <ul className="divide-y">
+                              {rows.map((r, i) => (
+                                <li key={i} className="flex items-start gap-2 px-3 py-2 text-xs">
+                                  {r.done
+                                    ? <Check className="h-3.5 w-3.5 text-emerald-600 mt-0.5 shrink-0" />
+                                    : <Minus className="h-3.5 w-3.5 text-muted-foreground mt-0.5 shrink-0" />}
+                                  <span className="w-44 shrink-0 text-muted-foreground">{r.question}</span>
+                                  <span className="flex-1 whitespace-pre-wrap break-words">
+                                    {r.done ? r.answer : <span className="text-muted-foreground italic">not done</span>}
+                                  </span>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                          {(t.screening_score !== null || t.mood_score !== null || t.safety_flag) && (
+                            <div className="px-3 py-2 border-t text-[11px] text-muted-foreground flex flex-wrap gap-3">
+                              {t.screening_score !== null && <span>Score: {t.screening_score}{t.screening_severity ? ` (${t.screening_severity})` : ""}</span>}
+                              {t.mood_score !== null && <span>Mood: {t.mood_score}</span>}
+                              {t.safety_flag && <span className="text-destructive font-medium">Safety flag raised</span>}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </DialogContent>
