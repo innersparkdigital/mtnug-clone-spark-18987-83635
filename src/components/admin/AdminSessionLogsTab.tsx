@@ -182,9 +182,9 @@ const AdminSessionLogsTab = () => {
                     <TableHead>Service</TableHead>
                     <TableHead>Duration</TableHead>
                     <TableHead>Progress</TableHead>
-                    <TableHead>Homework</TableHead>
+                    <TableHead className="min-w-[200px]">Homework</TableHead>
                     <TableHead className="min-w-[150px]">Next session</TableHead>
-                    <TableHead className="min-w-[260px]">Notes</TableHead>
+                    <TableHead className="min-w-[320px]">Notes</TableHead>
                     <TableHead className="text-right">Full record</TableHead>
                   </TableRow>
                 </TableHeader>
