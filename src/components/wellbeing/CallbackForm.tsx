@@ -5,6 +5,8 @@ import { Phone, Lock } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { motion, AnimatePresence } from 'framer-motion';
+import PhoneField from '@/components/PhoneField';
+import { isValidE164 } from '@/lib/phoneCountries';
 
 interface CallbackFormProps {
   percentage: number;
@@ -27,8 +29,8 @@ const CallbackForm = ({ percentage, rawScore, sessionId, source, deviceType, onC
   if (percentage > 50) return null;
 
   const handleSubmit = async () => {
-    if (!fullName.trim() || !phone.trim()) {
-      toast({ title: 'Please fill in all fields', variant: 'destructive' });
+    if (!fullName.trim() || !isValidE164(phone)) {
+      toast({ title: 'Please add your name and a valid phone number', variant: 'destructive' });
       return;
     }
     setSubmitting(true);
@@ -119,13 +121,7 @@ const CallbackForm = ({ percentage, rawScore, sessionId, source, deviceType, onC
               onChange={e => setFullName(e.target.value)}
               className="rounded-xl"
             />
-            <Input
-              placeholder="Phone Number (e.g. +256...)"
-              type="tel"
-              value={phone}
-              onChange={e => setPhone(e.target.value)}
-              className="rounded-xl"
-            />
+            <PhoneField value={phone} onChange={setPhone} placeholder="Phone number" />
             <Button
               onClick={handleSubmit}
               disabled={submitting}

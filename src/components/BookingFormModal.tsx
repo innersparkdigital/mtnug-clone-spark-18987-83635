@@ -31,6 +31,8 @@ import {
   Phone,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import PhoneField from "@/components/PhoneField";
+import { isValidE164 } from "@/lib/phoneCountries";
 import { trackBookingFormOpened, trackBookingSubmitted, trackWhatsAppClick } from "@/lib/analytics";
 import { trackGadsBookingConversion, trackGadsWhatsAppClick, trackGadsThankYouConversion } from "@/lib/gadsTracking";
 import { supabase } from "@/integrations/supabase/client";
@@ -609,14 +611,12 @@ const ContactFields = ({
     </div>
     <div>
       <Label htmlFor="booking-phone">Phone number</Label>
-      <div className="relative mt-1.5">
-        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input
+      <div className="mt-1.5">
+        <PhoneField
           id="booking-phone"
-          className="pl-10"
-          placeholder="+256 7XX XXX XXX"
           value={data.phone}
-          onChange={(e) => setData((d) => ({ ...d, phone: e.target.value }))}
+          onChange={(phone) => setData((d) => ({ ...d, phone }))}
+          placeholder="7XX XXX XXX"
         />
       </div>
     </div>

@@ -1,3 +1,5 @@
+import PhoneField from "@/components/PhoneField";
+import { isValidE164 } from "@/lib/phoneCountries";
 import { useState } from "react";
 import { Loader2, Check, X, Calendar, MessageSquare, Users, Video, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -130,7 +132,7 @@ const AmaniInlineForm = ({ kind, sessionId, anonymousId, therapistName, onClose,
   const submit = async () => {
     setError(null);
     if (name.trim().length < 2) return setError("Please add your name.");
-    if (!/^[+\d][\d\s()-]{6,}$/.test(phone.trim())) return setError("Please enter a valid WhatsApp number.");
+    if (!isValidE164(phone)) return setError("Please enter a valid WhatsApp number.");
     if (email.trim() && !/^\S+@\S+\.\S+$/.test(email.trim())) return setError("That email doesn't look right.");
     if (cfg.needsSlot && (!date || !time)) return setError("Please pick a date and time that suits you.");
     if (kind !== "group" && concern === "Something else" && concernOther.trim().length < 3)
@@ -239,7 +241,7 @@ const AmaniInlineForm = ({ kind, sessionId, anonymousId, therapistName, onClose,
       </div>
 
       <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" maxLength={120} className={inputCls} />
-      <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="WhatsApp e.g. 0792 085 773" maxLength={30} className={inputCls} />
+      <PhoneField compact value={phone} onChange={setPhone} placeholder="WhatsApp e.g. 792 085 773" aria-label="WhatsApp number" />
       <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email (for your confirmation)" maxLength={120} className={inputCls} />
 
       {kind === "group" ? (
