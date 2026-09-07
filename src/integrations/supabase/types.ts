@@ -3743,6 +3743,7 @@ export type Database = {
         Returns: string
       }
       admin_client_detail: { Args: { _client_id: string }; Returns: Json }
+      admin_client_homework: { Args: { _client_id: string }; Returns: Json }
       admin_create_client:
         | {
             Args: {
