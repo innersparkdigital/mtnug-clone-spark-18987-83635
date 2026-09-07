@@ -576,7 +576,7 @@ const Specialists = () => {
               "@type": "ItemList",
               "name": "Mental Health Professionals",
               "description": "Directory of licensed therapists, counselors, and psychologists",
-              "numberOfItems": 15
+              ...(specialists.length ? { "numberOfItems": specialists.length } : {})
             }
           })}
         </script>
