@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { SESSION_TYPES, normalizeSessionType } from "@/lib/sessionTypes";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -12,7 +13,7 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Loader2, AlertOctagon, Download, Eye, Receipt, Save, MessageCircle, Plus, Trash2, Mail, FileSpreadsheet, ChevronLeft, ChevronRight } from "lucide-react";
+import { Loader2, AlertOctagon, Download, Eye, Receipt, Save, MessageCircle, Plus, Trash2, Mail, FileSpreadsheet, ChevronLeft, ChevronRight, ChevronDown, ChevronUp } from "lucide-react";
 import { toast } from "sonner";
 import AdminClientDetailDialog from "./AdminClientDetailDialog";
 import AddClientDialog from "./AddClientDialog";
@@ -81,6 +82,7 @@ const AdminClientsTab = () => {
   const [payingId, setPayingId] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(25);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const load = async () => {
     setLoading(true);
@@ -336,12 +338,12 @@ const AdminClientsTab = () => {
           {loading ? (
             <div className="flex justify-center py-12"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
           ) : (
-            <div className="overflow-x-auto">
-              <Table className="min-w-[1800px] text-xs">
+            <div className="overflow-x-auto rounded-lg border">
+              <Table className="min-w-[1050px] text-xs">
                 <TableHeader>
-                  <TableRow>
-                    {["#", "Session Date", "Client Name", "Client Code", "Client Type", "Client Number", "Email", "Country", "Therapist Name", "Presenting Concern", "Session Type", "Duration", "Rating", "Next Session", "Would Rebook", "Amount UGX", "Therapist UGX", "InnerSpark UGX", "Client Paid", "Therapist Paid", "Risk", "Actions"].map((h) => (
-                      <TableHead key={h} className="whitespace-nowrap text-[11px]">{h}</TableHead>
+                  <TableRow className="bg-muted/50 hover:bg-muted/50">
+                    {["#", "Session date", "Client", "Therapist", "Session type", "Amount", "Payment", "Risk", ""].map((h, hi) => (
+                      <TableHead key={hi} className="whitespace-nowrap text-[11px] h-9">{h}</TableHead>
                     ))}
                   </TableRow>
                 </TableHeader>
@@ -350,119 +352,173 @@ const AdminClientsTab = () => {
                     const i = (page - 1) * pageSize + idx;
                     const risk = riskLevel(r);
                     const dirty = !!edits[r.id];
+                    const open = expandedId === r.id;
                     const amount = Number(val(r, "amount_ugx") || 0);
                     const tShare = Number(val(r, "therapist_share_ugx") ?? (amount ? Math.round(amount * 0.6) : 0));
+                    const paid = (val(r, "paid_status") as string) || "";
+                    const clientType = (val(r, "client_type") as string) || "new";
                     return (
-                      <TableRow key={r.id} className={dirty ? "bg-primary/5" : ""}>
-                        <TableCell className="text-muted-foreground">{i + 1}</TableCell>
-                        <TableCell>
-                          <Input type="date" className="h-8 w-[130px] text-xs" value={(val(r, "last_session_date") as string) || ""} onChange={(e) => setVal(r.id, "last_session_date", e.target.value)} />
-                        </TableCell>
-                        <TableCell className="font-medium whitespace-nowrap">{r.full_name}</TableCell>
-                        <TableCell className="font-mono">{r.client_code || "—"}</TableCell>
-                        <TableCell>
-                          <Select value={(val(r, "client_type") as string) || "new"} onValueChange={(v) => setVal(r.id, "client_type", v)}>
-                            <SelectTrigger className="h-8 w-[110px] text-xs"><SelectValue /></SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="new">New</SelectItem>
-                              <SelectItem value="returning">Returning</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </TableCell>
-                        <TableCell className="whitespace-nowrap">{r.phone || "—"}</TableCell>
-                        <TableCell className="max-w-[160px] truncate">{r.email || "—"}</TableCell>
-                        <TableCell>
-                          <Input className="h-8 w-[90px] text-xs" placeholder="Uganda" value={(val(r, "country") as string) || ""} onChange={(e) => setVal(r.id, "country", e.target.value)} />
-                        </TableCell>
-                        <TableCell className="whitespace-nowrap">{r.therapist_name}</TableCell>
-                        <TableCell className="max-w-[160px] truncate">{r.presenting_concern || "—"}</TableCell>
-                        <TableCell>
-                          <Select value={normalizeSessionType(val(r, "session_type") as string) || ""} onValueChange={(v) => setVal(r.id, "session_type", v)}>
-                            <SelectTrigger className="h-8 w-[190px] text-xs"><SelectValue placeholder="Needs review" /></SelectTrigger>
-                            <SelectContent>{SESSION_TYPES.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
-                          </Select>
-                        </TableCell>
-                        <TableCell>
-                          <Input type="number" className="h-8 w-[70px] text-xs" value={(val(r, "duration_mins") as number) ?? ""} onChange={(e) => setVal(r.id, "duration_mins", e.target.value)} />
-                        </TableCell>
-                        <TableCell>
-                          <Input type="number" min={1} max={5} className="h-8 w-[60px] text-xs" value={(val(r, "session_rating") as number) ?? ""} onChange={(e) => setVal(r.id, "session_rating", e.target.value)} />
-                        </TableCell>
-                        <TableCell>
-                          <Input type="date" className="h-8 w-[130px] text-xs" value={(val(r, "next_session_date") as string) || ""} onChange={(e) => setVal(r.id, "next_session_date", e.target.value)} />
-                        </TableCell>
-                        <TableCell>
-                          <Select value={val(r, "would_rebook") === null || val(r, "would_rebook") === undefined ? "" : val(r, "would_rebook") ? "yes" : "no"} onValueChange={(v) => setVal(r.id, "would_rebook", v === "yes")}>
-                            <SelectTrigger className="h-8 w-[80px] text-xs"><SelectValue placeholder="—" /></SelectTrigger>
-                            <SelectContent><SelectItem value="yes">Yes</SelectItem><SelectItem value="no">No</SelectItem></SelectContent>
-                          </Select>
-                        </TableCell>
-                        <TableCell>
-                          <Input type="number" className="h-8 w-[100px] text-xs" value={(val(r, "amount_ugx") as number) ?? ""} onChange={(e) => setVal(r.id, "amount_ugx", e.target.value)} />
-                        </TableCell>
-                        <TableCell>
-                          <Input type="number" className="h-8 w-[100px] text-xs" value={(val(r, "therapist_share_ugx") as number) ?? (amount ? Math.round(amount * 0.6) : "")} onChange={(e) => setVal(r.id, "therapist_share_ugx", e.target.value)} />
-                        </TableCell>
-                        <TableCell className="whitespace-nowrap">{amount ? fmtUGX(amount - tShare) : "—"}</TableCell>
-                        <TableCell>
-                          <Select value={(val(r, "paid_status") as string) || ""} onValueChange={(v) => setVal(r.id, "paid_status", v)}>
-                            <SelectTrigger className="h-8 w-[100px] text-xs"><SelectValue placeholder="—" /></SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="paid">Paid</SelectItem>
-                              <SelectItem value="pending">Pending</SelectItem>
-                              <SelectItem value="waived">Waived</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-2">
-                            <Switch
-                              checked={!!r.therapist_paid}
-                              disabled={payingId === r.id}
-                              onCheckedChange={(v) => toggleTherapistPaid(r, v)}
-                            />
-                            <span className="text-[10px] text-muted-foreground whitespace-nowrap">
-                              {r.therapist_paid ? "Paid out" : "Unpaid"}
-                            </span>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant={risk === "high" ? "destructive" : risk === "medium" ? "outline" : "secondary"} className="text-[10px]">
-                            {r.open_alerts > 0 && <AlertOctagon className="h-3 w-3 mr-1" />}
-                            {risk}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex gap-1">
-                            <Button size="sm" variant={dirty ? "default" : "ghost"} disabled={!dirty || savingId === r.id} onClick={() => saveRow(r)} title="Save session">
-                              {savingId === r.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-                            </Button>
-                            <Button size="sm" variant="ghost" disabled={receiptId === r.id} onClick={() => generateReceipt(r)} title="Generate receipt (email + WhatsApp)">
-                              {receiptId === r.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Receipt className="h-4 w-4" />}
-                            </Button>
-                            <Button size="sm" variant="ghost" disabled={receiptId === r.id || !r.email} onClick={() => emailReceipt(r)} title="Email receipt to client">
-                              <Mail className="h-4 w-4" />
-                            </Button>
-                            {r.receipt_url && (
-                              <Button size="sm" variant="ghost" title="Share receipt on WhatsApp" onClick={() => window.open(`https://wa.me/${(r.phone || "").replace(/[^0-9]/g, "")}?text=${encodeURIComponent(`Your InnerSpark receipt: ${r.receipt_url}`)}`, "_blank")}>
-                                <MessageCircle className="h-4 w-4" />
+                      <Fragment key={r.id}>
+                        <TableRow className={dirty ? "bg-primary/5" : open ? "bg-muted/30" : undefined}>
+                          <TableCell className="text-muted-foreground">{i + 1}</TableCell>
+                          <TableCell>
+                            <Input type="date" className="h-8 w-[130px] text-xs" value={(val(r, "last_session_date") as string) || ""} onChange={(e) => setVal(r.id, "last_session_date", e.target.value)} />
+                          </TableCell>
+                          <TableCell>
+                            <div className="min-w-[170px]">
+                              <button className="font-medium hover:underline text-left" onClick={() => setSelectedId(r.id)}>{r.full_name}</button>
+                              <div className="flex items-center gap-1.5 mt-0.5">
+                                <Badge variant={clientType === "returning" ? "default" : "secondary"} className="text-[10px] px-1.5 py-0">
+                                  {clientType === "returning" ? "Returning" : "New"}
+                                </Badge>
+                                <span className="font-mono text-[10px] text-muted-foreground">{r.client_code || "—"}</span>
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell className="whitespace-nowrap text-muted-foreground">{r.therapist_name}</TableCell>
+                          <TableCell>
+                            <Select value={normalizeSessionType(val(r, "session_type") as string) || ""} onValueChange={(v) => setVal(r.id, "session_type", v)}>
+                              <SelectTrigger className="h-8 w-[185px] text-xs"><SelectValue placeholder="Needs review" /></SelectTrigger>
+                              <SelectContent>{SESSION_TYPES.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
+                            </Select>
+                          </TableCell>
+                          <TableCell>
+                            <Input type="number" className="h-8 w-[100px] text-xs" placeholder="0" value={(val(r, "amount_ugx") as number) ?? ""} onChange={(e) => setVal(r.id, "amount_ugx", e.target.value)} />
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex flex-col gap-1">
+                              <Select value={paid} onValueChange={(v) => setVal(r.id, "paid_status", v)}>
+                                <SelectTrigger className="h-8 w-[105px] text-xs"><SelectValue placeholder="—" /></SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="paid">Paid</SelectItem>
+                                  <SelectItem value="pending">Pending</SelectItem>
+                                  <SelectItem value="waived">Waived</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <span className="text-[10px] text-muted-foreground whitespace-nowrap">
+                                Therapist: {r.therapist_paid ? "paid out" : "unpaid"}
+                              </span>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant={risk === "high" ? "destructive" : risk === "medium" ? "outline" : "secondary"} className="text-[10px]">
+                              {r.open_alerts > 0 && <AlertOctagon className="h-3 w-3 mr-1" />}
+                              {risk}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-1 justify-end">
+                              {dirty && (
+                                <Button size="sm" disabled={savingId === r.id} onClick={() => saveRow(r)} title="Save session">
+                                  {savingId === r.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+                                </Button>
+                              )}
+                              <Button size="sm" variant="ghost" onClick={() => setExpandedId(open ? null : r.id)} title={open ? "Hide details" : "Show all details"}>
+                                {open ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                               </Button>
-                            )}
-                            <Button size="sm" variant="ghost" onClick={() => setSelectedId(r.id)} title="View client">
-                              <Eye className="h-4 w-4" />
-                            </Button>
-                            <Button size="sm" variant="ghost" className="text-destructive" onClick={() => setDeleteRow(r)} title="Delete client">
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+
+                        {open && (
+                          <TableRow className="bg-muted/20 hover:bg-muted/20">
+                            <TableCell colSpan={9} className="p-4">
+                              <div className="grid gap-4 md:grid-cols-3">
+                                <div className="space-y-2">
+                                  <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Contact</p>
+                                  <p><span className="text-muted-foreground">Phone:</span> {r.phone || "—"}</p>
+                                  <p className="break-all"><span className="text-muted-foreground">Email:</span> {r.email || "—"}</p>
+                                  <div>
+                                    <Label className="text-[11px] text-muted-foreground">Country</Label>
+                                    <Input className="h-8 text-xs mt-1" placeholder="Uganda" value={(val(r, "country") as string) || ""} onChange={(e) => setVal(r.id, "country", e.target.value)} />
+                                  </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                  <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Session detail</p>
+                                  <div className="grid grid-cols-2 gap-2">
+                                    <div>
+                                      <Label className="text-[11px] text-muted-foreground">Client type</Label>
+                                      <Select value={clientType} onValueChange={(v) => setVal(r.id, "client_type", v)}>
+                                        <SelectTrigger className="h-8 text-xs mt-1"><SelectValue /></SelectTrigger>
+                                        <SelectContent>
+                                          <SelectItem value="new">New</SelectItem>
+                                          <SelectItem value="returning">Returning</SelectItem>
+                                        </SelectContent>
+                                      </Select>
+                                    </div>
+                                    <div>
+                                      <Label className="text-[11px] text-muted-foreground">Duration (mins)</Label>
+                                      <Input type="number" className="h-8 text-xs mt-1" value={(val(r, "duration_mins") as number) ?? ""} onChange={(e) => setVal(r.id, "duration_mins", e.target.value)} />
+                                    </div>
+                                    <div>
+                                      <Label className="text-[11px] text-muted-foreground">Next session</Label>
+                                      <Input type="date" className="h-8 text-xs mt-1" value={(val(r, "next_session_date") as string) || ""} onChange={(e) => setVal(r.id, "next_session_date", e.target.value)} />
+                                    </div>
+                                    <div>
+                                      <Label className="text-[11px] text-muted-foreground">Rating (1–5)</Label>
+                                      <Input type="number" min={1} max={5} className="h-8 text-xs mt-1" value={(val(r, "session_rating") as number) ?? ""} onChange={(e) => setVal(r.id, "session_rating", e.target.value)} />
+                                    </div>
+                                    <div className="col-span-2">
+                                      <Label className="text-[11px] text-muted-foreground">Would rebook</Label>
+                                      <Select value={val(r, "would_rebook") === null || val(r, "would_rebook") === undefined ? "" : val(r, "would_rebook") ? "yes" : "no"} onValueChange={(v) => setVal(r.id, "would_rebook", v === "yes")}>
+                                        <SelectTrigger className="h-8 text-xs mt-1"><SelectValue placeholder="—" /></SelectTrigger>
+                                        <SelectContent><SelectItem value="yes">Yes</SelectItem><SelectItem value="no">No</SelectItem></SelectContent>
+                                      </Select>
+                                    </div>
+                                  </div>
+                                  <div>
+                                    <p className="text-[11px] text-muted-foreground">Presenting concern</p>
+                                    <p className="whitespace-pre-wrap leading-relaxed">{r.presenting_concern || "—"}</p>
+                                  </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                  <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Money & actions</p>
+                                  <div>
+                                    <Label className="text-[11px] text-muted-foreground">Therapist share (UGX)</Label>
+                                    <Input type="number" className="h-8 text-xs mt-1" value={(val(r, "therapist_share_ugx") as number) ?? (amount ? Math.round(amount * 0.6) : "")} onChange={(e) => setVal(r.id, "therapist_share_ugx", e.target.value)} />
+                                  </div>
+                                  <p><span className="text-muted-foreground">InnerSpark share:</span> {amount ? fmtUGX(amount - tShare) : "—"}</p>
+                                  <div className="flex items-center gap-2">
+                                    <Switch checked={!!r.therapist_paid} disabled={payingId === r.id} onCheckedChange={(v) => toggleTherapistPaid(r, v)} />
+                                    <span className="text-[11px] text-muted-foreground">{r.therapist_paid ? "Therapist paid out" : "Therapist unpaid"}</span>
+                                  </div>
+                                  <div className="flex flex-wrap gap-1 pt-1">
+                                    <Button size="sm" variant={dirty ? "default" : "outline"} disabled={!dirty || savingId === r.id} onClick={() => saveRow(r)}>
+                                      {savingId === r.id ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Save className="h-4 w-4 mr-1" />}Save
+                                    </Button>
+                                    <Button size="sm" variant="outline" disabled={receiptId === r.id} onClick={() => generateReceipt(r)}>
+                                      {receiptId === r.id ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Receipt className="h-4 w-4 mr-1" />}Receipt
+                                    </Button>
+                                    <Button size="sm" variant="outline" disabled={receiptId === r.id || !r.email} onClick={() => emailReceipt(r)}>
+                                      <Mail className="h-4 w-4 mr-1" />Email
+                                    </Button>
+                                    {r.receipt_url && (
+                                      <Button size="sm" variant="outline" onClick={() => window.open(`https://wa.me/${(r.phone || "").replace(/[^0-9]/g, "")}?text=${encodeURIComponent(`Your InnerSpark receipt: ${r.receipt_url}`)}`, "_blank")}>
+                                        <MessageCircle className="h-4 w-4 mr-1" />WhatsApp
+                                      </Button>
+                                    )}
+                                    <Button size="sm" variant="outline" onClick={() => setSelectedId(r.id)}>
+                                      <Eye className="h-4 w-4 mr-1" />Full profile
+                                    </Button>
+                                    <Button size="sm" variant="outline" className="text-destructive" onClick={() => setDeleteRow(r)}>
+                                      <Trash2 className="h-4 w-4 mr-1" />Delete
+                                    </Button>
+                                  </div>
+                                </div>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </Fragment>
                     );
                   })}
                 </TableBody>
               </Table>
               {filtered.length === 0 && <p className="text-center text-muted-foreground py-8 text-sm">No clients match these filters.</p>}
             </div>
+
           )}
 
           {!loading && filtered.length > 0 && (
