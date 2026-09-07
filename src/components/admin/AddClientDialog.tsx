@@ -6,11 +6,27 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Loader2 } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Loader2, Check, ChevronsUpDown } from "lucide-react";
 import { toast } from "sonner";
 
-const SESSION_TYPES = ["individual", "couples", "teen", "group", "corporate"];
+import { SESSION_TYPES, DEFAULT_SESSION_TYPE, normalizeSessionType } from "@/lib/sessionTypes";
+
 const COUNTRIES = ["Uganda", "Kenya", "Tanzania", "Rwanda", "Nigeria", "Ghana", "South Africa", "Other"];
+
+type ExistingClient = {
+  id: string;
+  full_name: string;
+  email: string | null;
+  phone: string | null;
+  country: string | null;
+  presenting_concern: string | null;
+  session_type: string | null;
+  duration_mins: number | null;
+  therapist_id: string;
+  last_session_date: string | null;
+};
 
 const empty = {
   therapist_id: "",
@@ -19,7 +35,7 @@ const empty = {
   phone: "",
   presenting_concern: "",
   country: "Uganda",
-  session_type: "individual",
+  session_type: DEFAULT_SESSION_TYPE as string,
   duration_mins: "60",
   last_session_date: "",
   next_session_date: "",
@@ -28,7 +44,6 @@ const empty = {
   paid_status: "pending",
   session_rating: "",
   would_rebook: "",
-  client_type: "new",
 };
 
 const AddClientDialog = ({
@@ -43,6 +58,10 @@ const AddClientDialog = ({
   const [therapists, setTherapists] = useState<{ id: string; full_name: string }[]>([]);
   const [form, setForm] = useState({ ...empty });
   const [saving, setSaving] = useState(false);
+  const [mode, setMode] = useState<"new" | "returning">("new");
+  const [existing, setExisting] = useState<ExistingClient[]>([]);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState<string>("");
 
   useEffect(() => {
     if (!open) return;
@@ -53,6 +72,45 @@ const AddClientDialog = ({
       .order("full_name")
       .then(({ data }) => setTherapists((data as any[]) || []));
   }, [open]);
+
+  // Existing clients power the returning-client autocomplete.
+  useEffect(() => {
+    if (!open || mode !== "returning" || existing.length) return;
+    supabase.rpc("admin_list_all_clients" as any).then(({ data, error }) => {
+      if (error) return toast.error(error.message);
+      const rows = ((data as any[]) || []).filter((r) => r.full_name);
+      const latest = new Map<string, ExistingClient>();
+      for (const r of rows) {
+        const key = (r.full_name as string).trim().toLowerCase();
+        const prev = latest.get(key);
+        const date = r.last_session_date || "";
+        if (!prev || date > (prev.last_session_date || "")) latest.set(key, r as ExistingClient);
+      }
+      setExisting(Array.from(latest.values()).sort((a, b) => a.full_name.localeCompare(b.full_name)));
+    });
+  }, [open, mode, existing.length]);
+
+  const chooseExisting = (c: ExistingClient) => {
+    setSelectedId(c.id);
+    setPickerOpen(false);
+    setForm((f) => ({
+      ...f,
+      full_name: c.full_name || "",
+      email: c.email || "",
+      phone: c.phone || "",
+      country: c.country || "Uganda",
+      presenting_concern: c.presenting_concern || "",
+      session_type: normalizeSessionType(c.session_type) || DEFAULT_SESSION_TYPE,
+      therapist_id: c.therapist_id || f.therapist_id,
+      duration_mins: c.duration_mins ? String(c.duration_mins) : f.duration_mins,
+    }));
+  };
+
+  const switchMode = (m: "new" | "returning") => {
+    setMode(m);
+    setSelectedId("");
+    setForm({ ...empty });
+  };
 
   const set = (k: keyof typeof empty, v: string) => setForm((f) => ({ ...f, [k]: v }));
 
@@ -81,12 +139,14 @@ const AddClientDialog = ({
       _paid_status: form.paid_status || null,
       _session_rating: form.session_rating ? Number(form.session_rating) : null,
       _would_rebook: form.would_rebook === "" ? null : form.would_rebook === "yes",
-      _client_type: form.client_type,
+      _client_type: mode,
     });
     setSaving(false);
     if (error) return toast.error(error.message);
     toast.success("Client added");
     setForm({ ...empty });
+    setMode("new");
+    setSelectedId("");
     onOpenChange(false);
     onCreated();
   };
@@ -97,9 +157,58 @@ const AddClientDialog = ({
         <DialogHeader className="px-6 pt-6">
           <DialogTitle>Add a new client session</DialogTitle>
           <DialogDescription>
-            Enter a client manually. Saving posts the session amount to Finance as income.
+            Pick a returning client to pre-fill their details, or enter a new client manually. Saving posts the session amount to Finance as income.
           </DialogDescription>
         </DialogHeader>
+        <div className="px-6 pb-2 space-y-3">
+          <div className="inline-flex rounded-lg border p-1 bg-muted/40">
+            {(["new", "returning"] as const).map((m) => (
+              <button
+                key={m}
+                type="button"
+                onClick={() => switchMode(m)}
+                className={`px-4 py-1.5 text-sm rounded-md transition ${mode === m ? "bg-background shadow font-medium" : "text-muted-foreground"}`}
+              >
+                {m === "new" ? "New client" : "Returning client"}
+              </button>
+            ))}
+          </div>
+          {mode === "returning" && (
+            <Popover open={pickerOpen} onOpenChange={setPickerOpen}>
+              <PopoverTrigger asChild>
+                <Button variant="outline" role="combobox" className="w-full justify-between font-normal">
+                  {selectedId
+                    ? existing.find((c) => c.id === selectedId)?.full_name || "Select client"
+                    : "Search existing clients…"}
+                  <ChevronsUpDown className="ml-2 h-4 w-4 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+                <Command>
+                  <CommandInput placeholder="Type a name, phone or email…" />
+                  <CommandList>
+                    <CommandEmpty>No client found.</CommandEmpty>
+                    <CommandGroup>
+                      {existing.map((c) => (
+                        <CommandItem
+                          key={c.id}
+                          value={`${c.full_name} ${c.phone || ""} ${c.email || ""}`}
+                          onSelect={() => chooseExisting(c)}
+                        >
+                          <Check className={`mr-2 h-4 w-4 ${selectedId === c.id ? "opacity-100" : "opacity-0"}`} />
+                          <span className="truncate">
+                            {c.full_name}
+                            <span className="text-muted-foreground"> · {c.phone || c.email || "no contact"}</span>
+                          </span>
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
+          )}
+        </div>
         <div className="grid md:grid-cols-2 gap-3 overflow-y-auto px-6 py-4 flex-1">
           <div>
             <Label>Client name *</Label>
@@ -128,16 +237,6 @@ const AddClientDialog = ({
             <Select value={form.session_type} onValueChange={(v) => set("session_type", v)}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>{SESSION_TYPES.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
-            </Select>
-          </div>
-          <div>
-            <Label>Client type</Label>
-            <Select value={form.client_type} onValueChange={(v) => set("client_type", v)}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="new">New client</SelectItem>
-                <SelectItem value="returning">Returning client</SelectItem>
-              </SelectContent>
             </Select>
           </div>
           <div className="md:col-span-2">

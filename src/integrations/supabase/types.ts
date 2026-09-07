@@ -3063,6 +3063,7 @@ export type Database = {
           receipt_url: string | null
           session_rating: number | null
           session_type: string | null
+          session_type_needs_review: boolean
           therapist_id: string
           therapist_paid: boolean
           therapist_paid_at: string | null
@@ -3095,6 +3096,7 @@ export type Database = {
           receipt_url?: string | null
           session_rating?: number | null
           session_type?: string | null
+          session_type_needs_review?: boolean
           therapist_id: string
           therapist_paid?: boolean
           therapist_paid_at?: string | null
@@ -3127,6 +3129,7 @@ export type Database = {
           receipt_url?: string | null
           session_rating?: number | null
           session_type?: string | null
+          session_type_needs_review?: boolean
           therapist_id?: string
           therapist_paid?: boolean
           therapist_paid_at?: string | null
