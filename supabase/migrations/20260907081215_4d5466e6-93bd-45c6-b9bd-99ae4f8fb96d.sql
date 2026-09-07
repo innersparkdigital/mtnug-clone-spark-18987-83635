@@ -1,0 +1,1 @@
+REVOKE ALL ON FUNCTION public.propagate_session_feedback() FROM PUBLIC, anon, authenticated;
