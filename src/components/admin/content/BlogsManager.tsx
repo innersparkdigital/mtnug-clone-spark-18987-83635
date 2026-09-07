@@ -13,7 +13,8 @@ import { Loader2, Plus, Pencil, Trash2, Upload, Eye } from "lucide-react";
 import { toast } from "sonner";
 import { uploadContentMedia, slugify } from "./uploadMedia";
 import RichTextEditor from "./RichTextEditor";
-import { BLOG_BODY_TEMPLATE } from "./blogTemplate";
+import { BLOG_BODY_TEMPLATE, BLOG_SECTION_BLOCKS } from "./blogTemplate";
+import { normalizeBlogHtml, auditBlogBody } from "@/lib/blogContentNormalizer";
 
 interface FaqItem { question: string; answer: string }
 
@@ -100,6 +101,21 @@ const BlogsManager = () => {
   };
   const addFaq = () => setForm({ ...form, faqs: [...faqList, { question: "", answer: "" }] });
   const removeFaq = (i: number) => setForm({ ...form, faqs: faqList.filter((_, idx) => idx !== i) });
+
+  const bodyWarnings = auditBlogBody(form.content || "", faqList.filter((f) => f.question?.trim() && f.answer?.trim()).length);
+
+  /** Re-structure a post that was pasted in as flat paragraphs. */
+  const structurePost = () => {
+    const { html, faqs, changed } = normalizeBlogHtml(form.content || "");
+    if (!changed && !faqs.length) { toast.info("This post already looks structured"); return; }
+    const existing = faqList.filter((f) => f.question?.trim() && f.answer?.trim());
+    const merged = [...existing];
+    faqs.forEach((f) => {
+      if (!merged.some((e) => e.question.trim().toLowerCase() === f.question.trim().toLowerCase())) merged.push(f);
+    });
+    setForm((prev) => ({ ...prev, content: html, faqs: merged }));
+    toast.success(faqs.length ? `Structured — ${faqs.length} FAQ(s) moved to the FAQ builder` : "Post structured");
+  };
 
   const handleImage = async (file: File) => {
     setUploading(true);
@@ -330,27 +346,54 @@ const BlogsManager = () => {
               </div>
             </div>
             <div>
-              <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center justify-between gap-2 flex-wrap">
                 <Label>Content</Label>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  onClick={() => {
-                    const hasBody = (form.content || "").replace(/<[^>]*>/g, "").trim().length > 0;
-                    if (hasBody && !confirm("Append the standard InnerSpark blog structure to the current content?")) return;
-                    setForm((f) => ({ ...f, content: hasBody ? `${f.content}\n${BLOG_BODY_TEMPLATE}` : BLOG_BODY_TEMPLATE }));
-                  }}
-                >
-                  Insert standard structure
-                </Button>
+                <div className="flex gap-2">
+                  <Button type="button" size="sm" variant="secondary" onClick={structurePost}>
+                    Structure this post
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      const hasBody = (form.content || "").replace(/<[^>]*>/g, "").trim().length > 0;
+                      if (hasBody && !confirm("Append the standard InnerSpark blog structure to the current content?")) return;
+                      setForm((f) => ({ ...f, content: hasBody ? `${f.content}\n${BLOG_BODY_TEMPLATE}` : BLOG_BODY_TEMPLATE }));
+                    }}
+                  >
+                    Insert standard structure
+                  </Button>
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-1.5 my-2">
+                {BLOG_SECTION_BLOCKS.map((b) => (
+                  <Button
+                    key={b.label}
+                    type="button"
+                    size="sm"
+                    variant="ghost"
+                    className="h-7 px-2 text-xs border"
+                    onClick={() => setForm((f) => ({ ...f, content: `${f.content || ""}\n${b.html}` }))}
+                  >
+                    + {b.label}
+                  </Button>
+                ))}
               </div>
               <RichTextEditor
                 value={form.content || ""}
                 onChange={(html) => setForm({ ...form, content: html })}
-                placeholder="Write your blog post — use the toolbar for headings, paragraphs, lists, images and links."
+                placeholder="Paste or write your blog post — pasted text is structured automatically."
               />
+              {bodyWarnings.length > 0 && (
+                <ul className="mt-2 space-y-1 text-[12px] text-amber-700 dark:text-amber-500">
+                  {bodyWarnings.map((w) => (
+                    <li key={w}>• {w}</li>
+                  ))}
+                </ul>
+              )}
             </div>
+
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <Label>Status</Label>

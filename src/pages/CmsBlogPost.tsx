@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams, Link, Navigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { ArrowLeft, Calendar, Clock, Loader2, UserCheck } from "lucide-react";
@@ -15,6 +15,7 @@ import {
   WhatYouLearn,
   needsCrisisCallout,
 } from "@/components/blog/BlogCallouts";
+import { normalizeBlogHtml } from "@/lib/blogContentNormalizer";
 
 
 interface FaqItem { question: string; answer: string }
@@ -82,12 +83,19 @@ const CmsBlogPost = () => {
     : rawSocialImage.startsWith("http")
       ? rawSocialImage
       : `${SITE}${rawSocialImage.startsWith("/") ? "" : "/"}${rawSocialImage}`;
-  const faqs: FaqItem[] = Array.isArray(post.faqs)
+  const storedFaqs: FaqItem[] = Array.isArray(post.faqs)
     ? (post.faqs as FaqItem[]).filter((f) => f?.question && f?.answer)
     : [];
+  // Older posts were pasted in as flat text: give every post the house structure.
+  const structured = normalizeBlogHtml(post.content || "");
+  const body = structured.html || post.content || "";
+  const faqs: FaqItem[] = [...storedFaqs];
+  structured.faqs.forEach((f) => {
+    if (!faqs.some((e) => e.question.trim().toLowerCase() === f.question.trim().toLowerCase())) faqs.push(f);
+  });
   const modified = post.last_updated_at || date;
   const showCrisis =
-    !/blog-crisis/.test(post.content) &&
+    !/blog-crisis/.test(body) &&
     needsCrisisCallout(post.title, post.category, description, post.meta_keywords);
 
   const articleSchema = {
@@ -184,7 +192,7 @@ const CmsBlogPost = () => {
 
           <div
             className="blog-body prose prose-lg max-w-none text-foreground prose-headings:text-foreground prose-headings:font-bold prose-headings:tracking-tight prose-p:leading-[1.8] prose-p:text-foreground/90 prose-a:text-primary prose-a:font-medium prose-img:rounded-xl prose-strong:text-foreground prose-li:leading-relaxed"
-            dangerouslySetInnerHTML={{ __html: post.content }}
+            dangerouslySetInnerHTML={{ __html: body }}
           />
 
           {showCrisis && <CrisisCallout />}
