@@ -90,7 +90,12 @@ const paragraphLines = (el: Element): Line[] => {
     .filter((l) => l.text.length > 0);
 };
 
-export const normalizeBlogHtml = (input: string): NormalizedBlog => {
+export interface NormalizeOptions {
+  /** Tiptap strips unknown wrapper divs, so keep steps as a plain <ol> there. */
+  forEditor?: boolean;
+}
+
+export const normalizeBlogHtml = (input: string, opts: NormalizeOptions = {}): NormalizedBlog => {
   const source = (input || "").trim();
   if (!source) return { html: "", faqs: [], changed: false };
 
@@ -106,9 +111,8 @@ export const normalizeBlogHtml = (input: string): NormalizedBlog => {
 
   const flushSteps = () => {
     if (!stepBuffer.length) return;
-    out.push(
-      `<div class="blog-steps"><ol>${stepBuffer.map((s) => `<li>${s}</li>`).join("")}</ol></div>`
-    );
+    const list = `<ol>${stepBuffer.map((s) => `<li>${s}</li>`).join("")}</ol>`;
+    out.push(opts.forEditor ? list : `<div class="blog-steps">${list}</div>`);
     stepBuffer = [];
   };
   const flushBullets = () => {
