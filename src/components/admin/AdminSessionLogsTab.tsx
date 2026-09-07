@@ -33,7 +33,7 @@ interface Log {
   next_appt_service: string | null;
 }
 
-const CRISIS_STATUSES = new Set(["at_risk", "crisis_protocol_activated"]);
+const CRISIS_STATUSES = new Set(["at_risk", "crisis_activated"]);
 
 const AdminSessionLogsTab = () => {
   const [logs, setLogs] = useState<Log[]>([]);
@@ -146,12 +146,11 @@ const AdminSessionLogsTab = () => {
               <SelectTrigger className="w-48"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Any progress</SelectItem>
-                <SelectItem value="significant_improvement">Significant improvement</SelectItem>
-                <SelectItem value="some_improvement">Some improvement</SelectItem>
-                <SelectItem value="no_change">No change</SelectItem>
-                <SelectItem value="deterioration">Deterioration</SelectItem>
+                <SelectItem value="progressing_well">Progressing well</SelectItem>
+                <SelectItem value="steady">Steady</SelectItem>
+                <SelectItem value="needs_more_support">Needs more support</SelectItem>
                 <SelectItem value="at_risk">At risk</SelectItem>
-                <SelectItem value="crisis_protocol_activated">Crisis</SelectItem>
+                <SelectItem value="crisis_activated">Crisis activated</SelectItem>
               </SelectContent>
             </Select>
             <Select value={period} onValueChange={setPeriod}>
