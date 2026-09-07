@@ -76,7 +76,12 @@ const CmsBlogPost = () => {
   const url = post.canonical_url?.trim() || `${SITE}/blog/${post.slug}`;
   const description = post.meta_description || post.excerpt || post.title;
   const seoTitle = post.meta_title?.trim() || `${post.title} | InnerSpark Africa`;
-  const socialImage = post.og_image_url?.trim() || post.hero_image_url || DEFAULT_OG;
+  const rawSocialImage = post.og_image_url?.trim() || post.hero_image_url;
+  const socialImage = !rawSocialImage
+    ? DEFAULT_OG
+    : rawSocialImage.startsWith("http")
+      ? rawSocialImage
+      : `${SITE}${rawSocialImage.startsWith("/") ? "" : "/"}${rawSocialImage}`;
   const faqs: FaqItem[] = Array.isArray(post.faqs)
     ? (post.faqs as FaqItem[]).filter((f) => f?.question && f?.answer)
     : [];
