@@ -168,6 +168,11 @@ export const normalizeBlogHtml = (input: string, opts: NormalizeOptions = {}): N
       out.push(el.outerHTML);
       return;
     }
+    // Container wrappers (section, article, main, header) — process their children.
+    if (["SECTION", "ARTICLE", "MAIN", "HEADER", "ASIDE", "FOOTER", "SPAN"].includes(tag)) {
+      walk(Array.from(el.childNodes));
+      return;
+    }
     // Inline leftovers (b, em, a, text wrappers) treated as a paragraph line.
     const text = cleanText(el.textContent || "");
     if (text) pushLine({ html: inlineHtml(el) || escapeHtml(text), text });
