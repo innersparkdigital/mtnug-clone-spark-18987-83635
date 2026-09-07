@@ -13,7 +13,7 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Loader2, AlertOctagon, Download, Eye, Receipt, Save, MessageCircle, Plus, Trash2, Mail, FileSpreadsheet, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Calendar } from "lucide-react";
+import { Loader2, AlertOctagon, Download, Eye, Receipt, Save, MessageCircle, Plus, Trash2, Mail, FileSpreadsheet, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Calendar, Star } from "lucide-react";
 import { toast } from "sonner";
 import AdminClientDetailDialog from "./AdminClientDetailDialog";
 import AddClientDialog from "./AddClientDialog";
@@ -56,6 +56,21 @@ interface Row {
 }
 
 const fmtUGX = (n: number | null) => (n ? `UGX ${Math.round(Number(n)).toLocaleString()}` : "—");
+
+const RatingStars = ({ value }: { value: number | null }) => {
+  if (!value) return <span className="text-muted-foreground text-[11px]">—</span>;
+  return (
+    <span className="flex items-center gap-0.5" title={`Client rating: ${value}/5`}>
+      {[1, 2, 3, 4, 5].map((n) => (
+        <Star
+          key={n}
+          className="h-3 w-3"
+          style={{ fill: n <= value ? "#F2994A" : "transparent", color: n <= value ? "#F2994A" : "hsl(var(--muted-foreground))" }}
+        />
+      ))}
+    </span>
+  );
+};
 
 const riskLevel = (r: Row): "high" | "medium" | "low" => {
   if (r.open_alerts > 0) return "high";
@@ -440,7 +455,7 @@ const AdminClientsTab = () => {
 
                         {open && (
                           <TableRow className="bg-muted/20 hover:bg-muted/20">
-                            <TableCell colSpan={9} className="p-4">
+                            <TableCell colSpan={10} className="p-4">
                               <div className="grid gap-4 md:grid-cols-3">
                                 <div className="space-y-2">
                                   <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Contact</p>
