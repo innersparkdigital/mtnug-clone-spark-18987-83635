@@ -1,0 +1,2 @@
+DROP INDEX IF EXISTS public.specialist_reviews_source_feedback_key;
+CREATE UNIQUE INDEX specialist_reviews_source_feedback_key ON public.specialist_reviews(source_feedback_id);

@@ -13,7 +13,7 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Loader2, AlertOctagon, Download, Eye, Receipt, Save, MessageCircle, Plus, Trash2, Mail, FileSpreadsheet, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Calendar } from "lucide-react";
+import { Loader2, AlertOctagon, Download, Eye, Receipt, Save, MessageCircle, Plus, Trash2, Mail, FileSpreadsheet, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Calendar, Star } from "lucide-react";
 import { toast } from "sonner";
 import AdminClientDetailDialog from "./AdminClientDetailDialog";
 import AddClientDialog from "./AddClientDialog";
@@ -56,6 +56,21 @@ interface Row {
 }
 
 const fmtUGX = (n: number | null) => (n ? `UGX ${Math.round(Number(n)).toLocaleString()}` : "—");
+
+const RatingStars = ({ value }: { value: number | null }) => {
+  if (!value) return <span className="text-muted-foreground text-[11px]">—</span>;
+  return (
+    <span className="flex items-center gap-0.5" title={`Client rating: ${value}/5`}>
+      {[1, 2, 3, 4, 5].map((n) => (
+        <Star
+          key={n}
+          className="h-3 w-3"
+          style={{ fill: n <= value ? "#F2994A" : "transparent", color: n <= value ? "#F2994A" : "hsl(var(--muted-foreground))" }}
+        />
+      ))}
+    </span>
+  );
+};
 
 const riskLevel = (r: Row): "high" | "medium" | "low" => {
   if (r.open_alerts > 0) return "high";
@@ -339,10 +354,10 @@ const AdminClientsTab = () => {
             <div className="flex justify-center py-12"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
           ) : (
             <div className="overflow-x-auto rounded-lg border">
-              <Table className="min-w-[1050px] text-xs">
+              <Table className="min-w-[1020px] text-xs">
                 <TableHeader>
                   <TableRow className="bg-muted/50 hover:bg-muted/50">
-                    {["#", "Date", "Client", "Therapist", "Session type", "Amount", "Payment", "Risk", ""].map((h, hi) => (
+                    {["#", "Date", "Client", "Therapist", "Session type", "Amount", "Payment", "Rating", "Risk", ""].map((h, hi) => (
                       <TableHead key={hi} className="whitespace-nowrap text-[11px] h-9">{h}</TableHead>
                     ))}
                   </TableRow>
@@ -386,17 +401,17 @@ const AdminClientsTab = () => {
                           <TableCell className="whitespace-nowrap text-muted-foreground">{r.therapist_name}</TableCell>
                           <TableCell>
                             <Select value={normalizeSessionType(val(r, "session_type") as string) || ""} onValueChange={(v) => setVal(r.id, "session_type", v)}>
-                              <SelectTrigger className="h-8 w-[185px] text-xs"><SelectValue placeholder="Needs review" /></SelectTrigger>
+                              <SelectTrigger className="h-8 w-[158px] text-xs"><SelectValue placeholder="Needs review" /></SelectTrigger>
                               <SelectContent>{SESSION_TYPES.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
                             </Select>
                           </TableCell>
                           <TableCell>
-                            <Input type="number" className="h-8 w-[100px] text-xs" placeholder="0" value={(val(r, "amount_ugx") as number) ?? ""} onChange={(e) => setVal(r.id, "amount_ugx", e.target.value)} />
+                            <Input type="number" className="h-8 w-[88px] text-xs" placeholder="0" value={(val(r, "amount_ugx") as number) ?? ""} onChange={(e) => setVal(r.id, "amount_ugx", e.target.value)} />
                           </TableCell>
                           <TableCell>
                             <div className="flex flex-col gap-1">
                               <Select value={paid} onValueChange={(v) => setVal(r.id, "paid_status", v)}>
-                                <SelectTrigger className="h-8 w-[105px] text-xs"><SelectValue placeholder="—" /></SelectTrigger>
+                                <SelectTrigger className="h-8 w-[92px] text-xs"><SelectValue placeholder="—" /></SelectTrigger>
                                 <SelectContent>
                                   <SelectItem value="paid">Paid</SelectItem>
                                   <SelectItem value="pending">Pending</SelectItem>
@@ -406,6 +421,16 @@ const AdminClientsTab = () => {
                               <span className="text-[10px] text-muted-foreground whitespace-nowrap">
                                 Therapist: {r.therapist_paid ? "paid out" : "unpaid"}
                               </span>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex flex-col gap-0.5 w-[70px]">
+                              <RatingStars value={val(r, "session_rating") as number | null} />
+                              {val(r, "would_rebook") !== null && val(r, "would_rebook") !== undefined && (
+                                <span className="text-[10px] text-muted-foreground whitespace-nowrap">
+                                  {val(r, "would_rebook") ? "Would rebook" : "No rebook"}
+                                </span>
+                              )}
                             </div>
                           </TableCell>
                           <TableCell>
@@ -430,7 +455,7 @@ const AdminClientsTab = () => {
 
                         {open && (
                           <TableRow className="bg-muted/20 hover:bg-muted/20">
-                            <TableCell colSpan={9} className="p-4">
+                            <TableCell colSpan={10} className="p-4">
                               <div className="grid gap-4 md:grid-cols-3">
                                 <div className="space-y-2">
                                   <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Contact</p>
@@ -464,7 +489,7 @@ const AdminClientsTab = () => {
                                       <Input type="date" className="h-8 text-xs mt-1" value={(val(r, "next_session_date") as string) || ""} onChange={(e) => setVal(r.id, "next_session_date", e.target.value)} />
                                     </div>
                                     <div>
-                                      <Label className="text-[11px] text-muted-foreground">Rating (1–5)</Label>
+                                      <Label className="text-[11px] text-muted-foreground">Rating (1–5) · auto from client feedback</Label>
                                       <Input type="number" min={1} max={5} className="h-8 text-xs mt-1" value={(val(r, "session_rating") as number) ?? ""} onChange={(e) => setVal(r.id, "session_rating", e.target.value)} />
                                     </div>
                                     <div className="col-span-2">
