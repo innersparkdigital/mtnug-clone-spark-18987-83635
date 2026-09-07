@@ -13,12 +13,13 @@ import { withTimeout } from "@/lib/rpcTimeout";
 
 interface Log {
   id: string;
+  source: "feedback" | "client_record";
   session_date: string;
   is_new_client: boolean;
   service_delivered: string;
   duration: string;
-  progress_status: string;
-  homework_given: boolean;
+  progress_status: string | null;
+  homework_given: boolean | null;
   homework_text: string | null;
   next_appt_booked: string;
   next_appt_date: string | null;
@@ -31,6 +32,9 @@ interface Log {
   client_phone: string | null;
   therapist_email: string | null;
   next_appt_service: string | null;
+  session_rating: number | null;
+  amount_ugx: number | string | null;
+  paid_status: string | null;
 }
 
 interface HomeworkTask {
@@ -134,7 +138,7 @@ const AdminSessionLogsTab = () => {
     return logs.filter((l) => {
       if (since && new Date(l.created_at).getTime() < since) return false;
       if (therapistFilter !== "all" && l.therapist_id !== therapistFilter) return false;
-      if (statusFilter !== "all" && l.progress_status !== statusFilter) return false;
+      if (statusFilter !== "all" && (l.progress_status || "") !== statusFilter) return false;
       if (!s) return true;
       return (
         l.client_name.toLowerCase().includes(s) ||
@@ -149,7 +153,7 @@ const AdminSessionLogsTab = () => {
     const total = filtered.length;
     const withHomework = filtered.filter((l) => l.homework_given).length;
     const nextBooked = filtered.filter((l) => l.next_appt_booked === "yes").length;
-    const crisis = filtered.filter((l) => CRISIS_STATUSES.has(l.progress_status)).length;
+    const crisis = filtered.filter((l) => CRISIS_STATUSES.has(l.progress_status || "")).length;
     return { total, withHomework, nextBooked, crisis };
   }, [filtered]);
 
@@ -157,15 +161,15 @@ const AdminSessionLogsTab = () => {
     const header = [
       "Date", "Therapist", "Therapist email", "Client", "New client", "Phone",
       "Service", "Duration", "Progress", "Homework given", "Homework details",
-      "Next appt booked", "Next appt date", "Next appt service", "Notes", "Logged at",
+      "Next appt booked", "Next appt date", "Next appt service", "Notes", "Logged at", "Source",
     ];
     const lines = filtered.map((l) => [
       l.session_date, l.therapist_name, l.therapist_email || "", l.client_name,
       l.is_new_client ? "New" : "Returning", l.client_phone || "",
-      l.service_delivered, l.duration, l.progress_status,
+      l.service_delivered, l.duration, l.progress_status || "",
       l.homework_given ? "Yes" : "No", l.homework_text || "",
       l.next_appt_booked, l.next_appt_date || "", l.next_appt_service || "",
-      l.notes || "", l.created_at,
+      l.notes || "", l.created_at, l.source === "feedback" ? "Therapist feedback form" : "Client record",
     ]);
     const csv = [header, ...lines].map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n");
     const url = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
@@ -249,7 +253,7 @@ const AdminSessionLogsTab = () => {
                 </TableHeader>
                 <TableBody>
                   {filtered.map((l) => {
-                    const crisis = CRISIS_STATUSES.has(l.progress_status);
+                    const crisis = CRISIS_STATUSES.has(l.progress_status || "");
                     const isOpen = expanded === l.id;
                     return (
                       <Fragment key={l.id}>
@@ -268,6 +272,7 @@ const AdminSessionLogsTab = () => {
                             <div className="font-medium">{l.client_name}</div>
                             <div className="text-[11px] text-muted-foreground">
                               {l.is_new_client ? "New client" : "Returning"}
+                              {l.source === "client_record" && " · from client record"}
                             </div>
                           </TableCell>
                           <TableCell className="text-sm">{l.therapist_name}</TableCell>
@@ -276,15 +281,21 @@ const AdminSessionLogsTab = () => {
                             <div className="text-muted-foreground">{l.duration || "—"}</div>
                           </TableCell>
                           <TableCell>
-                            <Badge variant={crisis ? "destructive" : "outline"} className="text-[11px] whitespace-nowrap">
-                              {crisis && <AlertOctagon className="h-3 w-3 mr-1" />}
-                              {l.progress_status.replace(/_/g, " ")}
-                            </Badge>
+                            {l.progress_status ? (
+                              <Badge variant={crisis ? "destructive" : "outline"} className="text-[11px] whitespace-nowrap">
+                                {crisis && <AlertOctagon className="h-3 w-3 mr-1" />}
+                                {l.progress_status.replace(/_/g, " ")}
+                              </Badge>
+                            ) : (
+                              <span className="text-[11px] text-muted-foreground">no form filled</span>
+                            )}
                           </TableCell>
                           <TableCell className="text-xs">
-                            {l.homework_given
-                              ? <Badge variant="secondary" className="text-[11px]">Given</Badge>
-                              : <span className="text-muted-foreground">None</span>}
+                            {l.homework_given === null
+                              ? <span className="text-muted-foreground">—</span>
+                              : l.homework_given
+                                ? <Badge variant="secondary" className="text-[11px]">Given</Badge>
+                                : <span className="text-muted-foreground">None</span>}
                           </TableCell>
                           <TableCell className="text-xs">
                             <span className="capitalize">{l.next_appt_booked || "—"}</span>
@@ -302,7 +313,12 @@ const AdminSessionLogsTab = () => {
                             <TableCell colSpan={8} className="py-4">
                               <div className="grid md:grid-cols-2 gap-4 max-w-4xl">
                                 <LongField label="Session notes" value={l.notes} />
-                                <LongField label="Homework given" value={l.homework_given ? (l.homework_text || "Given") : "None"} />
+                                <LongField
+                                  label="Homework given"
+                                  value={l.homework_given === null
+                                    ? "Session feedback form not filled for this session"
+                                    : l.homework_given ? (l.homework_text || "Given") : "None"}
+                                />
                               </div>
                               <p className="text-[11px] text-muted-foreground mt-2">
                                 Next session: {l.next_appt_booked || "—"}
@@ -341,7 +357,10 @@ const AdminSessionLogsTab = () => {
                 <Field label="Service delivered" value={detail.service_delivered} />
                 <Field label="Duration" value={detail.duration} />
                 <Field label="Progress" value={detail.progress_status?.replace(/_/g, " ")} />
-                <Field label="Homework given" value={detail.homework_given ? "Yes" : "No"} />
+                <Field label="Homework given" value={detail.homework_given === null ? null : detail.homework_given ? "Yes" : "No"} />
+                <Field label="Client rating" value={detail.session_rating ? `${detail.session_rating}/5` : null} />
+                <Field label="Amount (UGX)" value={detail.amount_ugx ? Number(detail.amount_ugx).toLocaleString() : null} />
+                <Field label="Payment" value={detail.paid_status} />
                 <Field label="Next appointment booked" value={detail.next_appt_booked} />
                 <Field label="Next appointment date" value={detail.next_appt_date} />
                 <Field label="Next appointment service" value={detail.next_appt_service} />
