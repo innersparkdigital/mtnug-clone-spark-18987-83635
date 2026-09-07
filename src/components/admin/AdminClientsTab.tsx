@@ -362,7 +362,15 @@ const AdminClientsTab = () => {
                         <TableRow className={dirty ? "bg-primary/5" : open ? "bg-muted/30" : undefined}>
                           <TableCell className="text-muted-foreground">{i + 1}</TableCell>
                           <TableCell>
-                            <Input type="date" className="h-8 w-[130px] text-xs" value={(val(r, "last_session_date") as string) || ""} onChange={(e) => setVal(r.id, "last_session_date", e.target.value)} />
+                            <div className="relative w-[110px]">
+                              <Calendar className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
+                              <Input
+                                type="date"
+                                className="h-8 w-[110px] text-xs pl-7 pr-1.5 [color-scheme:light] dark:[color-scheme:dark]"
+                                value={(val(r, "last_session_date") as string) || ""}
+                                onChange={(e) => setVal(r.id, "last_session_date", e.target.value)}
+                              />
+                            </div>
                           </TableCell>
                           <TableCell>
                             <div className="min-w-[170px]">
