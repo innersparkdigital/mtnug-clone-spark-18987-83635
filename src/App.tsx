@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import PrivateRouteNoIndex from "./components/seo/PrivateRouteNoIndex";
+import RouteErrorBoundary from "./components/RouteErrorBoundary";
 import { lazy, Suspense } from "react";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { AuthProvider } from "@/contexts/AuthContext";
@@ -313,6 +314,7 @@ const App = () => (
                 <GlobalBookingModal />
               </Suspense>
 
+              <RouteErrorBoundary>
               <Suspense fallback={<RouteFallback />}>
               <Routes>
                 <Route path="/" element={<Index />} />
@@ -747,6 +749,7 @@ const App = () => (
                 <Route path="*" element={<NotFound />} />
               </Routes>
               </Suspense>
+              </RouteErrorBoundary>
             </BrowserRouter>
           </TooltipProvider>
           </CalmThemeProvider>

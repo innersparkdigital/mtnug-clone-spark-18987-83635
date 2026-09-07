@@ -16,6 +16,7 @@ import {
   ShieldCheck, GraduationCap, FileCheck, UserSearch, HelpCircle
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { withTimeout } from "@/lib/rpcTimeout";
 import { getSpecialistImage } from "@/lib/specialistImages";
 import { specialistPath } from "@/lib/specialistSlug";
 import PreAssessmentModal from "@/components/PreAssessmentModal";
@@ -428,6 +429,8 @@ const Specialists = () => {
   const [specialists, setSpecialists] = useState<Specialist[]>([]);
   const [verifiedSpecialists, setVerifiedSpecialists] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
   const [bookingSpecialist, setBookingSpecialist] = useState<Specialist | null>(null);
 
   const {
@@ -448,37 +451,59 @@ const Specialists = () => {
   const currentCategory = supportCategories.find(c => c.id === selectedCategory) || supportCategories[0];
 
   useEffect(() => {
+    let cancelled = false;
     const fetchData = async () => {
-      // Fetch specialists and certificates in parallel for faster loading
-      const [specialistsResult, certificatesResult] = await Promise.all([
-        supabase
-          .from("specialists")
-          .select("*")
-          .eq("is_active", true)
-          .not("bio", "is", null)
-          .not("education", "is", null)
-          .order("experience_years", { ascending: false }),
-        supabase
-          .from("specialist_certificates")
-          .select("specialist_id")
-      ]);
+      setLoading(true);
+      setLoadError(null);
+      try {
+        // Fetch specialists and certificates in parallel; a stalled request
+        // resolves as an error instead of spinning forever on slow networks.
+        const [specialistsResult, certificatesResult] = await Promise.all([
+          withTimeout(
+            supabase
+              .from("specialists")
+              .select("*")
+              .eq("is_active", true)
+              .not("bio", "is", null)
+              .not("education", "is", null)
+              .order("experience_years", { ascending: false }),
+            15000,
+            "Loading therapists",
+          ),
+          withTimeout(
+            supabase.from("specialist_certificates").select("specialist_id"),
+            15000,
+            "Loading verifications",
+          ),
+        ]);
+        if (cancelled) return;
 
-      if (specialistsResult.error) {
-        console.error("Error fetching specialists:", specialistsResult.error);
-      } else {
-        setSpecialists(specialistsResult.data || []);
+        if (specialistsResult.error) {
+          console.error("Error fetching specialists:", specialistsResult.error);
+          setLoadError(specialistsResult.error.message);
+        } else {
+          setSpecialists((specialistsResult.data as Specialist[]) || []);
+        }
+
+        if (!certificatesResult.error && certificatesResult.data) {
+          const verifiedIds = new Set(
+            (certificatesResult.data as { specialist_id: string }[]).map((cert) => cert.specialist_id),
+          );
+          setVerifiedSpecialists(verifiedIds);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          console.error("Error fetching specialists:", err);
+          setLoadError(err instanceof Error ? err.message : "Could not load therapists.");
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
       }
-
-      if (!certificatesResult.error && certificatesResult.data) {
-        const verifiedIds = new Set(certificatesResult.data.map(cert => cert.specialist_id));
-        setVerifiedSpecialists(verifiedIds);
-      }
-
-      setLoading(false);
     };
 
     fetchData();
-  }, []);
+    return () => { cancelled = true; };
+  }, [reloadKey]);
 
   const filteredSpecialists = specialists.filter((specialist) => {
     const matchesCategory = matchSpecialistToSupportCategory(specialist, currentCategory);
@@ -856,7 +881,18 @@ const Specialists = () => {
                   ))}
                 </div>
 
-                {filteredSpecialists.length === 0 && (
+                {loadError && specialists.length === 0 && (
+                  <div className="text-center py-12">
+                    <p className="text-foreground font-medium mb-2">We couldn't load our therapist list just now.</p>
+                    <p className="text-muted-foreground mb-4">{loadError}</p>
+                    <div className="flex flex-wrap gap-3 justify-center">
+                      <Button onClick={() => setReloadKey((k) => k + 1)}>Try again</Button>
+                      <Link to="/book-therapist"><Button variant="outline">Book a session instead</Button></Link>
+                    </div>
+                  </div>
+                )}
+
+                {!loadError && filteredSpecialists.length === 0 && (
                   <div className="text-center py-12">
                     <p className="text-muted-foreground mb-4">No specialists found matching your criteria.</p>
                 <Button variant="outline" onClick={() => { setSelectedCategory("all"); setSearchQuery(""); setSelectedCountry(""); setSelectedLanguage(""); setSelectedPrice(""); }}>
