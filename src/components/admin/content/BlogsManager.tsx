@@ -330,27 +330,54 @@ const BlogsManager = () => {
               </div>
             </div>
             <div>
-              <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center justify-between gap-2 flex-wrap">
                 <Label>Content</Label>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  onClick={() => {
-                    const hasBody = (form.content || "").replace(/<[^>]*>/g, "").trim().length > 0;
-                    if (hasBody && !confirm("Append the standard InnerSpark blog structure to the current content?")) return;
-                    setForm((f) => ({ ...f, content: hasBody ? `${f.content}\n${BLOG_BODY_TEMPLATE}` : BLOG_BODY_TEMPLATE }));
-                  }}
-                >
-                  Insert standard structure
-                </Button>
+                <div className="flex gap-2">
+                  <Button type="button" size="sm" variant="secondary" onClick={structurePost}>
+                    Structure this post
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      const hasBody = (form.content || "").replace(/<[^>]*>/g, "").trim().length > 0;
+                      if (hasBody && !confirm("Append the standard InnerSpark blog structure to the current content?")) return;
+                      setForm((f) => ({ ...f, content: hasBody ? `${f.content}\n${BLOG_BODY_TEMPLATE}` : BLOG_BODY_TEMPLATE }));
+                    }}
+                  >
+                    Insert standard structure
+                  </Button>
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-1.5 my-2">
+                {BLOG_SECTION_BLOCKS.map((b) => (
+                  <Button
+                    key={b.label}
+                    type="button"
+                    size="sm"
+                    variant="ghost"
+                    className="h-7 px-2 text-xs border"
+                    onClick={() => setForm((f) => ({ ...f, content: `${f.content || ""}\n${b.html}` }))}
+                  >
+                    + {b.label}
+                  </Button>
+                ))}
               </div>
               <RichTextEditor
                 value={form.content || ""}
                 onChange={(html) => setForm({ ...form, content: html })}
-                placeholder="Write your blog post — use the toolbar for headings, paragraphs, lists, images and links."
+                placeholder="Paste or write your blog post — pasted text is structured automatically."
               />
+              {bodyWarnings.length > 0 && (
+                <ul className="mt-2 space-y-1 text-[12px] text-amber-700 dark:text-amber-500">
+                  {bodyWarnings.map((w) => (
+                    <li key={w}>• {w}</li>
+                  ))}
+                </ul>
+              )}
             </div>
+
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <Label>Status</Label>
