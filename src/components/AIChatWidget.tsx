@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import PhoneField from "@/components/PhoneField";
+import { isValidE164 } from "@/lib/phoneCountries";
 import { MessageCircle, X, Send, Loader2, Phone, Calendar, Heart, AlertTriangle, LifeBuoy, PhoneCall, UserPlus, Check, Sparkles, ShieldCheck, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -381,8 +383,8 @@ const AIChatWidget = () => {
 
   const submitReminder = async () => {
     const phone = reminderPhone.trim();
-    if (!/^[+\d][\d\s()-]{6,}$/.test(phone)) {
-      setLeadError("Please enter a valid phone number.");
+    if (!isValidE164(phone)) {
+      setLeadError("Please pick your country and enter a valid phone number.");
       return;
     }
     setReminderSubmitting(true);
@@ -442,8 +444,8 @@ const AIChatWidget = () => {
     setLeadError(null);
     if (leadStep === 1) {
       const phone = leadPhone.trim();
-      if (!/^[+\d][\d\s()-]{6,}$/.test(phone)) {
-        setLeadError("Please enter a valid WhatsApp number.");
+      if (!isValidE164(phone)) {
+        setLeadError("Please pick your country and enter a valid WhatsApp number.");
         return;
       }
     } else {
@@ -455,15 +457,17 @@ const AIChatWidget = () => {
     setLeadSubmitting(true);
     try {
       if (leadStep === 1) {
-        const { data, error } = await supabase.from("chat_leads").insert({
-          session_id: sessionId,
-          anonymous_id: getAnonId(),
-          phone: leadPhone.trim(),
-          intent: leadIntent,
-          source_path: window.location.pathname,
-        }).select("id").single();
+        // Saved through an RPC: anonymous visitors can create a lead and get
+        // its id back without being able to read the leads table.
+        const { data, error } = await supabase.rpc("submit_chat_lead", {
+          _session_id: sessionId,
+          _anonymous_id: getAnonId(),
+          _phone: leadPhone.trim(),
+          _intent: leadIntent,
+          _source_path: window.location.pathname,
+        });
         if (error) throw error;
-        setLeadRowId(data?.id ?? null);
+        setLeadRowId((data as string) ?? null);
         setLeadStep(2);
         trackEvent("ai_chat_lead_phone_captured", { intent: leadIntent });
         logEvent("lead_phone_captured", { intent: leadIntent });
@@ -472,11 +476,12 @@ const AIChatWidget = () => {
       }
       // Step 2 — optional enrichment.
       if (leadRowId && (leadName.trim() || leadEmail.trim() || leadMsg.trim())) {
-        await supabase.from("chat_leads").update({
-          name: leadName.trim() || null,
-          email: leadEmail.trim() || null,
-          message: leadMsg.trim() || null,
-        }).eq("id", leadRowId);
+        await supabase.rpc("enrich_chat_lead", {
+          _id: leadRowId,
+          _name: leadName.trim() || null,
+          _email: leadEmail.trim() || null,
+          _message: leadMsg.trim() || null,
+        });
       }
       setLeadSubmitted(true);
       setShowLeadForm(false);
@@ -866,14 +871,12 @@ const AIChatWidget = () => {
                 </div>
                 {leadStep === 1 ? (
                   <>
-                    <input
-                      type="tel"
+                    <PhoneField
                       autoFocus
-                      placeholder="WhatsApp e.g. 0792 085 773"
                       value={leadPhone}
-                      onChange={(e) => setLeadPhone(e.target.value)}
-                      maxLength={30}
-                      className="w-full px-3 py-2.5 text-sm bg-background border border-primary/40 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                      onChange={setLeadPhone}
+                      placeholder="WhatsApp e.g. 792 085 773"
+                      aria-label="WhatsApp number"
                     />
                     <p className="text-[10px] text-muted-foreground">
                       We'll only WhatsApp you — no calls, no spam.
@@ -952,13 +955,12 @@ const AIChatWidget = () => {
                 <div className="text-xs text-muted-foreground leading-snug">
                   Not ready today? Drop your WhatsApp and we'll send you one gentle reminder when you feel ready. No spam.
                 </div>
-                <input
-                  type="tel"
-                  placeholder="e.g. 0792 085 773"
+                <PhoneField
+                  compact
                   value={reminderPhone}
-                  onChange={(e) => setReminderPhone(e.target.value)}
-                  maxLength={30}
-                  className="w-full px-2.5 py-1.5 text-xs bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  onChange={setReminderPhone}
+                  placeholder="e.g. 792 085 773"
+                  aria-label="WhatsApp number for reminder"
                 />
                 {leadError && <div className="text-[11px] text-red-600">{leadError}</div>}
                 <div className="flex gap-2">

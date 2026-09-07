@@ -1,3 +1,4 @@
+import { formatPhoneDisplay } from "@/lib/phoneCountries";
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -178,7 +179,7 @@ const ChatLeadsTab = () => {
                           {l.phone && (
                             <div className="flex items-center gap-1">
                               <Phone className="w-3 h-3" />
-                              <a href={`tel:${l.phone}`} className="hover:underline">{l.phone}</a>
+                              <a href={`tel:${l.phone}`} className="hover:underline whitespace-nowrap">{formatPhoneDisplay(l.phone)}</a>
                             </div>
                           )}
                           {l.email && (
@@ -232,7 +233,7 @@ const ChatLeadsTab = () => {
               <div className="space-y-1 text-sm">
                 <div><strong>Name:</strong> {openLead.name || "—"}</div>
                 {openLead.phone && (
-                  <div><strong>Phone:</strong> <a href={`tel:${openLead.phone}`} className="text-primary hover:underline">{openLead.phone}</a></div>
+                  <div><strong>Phone:</strong> <a href={`tel:${openLead.phone}`} className="text-primary hover:underline">{formatPhoneDisplay(openLead.phone)}</a></div>
                 )}
                 {openLead.email && (
                   <div><strong>Email:</strong> <a href={`mailto:${openLead.email}`} className="text-primary hover:underline">{openLead.email}</a></div>
