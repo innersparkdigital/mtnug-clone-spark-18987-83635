@@ -105,6 +105,9 @@ export const normalizeBlogHtml = (input: string, opts: NormalizeOptions = {}): N
 
   scrubAttributes(root);
 
+  // Dead placeholder links ("#") point at booking instead.
+  root.querySelectorAll('a[href="#"], a[href=""]').forEach((a) => a.setAttribute("href", "/book-therapist"));
+
   const out: string[] = [];
   let stepBuffer: string[] = [];
   let bulletBuffer: string[] = [];
@@ -194,9 +197,16 @@ export const normalizeBlogHtml = (input: string, opts: NormalizeOptions = {}): N
   if (faqStart !== -1) {
     const from = faqStart + 1;
     const tail = blocks.slice(Math.max(from, 0));
-    for (let i = 0; i < tail.length - 1; i++) {
+    for (let i = 0; i < tail.length; i++) {
       const q = tail[i];
-      const a = tail[i + 1];
+      const a = tail[i + 1] || "";
+      // Pattern: <p><strong>Question?</strong> Answer</p>
+      const strongPair = /^<p[^>]*>\s*<strong>(.+?)<\/strong>\s*(.+?)<\/p>$/i.exec(q.trim());
+      if (strongPair) {
+        const question = textOf(`<span>${strongPair[1]}</span>`);
+        const answer = textOf(`<span>${strongPair[2]}</span>`);
+        if (isQuestion(question) && answer) { faqs.push({ question, answer }); continue; }
+      }
       if ((isH(q, 3) || isH(q, 2)) && /^<p[ >]/i.test(a)) {
         const question = textOf(q);
         const answer = textOf(a);
