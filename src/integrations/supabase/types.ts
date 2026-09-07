@@ -2794,6 +2794,7 @@ export type Database = {
           is_verified: boolean
           rating: number
           reviewer_name: string
+          source_feedback_id: string | null
           specialist_id: string
         }
         Insert: {
@@ -2803,6 +2804,7 @@ export type Database = {
           is_verified?: boolean
           rating: number
           reviewer_name: string
+          source_feedback_id?: string | null
           specialist_id: string
         }
         Update: {
@@ -2812,6 +2814,7 @@ export type Database = {
           is_verified?: boolean
           rating?: number
           reviewer_name?: string
+          source_feedback_id?: string | null
           specialist_id?: string
         }
         Relationships: [
