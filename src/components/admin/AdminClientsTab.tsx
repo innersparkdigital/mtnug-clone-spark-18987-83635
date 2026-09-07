@@ -354,7 +354,7 @@ const AdminClientsTab = () => {
             <div className="flex justify-center py-12"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
           ) : (
             <div className="overflow-x-auto rounded-lg border">
-              <Table className="min-w-[1050px] text-xs">
+              <Table className="min-w-[1020px] text-xs">
                 <TableHeader>
                   <TableRow className="bg-muted/50 hover:bg-muted/50">
                     {["#", "Date", "Client", "Therapist", "Session type", "Amount", "Payment", "Rating", "Risk", ""].map((h, hi) => (
@@ -401,17 +401,17 @@ const AdminClientsTab = () => {
                           <TableCell className="whitespace-nowrap text-muted-foreground">{r.therapist_name}</TableCell>
                           <TableCell>
                             <Select value={normalizeSessionType(val(r, "session_type") as string) || ""} onValueChange={(v) => setVal(r.id, "session_type", v)}>
-                              <SelectTrigger className="h-8 w-[185px] text-xs"><SelectValue placeholder="Needs review" /></SelectTrigger>
+                              <SelectTrigger className="h-8 w-[158px] text-xs"><SelectValue placeholder="Needs review" /></SelectTrigger>
                               <SelectContent>{SESSION_TYPES.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
                             </Select>
                           </TableCell>
                           <TableCell>
-                            <Input type="number" className="h-8 w-[100px] text-xs" placeholder="0" value={(val(r, "amount_ugx") as number) ?? ""} onChange={(e) => setVal(r.id, "amount_ugx", e.target.value)} />
+                            <Input type="number" className="h-8 w-[88px] text-xs" placeholder="0" value={(val(r, "amount_ugx") as number) ?? ""} onChange={(e) => setVal(r.id, "amount_ugx", e.target.value)} />
                           </TableCell>
                           <TableCell>
                             <div className="flex flex-col gap-1">
                               <Select value={paid} onValueChange={(v) => setVal(r.id, "paid_status", v)}>
-                                <SelectTrigger className="h-8 w-[105px] text-xs"><SelectValue placeholder="—" /></SelectTrigger>
+                                <SelectTrigger className="h-8 w-[92px] text-xs"><SelectValue placeholder="—" /></SelectTrigger>
                                 <SelectContent>
                                   <SelectItem value="paid">Paid</SelectItem>
                                   <SelectItem value="pending">Pending</SelectItem>
@@ -424,7 +424,7 @@ const AdminClientsTab = () => {
                             </div>
                           </TableCell>
                           <TableCell>
-                            <div className="flex flex-col gap-0.5 w-[76px]">
+                            <div className="flex flex-col gap-0.5 w-[70px]">
                               <RatingStars value={val(r, "session_rating") as number | null} />
                               {val(r, "would_rebook") !== null && val(r, "would_rebook") !== undefined && (
                                 <span className="text-[10px] text-muted-foreground whitespace-nowrap">
