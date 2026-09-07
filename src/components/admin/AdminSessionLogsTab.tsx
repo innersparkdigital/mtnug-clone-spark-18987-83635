@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -252,8 +252,8 @@ const AdminSessionLogsTab = () => {
                     const crisis = CRISIS_STATUSES.has(l.progress_status);
                     const isOpen = expanded === l.id;
                     return (
-                      <>
-                        <TableRow key={l.id} className={crisis ? "bg-red-500/5 align-top" : "align-top"}>
+                      <Fragment key={l.id}>
+                        <TableRow className={crisis ? "bg-red-500/5 align-top" : "align-top"}>
                           <TableCell className="pr-0">
                             <button
                               aria-label={isOpen ? "Hide notes" : "Show notes"}
@@ -297,7 +297,7 @@ const AdminSessionLogsTab = () => {
                           </TableCell>
                         </TableRow>
                         {isOpen && (
-                          <TableRow key={`${l.id}-x`} className="bg-muted/20 hover:bg-muted/20">
+                          <TableRow className="bg-muted/20 hover:bg-muted/20">
                             <TableCell />
                             <TableCell colSpan={8} className="py-4">
                               <div className="grid md:grid-cols-2 gap-4 max-w-4xl">
@@ -312,7 +312,7 @@ const AdminSessionLogsTab = () => {
                             </TableCell>
                           </TableRow>
                         )}
-                      </>
+                      </Fragment>
                     );
                   })}
                 </TableBody>
