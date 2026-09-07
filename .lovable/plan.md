@@ -1,54 +1,49 @@
-# Plan — 5 Improvements, Sequenced for Zero Glitches
+# Making every blog come out structured — even when you just paste text
 
-I'll ship in **2 batches** so each piece is tested before the next lands. Credits will cover all 5 items.
+## Why the new posts look messy
 
----
+The house design already exists (hero, "What you'll learn" box, numbered steps, checklist grid, crisis box, FAQ, booking box). The problem is the **body text you paste**.
 
-## Batch 1 — DB + Backend foundations (this turn)
+When you paste from Word, Google Docs or ChatGPT, everything arrives as one long run of plain paragraphs. Your screenshot shows exactly that: the FAQ questions ("How is burnout different from just being tired?") land as ordinary paragraphs instead of proper question headings, so the page reads like a wall of text.
 
-### 1. Blog SEO fields (Image 1)
-- Add `meta_description` (TEXT, ≤160 chars) and `meta_keywords` (TEXT, comma-separated) columns to `blog_posts`.
-- Add inputs to `BlogsManager.tsx` form (below Excerpt).
-- Render them in `<Helmet>` on `CmsBlogPost.tsx` so Google indexes them.
-- Existing blogs unaffected — nullable columns.
+So the fix is not a new design — it is making the paste **become** the structure automatically.
 
-### 2. All Clients data model (Image 4 benchmark)
-- Extend `therapist_clients` (or session_feedback / income_entries — I'll pick the right home after reading) with the missing tracker fields: `client_code`, `client_phone`, `client_email`, `country`, `presenting_concern`, `session_type`, `duration_mins`, `session_rating`, `next_session_date`, `would_rebook`, `amount_ugx`, `therapist_share_ugx`, `innerspark_share_ugx`, `paid_status`.
-- One migration, RLS + GRANT included.
-- Auto-generate `client_code` (INS-XXXX) via trigger.
+## What I propose
 
-### 3. Digital Receipt infrastructure
-- New Edge Function `generate-receipt-pdf` — server-side PDF (via `pdf-lib` or HTML→PDF) styled like SafeBoda/Lovable receipt (already have `payment-receipt.tsx` template as reference).
-- New Edge Function `send-receipt-email` — sends the PDF as attachment via Resend to client email.
-- Storage bucket `receipts` (public read via signed URLs) for WhatsApp shareable links.
-- Marking a client entry as **paid** in admin auto-triggers: (a) receipt PDF generation, (b) email to client, (c) insert into `income_entries` (Finance & Accounts).
+### 1. Smart paste clean-up
+When you paste into the blog editor, the text is automatically tidied:
+- Short lines that end in a question mark become question headings
+- Lines like "1." / "Step 2" become proper numbered steps
+- Lines starting with a dash or bullet become bullet lists
+- Section names in ALL CAPS or ending in a colon become section headings
+- Word/Docs junk (stray fonts, colours, empty paragraphs, smart-quote noise) is stripped
 
-### 4. Kenya → Global Referrals rename
-- Rename admin tab "Kenya Referrals" → "Referrals" and remove Kenya-only filters.
-- Update `KenyaReferralsTab.tsx` to `ReferralsTab.tsx`, keep backwards-compatible route.
-- Referral tracking already works for any country — just UI + copy changes.
+### 2. A one-click "Structure this post" button
+Sits above the editor. Runs the same clean-up on content already saved, so the posts published in the last weeks can be fixed one by one without retyping them.
 
----
+### 3. Guided section blocks in the editor
+Instead of one big blank box, buttons to drop in ready-made blocks:
+Quick answer · What you'll learn · Signs list · Statistics with source · Crisis box · Step-by-step · What therapy looks like · Note from our clinical team · FAQ · Booking box.
+You then just replace the placeholder words with your text — impossible to end up disorganised.
 
-## Batch 2 — Admin UI redesign + Overview fix (next turn)
+### 4. Automatic FAQ pick-up
+Any question-and-answer pairs left at the bottom of the body get moved into the FAQ builder automatically, so they show as a proper accordion and can win Google rich results.
 
-### 5. Admin dashboard redesign (Image 2 → Image 3 aesthetic)
-- Diagnose "Unable to load overview" (likely RPC error on `admin_dashboard_stats`) and fix.
-- Apply the Calm/dark portal aesthetic from the therapist portal (Image 3) to `/admin`:
-  - Gradient greeting card (Good afternoon, admin 👋)
-  - Colored stat cards (Active clients, This week, Revenue, Safety flags)
-  - "Needs attention" alert strip
-  - Tabs restyled as pill nav, wrapped cleanly
-- Rebuild **All Clients** tab with the exact columns from your spec + a **Generate Receipt** button per row (Email / Download / WhatsApp share).
-- Rebuild **Overview** with revenue-per-session-type breakdown (Video / Chat / Group), therapist commission totals, InnerSpark totals — matching Image 4 layout.
+### 5. A publish check
+Before a post can be published, a short checklist warns if it is missing: an intro answer, at least two section headings, a booking link in the first part, or FAQs. Warning only — it never blocks you.
 
----
-
-## What I need from you
-Just say **"proceed"** and I ship Batch 1 immediately. Batch 2 lands right after you confirm Batch 1 works.
+### 6. Fix the posts already live
+Run the clean-up across the recently published posts (starting with the burnout one in your screenshot) and confirm each one renders with headings, steps and a real FAQ block.
 
 ## Technical notes
-- Receipt PDF: server-side via Deno + `pdf-lib` (works in edge functions, no browser dependency).
-- Finance auto-sync: DB trigger on `therapist_clients.paid_status = 'paid'` inserts into `income_entries`.
-- All new tables/columns include GRANT + RLS.
-- No changes to existing published data.
+- Paste normaliser: new `src/lib/blogContentNormalizer.ts` — HTML in, structured HTML out, using the existing `blog-callout` / `blog-crisis` / `blog-steps` / `blog-checkgrid` classes already styled in `index.css`.
+- Hooked into the rich-text editor's paste handler in `BlogsManager.tsx`, plus a manual "Structure this post" action.
+- Section-block inserter extends the existing `BLOG_BODY_TEMPLATE` into individual snippets.
+- FAQ extraction writes into the existing `faqs` column so `FaqSection` and FAQPage schema keep working.
+- No change to `BlogPostLayout` / `CmsBlogPost` rendering or the site design.
+
+## Order of work
+1. Normaliser + paste hook + "Structure this post" button
+2. Section blocks and publish checklist
+3. FAQ auto-extraction
+4. Clean up the already-published posts and verify in the preview
