@@ -428,6 +428,8 @@ const Specialists = () => {
   const [specialists, setSpecialists] = useState<Specialist[]>([]);
   const [verifiedSpecialists, setVerifiedSpecialists] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
   const [bookingSpecialist, setBookingSpecialist] = useState<Specialist | null>(null);
 
   const {
