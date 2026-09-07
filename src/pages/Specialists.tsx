@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getSpecialistImage } from "@/lib/specialistImages";
+import { specialistPath } from "@/lib/specialistSlug";
 import PreAssessmentModal from "@/components/PreAssessmentModal";
 import BookingFormModal from "@/components/BookingFormModal";
 import { useBookingFlow } from "@/hooks/useBookingFlow";
