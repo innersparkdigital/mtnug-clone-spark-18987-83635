@@ -3864,6 +3864,10 @@ export type Database = {
         Args: { payload: Json; queue_name: string }
         Returns: number
       }
+      enrich_chat_lead: {
+        Args: { _email: string; _id: string; _message: string; _name: string }
+        Returns: boolean
+      }
       get_campaign_by_slug: { Args: { _slug: string }; Returns: Json }
       get_campaign_completion: { Args: { _company_id: string }; Returns: Json }
       get_client_by_token: { Args: { _token: string }; Returns: Json }
@@ -3982,6 +3986,16 @@ export type Database = {
         Returns: boolean
       }
       slugify_company_name: { Args: { _name: string }; Returns: string }
+      submit_chat_lead: {
+        Args: {
+          _anonymous_id: string
+          _intent: string
+          _phone: string
+          _session_id: string
+          _source_path: string
+        }
+        Returns: string
+      }
       sync_form_emails_to_subscribers: { Args: never; Returns: Json }
       therapist_client_overview: { Args: never; Returns: Json }
       therapist_question_set_stats: { Args: never; Returns: Json }
