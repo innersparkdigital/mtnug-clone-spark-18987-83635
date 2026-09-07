@@ -3,6 +3,37 @@ import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import Image from "@tiptap/extension-image";
 import Placeholder from "@tiptap/extension-placeholder";
+import { Node, mergeAttributes } from "@tiptap/core";
+
+/** Keeps our layout boxes (callout, crisis, steps, checklist) alive in the editor. */
+const BlogBox = Node.create({
+  name: "blogBox",
+  group: "block",
+  content: "block+",
+  defining: true,
+  addAttributes() {
+    return {
+      class: {
+        default: "blog-callout",
+        parseHTML: (el) => (el as HTMLElement).getAttribute("class") || "blog-callout",
+      },
+    };
+  },
+  parseHTML() {
+    return [
+      {
+        tag: "div[class]",
+        getAttrs: (el) => {
+          const cls = (el as HTMLElement).getAttribute("class") || "";
+          return /blog-(callout|crisis|steps|checkgrid)/.test(cls) ? { class: cls } : false;
+        },
+      },
+    ];
+  },
+  renderHTML({ HTMLAttributes }) {
+    return ["div", mergeAttributes(HTMLAttributes), 0];
+  },
+});
 import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -29,6 +60,7 @@ const RichTextEditor = ({ value, onChange, placeholder, smartPaste = true }: Pro
       Link.configure({ openOnClick: false, HTMLAttributes: { class: "text-primary underline" } }),
       Image,
       Placeholder.configure({ placeholder: placeholder || "Start writing..." }),
+      BlogBox,
     ],
     content: value || "",
     editorProps: {
