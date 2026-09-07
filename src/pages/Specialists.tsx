@@ -16,6 +16,7 @@ import {
   ShieldCheck, GraduationCap, FileCheck, UserSearch, HelpCircle
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { withTimeout } from "@/lib/rpcTimeout";
 import { getSpecialistImage } from "@/lib/specialistImages";
 import { specialistPath } from "@/lib/specialistSlug";
 import PreAssessmentModal from "@/components/PreAssessmentModal";
