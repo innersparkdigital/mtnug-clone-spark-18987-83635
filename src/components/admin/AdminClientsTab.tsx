@@ -342,7 +342,7 @@ const AdminClientsTab = () => {
               <Table className="min-w-[1050px] text-xs">
                 <TableHeader>
                   <TableRow className="bg-muted/50 hover:bg-muted/50">
-                    {["#", "Date", "Client", "Therapist", "Session type", "Amount", "Payment", "Risk", ""].map((h, hi) => (
+                    {["#", "Date", "Client", "Therapist", "Session type", "Amount", "Payment", "Rating", "Risk", ""].map((h, hi) => (
                       <TableHead key={hi} className="whitespace-nowrap text-[11px] h-9">{h}</TableHead>
                     ))}
                   </TableRow>
