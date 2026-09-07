@@ -749,6 +749,7 @@ const App = () => (
                 <Route path="*" element={<NotFound />} />
               </Routes>
               </Suspense>
+              </RouteErrorBoundary>
             </BrowserRouter>
           </TooltipProvider>
           </CalmThemeProvider>
