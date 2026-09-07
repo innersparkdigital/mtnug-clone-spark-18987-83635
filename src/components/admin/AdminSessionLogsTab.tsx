@@ -272,7 +272,7 @@ const AdminSessionLogsTab = () => {
 const Field = ({ label, value }: { label: string; value?: string | null }) => (
   <div>
     <p className="text-xs text-muted-foreground">{label}</p>
-    <p className="mt-0.5 break-words capitalize-first">{value?.toString().trim() || "—"}</p>
+    <p className="mt-0.5 break-words">{value?.toString().trim() || "—"}</p>
   </div>
 );
 
