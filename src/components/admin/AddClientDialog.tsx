@@ -44,7 +44,6 @@ const empty = {
   paid_status: "pending",
   session_rating: "",
   would_rebook: "",
-  client_type: "new",
 };
 
 const AddClientDialog = ({
