@@ -3940,6 +3940,7 @@ export type Database = {
       }
       lookup_employee_by_code: { Args: { _code: string }; Returns: Json }
       lookup_employee_by_token: { Args: { _token: string }; Returns: Json }
+      match_specialist_by_name: { Args: { _name: string }; Returns: string }
       merge_feedback_therapist_names: {
         Args: { _from: string; _to: string }
         Returns: number
