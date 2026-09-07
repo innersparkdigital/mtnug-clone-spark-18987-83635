@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { SESSION_TYPES, normalizeSessionType } from "@/lib/sessionTypes";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -54,7 +55,6 @@ interface Row {
 }
 
 const fmtUGX = (n: number | null) => (n ? `UGX ${Math.round(Number(n)).toLocaleString()}` : "—");
-const SESSION_TYPES = ["individual", "couples", "teen", "group", "corporate"];
 
 const riskLevel = (r: Row): "high" | "medium" | "low" => {
   if (r.open_alerts > 0) return "high";
@@ -377,8 +377,8 @@ const AdminClientsTab = () => {
                         <TableCell className="whitespace-nowrap">{r.therapist_name}</TableCell>
                         <TableCell className="max-w-[160px] truncate">{r.presenting_concern || "—"}</TableCell>
                         <TableCell>
-                          <Select value={(val(r, "session_type") as string) || ""} onValueChange={(v) => setVal(r.id, "session_type", v)}>
-                            <SelectTrigger className="h-8 w-[120px] text-xs"><SelectValue placeholder="Type" /></SelectTrigger>
+                          <Select value={normalizeSessionType(val(r, "session_type") as string) || ""} onValueChange={(v) => setVal(r.id, "session_type", v)}>
+                            <SelectTrigger className="h-8 w-[190px] text-xs"><SelectValue placeholder="Needs review" /></SelectTrigger>
                             <SelectContent>{SESSION_TYPES.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
                           </Select>
                         </TableCell>
