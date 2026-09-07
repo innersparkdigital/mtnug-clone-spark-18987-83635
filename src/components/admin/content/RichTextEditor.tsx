@@ -3,7 +3,7 @@ import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import Image from "@tiptap/extension-image";
 import Placeholder from "@tiptap/extension-placeholder";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Bold, Italic, Strikethrough, Heading1, Heading2, Heading3,
@@ -11,14 +11,18 @@ import {
 } from "lucide-react";
 import { uploadContentMedia } from "./uploadMedia";
 import { toast } from "sonner";
+import { normalizeBlogHtml } from "@/lib/blogContentNormalizer";
 
 interface Props {
   value: string;
   onChange: (html: string) => void;
   placeholder?: string;
+  /** Auto-structure pasted text (headings, steps, bullets). On for blog bodies. */
+  smartPaste?: boolean;
 }
 
-const RichTextEditor = ({ value, onChange, placeholder }: Props) => {
+const RichTextEditor = ({ value, onChange, placeholder, smartPaste = true }: Props) => {
+  const editorRef = useRef<any>(null);
   const editor = useEditor({
     extensions: [
       StarterKit.configure({ heading: { levels: [1, 2, 3] } }),
@@ -32,9 +36,36 @@ const RichTextEditor = ({ value, onChange, placeholder }: Props) => {
         class:
           "prose prose-sm max-w-none min-h-[300px] focus:outline-none px-4 py-3 [&_h1]:text-2xl [&_h1]:font-bold [&_h2]:text-xl [&_h2]:font-bold [&_h3]:text-lg [&_h3]:font-semibold [&_p]:my-2 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6 [&_blockquote]:border-l-4 [&_blockquote]:border-muted [&_blockquote]:pl-4 [&_blockquote]:italic [&_a]:text-primary [&_a]:underline [&_img]:rounded [&_img]:my-4",
       },
+      handlePaste: (_view, event) => {
+        if (!smartPaste) return false;
+        const data = event.clipboardData;
+        if (!data) return false;
+        const html = data.getData("text/html");
+        const text = data.getData("text/plain");
+        const source =
+          html ||
+          (text
+            ? text
+                .split(/\n+/)
+                .map((l) => l.trim())
+                .filter(Boolean)
+                .map((l) => `<p>${l.replace(/&/g, "&amp;").replace(/</g, "&lt;")}</p>`)
+                .join("")
+            : "");
+        if (!source) return false;
+        const { html: structured } = normalizeBlogHtml(source, { forEditor: true });
+        if (!structured) return false;
+        event.preventDefault();
+        editorRef.current?.chain().focus().insertContent(structured).run();
+        toast.success("Pasted text structured automatically");
+        return true;
+      },
     },
     onUpdate: ({ editor }) => onChange(editor.getHTML()),
   });
+
+  editorRef.current = editor;
+
 
   useEffect(() => {
     if (editor && value !== editor.getHTML()) {
