@@ -71,6 +71,8 @@ export interface BlogPostData {
 const SITE = "https://www.innersparkafrica.com";
 const LOGO = `${SITE}/innerspark-logo.webp`;
 const DEFAULT_OG = `${SITE}/og-image.jpg`;
+const absUrl = (src?: string) =>
+  !src ? DEFAULT_OG : src.startsWith("http") ? src : `${SITE}${src.startsWith("/") ? "" : "/"}${src}`;
 const WA_NUMBER = "256792085773";
 
 function renderBlock(b: BlogBlock, i: number) {
@@ -150,7 +152,7 @@ const BlogPostLayout = ({ data }: { data: BlogPostData }) => {
     "@type": "BlogPosting",
     headline: data.title,
     description: data.metaDescription,
-    image: data.heroImage || DEFAULT_OG,
+    image: absUrl(data.heroImage),
     author: data.author
       ? { "@type": "Person", name: data.author }
       : { "@type": "Organization", name: "Innerspark Africa Clinical Team", url: SITE },
@@ -208,7 +210,7 @@ const BlogPostLayout = ({ data }: { data: BlogPostData }) => {
         <meta property="og:description" content={data.metaDescription} />
         <meta property="og:type" content="article" />
         <meta property="og:url" content={url} />
-        <meta property="og:image" content={data.heroImage || DEFAULT_OG} />
+        <meta property="og:image" content={absUrl(data.heroImage)} />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta property="article:published_time" content={data.isoDate} />
