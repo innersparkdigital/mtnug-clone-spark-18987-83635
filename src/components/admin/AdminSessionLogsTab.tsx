@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Loader2, AlertOctagon, Download } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Loader2, AlertOctagon, Download, Eye } from "lucide-react";
 import { toast } from "sonner";
 import { withTimeout } from "@/lib/rpcTimeout";
 
@@ -28,9 +29,11 @@ interface Log {
   client_id: string;
   client_name: string;
   client_phone: string | null;
+  therapist_email: string | null;
+  next_appt_service: string | null;
 }
 
-const CRISIS_STATUSES = new Set(["at_risk", "crisis_protocol_activated"]);
+const CRISIS_STATUSES = new Set(["at_risk", "crisis_activated"]);
 
 const AdminSessionLogsTab = () => {
   const [logs, setLogs] = useState<Log[]>([]);
@@ -40,6 +43,7 @@ const AdminSessionLogsTab = () => {
   const [therapistFilter, setTherapistFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [period, setPeriod] = useState("30");
+  const [detail, setDetail] = useState<Log | null>(null);
 
   const load = async () => {
     setLoading(true);
@@ -75,7 +79,8 @@ const AdminSessionLogsTab = () => {
       return (
         l.client_name.toLowerCase().includes(s) ||
         l.therapist_name.toLowerCase().includes(s) ||
-        (l.notes || "").toLowerCase().includes(s)
+        (l.notes || "").toLowerCase().includes(s) ||
+        (l.homework_text || "").toLowerCase().includes(s)
       );
     });
   }, [logs, search, therapistFilter, statusFilter, period]);
@@ -89,11 +94,18 @@ const AdminSessionLogsTab = () => {
   }, [filtered]);
 
   const exportCsv = () => {
-    const header = ["Date", "Therapist", "Client", "Phone", "Service", "Duration", "Progress", "Homework", "Next booked", "Notes"];
+    const header = [
+      "Date", "Therapist", "Therapist email", "Client", "New client", "Phone",
+      "Service", "Duration", "Progress", "Homework given", "Homework details",
+      "Next appt booked", "Next appt date", "Next appt service", "Notes", "Logged at",
+    ];
     const lines = filtered.map((l) => [
-      l.session_date, l.therapist_name, l.client_name, l.client_phone || "",
+      l.session_date, l.therapist_name, l.therapist_email || "", l.client_name,
+      l.is_new_client ? "New" : "Returning", l.client_phone || "",
       l.service_delivered, l.duration, l.progress_status,
-      l.homework_given ? "Yes" : "No", l.next_appt_booked, l.notes || "",
+      l.homework_given ? "Yes" : "No", l.homework_text || "",
+      l.next_appt_booked, l.next_appt_date || "", l.next_appt_service || "",
+      l.notes || "", l.created_at,
     ]);
     const csv = [header, ...lines].map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n");
     const url = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
@@ -134,12 +146,11 @@ const AdminSessionLogsTab = () => {
               <SelectTrigger className="w-48"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Any progress</SelectItem>
-                <SelectItem value="significant_improvement">Significant improvement</SelectItem>
-                <SelectItem value="some_improvement">Some improvement</SelectItem>
-                <SelectItem value="no_change">No change</SelectItem>
-                <SelectItem value="deterioration">Deterioration</SelectItem>
+                <SelectItem value="progressing_well">Progressing well</SelectItem>
+                <SelectItem value="steady">Steady</SelectItem>
+                <SelectItem value="needs_more_support">Needs more support</SelectItem>
                 <SelectItem value="at_risk">At risk</SelectItem>
-                <SelectItem value="crisis_protocol_activated">Crisis</SelectItem>
+                <SelectItem value="crisis_activated">Crisis activated</SelectItem>
               </SelectContent>
             </Select>
             <Select value={period} onValueChange={setPeriod}>
@@ -169,10 +180,12 @@ const AdminSessionLogsTab = () => {
                     <TableHead>Therapist</TableHead>
                     <TableHead>Client</TableHead>
                     <TableHead>Service</TableHead>
+                    <TableHead>Duration</TableHead>
                     <TableHead>Progress</TableHead>
-                    <TableHead>HW</TableHead>
-                    <TableHead>Next</TableHead>
-                    <TableHead>Notes</TableHead>
+                    <TableHead className="min-w-[200px]">Homework</TableHead>
+                    <TableHead className="min-w-[150px]">Next session</TableHead>
+                    <TableHead className="min-w-[320px]">Notes</TableHead>
+                    <TableHead className="text-right">Full record</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -191,9 +204,27 @@ const AdminSessionLogsTab = () => {
                           {l.progress_status.replace(/_/g, " ")}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-xs">{l.homework_given ? "✓" : "—"}</TableCell>
-                      <TableCell className="text-xs">{l.next_appt_booked}</TableCell>
-                      <TableCell className="text-xs max-w-[220px] truncate">{l.notes || "—"}</TableCell>
+                      <TableCell className="text-xs whitespace-nowrap">{l.duration || "—"}</TableCell>
+                      <TableCell className="text-xs align-top">
+                        {l.homework_given ? (
+                          <span className="whitespace-pre-wrap break-words">
+                            {l.homework_text?.trim() || "Given"}
+                          </span>
+                        ) : "—"}
+                      </TableCell>
+                      <TableCell className="text-xs align-top">
+                        <span className="capitalize">{l.next_appt_booked || "—"}</span>
+                        {l.next_appt_date && <div className="text-muted-foreground">{l.next_appt_date}</div>}
+                        {l.next_appt_service && <div className="text-muted-foreground">{l.next_appt_service}</div>}
+                      </TableCell>
+                      <TableCell className="text-xs align-top">
+                        <span className="whitespace-pre-wrap break-words">{l.notes?.trim() || "—"}</span>
+                      </TableCell>
+                      <TableCell className="text-right align-top">
+                        <Button variant="ghost" size="sm" className="h-7 px-2" onClick={() => setDetail(l)}>
+                          <Eye className="h-3.5 w-3.5 mr-1" /> View
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -203,9 +234,55 @@ const AdminSessionLogsTab = () => {
           )}
         </CardContent>
       </Card>
+
+      <Dialog open={!!detail} onOpenChange={(o) => !o && setDetail(null)}>
+        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Session record</DialogTitle>
+          </DialogHeader>
+          {detail && (
+            <div className="space-y-4 text-sm">
+              <div className="grid sm:grid-cols-2 gap-3">
+                <Field label="Session date" value={detail.session_date} />
+                <Field label="Logged at" value={new Date(detail.created_at).toLocaleString()} />
+                <Field label="Therapist" value={detail.therapist_name} />
+                <Field label="Therapist email" value={detail.therapist_email} />
+                <Field label="Client" value={detail.client_name} />
+                <Field label="Client phone" value={detail.client_phone} />
+                <Field label="Client status" value={detail.is_new_client ? "New client" : "Returning client"} />
+                <Field label="Service delivered" value={detail.service_delivered} />
+                <Field label="Duration" value={detail.duration} />
+                <Field label="Progress" value={detail.progress_status?.replace(/_/g, " ")} />
+                <Field label="Homework given" value={detail.homework_given ? "Yes" : "No"} />
+                <Field label="Next appointment booked" value={detail.next_appt_booked} />
+                <Field label="Next appointment date" value={detail.next_appt_date} />
+                <Field label="Next appointment service" value={detail.next_appt_service} />
+              </div>
+              <LongField label="Homework details" value={detail.homework_text} />
+              <LongField label="Session notes" value={detail.notes} />
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
+
+const Field = ({ label, value }: { label: string; value?: string | null }) => (
+  <div>
+    <p className="text-xs text-muted-foreground">{label}</p>
+    <p className="mt-0.5 break-words">{value?.toString().trim() || "—"}</p>
+  </div>
+);
+
+const LongField = ({ label, value }: { label: string; value?: string | null }) => (
+  <div>
+    <p className="text-xs text-muted-foreground mb-1">{label}</p>
+    <div className="rounded-md border bg-muted/30 p-3 text-sm whitespace-pre-wrap break-words leading-relaxed">
+      {value?.trim() || "—"}
+    </div>
+  </div>
+);
 
 const Metric = ({ label, v, urgent }: { label: string; v: number; urgent?: boolean }) => (
   <Card className={urgent ? "border-red-500/40" : ""}>
