@@ -15,6 +15,7 @@ import { uploadContentMedia, slugify } from "./uploadMedia";
 import RichTextEditor from "./RichTextEditor";
 import { BLOG_BODY_TEMPLATE, BLOG_SECTION_BLOCKS } from "./blogTemplate";
 import { normalizeBlogHtml, auditBlogBody } from "@/lib/blogContentNormalizer";
+import TablePagination from "@/components/admin/finance/TablePagination";
 
 interface FaqItem { question: string; answer: string }
 
@@ -77,20 +78,53 @@ const BlogsManager = () => {
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [form, setForm] = useState<Partial<BlogPost>>(empty);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(12);
+  const [total, setTotal] = useState(0);
+  const [publishedCount, setPublishedCount] = useState(0);
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [search, setSearch] = useState("");
+
+  const LIST_COLUMNS = "id,slug,title,excerpt,category,hero_image_url,status,created_at";
 
   const fetchPosts = async () => {
     setLoading(true);
-    const { data, error } = await supabase.from("blog_posts").select("*").order("created_at", { ascending: false });
+    let query = supabase
+      .from("blog_posts")
+      .select(LIST_COLUMNS, { count: "exact" })
+      .order("created_at", { ascending: false });
+    if (statusFilter !== "all") query = query.eq("status", statusFilter);
+    if (search.trim()) query = query.or(`title.ilike.%${search.trim()}%,slug.ilike.%${search.trim()}%`);
+    const from = (page - 1) * pageSize;
+    const { data, error, count } = await query.range(from, from + pageSize - 1);
     if (error) toast.error(error.message);
-    else setPosts(data as unknown as BlogPost[]);
+    else {
+      setPosts((data || []) as unknown as BlogPost[]);
+      setTotal(count || 0);
+      const { count: pubCount } = await supabase
+        .from("blog_posts")
+        .select("id", { count: "exact", head: true })
+        .eq("status", "published");
+      setPublishedCount(pubCount || 0);
+    }
     setLoading(false);
   };
 
-  useEffect(() => { fetchPosts(); }, []);
+  useEffect(() => { fetchPosts(); }, [page, pageSize, statusFilter]);
+
+  // Debounce the search box so typing doesn't fire a request per keystroke.
+  useEffect(() => {
+    const t = setTimeout(() => { setPage(1); fetchPosts(); }, 350);
+    return () => clearTimeout(t);
+  }, [search]);
 
   const openNew = () => { setForm(empty); setOpen(true); };
-  const openEdit = (p: BlogPost) => {
-    setForm({ ...p, faqs: Array.isArray(p.faqs) ? p.faqs : [] });
+  const openEdit = async (p: BlogPost) => {
+    // The list query only loads light columns, so pull the full record for editing.
+    const { data, error } = await supabase.from("blog_posts").select("*").eq("id", p.id).maybeSingle();
+    if (error || !data) { toast.error(error?.message || "Could not load this post"); return; }
+    const full = data as unknown as BlogPost;
+    setForm({ ...full, faqs: Array.isArray(full.faqs) ? full.faqs : [] });
     setOpen(true);
   };
 
@@ -181,12 +215,33 @@ const BlogsManager = () => {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-3 flex-wrap">
         <div>
           <h3 className="text-lg font-semibold">Blog Posts</h3>
-          <p className="text-sm text-muted-foreground">{posts.length} total · {posts.filter(p => p.status === "published").length} published</p>
+          <p className="text-sm text-muted-foreground">
+            {total} {statusFilter === "all" ? "total" : statusFilter}
+            {search.trim() ? " matching" : ""} · {publishedCount} published
+          </p>
         </div>
         <Button onClick={openNew} className="gap-2"><Plus className="h-4 w-4" /> New Post</Button>
+      </div>
+
+      <div className="flex items-center gap-2 flex-wrap">
+        <Input
+          placeholder="Search by title or slug"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="h-9 max-w-xs"
+        />
+        <Select value={statusFilter} onValueChange={(v) => { setStatusFilter(v); setPage(1); }}>
+          <SelectTrigger className="h-9 w-40"><SelectValue /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All statuses</SelectItem>
+            <SelectItem value="published">Published</SelectItem>
+            <SelectItem value="draft">Draft</SelectItem>
+            <SelectItem value="scheduled">Scheduled</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       {loading ? <div className="text-center py-8"><Loader2 className="h-6 w-6 animate-spin mx-auto" /></div> : (
@@ -211,9 +266,18 @@ const BlogsManager = () => {
               </CardContent>
             </Card>
           ))}
-          {posts.length === 0 && <p className="text-center text-muted-foreground py-8 col-span-full">No blog posts yet</p>}
+          {posts.length === 0 && <p className="text-center text-muted-foreground py-8 col-span-full">No blog posts found</p>}
         </div>
       )}
+
+      <TablePagination
+        page={page}
+        pageSize={pageSize}
+        total={total}
+        onPageChange={setPage}
+        onPageSizeChange={setPageSize}
+        pageSizeOptions={[12, 24, 48]}
+      />
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
