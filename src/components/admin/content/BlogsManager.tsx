@@ -15,6 +15,7 @@ import { uploadContentMedia, slugify } from "./uploadMedia";
 import RichTextEditor from "./RichTextEditor";
 import { BLOG_BODY_TEMPLATE, BLOG_SECTION_BLOCKS } from "./blogTemplate";
 import { normalizeBlogHtml, auditBlogBody } from "@/lib/blogContentNormalizer";
+import TablePagination from "@/components/admin/finance/TablePagination";
 
 interface FaqItem { question: string; answer: string }
 
