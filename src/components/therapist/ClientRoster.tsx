@@ -5,7 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { Loader2, UserPlus, Copy, AlertCircle, Users, CalendarCheck, ShieldAlert, Activity } from "lucide-react";
+import { Loader2, UserPlus, Copy, AlertCircle, Users, CalendarCheck, ShieldAlert, Activity, CheckCircle2, Clock3 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { copyToClipboard } from "@/lib/copyToClipboard";
 import { buildClientPortalUrl } from "@/lib/clientPortalLink";
 import MiniSparkline from "./MiniSparkline";
@@ -25,6 +26,8 @@ interface Client {
   overdue_tools?: number;
   open_alerts?: number;
   week_activity?: Array<{ date: string; completed: number }>;
+  consent_signed: boolean;
+  consent_signed_at: string | null;
 }
 
 interface Props {
@@ -89,7 +92,18 @@ const ClientRoster = ({ therapistId, therapistName }: Props) => {
     setLoading(false);
   };
 
-  useEffect(() => { load(); }, [therapistId]);
+  useEffect(() => {
+    load();
+    const channel = supabase
+      .channel(`therapist-client-consent-${therapistId}`)
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "therapist_clients", filter: `therapist_id=eq.${therapistId}` },
+        () => load(),
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [therapistId]);
 
   const needsAttention = useMemo(
     () => clients.filter((c) => (c.overdue_tools || 0) > 0 || (c.open_alerts || 0) > 0),
@@ -293,6 +307,10 @@ const ClientRoster = ({ therapistId, therapistName }: Props) => {
                           Safety
                         </span>
                       )}
+                      <Badge variant={c.consent_signed ? "default" : "outline"} className="text-[10px] px-1.5 py-0">
+                        {c.consent_signed ? <CheckCircle2 className="mr-1 h-3 w-3" /> : <Clock3 className="mr-1 h-3 w-3" />}
+                        Consent: {c.consent_signed ? "Signed" : "Pending"}
+                      </Badge>
                     </div>
                     <div className="text-xs text-muted-foreground mt-0.5 truncate">
                       {c.presenting_concern || "No concern recorded"}

@@ -19,6 +19,7 @@ const PRIVATE_PREFIXES = [
   "/auth",
   "/reset-password",
   "/course-certificate",
+  "/consent",
   "/session-feedback",
   "/unsubscribe",
   "/payment-success",

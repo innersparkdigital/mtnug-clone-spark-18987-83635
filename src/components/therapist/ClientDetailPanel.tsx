@@ -3,7 +3,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SessionFeedbackForm from "./SessionFeedbackForm";
-import { Loader2, AlertTriangle, TrendingDown, TrendingUp, Minus } from "lucide-react";
+import { Loader2, AlertTriangle, TrendingDown, TrendingUp, Minus, CheckCircle2, Clock3 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -32,6 +33,8 @@ interface Client {
   open_alerts?: number;
   overdue_tools?: number;
   active_tools?: number;
+  consent_signed: boolean;
+  consent_signed_at: string | null;
 }
 
 interface Submission {
@@ -226,6 +229,10 @@ const ClientDetailPanel = ({ open, onOpenChange, client, therapistName, onAssign
                   <span className={`risk-dot risk-${riskLevel}`} />
                   <span className="text-xs capitalize">{riskLevel} risk · {riskReason}</span>
                 </div>
+                <Badge variant={client.consent_signed ? "default" : "outline"} className="mt-2 text-[10px]">
+                  {client.consent_signed ? <CheckCircle2 className="mr-1 h-3 w-3" /> : <Clock3 className="mr-1 h-3 w-3" />}
+                  Consent: {client.consent_signed ? "Signed" : "Pending"}
+                </Badge>
               </div>
             </div>
           </SheetHeader>
