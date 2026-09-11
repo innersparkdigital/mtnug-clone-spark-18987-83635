@@ -184,21 +184,22 @@ async function fetchPosts() {
 }
 
 async function run() {
-  const shellPath = path.join(DIST, "index.html");
+  // prerender.mjs writes a clean SPA shell for us; fall back to dist/index.html.
+  const templatePath = path.join(DIST, "index.template.html");
+  const fallbackPath = path.join(DIST, "index.html");
   let shell;
   try {
-    shell = await readFile(shellPath, "utf8");
+    shell = await readFile(templatePath, "utf8");
   } catch {
-    console.warn("[prerender-blogs] dist/index.html not found — skipping.");
-    return;
+    try {
+      shell = await readFile(fallbackPath, "utf8");
+    } catch {
+      console.warn("[prerender-blogs] dist/index.template.html not found — skipping.");
+      return;
+    }
   }
-  // The homepage shell has already been prerendered by prerender.mjs, so read
-  // the untouched template from the build output of a nested route instead.
   if (!ROOT_RE.test(shell)) {
-    shell = shell.replace(/<div id="root">[\s\S]*?<\/div>\s*(?=<script)/, '<div id="root"></div>\n    ');
-  }
-  if (!ROOT_RE.test(shell)) {
-    console.warn("[prerender-blogs] could not isolate #root placeholder — skipping.");
+    console.warn("[prerender-blogs] #root placeholder not found in shell — skipping.");
     return;
   }
 
