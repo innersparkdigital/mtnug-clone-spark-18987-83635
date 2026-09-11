@@ -115,24 +115,6 @@ const ImposterSyndromeTest = lazy(
   () => import("./pages/tests/ImposterSyndromeTest"),
 );
 const SADTest = lazy(() => import("./pages/tests/SADTest"));
-const HowToHandleStressPost = lazy(
-  () => import("./pages/blog/HowToHandleStressPost"),
-);
-const PanicAttackPost = lazy(() => import("./pages/blog/PanicAttackPost"));
-const DepressionPost = lazy(() => import("./pages/blog/DepressionPost"));
-const MentalHealthPost = lazy(() => import("./pages/blog/MentalHealthPost"));
-const AnxietyManagementPost = lazy(
-  () => import("./pages/blog/AnxietyManagementPost"),
-);
-const SignsOfDepressionPost = lazy(
-  () => import("./pages/blog/SignsOfDepressionPost"),
-);
-const AnxietySymptomsPost = lazy(
-  () => import("./pages/blog/AnxietySymptomsPost"),
-);
-const HowToFindATherapistPost = lazy(
-  () => import("./pages/blog/HowToFindATherapistPost"),
-);
 const ForBusiness = lazy(() => import("./pages/ForBusiness"));
 const ForProfessionals = lazy(() => import("./pages/ForProfessionals"));
 const DoctorRefer = lazy(() => import("./pages/professionals/DoctorRefer"));
@@ -195,74 +177,6 @@ const AnxietyCounsellingUganda = lazy(() => import("./pages/AnxietyCounsellingUg
 const RelationshipCounsellingUganda = lazy(() => import("./pages/RelationshipCounsellingUganda"));
 const TherapyForTeensUganda = lazy(() => import("./pages/TherapyForTeensUganda"));
 const TraumaTherapyUganda = lazy(() => import("./pages/TraumaTherapyUganda"));
-const TherapyCostUgandaPost = lazy(
-  () => import("./pages/blog/TherapyCostUgandaPost"),
-);
-const FindTherapistKampalaPost = lazy(
-  () => import("./pages/blog/FindTherapistKampalaPost"),
-);
-const OnlineTherapyAfricaPost = lazy(
-  () => import("./pages/blog/OnlineTherapyAfricaPost"),
-);
-const SignsYouNeedTherapistPost = lazy(
-  () => import("./pages/blog/SignsYouNeedTherapistPost"),
-);
-const StudentTherapyUgandaPost = lazy(
-  () => import("./pages/blog/StudentTherapyUgandaPost"),
-);
-const WhatIsTherapyPost = lazy(() => import("./pages/blog/WhatIsTherapyPost"));
-const BenefitsOfTherapyPost = lazy(
-  () => import("./pages/blog/BenefitsOfTherapyPost"),
-);
-const TypesOfTherapyPost = lazy(
-  () => import("./pages/blog/TypesOfTherapyPost"),
-);
-const KampalaProfessionalsOnlineTherapyPost = lazy(
-  () => import("./pages/blog/KampalaProfessionalsOnlineTherapyPost"),
-);
-const MenTherapyUgandaPost = lazy(
-  () => import("./pages/blog/MenTherapyUgandaPost"),
-);
-const BurnoutKampalaProfessionalsPost = lazy(
-  () => import("./pages/blog/BurnoutKampalaProfessionalsPost"),
-);
-const RelationshipCounsellingUgandaPost = lazy(
-  () => import("./pages/blog/RelationshipCounsellingUgandaPost"),
-);
-const UgandaWorkplaceCrisisPost = lazy(
-  () => import("./pages/blog/UgandaWorkplaceCrisisPost"),
-);
-const InnerSparkAfricaReviewPost = lazy(
-  () => import("./pages/blog/InnerSparkAfricaReviewPost"),
-);
-const SparkFrameworkPost = lazy(
-  () => import("./pages/blog/SparkFrameworkPost"),
-);
-const MeetAmaniPost = lazy(() => import("./pages/blog/MeetAmaniPost"));
-const WhisperAnonymousPost = lazy(
-  () => import("./pages/blog/WhisperAnonymousPost"),
-);
-const FindTherapistUgandaPost = lazy(
-  () => import("./pages/blog/FindTherapistUgandaPost"),
-);
-const CorporateWellbeingScreeningPost = lazy(
-  () => import("./pages/blog/CorporateWellbeingScreeningPost"),
-);
-const AffordableOnlineCounsellingPost = lazy(
-  () => import("./pages/blog/AffordableOnlineCounsellingPost"),
-);
-const BestTherapistForAnxietyUgandaPost = lazy(
-  () => import("./pages/blog/BestTherapistForAnxietyUgandaPost"),
-);
-const OnlineVsInPersonTherapyUgandaPost = lazy(
-  () => import("./pages/blog/OnlineVsInPersonTherapyUgandaPost"),
-);
-const TalkToBossMentalHealthPost = lazy(
-  () => import("./pages/blog/TalkToBossMentalHealthPost"),
-);
-const HowToFindPsychologistKampalaPost = lazy(
-  () => import("./pages/blog/HowToFindPsychologistKampalaPost"),
-);
 const AmaniAI = lazy(() => import("./pages/AmaniAI"));
 const CmsBlogPost = lazy(() => import("./pages/CmsBlogPost"));
 const CmsEventPost = lazy(() => import("./pages/CmsEventPost"));
@@ -542,38 +456,6 @@ const App = () => (
                 />
                 <Route path="/mind-check/sad" element={<SADTest />} />
                 <Route
-                  path="/blog/how-to-handle-stress"
-                  element={<HowToHandleStressPost />}
-                />
-                <Route
-                  path="/blog/how-to-stop-a-panic-attack"
-                  element={<PanicAttackPost />}
-                />
-                <Route
-                  path="/blog/how-to-deal-with-depression"
-                  element={<DepressionPost />}
-                />
-                <Route
-                  path="/blog/what-is-mental-health"
-                  element={<MentalHealthPost />}
-                />
-                <Route
-                  path="/blog/how-to-manage-anxiety"
-                  element={<AnxietyManagementPost />}
-                />
-                <Route
-                  path="/blog/signs-of-depression"
-                  element={<SignsOfDepressionPost />}
-                />
-                <Route
-                  path="/blog/anxiety-symptoms"
-                  element={<AnxietySymptomsPost />}
-                />
-                <Route
-                  path="/blog/how-to-find-a-therapist"
-                  element={<HowToFindATherapistPost />}
-                />
-                <Route
                   path="/events-training/truck-drivers-retirement-training"
                   element={<TruckDriversPost />}
                 />
@@ -614,76 +496,7 @@ const App = () => (
                   path="/therapy-in-kampala"
                   element={<TherapyInKampala />}
                 />
-                {/* Buying-Intent Blog Posts */}
-                <Route
-                  path="/blog/therapy-cost-uganda"
-                  element={<TherapyCostUgandaPost />}
-                />
-                <Route
-                  path="/blog/find-therapist-kampala"
-                  element={<FindTherapistKampalaPost />}
-                />
-                <Route
-                  path="/blog/online-therapy-effective-africa"
-                  element={<OnlineTherapyAfricaPost />}
-                />
-                <Route
-                  path="/blog/signs-you-need-a-therapist"
-                  element={<SignsYouNeedTherapistPost />}
-                />
-                <Route
-                  path="/blog/student-therapy-uganda"
-                  element={<StudentTherapyUgandaPost />}
-                />
-                {/* TOFU Blog Posts */}
-                <Route
-                  path="/blog/what-is-therapy"
-                  element={<WhatIsTherapyPost />}
-                />
-                <Route
-                  path="/blog/benefits-of-therapy"
-                  element={<BenefitsOfTherapyPost />}
-                />
-                <Route
-                  path="/blog/types-of-therapy"
-                  element={<TypesOfTherapyPost />}
-                />
-                <Route
-                  path="/blog/meet-amani-ai-mental-wellness-uganda"
-                  element={<MeetAmaniPost />}
-                />
-                <Route
-                  path="/blog/whisper-anonymous-therapy-uganda"
-                  element={<WhisperAnonymousPost />}
-                />
-                <Route
-                  path="/blog/find-a-therapist-in-uganda"
-                  element={<FindTherapistUgandaPost />}
-                />
-                <Route
-                  path="/blog/corporate-wellbeing-screening-uganda"
-                  element={<CorporateWellbeingScreeningPost />}
-                />
-                <Route
-                  path="/blog/affordable-online-counselling-uganda"
-                  element={<AffordableOnlineCounsellingPost />}
-                />
-                <Route
-                  path="/blog/best-therapist-for-anxiety-in-uganda"
-                  element={<BestTherapistForAnxietyUgandaPost />}
-                />
-                <Route
-                  path="/blog/online-vs-in-person-therapy-uganda"
-                  element={<OnlineVsInPersonTherapyUgandaPost />}
-                />
-                <Route
-                  path="/blog/talk-to-boss-mental-health-uganda"
-                  element={<TalkToBossMentalHealthPost />}
-                />
-                <Route
-                  path="/blog/how-to-find-psychologist-in-kampala"
-                  element={<HowToFindPsychologistKampalaPost />}
-                />
+                {/* CMS-driven dynamic blog posts */}
                 {/* CMS-driven dynamic posts (fallback after hardcoded routes) */}
                 <Route path="/blog/:slug" element={<CmsBlogPost />} />
                 <Route
