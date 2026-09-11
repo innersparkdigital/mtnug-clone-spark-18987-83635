@@ -104,6 +104,30 @@ function buildBody(route) {
 
 const ROOT_RE = /<div id="root">\s*<\/div>/;
 
+async function sitemapRoutes() {
+  try {
+    const xml = await readFile(path.resolve(process.cwd(), "public/sitemap.xml"), "utf8");
+    return [...xml.matchAll(/<loc>https:\/\/www\.innersparkafrica\.com(\/[^<]*)<\/loc>/g)]
+      .map((match) => match[1])
+      .filter(Boolean);
+  } catch {
+    return [];
+  }
+}
+
+function canonicalOnlyHead(shell, routePath) {
+  const normalizedPath = routePath === "/" ? "/" : `/${routePath.replace(/^\/+|\/+$/g, "")}/`;
+  const url = `${SITE}${normalizedPath}`;
+  let out = shell;
+  out = upsert(out, /<link\s+rel="canonical"[\s\S]*?\/?>/i, `<link rel="canonical" href="${url}" />`);
+  out = upsert(
+    out,
+    /<meta\s+property="og:url"\s+content="[\s\S]*?"\s*\/?>/i,
+    `<meta property="og:url" content="${url}" />`,
+  );
+  return out;
+}
+
 async function run() {
   const shellPath = path.join(DIST, "index.html");
   let shell;
@@ -138,7 +162,22 @@ async function run() {
     await writeFile(outPath, html, "utf8");
     console.log(`[prerender] wrote ${path.relative(DIST, outPath)}`);
   }
-  console.log(`[prerender] ${routes.length} route(s) prerendered.`);
+
+  // Every other public sitemap route receives its own server-visible canonical
+  // instead of inheriting the homepage canonical from the SPA shell.
+  const richPaths = new Set(routes.map((route) => route.path));
+  const publicPaths = await sitemapRoutes();
+  let canonicalShells = 0;
+  for (const routePath of publicPaths) {
+    const normalizedPath = routePath === "/" ? "/" : `/${routePath.replace(/^\/+|\/+$/g, "")}`;
+    if (richPaths.has(normalizedPath)) continue;
+    const html = canonicalOnlyHead(shell, routePath);
+    const outPath = path.join(DIST, routePath.replace(/^\/+|\/+$/g, ""), "index.html");
+    await mkdir(path.dirname(outPath), { recursive: true });
+    await writeFile(outPath, html, "utf8");
+    canonicalShells += 1;
+  }
+  console.log(`[prerender] ${routes.length} rich route(s) and ${canonicalShells} canonical route shell(s) written.`);
 }
 
 run().catch((err) => {
