@@ -13,6 +13,28 @@
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 import { ROUTES, GLOBAL_LINKS, SITE } from "./prerender-content.mjs";
+import { GLOBAL_LANDING_PAGES } from "./global-landing-content.mjs";
+
+/**
+ * Country / segment landing pages, converted into the same route shape as
+ * ROUTES so their unique copy (headline, intro, every body section, bullets and
+ * FAQs) is written into the raw HTML instead of an empty #root.
+ */
+const COUNTRY_ROUTES = Object.values(GLOBAL_LANDING_PAGES).map((page) => ({
+  path: `/${page.slug}`,
+  title: page.title,
+  description: page.metaDescription,
+  h1: page.h1,
+  intro: page.intro,
+  sections: [
+    ...page.bodySections.map((s) => ({
+      h2: s.heading,
+      p: [...s.paragraphs, ...(s.bullets ?? [])].join(" "),
+    })),
+    ...page.faqs.map((f) => ({ h2: f.q, p: f.a })),
+  ],
+  extraLinks: page.relatedLinks?.map((l) => [l.to, l.label]) ?? [],
+}));
 
 // Safety cap so this can never balloon the published output.
 const MAX_PRERENDER_PAGES = 50;
@@ -70,7 +92,13 @@ function buildHead(html, route) {
  * for crawlers — no hiding, no cloaking.
  */
 function buildBody(route) {
-  const links = GLOBAL_LINKS.filter(([href]) => href !== route.path)
+  const seen = new Set([route.path]);
+  const links = [...(route.extraLinks ?? []), ...GLOBAL_LINKS]
+    .filter(([href]) => {
+      if (seen.has(href)) return false;
+      seen.add(href);
+      return true;
+    })
     .map(
       ([href, label]) =>
         `<li><a class="text-primary underline underline-offset-4" href="${href}">${esc(label)}</a></li>`,
@@ -146,7 +174,7 @@ async function run() {
   // Keep a clean SPA shell so downstream prerender-blogs.mjs can stamp posts.
   await writeFile(path.join(DIST, "index.template.html"), shell, "utf8");
 
-  const routes = ROUTES.slice(0, MAX_PRERENDER_PAGES);
+  const routes = [...ROUTES, ...COUNTRY_ROUTES].slice(0, MAX_PRERENDER_PAGES);
   for (const route of routes) {
     const html = buildHead(shell, route).replace(
       ROOT_RE,
