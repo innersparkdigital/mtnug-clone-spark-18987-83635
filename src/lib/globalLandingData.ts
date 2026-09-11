@@ -1,5 +1,5 @@
 import type { GlobalLandingProps } from "@/components/seo/GlobalLandingPage";
-// @ts-expect-error - plain JS data module shared with the build-time prerender script
+// Plain JS data module shared with the build-time prerender script.
 import { GLOBAL_LANDING_PAGES as RAW } from "../../scripts/global-landing-content.mjs";
 
 /**
