@@ -3047,6 +3047,9 @@ export type Database = {
           amount_ugx: number | null
           client_code: string | null
           client_type: string
+          consent_signed: boolean
+          consent_signed_at: string | null
+          consent_token: string | null
           country: string | null
           created_at: string
           duration_mins: number | null
@@ -3080,6 +3083,9 @@ export type Database = {
           amount_ugx?: number | null
           client_code?: string | null
           client_type?: string
+          consent_signed?: boolean
+          consent_signed_at?: string | null
+          consent_token?: string | null
           country?: string | null
           created_at?: string
           duration_mins?: number | null
@@ -3113,6 +3119,9 @@ export type Database = {
           amount_ugx?: number | null
           client_code?: string | null
           client_type?: string
+          consent_signed?: boolean
+          consent_signed_at?: string | null
+          consent_token?: string | null
           country?: string | null
           created_at?: string
           duration_mins?: number | null
@@ -3793,6 +3802,10 @@ export type Database = {
             Returns: string
           }
       admin_delete_client: { Args: { _client_id: string }; Returns: boolean }
+      admin_generate_client_consent_token: {
+        Args: { _client_id: string }
+        Returns: string
+      }
       admin_list_all_clients: { Args: never; Returns: Json }
       admin_list_enquiries: { Args: never; Returns: Json }
       admin_list_referral_rewards: { Args: never; Returns: Json }
@@ -3846,6 +3859,7 @@ export type Database = {
         Args: { _employee_id: string; _gender?: string }
         Returns: boolean
       }
+      confirm_client_consent: { Args: { _token: string }; Returns: Json }
       create_assignment_schedule: {
         Args: {
           _assignment_tool_id: string
@@ -3878,6 +3892,7 @@ export type Database = {
       get_campaign_by_slug: { Args: { _slug: string }; Returns: Json }
       get_campaign_completion: { Args: { _company_id: string }; Returns: Json }
       get_client_by_token: { Args: { _token: string }; Returns: Json }
+      get_client_consent: { Args: { _token: string }; Returns: Json }
       get_client_reactions_by_token: { Args: { _token: string }; Returns: Json }
       get_company_public: {
         Args: { p_company_id: string }
