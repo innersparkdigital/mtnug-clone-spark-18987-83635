@@ -6,6 +6,7 @@ import ShareResults from './ShareResults';
 import CallbackForm from './CallbackForm';
 import { useState } from 'react';
 import AppDownloadModal from './AppDownloadModal';
+import WellbeingBreakdown from './WellbeingBreakdown';
 
 type WellbeingLevel = 'low' | 'moderate' | 'high';
 
@@ -134,6 +135,11 @@ const WellbeingResults = ({ rawScore, percentage, sessionId, source, deviceType,
         deviceType={deviceType}
         onCtaClick={(type) => onCtaClick(type)}
       />
+
+      {/* Per-question breakdown */}
+      {answers && answers.some((a) => a !== null) && (
+        <WellbeingBreakdown answers={answers} percentage={percentage} />
+      )}
 
       {/* Share Results */}
       <ShareResults percentage={percentage} onCtaClick={(type) => onCtaClick(type)} />

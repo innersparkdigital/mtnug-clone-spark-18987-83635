@@ -146,6 +146,7 @@ const WellbeingCheck = () => {
                 sessionId={sessionId}
                 source={source}
                 deviceType={deviceType}
+                answers={answers}
                 onCtaClick={handleCtaClick}
                 onRetake={handleRetake}
               />

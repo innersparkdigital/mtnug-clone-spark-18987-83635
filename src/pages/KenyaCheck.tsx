@@ -116,6 +116,7 @@ export default function KenyaCheck() {
                   sessionId={sessionId}
                   source="kenya"
                   deviceType={/Mobi|Android/i.test(navigator.userAgent) ? "mobile" : "desktop"}
+                  answers={answers}
                   onCtaClick={handleCtaClick}
                   onRetake={() => { setPhase("hero"); setCurrentQuestion(0); setAnswers(Array(5).fill(null)); setShowResults(false); }}
                 />
