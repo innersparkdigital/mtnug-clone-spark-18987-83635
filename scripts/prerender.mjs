@@ -119,6 +119,9 @@ async function run() {
     return;
   }
 
+  // Keep a clean SPA shell so downstream prerender-blogs.mjs can stamp posts.
+  await writeFile(path.join(DIST, "index.template.html"), shell, "utf8");
+
   const routes = ROUTES.slice(0, MAX_PRERENDER_PAGES);
   for (const route of routes) {
     const html = buildHead(shell, route).replace(
