@@ -74,7 +74,10 @@ const CmsBlogPost = () => {
   if (!post) return null;
 
   const date = post.published_at || post.created_at;
-  const url = post.canonical_url?.trim() || `${SITE}/blog/${post.slug}`;
+  const configuredUrl = post.canonical_url?.trim();
+  const url = configuredUrl
+    ? configuredUrl.endsWith("/") ? configuredUrl : `${configuredUrl}/`
+    : `${SITE}/blog/${post.slug}/`;
   const description = post.meta_description || post.excerpt || post.title;
   const seoTitle = post.meta_title?.trim() || `${post.title} | InnerSpark Africa`;
   const rawSocialImage = post.og_image_url?.trim() || post.hero_image_url;

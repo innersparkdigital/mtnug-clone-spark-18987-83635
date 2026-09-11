@@ -31,7 +31,8 @@ export default function PageSeo({
   type = "website",
   noindex = false,
 }: PageSeoProps) {
-  const url = `${SITE}${path === "/" ? "" : path}`;
+  const normalizedPath = path === "/" ? "/" : `/${path.replace(/^\/+|\/+$/g, "")}/`;
+  const url = `${SITE}${normalizedPath}`;
   return (
     <Helmet>
       <title>{title}</title>

@@ -32,7 +32,7 @@ function buildUrlset(posts) {
       const lastmod = (p.updated_at || p.published_at || "").slice(0, 10);
       return [
         "  <url>",
-        `    <loc>${BASE_URL}/blog/${xmlEscape(p.slug)}</loc>`,
+        `    <loc>${BASE_URL}/blog/${xmlEscape(p.slug)}/</loc>`,
         lastmod ? `    <lastmod>${lastmod}</lastmod>` : null,
         "    <changefreq>weekly</changefreq>",
         "    <priority>0.7</priority>",

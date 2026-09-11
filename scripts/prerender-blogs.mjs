@@ -41,7 +41,11 @@ function upsert(html, matcher, tag) {
 }
 
 function buildHead(shell, post) {
-  const url = post.canonical_url?.trim() || `${SITE}/blog/${post.slug}`;
+  const defaultUrl = `${SITE}/blog/${post.slug}/`;
+  const configuredUrl = post.canonical_url?.trim();
+  const url = configuredUrl
+    ? configuredUrl.endsWith("/") ? configuredUrl : `${configuredUrl}/`
+    : defaultUrl;
   const title = post.meta_title?.trim() || `${post.title} | InnerSpark Africa`;
   const description = post.meta_description || post.excerpt || post.title;
   const image = post.og_image_url?.trim() || post.hero_image_url || `${SITE}/og-image.jpg`;
@@ -178,7 +182,7 @@ function buildListingBody(posts) {
         month: "long",
         year: "numeric",
       });
-      const url = `/blog/${post.slug}`;
+      const url = `/blog/${post.slug}/`;
       return `
         <article class="mb-8">
           <h2 class="text-xl font-bold mb-1"><a class="text-primary underline underline-offset-4" href="${url}">${esc(post.title)}</a></h2>
@@ -259,7 +263,7 @@ async function run() {
     excerpt: "Expert articles on depression, anxiety, stress and relationships, written by licensed African therapists. Practical tips you can use today.",
     meta_title: "Mental Health Blog Uganda | InnerSpark Africa",
     meta_description: "Expert articles on depression, anxiety, stress and relationships, written by licensed African therapists. Practical tips you can use today.",
-    canonical_url: `${SITE}/blog`,
+    canonical_url: `${SITE}/blog/`,
     og_title: "Mental Health Blog Uganda | InnerSpark Africa",
     og_description: "Expert articles on depression, anxiety, stress and relationships, written by licensed African therapists. Practical tips you can use today.",
     og_image_url: `${SITE}/og-image.jpg`,

@@ -129,7 +129,7 @@ Disallow: /admin-finance
 Disallow: /auth
 
 # Allow all important content pages
-Allow: /virtual-therapy
+Allow: /online-therapy
 Allow: /specialists
 Allow: /find-therapist
 Allow: /support-groups
