@@ -13,12 +13,13 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Loader2, AlertOctagon, Download, Eye, Receipt, Save, MessageCircle, Plus, Trash2, Mail, FileSpreadsheet, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Calendar, Star } from "lucide-react";
+import { Loader2, AlertOctagon, Download, Eye, Receipt, Save, MessageCircle, Plus, Trash2, Mail, FileSpreadsheet, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Calendar, Star, Link2, CheckCircle2, Clock3 } from "lucide-react";
 import { toast } from "sonner";
 import AdminClientDetailDialog from "./AdminClientDetailDialog";
 import AddClientDialog from "./AddClientDialog";
 import { buildReceiptPdf, makeReceiptNumber } from "@/lib/receiptPdf";
 import * as XLSX from "xlsx";
+import { copyToClipboard } from "@/lib/copyToClipboard";
 
 interface Row {
   id: string;
@@ -53,6 +54,8 @@ interface Row {
   therapist_paid_at: string | null;
   receipt_sent_at: string | null;
   client_type: string | null;
+  consent_signed: boolean;
+  consent_signed_at: string | null;
 }
 
 const fmtUGX = (n: number | null) => (n ? `UGX ${Math.round(Number(n)).toLocaleString()}` : "—");
@@ -98,6 +101,7 @@ const AdminClientsTab = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(25);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [consentLinkId, setConsentLinkId] = useState<string | null>(null);
 
   const load = async () => {
     setLoading(true);
@@ -106,7 +110,30 @@ const AdminClientsTab = () => {
     setRows((data as Row[]) || []);
     setLoading(false);
   };
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    load();
+    const channel = supabase
+      .channel("admin-client-consent-status")
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "therapist_clients" }, () => load())
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, []);
+
+  const generateConsentLink = async (r: Row) => {
+    setConsentLinkId(r.id);
+    const { data, error } = await supabase.rpc("admin_generate_client_consent_token", { _client_id: r.id });
+    setConsentLinkId(null);
+    if (error || !data) return toast.error(error?.message || "Could not generate the consent link.");
+
+    const url = `${window.location.origin}/consent/${data}`;
+    const copied = await copyToClipboard(url);
+    const message = encodeURIComponent(
+      `Hi ${r.full_name.split(" ")[0]}, please review and confirm your InnerSpark consent form before your session with ${r.therapist_name}: ${url}`,
+    );
+    const phone = (r.phone || "").replace(/[^0-9]/g, "");
+    window.open(`https://wa.me/${phone}?text=${message}`, "_blank", "noopener,noreferrer");
+    toast.success(copied ? "Consent link copied and WhatsApp opened" : "Consent link generated and WhatsApp opened");
+  };
 
   const therapists = useMemo(
     () => Array.from(new Map(rows.map((r) => [r.therapist_id, r.therapist_name])).entries()),
@@ -357,7 +384,7 @@ const AdminClientsTab = () => {
               <Table className="min-w-[1020px] text-xs">
                 <TableHeader>
                   <TableRow className="bg-muted/50 hover:bg-muted/50">
-                    {["#", "Date", "Client", "Therapist", "Session type", "Amount", "Payment", "Rating", "Risk", ""].map((h, hi) => (
+                    {["#", "Date", "Client", "Therapist", "Session type", "Amount", "Payment", "Consent", "Rating", "Risk", ""].map((h, hi) => (
                       <TableHead key={hi} className="whitespace-nowrap text-[11px] h-9">{h}</TableHead>
                     ))}
                   </TableRow>
@@ -424,6 +451,12 @@ const AdminClientsTab = () => {
                             </div>
                           </TableCell>
                           <TableCell>
+                            <Badge variant={r.consent_signed ? "default" : "outline"} className="whitespace-nowrap text-[10px]">
+                              {r.consent_signed ? <CheckCircle2 className="mr-1 h-3 w-3" /> : <Clock3 className="mr-1 h-3 w-3" />}
+                              {r.consent_signed ? "Signed" : "Pending"}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
                             <div className="flex flex-col gap-0.5 w-[70px]">
                               <RatingStars value={val(r, "session_rating") as number | null} />
                               {val(r, "would_rebook") !== null && val(r, "would_rebook") !== undefined && (
@@ -455,7 +488,7 @@ const AdminClientsTab = () => {
 
                         {open && (
                           <TableRow className="bg-muted/20 hover:bg-muted/20">
-                            <TableCell colSpan={10} className="p-4">
+                            <TableCell colSpan={11} className="p-4">
                               <div className="grid gap-4 md:grid-cols-3">
                                 <div className="space-y-2">
                                   <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Contact</p>
@@ -513,6 +546,12 @@ const AdminClientsTab = () => {
                                     <Input type="number" className="h-8 text-xs mt-1" value={(val(r, "therapist_share_ugx") as number) ?? (amount ? Math.round(amount * 0.6) : "")} onChange={(e) => setVal(r.id, "therapist_share_ugx", e.target.value)} />
                                   </div>
                                   <p><span className="text-muted-foreground">InnerSpark share:</span> {amount ? fmtUGX(amount - tShare) : "—"}</p>
+                                  <p>
+                                    <span className="text-muted-foreground">Consent:</span>{" "}
+                                    {r.consent_signed
+                                      ? `Signed${r.consent_signed_at ? ` · ${new Date(r.consent_signed_at).toLocaleString("en-UG")}` : ""}`
+                                      : "Pending"}
+                                  </p>
                                   <div className="flex items-center gap-2">
                                     <Switch checked={!!r.therapist_paid} disabled={payingId === r.id} onCheckedChange={(v) => toggleTherapistPaid(r, v)} />
                                     <span className="text-[11px] text-muted-foreground">{r.therapist_paid ? "Therapist paid out" : "Therapist unpaid"}</span>
@@ -526,6 +565,10 @@ const AdminClientsTab = () => {
                                     </Button>
                                     <Button size="sm" variant="outline" disabled={receiptId === r.id || !r.email} onClick={() => emailReceipt(r)}>
                                       <Mail className="h-4 w-4 mr-1" />Email
+                                    </Button>
+                                    <Button size="sm" variant="outline" disabled={consentLinkId === r.id} onClick={() => generateConsentLink(r)}>
+                                      {consentLinkId === r.id ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Link2 className="h-4 w-4 mr-1" />}
+                                      Generate Link
                                     </Button>
                                     {r.receipt_url && (
                                       <Button size="sm" variant="outline" onClick={() => window.open(`https://wa.me/${(r.phone || "").replace(/[^0-9]/g, "")}?text=${encodeURIComponent(`Your InnerSpark receipt: ${r.receipt_url}`)}`, "_blank")}>

@@ -145,6 +145,7 @@ const TherapistPortal = lazy(
 const ClientPortal = lazy(
   () => import(/* webpackChunkName: "client-portal" */ "./pages/ClientPortal"),
 );
+const ClientConsent = lazy(() => import("./pages/ClientConsent"));
 const MindCheckAnalytics = lazy(
   () => import(/* webpackChunkName: "admin" */ "./pages/MindCheckAnalytics"),
 );
@@ -315,6 +316,7 @@ const App = () => (
                 />
                 <Route path="/admin/finance" element={<AdminFinance />} />
                 <Route path="/therapist" element={<TherapistPortal />} />
+                <Route path="/consent/:token" element={<ClientConsent />} />
                 <Route path="/my-progress/:token" element={<ClientPortal />} />
                 <Route path="/my-progress/:slug/:token" element={<ClientPortal />} />
                 <Route path="/learning/:courseId" element={<CourseDetail />} />
