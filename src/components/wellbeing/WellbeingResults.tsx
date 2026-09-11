@@ -76,7 +76,7 @@ const WellbeingResults = ({ rawScore, percentage, sessionId, source, deviceType,
       key="results"
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="pt-8"
+      className="pt-8 pb-24"
     >
       <img src={logo} alt="InnerSpark Africa" className="h-12 mx-auto mb-6" />
 
