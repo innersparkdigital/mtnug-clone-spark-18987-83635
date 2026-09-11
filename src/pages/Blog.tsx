@@ -8,28 +8,6 @@ import Footer from "@/components/Footer";
 import AppDownload from "@/components/AppDownload";
 import NewsletterForm from "@/components/NewsletterForm";
 import { T } from "@/components/Translate";
-import stressHeroImage from "@/assets/blog/stress-management-hero.jpg";
-import panicHeroImage from "@/assets/blog/panic-attack-hero.jpg";
-import depressionHeroImage from "@/assets/blog/depression-hero.jpg";
-import mentalHealthHeroImage from "@/assets/blog/mental-health-hero.jpg";
-import anxietyHeroImage from "@/assets/blog/anxiety-management-hero.webp";
-import therapyCostHero from "@/assets/blog/therapy-cost-hero.jpg";
-import burnoutHero from "@/assets/blog/workplace-burnout-uganda.jpg";
-import talkBossHero from "@/assets/blog/talk-to-boss-mental-health-uganda.jpg";
-import findTherapistKampalaHero from "@/assets/blog/find-therapist-kampala-hero.webp";
-import onlineTherapyAfricaHero from "@/assets/blog/online-therapy-africa-hero.jpg";
-import signsNeedTherapistHero from "@/assets/blog/signs-need-therapist-hero.jpg";
-import studentTherapyHero from "@/assets/blog/student-therapy-hero.jpg";
-import whatIsTherapyHero from "@/assets/blog/what-is-therapy-hero.jpg";
-import benefitsTherapyHero from "@/assets/blog/benefits-therapy-hero.jpg";
-import typesTherapyHero from "@/assets/blog/types-therapy-hero.jpg";
-import findTherapistHero from "@/assets/blog/find-therapist-hero.jpg";
-import signsDepressionHero from "@/assets/blog/signs-depression-hero.jpg";
-import anxietySymptomsHero from "@/assets/blog/anxiety-symptoms-hero.jpg";
-import amaniAIHero from "@/assets/blog/amani-ai-hero.jpg";
-import whisperHero from "@/assets/blog/whisper-hero.jpg";
-import findTherapistUgandaHero from "@/assets/blog/find-therapist-uganda-hero.jpg";
-import corporateWellbeingHero from "@/assets/blog/corporate-wellbeing-uganda-hero.jpg";
 
 interface BlogPost {
   slug: string;
@@ -41,260 +19,15 @@ interface BlogPost {
   category: string;
 }
 
-const blogPosts: BlogPost[] = [
-  {
-    slug: "corporate-wellbeing-screening-uganda",
-    title: "Corporate Wellbeing Screening in Uganda — UGX 7,500/Employee with Clinical Safety Cover",
-    excerpt: "Screen every employee for under UGX 7,500. Get an anonymous HR dashboard plus clinical safety cover — at-risk staff get a free outreach from a licensed Ugandan therapist.",
-    date: "June 3, 2026",
-    readTime: "8 min read",
-    image: corporateWellbeingHero,
-    category: "For HR & Employers"
-  },
-  {
-    slug: "find-a-therapist-in-uganda",
-    title: "How to Find a Licensed Therapist in Uganda — A 2026 Guide",
-    excerpt: "InnerSpark's vetted network of licensed Ugandan therapists, from UGX 30,000 per session. How to pick the right one, what to expect, and how to book in minutes.",
-    date: "June 3, 2026",
-    readTime: "7 min read",
-    image: findTherapistUgandaHero,
-    category: "Find a Therapist"
-  },
-  {
-    slug: "meet-amani-ai-mental-wellness-uganda",
-    title: "Meet Amani: The Free AI Mental Wellness Companion Built for Uganda",
-    excerpt: "Amani is InnerSpark's free AI mental health chatbot — built for Ugandans who need someone to talk to right now. Here's how it works and where it can't replace a therapist.",
-    date: "June 3, 2026",
-    readTime: "6 min read",
-    image: amaniAIHero,
-    category: "Product"
-  },
-  {
-    slug: "whisper-anonymous-therapy-uganda",
-    title: "Too Heavy to Type? Try Whisper — Anonymous, Free Therapist Replies in Uganda",
-    excerpt: "Whisper lets you send a 3-minute anonymous voice note to a real Ugandan therapist — and get a thoughtful private reply within 24 hours. Free, no signup.",
-    date: "June 3, 2026",
-    readTime: "7 min read",
-    image: whisperHero,
-    category: "Mental Health"
-  },
-  {
-    slug: "kampala-professionals-online-therapy",
-    title: "Why Kampala Professionals Are Quietly Turning to Online Therapy",
-    excerpt: "NGO workers, bankers and government professionals in Kampala are choosing private, confidential online therapy. Here's why — and how it works.",
-    date: "May 25, 2026",
-    readTime: "9 min read",
-    image: talkBossHero,
-    category: "Professional Wellbeing"
-  },
-  {
-    slug: "men-therapy-uganda",
-    title: "Men and Therapy in Uganda: Why More Ugandan Men Are Seeking Help Online",
-    excerpt: "Ugandan men strongly prefer anonymous, online therapy over clinic visits. Voice and chat sessions, no video required, from UGX 75,000.",
-    date: "May 25, 2026",
-    readTime: "8 min read",
-    image: mentalHealthHeroImage,
-    category: "Men's Mental Health"
-  },
-  {
-    slug: "burnout-kampala-professionals",
-    title: "Burnout at Work in Kampala: How to Know When You Need More Than a Holiday",
-    excerpt: "Burnout in Kampala professionals is rising. Learn the warning signs, why a vacation won't fix it, and how online therapy helps you recover.",
-    date: "May 25, 2026",
-    readTime: "9 min read",
-    image: burnoutHero,
-    category: "Workplace Wellbeing"
-  },
-  {
-    slug: "relationship-counselling-uganda-online",
-    title: "Relationship Counselling in Uganda: Can It Be Done Online?",
-    excerpt: "Online relationship counselling in Uganda — for couples and individuals. Private video, voice or chat sessions with licensed therapists.",
-    date: "May 25, 2026",
-    readTime: "8 min read",
-    image: benefitsTherapyHero,
-    category: "Relationships"
-  },
-  {
-    slug: "uganda-workplace-mental-health-crisis",
-    title: "Uganda's Workplace Mental Health Crisis: What HR Leaders Need to Know in 2026",
-    excerpt: "Burnout, absenteeism and quiet quitting are draining Uganda's top employers. What HR teams in Kampala can do — and how InnerSpark's EAPs help.",
-    date: "May 25, 2026",
-    readTime: "11 min read",
-    image: talkBossHero,
-    category: "For HR & Employers"
-  },
-  {
-    slug: "innerspark-africa-review",
-    title: "InnerSpark Africa Review (2026): Honest Look at Uganda's Online Therapy Platform",
-    excerpt: "A detailed 2026 review — pricing, therapists, privacy, payment methods and how InnerSpark compares to other online therapy options for Uganda.",
-    date: "May 25, 2026",
-    readTime: "10 min read",
-    image: onlineTherapyAfricaHero,
-    category: "Platform Review"
-  },
-  {
-    slug: "spark-framework-mental-wellbeing",
-    title: "The S.P.A.R.K Framework: A 5-Step Mental Wellbeing Routine Built for Ugandans",
-    excerpt: "InnerSpark's S.P.A.R.K framework — Sleep, Purpose, Activity, Relationships, Knowledge — a practical weekly routine for stronger mental health.",
-    date: "May 25, 2026",
-    readTime: "8 min read",
-    image: anxietyHeroImage,
-    category: "Mental Wellbeing"
-  },
-  {
-    slug: "therapy-cost-uganda",
-    title: "How Much Does Therapy Cost in Uganda? A Complete 2026 Guide",
-    excerpt: "Therapy in Uganda costs UGX 30,000–200,000 per session. Compare online vs in-person prices, discover affordable options, and book your first session today.",
-    date: "February 22, 2026",
-    readTime: "10 min read",
-    image: therapyCostHero,
-    category: "Therapy Costs"
-  },
-  {
-    slug: "find-therapist-kampala",
-    title: "Where to Find a Therapist in Kampala: Top 7 Options in 2026",
-    excerpt: "Looking for a therapist in Kampala? Discover 7 proven ways to find affordable, licensed mental health professionals in Uganda's capital.",
-    date: "February 22, 2026",
-    readTime: "9 min read",
-    image: findTherapistKampalaHero,
-    category: "Finding Help"
-  },
-  {
-    slug: "online-therapy-effective-africa",
-    title: "Is Online Therapy Effective in Africa? What the Research Says",
-    excerpt: "Research proves online therapy is effective in Africa. Discover how virtual mental health care is transforming access to therapy across the continent.",
-    date: "February 22, 2026",
-    readTime: "10 min read",
-    image: onlineTherapyAfricaHero,
-    category: "Online Therapy"
-  },
-  {
-    slug: "signs-you-need-a-therapist",
-    title: "8 Signs You Need a Therapist (And Why That's Completely Okay)",
-    excerpt: "Not sure if you need therapy? Here are 8 clear signs it's time to talk to a professional — and why seeking help is a sign of strength.",
-    date: "February 22, 2026",
-    readTime: "8 min read",
-    image: signsNeedTherapistHero,
-    category: "Self-Assessment"
-  },
-  {
-    slug: "student-therapy-uganda",
-    title: "Best Therapy Options for University Students in Uganda (2026 Guide)",
-    excerpt: "University students in Uganda can access affordable therapy from UGX 30,000. Discover free campus counseling, online therapy, and student mental health resources.",
-    date: "February 22, 2026",
-    readTime: "9 min read",
-    image: studentTherapyHero,
-    category: "Student Mental Health"
-  },
-  {
-    slug: "what-is-therapy",
-    title: "What Is Therapy? A Simple Guide to How It Works & Why It Helps",
-    excerpt: "Wondering what therapy actually is? This beginner-friendly guide explains how therapy works, what happens in a session, who it's for, and how it can change your life.",
-    date: "February 22, 2026",
-    readTime: "10 min read",
-    image: whatIsTherapyHero,
-    category: "Therapy Basics"
-  },
-  {
-    slug: "benefits-of-therapy",
-    title: "12 Proven Benefits of Therapy (Backed by Research)",
-    excerpt: "Discover 12 science-backed benefits of therapy — from reducing anxiety to improving relationships, sleep, and career performance.",
-    date: "February 22, 2026",
-    readTime: "11 min read",
-    image: benefitsTherapyHero,
-    category: "Why Therapy Works"
-  },
-  {
-    slug: "types-of-therapy",
-    title: "Types of Therapy Explained: Which One Is Right for You?",
-    excerpt: "CBT, psychodynamic, trauma therapy, couples counseling — confused? This guide explains the most common types and helps you choose.",
-    date: "February 22, 2026",
-    readTime: "12 min read",
-    image: typesTherapyHero,
-    category: "Therapy Guide"
-  },
-  {
-    slug: "how-to-find-a-therapist",
-    title: "How to Find a Therapist: Complete Guide to Choosing the Right Mental Health Professional",
-    excerpt: "Step-by-step guide to finding the right therapist for your needs. Learn what to look for, questions to ask, and how to make your first appointment.",
-    date: "January 12, 2026",
-    readTime: "12 min read",
-    image: findTherapistHero,
-    category: "Finding Help"
-  },
-  {
-    slug: "signs-of-depression",
-    title: "10 Warning Signs of Depression You Shouldn't Ignore",
-    excerpt: "Learn to recognize the common signs and symptoms of depression. Early detection can lead to faster recovery. Discover what to look for and when to seek help.",
-    date: "January 12, 2026",
-    readTime: "8 min read",
-    image: signsDepressionHero,
-    category: "Depression"
-  },
-  {
-    slug: "anxiety-symptoms",
-    title: "Anxiety Symptoms: How to Recognize if You Have Anxiety Disorder",
-    excerpt: "Learn to identify the physical, emotional, and behavioral symptoms of anxiety. Understand the difference between normal worry and anxiety disorder.",
-    date: "January 12, 2026",
-    readTime: "10 min read",
-    image: anxietySymptomsHero,
-    category: "Anxiety"
-  },
-  {
-    slug: "how-to-manage-anxiety",
-    title: "How to Manage Anxiety: Expert-Backed Strategies for Finding Calm",
-    excerpt: "Anxiety can feel overwhelming, but you don't have to face it alone. Discover practical, research-backed strategies to help you manage anxiety, find calm, and reclaim your peace of mind.",
-    date: "December 9, 2025",
-    readTime: "14 min read",
-    image: anxietyHeroImage,
-    category: "Anxiety Management"
-  },
-  {
-    slug: "what-is-mental-health",
-    title: "What Is Mental Health? A Complete Guide to Conditions, Warning Signs & Everyday Wellness",
-    excerpt: "Mental health influences how we think, feel, and act every day. This guide explains what mental health is, common conditions, early warning signs, and proven tools to strengthen your emotional well-being.",
-    date: "December 9, 2025",
-    readTime: "15 min read",
-    image: mentalHealthHeroImage,
-    category: "Mental Health"
-  },
-  {
-    slug: "how-to-deal-with-depression",
-    title: "How to Deal With Depression? Simple, Compassionate Strategies That Actually Help",
-    excerpt: "Depression can feel heavy and isolating, but you're not alone—and you're not stuck. Here's a clear, gentle, research-backed guide to dealing with depression.",
-    date: "December 8, 2025",
-    readTime: "12 min read",
-    image: depressionHeroImage,
-    category: "Depression Support"
-  },
-  {
-    slug: "how-to-stop-a-panic-attack",
-    title: "How Do I Stop a Panic Attack? Simple, Fast Techniques to Regain Control",
-    excerpt: "Panic attacks can feel terrifying, but with the right tools, you can ease their intensity and return to balance. Learn expert-backed grounding techniques and breathing exercises.",
-    date: "December 6, 2025",
-    readTime: "10 min read",
-    image: panicHeroImage,
-    category: "Panic Management"
-  },
-  {
-    slug: "how-to-handle-stress",
-    title: "How Should I Handle Stress? Expert-Backed, Simple & Practical Ways to Regain Control",
-    excerpt: "Stress doesn't have to run the show. Learn how to understand your stress, break it down, and manage it using simple tools backed by mental health experts.",
-    date: "December 3, 2025",
-    readTime: "8 min read",
-    image: stressHeroImage,
-    category: "Stress Management"
-  }
-];
-
 const Blog = () => {
   const [cmsPosts, setCmsPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
       const { data } = await supabase
         .from("blog_posts")
-        .select("slug,title,excerpt,category,hero_image_url,read_time,published_at,created_at")
+        .select("slug,title,excerpt,category,hero_image_url,read_time,published_at,created_at,status")
         .eq("status", "published")
         .order("published_at", { ascending: false, nullsFirst: false });
       if (data) {
@@ -310,10 +43,9 @@ const Blog = () => {
           })),
         );
       }
+      setLoading(false);
     })();
   }, []);
-
-  const allPosts = [...cmsPosts, ...blogPosts];
 
   return (
     <>
@@ -355,7 +87,7 @@ const Blog = () => {
                     "url": "https://www.innersparkafrica.com/innerspark-logo.webp"
                   }
                 },
-                "blogPost": blogPosts.map(post => ({
+                "blogPost": cmsPosts.map(post => ({
                   "@type": "BlogPosting",
                   "headline": post.title,
                   "description": post.excerpt,
@@ -461,54 +193,62 @@ const Blog = () => {
         {/* Blog Posts Grid */}
         <section className="py-16 bg-background">
           <div className="container mx-auto px-4">
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {allPosts.map((post) => (
-                <article key={post.slug} className="group">
-                  <Link to={`/blog/${post.slug}`} className="block">
-                    <div className="relative overflow-hidden rounded-xl mb-4 aspect-video">
-                      <img 
-                        src={post.image} 
-                        alt={post.title}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        loading="lazy"
-                        decoding="async"
-                      />
-                      <div className="absolute top-4 left-4">
-                        <span className="bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-medium">
-                          {post.category}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                        <span className="flex items-center gap-1">
-                          <Calendar className="h-4 w-4" />
-                          {post.date}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Clock className="h-4 w-4" />
-                          {post.readTime}
-                        </span>
-                      </div>
-                      <h2 className="text-xl font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2">
-                        {post.title}
-                      </h2>
-                      <p className="text-muted-foreground line-clamp-3">
-                        {post.excerpt}
-                      </p>
-                      <span className="inline-flex items-center text-primary font-medium group-hover:gap-2 transition-all">
-                        Read More <ArrowRight className="h-4 w-4 ml-1" />
-                      </span>
-                    </div>
-                  </Link>
-                </article>
-              ))}
-            </div>
-
-            {allPosts.length === 0 && (
+            {loading ? (
               <div className="text-center py-16">
-                <p className="text-muted-foreground text-lg">More articles coming soon...</p>
+                <div className="h-8 w-8 rounded-full border-2 border-primary border-t-transparent animate-spin mx-auto" />
               </div>
+            ) : (
+              <>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {cmsPosts.map((post) => (
+                    <article key={post.slug} className="group">
+                      <Link to={`/blog/${post.slug}`} className="block">
+                        <div className="relative overflow-hidden rounded-xl mb-4 aspect-video">
+                          <img 
+                            src={post.image} 
+                            alt={post.title}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            loading="lazy"
+                            decoding="async"
+                          />
+                          <div className="absolute top-4 left-4">
+                            <span className="bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-medium">
+                              {post.category}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                            <span className="flex items-center gap-1">
+                              <Calendar className="h-4 w-4" />
+                              {post.date}
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <Clock className="h-4 w-4" />
+                              {post.readTime}
+                            </span>
+                          </div>
+                          <h2 className="text-xl font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2">
+                            {post.title}
+                          </h2>
+                          <p className="text-muted-foreground line-clamp-3">
+                            {post.excerpt}
+                          </p>
+                          <span className="inline-flex items-center text-primary font-medium group-hover:gap-2 transition-all">
+                            Read More <ArrowRight className="h-4 w-4 ml-1" />
+                          </span>
+                        </div>
+                      </Link>
+                    </article>
+                  ))}
+                </div>
+
+                {cmsPosts.length === 0 && (
+                  <div className="text-center py-16">
+                    <p className="text-muted-foreground text-lg">More articles coming soon...</p>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </section>

@@ -164,6 +164,44 @@ function buildBody(post) {
     </div>`;
 }
 
+function buildListingBody(posts) {
+  const links = GLOBAL_LINKS.map(
+    ([href, label]) =>
+      `<li><a class="text-primary underline underline-offset-4" href="${href}">${esc(label)}</a></li>`,
+  ).join("");
+
+  const items = posts
+    .map((post) => {
+      const published = post.published_at || post.created_at;
+      const date = new Date(published).toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      });
+      const url = `/blog/${post.slug}`;
+      return `
+        <article class="mb-8">
+          <h2 class="text-xl font-bold mb-1"><a class="text-primary underline underline-offset-4" href="${url}">${esc(post.title)}</a></h2>
+          <p class="text-sm text-foreground/60 mb-2">${esc(date)}${post.read_time ? ` &middot; ${esc(post.read_time)}` : ""}</p>
+          ${post.excerpt ? `<p class="text-foreground/80">${esc(post.excerpt)}</p>` : ""}
+        </article>`;
+    })
+    .join("");
+
+  return `
+    <div data-prerendered-seo="true" class="min-h-screen bg-background text-foreground">
+      <main class="container mx-auto px-4 py-12 max-w-3xl">
+        <h1 class="text-3xl md:text-5xl font-bold mb-4">Mental Health Blog Uganda | InnerSpark Africa</h1>
+        <p class="text-lg leading-relaxed text-foreground/80 mb-10">Expert articles on depression, anxiety, stress and relationships, written by licensed African therapists. Practical tips you can use today.</p>
+        ${items}
+        <nav aria-label="Site sections" class="mt-12">
+          <h2 class="text-xl font-bold mb-3">Explore InnerSpark Africa</h2>
+          <ul class="grid gap-2 sm:grid-cols-2">${links}</ul>
+        </nav>
+      </main>
+    </div>`;
+}
+
 const ROOT_RE = /<div id="root">\s*<\/div>/;
 
 async function fetchPosts() {
@@ -184,21 +222,22 @@ async function fetchPosts() {
 }
 
 async function run() {
-  const shellPath = path.join(DIST, "index.html");
+  // prerender.mjs writes a clean SPA shell for us; fall back to dist/index.html.
+  const templatePath = path.join(DIST, "index.template.html");
+  const fallbackPath = path.join(DIST, "index.html");
   let shell;
   try {
-    shell = await readFile(shellPath, "utf8");
+    shell = await readFile(templatePath, "utf8");
   } catch {
-    console.warn("[prerender-blogs] dist/index.html not found — skipping.");
-    return;
+    try {
+      shell = await readFile(fallbackPath, "utf8");
+    } catch {
+      console.warn("[prerender-blogs] dist/index.template.html not found — skipping.");
+      return;
+    }
   }
-  // The homepage shell has already been prerendered by prerender.mjs, so read
-  // the untouched template from the build output of a nested route instead.
   if (!ROOT_RE.test(shell)) {
-    shell = shell.replace(/<div id="root">[\s\S]*?<\/div>\s*(?=<script)/, '<div id="root"></div>\n    ');
-  }
-  if (!ROOT_RE.test(shell)) {
-    console.warn("[prerender-blogs] could not isolate #root placeholder — skipping.");
+    console.warn("[prerender-blogs] #root placeholder not found in shell — skipping.");
     return;
   }
 
@@ -212,7 +251,29 @@ async function run() {
     await writeFile(outPath, html, "utf8");
     count += 1;
   }
-  console.log(`[prerender-blogs] ${count} blog post(s) prerendered.`);
+
+  // Prerender the /blog listing page so crawlers see all article links.
+  const listingHead = buildHead(shell, {
+    slug: "blog",
+    title: "Mental Health Blog Uganda | InnerSpark Africa",
+    excerpt: "Expert articles on depression, anxiety, stress and relationships, written by licensed African therapists. Practical tips you can use today.",
+    meta_title: "Mental Health Blog Uganda | InnerSpark Africa",
+    meta_description: "Expert articles on depression, anxiety, stress and relationships, written by licensed African therapists. Practical tips you can use today.",
+    canonical_url: `${SITE}/blog`,
+    og_title: "Mental Health Blog Uganda | InnerSpark Africa",
+    og_description: "Expert articles on depression, anxiety, stress and relationships, written by licensed African therapists. Practical tips you can use today.",
+    og_image_url: `${SITE}/og-image.jpg`,
+    schema_type: "CollectionPage",
+    published_at: new Date().toISOString(),
+    created_at: new Date().toISOString(),
+    last_updated_at: new Date().toISOString(),
+    author: "InnerSpark Africa",
+  });
+  const listingHtml = listingHead.replace(ROOT_RE, `<div id="root">${buildListingBody(posts)}</div>`);
+  await mkdir(path.join(DIST, "blog"), { recursive: true });
+  await writeFile(path.join(DIST, "blog", "index.html"), listingHtml, "utf8");
+
+  console.log(`[prerender-blogs] ${count} blog post(s) + listing prerendered.`);
 }
 
 run().catch((err) => {
