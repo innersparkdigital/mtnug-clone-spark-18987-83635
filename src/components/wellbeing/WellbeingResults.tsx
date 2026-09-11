@@ -56,11 +56,12 @@ interface WellbeingResultsProps {
   sessionId: string | null;
   source: string;
   deviceType: string;
+  answers?: (number | null)[];
   onCtaClick: (type: string, url?: string) => void;
   onRetake: () => void;
 }
 
-const WellbeingResults = ({ rawScore, percentage, sessionId, source, deviceType, onCtaClick, onRetake }: WellbeingResultsProps) => {
+const WellbeingResults = ({ rawScore, percentage, sessionId, source, deviceType, answers, onCtaClick, onRetake }: WellbeingResultsProps) => {
   const level = getWellbeingLevel(percentage);
   const config = getWellbeingConfig(level);
   const [showDownload, setShowDownload] = useState(false);
