@@ -13,6 +13,28 @@
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 import { ROUTES, GLOBAL_LINKS, SITE } from "./prerender-content.mjs";
+import { GLOBAL_LANDING_PAGES } from "./global-landing-content.mjs";
+
+/**
+ * Country / segment landing pages, converted into the same route shape as
+ * ROUTES so their unique copy (headline, intro, every body section, bullets and
+ * FAQs) is written into the raw HTML instead of an empty #root.
+ */
+const COUNTRY_ROUTES = Object.values(GLOBAL_LANDING_PAGES).map((page) => ({
+  path: `/${page.slug}`,
+  title: page.title,
+  description: page.metaDescription,
+  h1: page.h1,
+  intro: page.intro,
+  sections: [
+    ...page.bodySections.map((s) => ({
+      h2: s.heading,
+      p: [...s.paragraphs, ...(s.bullets ?? [])].join(" "),
+    })),
+    ...page.faqs.map((f) => ({ h2: f.q, p: f.a })),
+  ],
+  extraLinks: page.relatedLinks?.map((l) => [l.to, l.label]) ?? [],
+}));
 
 // Safety cap so this can never balloon the published output.
 const MAX_PRERENDER_PAGES = 50;
