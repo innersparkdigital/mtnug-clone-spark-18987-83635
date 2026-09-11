@@ -92,7 +92,13 @@ function buildHead(html, route) {
  * for crawlers — no hiding, no cloaking.
  */
 function buildBody(route) {
-  const links = GLOBAL_LINKS.filter(([href]) => href !== route.path)
+  const seen = new Set([route.path]);
+  const links = [...(route.extraLinks ?? []), ...GLOBAL_LINKS]
+    .filter(([href]) => {
+      if (seen.has(href)) return false;
+      seen.add(href);
+      return true;
+    })
     .map(
       ([href, label]) =>
         `<li><a class="text-primary underline underline-offset-4" href="${href}">${esc(label)}</a></li>`,
