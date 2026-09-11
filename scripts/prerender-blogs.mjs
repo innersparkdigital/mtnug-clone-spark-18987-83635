@@ -164,6 +164,44 @@ function buildBody(post) {
     </div>`;
 }
 
+function buildListingBody(posts) {
+  const links = GLOBAL_LINKS.map(
+    ([href, label]) =>
+      `<li><a class="text-primary underline underline-offset-4" href="${href}">${esc(label)}</a></li>`,
+  ).join("");
+
+  const items = posts
+    .map((post) => {
+      const published = post.published_at || post.created_at;
+      const date = new Date(published).toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      });
+      const url = `/blog/${post.slug}`;
+      return `
+        <article class="mb-8">
+          <h2 class="text-xl font-bold mb-1"><a class="text-primary underline underline-offset-4" href="${url}">${esc(post.title)}</a></h2>
+          <p class="text-sm text-foreground/60 mb-2">${esc(date)}${post.read_time ? ` &middot; ${esc(post.read_time)}` : ""}</p>
+          ${post.excerpt ? `<p class="text-foreground/80">${esc(post.excerpt)}</p>` : ""}
+        </article>`;
+    })
+    .join("");
+
+  return `
+    <div data-prerendered-seo="true" class="min-h-screen bg-background text-foreground">
+      <main class="container mx-auto px-4 py-12 max-w-3xl">
+        <h1 class="text-3xl md:text-5xl font-bold mb-4">Mental Health Blog Uganda | InnerSpark Africa</h1>
+        <p class="text-lg leading-relaxed text-foreground/80 mb-10">Expert articles on depression, anxiety, stress and relationships, written by licensed African therapists. Practical tips you can use today.</p>
+        ${items}
+        <nav aria-label="Site sections" class="mt-12">
+          <h2 class="text-xl font-bold mb-3">Explore InnerSpark Africa</h2>
+          <ul class="grid gap-2 sm:grid-cols-2">${links}</ul>
+        </nav>
+      </main>
+    </div>`;
+}
+
 const ROOT_RE = /<div id="root">\s*<\/div>/;
 
 async function fetchPosts() {
