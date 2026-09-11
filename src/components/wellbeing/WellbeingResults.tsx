@@ -6,6 +6,7 @@ import ShareResults from './ShareResults';
 import CallbackForm from './CallbackForm';
 import { useState } from 'react';
 import AppDownloadModal from './AppDownloadModal';
+import WellbeingBreakdown from './WellbeingBreakdown';
 
 type WellbeingLevel = 'low' | 'moderate' | 'high';
 
@@ -56,11 +57,12 @@ interface WellbeingResultsProps {
   sessionId: string | null;
   source: string;
   deviceType: string;
+  answers?: (number | null)[];
   onCtaClick: (type: string, url?: string) => void;
   onRetake: () => void;
 }
 
-const WellbeingResults = ({ rawScore, percentage, sessionId, source, deviceType, onCtaClick, onRetake }: WellbeingResultsProps) => {
+const WellbeingResults = ({ rawScore, percentage, sessionId, source, deviceType, answers, onCtaClick, onRetake }: WellbeingResultsProps) => {
   const level = getWellbeingLevel(percentage);
   const config = getWellbeingConfig(level);
   const [showDownload, setShowDownload] = useState(false);
@@ -74,7 +76,7 @@ const WellbeingResults = ({ rawScore, percentage, sessionId, source, deviceType,
       key="results"
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="pt-8"
+      className="pt-8 pb-24"
     >
       <img src={logo} alt="InnerSpark Africa" className="h-12 mx-auto mb-6" />
 
@@ -133,6 +135,11 @@ const WellbeingResults = ({ rawScore, percentage, sessionId, source, deviceType,
         deviceType={deviceType}
         onCtaClick={(type) => onCtaClick(type)}
       />
+
+      {/* Per-question breakdown */}
+      {answers && answers.some((a) => a !== null) && (
+        <WellbeingBreakdown answers={answers} percentage={percentage} />
+      )}
 
       {/* Share Results */}
       <ShareResults percentage={percentage} onCtaClick={(type) => onCtaClick(type)} />
