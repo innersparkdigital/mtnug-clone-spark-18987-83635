@@ -41,6 +41,7 @@ const EXCLUDE = new Set([
   "/virtual-therapy",
   "/video-therapy",
   "/mental-health-support",
+  "/find-therapist",
 ]);
 
 function routePaths() {
@@ -77,7 +78,7 @@ const xml = [
     const { changefreq, priority } = meta(p);
     return [
       "  <url>",
-      `    <loc>${BASE_URL}${p === "/" ? "/" : p}</loc>`,
+      `    <loc>${BASE_URL}${p === "/" ? "/" : `${p}/`}</loc>`,
       `    <changefreq>${changefreq}</changefreq>`,
       `    <priority>${priority}</priority>`,
       "  </url>",

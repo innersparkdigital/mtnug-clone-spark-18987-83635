@@ -33,7 +33,7 @@ function upsert(html, matcher, tag) {
 }
 
 function buildHead(html, route) {
-  const url = `${SITE}${route.path === "/" ? "/" : route.path}`;
+  const url = `${SITE}${route.path === "/" ? "/" : `${route.path}/`}`;
   let out = html;
   out = upsert(out, /<title>[\s\S]*?<\/title>/i, `<title>${esc(route.title)}</title>`);
   out = upsert(
