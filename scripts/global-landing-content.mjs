@@ -127,6 +127,10 @@ export const GLOBAL_LANDING_PAGES = {
       { to: "/online-therapy-nigeria", label: "Therapy in Nigeria" },
       { to: "/online-therapy-ghana", label: "Therapy in Ghana" },
       { to: "/online-therapy-south-africa", label: "Therapy in South Africa" },
+      { to: "/blog/cost-of-therapy-in-kenya", label: "What therapy costs in Kenya" },
+      { to: "/blog/cost-of-therapy-in-nigeria", label: "What therapy costs in Nigeria" },
+      { to: "/blog/cost-of-therapy-in-ghana", label: "What therapy costs in Ghana" },
+
       ...COMMON_RELATED,
     ],
   },
