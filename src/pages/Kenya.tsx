@@ -557,7 +557,34 @@ export default function Kenya() {
           </p>
         </div>
       </section>
+
+      {/* Read next — Kenya guides */}
+      <section className="py-14 bg-background">
+        <div className="container mx-auto px-4 max-w-3xl">
+          <h2 className="text-2xl md:text-3xl font-bold font-display mb-6" style={{ color: DEEP_NIGHT }}>
+            Read next: therapy in Kenya, explained
+          </h2>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <Link to="/blog/cost-of-therapy-in-kenya" className="block rounded-xl border p-5 hover:shadow-md transition-shadow">
+              <span className="text-xs font-medium" style={{ color: SPARK_BLUE }}>Therapy costs</span>
+              <h3 className="font-semibold mt-1 mb-1" style={{ color: DEEP_NIGHT }}>How much does therapy cost in Kenya?</h3>
+              <p className="text-sm text-muted-foreground">Nairobi clinic fees, NHIF and insurance limits, free options and M-Pesa online rates, side by side.</p>
+            </Link>
+            <Link to="/blog/find-a-therapist-in-nairobi" className="block rounded-xl border p-5 hover:shadow-md transition-shadow">
+              <span className="text-xs font-medium" style={{ color: SPARK_BLUE }}>Finding help</span>
+              <h3 className="font-semibold mt-1 mb-1" style={{ color: DEEP_NIGHT }}>How to find a therapist in Nairobi</h3>
+              <p className="text-sm text-muted-foreground">Every real option ranked, plus the two questions that prove a therapist is licensed.</p>
+            </Link>
+          </div>
+          <p className="text-sm mt-5">
+            <Link to="/online-therapy-africa" className="hover:underline" style={{ color: SPARK_BLUE }}>Online therapy across Africa</Link>
+            {" · "}
+            <Link to="/mind-check" className="hover:underline" style={{ color: SPARK_BLUE }}>Free screening tools</Link>
+          </p>
+        </div>
+      </section>
       <div style={{ background: WARMTH, height: 4 }} />
+
 
       {/* Kenya-specific footer additions */}
       <section className="bg-secondary py-8 text-sm" style={{ color: "#555" }}>
