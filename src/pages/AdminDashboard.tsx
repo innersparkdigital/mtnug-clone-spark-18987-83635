@@ -116,6 +116,19 @@ const AdminDashboard = () => {
     return <Navigate to="/learning/student-dashboard" replace />;
   }
 
+  const defaultTab = isAdmin
+    ? 'overview'
+    : hasPageAccess('learning')
+      ? 'learning'
+      : hasPageAccess('registrations')
+        ? 'registrations'
+        : hasPageAccess('newsletter')
+          ? 'newsletter'
+          : hasPageAccess('referrals')
+            ? 'referrals'
+            : 'users';
+  const currentTab = activeTab ?? defaultTab;
+
   const getCourseById = (courseId: string) => {
     return getWorkplaceCourseById(courseId) || allWorkplaceCourses.find(c => c.id === courseId);
   };
@@ -199,16 +212,95 @@ const AdminDashboard = () => {
             Platform Management
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground">
-            Monitor learner progress, training registrations & platform performance
+            Manage clients, paid bookings, sessions and day-to-day operations
           </p>
         </div>
 
         <Tabs
-          value={activeTab ?? (isAdmin ? 'overview' : hasPageAccess('learning') ? 'learning' : hasPageAccess('registrations') ? 'registrations' : hasPageAccess('newsletter') ? 'newsletter' : hasPageAccess('referrals') ? 'referrals' : 'users')}
+          value={currentTab}
           onValueChange={setActiveTab}
-          className="space-y-6"
+          className="space-y-4 sm:space-y-6"
         >
-          <TabsList className="flex-wrap h-auto w-full justify-start gap-1 p-1">
+          {isAdmin && (
+            <div className="md:hidden space-y-3 sticky top-16 z-30 rounded-xl border bg-background/95 p-3 shadow-sm backdrop-blur">
+              <label htmlFor="admin-mobile-section" className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                Dashboard section
+              </label>
+              <select
+                id="admin-mobile-section"
+                value={currentTab}
+                onChange={(event) => {
+                  if (event.target.value === 'finance') {
+                    window.location.assign('/admin/finance');
+                    return;
+                  }
+                  setActiveTab(event.target.value);
+                }}
+                className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-primary"
+              >
+                <optgroup label="Daily work">
+                  <option value="overview">Overview</option>
+                  <option value="all-clients">All Clients</option>
+                  <option value="sales-tracking">WhatsApp Sales</option>
+                  <option value="session-logs">Session Logs</option>
+                  <option value="enquiries">Enquiries</option>
+                  <option value="revenue">Revenue</option>
+                  <option value="therapists">Therapists</option>
+                  <option value="therapist-portal">Therapist Portal</option>
+                </optgroup>
+                <optgroup label="Messages and safety">
+                  <option value="chat-leads">Chat Leads</option>
+                  <option value="crisis-queue">Crisis Queue</option>
+                  <option value="crisis-alerts">Crisis Alerts</option>
+                  <option value="feedback">Feedback</option>
+                </optgroup>
+                <optgroup label="Business and content">
+                  <option value="finance">Finance & Accounts</option>
+                  <option value="corporate-bookings">Corporate Bookings</option>
+                  <option value="registrations">Training Registrations</option>
+                  <option value="newsletter">Newsletter</option>
+                  <option value="content">Content</option>
+                  <option value="site-sections">Site Sections</option>
+                  <option value="emails">Emails</option>
+                  <option value="email-segments">Email Segments</option>
+                </optgroup>
+                <optgroup label="Reports and settings">
+                  <option value="learning">Learning Analytics</option>
+                  <option value="chat-analytics">AI Chat Analytics</option>
+                  <option value="kenya-referrals">Traffic & Referrals</option>
+                  <option value="search-console">Search Console</option>
+                  <option value="backlinks">Backlinks</option>
+                  <option value="referrals">Referrals</option>
+                  <option value="whispers">Whispers</option>
+                  <option value="specialists">Specialists</option>
+                  <option value="users">Admin Users</option>
+                </optgroup>
+              </select>
+              <div className="grid grid-cols-3 gap-2" aria-label="Quick access">
+                {[
+                  ['overview', 'Overview'],
+                  ['all-clients', 'Clients'],
+                  ['sales-tracking', 'Sales'],
+                  ['session-logs', 'Sessions'],
+                  ['enquiries', 'Enquiries'],
+                  ['revenue', 'Revenue'],
+                ].map(([value, label]) => (
+                  <Button
+                    key={value}
+                    type="button"
+                    size="sm"
+                    variant={currentTab === value ? 'default' : 'outline'}
+                    className="h-10 px-2 text-xs"
+                    onClick={() => setActiveTab(value)}
+                  >
+                    {label}
+                  </Button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <TabsList className="hidden md:flex flex-wrap h-auto w-full justify-start gap-1 p-1 sticky top-20 z-20 bg-background/95 shadow-sm backdrop-blur">
             {isAdmin && (
               <TabsTrigger value="overview" className="gap-2">
                 <Home className="h-4 w-4" />
