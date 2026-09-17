@@ -147,10 +147,5 @@ Allow: /donate-therapy
 Allow: /amani-ai
 Allow: /whisper
 
-# Sitemaps
+# Sitemap index (the index lists the page and blog sitemaps)
 Sitemap: https://www.innersparkafrica.com/sitemap-index.xml
-Sitemap: https://www.innersparkafrica.com/sitemap.xml
-Sitemap: https://www.innersparkafrica.com/sitemap-blogs.xml
-
-# Host
-Host: https://www.innersparkafrica.com
