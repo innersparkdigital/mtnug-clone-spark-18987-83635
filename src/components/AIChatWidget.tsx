@@ -121,16 +121,9 @@ function contextualWelcome(pathname: string): Msg {
   return { role: "assistant", content };
 }
 
-function autoOpenDelayMs(pathname: string): number | null {
-  const p = pathname.toLowerCase();
-  if (p === "/" || p === "") return 8000;
-  if (p.startsWith("/blog")) return 15000;
-  if (
-    p.startsWith("/for-business") || p.startsWith("/corporate") ||
-    p.startsWith("/specialists") || p.startsWith("/find-therapist") ||
-    p.startsWith("/book-therapist") || p.startsWith("/therapy-in") ||
-    p.includes("therapy") || p.includes("counsel") || p.startsWith("/kenya")
-  ) return 15000;
+function autoOpenDelayMs(_pathname: string): number | null {
+  // Keep Amani available without covering page content unexpectedly.
+  // Visitors can open the chat themselves using the floating button.
   return null;
 }
 
