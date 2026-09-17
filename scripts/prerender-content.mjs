@@ -163,4 +163,27 @@ export const ROUTES = [
       },
     ],
   },
+  {
+    path: "/kenya",
+    title: "Online Therapy in Kenya | InnerSpark Africa",
+    description:
+      "Online therapy in Kenya with licensed African therapists. Video, voice or chat from KES 2,600, paid via M-Pesa. Book in 2 minutes, fully private.",
+    h1: "Therapy That Understands Your World — From Anywhere in Kenya",
+    intro:
+      "Book a licensed African therapist by video, voice or chat from KES 2,600. Pay via M-Pesa and complete your booking in about two minutes.",
+    sections: [
+      {
+        h2: "Online therapy across Kenya",
+        p: "Meet from Nairobi, Mombasa, Kisumu, Nakuru, Eldoret or rural Kenya using low-bandwidth video, voice or chat. Therapists understand East African family, work and cultural contexts.",
+      },
+      {
+        h2: "Simple M-Pesa payment",
+        p: "Single online sessions start from KES 2,600. Pay through M-Pesa, then receive the session confirmation and joining details by WhatsApp.",
+      },
+      {
+        h2: "Choose a licensed therapist",
+        p: "Browse therapist profiles by speciality, language and availability, or ask InnerSpark to recommend a match for individual, couples, teen or family support.",
+      },
+    ],
+  },
 ];
