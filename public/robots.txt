@@ -1,7 +1,6 @@
 # Robots.txt for Innerspark Africa - Mental Health Services
 # https://www.innersparkafrica.com
 
-# Allow all major search engines full access
 User-agent: Googlebot
 Allow: /
 Crawl-delay: 1
@@ -25,7 +24,6 @@ Allow: /
 User-agent: YandexBot
 Allow: /
 
-# Social media crawlers
 User-agent: Twitterbot
 Allow: /
 
@@ -41,7 +39,6 @@ Allow: /
 User-agent: WhatsApp
 Allow: /
 
-# AI search engines & assistants (answer engines)
 User-agent: GPTBot
 Allow: /
 
@@ -111,11 +108,8 @@ Allow: /
 User-agent: TikTokSpider
 Allow: /
 
-# Default rules for all other bots
 User-agent: *
 Allow: /
-
-# Disallow private/user-specific pages
 Disallow: /profile-settings
 Disallow: /admin-dashboard
 Disallow: /student-dashboard
@@ -124,33 +118,7 @@ Disallow: /learning/student-dashboard
 Disallow: /corporate-admin
 Disallow: /mind-check/analytics
 Disallow: /admin-finance
-
-# Disallow auth pages (not useful for search)
 Disallow: /auth
 
-# Allow all important content pages
-Allow: /virtual-therapy
-Allow: /specialists
-Allow: /find-therapist
-Allow: /support-groups
-Allow: /blog
-Allow: /mind-check
-Allow: /learning
-Allow: /services
-Allow: /about
-Allow: /contact
-Allow: /events-training
-Allow: /for-business
-Allow: /for-professionals
-Allow: /emergency-support
-Allow: /donate-therapy
-Allow: /amani-ai
-Allow: /whisper
-
-# Sitemaps
+# Sitemap index (the index lists the page and blog sitemaps)
 Sitemap: https://www.innersparkafrica.com/sitemap-index.xml
-Sitemap: https://www.innersparkafrica.com/sitemap.xml
-Sitemap: https://www.innersparkafrica.com/sitemap-blogs.xml
-
-# Host
-Host: https://www.innersparkafrica.com
