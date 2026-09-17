@@ -40,6 +40,7 @@ const AdminClientsTab = lazy(() => import('@/components/admin/AdminClientsTab'))
 const AdminSessionLogsTab = lazy(() => import('@/components/admin/AdminSessionLogsTab'));
 const AdminEnquiriesTab = lazy(() => import('@/components/admin/AdminEnquiriesTab'));
 const AdminRevenueTab = lazy(() => import('@/components/admin/AdminRevenueTab'));
+const AdminSalesTrackingTab = lazy(() => import('@/components/admin/AdminSalesTrackingTab'));
 
 const TabFallback = () => (
   <div className="flex items-center justify-center py-12">
@@ -238,6 +239,12 @@ const AdminDashboard = () => {
                 Revenue
               </TabsTrigger>
             )}
+            {isAdmin && (
+              <TabsTrigger value="sales-tracking" className="gap-2">
+                <Target className="h-4 w-4" />
+                WhatsApp Sales
+              </TabsTrigger>
+            )}
             {hasPageAccess('learning') && (
               <TabsTrigger value="learning" className="gap-2">
                 <GraduationCap className="h-4 w-4" />
@@ -405,6 +412,11 @@ const AdminDashboard = () => {
           {isAdmin && (
             <TabsContent value="revenue">
               <Suspense fallback={<TabFallback />}><AdminRevenueTab /></Suspense>
+            </TabsContent>
+          )}
+          {isAdmin && (
+            <TabsContent value="sales-tracking">
+              <Suspense fallback={<TabFallback />}><AdminSalesTrackingTab /></Suspense>
             </TabsContent>
           )}
 
