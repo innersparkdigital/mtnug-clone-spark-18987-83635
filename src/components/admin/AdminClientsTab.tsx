@@ -216,19 +216,59 @@ const AdminClientsTab = () => {
     if (amount <= 0) return toast.error("Enter the amount paid first.");
 
     const sessionDate = (val(r, "last_session_date") as string) || new Date().toISOString().slice(0, 10);
+    const paidAt = `${sessionDate}T12:00:00+03:00`;
+    const phoneDigits = (r.phone || "").replace(/[^0-9]/g, "");
+    const fallbackReference = `ISA-${r.id.replace(/-/g, "").slice(0, 8).toUpperCase()}`;
     setWhatsappSalesId(r.id);
-    const { data, error } = await supabase.rpc("admin_send_paid_client_to_whatsapp_sales" as any, {
-      _client_id: r.id,
-      _name: r.full_name,
-      _phone: r.phone || "",
-      _amount_ugx: amount,
-      _paid_at: `${sessionDate}T12:00:00+03:00`,
-      _booking_type: (val(r, "session_type") as string) || null,
-      _country: (val(r, "country") as string) || null,
-    });
-    setWhatsappSalesId(null);
-    if (error) return toast.error(error.message);
-    toast.success(`${r.full_name} sent to WhatsApp Sales (${data})`);
+
+    try {
+      const { data: currentData, error: listError } = await supabase.rpc("admin_list_ad_sales_leads" as any);
+      if (listError) throw listError;
+      const current = ((currentData as any[]) || []).find((lead) =>
+        phoneDigits && String(lead.phone || "").replace(/[^0-9]/g, "") === phoneDigits,
+      );
+
+      let salesLead = current;
+      if (!salesLead) {
+        const { error: createError } = await supabase.rpc("create_ad_sales_lead" as any, {
+          _lead_reference: fallbackReference,
+          _name: r.full_name,
+          _email: r.email || null,
+          _phone: r.phone || null,
+          _booking_type: (val(r, "session_type") as string) || null,
+          _session_format: null,
+          _expected_value_ugx: amount,
+          _landing_path: "/admin/clients",
+          _gclid: null,
+          _gbraid: null,
+          _wbraid: null,
+          _utm_source: "whatsapp",
+          _utm_medium: "manual",
+          _utm_campaign: null,
+          _utm_content: (val(r, "country") as string) || null,
+          _utm_term: null,
+        });
+        if (createError) throw createError;
+
+        const { data: refreshedData, error: refreshError } = await supabase.rpc("admin_list_ad_sales_leads" as any);
+        if (refreshError) throw refreshError;
+        salesLead = ((refreshedData as any[]) || []).find((lead) => lead.lead_reference === fallbackReference);
+      }
+
+      if (!salesLead?.id) throw new Error("The WhatsApp Sales record could not be found.");
+      const { error: updateError } = await supabase.rpc("admin_update_ad_sales_lead" as any, {
+        _id: salesLead.id,
+        _status: "paid",
+        _paid_amount_ugx: amount,
+        _paid_at: paidAt,
+      });
+      if (updateError) throw updateError;
+      toast.success(`${r.full_name} sent to WhatsApp Sales (${salesLead.lead_reference})`);
+    } catch (error: any) {
+      toast.error(error?.message || "Could not send this client to WhatsApp Sales.");
+    } finally {
+      setWhatsappSalesId(null);
+    }
   };
 
   const buildAndSend = async (
