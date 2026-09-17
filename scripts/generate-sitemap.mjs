@@ -37,10 +37,11 @@ const EXCLUDE = new Set([
   "/thank-you-referral",
   "/thank-you-newsletter",
   "/thank-you-download",
-  // Consolidated into /online-therapy (301-style client redirects)
+  // Consolidated into /online-therapy (client redirects)
   "/virtual-therapy",
   "/video-therapy",
   "/mental-health-support",
+  "/find-therapist",
 ]);
 
 function routePaths() {
@@ -55,34 +56,15 @@ function routePaths() {
   });
 }
 
-function meta(path) {
-  if (path === "/") return { changefreq: "daily", priority: "1.0" };
-  if (/^\/(online-therapy|book-therapist|specialists|find-therapist|chat-therapy|services)$/.test(path))
-    return { changefreq: "weekly", priority: "0.95" };
-  if (/^\/(therapy-in-|depression-|anxiety-|relationship-|trauma-|marriage-|psychiatrist-|counselling-|therapist-near-|therapy-for-|online-therapy-)/.test(path))
-    return { changefreq: "weekly", priority: "0.9" };
-  if (path.startsWith("/blog")) return { changefreq: "weekly", priority: "0.8" };
-  if (path.startsWith("/mind-check")) return { changefreq: "monthly", priority: "0.75" };
-  if (path.startsWith("/events-training")) return { changefreq: "monthly", priority: "0.6" };
-  if (/^\/(privacy-policy|terms-of-service|cookie-policy)$/.test(path))
-    return { changefreq: "yearly", priority: "0.3" };
-  return { changefreq: "monthly", priority: "0.7" };
-}
-
 const paths = routePaths();
 const xml = [
   '<?xml version="1.0" encoding="UTF-8"?>',
   '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-  ...paths.map((p) => {
-    const { changefreq, priority } = meta(p);
-    return [
-      "  <url>",
-      `    <loc>${BASE_URL}${p === "/" ? "/" : p}</loc>`,
-      `    <changefreq>${changefreq}</changefreq>`,
-      `    <priority>${priority}</priority>`,
-      "  </url>",
-    ].join("\n");
-  }),
+  ...paths.map((p) => [
+    "  <url>",
+    `    <loc>${BASE_URL}${p === "/" ? "/" : p}</loc>`,
+    "  </url>",
+  ].join("\n")),
   "</urlset>",
   "",
 ].join("\n");
