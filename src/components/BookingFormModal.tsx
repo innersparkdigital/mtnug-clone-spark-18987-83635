@@ -37,6 +37,7 @@ import { trackBookingFormOpened, trackBookingSubmitted, trackWhatsAppClick } fro
 import { trackGadsBookingConversion, trackGadsWhatsAppClick, trackGadsThankYouConversion } from "@/lib/gadsTracking";
 import { supabase } from "@/integrations/supabase/client";
 import { getReferralCookie } from "@/lib/referralCookie";
+import { captureAdAttribution } from "@/lib/adAttribution";
 
 interface BookingFormModalProps {
   isOpen: boolean;
@@ -194,13 +195,14 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
     }));
   };
 
-  const buildSummary = () => {
+  const buildSummary = (leadReference?: string) => {
     const refSlug = getReferralCookie();
     const refLine = refSlug ? `\n*Referred by:* ${refSlug}\n` : "";
+    const salesRefLine = leadReference ? `\n*Booking reference:* ${leadReference}\n` : "";
     if (isGroup) {
       return (
         `*New Support Group Request – InnerSpark Africa*\n\n` +
-        `*Name:* ${data.name}\n*Phone:* ${data.phone}\n*Email:* ${data.email}\n` + refLine + `\n` +
+        `*Name:* ${data.name}\n*Phone:* ${data.phone}\n*Email:* ${data.email}\n` + refLine + salesRefLine + `\n` +
         `*Group:* ${groupName}\n*Weekly Fee:* ${groupPriceLabel}`
       );
     }
@@ -210,7 +212,7 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
       : `*New Therapy Booking – InnerSpark Africa*`;
     return (
       `${header}\n\n` +
-      `*Name:* ${data.name}\n*Phone:* ${data.phone}\n*Email:* ${data.email}\n` + refLine + `\n` +
+      `*Name:* ${data.name}\n*Phone:* ${data.phone}\n*Email:* ${data.email}\n` + refLine + salesRefLine + `\n` +
       `*Therapy type:* ${typeLabel}\n` +
       `*Gender:* ${data.gender}\n` +
       `*Age:* ${data.age}\n` +
@@ -227,7 +229,33 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
   const handleSubmit = async () => {
     setSubmitting(true);
     try {
-      const summaryText = buildSummary();
+      const attribution = captureAdAttribution();
+      const summaryText = buildSummary(attribution.leadReference);
+
+      // Save the ad reference before opening WhatsApp. This is non-blocking so a
+      // temporary analytics problem can never stop someone requesting therapy.
+      try {
+        await supabase.rpc("create_ad_sales_lead" as any, {
+          _lead_reference: attribution.leadReference,
+          _name: data.name || null,
+          _email: data.email || null,
+          _phone: data.phone || null,
+          _booking_type: formType,
+          _session_format: data.sessionFormat || null,
+          _expected_value_ugx: isGroup ? 25000 : isConsultation ? 0 : selectedFormat?.ugx ?? 0,
+          _landing_path: attribution.landingPath,
+          _gclid: attribution.gclid,
+          _gbraid: attribution.gbraid,
+          _wbraid: attribution.wbraid,
+          _utm_source: attribution.utmSource,
+          _utm_medium: attribution.utmMedium,
+          _utm_campaign: attribution.utmCampaign,
+          _utm_content: attribution.utmContent,
+          _utm_term: attribution.utmTerm,
+        });
+      } catch (err) {
+        console.warn("Ad sales reference logging failed (non-blocking):", err);
+      }
 
       // Referral conversion tracking (Kenya / Synder-style links)
       const refSlug = getReferralCookie();
