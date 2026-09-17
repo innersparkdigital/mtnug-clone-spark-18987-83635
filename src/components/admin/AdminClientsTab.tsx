@@ -510,8 +510,8 @@ const AdminClientsTab = () => {
                                   onClick={() => sendToWhatsappSales(r)}
                                   title="Send paid client to WhatsApp Sales"
                                 >
-                                  {whatsappSalesId === r.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <MessageCircle className="h-4 w-4" />}
-                                  <span className="sr-only">Send to WhatsApp Sales</span>
+                                  {whatsappSalesId === r.id ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <MessageCircle className="h-4 w-4 mr-1" />}
+                                  To Sales
                                 </Button>
                               )}
                               <Button size="sm" variant="ghost" onClick={() => setExpandedId(open ? null : r.id)} title={open ? "Hide details" : "Show all details"}>
