@@ -300,7 +300,7 @@ const AdminDashboard = () => {
             </div>
           )}
 
-          <TabsList className="hidden md:flex flex-wrap h-auto w-full justify-start gap-1 p-1 sticky top-20 z-20 bg-background/95 shadow-sm backdrop-blur">
+          <TabsList className={`${isAdmin ? 'hidden md:flex' : 'flex'} flex-wrap h-auto w-full justify-start gap-1 p-1 sticky top-20 z-20 bg-background/95 shadow-sm backdrop-blur`}>
             {isAdmin && (
               <TabsTrigger value="overview" className="gap-2">
                 <Home className="h-4 w-4" />
