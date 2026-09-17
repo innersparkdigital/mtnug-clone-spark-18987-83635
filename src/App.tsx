@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import PrivateRouteNoIndex from "./components/seo/PrivateRouteNoIndex";
 import RouteErrorBoundary from "./components/RouteErrorBoundary";
+import AdminDashboard from "./pages/AdminDashboard";
 import { lazy, Suspense } from "react";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { AuthProvider } from "@/contexts/AuthContext";
@@ -133,9 +134,6 @@ const LessonViewer = lazy(() => import("./pages/LessonViewer"));
 const CourseCertificate = lazy(() => import("./pages/CourseCertificate"));
 const LearningDashboard = lazy(() => import("./pages/LearningDashboard"));
 const StudentDashboard = lazy(() => import("./pages/StudentDashboard"));
-const AdminDashboard = lazy(
-  () => import(/* webpackChunkName: "admin" */ "./pages/AdminDashboard"),
-);
 const AdminFinance = lazy(
   () => import(/* webpackChunkName: "admin" */ "./pages/AdminFinance"),
 );
