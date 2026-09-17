@@ -1,5 +1,4 @@
 import { Helmet } from "react-helmet";
-import ExpandedSeoSchema from "@/components/seo/ExpandedSeoSchema";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -23,7 +22,7 @@ const BookTherapist = () => {
     "@context": "https://schema.org",
     "@type": "WebPage",
     "name": "Book a Therapist Online - Schedule Therapy Session Today",
-    "description": "Book a licensed therapist online today. Schedule your therapy appointment in minutes. Video, voice, and chat sessions available globally.",
+    "description": "Book a licensed African therapist in about two minutes. Choose video, voice or chat from UGX 30,000.",
     "url": "https://www.innersparkafrica.com/book-therapist"
   };
 
@@ -31,17 +30,18 @@ const BookTherapist = () => {
     "@context": "https://schema.org",
     "@type": "Service",
     "name": "Book Therapy Appointment",
-    "description": "Schedule a therapy session with a licensed mental health professional. Same-day appointments available.",
+    "description": "Book video, voice or chat therapy with a licensed African therapist from UGX 30,000.",
     "provider": {
       "@type": "MedicalOrganization",
       "name": "Innerspark Africa",
       "url": "https://www.innersparkafrica.com"
     },
     "serviceType": "Therapy Appointment Booking",
-    "areaServed": {
-      "@type": "Place",
-      "name": "Worldwide"
-    }
+    "areaServed": [
+      { "@type": "Country", "name": "Uganda" },
+      { "@type": "Country", "name": "Kenya" },
+      { "@type": "Country", "name": "Tanzania" }
+    ]
   };
 
   const faqSchema = {
@@ -53,7 +53,7 @@ const BookTherapist = () => {
         "name": "How quickly can I book a therapy session?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "You can book a therapy session in just a few minutes. Many therapists have same-day availability, so you can start getting help today."
+          "text": "The booking form takes about two minutes. Session timing depends on therapist availability."
         }
       },
       {
@@ -66,10 +66,10 @@ const BookTherapist = () => {
       },
       {
         "@type": "Question",
-        "name": "Can I book a therapist for an emergency?",
+        "name": "Can I use this booking page for an emergency?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes, we offer urgent support. Contact us via WhatsApp for immediate assistance and same-day booking."
+          "text": "No. If you are in immediate danger or may harm yourself, use the emergency support page for local crisis contacts rather than waiting for a therapy booking."
         }
       }
     ]
@@ -93,11 +93,11 @@ const BookTherapist = () => {
         <meta name="twitter:title" content="Book a Therapist Online | Innerspark" />
         <meta name="twitter:description" content="Schedule your therapy appointment in minutes. Same-day availability with licensed therapists." />
         
-        <script type="application/ld+json">{JSON.stringify(pageSchema)}</script>
-        <script type="application/ld+json">{JSON.stringify(serviceSchema)}</script>
-        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [pageSchema, serviceSchema, faqSchema],
+        })}</script>
       </Helmet>
-      <ExpandedSeoSchema region="africa" />
 
       {/* Pre-Assessment Modal */}
       <PreAssessmentModal 
@@ -218,7 +218,7 @@ const BookTherapist = () => {
                 {
                   icon: Heart,
                   title: "Affordable Rates",
-                  desc: "Quality therapy at accessible prices. Starting from $22 per session"
+                  desc: "Quality therapy at accessible prices. Chat sessions start from UGX 30,000"
                 },
                 {
                   icon: Globe,
@@ -313,15 +313,15 @@ const BookTherapist = () => {
               {[
                 {
                   q: "How quickly can I book a therapy session?",
-                  a: "You can book a therapy session in just a few minutes. Many therapists have same-day availability, so you can start getting help today."
+                  a: "The booking form takes about two minutes. Session timing depends on therapist availability."
                 },
                 {
                   q: "What types of therapists can I book?",
                   a: "We have licensed psychologists, counselors, and psychiatrists specializing in depression, anxiety, trauma, relationships, and more."
                 },
                 {
-                  q: "Can I book a therapist for an emergency?",
-                  a: "Yes, we offer urgent support. Contact us via WhatsApp for immediate assistance and same-day booking."
+                  q: "Can I use this booking page for an emergency?",
+                  a: "No. If you are in immediate danger or may harm yourself, use the emergency support page for local crisis contacts rather than waiting for a therapy booking."
                 },
                 {
                   q: "How do I reschedule my appointment?",
