@@ -32,10 +32,8 @@ function buildUrlset(posts) {
       const lastmod = (p.updated_at || p.published_at || "").slice(0, 10);
       return [
         "  <url>",
-        `    <loc>${BASE_URL}/blog/${xmlEscape(p.slug)}/</loc>`,
+        `    <loc>${BASE_URL}/blog/${xmlEscape(p.slug)}</loc>`,
         lastmod ? `    <lastmod>${lastmod}</lastmod>` : null,
-        "    <changefreq>weekly</changefreq>",
-        "    <priority>0.7</priority>",
         "  </url>",
       ]
         .filter(Boolean)
@@ -52,11 +50,12 @@ function buildUrlset(posts) {
 }
 
 function buildIndex() {
+  const lastmod = new Date().toISOString().slice(0, 10);
   return [
     '<?xml version="1.0" encoding="UTF-8"?>',
     '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-    `  <sitemap><loc>${BASE_URL}/sitemap.xml</loc></sitemap>`,
-    `  <sitemap><loc>${BASE_URL}/sitemap-blogs.xml</loc></sitemap>`,
+    `  <sitemap><loc>${BASE_URL}/sitemap.xml</loc><lastmod>${lastmod}</lastmod></sitemap>`,
+    `  <sitemap><loc>${BASE_URL}/sitemap-blogs.xml</loc><lastmod>${lastmod}</lastmod></sitemap>`,
     "</sitemapindex>",
     "",
   ].join("\n");
