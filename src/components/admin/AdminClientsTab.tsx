@@ -102,6 +102,7 @@ const AdminClientsTab = () => {
   const [pageSize, setPageSize] = useState(25);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [consentLinkId, setConsentLinkId] = useState<string | null>(null);
+  const [whatsappSalesId, setWhatsappSalesId] = useState<string | null>(null);
 
   const load = async () => {
     setLoading(true);
@@ -206,6 +207,28 @@ const AdminClientsTab = () => {
       await emailReceipt({ ...r, ...e, paid_status: "paid" } as Row, { silent: false, whatsapp: false, download: false });
     }
     load();
+  };
+
+  const sendToWhatsappSales = async (r: Row) => {
+    const amount = Number(val(r, "amount_ugx") || 0);
+    const paidStatus = val(r, "paid_status") as string;
+    if (paidStatus !== "paid") return toast.error("Mark the client Paid first.");
+    if (amount <= 0) return toast.error("Enter the amount paid first.");
+
+    const sessionDate = (val(r, "last_session_date") as string) || new Date().toISOString().slice(0, 10);
+    setWhatsappSalesId(r.id);
+    const { data, error } = await supabase.rpc("admin_send_paid_client_to_whatsapp_sales" as any, {
+      _client_id: r.id,
+      _name: r.full_name,
+      _phone: r.phone || "",
+      _amount_ugx: amount,
+      _paid_at: `${sessionDate}T12:00:00+03:00`,
+      _booking_type: (val(r, "session_type") as string) || null,
+      _country: (val(r, "country") as string) || null,
+    });
+    setWhatsappSalesId(null);
+    if (error) return toast.error(error.message);
+    toast.success(`${r.full_name} sent to WhatsApp Sales (${data})`);
   };
 
   const buildAndSend = async (
@@ -477,6 +500,18 @@ const AdminClientsTab = () => {
                               {dirty && (
                                 <Button size="sm" disabled={savingId === r.id} onClick={() => saveRow(r)} title="Save session">
                                   {savingId === r.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+                                </Button>
+                              )}
+                              {paid === "paid" && (
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  disabled={whatsappSalesId === r.id}
+                                  onClick={() => sendToWhatsappSales(r)}
+                                  title="Send paid client to WhatsApp Sales"
+                                >
+                                  {whatsappSalesId === r.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <MessageCircle className="h-4 w-4" />}
+                                  <span className="sr-only">Send to WhatsApp Sales</span>
                                 </Button>
                               )}
                               <Button size="sm" variant="ghost" onClick={() => setExpandedId(open ? null : r.id)} title={open ? "Hide details" : "Show all details"}>
