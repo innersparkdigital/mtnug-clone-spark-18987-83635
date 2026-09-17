@@ -4,7 +4,6 @@ import ScrollReveal, { StaggerContainer, StaggerItem } from "@/components/Scroll
 import { useBookingFlow } from "@/hooks/useBookingFlow";
 import PreAssessmentModal from "@/components/PreAssessmentModal";
 import BookingFormModal from "@/components/BookingFormModal";
-import { Helmet } from "react-helmet";
 
 const concerns = [
   {
@@ -139,14 +138,6 @@ const ConcernsSection = () => {
 
   return (
     <>
-      <Helmet>
-        <script type="application/ld+json">
-          {JSON.stringify(concernsJsonLd)}
-        </script>
-        <script type="application/ld+json">
-          {JSON.stringify(faqJsonLd)}
-        </script>
-      </Helmet>
 
       <PreAssessmentModal
         isOpen={isAssessmentModalOpen}
