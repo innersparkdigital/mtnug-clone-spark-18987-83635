@@ -1,5 +1,4 @@
 import { Helmet } from "react-helmet";
-import ExpandedSeoSchema from "@/components/seo/ExpandedSeoSchema";
 import { Link } from "react-router-dom";
 import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -40,6 +39,55 @@ const Index = () => {
     partners: useSectionVisibility("partners"),
     events: useSectionVisibility("events_section"),
   };
+  const homeSchema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "MedicalOrganization",
+        "@id": "https://www.innersparkafrica.com/#organization",
+        name: "InnerSpark Africa",
+        url: "https://www.innersparkafrica.com/",
+        logo: "https://www.innersparkafrica.com/innerspark-logo.webp",
+        description: "Online therapy with licensed African therapists by video, voice or chat.",
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: "Kampala",
+          addressCountry: "UG",
+        },
+        areaServed: [
+          { "@type": "Country", name: "Uganda" },
+          { "@type": "Country", name: "Kenya" },
+          { "@type": "Country", name: "Tanzania" },
+        ],
+        currenciesAccepted: "UGX, KES, TZS, USD",
+        paymentAccepted: "Mobile Money, Card",
+        contactPoint: {
+          "@type": "ContactPoint",
+          telephone: "+256792085773",
+          contactType: "customer support",
+          areaServed: ["UG", "KE", "TZ"],
+          availableLanguage: ["English", "Luganda", "Swahili"],
+        },
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://www.innersparkafrica.com/#website",
+        url: "https://www.innersparkafrica.com/",
+        name: "InnerSpark Africa",
+        publisher: { "@id": "https://www.innersparkafrica.com/#organization" },
+        inLanguage: "en",
+      },
+      {
+        "@type": "WebPage",
+        "@id": "https://www.innersparkafrica.com/#webpage",
+        url: "https://www.innersparkafrica.com/",
+        name: "Mental Wellness & Therapy in Uganda from UGX 30,000 | InnerSpark",
+        isPartOf: { "@id": "https://www.innersparkafrica.com/#website" },
+        about: { "@id": "https://www.innersparkafrica.com/#organization" },
+      },
+    ],
+  };
+
   return (
     <>
       <Helmet>
@@ -49,8 +97,8 @@ const Index = () => {
         <meta property="og:description" content="Confidential mental health support from licensed Ugandan therapists by video, voice or chat from UGX 30,000. Pay by MTN or Airtel Money, book in 2 minutes." />
         <meta name="keywords" content="online therapy Uganda, therapist Uganda, therapist Kampala, counsellor Kampala, online counselling Uganda, teletherapy Uganda, private therapy Kampala, confidential therapy Kampala, mental health Uganda, therapy for professionals Uganda, burnout therapy Uganda, anonymous therapy Uganda, corporate mental health Uganda, WHO-5 Uganda, therapist for depression Uganda, therapist for anxiety Uganda, therapist for trauma Uganda, therapist for couples Uganda, therapist for suicidal thoughts Uganda, chat therapy Uganda 30000, affordable chat therapy Uganda, therapy via WhatsApp chat Uganda, evening therapy sessions Uganda, Sunday therapy sessions Uganda, weekend therapist Uganda, same day therapist Uganda, urgent therapy Uganda, emergency counselling Uganda, teen therapist Uganda, therapy for teenagers Kampala, youth mental health Uganda, therapy for students Uganda, online therapy South Sudan, therapist South Sudan, mental health support South Sudan, online counselling East Africa" />
         <link rel="canonical" href="https://www.innersparkafrica.com/" />
+        <script type="application/ld+json">{JSON.stringify(homeSchema)}</script>
       </Helmet>
-      <ExpandedSeoSchema region="uganda" />
       <div className="min-h-screen bg-background">
         <GeoKenyaBanner />
         <Header />
