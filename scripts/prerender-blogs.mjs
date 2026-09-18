@@ -18,8 +18,15 @@ import { SITE, GLOBAL_LINKS } from "./prerender-content.mjs";
 const DIST = path.resolve(process.cwd(), "dist");
 const MAX_POSTS = 200;
 
-const SUPABASE_URL = process.env.VITE_SUPABASE_URL;
-const SUPABASE_KEY = process.env.VITE_SUPABASE_PUBLISHABLE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
+// Node does not automatically load Vite's .env file during postbuild.
+// Keep the public read-only project details as fallbacks so blog prerendering
+// still runs on hosts that expose these values only to the browser bundle.
+const SUPABASE_URL =
+  process.env.VITE_SUPABASE_URL || "https://hnjpsvpudwwyzrrwzbpa.supabase.co";
+const SUPABASE_KEY =
+  process.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
+  process.env.VITE_SUPABASE_ANON_KEY ||
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhuanBzdnB1ZHd3eXpycnd6YnBhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIyMDgyODAsImV4cCI6MjA3Nzc4NDI4MH0.2s0TlAxFujnY2FMz0SDbzrjbsMCsgg1eCBHfUiiAGIQ";
 
 const esc = (s) =>
   String(s ?? "")
@@ -209,20 +216,19 @@ function buildListingBody(posts) {
 const ROOT_RE = /<div id="root">\s*<\/div>/;
 
 async function fetchPosts() {
-  if (!SUPABASE_URL || !SUPABASE_KEY) {
-    console.warn("[prerender-blogs] Supabase env vars missing — skipping.");
-    return [];
-  }
   const url =
     `${SUPABASE_URL}/rest/v1/blog_posts?status=eq.published&select=*&order=published_at.desc&limit=${MAX_POSTS}`;
   const res = await fetch(url, {
     headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
   });
   if (!res.ok) {
-    console.warn(`[prerender-blogs] fetch failed: ${res.status}`);
-    return [];
+    throw new Error(`[prerender-blogs] blog fetch failed: ${res.status} ${await res.text()}`);
   }
-  return res.json();
+  const posts = await res.json();
+  if (!Array.isArray(posts) || posts.length === 0) {
+    throw new Error("[prerender-blogs] no published blog posts returned; refusing to ship homepage fallbacks for blog URLs");
+  }
+  return posts;
 }
 
 async function run() {
