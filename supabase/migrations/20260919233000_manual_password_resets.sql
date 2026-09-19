@@ -6,7 +6,7 @@ create table if not exists public.manual_password_reset_requests (
   account_id uuid not null,
   user_id uuid null,
   identifier_masked text not null,
-  status text not null default 'pending' check (status in ('pending','processing','sent','used','completed','expired','cancelled')),
+  status text not null default 'pending' check (status in ('pending','processing','ready','sent','used','completed','expired','cancelled')),
   temp_secret_hash text null,
   requested_at timestamptz not null default now(),
   expires_at timestamptz null,
@@ -58,7 +58,7 @@ begin
   if not found then return false; end if;
   update public.manual_password_reset_requests
   set temp_secret_hash = encode(digest(_temporary_passcode, 'sha256'), 'hex'),
-      status = 'sent', revealed_at = now(), expires_at = now() + interval '60 minutes', updated_at = now()
+      status = 'ready', revealed_at = now(), expires_at = now() + interval '60 minutes', updated_at = now()
   where id = _request_id and account_type = 'client' and account_id = _client_id and status = 'processing';
   return found;
 end;
@@ -80,7 +80,7 @@ begin
   end if;
 
   select * into r from public.manual_password_reset_requests
-  where account_type = 'client' and account_id = c.id and status = 'sent'
+  where account_type = 'client' and account_id = c.id and status in ('ready','sent')
   order by revealed_at desc limit 1;
 
   if r.id is not null then
@@ -90,7 +90,7 @@ begin
       return jsonb_build_object('valid', false, 'temporary', true, 'expired', true);
     end if;
     update public.manual_password_reset_requests
-    set status='used', consumed_at=now(), updated_at=now() where id=r.id and status='sent';
+    set status='used', consumed_at=now(), updated_at=now() where id=r.id and status in ('ready','sent');
     update public.therapist_clients set passcode_hash = null where id=c.id;
     return jsonb_build_object('valid', true, 'temporary', true, 'request_id', r.id);
   end if;
