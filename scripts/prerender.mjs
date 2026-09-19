@@ -125,6 +125,10 @@ function buildHead(html, route) {
     /<meta\s+property="og:url"\s+content="[\s\S]*?"\s*\/?>/i,
     `<meta property="og:url" content="${url}" />`,
   );
+  const schema = schemaForRoute(route, url);
+  if (schema) {
+    out = out.replace("</head>", `    <script type="application/ld+json">${JSON.stringify(schema)}</script>\n  </head>`);
+  }
   return out;
 }
 
