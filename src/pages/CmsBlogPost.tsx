@@ -15,6 +15,7 @@ import {
   needsCrisisCallout,
 } from "@/components/blog/BlogCallouts";
 import { normalizeBlogHtml } from "@/lib/blogContentNormalizer";
+import { BLOG_JOURNEYS } from "@/lib/blogJourneys";
 
 
 interface FaqItem { question: string; answer: string }
@@ -91,6 +92,7 @@ const CmsBlogPost = () => {
   // Older posts were pasted in as flat text: give every post the house structure.
   const structured = normalizeBlogHtml(post.content || "");
   const body = structured.html || post.content || "";
+  const journey = BLOG_JOURNEYS[post.slug];
   const faqs: FaqItem[] = [...storedFaqs];
   structured.faqs.forEach((f) => {
     if (!faqs.some((e) => e.question.trim().toLowerCase() === f.question.trim().toLowerCase())) faqs.push(f);
@@ -187,6 +189,11 @@ const CmsBlogPost = () => {
         </header>
 
         <article className="container mx-auto px-4 py-14 max-w-3xl">
+          {journey && (
+            <aside className="mb-10 rounded-3xl border border-[#D9D0BF] bg-white p-6 md:p-8">
+              <p className="text-xl leading-relaxed text-[#374151]">{journey.hook}</p>
+            </aside>
+          )}
           {post.excerpt && (
             <p className="text-xl text-foreground/80 leading-relaxed mb-6 font-light">{post.excerpt}</p>
           )}
@@ -207,14 +214,14 @@ const CmsBlogPost = () => {
           <FaqSection items={faqs.map((f) => ({ q: f.question, a: f.answer }))} />
 
 
-          <div className="mt-14 rounded-2xl bg-primary/5 border border-primary/15 p-6 md:p-8">
-            <h2 className="text-xl md:text-2xl font-bold text-foreground mb-2">Ready to talk to someone?</h2>
-            <p className="text-muted-foreground mb-5 leading-relaxed">
-              Video therapy with a licensed African therapist costs UGX 75,000 per session. Chat therapy costs UGX 30,000. Pay by Mobile Money or card.
+          <div className="mt-14 rounded-3xl bg-[#0F172A] text-white p-7 md:p-9">
+            <h2 className="font-serif text-2xl md:text-3xl font-semibold mb-3">{journey?.cta || "Ready to talk to someone?"}</h2>
+            <p className="text-white/80 mb-6 leading-relaxed">
+              {journey?.body || "Video therapy with a licensed African therapist costs UGX 75,000 per session. Chat therapy costs UGX 30,000. Pay by Mobile Money or card."}
             </p>
             <div className="flex flex-wrap gap-3">
-              <Link to="/book-therapist" className="inline-flex items-center rounded-full bg-primary px-6 py-3 text-primary-foreground font-semibold hover:opacity-90">
-                Book a session
+              <Link to={journey?.href || "/book-therapist"} className="inline-flex items-center rounded-full bg-[#F59E0B] px-6 py-3 text-[#111827] font-bold hover:opacity-90">
+                {journey?.label || "Book a session"}
               </Link>
               {post.related_service_url && (
                 <Link to={post.related_service_url} className="inline-flex items-center rounded-full border border-primary/30 px-6 py-3 text-primary font-semibold hover:bg-primary/5">
