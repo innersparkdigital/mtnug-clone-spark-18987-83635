@@ -6,8 +6,8 @@ const AffordableOnlineCounsellingPost = () => {
     slug: "affordable-online-counselling-uganda",
     category: "Online Therapy",
     title: "Affordable Online Counselling in Uganda: Your Complete 2026 Guide",
-    metaTitle: "Affordable Online Counselling in Uganda from UGX 30,000 | Innerspark Africa",
-    metaDescription: "How to access affordable online counselling in Uganda — real prices, who it works for, how to choose a therapist, and how to start this week. Sessions from UGX 30,000, paid by MTN or Airtel Mobile Money.",
+    metaTitle: "Online Counselling Uganda: Video UGX 75,000 | InnerSpark",
+    metaDescription: "Online counselling in Uganda with licensed African therapists: video sessions cost UGX 75,000 and chat sessions cost UGX 30,000.",
     date: "May 3, 2026",
     isoDate: "2026-05-03",
     readTime: "9 min read",
@@ -19,7 +19,7 @@ const AffordableOnlineCounsellingPost = () => {
         title: "Therapy in Uganda used to be expensive. Not anymore.",
         blocks: [
           { type: "lead", text: "For a long time, talking to a therapist in Uganda meant a long commute to Kololo, a UGX 200,000 fee, and a waiting room where you might bump into someone you know. That kept most people away from help they badly needed. Online counselling has quietly changed the entire picture — and the prices that come with it." },
-          { type: "callout", label: "The short version:", text: "Affordable online counselling in Uganda is here. Sessions at Innerspark Africa start at UGX 30,000, with our standard rate at UGX 75,000 per 60-minute session. No transport, no waiting room, complete privacy." },
+          { type: "callout", label: "The short version:", text: "Affordable online counselling in Uganda is here. Video therapy at InnerSpark Africa costs UGX 75,000 per session; chat therapy costs UGX 30,000. No transport, no waiting room, complete privacy." },
           { type: "p", text: "This guide explains exactly what \"affordable\" means in Uganda right now, who online counselling is and isn't suited for, how to make it work on a tight budget, and how to take the first step in under five minutes." },
         ],
       },
@@ -29,7 +29,8 @@ const AffordableOnlineCounsellingPost = () => {
           { type: "p", text: "Prices vary by therapist seniority and specialisation, but here is the honest landscape across Uganda right now." },
           { type: "h3", text: "Innerspark Africa rates" },
           { type: "list", items: [
-            <><strong>Individual therapy:</strong> UGX 30,000 – 75,000 per 60-minute session</>,
+            <><strong>Video therapy:</strong> UGX 75,000 per session</>,
+            <><strong>Chat therapy:</strong> UGX 30,000 per session</>,
             <><strong>Group support sessions:</strong> UGX 25,000 per week</>,
             <><strong>Couples therapy:</strong> UGX 75,000 per session</>,
             <><strong>Teen therapy:</strong> UGX 75,000 per session</>,
@@ -63,7 +64,7 @@ const AffordableOnlineCounsellingPost = () => {
         blocks: [
           { type: "numberedCards", title: "Budget-friendly strategies", items: [
             "Start with one session, not a 12-week commitment — most clients pay as they go.",
-            "Ask about the entry-level rate (UGX 30,000) — designed for students and tight budgets.",
+            "Choose chat therapy at UGX 30,000 when written support fits your needs and budget.",
             "Join a support group at UGX 25,000 per week — same therapist, shared cost.",
             "Use the free wellbeing check and mind-check tools first — clarity before you spend.",
             "Space sessions every 2 weeks instead of weekly if cash flow is tight — still highly effective.",
@@ -123,7 +124,7 @@ const AffordableOnlineCounsellingPost = () => {
       },
     ],
     faqs: [
-      { q: "How much does online counselling cost in Uganda?", a: "Sessions at Innerspark Africa range from UGX 30,000 to UGX 75,000 per 60-minute session. Group support sessions are UGX 25,000 per week. Payment is via MTN or Airtel Mobile Money." },
+      { q: "How much does online counselling cost in Uganda?", a: "Video therapy at InnerSpark Africa costs UGX 75,000 per session. Chat therapy costs UGX 30,000, with payment by Mobile Money or card." },
       { q: "Is online counselling as effective as in-person?", a: "Yes. Research consistently shows online therapy produces the same outcomes as in-person therapy for most concerns — anxiety, depression, stress, grief, relationships. Convenience and privacy often improve attendance, which improves results." },
       { q: "What do I need to start?", a: "A smartphone or laptop, stable internet or mobile data, a private space for 60 minutes, and Mobile Money for payment. That's it." },
       { q: "Are Innerspark therapists actually qualified?", a: "Yes — every therapist is licensed and vetted before joining. We verify qualifications, supervision, and professional registration. You can browse profiles before booking." },
@@ -137,7 +138,7 @@ const AffordableOnlineCounsellingPost = () => {
       { label: "Innerspark — Free wellbeing check", url: "https://www.innersparkafrica.com/wellbeing-check" },
     ],
     closing: { headline: "The cost of starting therapy is lower than it has ever been.", primary: "The cost of putting it off is the only one still rising." },
-    cta: { heading: "Book your first affordable online session", body: "Sessions from UGX 30,000. Paid by Mobile Money. Private, online, this week.", whatsappText: "Hi, I just read your affordable online counselling article and would like to book a session." },
+    cta: { heading: "Book your first online therapy session", body: "Video therapy is UGX 75,000; chat therapy is UGX 30,000. Pay by Mobile Money or card.", whatsappText: "Hi, I just read your affordable online counselling article and would like to book a session." },
   };
 
   return <BlogPostLayout data={data} />;
