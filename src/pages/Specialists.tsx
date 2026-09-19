@@ -535,14 +535,14 @@ const Specialists = () => {
         <title>Licensed Mental Health Therapists in Uganda | InnerSpark</title>
         <meta
           name="description"
-          content="Confidential mental health therapy and counselling with licensed Ugandan therapists in Kampala and across Africa. Video, voice or chat from UGX 30,000."
+          content="Browse licensed African therapists for confidential online support. Video therapy costs UGX 75,000 per session; chat therapy costs UGX 30,000."
         />
         <meta name="keywords" content="therapist Uganda, therapist Kampala, licensed therapist Kampala, find a therapist Uganda, female therapist Uganda, male therapist Uganda, counsellor Kampala, psychologist Uganda online, trauma therapist Uganda, burnout therapist Kampala, relationship therapist Uganda, anxiety counselling Uganda, depression therapy Uganda, therapist for depression Uganda, therapist for anxiety Uganda, therapist for couples Uganda, therapist for suicidal thoughts Uganda, teen therapist Uganda, same day therapist Uganda, therapist available today Uganda, evening therapy sessions Uganda, weekend therapist Uganda, therapist Nairobi, licensed therapist Nairobi, female therapist Kenya, male therapist Kenya, private therapy Nairobi, trauma therapist Kenya, burnout therapist Nairobi, therapist South Sudan" />
         <link rel="canonical" href="https://www.innersparkafrica.com/specialists" />
         
         {/* Open Graph */}
         <meta property="og:title" content="Licensed Mental Health Therapists in Uganda | InnerSpark" />
-        <meta property="og:description" content="Browse our network of licensed therapists, counselors & psychologists. Find the right mental health professional. Book online sessions today." />
+        <meta property="og:description" content="Browse licensed African therapists by specialty, language and availability. Video therapy is UGX 75,000; chat therapy is UGX 30,000." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.innersparkafrica.com/specialists" />
         <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.webp" />
