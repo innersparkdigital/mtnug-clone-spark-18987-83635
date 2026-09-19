@@ -1,0 +1,24 @@
+DirectoryIndex index.html
+Options -MultiViews
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Keep real files and generated route directories intact.
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Serve a generated route page when its directory exists without a slash.
+  RewriteCond %{DOCUMENT_ROOT}/$1/index.html -f
+  RewriteRule ^(.+?)/?$ $1/index.html [L]
+
+  # Client-side routes that are not prerendered use the SPA shell.
+  RewriteRule ^ index.html [L]
+</IfModule>
+
+<IfModule mod_headers.c>
+  <FilesMatch "\.(html)$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+  </FilesMatch>
+</IfModule>
