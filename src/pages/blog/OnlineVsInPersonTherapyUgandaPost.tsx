@@ -7,7 +7,7 @@ const OnlineVsInPersonTherapyUgandaPost = () => {
     category: "Therapy in Uganda",
     title: "Online vs In-Person Therapy in Uganda: Which Is Right for You?",
     metaTitle: "Online vs In-Person Therapy in Uganda — Which Is Right? | Innerspark Africa",
-    metaDescription: "Honest 2026 comparison of online and in-person therapy in Uganda — cost (UGX 30,000 vs 200,000+), privacy, effectiveness, who each one fits, and how to decide this week.",
+    metaDescription: "Compare online and in-person therapy in Uganda. InnerSpark video therapy costs UGX 75,000; chat therapy costs UGX 30,000 per session.",
     date: "May 24, 2026",
     isoDate: "2026-05-24",
     readTime: "10 min read",
@@ -28,7 +28,7 @@ const OnlineVsInPersonTherapyUgandaPost = () => {
         title: "The real question is not which is better — it is which fits you",
         blocks: [
           { type: "lead", text: "If you have decided to start therapy in Uganda, the next question is almost always the same: should I do it online or sit in a clinic in Kampala? The honest answer is that both work — but they fit very different lives, budgets, and situations. This guide helps you choose without wasting a single session." },
-          { type: "callout", label: "The short version:", text: "Online therapy in Uganda is cheaper (UGX 30,000–75,000), more private, more flexible, and clinically as effective for most concerns. In-person therapy (UGX 100,000–400,000 per session) is the better choice when you need close monitoring, hands-on assessment, or simply have no private space at home." },
+          { type: "callout", label: "The short version:", text: "InnerSpark Africa video therapy costs UGX 75,000 per session and chat therapy costs UGX 30,000. Online care is private and flexible for many concerns. In-person therapy (UGX 100,000–400,000 per session) is the better choice when you need close monitoring, hands-on assessment, or simply have no private space at home." },
           { type: "p", text: "Below: a head-to-head comparison, the situations where each one wins, what they actually cost in Uganda right now, and how to decide in under five minutes." },
         ],
       },
@@ -37,7 +37,8 @@ const OnlineVsInPersonTherapyUgandaPost = () => {
         blocks: [
           { type: "h3", text: "Online therapy" },
           { type: "list", items: [
-            <><strong>Cost:</strong> UGX 30,000 – 75,000 per 60-minute session at Innerspark Africa</>,
+            <><strong>Video therapy:</strong> UGX 75,000 per session at InnerSpark Africa</>,
+            <><strong>Chat therapy:</strong> UGX 30,000 per session at InnerSpark Africa</>,
             <><strong>Where:</strong> Anywhere with mobile data — home, parked car, hotel room</>,
             <><strong>Privacy:</strong> Maximum — no clinic waiting room, no one sees you arrive</>,
             <><strong>Time cost:</strong> Just the 60-minute session, no travel</>,
@@ -102,7 +103,8 @@ const OnlineVsInPersonTherapyUgandaPost = () => {
         blocks: [
           { type: "h3", text: "Online therapy (per session)" },
           { type: "list", items: [
-            "Innerspark Africa: UGX 30,000 – 75,000",
+            "InnerSpark Africa video therapy: UGX 75,000",
+            "InnerSpark Africa chat therapy: UGX 30,000",
             "Group support online: UGX 25,000 per week",
             "Couples online: UGX 75,000",
           ]},
@@ -155,7 +157,7 @@ const OnlineVsInPersonTherapyUgandaPost = () => {
     ],
     faqs: [
       { q: "Is online therapy as effective as in-person therapy in Uganda?", a: "Yes. Research consistently shows online therapy produces the same outcomes as in-person care for anxiety, depression, stress, grief, trauma, and relationship issues. Attendance is often higher online because there are fewer barriers to showing up." },
-      { q: "How much cheaper is online therapy in Uganda?", a: "At Innerspark Africa, online sessions are UGX 30,000–75,000. Comparable in-person sessions in Kampala clinics range from UGX 100,000 to UGX 400,000. Once you add transport, time off work, and parking, online therapy is usually 3–5x cheaper per session." },
+      { q: "How much cheaper is online therapy in Uganda?", a: "At InnerSpark Africa, video therapy is UGX 75,000 and chat therapy is UGX 30,000 per session. Comparable in-person sessions in Kampala clinics range from UGX 100,000 to UGX 400,000. Once you add transport, time off work, and parking, online therapy is usually 3–5x cheaper per session." },
       { q: "When should I choose in-person therapy instead?", a: "Choose in-person if you are dealing with active psychosis, severe mania, acute suicide risk, severe addiction needing medical detox, court-ordered therapy, or simply have no private space at home for an online session." },
       { q: "Can I switch from online to in-person (or vice versa)?", a: "Yes. Many clients mix formats — for example, one in-person assessment followed by weekly online sessions. Just tell your therapist what works for you." },
       { q: "Is online therapy private and confidential in Uganda?", a: "Yes. Sessions are encrypted and not recorded. Therapists are bound by Uganda Counselling Association ethics. We never share details with employers, family, or insurance unless there is immediate risk to life." },
@@ -168,7 +170,7 @@ const OnlineVsInPersonTherapyUgandaPost = () => {
       { label: "Innerspark — Free wellbeing check", url: "https://www.innersparkafrica.com/wellbeing-check" },
     ],
     closing: { headline: "There is no \"better\" format. There is only the one you will actually keep showing up to.", primary: "Pick the one that removes your biggest barrier — and start this week." },
-    cta: { heading: "Start with the format that fits your life", body: "Online from UGX 30,000 or in-person in Kampala. Paid by Mobile Money, one session at a time.", whatsappText: "Hi, I just read your online vs in-person therapy article and would like help choosing and booking." },
+    cta: { heading: "Start with the format that fits your life", body: "Video therapy is UGX 75,000; chat therapy is UGX 30,000. Pay by Mobile Money or card.", whatsappText: "Hi, I just read your online vs in-person therapy article and would like help choosing and booking." },
   };
 
   return <BlogPostLayout data={data} />;
