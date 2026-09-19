@@ -10,8 +10,8 @@ const UICTWellnessPost = () => {
     <div className="min-h-screen bg-[#F7F3EA]">
       <Header />
       <ArticleSchema
-        headline="UICT Wellness Activity Day – Mental Health Is in the Palm of Your Hands"
-        description="Highlights from UICT Wellness Activity Day, where Innerspark ran interactive sessions on stress, self-care and campus mental health."
+        headline="Student Wellness Programme in Uganda: UICT Activity Day"
+        description="See how InnerSpark Africa delivers student wellness programmes in Uganda with practical stress, self-care and campus mental health sessions."
         path="/events-training/uict-wellness-activity-day"
         datePublished="2025-05-01"
         image={uictWellnessImage}
@@ -44,7 +44,7 @@ const UICTWellnessPost = () => {
           </div>
 
           <h1 className="font-serif text-4xl md:text-6xl font-semibold leading-[1.08] tracking-tight mb-8 text-[#111827] border-b border-[#D9D0BF] pb-8">
-            UICT Wellness Activity Day – Mental Health Is in the Palm of Your Hands
+            Student Wellness Programme in Uganda: UICT Activity Day
           </h1>
 
           <div className="prose prose-lg max-w-none text-[#1F2937] prose-headings:font-serif prose-headings:text-[#111827] prose-h2:border-t prose-h2:border-[#D9D0BF] prose-h2:pt-9 prose-p:leading-[1.85] prose-a:text-primary">
@@ -119,6 +119,11 @@ const UICTWellnessPost = () => {
               Because true wellness begins in the mind — and the power to nurture it lies in our hands. 🤲
             </p>
           </div>
+          <aside className="mt-12 rounded-3xl border border-[#D9D0BF] bg-white p-7 md:p-9">
+            <h2 className="font-serif text-2xl font-semibold text-[#111827] mb-3">Plan a student wellness programme</h2>
+            <p className="text-[#4B5563] mb-5">Request an interactive wellness day, counselling support or staff training for your institution.</p>
+            <a href="/corporate/service-request" className="inline-flex rounded-full bg-primary px-6 py-3 font-semibold text-primary-foreground">Request a wellness programme</a>
+          </aside>
         </div>
       </article>
 
