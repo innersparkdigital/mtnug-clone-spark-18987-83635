@@ -29,6 +29,7 @@ const WhispersTab = lazy(() => import('@/components/admin/WhispersTab'));
 const CrisisAlertsTab = lazy(() => import('@/components/admin/CrisisAlertsTab'));
 const TherapistsTab = lazy(() => import('@/components/admin/TherapistsTab'));
 const TherapistPortalAdminTab = lazy(() => import('@/components/admin/TherapistPortalAdminTab'));
+const PasswordResetRequestsTab = lazy(() => import('@/components/admin/PasswordResetRequestsTab'));
 const SpecialistsTab = lazy(() => import('@/components/admin/SpecialistsTab'));
 const SiteSectionsTab = lazy(() => import('@/components/admin/SiteSectionsTab'));
 const FeedbackTab = lazy(() => import('@/components/admin/FeedbackTab'));
@@ -75,7 +76,8 @@ import {
   Inbox,
   DollarSign,
   Link2,
-  Globe
+  Globe,
+  KeyRound
 } from 'lucide-react';
 import {
   ChartContainer,
@@ -247,6 +249,7 @@ const AdminDashboard = () => {
                   <option value="revenue">Revenue</option>
                   <option value="therapists">Therapists</option>
                   <option value="therapist-portal">Therapist Portal</option>
+                  <option value="password-resets">Password Resets</option>
                 </optgroup>
                 <optgroup label="Messages and safety">
                   <option value="chat-leads">Chat Leads</option>
@@ -439,6 +442,12 @@ const AdminDashboard = () => {
               <TabsTrigger value="therapist-portal" className="gap-2">
                 <Stethoscope className="h-4 w-4" />
                 Therapist Portal
+              </TabsTrigger>
+            )}
+            {isAdmin && (
+              <TabsTrigger value="password-resets" className="gap-2">
+                <KeyRound className="h-4 w-4" />
+                Password Resets
               </TabsTrigger>
             )}
             {isAdmin && (
@@ -906,6 +915,11 @@ const AdminDashboard = () => {
           {isAdmin && (
             <TabsContent value="therapist-portal">
               <Suspense fallback={<TabFallback />}><TherapistPortalAdminTab /></Suspense>
+            </TabsContent>
+          )}
+          {isAdmin && (
+            <TabsContent value="password-resets">
+              <Suspense fallback={<TabFallback />}><PasswordResetRequestsTab /></Suspense>
             </TabsContent>
           )}
           {isAdmin && (
