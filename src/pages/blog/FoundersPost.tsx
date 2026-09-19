@@ -8,7 +8,7 @@ import ArticleSchema from "@/components/seo/ArticleSchema";
 
 const FoundersPost = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#F7F3EA]">
       <Header />
       <ArticleSchema
         headline="Shaping the Founder's Mindset at the National ICT Innovation Hub"
@@ -19,7 +19,7 @@ const FoundersPost = () => {
         section="Press"
       />
       
-      <article className="pt-32 pb-16">
+      <article className="pt-28 pb-16">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <Link 
@@ -30,14 +30,14 @@ const FoundersPost = () => {
               <span>Back to Events & Training</span>
             </Link>
 
-            <div className="mb-8">
+            <div className="mb-10 border-b border-[#D9D0BF] pb-8">
               <div className="flex items-center gap-3 mb-4">
                 <span className="text-xs font-bold bg-primary text-primary-foreground px-3 py-1 rounded">
                   PRESS
                 </span>
                 <span className="text-sm text-muted-foreground">September 2024</span>
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold mb-6 text-foreground">
+              <h1 className="font-serif text-4xl md:text-6xl font-semibold leading-[1.08] tracking-tight mb-6 text-[#111827]">
                 Shaping the Founder's Mindset at the National ICT Innovation Hub
               </h1>
             </div>
@@ -45,10 +45,10 @@ const FoundersPost = () => {
             <img 
               src={foundersMindsetImage} 
               alt="Startup founders attending wellness program" 
-              className="w-full h-96 object-cover rounded-lg mb-8"
+              className="w-full aspect-[16/9] object-cover rounded-3xl shadow-sm mb-10"
             />
 
-            <div className="prose prose-lg max-w-none">
+            <div className="prose prose-lg max-w-none text-[#1F2937] prose-headings:font-serif prose-headings:text-[#111827] prose-h2:border-t prose-h2:border-[#D9D0BF] prose-h2:pt-9 prose-p:leading-[1.85] prose-a:text-primary">
               <p className="text-foreground mb-4">
                 Through our Startup Wellness Program, Innerspark in partnership with Dr. Lisa Tumwine from LILA Haven and Martin Tumwine from Zaantu Capital had the privilege of engaging with 30+ startup founders on a journey of self-discovery and alignment.
               </p>
