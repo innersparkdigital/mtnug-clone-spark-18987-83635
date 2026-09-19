@@ -119,7 +119,7 @@ export const BookHandoff = () => (
     <Link to="/book-therapist" className="text-primary font-semibold underline underline-offset-4">
       book a session with a licensed Ugandan therapist
     </Link>{" "}
-    — video, voice or chat from UGX 30,000, bookable in about two minutes.
+    — video therapy is UGX 75,000 per session; chat therapy is UGX 30,000, bookable in about two minutes.
   </p>
 );
 
