@@ -153,6 +153,8 @@ const AIChatWidget = () => {
   const [activeForm, setActiveForm] = useState<FormKind | null>(null);
   const [activeFormTherapist, setActiveFormTherapist] = useState<string | null>(null);
   const openedAtRef = useRef<number>(Date.now());
+  const qualifiedTrackedRef = useRef(false);
+  const bookingOfferTrackedRef = useRef(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -270,11 +272,13 @@ const AIChatWidget = () => {
         const formOffer = parsedReply.chips.map((chip) => parseFormTarget(chip.target)).find(Boolean);
         const qualification = accumulated.match(/\[qual:\s*([^\]]+)\]/i)?.[1];
         const outcome = accumulated.match(/\[outcome:\s*([^\]]+)\]/i)?.[1];
-        if (qualification) {
+        if (qualification && !qualifiedTrackedRef.current) {
+          qualifiedTrackedRef.current = true;
           trackEvent("ai_chat_qualified", { qualification, source_path: window.location.pathname });
           logEvent("conversation_qualified", { qualification, source_path: window.location.pathname });
         }
-        if (formOffer) {
+        if (formOffer && !bookingOfferTrackedRef.current) {
+          bookingOfferTrackedRef.current = true;
           trackEvent("ai_chat_booking_offered", { kind: formOffer.kind, therapist: formOffer.therapist || undefined });
           logEvent("booking_offered", { kind: formOffer.kind, therapist: formOffer.therapist || undefined });
         }
