@@ -4,6 +4,7 @@ import { writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 const BASE_URL = "https://www.innersparkafrica.com";
+const SHARED_ARTICLE_UPDATE = "2026-09-19";
 const SUPABASE_URL =
   process.env.VITE_SUPABASE_URL || "https://hnjpsvpudwwyzrrwzbpa.supabase.co";
 const SUPABASE_KEY =
@@ -35,7 +36,8 @@ function buildUrlset(posts) {
       return true;
     })
     .map((p) => {
-      const lastmod = (p.updated_at || p.published_at || "").slice(0, 10);
+      const storedDate = (p.updated_at || p.published_at || "").slice(0, 10);
+      const lastmod = storedDate > SHARED_ARTICLE_UPDATE ? storedDate : SHARED_ARTICLE_UPDATE;
       return [
         "  <url>",
         `    <loc>${BASE_URL}/blog/${xmlEscape(p.slug)}/</loc>`,
