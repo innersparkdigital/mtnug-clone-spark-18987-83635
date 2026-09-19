@@ -132,6 +132,9 @@ const AIChatWidget = () => {
   const [loading, setLoading] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(() => sessionStorage.getItem(SESSION_KEY));
   const [highRisk, setHighRisk] = useState(() => sessionStorage.getItem(FLAGGED_KEY) === "1");
+  const handoffWhatsAppUrl = `https://wa.me/256792085773?text=${encodeURIComponent(
+    `Hi, I need to talk to someone at InnerSpark urgently. Amani session: ${sessionId || "not assigned"}`
+  )}`;
   const [crisisDismissed, setCrisisDismissed] = useState(false);
   const [distress, setDistress] = useState(false);
   const [leadPromptShown, setLeadPromptShown] = useState(false);
@@ -634,7 +637,7 @@ const AIChatWidget = () => {
                   </div>
 
                   <a
-                    href="https://wa.me/256792085773?text=Hi%2C%20I%20need%20to%20talk%20to%20someone%20at%20InnerSpark%20urgently"
+                    href={handoffWhatsAppUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => handleCTA("crisis_whatsapp")}
@@ -827,7 +830,7 @@ const AIChatWidget = () => {
                 </div>
                 <div className="flex gap-2">
                   <a
-                    href="https://wa.me/256792085773?text=Hi%2C%20I%20need%20to%20talk%20to%20someone%20at%20InnerSpark"
+                    href={highRisk ? handoffWhatsAppUrl : "https://wa.me/256792085773?text=Hi%2C%20I%20need%20to%20talk%20to%20someone%20at%20InnerSpark"}
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => handleCTA("whatsapp_emergency")}
