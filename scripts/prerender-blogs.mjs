@@ -23,6 +23,14 @@ const SEO_OVERRIDES = {
     title: "How to Stop a Panic Attack Now: 7 Safe Steps | InnerSpark",
     description: "Use seven practical steps to manage a panic attack safely, then book confidential support with a licensed African therapist if attacks continue.",
   },
+  "spark-framework-mental-wellbeing": {
+    title: "S.P.A.R.K Mental Wellbeing Routine for Ugandans",
+    description: "Use InnerSpark Africa's five-step S.P.A.R.K routine to strengthen sleep, purpose, activity, relationships and self-awareness in a realistic Ugandan week.",
+  },
+  "types-of-therapy": {
+    title: "Types of Therapy: Choose the Right Support in Uganda",
+    description: "Compare common types of therapy and choose a licensed African therapist for anxiety, trauma, relationships, stress or personal growth.",
+  },
   "therapy-cost-uganda": {
     title: "Therapy Cost in Uganda: Video UGX 75,000 | InnerSpark",
     description: "Compare therapy costs in Uganda. InnerSpark video therapy is UGX 75,000 per session and chat therapy is UGX 30,000.",
@@ -162,6 +170,13 @@ const removeLeakedTemplateCode = (input) => {
 const sanitize = (html) =>
   removeLeakedTemplateCode(html)
     .replace(/<script[\s\S]*?<\/script>/gi, "")
+    .replace(/<h1([^>]*)>/gi, "<h2$1>")
+    .replace(/<\/h1>/gi, "</h2>")
+    .replace(/<[^>]+>\s*(?:Back to Blog|desc|\{title\})\s*<\/[^>]+>/gi, "")
+    .replace(/browse 20\+ licensed therapists/gi, "browse licensed therapists")
+    .replace(/start with a free consultation/gi, "start by choosing a therapist")
+    .replace(/free initial consultations?/gi, "an introductory conversation where available")
+    .replace(/free consultation/gi, "therapist matching support")
     .replace(/<iframe[\s\S]*?<\/iframe>/gi, "")
     .replace(/\son\w+="[^"]*"/gi, "")
     .replace(/video, voice or chat from UGX 30,000/gi, "video therapy at UGX 75,000 or chat therapy at UGX 30,000")
