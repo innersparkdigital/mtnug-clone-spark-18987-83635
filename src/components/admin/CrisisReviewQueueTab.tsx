@@ -42,7 +42,7 @@ interface Message {
 }
 
 const STATUS_META: Record<ReviewStatus, { label: string; color: string; icon: typeof Clock }> = {
-  pending: { label: "Pending", color: "bg-red-100 text-red-800 border-red-300", icon: AlertOctagon },
+  pending: { label: "Awaiting staff", color: "bg-red-100 text-red-800 border-red-300", icon: AlertOctagon },
   contacted: { label: "Contacted", color: "bg-amber-100 text-amber-800 border-amber-300", icon: Phone },
   resolved: { label: "Resolved", color: "bg-emerald-100 text-emerald-800 border-emerald-300", icon: CheckCircle2 },
 };
@@ -191,12 +191,12 @@ const CrisisReviewQueueTab = () => {
         <CardHeader className="flex flex-row items-center justify-between gap-2 flex-wrap">
           <CardTitle className="flex items-center gap-2">
             <AlertOctagon className="w-5 h-5 text-red-600" />
-            Crisis Review Queue
+            Human Handoff Queue
           </CardTitle>
           <div className="flex items-center gap-2 flex-wrap">
             <Tabs value={statusFilter} onValueChange={(v) => setStatusFilter(v as ReviewStatus | "all")}>
               <TabsList>
-                <TabsTrigger value="pending">Pending ({counts.pending})</TabsTrigger>
+                <TabsTrigger value="pending">Awaiting staff ({counts.pending})</TabsTrigger>
                 <TabsTrigger value="contacted">Contacted ({counts.contacted})</TabsTrigger>
                 <TabsTrigger value="resolved">Resolved ({counts.resolved})</TabsTrigger>
                 <TabsTrigger value="all">All</TabsTrigger>
@@ -218,7 +218,7 @@ const CrisisReviewQueueTab = () => {
             </div>
           ) : filtered.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground text-sm">
-              No high-risk sessions match this filter. 🌿
+              No flagged conversations match this filter.
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -298,7 +298,7 @@ const CrisisReviewQueueTab = () => {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <AlertOctagon className="w-5 h-5 text-red-600" />
-              High-risk session transcript
+              Flagged conversation — human handoff required
             </DialogTitle>
           </DialogHeader>
           {openSession && (
