@@ -107,6 +107,126 @@ const SEO_OVERRIDES = {
     title: "Workplace Mental Health Support Uganda | InnerSpark",
     description: "Get workplace mental health training and confidential employee support in Uganda for stress, burnout and healthier teams.",
   },
+  "corporate-wellbeing-screening-uganda": {
+    title: "Employee Wellbeing Screening Uganda | InnerSpark",
+    description: "Arrange confidential employee wellbeing screening in Uganda to identify stress and support needs before they become bigger workplace problems.",
+  },
+  "how-to-handle-stress": {
+    title: "How to Handle Stress: Practical Steps That Help",
+    description: "Try practical ways to handle stress when work, money, family or study pressure feels too heavy, and learn when talking to a therapist may help.",
+  },
+  "what-is-mental-health": {
+    title: "What Is Mental Health? A Clear African Guide",
+    description: "Understand what mental health means, what can affect it and how to seek confidential support without shame or clinical jargon.",
+  },
+  "how-to-deal-with-depression": {
+    title: "How to Deal With Depression: Safe First Steps",
+    description: "Learn gentle, practical steps for coping with persistent low mood and how to find confidential support from a licensed therapist.",
+  },
+  "anxiety-symptoms": {
+    title: "Anxiety Symptoms: What They Can Feel Like",
+    description: "Recognise common emotional and physical anxiety symptoms, understand when they disrupt daily life and learn where to find confidential support.",
+  },
+  "signs-of-depression": {
+    title: "Signs of Depression: When to Seek Support",
+    description: "Learn common signs of depression, how they can affect daily life and when to speak privately with a licensed therapist.",
+  },
+  "how-to-find-a-therapist": {
+    title: "How to Find the Right Therapist: 7 Clear Steps",
+    description: "Use seven practical checks to choose a licensed therapist who fits your needs, budget, language and preferred session format.",
+  },
+  "benefits-of-therapy": {
+    title: "Benefits of Therapy: What Can Change With Support",
+    description: "Understand how therapy can support clearer thinking, healthier relationships and better coping without promising a quick or guaranteed result.",
+  },
+  "online-therapy-effective-africa": {
+    title: "Does Online Therapy Work in Africa? What to Know",
+    description: "Learn when online therapy can be a practical option in Africa, what a session involves and how to choose a licensed therapist.",
+  },
+  "whisper-anonymous-therapy-uganda": {
+    title: "Anonymous Mental Health Support Uganda | Whisper",
+    description: "Explore a private way to share what is weighing on you in Uganda, then choose confidential therapy when you are ready for ongoing support.",
+  },
+  "kampala-professionals-online-therapy": {
+    title: "Online Therapy for Kampala Professionals",
+    description: "Book confidential online therapy around a demanding Kampala workday with licensed African therapists who understand local workplace pressure.",
+  },
+  "what-is-therapy": {
+    title: "What Is Therapy? What Your First Session Is Like",
+    description: "Learn what therapy is, what happens in a first session and how confidential video or chat support works with a licensed therapist.",
+  },
+  "innerspark-africa-review": {
+    title: "InnerSpark Africa Review: Price, Therapists and Booking",
+    description: "Review InnerSpark Africa's licensed therapists, session formats, clear prices, payment options and booking process before choosing support.",
+  },
+  "8-signs-you-need-a-therapist-and-why-thats-completely-okay": {
+    title: "8 Signs It May Be Time to Talk to a Therapist",
+    description: "Read eight everyday signs that extra support may help, without shame, labels or pressure, and see how to book confidential therapy.",
+  },
+  "exam-stress-and-mental-health-a-guide-for-ugandan-students": {
+    title: "Exam Stress Help for Ugandan Students",
+    description: "Use practical steps to manage exam stress in Uganda and find confidential student counselling when pressure begins affecting sleep or daily life.",
+  },
+  "signs-of-burnout-when-stress-becomes-something-more": {
+    title: "Signs of Burnout: When Stress Becomes Too Much",
+    description: "Recognise signs of burnout in your body, mood and work, then learn practical next steps and where to find confidential support.",
+  },
+  "is-online-therapy-legit-what-to-expect-before-booking": {
+    title: "Is Online Therapy Legit? What to Check Before Booking",
+    description: "Check therapist credentials, privacy, pricing and session format before booking legitimate online therapy with confidence.",
+  },
+  "why-more-ugandan-men-are-quietly-seeking-therapy-online": {
+    title: "Why Ugandan Men Are Choosing Online Therapy",
+    description: "Learn why more Ugandan men are choosing private online therapy for work, relationships, grief and pressure without public attention.",
+  },
+  "talk-to-boss-mental-health-uganda": {
+    title: "How to Talk to Your Boss About Mental Health in Uganda",
+    description: "Prepare a clear, private conversation with your employer about mental health, workload or time for support without oversharing.",
+  },
+};
+
+const ARTICLE_JOURNEYS = {
+  "find-therapist-kampala": { hook: "You do not need to tell your whole story before you know who will listen. Start by checking qualifications, fit, privacy and price.", cta: "Choose a therapist you can speak to honestly", body: "Browse licensed African therapists, compare availability and book confidential video therapy for UGX 75,000 or chat therapy for UGX 30,000.", label: "Find a therapist in Kampala", href: "/book-therapist" },
+  "spark-framework-mental-wellbeing": { hook: "When life feels scattered, a small routine can give the day somewhere steady to begin. S.P.A.R.K turns wellbeing into five realistic choices.", cta: "Need more than a routine right now?", body: "A licensed therapist can help you work through what is underneath the stress, privately and without judgement.", label: "Talk to a therapist", href: "/book-therapist" },
+  "find-a-therapist-in-uganda": { hook: "Finding the right therapist is not about choosing the first name on a list. It is about feeling safe, understood and clear about what happens next.", cta: "Find licensed support that fits you", body: "Compare therapists who understand local languages and context, then book by video or chat with clear pricing.", label: "Browse licensed therapists", href: "/book-therapist" },
+  "corporate-wellbeing-screening-uganda": { hook: "People often keep working while silently running out of strength. Confidential screening helps an organisation notice pressure before it becomes absence, conflict or resignation.", cta: "Understand what your team needs", body: "Request a confidential wellbeing screening programme designed for workplaces in Uganda.", label: "Request workplace support", href: "/corporate/service-request" },
+  "how-to-handle-stress": { hook: "Stress can make even simple decisions feel heavy. You do not have to fix your entire life today; one calmer next step is enough.", cta: "You do not have to carry the pressure alone", body: "Talk privately with a licensed African therapist who can help you make sense of what is draining you.", label: "Book confidential support", href: "/book-therapist" },
+  "how-to-stop-a-panic-attack": { hook: "A panic attack can feel frightening, but the wave will pass. Focus first on safety, slower breathing and the next minute—not the whole day.", cta: "Get support for recurring panic", body: "If panic keeps returning or changes how you live, a licensed therapist can help you understand the pattern and build practical coping tools.", label: "Talk to a therapist", href: "/book-therapist" },
+  "what-is-mental-health": { hook: "Mental health is part of ordinary life: how you carry pressure, connect with people, make decisions and recover when things hurt.", cta: "Start a private conversation", body: "You do not need a perfect explanation. Begin with what has felt difficult lately and a licensed therapist will help you take it from there.", label: "Choose a therapist", href: "/book-therapist" },
+  "how-to-deal-with-depression": { hook: "When getting through the day already takes effort, advice can feel like another demand. Begin gently, and do not mistake needing support for weakness.", cta: "Let someone meet you where you are", body: "Book a confidential session with a licensed therapist who will listen without judgement and help you plan manageable next steps.", label: "Book a private session", href: "/book-therapist" },
+  "anxiety-symptoms": { hook: "Anxiety does not always look like fear. It can feel like a racing heart, poor sleep, irritability, stomach discomfort or a mind that will not switch off.", cta: "Make sense of what your body is telling you", body: "A licensed therapist can help you understand your symptoms and build coping strategies around your real life.", label: "Talk to an anxiety therapist", href: "/book-therapist" },
+  "signs-of-depression": { hook: "Depression can be quiet. Sometimes it looks less like sadness and more like numbness, exhaustion, withdrawal or losing interest in the people and things you love.", cta: "You deserve support before it gets worse", body: "Speak privately with a licensed therapist and take one manageable step toward feeling more like yourself.", label: "Find confidential support", href: "/book-therapist" },
+  "how-to-find-a-therapist": { hook: "The right therapist should make it easier to speak honestly—not make you feel judged, rushed or confused about the process.", cta: "Compare therapists before you decide", body: "Review licensed African therapists by experience, language and availability, with clear session prices before booking.", label: "Browse therapists", href: "/book-therapist" },
+  "benefits-of-therapy": { hook: "Therapy is not about becoming a different person. It can help you understand your patterns, respond with more choice and feel less alone in what you carry.", cta: "See what support could feel like", body: "Start with one confidential conversation. Video therapy is UGX 75,000 and chat therapy is UGX 30,000.", label: "Book your first session", href: "/book-therapist" },
+  "types-of-therapy": { hook: "You do not need to know the name of every therapy approach. You only need to explain what has been difficult and what you hope could change.", cta: "Choose support for your situation", body: "Find a licensed therapist for individual, relationship, teen, student or work-related concerns.", label: "Explore therapist options", href: "/book-therapist" },
+  "online-therapy-effective-africa": { hook: "Good support should not depend on traffic, distance or whether a clinic nearby feels safe to visit. Online therapy brings the conversation to a private place you choose.", cta: "Try therapy from where you feel comfortable", body: "Book confidential video or chat support with a licensed African therapist who understands local context.", label: "Book online therapy", href: "/book-therapist" },
+  "whisper-anonymous-therapy-uganda": { hook: "Sometimes writing the truth anonymously is the first time it feels possible to say it at all. That first release can help you decide what support you want next.", cta: "Start privately, at your own pace", body: "Use Whisper to share anonymously, or choose a licensed therapist when you are ready for a confidential conversation.", label: "Open Whisper", href: "/whisper" },
+  "kampala-professionals-online-therapy": { hook: "You can look capable at work and still feel exhausted, anxious or disconnected inside. Success does not cancel your need for support.", cta: "Fit support around your workday", body: "Book confidential online therapy without crossing Kampala or sitting in a waiting room.", label: "Book online therapy", href: "/book-therapist" },
+  "what-is-therapy": { hook: "Therapy is a private conversation with structure and purpose. You bring what is happening; the therapist helps you understand it and decide what to try next.", cta: "See what a first session feels like", body: "Choose a licensed African therapist and book video therapy for UGX 75,000 or chat therapy for UGX 30,000.", label: "Book a first session", href: "/book-therapist" },
+  "innerspark-africa-review": { hook: "Before trusting any therapy platform, you should know who you will speak to, what it costs, how privacy works and how quickly you can book.", cta: "Review your options, then choose", body: "Browse licensed therapists, clear prices and available session times before you pay.", label: "Explore InnerSpark therapists", href: "/book-therapist" },
+  "relationship-counselling-uganda-online": { hook: "When every conversation becomes an argument—or silence feels safer than honesty—outside support can help both people slow down and hear what is underneath.", cta: "Create space for a different conversation", body: "Book confidential online relationship counselling with a licensed African therapist who understands local family and cultural context.", label: "Book relationship counselling", href: "/book-therapist" },
+  "burnout-kampala-professionals": { hook: "Burnout can hide behind productivity until your body, patience or relationships start paying the price. Rest alone may not solve what keeps recreating the pressure.", cta: "Talk before exhaustion becomes your normal", body: "Book confidential support with a therapist who understands demanding work and life in Kampala.", label: "Find burnout support", href: "/book-therapist" },
+  "men-therapy-uganda": { hook: "Many men were taught to keep moving, provide and stay quiet. Therapy offers a private place to speak without being reduced to a label or judged for struggling.", cta: "Talk privately, without having to perform", body: "Choose a licensed African therapist for work pressure, grief, relationships, anger or the weight you have kept to yourself.", label: "Find a therapist", href: "/book-therapist" },
+  "uganda-workplace-mental-health-crisis": { hook: "A team can meet targets while people quietly burn out. The cost eventually appears in mistakes, absence, conflict and good employees leaving.", cta: "Build a healthier workplace", body: "Request practical mental health training, confidential screening or employee support for your organisation.", label: "Request workplace support", href: "/corporate/service-request" },
+  "cost-of-therapy-in-kenya": { hook: "The price of therapy should be clear before you share anything personal. Compare session format, payment and therapist fit—not price alone.", cta: "Book online therapy from Kenya", body: "Choose a licensed African therapist and pay by Visa for confidential video or chat support.", label: "Browse therapists", href: "/book-therapist" },
+  "find-a-therapist-in-nairobi": { hook: "You should not have to cross Nairobi or explain your decision to anyone before getting support. Online therapy lets you begin privately.", cta: "Find a therapist who understands your context", body: "Compare licensed African therapists and book a confidential online session from Nairobi.", label: "Find a therapist", href: "/book-therapist" },
+  "cost-of-therapy-in-nigeria": { hook: "Clear pricing matters when you are deciding whether therapy can fit your life. Check the format, therapist credentials and payment options before booking.", cta: "Book online support from Nigeria", body: "Choose a licensed African therapist and pay securely by Visa for a confidential session.", label: "Browse therapists", href: "/book-therapist" },
+  "find-a-therapist-in-lagos": { hook: "Finding support should not add another long journey to an already difficult week. Online therapy lets you speak from a private place you choose.", cta: "Find a therapist from Lagos", body: "Compare licensed African therapists and book confidential video or chat support online.", label: "Choose a therapist", href: "/book-therapist" },
+  "find-a-therapist-in-accra": { hook: "You do not have to wait until things become unbearable before speaking to someone. Private online support can begin wherever you feel safe.", cta: "Find a therapist from Accra", body: "Choose a licensed African therapist for confidential video or chat support and pay by Visa.", label: "Browse therapists", href: "/book-therapist" },
+  "cost-of-therapy-in-ghana": { hook: "Therapy is easier to consider when the price and process are clear. Compare the session type, therapist and payment method before deciding.", cta: "Book online therapy from Ghana", body: "Choose a licensed African therapist and pay securely by Visa for confidential support.", label: "View therapist options", href: "/book-therapist" },
+  "8-signs-you-need-a-therapist-and-why-thats-completely-okay": { hook: "You do not need a crisis, diagnosis or perfect reason to ask for help. If life feels harder to carry alone, that is enough to start a conversation.", cta: "Take your feelings seriously", body: "Choose a licensed therapist and begin with the part that has been hardest to say out loud.", label: "Talk to a therapist", href: "/book-therapist" },
+  "therapy-cost-uganda": { hook: "You should know the exact price before you book. Video therapy costs UGX 75,000 per session; chat therapy costs UGX 30,000.", cta: "Choose the session that fits you", body: "Compare licensed therapists and available times, then pay by Mobile Money or card.", label: "Book therapy in Uganda", href: "/book-therapist" },
+  "exam-stress-and-mental-health-a-guide-for-ugandan-students": { hook: "Exam pressure can make your future feel as if it depends on one week. Your wellbeing still matters, even when everyone around you is focused on marks.", cta: "Get support without judgement", body: "Talk privately with a licensed therapist about pressure, sleep, confidence or fear of disappointing people.", label: "Book student counselling", href: "/book-therapist" },
+  "signs-of-burnout-when-stress-becomes-something-more": { hook: "Burnout is not laziness. It is what can happen when demand stays high and recovery never catches up.", cta: "Do not wait for your body to force a stop", body: "A licensed therapist can help you understand the pressure, protect your limits and plan realistic changes.", label: "Find burnout support", href: "/book-therapist" },
+  "is-online-therapy-legit-what-to-expect-before-booking": { hook: "A professional-looking website is not enough. Legitimate online therapy should make credentials, privacy, pricing and the booking process clear.", cta: "Book with clarity, not guesswork", body: "Review licensed therapists, session formats and exact prices before choosing who to speak with.", label: "Check therapist options", href: "/book-therapist" },
+  "why-more-ugandan-men-are-quietly-seeking-therapy-online": { hook: "Privacy makes honesty easier. Online therapy gives men room to talk about pressure, grief, relationships or anger without walking into a public waiting room.", cta: "Speak without having to explain yourself first", body: "Choose a licensed African therapist and start with a private video or chat session.", label: "Find confidential support", href: "/book-therapist" },
+  "talk-to-boss-mental-health-uganda": { hook: "You can ask for support at work without sharing every private detail. A clear conversation can focus on what is affecting your work and what adjustment would help.", cta: "Prepare before the conversation", body: "Talk privately with a licensed therapist who can help you organise what to say and protect your boundaries.", label: "Book confidential support", href: "/book-therapist" },
+  "mental-health-support-students-uganda": { hook: "University and school pressure can feel lonely when everyone expects you to cope. Support is not a sign that you are failing; it is a way to protect yourself while you continue.", cta: "Talk to someone who will listen", body: "Book confidential student counselling for study pressure, anxiety, relationships or family difficulties.", label: "Find student support", href: "/book-therapist" },
+  "affordable-online-counselling-uganda": { hook: "Cost should be clear, and support should still feel human. Choose video when you want face-to-face connection or chat when writing feels easier.", cta: "Choose a clear, affordable starting point", body: "Video therapy costs UGX 75,000. Chat therapy costs UGX 30,000. Pay by Mobile Money or card.", label: "Book online counselling", href: "/book-therapist" },
+  "online-vs-in-person-therapy-uganda": { hook: "The best format is the one that lets you attend consistently and speak safely. For some people that is a clinic; for others it is a private room and a phone.", cta: "Choose the format that fits your life", body: "Compare licensed therapists for confidential online video or chat support in Uganda.", label: "Explore online therapy", href: "/book-therapist" },
+  "best-therapist-for-anxiety-in-uganda": { hook: "The best anxiety therapist is not simply the person with the longest profile. It is someone qualified who helps you feel safe enough to be honest and practical enough to move forward.", cta: "Find the right anxiety therapist for you", body: "Compare licensed therapists by experience, language and availability before booking.", label: "Browse anxiety therapists", href: "/book-therapist" },
+  "how-to-find-psychologist-in-kampala": { hook: "Credentials matter, but so does the feeling that you can speak freely. Check both before committing to ongoing sessions.", cta: "Find qualified support in Kampala", body: "Compare licensed therapists, clear prices and online availability in one place.", label: "Find a psychologist", href: "/book-therapist" },
+  "cost-of-therapy-in-kampala-2026": { hook: "Therapy prices in Kampala vary, so ask what the fee includes before booking. InnerSpark video therapy is UGX 75,000 and chat therapy is UGX 30,000.", cta: "Book with the price clear from the start", body: "Choose a licensed therapist, preferred session format and available time before paying.", label: "Book therapy in Kampala", href: "/book-therapist" },
 };
 
 // Node does not automatically load Vite's .env file during postbuild.
