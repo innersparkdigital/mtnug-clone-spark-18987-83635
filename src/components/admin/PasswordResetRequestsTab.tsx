@@ -8,13 +8,14 @@ import { toast } from "sonner";
 
 type ResetRow = {
   id: string; account_type: "client" | "therapist"; identifier_masked: string;
-  status: "pending" | "processing" | "sent" | "used" | "completed" | "expired" | "cancelled";
+  status: "pending" | "processing" | "ready" | "sent" | "used" | "completed" | "expired" | "cancelled";
   requested_at: string; expires_at: string | null;
 };
 
 const statusLabel: Record<ResetRow["status"], string> = {
   pending: "Pending — awaiting admin action",
   processing: "Being generated",
+  ready: "Copied — confirm after sharing",
   sent: "Sent — awaiting user login",
   used: "Used — awaiting new password",
   completed: "Completed",
@@ -50,7 +51,15 @@ const PasswordResetRequestsTab = () => {
     if (!secret) return;
     await navigator.clipboard.writeText(secret.value);
     setSecret(null);
-    toast.success("Copied. The temporary password is now hidden and cannot be viewed again.");
+    toast.success("Copied and hidden. Share it manually, then mark the request as sent.");
+    load();
+  };
+
+  const markSent = async (id: string) => {
+    const { data, error } = await supabase.functions.invoke("manual-password-reset", { body: { action: "mark_sent", request_id: id } });
+    if (error || data?.error) return toast.error(data?.error || error?.message || "Could not update request");
+    toast.success("Marked as shared with the user.");
+    load();
   };
 
   return (
@@ -85,6 +94,7 @@ const PasswordResetRequestsTab = () => {
                 {revealing === row.id && <Loader2 className="h-4 w-4 animate-spin mr-2" />}Generate and view once
               </Button>
             )}
+            {row.status === "ready" && <Button variant="outline" onClick={() => markSent(row.id)}>Mark as sent</Button>}
           </div>
         ))}
       </CardContent>
