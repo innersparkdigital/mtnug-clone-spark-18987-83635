@@ -43,7 +43,7 @@ Deno.serve(async (req) => {
       if (account) {
         const { data: existing } = await admin.from("manual_password_reset_requests")
           .select("id,status,expires_at").eq("account_type", accountType).eq("account_id", account.id)
-          .in("status", ["pending", "sent"]).order("requested_at", { ascending: false }).limit(1).maybeSingle();
+          .in("status", ["pending", "ready", "sent"]).order("requested_at", { ascending: false }).limit(1).maybeSingle();
         const stillActive = existing && (existing.status === "pending" || !existing.expires_at || new Date(existing.expires_at) > new Date());
         if (!stillActive) {
           await admin.from("manual_password_reset_requests").insert({
@@ -64,13 +64,13 @@ Deno.serve(async (req) => {
     if (action === "consume_therapist") {
       const { data: request } = await admin.from("manual_password_reset_requests")
         .select("id,expires_at,status").eq("account_type", "therapist").eq("user_id", user.id)
-        .eq("status", "sent").order("revealed_at", { ascending: false }).limit(1).maybeSingle();
+        .in("status", ["ready", "sent"]).order("revealed_at", { ascending: false }).limit(1).maybeSingle();
       if (!request) return json({ temporary: false });
       const expired = !request.expires_at || new Date(request.expires_at) <= new Date();
       await admin.auth.admin.updateUserById(user.id, { password: generatePassword() });
       await admin.from("manual_password_reset_requests").update({
         status: expired ? "expired" : "used", consumed_at: new Date().toISOString(), updated_at: new Date().toISOString(),
-      }).eq("id", request.id).eq("status", "sent");
+      }).eq("id", request.id).in("status", ["ready", "sent"]);
       return json({ temporary: true, expired, request_id: request.id });
     }
 
@@ -89,9 +89,16 @@ Deno.serve(async (req) => {
     const { data: isAdmin } = await admin.rpc("has_role", { _user_id: user.id, _role: "admin" });
     if (!isAdmin) return json({ error: "Admin access required" }, 403);
 
+    if (action === "mark_sent") {
+      const requestId = String(body.request_id || "");
+      await admin.from("manual_password_reset_requests").update({ status: "sent", updated_at: new Date().toISOString() })
+        .eq("id", requestId).eq("status", "ready");
+      return json({ ok: true });
+    }
+
     if (action === "list") {
       await admin.from("manual_password_reset_requests").update({ status: "expired", updated_at: new Date().toISOString() })
-        .eq("status", "sent").lt("expires_at", new Date().toISOString());
+        .in("status", ["ready", "sent"]).lt("expires_at", new Date().toISOString());
       const { data, error } = await admin.from("manual_password_reset_requests")
         .select("id,account_type,identifier_masked,status,requested_at,expires_at,revealed_at,consumed_at,completed_at")
         .order("requested_at", { ascending: false }).limit(200);
@@ -120,7 +127,7 @@ Deno.serve(async (req) => {
         const hash = Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(temporaryPassword))))
           .map((b) => b.toString(16).padStart(2, "0")).join("");
         await admin.from("manual_password_reset_requests").update({
-          temp_secret_hash: hash, status: "sent", revealed_at: new Date().toISOString(), revealed_by: user.id,
+          temp_secret_hash: hash, status: "ready", revealed_at: new Date().toISOString(), revealed_by: user.id,
           expires_at: new Date(Date.now() + 60 * 60 * 1000).toISOString(), updated_at: new Date().toISOString(),
         }).eq("id", request.id).eq("status", "processing");
       }
