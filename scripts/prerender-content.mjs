@@ -164,6 +164,18 @@ export const ROUTES = [
     ],
   },
   {
+    path: "/for-business",
+    title: "Corporate Mental Health & EAP | InnerSpark",
+    description: "Employee wellbeing screening, confidential counselling and practical workplace mental health training for employers in Uganda, Kenya and Tanzania.",
+    h1: "Corporate mental health support for East African teams",
+    intro: "InnerSpark Africa helps employers understand wellbeing needs and give employees confidential access to licensed therapists.",
+    sections: [
+      { h2: "Employee wellbeing screening", p: "Use confidential wellbeing checks to identify pressure and support needs at team level without exposing individual responses." },
+      { h2: "Confidential employee counselling", p: "Give employees access to licensed African therapists by video or chat, with support that understands local workplace and family context." },
+      { h2: "Mental health training", p: "Equip managers and teams with practical ways to recognise stress, respond appropriately and build healthier work routines." },
+    ],
+  },
+  {
     path: "/amani-ai",
     title: "Amani AI Uganda — Free Mental Wellness Chat | InnerSpark",
     description:
