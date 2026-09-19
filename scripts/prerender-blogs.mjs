@@ -47,7 +47,11 @@ const sanitize = (html) =>
   String(html ?? "")
     .replace(/<script[\s\S]*?<\/script>/gi, "")
     .replace(/<iframe[\s\S]*?<\/iframe>/gi, "")
-    .replace(/\son\w+="[^"]*"/gi, "");
+    .replace(/\son\w+="[^"]*"/gi, "")
+    .replace(/video, voice or chat from UGX 30,000/gi, "video therapy at UGX 75,000 or chat therapy at UGX 30,000")
+    .replace(/online therapy starting from UGX 30,000 per session/gi, "video therapy at UGX 75,000 per session and chat therapy at UGX 30,000")
+    .replace(/therapy starting from UGX 30,000 per session/gi, "video therapy at UGX 75,000 per session and chat therapy at UGX 30,000")
+    .replace(/video sessions? (?:start at|costs?) UGX 30,000/gi, "video sessions cost UGX 75,000");
 
 function upsert(html, matcher, tag) {
   if (matcher.test(html)) return html.replace(matcher, tag);
@@ -164,21 +168,31 @@ function buildBody(post) {
   ).join("");
 
   return `
-    <div data-prerendered-seo="true" class="min-h-screen bg-background text-foreground">
-      <main class="container mx-auto px-4 py-12 max-w-3xl">
-        <p class="text-sm uppercase tracking-widest text-foreground/60 mb-3">${esc(post.category || "Mental health")}</p>
-        <h1 class="text-3xl md:text-5xl font-bold mb-4">${esc(post.title)}</h1>
-        <p class="text-sm text-foreground/60 mb-8">${esc(date)}${post.read_time ? ` &middot; ${esc(post.read_time)}` : ""} &middot; By ${esc(
-          post.author || "InnerSpark Africa Clinical Team",
-        )}</p>
-        ${post.excerpt ? `<p class="text-lg leading-relaxed text-foreground/80 mb-8">${esc(post.excerpt)}</p>` : ""}
-        <div class="blog-body prose prose-lg max-w-none mb-10">${sanitize(post.content)}</div>
-        ${faqHtml}
-        <p class="mb-6"><a class="text-primary font-semibold underline underline-offset-4" href="/book-therapist">Book a session with a licensed Ugandan therapist</a></p>
-        <nav aria-label="Site sections">
-          <h2 class="text-xl font-bold mb-3">Explore InnerSpark Africa</h2>
-          <ul class="grid gap-2 sm:grid-cols-2">${links}</ul>
-        </nav>
+    <div data-prerendered-seo="true" class="min-h-screen bg-[#F7F3EA] text-[#111827]">
+      <main>
+        <header class="border-b border-[#D9D0BF]">
+          <div class="container mx-auto px-4 py-12 max-w-5xl">
+            <p class="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-4">${esc(post.category || "Mental health")}</p>
+            <h1 class="font-serif text-4xl md:text-6xl font-semibold leading-tight mb-5">${esc(post.title)}</h1>
+            ${post.excerpt ? `<p class="text-xl leading-relaxed text-[#4B5563] mb-6 max-w-3xl">${esc(post.excerpt)}</p>` : ""}
+            <p class="text-sm text-[#4B5563]">${esc(date)}${post.read_time ? ` &middot; ${esc(post.read_time)}` : ""} &middot; By ${esc(
+              post.author || "InnerSpark Africa Clinical Team",
+            )}</p>
+            <div class="mt-8 rounded-2xl bg-white border border-[#D9D0BF] p-5 max-w-2xl">
+              <p class="font-bold mb-1">Video therapy: UGX 75,000 per session</p>
+              <p class="text-[#4B5563]">Chat therapy: UGX 30,000. Pay by Mobile Money or card.</p>
+            </div>
+          </div>
+        </header>
+        <article class="container mx-auto px-4 py-12 max-w-3xl">
+          <div class="blog-body prose prose-lg max-w-none mb-10">${sanitize(post.content)}</div>
+          ${faqHtml}
+          <p class="mb-6"><a class="text-primary font-semibold underline underline-offset-4" href="/book-therapist">Book video therapy with a licensed African therapist</a></p>
+          <nav aria-label="Site sections">
+            <h2 class="text-xl font-bold mb-3">Explore InnerSpark Africa</h2>
+            <ul class="grid gap-2 sm:grid-cols-2">${links}</ul>
+          </nav>
+        </article>
       </main>
     </div>`;
 }
