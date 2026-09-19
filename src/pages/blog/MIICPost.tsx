@@ -11,8 +11,8 @@ const MIICPost = () => {
     <div className="min-h-screen bg-[#F7F3EA]">
       <Header />
       <ArticleSchema
-        headline="Fostering Wellness in Innovation: Innerspark Conducts Mental Health Awareness Session at MIIC"
-        description="Innerspark's mental health awareness session at MIIC helped innovators manage pressure, stress and burnout while building products."
+        headline="Workplace Mental Health Training for Startups in Uganda"
+        description="See how InnerSpark Africa delivers workplace mental health training for startup teams in Uganda, covering stress, burnout and psychologically safe work."
         path="/events-training/miic-wellness-innovation"
         datePublished="2025-08-01"
         image={miicImage}
@@ -38,7 +38,7 @@ const MIICPost = () => {
                 <span className="text-sm text-muted-foreground">August 1st, 2025</span>
               </div>
               <h1 className="font-serif text-4xl md:text-6xl font-semibold leading-[1.08] tracking-tight mb-6 text-[#111827]">
-                Fostering Wellness in Innovation: Innerspark Conducts Mental Health Awareness Session at MIIC
+                Workplace Mental Health Training for Startups in Uganda
               </h1>
               <p className="text-lg text-muted-foreground">
                 Location: Makerere Innovation & Incubation Center (MIIC), Uganda | Participants: 20 staff & startup support members
@@ -93,6 +93,11 @@ const MIICPost = () => {
                 Together, we're building workplaces where innovation starts from within.
               </p>
             </div>
+            <aside className="mt-12 rounded-3xl border border-[#D9D0BF] bg-white p-7 md:p-9">
+              <h2 className="font-serif text-2xl font-semibold text-[#111827] mb-3">Build a healthier startup workplace</h2>
+              <p className="text-[#4B5563] mb-5">Request mental health training for your startup, innovation hub or support team in Uganda.</p>
+              <a href="/corporate/service-request" className="inline-flex rounded-full bg-primary px-6 py-3 font-semibold text-primary-foreground">Request workplace training</a>
+            </aside>
           </div>
         </div>
       </article>
