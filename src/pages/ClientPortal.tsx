@@ -33,6 +33,7 @@ import GreetingBlock from "@/components/client-portal/GreetingBlock";
 import WeekStrip, { toIso, useWeekWindow } from "@/components/client-portal/WeekStrip";
 import ClientToolCard from "@/components/client-portal/ClientToolCard";
 import { summarizeSchedule } from "@/components/therapist/ScheduleFields";
+import ManualResetRequestForm from "@/components/auth/ManualResetRequestForm";
 
 interface Schedule {
   id: string;
@@ -94,6 +95,8 @@ const ClientPortalInner = () => {
   const [activeToolId, setActiveToolId] = useState<string | null>(null);
   const [selectedIso, setSelectedIso] = useState<string>("");
   const [view, setView] = useState<"today" | "all">("today");
+  const [resetOpen, setResetOpen] = useState(false);
+  const [temporaryResetId, setTemporaryResetId] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     if (!token) return;
@@ -233,19 +236,29 @@ const ClientPortalInner = () => {
     if (passcode.length < 6) return toast.error("Passcode must be at least 6 characters.");
     if (passcode !== confirmPasscode) return toast.error("Passcodes don't match.");
     setBusy(true);
-    const { data, error } = await supabase.rpc("set_client_passcode", { _token: token!, _passcode: passcode });
+    const result = temporaryResetId
+      ? await supabase.rpc("complete_client_temporary_reset", { _token: token!, _request_id: temporaryResetId, _new_passcode: passcode })
+      : await supabase.rpc("set_client_passcode", { _token: token!, _passcode: passcode });
     setBusy(false);
-    if (error || !data) return toast.error(error?.message || "Could not set passcode.");
+    if (result.error || !result.data) return toast.error(result.error?.message || "Could not set passcode.");
+    setTemporaryResetId(null);
     setUnlocked(true);
     await load();
   };
 
   const verifyPasscodeFn = async () => {
     setBusy(true);
-    const { data, error } = await supabase.rpc("verify_client_passcode", { _token: token!, _passcode: passcode });
+    const { data, error } = await supabase.rpc("verify_client_portal_credential", { _token: token!, _passcode: passcode });
     setBusy(false);
     if (error) return toast.error(error.message);
-    if (!data) return toast.error("That passcode doesn't match.");
+    const result = data as unknown as { valid: boolean; temporary: boolean; expired?: boolean; request_id?: string };
+    if (!result?.valid) return toast.error(result?.expired ? "That temporary passcode expired. Please request another one." : "That passcode doesn't match.");
+    if (result.temporary && result.request_id) {
+      setPasscode("");
+      setConfirmPasscode("");
+      setTemporaryResetId(result.request_id);
+      return;
+    }
     setUnlocked(true);
   };
 
@@ -267,25 +280,34 @@ const ClientPortalInner = () => {
               </p>
             </div>
             <div className="space-y-3 mt-6">
+              {resetOpen ? (
+                <ManualResetRequestForm accountType="client" onBack={() => setResetOpen(false)} />
+              ) : <>
               <div>
-                <Label>{snapshot.client.has_passcode ? "Passcode" : "Choose a passcode (min 6 characters)"}</Label>
+                <Label>{temporaryResetId ? "Choose a new permanent passcode" : snapshot.client.has_passcode ? "Passcode" : "Choose a passcode (min 6 characters)"}</Label>
                 <Input type="password" value={passcode} onChange={(e) => setPasscode(e.target.value)} autoFocus />
               </div>
-              {!snapshot.client.has_passcode && (
+              {(!snapshot.client.has_passcode || temporaryResetId) && (
                 <div>
                   <Label>Confirm passcode</Label>
                   <Input type="password" value={confirmPasscode} onChange={(e) => setConfirmPasscode(e.target.value)} />
                 </div>
               )}
               <Button
-                onClick={snapshot.client.has_passcode ? verifyPasscodeFn : setPasscodeFn}
+                onClick={snapshot.client.has_passcode && !temporaryResetId ? verifyPasscodeFn : setPasscodeFn}
                 disabled={busy}
                 className="w-full"
               >
                 {busy && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
-                {snapshot.client.has_passcode ? "Open my space" : "Set passcode & continue"}
+                {temporaryResetId ? "Save new passcode and continue" : snapshot.client.has_passcode ? "Open my space" : "Set passcode & continue"}
               </Button>
+              {snapshot.client.has_passcode && !temporaryResetId && (
+                <button type="button" className="w-full text-sm text-primary hover:underline" onClick={() => setResetOpen(true)}>
+                  Forgot passcode?
+                </button>
+              )}
               <QuietFooter />
+              </>}
             </div>
           </div>
         </div>
