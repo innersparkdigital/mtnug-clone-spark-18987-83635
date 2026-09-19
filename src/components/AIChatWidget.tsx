@@ -486,6 +486,19 @@ const AIChatWidget = () => {
         setLeadStep(2);
         trackEvent("ai_chat_lead_phone_captured", { intent: leadIntent });
         logEvent("lead_phone_captured", { intent: leadIntent });
+        // Notify the team as soon as the WhatsApp number is saved; the optional
+        // profile step must never delay a real follow-up.
+        supabase.functions.invoke("notify-chat-event", {
+          body: {
+            kind: "new_lead",
+            session_id: sessionId,
+            anonymous_id: getAnonId(),
+            source_path: window.location.pathname,
+            phone: leadPhone.trim(),
+            intent: leadIntent,
+            message: "Amani captured a WhatsApp number. Optional details may follow.",
+          },
+        }).catch((e) => console.warn("notify-chat-event failed:", e));
         setLeadSubmitting(false);
         return;
       }
