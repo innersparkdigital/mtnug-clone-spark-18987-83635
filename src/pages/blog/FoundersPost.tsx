@@ -11,8 +11,8 @@ const FoundersPost = () => {
     <div className="min-h-screen bg-[#F7F3EA]">
       <Header />
       <ArticleSchema
-        headline="Shaping the Founder's Mindset at the National ICT Innovation Hub"
-        description="Inside Innerspark's founder mindset training at Uganda's National ICT Innovation Hub: resilience, burnout prevention and healthy leadership."
+        headline="Founder Mental Health Training in Uganda: ICT Hub Case Study"
+        description="See how InnerSpark Africa delivers founder mental health training in Uganda for burnout prevention, resilience and healthier startup leadership."
         path="/events-training/founders-mindset-training"
         datePublished="2024-09-01"
         image={foundersMindsetImage}
@@ -38,7 +38,7 @@ const FoundersPost = () => {
                 <span className="text-sm text-muted-foreground">September 2024</span>
               </div>
               <h1 className="font-serif text-4xl md:text-6xl font-semibold leading-[1.08] tracking-tight mb-6 text-[#111827]">
-                Shaping the Founder's Mindset at the National ICT Innovation Hub
+                Founder Mental Health Training in Uganda: ICT Hub Case Study
               </h1>
             </div>
 
@@ -82,6 +82,11 @@ const FoundersPost = () => {
                 We are excited to extend the Startup Wellness Program to other innovation hubs, accelerators, incubators, and organizations that want to empower founders with resilience, balance, and purpose-driven growth. Let's collaborate to build stronger businesses by investing in the wellbeing of their leaders.
               </p>
             </div>
+            <aside className="mt-12 rounded-3xl border border-[#D9D0BF] bg-white p-7 md:p-9">
+              <h2 className="font-serif text-2xl font-semibold text-[#111827] mb-3">Support the founders in your programme</h2>
+              <p className="text-[#4B5563] mb-5">Request a practical resilience and burnout-prevention workshop for your hub, accelerator or incubator.</p>
+              <a href="/corporate/service-request" className="inline-flex rounded-full bg-primary px-6 py-3 font-semibold text-primary-foreground">Request founder training</a>
+            </aside>
           </div>
         </div>
       </article>
