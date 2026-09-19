@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import ClientRoster from "@/components/therapist/ClientRoster";
 import { CalmThemeRoot } from "@/contexts/CalmThemeContext";
 import CalmThemeToggle from "@/components/CalmThemeToggle";
+import ManualResetRequestForm from "@/components/auth/ManualResetRequestForm";
 
 interface TherapistAccount {
   id: string;
@@ -34,8 +35,7 @@ const TherapistPortal = () => {
   const [loginPassword, setLoginPassword] = useState("");
   const [signingIn, setSigningIn] = useState(false);
   const [resetOpen, setResetOpen] = useState(false);
-  const [resetEmail, setResetEmail] = useState("");
-  const [resetSubmitting, setResetSubmitting] = useState(false);
+  const [temporaryResetId, setTemporaryResetId] = useState<string | null>(null);
 
   useEffect(() => {
     if (loading) return;
@@ -74,24 +74,18 @@ const TherapistPortal = () => {
         toast.error(error.message.includes("Invalid") ? "Invalid email or password" : error.message);
         return;
       }
-      toast.success("Welcome back");
-    };
-
-    const handleReset = async (e: React.FormEvent) => {
-      e.preventDefault();
-      if (!resetEmail) return;
-      setResetSubmitting(true);
-      const { error } = await supabase.auth.resetPasswordForEmail(resetEmail.trim().toLowerCase(), {
-        redirectTo: `${window.location.origin}/reset-password`,
+      const { data: resetData } = await supabase.functions.invoke("manual-password-reset", {
+        body: { action: "consume_therapist" },
       });
-      setResetSubmitting(false);
-      if (error) {
-        toast.error(error.message);
-        return;
+      if (resetData?.temporary) {
+        if (resetData.expired) {
+          await signOut();
+          toast.error("That temporary password expired. Please request another one.");
+          return;
+        }
+        setTemporaryResetId(resetData.request_id);
       }
-      toast.success("If an account exists, a reset link has been sent.");
-      setResetOpen(false);
-      setResetEmail("");
+      toast.success("Welcome back");
     };
 
     return (
@@ -139,7 +133,7 @@ const TherapistPortal = () => {
                   <button
                     type="button"
                     className="text-sm text-primary hover:underline"
-                    onClick={() => { setResetEmail(loginEmail); setResetOpen(true); }}
+                    onClick={() => setResetOpen(true)}
                   >
                     Forgot password?
                   </button>
@@ -150,25 +144,7 @@ const TherapistPortal = () => {
                 </p>
               </form>
             ) : (
-              <form onSubmit={handleReset} className="space-y-4">
-                <div>
-                  <Label htmlFor="t-reset">Enter your therapist email</Label>
-                  <Input
-                    id="t-reset"
-                    type="email"
-                    value={resetEmail}
-                    onChange={(e) => setResetEmail(e.target.value)}
-                    required
-                  />
-                </div>
-                <Button type="submit" className="w-full" disabled={resetSubmitting}>
-                  {resetSubmitting && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
-                  Send reset link
-                </Button>
-                <Button type="button" variant="ghost" className="w-full" onClick={() => setResetOpen(false)}>
-                  Back to sign in
-                </Button>
-              </form>
+              <ManualResetRequestForm accountType="therapist" onBack={() => setResetOpen(false)} />
             )}
           </CardContent>
         </Card>
@@ -236,6 +212,12 @@ const TherapistPortal = () => {
     if (acctErr) {
       toast.error(acctErr.message);
       return;
+    }
+    if (temporaryResetId) {
+      await supabase.functions.invoke("manual-password-reset", {
+        body: { action: "complete_therapist", request_id: temporaryResetId },
+      });
+      setTemporaryResetId(null);
     }
     setAccount({ ...account, must_change_password: false });
     setNewPassword("");
