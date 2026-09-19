@@ -77,7 +77,7 @@ function schemaForRoute(route, url) {
       description: route.description,
       url,
       about: { "@type": "Thing", name: "Licensed African therapists" },
-      provider: { "@id": `${SITE}/#organization` },
+      provider: { "@type": "MedicalOrganization", "@id": `${SITE}/#organization`, name: "InnerSpark Africa", url: `${SITE}/` },
     };
   }
   if (route.path === "/for-business") {
@@ -88,7 +88,7 @@ function schemaForRoute(route, url) {
       name: "Corporate Mental Health and Employee Wellbeing Support",
       description: route.description,
       url,
-      provider: { "@id": `${SITE}/#organization` },
+      provider: { "@type": "MedicalOrganization", "@id": `${SITE}/#organization`, name: "InnerSpark Africa", url: `${SITE}/` },
       areaServed: ["Uganda", "Kenya", "Tanzania"],
       serviceType: ["Employee wellbeing screening", "Employee counselling", "Workplace mental health training"],
     };
