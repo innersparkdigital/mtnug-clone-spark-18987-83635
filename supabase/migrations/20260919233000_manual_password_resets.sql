@@ -108,3 +108,25 @@ begin
 end;
 $$;
 grant execute on function public.complete_client_temporary_reset(text,uuid,text) to anon, authenticated;
+
+create or replace function public.set_or_complete_client_passcode(_token text, _new_passcode text)
+returns boolean
+language plpgsql security definer set search_path = public
+as $$
+declare cid uuid; rid uuid;
+begin
+  if length(_new_passcode) < 6 then return false; end if;
+  select id into cid from public.therapist_clients where access_token=_token limit 1;
+  if cid is null then return false; end if;
+  select id into rid from public.manual_password_reset_requests
+    where account_type='client' and account_id=cid and status='used'
+    order by consumed_at desc limit 1;
+  update public.therapist_clients set passcode_hash=crypt(_new_passcode, gen_salt('bf')) where id=cid;
+  if rid is not null then
+    update public.manual_password_reset_requests
+      set status='completed', completed_at=now(), updated_at=now() where id=rid and status='used';
+  end if;
+  return true;
+end;
+$$;
+grant execute on function public.set_or_complete_client_passcode(text,text) to anon, authenticated;
