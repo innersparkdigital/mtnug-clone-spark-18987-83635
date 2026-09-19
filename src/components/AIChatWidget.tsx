@@ -173,6 +173,9 @@ const AIChatWidget = () => {
     setMessages(newMessages);
     setInput("");
     setLoading(true);
+    const userMessageCount = newMessages.filter((m) => m.role === "user").length;
+    trackEvent("ai_chat_message_sent", { message_number: userMessageCount, source_path: window.location.pathname });
+    logEvent("message_sent", { message_number: userMessageCount, source_path: window.location.pathname });
 
     // Add placeholder assistant message we'll stream into
     setMessages(prev => [...prev, { role: "assistant", content: "" }]);
@@ -260,6 +263,22 @@ const AIChatWidget = () => {
             }
           } catch (_e) { /* ignore */ }
         }
+      }
+
+      if (accumulated) {
+        const parsedReply = parseChips(accumulated);
+        const formOffer = parsedReply.chips.map((chip) => parseFormTarget(chip.target)).find(Boolean);
+        const qualification = accumulated.match(/\[qual:\s*([^\]]+)\]/i)?.[1];
+        const outcome = accumulated.match(/\[outcome:\s*([^\]]+)\]/i)?.[1];
+        if (qualification) {
+          trackEvent("ai_chat_qualified", { qualification, source_path: window.location.pathname });
+          logEvent("conversation_qualified", { qualification, source_path: window.location.pathname });
+        }
+        if (formOffer) {
+          trackEvent("ai_chat_booking_offered", { kind: formOffer.kind, therapist: formOffer.therapist || undefined });
+          logEvent("booking_offered", { kind: formOffer.kind, therapist: formOffer.therapist || undefined });
+        }
+        if (outcome) logEvent("conversation_outcome", { outcome });
       }
 
       if (!accumulated) {
@@ -394,8 +413,16 @@ const AIChatWidget = () => {
   };
 
   const handleCTA = (cta: string, path?: string) => {
-    trackEvent("ai_chat_cta_click", { cta });
+    trackEvent("ai_chat_cta_click", { cta, path });
     logEvent("cta_click", { cta, path });
+    if (cta === "inline_chip_form" || cta === "inline_chip_booking") {
+      trackEvent("ai_chat_booking_started", { cta, path });
+      logEvent("booking_started", { cta, path });
+    }
+    if (cta.includes("whatsapp")) {
+      trackEvent("ai_chat_whatsapp_clicked", { cta, path });
+      logEvent("whatsapp_clicked", { cta, path });
+    }
   };
 
   // Detect lead intent from the latest user message and (once per session) prompt for contact details.
@@ -966,6 +993,8 @@ const AIChatWidget = () => {
                 onClose={() => { setActiveForm(null); setActiveFormTherapist(null); }}
                 onSubmitted={(k) => {
                   setLeadSubmitted(true);
+                  trackEvent("ai_chat_booking_request_submitted", { kind: k, therapist: activeFormTherapist || undefined });
+                  logEvent("booking_request_submitted", { kind: k, therapist: activeFormTherapist || undefined });
                   logEvent("inline_form_submitted", { kind: k });
                   setMessages((prev) => [...prev, {
                     role: "assistant",
