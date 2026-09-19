@@ -523,7 +523,6 @@ Deno.serve(async (req) => {
           high_risk_triggered: true,
           escalated: true,
           review_status: "pending",
-          booked_outcome: "human_handoff",
           updated_at: new Date().toISOString(),
         }).eq("id", sid);
         await supabase.from("chat_events").insert({
@@ -645,7 +644,6 @@ Deno.serve(async (req) => {
         });
         await supabase.from("chat_sessions").update({
           escalated: true,
-          booked_outcome: "human_handoff",
           message_count: messages.length + 1,
           updated_at: new Date().toISOString(),
         }).eq("id", sid);
