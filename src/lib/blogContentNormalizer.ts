@@ -64,6 +64,10 @@ export const removeLeakedTemplateCode = (input: string) => {
 /** Keep legacy CMS articles aligned with the current published session prices. */
 export const applyCurrentTherapyPricing = (input: string) =>
   String(input || "")
+    .replace(/browse 20\+ licensed therapists/gi, "browse licensed therapists")
+    .replace(/start with a free consultation/gi, "start by choosing a therapist")
+    .replace(/free initial consultations?/gi, "an introductory conversation where available")
+    .replace(/free consultation/gi, "therapist matching support")
     .replace(/video, voice or chat from UGX 30,000/gi, "video therapy at UGX 75,000 or chat therapy at UGX 30,000")
     .replace(/online therapy starting from UGX 30,000 per session/gi, "video therapy at UGX 75,000 per session and chat therapy at UGX 30,000")
     .replace(/therapy starting from UGX 30,000 per session/gi, "video therapy at UGX 75,000 per session and chat therapy at UGX 30,000")
@@ -155,6 +159,17 @@ export const normalizeBlogHtml = (input: string, opts: NormalizeOptions = {}): N
   if (!root) return { html: source, faqs: [], changed: false };
 
   scrubAttributes(root);
+
+  // The article shell already supplies the only H1 and back link.
+  root.querySelectorAll("h1").forEach((heading) => {
+    const h2 = doc.createElement("h2");
+    h2.innerHTML = heading.innerHTML;
+    heading.replaceWith(h2);
+  });
+  root.querySelectorAll("h2,h3,p,span,div").forEach((el) => {
+    const text = (el.textContent || "").trim();
+    if (/^(?:Back to Blog|desc|\{title\})$/i.test(text)) el.remove();
+  });
 
   // Dead placeholder links ("#") point at booking instead.
   root.querySelectorAll('a[href="#"], a[href=""]').forEach((a) => a.setAttribute("href", "/book-therapist"));
