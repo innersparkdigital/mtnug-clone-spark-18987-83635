@@ -107,13 +107,16 @@ const CmsBlogPost = () => {
     "@type": post.schema_type === "HowTo" ? "HowTo" : "Article",
     headline: post.title,
     description,
-    image: socialImage,
+    image: { "@type": "ImageObject", url: socialImage },
     datePublished: date,
     dateModified: modified,
     mainEntityOfPage: { "@type": "WebPage", "@id": url },
-    author: { "@type": "Person", name: post.author || "InnerSpark Africa" },
+    author: post.author && post.author.trim().toLowerCase() !== "innerspark africa"
+      ? { "@type": "Person", name: post.author.trim() }
+      : { "@type": "Organization", "@id": `${SITE}/#organization`, name: "InnerSpark Africa", url: SITE },
     publisher: {
       "@type": "Organization",
+      "@id": `${SITE}/#organization`,
       name: "InnerSpark Africa",
       logo: { "@type": "ImageObject", url: `${SITE}/innerspark-logo.webp` },
     },
