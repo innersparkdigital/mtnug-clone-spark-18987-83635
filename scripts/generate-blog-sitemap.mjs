@@ -26,13 +26,19 @@ function xmlEscape(value) {
 }
 
 function buildUrlset(posts) {
+  const seen = new Set();
   const urls = posts
-    .filter((p) => p.slug)
+    .filter((p) => {
+      const slug = String(p.slug || "").trim();
+      if (!slug || seen.has(slug)) return false;
+      seen.add(slug);
+      return true;
+    })
     .map((p) => {
       const lastmod = (p.updated_at || p.published_at || "").slice(0, 10);
       return [
         "  <url>",
-        `    <loc>${BASE_URL}/blog/${xmlEscape(p.slug)}</loc>`,
+        `    <loc>${BASE_URL}/blog/${xmlEscape(p.slug)}/</loc>`,
         lastmod ? `    <lastmod>${lastmod}</lastmod>` : null,
         "  </url>",
       ]
