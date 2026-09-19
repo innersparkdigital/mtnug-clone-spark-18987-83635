@@ -20,6 +20,31 @@ export interface NormalizedBlog {
 
 const KEEP_CLASSES = ["blog-callout", "blog-crisis", "blog-steps", "blog-checkgrid"];
 
+const THERAPY_TYPES_SECTION = `<section class="blog-callout">
+  <h2>Therapy options available through InnerSpark Africa</h2>
+  <p>Choose the kind of support that matches what you want help with. A licensed therapist can explain the best starting point during your first confidential session.</p>
+  <h3>Individual therapy</h3><p>One-to-one support for anxiety, depression, grief, trauma, stress, burnout and major life changes.</p>
+  <h3>Couples therapy</h3><p>Practical support for communication, conflict, trust and relationship decisions.</p>
+  <h3>Teen and student counselling</h3><p>Age-appropriate support for school pressure, family difficulties, confidence and emotional wellbeing.</p>
+  <h3>Video and chat therapy</h3><p>Video therapy costs UGX 75,000 per session. Chat therapy costs UGX 30,000 for people who prefer written support.</p>
+  <p><a href="/book-therapist">Choose a licensed African therapist and book a session</a>.</p>
+</section>`;
+
+/** Replace accidentally pasted React/template source with readable article copy. */
+export const removeLeakedTemplateCode = (input: string) => {
+  let source = String(input || "");
+  if (/therapyTypes\.map|therapy\.icon|therapy\.name/.test(source)) {
+    source = source.replace(/\{therapyTypes\.map\([\s\S]*?(?:\}\)\}|\}\);?)/g, THERAPY_TYPES_SECTION);
+    if (!source.includes(THERAPY_TYPES_SECTION)) source += THERAPY_TYPES_SECTION;
+  }
+  return source
+    .split(/\r?\n/)
+    .filter((line) => !/^\s*(?:\{?[A-Za-z_$][\w$]*\.map\(|const\s+Icon\s*=|return\s*\(|\{[A-Za-z_$][\w$]*\.(?:name|description|icon)\}|[)};,]+\s*$)/.test(line))
+    .join("\n")
+    .replace(/\{therapy\.(?:name|description|icon)\}/g, "")
+    .replace(/\{therapyTypes\.map\([^\n]*/g, "");
+};
+
 /** Keep legacy CMS articles aligned with the current published session prices. */
 export const applyCurrentTherapyPricing = (input: string) =>
   String(input || "")
@@ -104,7 +129,7 @@ export interface NormalizeOptions {
 }
 
 export const normalizeBlogHtml = (input: string, opts: NormalizeOptions = {}): NormalizedBlog => {
-  const source = applyCurrentTherapyPricing(input).trim();
+  const source = applyCurrentTherapyPricing(removeLeakedTemplateCode(input)).trim();
   if (!source) return { html: "", faqs: [], changed: false };
 
   const doc = new DOMParser().parseFromString(`<div id="root">${source}</div>`, "text/html");
