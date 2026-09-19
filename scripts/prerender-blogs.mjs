@@ -160,7 +160,9 @@ const removeLeakedTemplateCode = (input) => {
     .filter((line) => !/^\s*(?:\{?[A-Za-z_$][\w$]*\.map\(|const\s+Icon\s*=|return\s*\(|\{[A-Za-z_$][\w$]*\.(?:name|description|icon)\}|[)};,]+\s*$)/.test(line))
     .join("\n")
     .replace(/\{(?:therapy|p)\.(?:name|description|icon|letter|body)\}/g, "")
+    .replace(/\{[A-Za-z_$][\w$]*\.map\([\s\S]*?\)\)\}/g, "")
     .replace(/\{(?:therapyTypes|pillars)\.map\([^\n]*/g, "")
+    .replace(/const\s+[A-Za-z_$][\w$]*\s*=\s*[^;]+;?/g, "")
     .replace(/\{(?:title|desc|description|category|date|readTime)\}/g, "")
     .replace(/(?:Back to Blog\s*){2,}/gi, "Back to Blog ")
     .replace(/<[^>]+>\s*<\/[^>]+>/g, "");
