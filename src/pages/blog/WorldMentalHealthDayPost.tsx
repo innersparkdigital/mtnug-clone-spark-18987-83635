@@ -11,8 +11,8 @@ const WorldMentalHealthDayPost = () => {
     <div className="min-h-screen bg-[#F7F3EA]">
       <Header />
       <ArticleSchema
-        headline="World Mental Health Day Workshop: Prioritizing Workplace Mental Health"
-        description="Innerspark's World Mental Health Day workshop on building psychologically safe, productive workplaces in Uganda."
+        headline="World Mental Health Day Workplace Training in Uganda"
+        description="Book World Mental Health Day workplace training in Uganda with InnerSpark Africa, covering psychological safety, stress and practical employee support."
         path="/events-training/world-mental-health-day-2024"
         datePublished="2024-10-08"
         image={worldMentalHealthImage}
@@ -38,7 +38,7 @@ const WorldMentalHealthDayPost = () => {
                 <span className="text-sm text-muted-foreground">October 8th, 2024</span>
               </div>
               <h1 className="font-serif text-4xl md:text-6xl font-semibold leading-[1.08] tracking-tight mb-6 text-[#111827]">
-                World Mental Health Day Workshop: Prioritizing Workplace Mental Health
+                World Mental Health Day Workplace Training in Uganda
               </h1>
               <p className="text-lg text-muted-foreground">
                 Location: National ICT Innovation Hub, Nakawa | Participants: 50 professionals from government, private sector, academia, and healthcare
@@ -101,6 +101,11 @@ const WorldMentalHealthDayPost = () => {
                 Together, we can create a future where mental wellness is not just acknowledged — but actively prioritized in every workplace.
               </p>
             </div>
+            <aside className="mt-12 rounded-3xl border border-[#D9D0BF] bg-white p-7 md:p-9">
+              <h2 className="font-serif text-2xl font-semibold text-[#111827] mb-3">Plan your workplace mental health event</h2>
+              <p className="text-[#4B5563] mb-5">Request a practical World Mental Health Day workshop for your employees or leadership team.</p>
+              <a href="/corporate/service-request" className="inline-flex rounded-full bg-primary px-6 py-3 font-semibold text-primary-foreground">Request workplace training</a>
+            </aside>
           </div>
         </div>
       </article>
