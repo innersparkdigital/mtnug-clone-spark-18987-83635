@@ -835,13 +835,15 @@ const AIChatWidget = () => {
                   >
                     <Phone className="w-3.5 h-3.5" /> WhatsApp Now
                   </a>
-                  <button
-                    type="button"
-                    onClick={() => { handleCTA("book_emergency"); setOpen(false); startBooking(); }}
-                    className="flex-1 flex items-center justify-center gap-1.5 bg-primary text-primary-foreground text-xs font-bold py-2 rounded-lg"
-                  >
-                    <Calendar className="w-3.5 h-3.5" /> Book Therapist
-                  </button>
+                  {!highRisk && (
+                    <button
+                      type="button"
+                      onClick={() => { handleCTA("book_distress"); setOpen(false); startBooking(); }}
+                      className="flex-1 flex items-center justify-center gap-1.5 bg-primary text-primary-foreground text-xs font-bold py-2 rounded-lg"
+                    >
+                      <Calendar className="w-3.5 h-3.5" /> General booking form
+                    </button>
+                  )}
                 </div>
               </div>
             )}
@@ -962,7 +964,7 @@ const AIChatWidget = () => {
             )}
 
             {/* Close-intercept: WhatsApp reminder */}
-            {showReminderPrompt && !reminderSubmitted && (
+            {!highRisk && showReminderPrompt && !reminderSubmitted && (
               <div className="px-3 py-3 border-t border-border bg-primary/5 space-y-2">
                 <div className="text-xs font-bold text-foreground">
                   Before you go 💙
