@@ -11,8 +11,8 @@ const MTNPost = () => {
     <div className="min-h-screen bg-[#F7F3EA]">
       <Header />
       <ArticleSchema
-        headline="Managing Anxiety During Internship – MTN Uganda"
-        description="Innerspark trained 50 MTN Uganda Career ACE interns on recognising anxiety triggers and building resilience at work."
+        headline="Intern Mental Health Training in Uganda: MTN Anxiety Workshop"
+        description="See how InnerSpark Africa delivers intern mental health training in Uganda, helping early-career teams manage anxiety, pressure and workplace transitions."
         path="/events-training/mtn-internship-anxiety"
         datePublished="2025-07-11"
         image={mtnImage}
@@ -38,7 +38,7 @@ const MTNPost = () => {
                 <span className="text-sm text-muted-foreground">July 11th, 2025</span>
               </div>
               <h1 className="font-serif text-4xl md:text-6xl font-semibold leading-[1.08] tracking-tight mb-6 text-[#111827]">
-                Managing Anxiety During Internship – MTN Uganda
+                Intern Mental Health Training in Uganda: MTN Anxiety Workshop
               </h1>
               <p className="text-lg text-muted-foreground">
                 Location: MTN Uganda Headquarters | Participants: 50 Career ACE Interns
@@ -112,6 +112,11 @@ const MTNPost = () => {
                 Through this partnership, MTN Uganda and Innerspark continue to champion mental wellness as a pillar of career development. By empowering interns to understand and manage anxiety, this initiative nurtures a new generation of emotionally intelligent, self-aware, and resilient professionals ready to take on tomorrow's challenges.
               </p>
             </div>
+            <aside className="mt-12 rounded-3xl border border-[#D9D0BF] bg-white p-7 md:p-9">
+              <h2 className="font-serif text-2xl font-semibold text-[#111827] mb-3">Support interns and early-career staff</h2>
+              <p className="text-[#4B5563] mb-5">Request an anxiety, resilience and workplace-transition session for your internship or graduate programme.</p>
+              <a href="/corporate/service-request" className="inline-flex rounded-full bg-primary px-6 py-3 font-semibold text-primary-foreground">Request intern training</a>
+            </aside>
           </div>
         </div>
       </article>
