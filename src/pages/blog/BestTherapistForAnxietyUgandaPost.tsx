@@ -7,7 +7,7 @@ const BestTherapistForAnxietyUgandaPost = () => {
     category: "Anxiety",
     title: "Finding the Best Therapist for Anxiety in Uganda: A Practical 2026 Guide",
     metaTitle: "Best Therapist for Anxiety in Uganda — How to Choose & Book | Innerspark Africa",
-    metaDescription: "How to find the best therapist for anxiety in Uganda — what qualifications to check, the right therapy types (CBT, ACT, EMDR), real costs from UGX 30,000, and how to book this week.",
+    metaDescription: "Find a licensed anxiety therapist in Uganda. Video therapy costs UGX 75,000 per session; chat therapy costs UGX 30,000.",
     date: "May 10, 2026",
     isoDate: "2026-05-10",
     readTime: "10 min read",
@@ -34,7 +34,7 @@ const BestTherapistForAnxietyUgandaPost = () => {
           {
             type: "callout",
             label: "The short version:",
-            text: "The best therapist for anxiety in Uganda is licensed, trained in CBT or ACT, transparent about pricing (UGX 30,000–75,000 at Innerspark), available online or in Kampala, and someone you actually feel safe talking to.",
+            text: "The best therapist for anxiety in Uganda is licensed, trained in evidence-based care and someone you feel safe talking to. At InnerSpark Africa, video therapy costs UGX 75,000 and chat therapy costs UGX 30,000 per session.",
           },
           {
             type: "p",
@@ -200,7 +200,8 @@ const BestTherapistForAnxietyUgandaPost = () => {
           {
             type: "list",
             items: [
-              <><strong>Innerspark Africa:</strong> UGX 30,000 – 75,000 per 60-minute session</>,
+              <><strong>InnerSpark Africa video therapy:</strong> UGX 75,000 per session</>,
+              <><strong>InnerSpark Africa chat therapy:</strong> UGX 30,000 per session</>,
               <><strong>Group anxiety support:</strong> UGX 25,000 per week</>,
               <><strong>Private clinics in Kololo / Naguru:</strong> UGX 100,000 – 300,000 per session</>,
               <><strong>Hospitals (IHK, Nakasero, AAR):</strong> UGX 150,000 – 400,000 per session</>,
@@ -236,7 +237,7 @@ const BestTherapistForAnxietyUgandaPost = () => {
       },
       {
         q: "How much does anxiety therapy cost in Uganda?",
-        a: "At Innerspark Africa, sessions range from UGX 30,000 to UGX 75,000 per 60-minute session. Group anxiety support is UGX 25,000 per week. Payment is via MTN or Airtel Mobile Money, one session at a time.",
+        a: "At InnerSpark Africa, video therapy costs UGX 75,000 per session and chat therapy costs UGX 30,000. Payment is available by Mobile Money or card.",
       },
       {
         q: "How many sessions will I need for anxiety?",
@@ -267,7 +268,7 @@ const BestTherapistForAnxietyUgandaPost = () => {
     },
     cta: {
       heading: "Book a vetted anxiety therapist this week",
-      body: "Sessions from UGX 30,000. Online or in Kampala. Paid by Mobile Money, one session at a time.",
+      body: "Video therapy is UGX 75,000; chat therapy is UGX 30,000. Pay by Mobile Money or card.",
       whatsappText:
         "Hi, I just read your guide on finding the best therapist for anxiety in Uganda and would like to book a session.",
     },
