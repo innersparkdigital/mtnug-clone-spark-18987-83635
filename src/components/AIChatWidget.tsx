@@ -67,6 +67,8 @@ function parseFormTarget(target: string): { kind: FormKind; therapist: string | 
 const ANON_KEY = "is_chat_anon_id";
 const AUTO_OPEN_KEY = "is_chat_auto_opened";
 const CLOSE_INTERCEPT_KEY = "is_chat_reminder_seen";
+const SESSION_KEY = "is_chat_session_id";
+const FLAGGED_KEY = "is_chat_flagged";
 
 function getAnonId(): string {
   let id = localStorage.getItem(ANON_KEY);
@@ -128,8 +130,8 @@ const AIChatWidget = () => {
   const [messages, setMessages] = useState<Msg[]>([initialWelcome]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [sessionId, setSessionId] = useState<string | null>(null);
-  const [highRisk, setHighRisk] = useState(false);
+  const [sessionId, setSessionId] = useState<string | null>(() => sessionStorage.getItem(SESSION_KEY));
+  const [highRisk, setHighRisk] = useState(() => sessionStorage.getItem(FLAGGED_KEY) === "1");
   const [crisisDismissed, setCrisisDismissed] = useState(false);
   const [distress, setDistress] = useState(false);
   const [leadPromptShown, setLeadPromptShown] = useState(false);
@@ -238,8 +240,20 @@ const AIChatWidget = () => {
           try {
             const evt = JSON.parse(payload);
             if (evt.type === "meta") {
-              if (evt.session_id && !sessionId) setSessionId(evt.session_id);
-              if (evt.high_risk) { isHighRisk = true; setHighRisk(true); }
+              if (evt.session_id) {
+                if (!sessionId) setSessionId(evt.session_id);
+                sessionStorage.setItem(SESSION_KEY, evt.session_id);
+              }
+              if (evt.high_risk) {
+                isHighRisk = true;
+                setHighRisk(true);
+                sessionStorage.setItem(FLAGGED_KEY, "1");
+                setActiveForm(null);
+                setActiveFormTherapist(null);
+                setShowLeadForm(false);
+                setShowReminderPrompt(false);
+                closeFlow();
+              }
               if (evt.distress) setDistress(true);
               if (Array.isArray(evt.tools_used) && evt.tools_used.length > 0) {
                 toolsUsed = evt.tools_used as string[];
@@ -646,7 +660,7 @@ const AIChatWidget = () => {
                     onClick={() => setCrisisDismissed(true)}
                     className="block mx-auto text-xs text-muted-foreground underline hover:text-foreground pt-2"
                   >
-                    Continue chatting instead
+                    Continue to the human handoff
                   </button>
                 </div>
               </motion.div>
@@ -723,7 +737,7 @@ const AIChatWidget = () => {
                       </div>
                     )}
                     </div>
-                    {showChips && (
+                    {showChips && !highRisk && (
                       <div className="mt-2 flex flex-wrap gap-1.5 max-w-[85%]">
                         {chips.map((c, idx) => {
                           const isUrl = c.target.startsWith("http");
@@ -833,7 +847,7 @@ const AIChatWidget = () => {
             )}
 
             {/* Lead capture prompt / form */}
-            {leadPromptShown && !leadPromptDismissed && !leadSubmitted && !showLeadForm && (
+            {!highRisk && leadPromptShown && !leadPromptDismissed && !leadSubmitted && !showLeadForm && (
               <div className="px-3 py-2 border-t border-border bg-primary/5 flex items-center gap-2">
                 <UserPlus className="w-4 h-4 text-primary flex-shrink-0" />
                 <div className="text-xs flex-1 leading-snug">
@@ -855,7 +869,7 @@ const AIChatWidget = () => {
               </div>
             )}
 
-            {showLeadForm && !leadSubmitted && (
+            {!highRisk && showLeadForm && !leadSubmitted && (
               <div className="px-3 py-3 border-t border-border bg-primary/5 space-y-2">
                 <div className="flex items-center justify-between">
                   <div className="text-xs font-bold text-foreground flex items-center gap-1.5">
@@ -987,7 +1001,7 @@ const AIChatWidget = () => {
             )}
 
             {/* Inline booking forms (free call / chat consultation / support group) */}
-            {activeForm && (
+            {activeForm && !highRisk && (
               <AmaniInlineForm
                 kind={activeForm}
                 sessionId={sessionId}
