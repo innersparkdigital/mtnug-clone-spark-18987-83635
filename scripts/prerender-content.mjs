@@ -182,7 +182,7 @@ export const ROUTES = [
       },
       {
         h2: "If you feel unsafe or may harm yourself",
-        p: "Amani is not an emergency service. WhatsApp InnerSpark immediately on +256 792 085 773 to reach a real person.",
+        p: "Amani is not an emergency service. If you may harm yourself or feel unsafe, send an urgent WhatsApp message to InnerSpark on +256 792 085 773.",
       },
       {
         h2: "Move from chat to licensed support",
