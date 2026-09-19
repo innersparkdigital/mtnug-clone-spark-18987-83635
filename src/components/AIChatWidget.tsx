@@ -585,7 +585,7 @@ const AIChatWidget = () => {
                     </div>
                     <h3 className="text-lg font-bold text-red-900">We hear you. Please reach out now.</h3>
                     <p className="text-sm text-red-900/80 mt-1">
-                      What you're feeling is real, and help is just one tap away. Talk to a real person — right now.
+                      What you're feeling is real. Send an urgent WhatsApp message to the InnerSpark team now.
                     </p>
                   </div>
 
