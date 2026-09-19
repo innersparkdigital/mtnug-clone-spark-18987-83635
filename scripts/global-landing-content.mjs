@@ -127,6 +127,7 @@ export const GLOBAL_LANDING_PAGES = {
       { to: "/online-therapy-nigeria", label: "Therapy in Nigeria" },
       { to: "/online-therapy-ghana", label: "Therapy in Ghana" },
       { to: "/online-therapy-south-africa", label: "Therapy in South Africa" },
+      { to: "/online-therapy-tanzania", label: "Therapy in Tanzania" },
       { to: "/blog/cost-of-therapy-in-kenya", label: "What therapy costs in Kenya" },
       { to: "/blog/cost-of-therapy-in-nigeria", label: "What therapy costs in Nigeria" },
       { to: "/blog/cost-of-therapy-in-ghana", label: "What therapy costs in Ghana" },
@@ -626,6 +627,81 @@ export const GLOBAL_LANDING_PAGES = {
     relatedLinks: [
       { to: "/online-therapy-africa", label: "Online therapy across Africa" },
       { to: "/therapy-for-executives", label: "Confidential therapy for executives" },
+      ...COMMON_RELATED,
+    ],
+  },
+
+  "online-therapy-tanzania": {
+    slug: "online-therapy-tanzania",
+    title: "Online Therapy in Tanzania | Licensed African Therapists",
+    metaDescription:
+      "Private online therapy in Tanzania with licensed African therapists. Video, voice or chat, local-context care, Visa payment, and clear pricing before booking.",
+    keywords:
+      "online therapy Tanzania, therapist Dar es Salaam, counselling Tanzania online, psychologist Tanzania online, Swahili therapist online, affordable therapy Tanzania",
+    h1: "Online Therapy in Tanzania With Licensed African Therapists",
+    intro:
+      "Talk privately with a licensed African therapist by video, voice or chat from Dar es Salaam, Arusha, Mwanza, Dodoma, Zanzibar or anywhere else in Tanzania.",
+    areaServed: ["Tanzania"],
+    heroBadge: "Licensed African therapists · Tanzania-wide · Confidential",
+    ctaPrice: "clear price before booking",
+    serviceName: "Online Therapy and Counselling in Tanzania",
+    bodySections: [
+      {
+        heading: "Therapy that understands the local context",
+        paragraphs: [
+          "You should not have to explain family expectations, faith, work pressure or the stigma around asking for mental health support before therapy can begin. InnerSpark matches Tanzanian clients with licensed African therapists who understand these realities.",
+        ],
+        bullets: [
+          "Support for adults, couples, students and teenagers",
+          "Anxiety, stress, grief, relationships, trauma and burnout",
+          "English and Swahili support subject to therapist availability",
+          "Private sessions with no employer or family notification",
+        ],
+      },
+      {
+        heading: "Join from anywhere in Tanzania",
+        paragraphs: [
+          "Sessions run online, so there is no clinic journey or city waiting room. Choose video when you want face-to-face contact, voice when data or privacy is limited, or chat when writing feels easier than speaking.",
+        ],
+      },
+      paymentSection(
+        "Simple payment and clear pricing",
+        [
+          "The session price is shown before you confirm. Clients in Tanzania can pay by Visa, one session at a time, with no subscription required.",
+        ],
+        [
+          "Video, voice and chat options",
+          "Visa accepted from Tanzania",
+          "No subscription or long-term commitment",
+          "Booking confirmation sent privately",
+        ],
+      ),
+      {
+        heading: "How booking works",
+        paragraphs: [
+          "Share what you want help with and your preferred session format, review the available therapist match, choose a suitable time, then confirm payment. Your joining details are sent privately after booking.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        q: "Can I get online therapy anywhere in Tanzania?",
+        a: "Yes. Sessions are online, so you can join from Dar es Salaam, Arusha, Mwanza, Dodoma, Zanzibar or elsewhere with a phone and internet connection.",
+      },
+      {
+        q: "Can I speak with a therapist who understands East African culture?",
+        a: "Yes. InnerSpark works with licensed African therapists and matches clients based on concern, language and availability.",
+      },
+      {
+        q: "How do I pay from Tanzania?",
+        a: "Visa is accepted. The exact session price is shown before you confirm, and there is no subscription requirement.",
+      },
+      faqTimezone("Tanzania"),
+      CONFIDENTIAL_FAQ,
+    ],
+    relatedLinks: [
+      { to: "/online-therapy-africa", label: "Online therapy across Africa" },
+      { to: "/therapy-for-students-africa", label: "Therapy for university students" },
       ...COMMON_RELATED,
     ],
   },
