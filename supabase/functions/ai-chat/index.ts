@@ -490,10 +490,23 @@ Deno.serve(async (req) => {
     const risk = detectRisk(userText);
     const topics = detectTopics(userText);
 
+    // A crisis flag is session-wide and irreversible for this conversation.
+    // Re-read it from the database on every turn so refreshes, another tab or
+    // client-side state loss can never return the visitor to AI matching.
+    let sessionWasFlagged = false;
+    if (sid) {
+      const { data: sessionState } = await supabase
+        .from("chat_sessions")
+        .select("high_risk_triggered")
+        .eq("id", sid)
+        .maybeSingle();
+      sessionWasFlagged = sessionState?.high_risk_triggered === true;
+    }
+
     // Persist user message
     if (sid) {
       await supabase.from("chat_messages").insert({
-        session_id: sid, role: "user", content: userText, flagged: risk !== "none",
+        session_id: sid, role: "user", content: userText, flagged: risk !== "none" || sessionWasFlagged,
       });
       // Merge auto-tags onto the session (best-effort, non-blocking semantics).
       if (topics.length > 0) {
@@ -507,7 +520,11 @@ Deno.serve(async (req) => {
       }
       if (risk === "high") {
         await supabase.from("chat_sessions").update({
-          high_risk_triggered: true, escalated: true,
+          high_risk_triggered: true,
+          escalated: true,
+          review_status: "pending",
+          booked_outcome: "human_handoff",
+          updated_at: new Date().toISOString(),
         }).eq("id", sid);
         await supabase.from("chat_events").insert({
           session_id: sid, event_type: "high_risk_detected",
@@ -609,6 +626,47 @@ Deno.serve(async (req) => {
         },
       });
       return new Response(safetyStream, {
+        headers: {
+          ...corsHeaders,
+          "Content-Type": "text/event-stream",
+          "Cache-Control": "no-cache",
+          "Connection": "keep-alive",
+        },
+      });
+    }
+
+    // Once this session was flagged on an earlier turn, never call the model,
+    // therapist directory or booking tools again. Human staff own the handoff.
+    if (sessionWasFlagged) {
+      const handoffReply = "This conversation has been flagged for human follow-up, so I won't recommend a therapist or continue automated booking here. Please send an urgent WhatsApp message to InnerSpark on **+256 792 085 773** so a staff member can take over. Amani is not an emergency service.";
+      if (sid) {
+        await supabase.from("chat_messages").insert({
+          session_id: sid, role: "assistant", content: handoffReply, flagged: true,
+        });
+        await supabase.from("chat_sessions").update({
+          escalated: true,
+          booked_outcome: "human_handoff",
+          message_count: messages.length + 1,
+          updated_at: new Date().toISOString(),
+        }).eq("id", sid);
+        await supabase.from("chat_events").insert({
+          session_id: sid, event_type: "flagged_handoff_repeated",
+        });
+      }
+      const enc = new TextEncoder();
+      const handoffStream = new ReadableStream({
+        start(controller) {
+          controller.enqueue(enc.encode(
+            `data: ${JSON.stringify({ type: "meta", session_id: sid, high_risk: true, human_handoff: true })}\n\n`
+          ));
+          controller.enqueue(enc.encode(
+            `data: ${JSON.stringify({ type: "delta", content: handoffReply })}\n\n`
+          ));
+          controller.enqueue(enc.encode(`data: ${JSON.stringify({ type: "done" })}\n\n`));
+          controller.close();
+        },
+      });
+      return new Response(handoffStream, {
         headers: {
           ...corsHeaders,
           "Content-Type": "text/event-stream",
