@@ -9,14 +9,14 @@ import amaniAvatar from "@/assets/amani-avatar.jpg";
 import heroImg from "@/assets/blog/amani-ai-hero.jpg";
 
 const URL = "https://www.innersparkafrica.com/amani-ai";
-const TITLE = "Amani AI — Free Mental Wellness Chatbot for Uganda & Africa";
-const DESC = "Meet Amani, InnerSpark's free AI mental wellness companion. Chat 24/7 in English, get matched to a therapist, take a wellbeing check or just talk through how you feel — private and instant.";
+const TITLE = "Amani AI Uganda — Free Mental Wellness Chat | InnerSpark";
+const DESC = "Chat with Amani, InnerSpark Africa's free AI wellness guide for stress, sleep, anxiety and relationships. Amani is not a therapist or emergency service.";
 
 const faqs = [
   { q: "Is Amani AI free to use?", a: "Yes. Chatting with Amani is completely free. You can ask questions, get matched to a therapist or take a wellbeing check at no cost." },
   { q: "Is Amani a real therapist?", a: "No. Amani is a friendly AI wellness assistant trained to listen, share coping strategies and guide you to the right next step — including booking a licensed InnerSpark therapist when you need one." },
-  { q: "Is what I share with Amani private?", a: "Yes. Conversations are private. We don't sell your data and we never share your messages with your employer, family or anyone else." },
-  { q: "Can Amani help in a crisis?", a: "If you are in crisis or thinking about self-harm, please contact our 24/7 line on +256 792 085 773 or use the Emergency Support page. Amani will always direct you to a human in serious moments." },
+  { q: "Is what I share with Amani private?", a: "Your chat is handled through InnerSpark's service, but no online service can promise absolute privacy. Avoid sharing passwords, financial details or other sensitive identifying information." },
+  { q: "Can Amani help in a crisis?", a: "Amani is not an emergency service. If you may harm yourself or feel unsafe, WhatsApp InnerSpark immediately on +256 792 085 773 to reach a real person." },
   { q: "What can I ask Amani?", a: "Anything mental-health related — stress, sleep, anxiety, relationship struggles, work burnout, or how to book a therapist. Amani can also guide you to the right free assessment." },
 ];
 
@@ -30,7 +30,6 @@ const softwareSchema = {
   description: DESC,
   offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
   provider: { "@type": "Organization", name: "InnerSpark Africa", url: "https://www.innersparkafrica.com" },
-  aggregateRating: { "@type": "AggregateRating", ratingValue: "4.9", reviewCount: "2150" },
 };
 
 const faqSchema = {
@@ -73,12 +72,17 @@ const AmaniAI = () => (
     <Helmet>
       <title>{TITLE}</title>
       <meta name="description" content={DESC} />
-      <meta name="keywords" content="Amani AI, Amani AI Uganda, InnerSpark Amani, mental health chatbot Uganda, AI therapist Africa, free AI counsellor Uganda, free mental wellness chatbot, online therapy chatbot Uganda, mental health AI assistant Kampala, AI mental health support Kenya, talk to AI about anxiety, free therapy chat Uganda" />
+      <meta name="keywords" content="Amani AI Uganda, InnerSpark Amani, mental wellness chatbot Uganda, AI mental health support Africa, free wellbeing chat Uganda" />
       <link rel="canonical" href={URL} />
       <meta property="og:title" content={TITLE} />
       <meta property="og:description" content={DESC} />
       <meta property="og:type" content="website" />
       <meta property="og:url" content={URL} />
+      <meta property="og:image" content="https://www.innersparkafrica.com/og-image.jpg" />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={TITLE} />
+      <meta name="twitter:description" content={DESC} />
+      <meta name="twitter:image" content="https://www.innersparkafrica.com/og-image.jpg" />
       <script type="application/ld+json">{JSON.stringify(softwareSchema)}</script>
       <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
       <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
@@ -91,7 +95,7 @@ const AmaniAI = () => (
         <div className="container mx-auto px-4 grid lg:grid-cols-2 gap-10 items-center">
           <div>
             <span className="inline-flex items-center gap-1.5 bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-semibold mb-4">
-              <Sparkles className="w-3.5 h-3.5" /> Free · 24/7 · Private
+              <Sparkles className="w-3.5 h-3.5" /> Free · Available anytime · AI wellness guide
             </span>
             <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-4">
               Meet <span className="text-primary">Amani</span> — your free AI mental wellness companion
@@ -109,7 +113,7 @@ const AmaniAI = () => (
             </div>
             <div className="mt-6 flex items-center gap-4 text-sm text-muted-foreground">
               <img src={amaniAvatar} alt="Amani AI avatar" width={40} height={40} className="rounded-full" loading="lazy" />
-              <span>Trusted by 10,000+ Africans on their wellness journey</span>
+              <span>Start without payment or a long signup form</span>
             </div>
           </div>
           <div>
@@ -127,14 +131,14 @@ const AmaniAI = () => (
       {/* Why Amani */}
       <section className="py-16">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-10">Why thousands of Ugandans talk to Amani first</h2>
+          <h2 className="text-3xl font-bold text-center mb-10">Why people may choose to talk to Amani first</h2>
           <div className="grid md:grid-cols-3 gap-6">
             {[
               { Icon: Clock, title: "Always available", body: "2am, lunch break, Sunday morning — Amani is online whenever you need to talk things through." },
-              { Icon: ShieldCheck, title: "Completely private", body: "No employer, family or friend sees what you share. Your conversation stays between you and Amani." },
-              { Icon: Heart, title: "Built for African life", body: "Amani understands Kampala stress, family expectations, faith life and East African workplace culture." },
+              { Icon: ShieldCheck, title: "Privacy-aware", body: "Amani is designed for personal wellness conversations. Avoid sharing passwords, payment details or other sensitive identifying information." },
+              { Icon: Heart, title: "Built for African life", body: "Amani is designed around common East African concerns such as work pressure, family expectations and relationships." },
               { Icon: Sparkles, title: "Smart next step", body: "Whether it's a free assessment, a support group or a licensed therapist, Amani points you to the right help." },
-              { Icon: Globe2, title: "English-first, multi-lingual", body: "Built for Uganda, Kenya and the wider African diaspora — accessible anywhere with internet." },
+              { Icon: Globe2, title: "English-first", body: "Built for Uganda, Kenya and the wider African diaspora, with simple English that is accessible anywhere with internet." },
               { Icon: MessageCircle, title: "No signup required", body: "Just open the chat bubble. No long forms, no waiting list, no credit card." },
             ].map(({ Icon, title, body }) => (
               <div key={title} className="p-6 rounded-2xl border bg-card">
@@ -191,7 +195,7 @@ const AmaniAI = () => (
       <section className="py-16 bg-primary text-primary-foreground text-center">
         <div className="container mx-auto px-4 max-w-2xl">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Ready to chat with Amani?</h2>
-          <p className="text-lg text-primary-foreground/90 mb-7">It's free, private, and only takes a moment to start.</p>
+          <p className="text-lg text-primary-foreground/90 mb-7">It's free and only takes a moment to start. Amani is an AI guide, not a therapist or emergency service.</p>
           <Button size="lg" variant="secondary" className="rounded-full" onClick={openAmani}>
             <MessageCircle className="w-5 h-5 mr-2" /> Open Amani chat
           </Button>
