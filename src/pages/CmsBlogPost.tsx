@@ -174,12 +174,12 @@ const CmsBlogPost = () => {
               <div className="flex flex-wrap items-center gap-x-5 gap-y-3 text-sm text-[#4B5563]">
                 <span className="flex items-center gap-1.5"><Calendar className="h-4 w-4" />{new Date(date).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}</span>
                 {post.read_time && <span className="flex items-center gap-1.5"><Clock className="h-4 w-4" />{post.read_time}</span>}
-                <span className="flex items-center gap-1.5"><UserCheck className="h-4 w-4" />By {post.author || "InnerSpark Africa Clinical Team"}</span>
+                <span className="flex items-center gap-1.5"><UserCheck className="h-4 w-4" />By {post.author || "InnerSpark Africa"}</span>
               </div>
             </div>
             <div className="relative">
               {post.hero_image_url ? (
-                <img src={post.hero_image_url} alt={post.title} className="w-full aspect-[4/3] object-cover rounded-3xl shadow-sm" />
+                <img src={post.hero_image_url} alt={post.title} width="1200" height="900" fetchPriority="high" decoding="async" className="w-full aspect-[4/3] object-cover rounded-3xl shadow-sm" />
               ) : (
                 <div className="w-full aspect-[4/3] rounded-3xl bg-gradient-to-br from-primary/25 to-primary/5" />
               )}
