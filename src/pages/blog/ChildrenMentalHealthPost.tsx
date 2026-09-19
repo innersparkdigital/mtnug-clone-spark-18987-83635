@@ -11,8 +11,8 @@ const ChildrenMentalHealthPost = () => {
     <div className="min-h-screen bg-[#F7F3EA]">
       <Header />
       <ArticleSchema
-        headline="Innerspark Brings Mental Health Awareness to Children at Full Gospel Primary School, Nsambya CDC"
-        description="How Innerspark delivered child-friendly mental health awareness to pupils at Full Gospel Primary School, Nsambya CDC, in Kampala."
+        headline="School Mental Health Training in Kampala: Nsambya Case Study"
+        description="See how InnerSpark Africa delivers school mental health training in Kampala for pupils, teachers and caregivers, with practical follow-up support."
         path="/events-training/children-mental-health-awareness"
         datePublished="2025-08-09"
         image={childrenMentalHealthImage}
@@ -38,7 +38,7 @@ const ChildrenMentalHealthPost = () => {
                 <span className="text-sm text-muted-foreground">9th August 2025</span>
               </div>
               <h1 className="font-serif text-4xl md:text-6xl font-semibold leading-[1.08] tracking-tight mb-6 text-[#111827]">
-                Innerspark Brings Mental Health Awareness to Children at Full Gospel Primary School, Nsambya CDC
+                School Mental Health Training in Kampala: Nsambya Case Study
               </h1>
               <p className="text-lg text-muted-foreground">
                 Facilitator: Rita Lutta, Mental Health Facilitator
@@ -111,6 +111,11 @@ const ChildrenMentalHealthPost = () => {
                 Together, we can raise a generation that understands and values mental health as an essential part of life.
               </p>
             </div>
+            <aside className="mt-12 rounded-3xl border border-[#D9D0BF] bg-white p-7 md:p-9">
+              <h2 className="font-serif text-2xl font-semibold text-[#111827] mb-3">Bring mental health training to your school</h2>
+              <p className="text-[#4B5563] mb-5">Request a practical, age-appropriate programme for students, teachers or parents in Uganda.</p>
+              <a href="/corporate/service-request" className="inline-flex rounded-full bg-primary px-6 py-3 font-semibold text-primary-foreground">Request school training</a>
+            </aside>
           </div>
         </div>
       </article>
