@@ -236,9 +236,7 @@ const ClientPortalInner = () => {
     if (passcode.length < 6) return toast.error("Passcode must be at least 6 characters.");
     if (passcode !== confirmPasscode) return toast.error("Passcodes don't match.");
     setBusy(true);
-    const result = temporaryResetId
-      ? await supabase.rpc("complete_client_temporary_reset", { _token: token!, _request_id: temporaryResetId, _new_passcode: passcode })
-      : await supabase.rpc("set_client_passcode", { _token: token!, _passcode: passcode });
+    const result = await (supabase.rpc as any)("set_or_complete_client_passcode", { _token: token!, _new_passcode: passcode });
     setBusy(false);
     if (result.error || !result.data) return toast.error(result.error?.message || "Could not set passcode.");
     setTemporaryResetId(null);
