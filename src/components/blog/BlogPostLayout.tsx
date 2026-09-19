@@ -229,50 +229,41 @@ const BlogPostLayout = ({ data }: { data: BlogPostData }) => {
 
       <Header />
 
-      <main>
-        <article className="bg-background">
-          {/* Hero */}
-          <div className="relative h-[50vh] md:h-[60vh] overflow-hidden">
-            <img src={data.heroImage} alt={data.heroAlt} className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 p-6 md:p-12">
-              <div className="container mx-auto">
-                <nav className="mb-4">
-                  <Link to="/blog" className="inline-flex items-center text-primary-foreground/90 hover:text-primary-foreground bg-primary/80 px-3 py-1 rounded-full text-sm">
-                    <ArrowLeft className="h-4 w-4 mr-2" /> Back to Blog
-                  </Link>
-                </nav>
-                <span className="inline-block bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-medium mb-4">
-                  {data.category}
-                </span>
-                <h1 className="text-3xl md:text-5xl font-bold text-foreground mb-4 max-w-4xl">{data.title}</h1>
-                <div className="flex flex-wrap items-center gap-6 text-muted-foreground">
-                  <span className="flex items-center gap-2"><Calendar className="h-5 w-5" /> {data.date}</span>
-                  <span className="flex items-center gap-2"><Clock className="h-5 w-5" /> {data.readTime}</span>
-                  <span className="flex items-center gap-2">
-                    <UserCheck className="h-5 w-5" />
-                    <span>
-                      By {data.author || "InnerSpark Africa Clinical Team"}
-                      {data.reviewedBy && (
-                        <> &middot; Reviewed by {data.reviewedBy.name}{data.reviewedBy.credential ? `, ${data.reviewedBy.credential}` : ""}</>
-                      )}
-                    </span>
-                  </span>
-                  <div className="ml-auto">
-                    <SocialShareButtons url={url} title={data.title} description={data.metaDescription} />
-                  </div>
+      <main className="bg-[#F7F3EA]">
+        <article>
+          {/* Editorial hero shared by every code-based blog post. */}
+          <header className="border-b border-[#D9D0BF]">
+            <div className="container mx-auto px-4 py-10 md:py-16 max-w-6xl grid lg:grid-cols-[1.05fr_0.95fr] gap-10 items-center">
+              <div>
+                <Link to="/blog" className="inline-flex items-center text-primary font-semibold text-sm mb-7">
+                  <ArrowLeft className="h-4 w-4 mr-2" /> Back to Blog
+                </Link>
+                <span className="block text-xs font-bold uppercase tracking-[0.2em] text-primary mb-4">{data.category}</span>
+                <h1 className="font-serif text-4xl md:text-6xl font-semibold text-[#111827] leading-[1.08] tracking-tight mb-6">{data.title}</h1>
+                <p className="text-lg md:text-xl text-[#4B5563] leading-relaxed mb-7">{data.metaDescription}</p>
+                <div className="flex flex-wrap items-center gap-x-5 gap-y-3 text-sm text-[#4B5563]">
+                  <span className="flex items-center gap-1.5"><Calendar className="h-4 w-4" /> {data.date}</span>
+                  <span className="flex items-center gap-1.5"><Clock className="h-4 w-4" /> {data.readTime}</span>
+                  <span className="flex items-center gap-1.5"><UserCheck className="h-4 w-4" /> By {data.author || "InnerSpark Africa Clinical Team"}</span>
+                </div>
+              </div>
+              <div className="relative">
+                <img src={data.heroImage} alt={data.heroAlt} className="w-full aspect-[4/3] object-cover rounded-3xl shadow-sm" />
+                <div className="absolute -bottom-5 left-5 right-5 rounded-2xl bg-white/95 border border-[#D9D0BF] p-4 shadow-sm">
+                  <p className="text-sm font-bold text-[#111827]">Video therapy: UGX 75,000 per session</p>
+                  <p className="text-sm text-[#4B5563]">Chat therapy: UGX 30,000 · Mobile Money or card</p>
                 </div>
               </div>
             </div>
-          </div>
+          </header>
 
           {/* Body */}
-          <div className="container mx-auto px-4 py-12">
+          <div className="container mx-auto px-4 py-14">
             <div className="max-w-3xl mx-auto">
-              <div className="prose prose-lg max-w-none">
+              <div className="prose prose-lg max-w-none text-[#1F2937] prose-headings:font-serif prose-headings:text-[#111827] prose-headings:tracking-tight prose-p:leading-[1.85] prose-p:text-[#374151] prose-a:text-primary prose-a:font-semibold prose-strong:text-[#111827]">
                 {data.sections.map((s, i) => (
                   <section key={i} className="mb-12">
-                    <h2 className="text-3xl font-bold text-foreground mb-6">{s.title}</h2>
+                    <h2 className="text-3xl font-serif font-semibold text-[#111827] border-t border-[#D9D0BF] pt-9 mb-6">{s.title}</h2>
                     {s.blocks.map((b, bi) => (
                       <div key={bi} className="contents">
                         {renderBlock(b, bi)}
@@ -323,6 +314,7 @@ const BlogPostLayout = ({ data }: { data: BlogPostData }) => {
                 {data.cta && (
                   <section className="bg-primary/10 p-8 rounded-2xl text-center">
                     <h3 className="text-2xl font-bold text-foreground mb-4">{data.cta.heading}</h3>
+                    <p className="text-muted-foreground mb-2">Video therapy is UGX 75,000 per session; chat therapy is UGX 30,000.</p>
                     <p className="text-muted-foreground mb-6">{data.cta.body}</p>
                     <a
                       href={`https://wa.me/${WA_NUMBER}?text=${waText}`}
@@ -344,7 +336,9 @@ const BlogPostLayout = ({ data }: { data: BlogPostData }) => {
         </article>
       </main>
 
-      <RelatedArticles currentSlug={data.slug} />
+      <div className="bg-[#F7F3EA]">
+        <RelatedArticles currentSlug={data.slug} />
+      </div>
       <AppDownload />
       <Footer />
     </>
