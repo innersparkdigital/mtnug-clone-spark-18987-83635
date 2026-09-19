@@ -74,9 +74,14 @@ const TherapistPortal = () => {
         toast.error(error.message.includes("Invalid") ? "Invalid email or password" : error.message);
         return;
       }
-      const { data: resetData } = await supabase.functions.invoke("manual-password-reset", {
+      const { data: resetData, error: resetError } = await supabase.functions.invoke("manual-password-reset", {
         body: { action: "consume_therapist" },
       });
+      if (resetError || resetData?.error) {
+        await signOut();
+        toast.error("We could not verify this login safely. Please try again.");
+        return;
+      }
       if (resetData?.temporary) {
         if (resetData.expired) {
           await signOut();
