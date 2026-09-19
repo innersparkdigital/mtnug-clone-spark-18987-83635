@@ -11,8 +11,8 @@ const TruckDriversPost = () => {
     <div className="min-h-screen bg-[#F7F3EA]">
       <Header />
       <ArticleSchema
-        headline="Preparing Truck Drivers for Life Beyond the Road: A Journey of Empowerment and Transition"
-        description="How Innerspark supported long-haul truck drivers through retirement planning, identity change and emotional wellbeing."
+        headline="Truck Driver Mental Health and Retirement Training in Uganda"
+        description="See how InnerSpark Africa delivers truck driver mental health and retirement training in Uganda, covering identity, transition and emotional wellbeing."
         path="/events-training/truck-drivers-retirement-training"
         datePublished="2024-07-01"
         image={truckDriversImage}
@@ -38,7 +38,7 @@ const TruckDriversPost = () => {
                 <span className="text-sm text-muted-foreground">July 2024</span>
               </div>
               <h1 className="font-serif text-4xl md:text-6xl font-semibold leading-[1.08] tracking-tight mb-6 text-[#111827]">
-                Preparing Truck Drivers for Life Beyond the Road: A Journey of Empowerment and Transition
+                Truck Driver Mental Health and Retirement Training in Uganda
               </h1>
             </div>
 
@@ -93,6 +93,11 @@ const TruckDriversPost = () => {
                 If you've ever been part of a major career shift — or helped others through one — you know it's not just a change in work, but a change in identity. Let's keep building programs that prepare people not just to survive transitions, but to thrive in them.
               </p>
             </div>
+            <aside className="mt-12 rounded-3xl border border-[#D9D0BF] bg-white p-7 md:p-9">
+              <h2 className="font-serif text-2xl font-semibold text-[#111827] mb-3">Support drivers through change</h2>
+              <p className="text-[#4B5563] mb-5">Request practical mental health, transition or retirement training for your transport workforce.</p>
+              <a href="/corporate/service-request" className="inline-flex rounded-full bg-primary px-6 py-3 font-semibold text-primary-foreground">Request driver training</a>
+            </aside>
           </div>
         </div>
       </article>
