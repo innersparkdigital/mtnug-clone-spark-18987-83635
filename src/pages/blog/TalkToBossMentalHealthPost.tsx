@@ -157,7 +157,7 @@ const TalkToBossMentalHealthPost = () => {
       { label: "Innerspark — For employers", url: "https://www.innersparkafrica.com/innerspark-for-business" },
     ],
     closing: { headline: "The fear of having this conversation is almost always bigger than the conversation itself.", primary: "Name it, ask for one specific thing, and let your work — and your boss — surprise you." },
-    cta: { heading: "Get support before the conversation", body: "Talk to a licensed Ugandan therapist who can also provide a confidential letter for your employer. Sessions from UGX 30,000.", whatsappText: "Hi, I just read your article on talking to my boss about mental health and would like to book a session." },
+    cta: { heading: "Get support before the conversation", body: "Talk to a licensed African therapist before the conversation. Video therapy is UGX 75,000; chat therapy is UGX 30,000.", whatsappText: "Hi, I just read your article on talking to my boss about mental health and would like to book a session." },
   };
 
   return <BlogPostLayout data={data} />;
