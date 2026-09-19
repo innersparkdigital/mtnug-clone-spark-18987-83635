@@ -51,7 +51,7 @@ const howToSchema = {
   "@context": "https://schema.org",
   "@type": "HowTo",
   name: "How to chat with Amani AI for free mental health support",
-  description: "Start a free, private conversation with Amani, InnerSpark Africa's AI mental wellness companion.",
+  description: "Start a free conversation with Amani, InnerSpark Africa's AI mental wellness guide.",
   totalTime: "PT2M",
   step: [
     { "@type": "HowToStep", name: "Open the chat", text: "Tap the blue Amani chat bubble at the bottom-right of any InnerSpark page." },
