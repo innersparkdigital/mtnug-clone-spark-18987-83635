@@ -8,12 +8,13 @@ import { toast } from "sonner";
 
 type ResetRow = {
   id: string; account_type: "client" | "therapist"; identifier_masked: string;
-  status: "pending" | "sent" | "used" | "completed" | "expired" | "cancelled";
+  status: "pending" | "processing" | "sent" | "used" | "completed" | "expired" | "cancelled";
   requested_at: string; expires_at: string | null;
 };
 
 const statusLabel: Record<ResetRow["status"], string> = {
   pending: "Pending — awaiting admin action",
+  processing: "Being generated",
   sent: "Sent — awaiting user login",
   used: "Used — awaiting new password",
   completed: "Completed",
