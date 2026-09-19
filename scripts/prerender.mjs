@@ -54,6 +54,48 @@ function upsert(html, matcher, tag) {
   return html.replace("</head>", `    ${tag}\n  </head>`);
 }
 
+function schemaForRoute(route, url) {
+  if (route.path === "/") {
+    return {
+      "@context": "https://schema.org",
+      "@type": ["Organization", "MedicalOrganization"],
+      "@id": `${SITE}/#organization`,
+      name: "InnerSpark Africa",
+      url: `${SITE}/`,
+      logo: { "@type": "ImageObject", url: `${SITE}/innerspark-logo.webp` },
+      description: "Online therapy with licensed African therapists by video, voice or chat.",
+      telephone: "+256792085773",
+      areaServed: ["Uganda", "Kenya", "Tanzania"],
+    };
+  }
+  if (route.path === "/specialists") {
+    return {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "@id": `${url}#directory`,
+      name: route.title,
+      description: route.description,
+      url,
+      about: { "@type": "Thing", name: "Licensed African therapists" },
+      provider: { "@id": `${SITE}/#organization` },
+    };
+  }
+  if (route.path === "/for-business") {
+    return {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "@id": `${url}#service`,
+      name: "Corporate Mental Health and Employee Wellbeing Support",
+      description: route.description,
+      url,
+      provider: { "@id": `${SITE}/#organization` },
+      areaServed: ["Uganda", "Kenya", "Tanzania"],
+      serviceType: ["Employee wellbeing screening", "Employee counselling", "Workplace mental health training"],
+    };
+  }
+  return null;
+}
+
 function buildHead(html, route) {
   const url = `${SITE}${route.path === "/" ? "/" : `${route.path}/`}`;
   let out = html;
