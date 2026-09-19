@@ -518,7 +518,7 @@ Deno.serve(async (req) => {
         const merged = mergeTags(sessRow?.tags as string[] | null, topics);
         await supabase.from("chat_sessions").update({ tags: merged }).eq("id", sid);
       }
-      if (risk === "high") {
+      if (risk === "high" && !sessionWasFlagged) {
         await supabase.from("chat_sessions").update({
           high_risk_triggered: true,
           escalated: true,
