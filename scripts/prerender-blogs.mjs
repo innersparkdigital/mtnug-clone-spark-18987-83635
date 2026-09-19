@@ -367,13 +367,16 @@ function buildHead(shell, post) {
       "@type": post.schema_type === "HowTo" ? "HowTo" : "Article",
       headline: post.title,
       description,
-      image,
+      image: { "@type": "ImageObject", url: image },
       datePublished: published,
       dateModified: modified,
       mainEntityOfPage: { "@type": "WebPage", "@id": url },
-      author: { "@type": "Person", name: post.author || "InnerSpark Africa Clinical Team" },
+      author: post.author && post.author.trim().toLowerCase() !== "innerspark africa"
+        ? { "@type": "Person", name: post.author.trim() }
+        : { "@type": "Organization", "@id": `${SITE}/#organization`, name: "InnerSpark Africa", url: SITE },
       publisher: {
         "@type": "Organization",
+        "@id": `${SITE}/#organization`,
         name: "InnerSpark Africa",
         logo: { "@type": "ImageObject", url: `${SITE}/innerspark-logo.webp` },
       },
