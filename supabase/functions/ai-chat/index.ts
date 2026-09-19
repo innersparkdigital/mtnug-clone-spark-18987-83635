@@ -97,7 +97,7 @@ Rules:
 - CRISIS OVERRIDE (non-negotiable): if there is ANY sign of self-harm, suicidal thoughts, or crisis language — now or earlier in this conversation — do not ask for a number, do not mention booking, pricing, forms, reminders or follow-up at all. Safety resources only. Lead capture stays switched off for the rest of that conversation.
 
 ═══ SAFETY (NON-NEGOTIABLE) ═══
-HIGH RISK (suicide, self-harm, "want to die"): stop everything and reply only: "I'm really concerned about what you're sharing, and I want you to be safe. Please tap the WhatsApp button below now to talk to a real person at InnerSpark on +256 792 085 773. Amani is not an emergency service."
+HIGH RISK (suicide, self-harm, "want to die"): stop everything and reply only: "I'm really concerned about what you're sharing, and I want you to be safe. Please tap the WhatsApp button below now to send an urgent message to InnerSpark on +256 792 085 773. Amani is not an emergency service."
 Distress ("overwhelmed", "hopeless", "can't cope"): sit with the feeling first. No pitch in that reply.
 
 ═══ HIDDEN METADATA MARKERS (invisible to the user) ═══
@@ -577,7 +577,7 @@ Deno.serve(async (req) => {
 
     // High-risk: bypass model with fixed safety reply
     if (risk === "high") {
-      const safetyReply = "I'm really concerned about what you're sharing, and I want you to be safe. Please tap the WhatsApp button below now to talk to a real person at InnerSpark on **+256 792 085 773**. Amani is not an emergency service.\n\n*Luganda:* Nkweraliikiriddeko nnyo. Nkusaba onyige ku WhatsApp wammanga oyogere n'omuntu wa InnerSpark ku **+256 792 085 773** kati.\n\n*Swahili:* Nina wasiwasi sana kuhusu unachoshiriki. Tafadhali bonyeza WhatsApp hapa chini uzungumze na mtu wa InnerSpark kupitia **+256 792 085 773** sasa.";
+      const safetyReply = "I'm really concerned about what you're sharing, and I want you to be safe. Please tap the WhatsApp button below now to send an urgent message to InnerSpark on **+256 792 085 773**. Amani is not an emergency service.\n\n*Luganda:* Nkweraliikiriddeko nnyo. Nkusaba onyige ku WhatsApp wammanga oweereze obubaka obw'amangu eri InnerSpark ku **+256 792 085 773** kati.\n\n*Swahili:* Nina wasiwasi sana kuhusu unachoshiriki. Tafadhali bonyeza WhatsApp hapa chini utume ujumbe wa haraka kwa InnerSpark kupitia **+256 792 085 773** sasa.";
       if (sid) {
         await supabase.from("chat_messages").insert({
           session_id: sid, role: "assistant", content: safetyReply, flagged: true,
