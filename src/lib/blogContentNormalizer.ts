@@ -285,5 +285,7 @@ export const auditBlogBody = (html: string, faqCount: number): string[] => {
   if (!/\/book-therapist|\/online-therapy|\/mind-check/.test(firstPart))
     warnings.push("No booking link near the top — add one in the first two paragraphs.");
   if (faqCount < 2) warnings.push("Add at least two FAQs so Google can show rich results.");
+  if (/\.map\s*\(|const\s+Icon\s*=|\{[A-Za-z_$][\w$]*\.(?:name|description|icon)\}/.test(text))
+    warnings.push("Template code is visible in the article body — remove it before publishing.");
   return warnings;
 };
