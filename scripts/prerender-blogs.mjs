@@ -18,6 +18,13 @@ import { SITE, GLOBAL_LINKS } from "./prerender-content.mjs";
 const DIST = path.resolve(process.cwd(), "dist");
 const MAX_POSTS = 200;
 
+const SEO_OVERRIDES = {
+  "how-to-stop-a-panic-attack": {
+    title: "How to Stop a Panic Attack Now: 7 Safe Steps | InnerSpark",
+    description: "Use seven practical steps to manage a panic attack safely, including slower breathing and grounding. Learn when to seek urgent help or talk to a licensed therapist.",
+  },
+};
+
 // Node does not automatically load Vite's .env file during postbuild.
 // Keep the public read-only project details as fallbacks so blog prerendering
 // still runs on hosts that expose these values only to the browser bundle.
@@ -53,8 +60,9 @@ function buildHead(shell, post) {
   const url = configuredUrl
     ? configuredUrl.endsWith("/") ? configuredUrl : `${configuredUrl}/`
     : defaultUrl;
-  const title = post.meta_title?.trim() || `${post.title} | InnerSpark Africa`;
-  const description = post.meta_description || post.excerpt || post.title;
+  const override = SEO_OVERRIDES[post.slug];
+  const title = override?.title || post.meta_title?.trim() || `${post.title} | InnerSpark Africa`;
+  const description = override?.description || post.meta_description || post.excerpt || post.title;
   const image = post.og_image_url?.trim() || post.hero_image_url || `${SITE}/og-image.jpg`;
   const published = post.published_at || post.created_at;
   const modified = post.last_updated_at || published;
