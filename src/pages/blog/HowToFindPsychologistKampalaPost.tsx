@@ -7,7 +7,7 @@ const HowToFindPsychologistKampalaPost = () => {
     category: "Therapy in Kampala",
     title: "How to Find a Good Psychologist in Kampala: A Practical 2026 Guide",
     metaTitle: "How to Find a Good Psychologist in Kampala — Vetted, Affordable | Innerspark",
-    metaDescription: "A clear, practical guide to finding a vetted psychologist in Kampala — qualifications to check, realistic costs (UGX 30,000–300,000), where to look, red flags, and how to book this week.",
+    metaDescription: "Find a licensed psychologist in Kampala. InnerSpark Africa video therapy costs UGX 75,000; chat therapy costs UGX 30,000 per session.",
     date: "June 7, 2026",
     isoDate: "2026-06-07",
     readTime: "10 min read",
@@ -17,7 +17,7 @@ const HowToFindPsychologistKampalaPost = () => {
     sections: [
       { title: "Finding the right psychologist in Kampala matters more than people realise", blocks: [
         { type: "lead", text: "Kampala has more qualified psychologists than ever — and more people calling themselves \"therapists\" without proper training. The difference between a good and a bad fit can be the difference between feeling better in 6 weeks and giving up on therapy entirely. This guide shows you exactly how to find someone who actually knows what they are doing." },
-        { type: "callout", label: "The short version:", text: "A good psychologist in Kampala is registered with the Uganda Counselling Association or the Allied Health Professionals Council, trained in evidence-based therapy (CBT, ACT, EMDR), transparent about fees (UGX 30,000–300,000 per session), and someone you feel safe with after the first conversation." },
+        { type: "callout", label: "The short version:", text: "A good psychologist in Kampala is properly qualified, trained in evidence-based care, transparent about fees and someone you feel safe with. InnerSpark Africa video therapy costs UGX 75,000; chat therapy costs UGX 30,000 per session." },
         { type: "p", text: "Below: what to look for, where to actually find them, what they should cost, the red flags that should make you walk away, and a four-step path to booking your first session this week." },
       ]},
       { title: "Psychologist vs counsellor vs psychiatrist — what's the difference?", blocks: [
@@ -51,7 +51,8 @@ const HowToFindPsychologistKampalaPost = () => {
       ]},
       { title: "What it should cost in Kampala right now", blocks: [
         { type: "list", items: [
-          <><strong>Innerspark Africa (online or hybrid):</strong> UGX 30,000 – 75,000 per 60-minute session</>,
+          <><strong>InnerSpark Africa video therapy:</strong> UGX 75,000 per session</>,
+          <><strong>InnerSpark Africa chat therapy:</strong> UGX 30,000 per session</>,
           <><strong>Private clinics (Kololo, Naguru, Bugolobi):</strong> UGX 100,000 – 300,000 per session</>,
           <><strong>Hospital outpatient (IHK, Nakasero, AAR):</strong> UGX 150,000 – 400,000 per session</>,
           <><strong>Butabika Hospital:</strong> Free, but expect longer waiting times</>,
@@ -90,7 +91,7 @@ const HowToFindPsychologistKampalaPost = () => {
     ],
     faqs: [
       { q: "How do I know if a Kampala psychologist is actually qualified?", a: "Ask for their qualification (Master's in Clinical Psychology or registered counselling diploma) and their registration with the Uganda Counselling Association or Allied Health Professionals Council. Any good psychologist will confirm this in writing without hesitation." },
-      { q: "How much does a psychologist cost in Kampala?", a: "Online platforms like Innerspark Africa charge UGX 30,000–75,000 per session. Private clinics in Kololo/Naguru charge UGX 100,000–300,000. Hospitals charge UGX 150,000–400,000. Butabika Hospital and university clinics offer free or subsidised care with waiting lists." },
+      { q: "How much does a psychologist cost in Kampala?", a: "InnerSpark Africa video therapy costs UGX 75,000 per session and chat therapy costs UGX 30,000. Other Kampala providers set their own fees, so confirm the current price before booking." },
       { q: "Should I see a psychologist, counsellor, or psychiatrist?", a: "Start with a psychologist or counsellor for most concerns. See a psychiatrist if your symptoms are severe, you may need medication, or you have a complex condition such as bipolar disorder or psychosis. Your psychologist can refer you when needed." },
       { q: "Can I see a Kampala psychologist online?", a: "Yes. Innerspark Africa and many private practices now offer secure online sessions over WhatsApp, Zoom, or in-app. Outcomes are the same as in-person for most concerns, and it is significantly more affordable." },
       { q: "How many sessions will I need?", a: "Most people experience meaningful progress in 6–12 sessions. Mild concerns can shift in fewer; long-standing or trauma-related concerns may take more. A good psychologist will agree a plan with you and review it openly." },
@@ -103,7 +104,7 @@ const HowToFindPsychologistKampalaPost = () => {
       { label: "Innerspark — Browse Kampala psychologists", url: "https://www.innersparkafrica.com/specialists" },
     ],
     closing: { headline: "Finding the right psychologist in Kampala is easier than it has ever been.", primary: "One vetted session this week is worth more than another year of waiting." },
-    cta: { heading: "Book a vetted Kampala psychologist", body: "Sessions from UGX 30,000. Online or in-person in Kampala. Paid by Mobile Money, one session at a time.", whatsappText: "Hi, I just read your guide on finding a psychologist in Kampala and would like to book a session." },
+    cta: { heading: "Book a vetted Kampala psychologist", body: "Video therapy is UGX 75,000; chat therapy is UGX 30,000. Pay by Mobile Money or card.", whatsappText: "Hi, I just read your guide on finding a psychologist in Kampala and would like to book a session." },
   };
   return <BlogPostLayout data={data} />;
 };
