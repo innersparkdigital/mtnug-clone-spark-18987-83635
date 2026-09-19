@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import PhoneField from "@/components/PhoneField";
 import { isValidE164 } from "@/lib/phoneCountries";
-import { MessageCircle, X, Send, Loader2, Phone, Calendar, Heart, AlertTriangle, LifeBuoy, UserPlus, Check, Sparkles, ShieldCheck, Star } from "lucide-react";
+import { MessageCircle, X, Send, Loader2, Phone, Calendar, Heart, AlertTriangle, LifeBuoy, UserPlus, Check, Sparkles, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
@@ -64,14 +64,6 @@ function parseFormTarget(target: string): { kind: FormKind; therapist: string | 
   return { kind, therapist: therapist || null };
 }
 
-// Rotating social-proof lines shown once per open. Real InnerSpark themes, no PII.
-const MICRO_TESTIMONIALS = [
-  "★★★★★ \"Booked in 4 minutes — my therapist really listened.\" — Sarah, Kampala",
-  "★★★★★ \"Amani made asking for help feel simple.\" — David, Nairobi",
-  "★★★★★ \"I was matched the same day. Life-changing.\" — Aisha, Kampala",
-  "★★★★★ \"Chat therapy fit my budget and my schedule.\" — Peter, Uganda",
-];
-
 const ANON_KEY = "is_chat_anon_id";
 const AUTO_OPEN_KEY = "is_chat_auto_opened";
 const CLOSE_INTERCEPT_KEY = "is_chat_reminder_seen";
@@ -106,7 +98,7 @@ function contextualWelcome(pathname: string): Msg {
   const p = pathname.toLowerCase();
   const greeting = getTimeGreeting();
   const dayNote = getDayNote();
-  let content = `${greeting} — I'm Amani from InnerSpark 👋 This is a judgment-free space, and whatever you share stays private.\n\n${dayNote} May I know your name so I can make this conversation feel more personal?`;
+  let content = `${greeting} — I'm Amani from InnerSpark 👋 This is a judgment-free space. Please avoid sharing passwords, payment details or other sensitive identifying information.\n\n${dayNote} May I know your name so I can make this conversation feel more personal?`;
   if (p.startsWith("/for-business") || p.startsWith("/corporate")) {
     content = `${greeting} — I'm Amani 👋 Looking for support for your team? How many people are we talking about?`;
   } else if (p.startsWith("/specialists") || p.startsWith("/find-therapist") || p.startsWith("/book-therapist")) {
@@ -160,7 +152,6 @@ const AIChatWidget = () => {
   const [leadRowId, setLeadRowId] = useState<string | null>(null);
   const [activeForm, setActiveForm] = useState<FormKind | null>(null);
   const [activeFormTherapist, setActiveFormTherapist] = useState<string | null>(null);
-  const [testimonialIdx] = useState(() => Math.floor(Math.random() * MICRO_TESTIMONIALS.length));
   const openedAtRef = useRef<number>(Date.now());
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -664,10 +655,10 @@ const AIChatWidget = () => {
               </button>
             </div>
 
-            {/* Social proof strip + disclaimer */}
+            {/* Clear scope and privacy notice */}
             <div className="px-3 py-1.5 bg-emerald-50 border-b border-emerald-100 text-[11px] text-emerald-900 flex items-center gap-1.5">
-              <Star className="w-3 h-3 flex-shrink-0 fill-amber-500 text-amber-500" />
-              <span className="truncate">{MICRO_TESTIMONIALS[testimonialIdx]}</span>
+              <ShieldCheck className="w-3 h-3 flex-shrink-0" />
+              <span className="truncate">Free AI wellness guidance · No payment required to start</span>
             </div>
             <div className="px-3 py-1.5 bg-amber-50 border-b border-amber-200 text-[10px] text-amber-900 flex items-start gap-1.5">
               <AlertTriangle className="w-3 h-3 mt-0.5 flex-shrink-0" />
