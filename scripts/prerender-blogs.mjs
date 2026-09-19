@@ -118,6 +118,15 @@ const esc = (s) =>
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
 
+const SPARK_PILLARS_SECTION = `<section class="blog-callout">
+  <h2>The five S.P.A.R.K wellbeing pillars</h2>
+  <h3>S — Sleep</h3><p>Protect a regular sleep window and reduce late-night screen time where your routine allows.</p>
+  <h3>P — Purpose</h3><p>Choose one meaningful priority for the week instead of trying to solve everything at once.</p>
+  <h3>A — Activity</h3><p>Move your body in a realistic way: walking, stretching, sport or active household work all count.</p>
+  <h3>R — Relationships</h3><p>Make time for at least one honest conversation with someone you trust.</p>
+  <h3>K — Knowledge</h3><p>Notice patterns in your mood, stress and coping, then seek reliable information or professional support when needed.</p>
+</section>`;
+
 const THERAPY_TYPES_SECTION = `<section class="blog-callout">
   <h2>Therapy options available through InnerSpark Africa</h2>
   <p>Choose the kind of support that matches what you want help with. A licensed therapist can explain the best starting point during your first confidential session.</p>
@@ -134,12 +143,19 @@ const removeLeakedTemplateCode = (input) => {
     source = source.replace(/\{therapyTypes\.map\([\s\S]*?(?:\}\)\}|\}\);?)/g, THERAPY_TYPES_SECTION);
     if (!source.includes(THERAPY_TYPES_SECTION)) source += THERAPY_TYPES_SECTION;
   }
+  if (/pillars\.map|p\.letter|p\.name|p\.body/.test(source)) {
+    source = source.replace(/\{pillars\.map\([\s\S]*?(?:\)\)\}|\}\);?)/g, SPARK_PILLARS_SECTION);
+    if (!source.includes(SPARK_PILLARS_SECTION)) source += SPARK_PILLARS_SECTION;
+  }
   return source
     .split(/\r?\n/)
     .filter((line) => !/^\s*(?:\{?[A-Za-z_$][\w$]*\.map\(|const\s+Icon\s*=|return\s*\(|\{[A-Za-z_$][\w$]*\.(?:name|description|icon)\}|[)};,]+\s*$)/.test(line))
     .join("\n")
-    .replace(/\{therapy\.(?:name|description|icon)\}/g, "")
-    .replace(/\{therapyTypes\.map\([^\n]*/g, "");
+    .replace(/\{(?:therapy|p)\.(?:name|description|icon|letter|body)\}/g, "")
+    .replace(/\{(?:therapyTypes|pillars)\.map\([^\n]*/g, "")
+    .replace(/\{(?:title|desc|description|category|date|readTime)\}/g, "")
+    .replace(/(?:Back to Blog\s*){2,}/gi, "Back to Blog ")
+    .replace(/<[^>]+>\s*<\/[^>]+>/g, "");
 };
 
 /** Keep the article markup but drop anything executable. */
@@ -151,7 +167,9 @@ const sanitize = (html) =>
     .replace(/video, voice or chat from UGX 30,000/gi, "video therapy at UGX 75,000 or chat therapy at UGX 30,000")
     .replace(/online therapy starting from UGX 30,000 per session/gi, "video therapy at UGX 75,000 per session and chat therapy at UGX 30,000")
     .replace(/therapy starting from UGX 30,000 per session/gi, "video therapy at UGX 75,000 per session and chat therapy at UGX 30,000")
-    .replace(/video sessions? (?:start at|costs?) UGX 30,000/gi, "video sessions cost UGX 75,000");
+    .replace(/video sessions? (?:start at|costs?) UGX 30,000/gi, "video sessions cost UGX 75,000")
+    .replace(/sessions? from UGX 30,000/gi, "video sessions at UGX 75,000 or chat sessions at UGX 30,000")
+    .replace(/UGX 30,000\s*[–-]\s*75,000 per session/gi, "UGX 75,000 for video or UGX 30,000 for chat per session");
 
 function upsert(html, matcher, tag) {
   if (matcher.test(html)) return html.replace(matcher, tag);
