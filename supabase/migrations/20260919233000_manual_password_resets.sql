@@ -6,7 +6,7 @@ create table if not exists public.manual_password_reset_requests (
   account_id uuid not null,
   user_id uuid null,
   identifier_masked text not null,
-  status text not null default 'pending' check (status in ('pending','sent','used','completed','expired','cancelled')),
+  status text not null default 'pending' check (status in ('pending','processing','sent','used','completed','expired','cancelled')),
   temp_secret_hash text null,
   requested_at timestamptz not null default now(),
   expires_at timestamptz null,
@@ -30,6 +30,20 @@ on public.manual_password_reset_requests for select
 to authenticated
 using (public.has_role(auth.uid(), 'admin'));
 
+create or replace function public.claim_manual_password_reset(_request_id uuid, _admin_id uuid)
+returns boolean
+language plpgsql security definer set search_path = public
+as $$
+begin
+  update public.manual_password_reset_requests
+  set status='processing', revealed_by=_admin_id, updated_at=now()
+  where id=_request_id and status='pending' and revealed_at is null;
+  return found;
+end;
+$$;
+revoke all on function public.claim_manual_password_reset(uuid,uuid) from public, anon, authenticated;
+grant execute on function public.claim_manual_password_reset(uuid,uuid) to service_role;
+
 create or replace function public.admin_set_client_temporary_passcode(
   _request_id uuid,
   _client_id uuid,
@@ -45,7 +59,7 @@ begin
   update public.manual_password_reset_requests
   set temp_secret_hash = encode(digest(_temporary_passcode, 'sha256'), 'hex'),
       status = 'sent', revealed_at = now(), expires_at = now() + interval '60 minutes', updated_at = now()
-  where id = _request_id and account_type = 'client' and account_id = _client_id and status = 'pending';
+  where id = _request_id and account_type = 'client' and account_id = _client_id and status = 'processing';
   return found;
 end;
 $$;
