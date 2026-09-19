@@ -16,7 +16,7 @@ const faqs = [
   { q: "Is Amani AI free to use?", a: "Yes. Chatting with Amani is completely free. You can ask questions, get matched to a therapist or take a wellbeing check at no cost." },
   { q: "Is Amani a real therapist?", a: "No. Amani is a friendly AI wellness assistant trained to listen, share coping strategies and guide you to the right next step — including booking a licensed InnerSpark therapist when you need one." },
   { q: "Is what I share with Amani private?", a: "Your chat is handled through InnerSpark's service, but no online service can promise absolute privacy. Avoid sharing passwords, financial details or other sensitive identifying information." },
-  { q: "Can Amani help in a crisis?", a: "Amani is not an emergency service. If you may harm yourself or feel unsafe, WhatsApp InnerSpark immediately on +256 792 085 773 to reach a real person." },
+  { q: "Can Amani help in a crisis?", a: "Amani is not an emergency service. If you may harm yourself or feel unsafe, send an urgent WhatsApp message to InnerSpark on +256 792 085 773." },
   { q: "What can I ask Amani?", a: "Anything mental-health related — stress, sleep, anxiety, relationship struggles, work burnout, or how to book a therapist. Amani can also guide you to the right free assessment." },
 ];
 
