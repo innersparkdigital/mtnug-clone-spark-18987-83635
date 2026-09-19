@@ -21,7 +21,83 @@ const MAX_POSTS = 200;
 const SEO_OVERRIDES = {
   "how-to-stop-a-panic-attack": {
     title: "How to Stop a Panic Attack Now: 7 Safe Steps | InnerSpark",
-    description: "Use seven practical steps to manage a panic attack safely, including slower breathing and grounding. Learn when to seek urgent help or talk to a licensed therapist.",
+    description: "Use seven practical steps to manage a panic attack safely, then book confidential support with a licensed African therapist if attacks continue.",
+  },
+  "therapy-cost-uganda": {
+    title: "Therapy Cost in Uganda: Video UGX 75,000 | InnerSpark",
+    description: "Compare therapy costs in Uganda. InnerSpark video therapy is UGX 75,000 per session and chat therapy is UGX 30,000.",
+  },
+  "cost-of-therapy-in-kampala-2026": {
+    title: "Therapy Cost in Kampala 2026: Prices and Booking",
+    description: "Compare therapy prices in Kampala and book a licensed African therapist. Video sessions cost UGX 75,000; chat costs UGX 30,000.",
+  },
+  "affordable-online-counselling-uganda": {
+    title: "Online Counselling Uganda: Video UGX 75,000",
+    description: "Book online counselling in Uganda with a licensed African therapist. Video sessions cost UGX 75,000 and chat sessions cost UGX 30,000.",
+  },
+  "best-therapist-for-anxiety-in-uganda": {
+    title: "Anxiety Therapist Uganda: Find and Book Online",
+    description: "Find a licensed anxiety therapist in Uganda for confidential video or chat sessions, with local payment options and clear pricing.",
+  },
+  "how-to-find-psychologist-in-kampala": {
+    title: "Psychologist Kampala: How to Find and Book One",
+    description: "Find a licensed psychologist in Kampala and compare credentials, session format, pricing and availability before you book.",
+  },
+  "find-therapist-kampala": {
+    title: "Find a Therapist in Kampala and Book Online",
+    description: "Find and book a licensed therapist in Kampala for confidential video or chat support with clear local pricing.",
+  },
+  "find-a-therapist-in-uganda": {
+    title: "Find a Therapist in Uganda: Licensed Online Support",
+    description: "Choose a licensed therapist in Uganda for confidential online support by video or chat. Compare fit, availability and price before booking.",
+  },
+  "relationship-counselling-uganda-online": {
+    title: "Online Relationship Counselling Uganda | InnerSpark",
+    description: "Book confidential online relationship counselling in Uganda with a licensed African therapist who understands local family and cultural context.",
+  },
+  "online-vs-in-person-therapy-uganda": {
+    title: "Online vs In-Person Therapy Uganda: Cost and Fit",
+    description: "Compare online and in-person therapy in Uganda by cost, privacy, convenience and therapist access before choosing where to book.",
+  },
+  "cost-of-therapy-in-kenya": {
+    title: "Therapy Cost in Kenya: Online Prices and Booking",
+    description: "Compare therapy costs in Kenya and book a licensed African therapist online for confidential support by video or chat.",
+  },
+  "find-a-therapist-in-nairobi": {
+    title: "Find a Therapist in Nairobi and Book Online",
+    description: "Find a licensed therapist in Nairobi for confidential online therapy, with clear session options, local context and simple booking.",
+  },
+  "cost-of-therapy-in-nigeria": {
+    title: "Therapy Cost in Nigeria: Online Prices and Booking",
+    description: "Compare therapy costs in Nigeria and book confidential online support with a licensed African therapist using card payment.",
+  },
+  "find-a-therapist-in-lagos": {
+    title: "Find a Therapist in Lagos and Book Online",
+    description: "Find a licensed therapist in Lagos for confidential online therapy by video or chat, with clear availability and simple booking.",
+  },
+  "cost-of-therapy-in-ghana": {
+    title: "Therapy Cost in Ghana: Online Prices and Booking",
+    description: "Compare therapy costs in Ghana and book confidential online support with a licensed African therapist using card payment.",
+  },
+  "find-a-therapist-in-accra": {
+    title: "Find a Therapist in Accra and Book Online",
+    description: "Find a licensed therapist in Accra for confidential online therapy by video or chat, with clear availability and simple booking.",
+  },
+  "mental-health-support-students-uganda": {
+    title: "Student Counselling Uganda: Find Support Online",
+    description: "Find confidential student counselling in Uganda for study pressure, anxiety, relationships and family difficulties with a licensed therapist.",
+  },
+  "burnout-kampala-professionals": {
+    title: "Burnout Therapy Kampala: Online Support for Work Stress",
+    description: "Book confidential burnout therapy in Kampala with a licensed therapist who understands workplace pressure and professional life in Uganda.",
+  },
+  "men-therapy-uganda": {
+    title: "Therapy for Men in Uganda: Confidential Online Support",
+    description: "Find confidential therapy for men in Uganda with licensed African therapists and private video or chat sessions.",
+  },
+  "uganda-workplace-mental-health-crisis": {
+    title: "Workplace Mental Health Support Uganda | InnerSpark",
+    description: "Get workplace mental health training and confidential employee support in Uganda for stress, burnout and healthier teams.",
   },
 };
 
