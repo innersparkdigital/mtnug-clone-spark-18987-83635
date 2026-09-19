@@ -141,7 +141,7 @@ const Blog = () => {
                     "name": "How do I find affordable therapy in Uganda?",
                     "acceptedAnswer": {
                       "@type": "Answer",
-                      "text": "Innerspark Africa offers affordable online therapy starting from UGX 30,000 per session with licensed therapists. Sessions are available via video, voice, or chat from anywhere."
+                      "text": "InnerSpark Africa offers video therapy at UGX 75,000 per session and chat therapy at UGX 30,000 per session with licensed African therapists."
                     }
                   },
                   {
