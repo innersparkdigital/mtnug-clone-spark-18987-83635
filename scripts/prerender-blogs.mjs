@@ -510,6 +510,41 @@ async function fetchPosts() {
   return posts;
 }
 
+function auditPublishedPosts(posts) {
+  const seenTitles = new Map();
+  const critical = [];
+  const warnings = [];
+
+  for (const post of posts) {
+    const slug = String(post?.slug || "").trim();
+    const clean = sanitize(post?.content || "");
+    const text = clean.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+    const wordCount = text ? text.split(" ").length : 0;
+    const headingCount = (clean.match(/<h[23][^>]*>/gi) || []).length;
+    const title = SEO_OVERRIDES[slug]?.title;
+
+    if (!slug) critical.push("A published article has no slug.");
+    if (!SEO_OVERRIDES[slug]) critical.push(`${slug}: missing unique search title and description.`);
+    if (!ARTICLE_JOURNEYS[slug]) critical.push(`${slug}: missing reader hook and conversion path.`);
+    if (/\.map\s*\(|const\s+[A-Za-z_$]|\{[A-Za-z_$][\w$]*\.(?:name|body|icon|letter)\}/.test(clean))
+      critical.push(`${slug}: visible template code remains after cleaning.`);
+    if (/sessions? from UGX 30,000|video[^.]{0,30}UGX 30,000/i.test(clean))
+      critical.push(`${slug}: stale video-therapy pricing remains after cleaning.`);
+    if (wordCount < 400) warnings.push(`${slug}: ${wordCount} words; expand the article body.`);
+    if (headingCount < 2) warnings.push(`${slug}: only ${headingCount} structured subheadings.`);
+    if (!Array.isArray(post.faqs) || post.faqs.length < 2) warnings.push(`${slug}: fewer than two stored FAQs.`);
+    if (!post.hero_image_url) warnings.push(`${slug}: no article-specific hero image.`);
+    if (title) {
+      if (seenTitles.has(title)) critical.push(`${slug}: duplicates the search title used by ${seenTitles.get(title)}.`);
+      else seenTitles.set(title, slug);
+    }
+  }
+
+  warnings.forEach((warning) => console.warn(`[blog-audit] ${warning}`));
+  if (critical.length) throw new Error(`[blog-audit] ${critical.join("\n[blog-audit] ")}`);
+  console.log(`[blog-audit] ${posts.length} published articles passed critical content, pricing, SEO and conversion checks.`);
+}
+
 async function run() {
   // prerender.mjs writes a clean SPA shell for us; fall back to dist/index.html.
   const templatePath = path.join(DIST, "index.template.html");
@@ -531,6 +566,7 @@ async function run() {
   }
 
   const posts = await fetchPosts();
+  auditPublishedPosts(posts);
   let count = 0;
   for (const post of posts) {
     if (!post?.slug) continue;
