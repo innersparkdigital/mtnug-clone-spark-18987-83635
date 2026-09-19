@@ -608,22 +608,9 @@ const AIChatWidget = () => {
                     <Phone className="w-5 h-5" /> WhatsApp InnerSpark Now
                   </a>
 
-                  <a
-                    href="tel:0800212121"
-                    onClick={() => handleCTA("crisis_helpline")}
-                    className="flex items-center justify-center gap-2 w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 rounded-xl shadow-lg text-base"
-                  >
-                    <PhoneCall className="w-5 h-5" /> Call Butabika Helpline
-                    <span className="text-xs font-normal opacity-90">(0800-21-21-21)</span>
-                  </a>
-
-                  <button
-                    type="button"
-                    onClick={() => { handleCTA("crisis_book"); setOpen(false); startBooking(); }}
-                    className="flex items-center justify-center gap-2 w-full bg-primary hover:opacity-90 text-primary-foreground font-bold py-4 rounded-xl shadow-lg text-base"
-                  >
-                    <Calendar className="w-5 h-5" /> Book a Therapist Today
-                  </button>
+                  <p className="text-center text-xs text-red-900 leading-relaxed">
+                    Amani is not an emergency service. For crisis support, use the InnerSpark WhatsApp button above to reach a real person.
+                  </p>
 
                   <div className="bg-white/70 border border-red-200 rounded-xl p-3 text-xs text-red-900 leading-relaxed">
                     <div className="font-semibold mb-1">While you wait — try this 60-second breath:</div>
