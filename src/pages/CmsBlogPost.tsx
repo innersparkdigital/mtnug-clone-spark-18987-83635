@@ -154,35 +154,40 @@ const CmsBlogPost = () => {
         {faqSchema && <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>}
       </Helmet>
       <Header />
-      <main>
-        {/* Full-bleed hero with the headline over the image */}
-        <header className="relative w-full h-[52vh] min-h-[360px] md:h-[62vh] flex items-end overflow-hidden">
-          {post.hero_image_url ? (
-            <img src={post.hero_image_url} alt={post.title} className="absolute inset-0 w-full h-full object-cover" />
-          ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-primary to-primary/60" />
-          )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/50 to-black/20" />
-          <div className="relative container mx-auto px-4 pb-10 md:pb-14 max-w-3xl">
-            <Link to="/blog" className="inline-flex items-center text-white/90 hover:text-white bg-white/15 backdrop-blur px-3 py-1.5 rounded-full text-sm mb-5">
-              <ArrowLeft className="h-4 w-4 mr-2" /> Back to Blog
-            </Link>
-            {post.category && (
-              <span className="block text-xs font-semibold uppercase tracking-[0.18em] text-white/80 mb-3">{post.category}</span>
-            )}
-            <h1 className="text-3xl md:text-5xl font-bold text-white leading-tight tracking-tight mb-4">{post.title}</h1>
-            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-white/85">
-              <span className="flex items-center gap-1.5"><Calendar className="h-4 w-4" />{new Date(date).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}</span>
-              {post.read_time && <span className="flex items-center gap-1.5"><Clock className="h-4 w-4" />{post.read_time}</span>}
-              <span className="flex items-center gap-1.5"><UserCheck className="h-4 w-4" />By {post.author || "InnerSpark Africa Clinical Team"}</span>
-              <div className="ml-auto">
-                <SocialShareButtons url={url} title={post.title} description={description} />
+      <main className="bg-[#F7F3EA]">
+        {/* Editorial hero shared by every CMS article. */}
+        <header className="border-b border-[#D9D0BF]">
+          <div className="container mx-auto px-4 py-10 md:py-16 max-w-6xl grid lg:grid-cols-[1.05fr_0.95fr] gap-10 items-center">
+            <div>
+              <Link to="/blog" className="inline-flex items-center text-primary font-semibold text-sm mb-7">
+                <ArrowLeft className="h-4 w-4 mr-2" /> Back to Blog
+              </Link>
+              {post.category && (
+                <span className="block text-xs font-bold uppercase tracking-[0.2em] text-primary mb-4">{post.category}</span>
+              )}
+              <h1 className="font-serif text-4xl md:text-6xl font-semibold text-[#111827] leading-[1.08] tracking-tight mb-6">{post.title}</h1>
+              <p className="text-lg md:text-xl text-[#4B5563] leading-relaxed mb-7">{description}</p>
+              <div className="flex flex-wrap items-center gap-x-5 gap-y-3 text-sm text-[#4B5563]">
+                <span className="flex items-center gap-1.5"><Calendar className="h-4 w-4" />{new Date(date).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}</span>
+                {post.read_time && <span className="flex items-center gap-1.5"><Clock className="h-4 w-4" />{post.read_time}</span>}
+                <span className="flex items-center gap-1.5"><UserCheck className="h-4 w-4" />By {post.author || "InnerSpark Africa Clinical Team"}</span>
+              </div>
+            </div>
+            <div className="relative">
+              {post.hero_image_url ? (
+                <img src={post.hero_image_url} alt={post.title} className="w-full aspect-[4/3] object-cover rounded-3xl shadow-sm" />
+              ) : (
+                <div className="w-full aspect-[4/3] rounded-3xl bg-gradient-to-br from-primary/25 to-primary/5" />
+              )}
+              <div className="absolute -bottom-5 left-5 right-5 rounded-2xl bg-white/95 border border-[#D9D0BF] p-4 shadow-sm">
+                <p className="text-sm font-bold text-[#111827]">Video therapy: UGX 75,000 per session</p>
+                <p className="text-sm text-[#4B5563]">Chat therapy: UGX 30,000 · Mobile Money or card</p>
               </div>
             </div>
           </div>
         </header>
 
-        <article className="container mx-auto px-4 py-12 max-w-3xl">
+        <article className="container mx-auto px-4 py-14 max-w-3xl">
           {post.excerpt && (
             <p className="text-xl text-foreground/80 leading-relaxed mb-6 font-light">{post.excerpt}</p>
           )}
@@ -194,7 +199,7 @@ const CmsBlogPost = () => {
           <BookHandoff />
 
           <div
-            className="blog-body prose prose-lg max-w-none text-foreground prose-headings:text-foreground prose-headings:font-bold prose-headings:tracking-tight prose-p:leading-[1.8] prose-p:text-foreground/90 prose-a:text-primary prose-a:font-medium prose-img:rounded-xl prose-strong:text-foreground prose-li:leading-relaxed"
+            className="blog-body prose prose-lg max-w-none text-[#1F2937] prose-headings:font-serif prose-headings:text-[#111827] prose-headings:tracking-tight prose-h2:border-t prose-h2:border-[#D9D0BF] prose-h2:pt-9 prose-p:leading-[1.85] prose-p:text-[#374151] prose-a:text-primary prose-a:font-semibold prose-img:rounded-2xl prose-strong:text-[#111827] prose-li:leading-relaxed prose-blockquote:border-primary prose-blockquote:bg-white prose-blockquote:rounded-r-xl prose-blockquote:py-2"
             dangerouslySetInnerHTML={{ __html: body }}
           />
 
@@ -206,7 +211,7 @@ const CmsBlogPost = () => {
           <div className="mt-14 rounded-2xl bg-primary/5 border border-primary/15 p-6 md:p-8">
             <h2 className="text-xl md:text-2xl font-bold text-foreground mb-2">Ready to talk to someone?</h2>
             <p className="text-muted-foreground mb-5 leading-relaxed">
-              Licensed Ugandan therapists, private sessions over video, voice or chat from UGX 30,000. Pay by MTN or Airtel Money.
+              Video therapy with a licensed African therapist costs UGX 75,000 per session. Chat therapy costs UGX 30,000. Pay by Mobile Money or card.
             </p>
             <div className="flex flex-wrap gap-3">
               <Link to="/book-therapist" className="inline-flex items-center rounded-full bg-primary px-6 py-3 text-primary-foreground font-semibold hover:opacity-90">
@@ -221,7 +226,9 @@ const CmsBlogPost = () => {
           </div>
         </article>
       </main>
-      <RelatedArticles currentSlug={post.slug} />
+      <div className="bg-[#F7F3EA]">
+        <RelatedArticles currentSlug={post.slug} />
+      </div>
       <AppDownload />
       <Footer />
     </>
