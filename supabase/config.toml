@@ -35,3 +35,5 @@ project_id = "hnjpsvpudwwyzrrwzbpa"
     verify_jwt = false
   [functions.sitemap-blogs]
     verify_jwt = false
+  [functions.manual-password-reset]
+    verify_jwt = false
