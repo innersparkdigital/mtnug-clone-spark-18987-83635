@@ -164,6 +164,33 @@ export const ROUTES = [
     ],
   },
   {
+    path: "/amani-ai",
+    title: "Amani AI Uganda — Free Mental Wellness Chat | InnerSpark",
+    description:
+      "Chat with Amani, InnerSpark Africa's free AI wellness guide for stress, sleep, anxiety and relationships. Amani is not a therapist or emergency service.",
+    h1: "Meet Amani — your free AI mental wellness guide",
+    intro:
+      "Use Amani to talk through stress, anxiety, burnout, sleep or relationship concerns and find a practical next step. Amani is an AI guide, not a therapist or emergency service.",
+    sections: [
+      {
+        h2: "What Amani can help with",
+        p: "Amani can listen, share general coping ideas, suggest a free wellbeing check and help you find a licensed InnerSpark therapist when you want professional support.",
+      },
+      {
+        h2: "Know the limits before you chat",
+        p: "Amani cannot diagnose, prescribe treatment or replace a licensed therapist. Avoid sharing passwords, payment details or other sensitive identifying information.",
+      },
+      {
+        h2: "If you feel unsafe or may harm yourself",
+        p: "Amani is not an emergency service. WhatsApp InnerSpark immediately on +256 792 085 773 to reach a real person.",
+      },
+      {
+        h2: "Move from chat to licensed support",
+        p: "When you are ready, Amani can guide you to licensed African therapists. Video therapy costs UGX 75,000 per session and chat therapy costs UGX 30,000.",
+      },
+    ],
+  },
+  {
     path: "/kenya",
     title: "Online Therapy in Kenya | InnerSpark Africa",
     description:
