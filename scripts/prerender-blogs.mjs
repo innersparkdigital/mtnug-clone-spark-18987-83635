@@ -398,6 +398,7 @@ function buildHead(shell, post) {
 }
 
 function buildBody(post) {
+  const journey = ARTICLE_JOURNEYS[post.slug];
   const faqs = Array.isArray(post.faqs) ? post.faqs.filter((f) => f?.question && f?.answer) : [];
   const published = post.published_at || post.created_at;
   const date = new Date(published).toLocaleDateString("en-GB", {
@@ -440,9 +441,10 @@ function buildBody(post) {
           </div>
         </header>
         <article class="container mx-auto px-4 py-12 max-w-3xl">
+          ${journey ? `<aside class="mb-10 rounded-3xl bg-white border border-[#D9D0BF] p-6 md:p-8"><p class="text-xl leading-relaxed text-[#374151]">${esc(journey.hook)}</p></aside>` : ""}
           <div class="blog-body prose prose-lg max-w-none mb-10">${sanitize(post.content)}</div>
           ${faqHtml}
-          <p class="mb-6"><a class="text-primary font-semibold underline underline-offset-4" href="/book-therapist">Book video therapy with a licensed African therapist</a></p>
+          ${journey ? `<aside class="my-10 rounded-3xl bg-[#0F172A] text-white p-7 md:p-9"><h2 class="font-serif text-2xl md:text-3xl font-semibold mb-3">${esc(journey.cta)}</h2><p class="text-white/80 leading-relaxed mb-6">${esc(journey.body)}</p><a class="inline-flex rounded-full bg-[#F59E0B] px-6 py-3 font-bold text-[#111827]" href="${journey.href}">${esc(journey.label)}</a></aside>` : `<p class="mb-6"><a class="text-primary font-semibold underline underline-offset-4" href="/book-therapist">Book video therapy with a licensed African therapist</a></p>`}
           <nav aria-label="Site sections">
             <h2 class="text-xl font-bold mb-3">Explore InnerSpark Africa</h2>
             <ul class="grid gap-2 sm:grid-cols-2">${links}</ul>
