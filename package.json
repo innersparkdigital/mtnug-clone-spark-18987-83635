@@ -10,9 +10,10 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "predev": "node scripts/generate-sitemap.mjs && node scripts/generate-blog-sitemap.mjs",
-    "prebuild": "node scripts/validate-flagged-chat-lock.mjs && node scripts/generate-sitemap.mjs && node scripts/generate-blog-sitemap.mjs",
+    "prebuild": "node scripts/validate-flagged-chat-lock.mjs && node scripts/validate-manual-password-reset.mjs && node scripts/generate-sitemap.mjs && node scripts/generate-blog-sitemap.mjs",
     "postbuild": "node -e \"console.log('SEO prerendering completed during build')\"",
-    "test:amani-safety": "node scripts/validate-flagged-chat-lock.mjs"
+    "test:amani-safety": "node scripts/validate-flagged-chat-lock.mjs",
+    "test:password-reset": "node scripts/validate-manual-password-reset.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
