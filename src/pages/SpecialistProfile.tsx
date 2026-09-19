@@ -367,11 +367,32 @@ Please confirm availability. Thank you!`;
   return (
     <>
       <Helmet>
-        <title>{specialist.name} - {specialist.type.charAt(0).toUpperCase() + specialist.type.slice(1)} | Innerspark Africa</title>
+        <title>{specialist.name} - {specialist.type.charAt(0).toUpperCase() + specialist.type.slice(1)} | InnerSpark Africa</title>
         <meta
           name="description"
-          content={`Book a session with ${specialist.name}, an experienced ${specialist.type} specializing in ${specialist.specialties.slice(0, 3).join(", ")}.`}
+          content={`View ${specialist.name}'s experience, languages and specialties, then book a confidential online session through InnerSpark Africa.`}
         />
+        <link rel="canonical" href={`https://www.innersparkafrica.com${specialistPath(specialist)}`} />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Person",
+            "@id": `https://www.innersparkafrica.com${specialistPath(specialist)}#person`,
+            name: specialist.name,
+            url: `https://www.innersparkafrica.com${specialistPath(specialist)}`,
+            ...(imageUrl ? { image: imageUrl.startsWith("http") ? imageUrl : `https://www.innersparkafrica.com${imageUrl.startsWith("/") ? "" : "/"}${imageUrl}` } : {}),
+            jobTitle: specialist.type,
+            description: specialist.bio || undefined,
+            knowsAbout: specialist.specialties,
+            knowsLanguage: specialist.languages,
+            worksFor: {
+              "@type": "MedicalOrganization",
+              "@id": "https://www.innersparkafrica.com/#organization",
+              name: "InnerSpark Africa",
+              url: "https://www.innersparkafrica.com/",
+            },
+          })}
+        </script>
       </Helmet>
 
       <Header />
