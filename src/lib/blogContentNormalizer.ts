@@ -20,6 +20,14 @@ export interface NormalizedBlog {
 
 const KEEP_CLASSES = ["blog-callout", "blog-crisis", "blog-steps", "blog-checkgrid"];
 
+/** Keep legacy CMS articles aligned with the current published session prices. */
+export const applyCurrentTherapyPricing = (input: string) =>
+  String(input || "")
+    .replace(/video, voice or chat from UGX 30,000/gi, "video therapy at UGX 75,000 or chat therapy at UGX 30,000")
+    .replace(/online therapy starting from UGX 30,000 per session/gi, "video therapy at UGX 75,000 per session and chat therapy at UGX 30,000")
+    .replace(/therapy starting from UGX 30,000 per session/gi, "video therapy at UGX 75,000 per session and chat therapy at UGX 30,000")
+    .replace(/video sessions? (?:start at|costs?) UGX 30,000/gi, "video sessions cost UGX 75,000");
+
 const BLOCK_KEEP = new Set([
   "H1", "H2", "H3", "H4", "H5", "H6",
   "UL", "OL", "BLOCKQUOTE", "FIGURE", "IMG", "TABLE", "HR", "PRE", "DIV",
@@ -96,7 +104,7 @@ export interface NormalizeOptions {
 }
 
 export const normalizeBlogHtml = (input: string, opts: NormalizeOptions = {}): NormalizedBlog => {
-  const source = (input || "").trim();
+  const source = applyCurrentTherapyPricing(input).trim();
   if (!source) return { html: "", faqs: [], changed: false };
 
   const doc = new DOMParser().parseFromString(`<div id="root">${source}</div>`, "text/html");
