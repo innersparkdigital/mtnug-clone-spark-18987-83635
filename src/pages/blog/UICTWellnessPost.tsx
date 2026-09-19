@@ -7,7 +7,7 @@ import ArticleSchema from "@/components/seo/ArticleSchema";
 
 const UICTWellnessPost = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#F7F3EA]">
       <Header />
       <ArticleSchema
         headline="UICT Wellness Activity Day – Mental Health Is in the Palm of Your Hands"
@@ -18,13 +18,13 @@ const UICTWellnessPost = () => {
         section="Press"
       />
       
-      <article className="pt-32 pb-16">
+      <article className="pt-28 pb-16">
         <div className="container mx-auto px-4 max-w-4xl">
-          <div className="mb-8">
+          <div className="mb-10">
             <img 
               src={uictWellnessImage} 
               alt="UICT Wellness Activity Day participants" 
-              className="w-full h-[400px] object-cover rounded-lg shadow-xl"
+              className="w-full aspect-[16/9] object-cover rounded-3xl shadow-sm"
             />
           </div>
 
@@ -43,11 +43,11 @@ const UICTWellnessPost = () => {
             </div>
           </div>
 
-          <h1 className="text-4xl md:text-5xl font-bold mb-6 text-foreground">
+          <h1 className="font-serif text-4xl md:text-6xl font-semibold leading-[1.08] tracking-tight mb-8 text-[#111827] border-b border-[#D9D0BF] pb-8">
             UICT Wellness Activity Day – Mental Health Is in the Palm of Your Hands
           </h1>
 
-          <div className="prose prose-lg max-w-none">
+          <div className="prose prose-lg max-w-none text-[#1F2937] prose-headings:font-serif prose-headings:text-[#111827] prose-h2:border-t prose-h2:border-[#D9D0BF] prose-h2:pt-9 prose-p:leading-[1.85] prose-a:text-primary">
             <p className="text-xl text-muted-foreground mb-8">
               In a world where academic and social pressures are growing, Innerspark continues to champion mental health awareness across learning institutions. The UICT Wellness Activity Day, held on October 29th and 30th, 2025, brought together students and staff under the theme "Mental Health Is in the Palm of Your Hands – Awareness of Mental Health in Everyday Life."
             </p>
