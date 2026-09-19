@@ -75,10 +75,14 @@ Deno.serve(async (req) => {
     }
 
     if (action === "complete_therapist") {
-      const requestId = String(body.request_id || "");
-      await admin.from("manual_password_reset_requests").update({
+      let query = admin.from("manual_password_reset_requests").select("id")
+        .eq("user_id", user.id).eq("account_type", "therapist").eq("status", "used")
+        .order("consumed_at", { ascending: false }).limit(1);
+      if (body.request_id) query = query.eq("id", String(body.request_id));
+      const { data: used } = await query.maybeSingle();
+      if (used?.id) await admin.from("manual_password_reset_requests").update({
         status: "completed", completed_at: new Date().toISOString(), updated_at: new Date().toISOString(),
-      }).eq("id", requestId).eq("user_id", user.id).eq("status", "used");
+      }).eq("id", used.id).eq("status", "used");
       return json({ ok: true });
     }
 
