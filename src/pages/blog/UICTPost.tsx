@@ -11,8 +11,8 @@ const UICTPost = () => {
     <div className="min-h-screen bg-[#F7F3EA]">
       <Header />
       <ArticleSchema
-        headline="Mental Health Awareness Training – Uganda Institute of Communication Technology (UICT)"
-        description="Innerspark's mental health awareness training at UICT equipped students and staff with practical coping and help-seeking skills."
+        headline="Student Mental Health Training in Uganda: UICT Case Study"
+        description="See how InnerSpark Africa delivers student mental health training in Uganda, building practical coping, early support and help-seeking skills on campus."
         path="/events-training/uict-mental-health-training"
         datePublished="2025-03-19"
         image={uictImage}
@@ -38,7 +38,7 @@ const UICTPost = () => {
                 <span className="text-sm text-muted-foreground">March 19th, 2025</span>
               </div>
               <h1 className="font-serif text-4xl md:text-6xl font-semibold leading-[1.08] tracking-tight mb-6 text-[#111827]">
-                Mental Health Awareness Training – Uganda Institute of Communication Technology (UICT)
+                Student Mental Health Training in Uganda: UICT Case Study
               </h1>
               <p className="text-lg text-muted-foreground">
                 Location: Uganda Institute of Communication Technology (UICT) | Participants: 50 students
@@ -100,6 +100,11 @@ const UICTPost = () => {
                 Innerspark remains committed to promoting mental health awareness in academic institutions, equipping young people with the knowledge, empathy, and tools to manage life's challenges. By supporting initiatives like Tuli Nawe, we continue to nurture emotionally intelligent, resilient, and supportive learning environments across Uganda.
               </p>
             </div>
+            <aside className="mt-12 rounded-3xl border border-[#D9D0BF] bg-white p-7 md:p-9">
+              <h2 className="font-serif text-2xl font-semibold text-[#111827] mb-3">Bring mental health training to your campus</h2>
+              <p className="text-[#4B5563] mb-5">Request practical awareness, coping and referral training for students and staff in Uganda.</p>
+              <a href="/corporate/service-request" className="inline-flex rounded-full bg-primary px-6 py-3 font-semibold text-primary-foreground">Request campus training</a>
+            </aside>
           </div>
         </div>
       </article>
