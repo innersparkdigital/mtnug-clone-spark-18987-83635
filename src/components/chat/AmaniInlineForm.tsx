@@ -206,7 +206,9 @@ const AmaniInlineForm = ({ kind, sessionId, anonymousId, therapistName, onClose,
       console.warn("lead save failed", e);
     }
 
-    trackEvent("amani_form_submitted", { kind, pay: isPaid ? payMethod : "free" });
+    trackEvent("amani_form_submitted", { kind, pay: isPaid ? payMethod : "free", therapist: therapist || undefined });
+    trackEvent("ai_chat_whatsapp_handoff", { kind, therapist: therapist || undefined });
+    if (isPaid && txnId.trim()) trackEvent("ai_chat_payment_reported", { kind, pay: payMethod });
     setBusy(false);
     setDone(true);
     onSubmitted(kind);
@@ -339,6 +341,7 @@ const AmaniInlineForm = ({ kind, sessionId, anonymousId, therapistName, onClose,
               href={IOTEC_PAY_URL}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackEvent("ai_chat_payment_started", { kind, method: "online", therapist: therapist || undefined })}
               className="flex items-center justify-center gap-1.5 text-[11px] font-semibold text-primary underline"
             >
               Open secure payment page <ExternalLink className="w-3 h-3" />
