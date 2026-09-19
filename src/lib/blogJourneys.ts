@@ -6,6 +6,7 @@ export interface BlogJourney {
   href: string;
 }
 
+// Every sitemap article must have one unique entry here. The build audit rejects omissions.
 export const BLOG_JOURNEYS: Record<string, BlogJourney> = {
   "find-therapist-kampala": { hook: "You do not need to tell your whole story before you know who will listen. Start by checking qualifications, fit, privacy and price.", cta: "Choose a therapist you can speak to honestly", body: "Browse licensed African therapists, compare availability and book confidential video therapy for UGX 75,000 or chat therapy for UGX 30,000.", label: "Find a therapist in Kampala", href: "/book-therapist" },
   "spark-framework-mental-wellbeing": { hook: "When life feels scattered, a small routine can give the day somewhere steady to begin. S.P.A.R.K turns wellbeing into five realistic choices.", cta: "Need more than a routine right now?", body: "A licensed therapist can help you work through what is underneath the stress, privately and without judgement.", label: "Talk to a therapist", href: "/book-therapist" },
