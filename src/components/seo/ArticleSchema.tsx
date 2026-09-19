@@ -14,6 +14,7 @@ export interface ArticleSchemaProps {
   /** Imported asset or absolute URL */
   image: string;
   author?: string;
+  authorUrl?: string;
   section?: string;
   keywords?: string[];
   /** Also emit <title> and meta description for the page */
@@ -31,29 +32,35 @@ const ArticleSchema = ({
   datePublished,
   dateModified,
   image,
-  author = "Innerspark Africa",
+  author = "InnerSpark Africa",
+  authorUrl,
   section,
   keywords,
   withMeta = true,
 }: ArticleSchemaProps) => {
   const url = `${SITE}${path}`;
   const img = absolute(image);
+  const organizationAuthored = author.trim().toLowerCase() === "innerspark africa";
+  const authorSchema = organizationAuthored
+    ? { "@type": "Organization", "@id": `${SITE}/#organization`, name: "InnerSpark Africa", url: SITE }
+    : { "@type": "Person", name: author, ...(authorUrl ? { url: absolute(authorUrl) } : {}) };
 
   const schema = {
     "@context": "https://schema.org",
     "@type": "Article",
     headline,
     description,
-    image: img,
+    image: { "@type": "ImageObject", url: img },
     datePublished,
     dateModified: dateModified || datePublished,
     inLanguage: "en",
     ...(section ? { articleSection: section } : {}),
     ...(keywords?.length ? { keywords } : {}),
-    author: { "@type": "Organization", name: author, url: SITE },
+    author: authorSchema,
     publisher: {
       "@type": "Organization",
-      name: "Innerspark Africa",
+      "@id": `${SITE}/#organization`,
+      name: "InnerSpark Africa",
       logo: { "@type": "ImageObject", url: LOGO },
     },
     mainEntityOfPage: { "@type": "WebPage", "@id": url },
