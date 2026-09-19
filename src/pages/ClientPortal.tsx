@@ -246,7 +246,7 @@ const ClientPortalInner = () => {
 
   const verifyPasscodeFn = async () => {
     setBusy(true);
-    const { data, error } = await supabase.rpc("verify_client_portal_credential", { _token: token!, _passcode: passcode });
+    const { data, error } = await (supabase.rpc as any)("verify_client_portal_credential", { _token: token!, _passcode: passcode });
     setBusy(false);
     if (error) return toast.error(error.message);
     const result = data as unknown as { valid: boolean; temporary: boolean; expired?: boolean; request_id?: string };
