@@ -104,6 +104,8 @@ Deno.serve(async (req) => {
       const { data: request } = await admin.from("manual_password_reset_requests").select("*")
         .eq("id", requestId).eq("status", "pending").maybeSingle();
       if (!request || request.revealed_at) return json({ error: "This temporary password was already viewed or is unavailable." }, 409);
+      const { data: claimed } = await admin.rpc("claim_manual_password_reset", { _request_id: request.id, _admin_id: user.id });
+      if (!claimed) return json({ error: "Another administrator already opened this request." }, 409);
       const temporaryPassword = generatePassword();
       if (request.account_type === "client") {
         const { data: ok, error } = await admin.rpc("admin_set_client_temporary_passcode", {
@@ -120,7 +122,7 @@ Deno.serve(async (req) => {
         await admin.from("manual_password_reset_requests").update({
           temp_secret_hash: hash, status: "sent", revealed_at: new Date().toISOString(), revealed_by: user.id,
           expires_at: new Date(Date.now() + 60 * 60 * 1000).toISOString(), updated_at: new Date().toISOString(),
-        }).eq("id", request.id).eq("status", "pending");
+        }).eq("id", request.id).eq("status", "processing");
       }
       return json({ temporary_password: temporaryPassword, expires_in_minutes: 60 });
     }
