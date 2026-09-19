@@ -559,6 +559,7 @@ const App = () => (
                 <Route path="/online-therapy-nigeria" element={<GlobalLanding slug="online-therapy-nigeria" />} />
                 <Route path="/online-therapy-ghana" element={<GlobalLanding slug="online-therapy-ghana" />} />
                 <Route path="/online-therapy-south-africa" element={<GlobalLanding slug="online-therapy-south-africa" />} />
+                <Route path="/online-therapy-tanzania" element={<GlobalLanding slug="online-therapy-tanzania" />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
               </Suspense>
