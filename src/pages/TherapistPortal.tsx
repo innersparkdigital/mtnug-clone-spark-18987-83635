@@ -213,12 +213,10 @@ const TherapistPortal = () => {
       toast.error(acctErr.message);
       return;
     }
-    if (temporaryResetId) {
-      await supabase.functions.invoke("manual-password-reset", {
-        body: { action: "complete_therapist", request_id: temporaryResetId },
-      });
-      setTemporaryResetId(null);
-    }
+    await supabase.functions.invoke("manual-password-reset", {
+      body: { action: "complete_therapist", request_id: temporaryResetId || undefined },
+    });
+    setTemporaryResetId(null);
     setAccount({ ...account, must_change_password: false });
     setNewPassword("");
     setConfirmPassword("");
