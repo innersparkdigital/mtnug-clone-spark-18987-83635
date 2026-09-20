@@ -17,8 +17,9 @@ const MARKETS: Record<string, Market> = {
   usa: { country: "the United States", code: "US", currency: "USD", video: "about USD 21", chat: "about USD 8", cities: "all US states where cross-border online support is appropriate", pain: "African immigrants and students may want someone who understands culture, family obligations and life between two worlds.", context: "diaspora identity, adjustment, relationships, grief, family expectations and work stress", payment: "Visa card" },
 };
 
-export default function LocalizedTherapy() {
-  const { market = "" } = useParams();
+export default function LocalizedTherapy({ marketOverride }: { marketOverride?: string }) {
+  const { market: routeMarket = "" } = useParams();
+  const market = marketOverride || routeMarket;
   const m = MARKETS[market];
   const { startBooking, closeFlow, isBookingFormOpen, actionType } = useBookingFlow();
   if (!m) return <Navigate to="/" replace />;
