@@ -13,7 +13,7 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Loader2, AlertOctagon, Download, Eye, Receipt, Save, MessageCircle, Plus, Trash2, Mail, FileSpreadsheet, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Calendar, Star, Link2, CheckCircle2, Clock3 } from "lucide-react";
+import { Loader2, AlertOctagon, Download, Eye, Receipt, Save, MessageCircle, Plus, Trash2, Mail, FileSpreadsheet, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Calendar, Star, Link2, CheckCircle2, Clock3, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import AdminClientDetailDialog from "./AdminClientDetailDialog";
 import AddClientDialog from "./AddClientDialog";
@@ -178,6 +178,20 @@ const AdminClientsTab = () => {
   const saveRow = async (r: Row) => {
     setSavingId(r.id);
     const e = edits[r.id] || {};
+    const identityChanged = ["full_name", "phone", "email", "country"].some((key) => key in e);
+    if (identityChanged) {
+      const { error: identityError } = await supabase.rpc("admin_update_client_identity" as any, {
+        _client_id: r.id,
+        _full_name: val(r, "full_name"),
+        _phone: val(r, "phone") || null,
+        _email: val(r, "email") || null,
+        _country: val(r, "country") || null,
+      });
+      if (identityError) {
+        setSavingId(null);
+        return toast.error(identityError.message);
+      }
+    }
     const amount = Number(val(r, "amount_ugx") || 0);
     const therapistShare = e.therapist_share_ugx ?? r.therapist_share_ugx ?? (amount ? Math.round(amount * 0.6) : null);
     const { error } = await supabase.rpc("admin_update_client_tracker" as any, {
@@ -537,8 +551,11 @@ const AdminClientsTab = () => {
                           </TableCell>
                           <TableCell>
                             <div className="flex items-center gap-1 justify-end">
+                              <Button size="sm" variant="outline" onClick={() => setExpandedId(open ? null : r.id)} title="Edit client details">
+                                <Pencil className="h-4 w-4 mr-1" /> Edit
+                              </Button>
                               {dirty && (
-                                <Button size="sm" disabled={savingId === r.id} onClick={() => saveRow(r)} title="Save session">
+                                <Button size="sm" disabled={savingId === r.id} onClick={() => saveRow(r)} title="Save client and session">
                                   {savingId === r.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
                                 </Button>
                               )}
@@ -567,8 +584,18 @@ const AdminClientsTab = () => {
                               <div className="grid gap-4 md:grid-cols-3">
                                 <div className="space-y-2">
                                   <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Contact</p>
-                                  <p><span className="text-muted-foreground">Phone:</span> {r.phone || "—"}</p>
-                                  <p className="break-all"><span className="text-muted-foreground">Email:</span> {r.email || "—"}</p>
+                                  <div>
+                                    <Label className="text-[11px] text-muted-foreground">Client name</Label>
+                                    <Input className="h-8 text-xs mt-1" value={(val(r, "full_name") as string) || ""} onChange={(e) => setVal(r.id, "full_name", e.target.value)} />
+                                  </div>
+                                  <div>
+                                    <Label className="text-[11px] text-muted-foreground">Phone</Label>
+                                    <Input className="h-8 text-xs mt-1" value={(val(r, "phone") as string) || ""} onChange={(e) => setVal(r.id, "phone", e.target.value)} />
+                                  </div>
+                                  <div>
+                                    <Label className="text-[11px] text-muted-foreground">Email</Label>
+                                    <Input type="email" className="h-8 text-xs mt-1" value={(val(r, "email") as string) || ""} onChange={(e) => setVal(r.id, "email", e.target.value)} />
+                                  </div>
                                   <div>
                                     <Label className="text-[11px] text-muted-foreground">Country</Label>
                                     <Input className="h-8 text-xs mt-1" placeholder="Uganda" value={(val(r, "country") as string) || ""} onChange={(e) => setVal(r.id, "country", e.target.value)} />
