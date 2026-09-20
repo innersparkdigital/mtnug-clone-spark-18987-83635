@@ -186,6 +186,7 @@ const CorporateServiceRequest = lazy(
 const Whisper = lazy(() => import("./pages/Whisper"));
 const SessionFeedback = lazy(() => import("./pages/SessionFeedback"));
 const Kenya = lazy(() => import("./pages/Kenya"));
+const LocalizedTherapy = lazy(() => import("./pages/LocalizedTherapy"));
 const GlobalLanding = lazy(() => import("./pages/global/GlobalLanding"));
 const KenyaCheck = lazy(() => import("./pages/KenyaCheck"));
 const KenyaReferralRedirect = lazy(
@@ -506,6 +507,7 @@ const App = () => (
                 <Route path="/unsubscribe" element={<Unsubscribe />} />
                 <Route path="/feedback" element={<SessionFeedback />} />
                 <Route path="/kenya" element={<Kenya />} />
+                <Route path="/:market(tanzania|nigeria|ghana|gambia|usa)" element={<LocalizedTherapy />} />
                 <Route
                   path="/kenya/ref/:slug"
                   element={<KenyaReferralRedirect />}
