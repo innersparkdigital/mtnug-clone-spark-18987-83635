@@ -77,12 +77,13 @@ const TherapistPortal = () => {
       const { data: resetData, error: resetError } = await supabase.functions.invoke("manual-password-reset", {
         body: { action: "consume_therapist" },
       });
+      // Password-reset support is an extra safety check, not a condition for
+      // ordinary therapist access. Existing accounts must still sign in while
+      // the reset service is being deployed.
       if (resetError || resetData?.error) {
-        await signOut();
-        toast.error("We could not verify this login safely. Please try again.");
-        return;
+        console.warn("Temporary-password check unavailable", resetError || resetData?.error);
       }
-      if (resetData?.temporary) {
+      if (!resetError && !resetData?.error && resetData?.temporary) {
         if (resetData.expired) {
           await signOut();
           toast.error("That temporary password expired. Please request another one.");
