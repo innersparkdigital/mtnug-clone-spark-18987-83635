@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import logo from "@/assets/innerspark-logo.webp";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUserRole } from "@/hooks/useUserRole";
-import { useIsKenyaVisitor } from "@/hooks/useIsKenyaVisitor";
+import { useVisitorMarket } from "@/hooks/useVisitorMarket";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -99,12 +99,20 @@ function MobileMegaSection({ title, items, onNavigate }: { title: string; items:
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const isKenyaGeo = useIsKenyaVisitor();
+  const visitorMarket = useVisitorMarket();
   const { user, signOut } = useAuth();
   const { isAdmin } = useUserRole();
   // Always show Kenya entry point to anyone signed in (covers admins regardless
   // of role-hook timing/RLS) plus visitors detected as Kenyan.
-  const isKenyaVisitor = isKenyaGeo || isAdmin || !!user;
+  const marketLink = visitorMarket ? {
+    kenya: { to: "/kenya", label: "Kenya", flag: "🇰🇪" },
+    nigeria: { to: "/nigeria", label: "Nigeria", flag: "🇳🇬" },
+    tanzania: { to: "/tanzania", label: "Tanzania", flag: "🇹🇿" },
+    gambia: { to: "/gambia", label: "Gambia", flag: "🇬🇲" },
+    ghana: { to: "/ghana", label: "Ghana", flag: "🇬🇭" },
+    usa: { to: "/usa", label: "USA", flag: "🇺🇸" },
+  }[visitorMarket] : null;
+  const localLink = marketLink || ((isAdmin || !!user) ? { to: "/kenya", label: "Kenya", flag: "🇰🇪" } : null);
   const closeMobile = () => setIsMenuOpen(false);
 
   return (
@@ -190,13 +198,13 @@ const Header = () => {
 
             {/* Right cluster */}
             <div className="flex items-center gap-2 md:gap-3">
-              {isKenyaVisitor && (
+              {localLink && (
                 <Link
-                  to="/kenya"
+                  to={localLink.to}
                   className="hidden md:inline-flex items-center gap-1 rounded-full border border-primary/30 bg-primary/5 px-3 py-1 text-[11px] font-semibold text-primary hover:bg-primary/10 transition-colors"
-                  aria-label="Visit InnerSpark Kenya"
+                  aria-label={`Visit InnerSpark ${localLink.label}`}
                 >
-                  <span aria-hidden>🇰🇪</span> Kenya
+                  <span aria-hidden>{localLink.flag}</span> {localLink.label}
                 </Link>
               )}
               {user && (
