@@ -21,7 +21,7 @@ import ImpactCounter from "@/components/home/ImpactCounter";
 import SDGAlignment from "@/components/home/SDGAlignment";
 import WhisperTeaser from "@/components/home/WhisperTeaser";
 import { useSectionVisibility } from "@/hooks/useSectionVisibility";
-import GeoKenyaBanner from "@/components/GeoKenyaBanner";
+import GeoCountryBanner from "@/components/GeoCountryBanner";
 
 const Index = () => {
   const v = {
@@ -100,7 +100,7 @@ const Index = () => {
         <script type="application/ld+json">{JSON.stringify(homeSchema)}</script>
       </Helmet>
       <div className="min-h-screen bg-background">
-        <GeoKenyaBanner />
+        <GeoCountryBanner />
         <Header />
         {v.hero && <HeroSection />}
         <TrustStatsBar />
