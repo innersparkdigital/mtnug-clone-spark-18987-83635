@@ -87,8 +87,8 @@ const WellbeingCheck = () => {
   return (
     <>
       <Helmet>
-        <title>Free 2-Minute Mental Health Check (WHO-5) — Uganda</title>
-        <meta name="description" content="Know where your mental health stands in 2 minutes. Free WHO-5 check, private results, no account. Talk to a Ugandan therapist from UGX 30,000 if you need to." />
+        <title>Free WHO-5 Mental Wellbeing Check | InnerSpark Africa</title>
+        <meta name="description" content="Take the free WHO-5 mental wellbeing check in about two minutes. Private results, no account and clear next steps without a diagnosis." />
         <meta name="keywords" content="WHO-5 Uganda, wellbeing check Uganda, free mental health test Uganda, mental health screening Kampala, depression test Uganda, anxiety test Uganda, am I depressed Uganda, online therapy Uganda" />
         <link rel="canonical" href="https://www.innersparkafrica.com/wellbeing-check" />
         <meta property="og:title" content="Free WHO-5 Wellbeing Check Uganda | InnerSpark Africa" />
@@ -103,7 +103,7 @@ const WellbeingCheck = () => {
             {"@type":"Question","name":"How accurate is the WHO-5 for Ugandans?","acceptedAnswer":{"@type":"Answer","text":"The WHO-5 has been validated across more than 30 countries, including studies in sub-Saharan Africa. It is one of the most widely validated wellbeing instruments in the world."}},
             {"@type":"Question","name":"What does my wellbeing score mean?","acceptedAnswer":{"@type":"Answer","text":"Scores 0–28% suggest low wellbeing and we recommend talking to a therapist. 29–50% is below average. 51–75% is moderate wellbeing. 76–100% indicates good wellbeing."}},
             {"@type":"Question","name":"How often should I take the wellbeing check?","acceptedAnswer":{"@type":"Answer","text":"Every 4 weeks is ideal. Trends across multiple checks are far more meaningful than any single score."}},
-            {"@type":"Question","name":"What does therapy cost in Uganda through InnerSpark?","acceptedAnswer":{"@type":"Answer","text":"Therapy sessions start from UGX 30,000, with the standard 60-minute session at UGX 75,000 (~$22). Payment is via Mobile Money, card, or bank transfer through PesaPal."}}
+            {"@type":"Question","name":"What does therapy cost in Uganda through InnerSpark?","acceptedAnswer":{"@type":"Answer","text":"Video therapy costs UGX 75,000 per session. Chat therapy costs UGX 30,000. Payment is available by Mobile Money or card."}}
           ]})}
         </script>
         <script type="application/ld+json">
