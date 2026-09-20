@@ -287,9 +287,9 @@ const Header = () => {
               <MobileMegaSection title="For Business" items={businessItems} onNavigate={closeMobile} />
               <MobileMegaSection title="For Professionals" items={professionalsItems} onNavigate={closeMobile} />
 
-              {isKenyaVisitor && (
-                <Link to="/kenya" onClick={closeMobile} className="flex items-center gap-2 py-3 border-b border-border text-sm font-semibold text-primary">
-                  <span aria-hidden>🇰🇪</span> Visit Kenya page
+              {localLink && (
+                <Link to={localLink.to} onClick={closeMobile} className="flex items-center gap-2 py-3 border-b border-border text-sm font-semibold text-primary">
+                  <span aria-hidden>{localLink.flag}</span> Visit {localLink.label} page
                 </Link>
               )}
 
