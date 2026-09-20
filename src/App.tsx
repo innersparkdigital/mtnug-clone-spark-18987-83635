@@ -507,7 +507,11 @@ const App = () => (
                 <Route path="/unsubscribe" element={<Unsubscribe />} />
                 <Route path="/feedback" element={<SessionFeedback />} />
                 <Route path="/kenya" element={<Kenya />} />
-                <Route path="/:market(tanzania|nigeria|ghana|gambia|usa)" element={<LocalizedTherapy />} />
+                <Route path="/tanzania" element={<LocalizedTherapy marketOverride="tanzania" />} />
+                <Route path="/nigeria" element={<LocalizedTherapy marketOverride="nigeria" />} />
+                <Route path="/ghana" element={<LocalizedTherapy marketOverride="ghana" />} />
+                <Route path="/gambia" element={<LocalizedTherapy marketOverride="gambia" />} />
+                <Route path="/usa" element={<LocalizedTherapy marketOverride="usa" />} />
                 <Route
                   path="/kenya/ref/:slug"
                   element={<KenyaReferralRedirect />}
