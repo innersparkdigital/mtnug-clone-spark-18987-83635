@@ -216,24 +216,24 @@ function WhisperRecorder() {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Whisper | Free Private Therapist Reply</title>
-        <meta name="description" content="Whisper a voice note. A licensed Ugandan therapist replies privately on WhatsApp within 24 hours — free, no signup. Email reply also available." />
-        <meta name="keywords" content="WhatsApp therapy Uganda, private therapist reply, voice therapy Africa, Whisper InnerSpark, free mental health support" />
+        <title>Whisper: Private Mental Health Voice Note | InnerSpark</title>
+        <meta name="description" content="Record a private voice note for InnerSpark when what you are carrying feels difficult to type. No public post and no long signup form." />
+        <meta name="keywords" content="private mental health voice note Uganda, anonymous mental health support Africa, Whisper InnerSpark, talk to a therapist Uganda" />
         <link rel="canonical" href="https://www.innersparkafrica.com/whisper" />
-        <meta property="og:title" content="Whisper | Free Private Therapist Reply" />
-        <meta property="og:description" content="Too heavy to type? Whisper it. A real licensed Ugandan therapist replies privately on WhatsApp within 24 hours — free." />
+        <meta property="og:title" content="Whisper: Private Mental Health Voice Note | InnerSpark" />
+        <meta property="og:description" content="Too difficult to type? Record a private voice note for the InnerSpark team without posting it publicly." />
         <meta property="og:url" content="https://www.innersparkafrica.com/whisper" />
         <meta property="og:type" content="website" />
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Service",
-          name: "Whisper — Private Voice Therapy Reply on WhatsApp",
-          serviceType: "Private mental health support",
+          name: "Whisper — Private Mental Health Voice Note",
+          serviceType: "Private mental health support request",
           provider: { "@type": "Organization", name: "InnerSpark Africa", url: "https://www.innersparkafrica.com" },
           areaServed: ["Uganda", "Africa"],
           offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
           url: "https://www.innersparkafrica.com/whisper",
-          description: "Record a 3-minute voice note and receive a private reply from a licensed Ugandan therapist on WhatsApp within 24 hours.",
+          description: "Record a short private voice note for review by the InnerSpark team when writing feels difficult.",
         })}</script>
       </Helmet>
       <div className="fixed inset-0 bg-background flex flex-col z-50 overflow-hidden">
