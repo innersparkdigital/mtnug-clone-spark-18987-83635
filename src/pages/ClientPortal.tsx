@@ -236,7 +236,10 @@ const ClientPortalInner = () => {
     if (passcode.length < 6) return toast.error("Passcode must be at least 6 characters.");
     if (passcode !== confirmPasscode) return toast.error("Passcodes don't match.");
     setBusy(true);
-    const result = await (supabase.rpc as any)("set_or_complete_client_passcode", { _token: token!, _new_passcode: passcode });
+    let result = await (supabase.rpc as any)("set_or_complete_client_passcode", { _token: token!, _new_passcode: passcode });
+    if (result.error?.message?.includes("set_or_complete_client_passcode") && !temporaryResetId) {
+      result = await supabase.rpc("set_client_passcode", { _token: token!, _passcode: passcode });
+    }
     setBusy(false);
     if (result.error || !result.data) return toast.error(result.error?.message || "Could not set passcode.");
     setTemporaryResetId(null);
@@ -246,7 +249,14 @@ const ClientPortalInner = () => {
 
   const verifyPasscodeFn = async () => {
     setBusy(true);
-    const { data, error } = await (supabase.rpc as any)("verify_client_portal_credential", { _token: token!, _passcode: passcode });
+    let { data, error } = await (supabase.rpc as any)("verify_client_portal_credential", { _token: token!, _passcode: passcode });
+    // Keep existing client accounts usable while the new one-time reset
+    // database function is rolling out.
+    if (error?.message?.includes("verify_client_portal_credential")) {
+      const legacy = await supabase.rpc("verify_client_passcode", { _token: token!, _passcode: passcode });
+      data = { valid: !!legacy.data, temporary: false };
+      error = legacy.error;
+    }
     setBusy(false);
     if (error) return toast.error(error.message);
     const result = data as unknown as { valid: boolean; temporary: boolean; expired?: boolean; request_id?: string };
