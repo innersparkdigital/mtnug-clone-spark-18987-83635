@@ -42,6 +42,7 @@ const AdminSessionLogsTab = lazy(() => import('@/components/admin/AdminSessionLo
 const AdminEnquiriesTab = lazy(() => import('@/components/admin/AdminEnquiriesTab'));
 const AdminRevenueTab = lazy(() => import('@/components/admin/AdminRevenueTab'));
 const AdminSalesTrackingTab = lazy(() => import('@/components/admin/AdminSalesTrackingTab'));
+const UpcomingSessionsTab = lazy(() => import('@/components/admin/UpcomingSessionsTab'));
 
 const TabFallback = () => (
   <div className="flex items-center justify-center py-12">
@@ -243,6 +244,7 @@ const AdminDashboard = () => {
                 <optgroup label="Daily work">
                   <option value="overview">Overview</option>
                   <option value="all-clients">All Clients</option>
+                  <option value="upcoming-sessions">Upcoming Sessions</option>
                   <option value="sales-tracking">WhatsApp Sales</option>
                   <option value="session-logs">Session Logs</option>
                   <option value="enquiries">Enquiries</option>
@@ -283,6 +285,7 @@ const AdminDashboard = () => {
                 {[
                   ['overview', 'Overview'],
                   ['all-clients', 'Clients'],
+                  ['upcoming-sessions', 'Upcoming'],
                   ['sales-tracking', 'Sales'],
                   ['session-logs', 'Sessions'],
                   ['enquiries', 'Enquiries'],
