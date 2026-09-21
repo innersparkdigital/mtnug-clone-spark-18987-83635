@@ -244,6 +244,7 @@ const AdminDashboard = () => {
                 <optgroup label="Daily work">
                   <option value="overview">Overview</option>
                   <option value="all-clients">All Clients</option>
+                  <option value="upcoming-sessions">Upcoming Sessions</option>
                   <option value="sales-tracking">WhatsApp Sales</option>
                   <option value="session-logs">Session Logs</option>
                   <option value="enquiries">Enquiries</option>
