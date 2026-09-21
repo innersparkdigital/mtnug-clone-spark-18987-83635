@@ -285,6 +285,7 @@ const AdminDashboard = () => {
                 {[
                   ['overview', 'Overview'],
                   ['all-clients', 'Clients'],
+                  ['upcoming-sessions', 'Upcoming'],
                   ['sales-tracking', 'Sales'],
                   ['session-logs', 'Sessions'],
                   ['enquiries', 'Enquiries'],
