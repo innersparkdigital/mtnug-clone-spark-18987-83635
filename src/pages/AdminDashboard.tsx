@@ -42,6 +42,7 @@ const AdminSessionLogsTab = lazy(() => import('@/components/admin/AdminSessionLo
 const AdminEnquiriesTab = lazy(() => import('@/components/admin/AdminEnquiriesTab'));
 const AdminRevenueTab = lazy(() => import('@/components/admin/AdminRevenueTab'));
 const AdminSalesTrackingTab = lazy(() => import('@/components/admin/AdminSalesTrackingTab'));
+const UpcomingSessionsTab = lazy(() => import('@/components/admin/UpcomingSessionsTab'));
 
 const TabFallback = () => (
   <div className="flex items-center justify-center py-12">
