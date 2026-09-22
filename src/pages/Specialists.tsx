@@ -535,22 +535,22 @@ const Specialists = () => {
         <title>Licensed Mental Health Therapists in Uganda | InnerSpark</title>
         <meta
           name="description"
-          content="Browse licensed African therapists for confidential online support. Video therapy costs UGX 75,000 per session; chat therapy costs UGX 30,000."
+          content="For professionals ready to pay for confidential care. Browse licensed African therapists. Video UGX 75,000 · Chat UGX 30,000. Book in about two minutes."
         />
         <meta name="keywords" content="therapist Uganda, therapist Kampala, licensed therapist Kampala, find a therapist Uganda, female therapist Uganda, male therapist Uganda, counsellor Kampala, psychologist Uganda online, trauma therapist Uganda, burnout therapist Kampala, relationship therapist Uganda, anxiety counselling Uganda, depression therapy Uganda, therapist for depression Uganda, therapist for anxiety Uganda, therapist for couples Uganda, therapist for suicidal thoughts Uganda, teen therapist Uganda, same day therapist Uganda, therapist available today Uganda, evening therapy sessions Uganda, weekend therapist Uganda, therapist Nairobi, licensed therapist Nairobi, female therapist Kenya, male therapist Kenya, private therapy Nairobi, trauma therapist Kenya, burnout therapist Nairobi, therapist South Sudan" />
         <link rel="canonical" href="https://www.innersparkafrica.com/specialists" />
         
         {/* Open Graph */}
-        <meta property="og:title" content="Licensed Mental Health Therapists in Uganda | InnerSpark" />
-        <meta property="og:description" content="Browse licensed African therapists by specialty, language and availability. Video therapy is UGX 75,000; chat therapy is UGX 30,000." />
+        <meta property="og:title" content="Book Licensed Therapists Uganda & Kampala | Video UGX 75,000" />
+        <meta property="og:description" content="For professionals ready to invest in care. Licensed African therapists. Video UGX 75,000 · Chat UGX 30,000." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.innersparkafrica.com/specialists" />
         <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.webp" />
         
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Licensed Mental Health Therapists in Uganda | InnerSpark" />
-        <meta name="twitter:description" content="Find licensed therapists & counselors. Book affordable online therapy for depression, anxiety, trauma & more." />
+        <meta name="twitter:title" content="Book Licensed Therapists | Video UGX 75,000" />
+        <meta name="twitter:description" content="Licensed African therapists. Video UGX 75,000 · Chat UGX 30,000. Clear professional pricing." />
         
         {/* Schema.org */}
         <script type="application/ld+json">
