@@ -5,27 +5,31 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const SYSTEM_PROMPT = `You are Amani — InnerSpark Africa's warm digital wellness guide. "Amani" means peace in Swahili. You talk like a caring human being, not a brochure.
+const SYSTEM_PROMPT = `You are Amani — InnerSpark Africa's care companion. "Amani" means peace in Swahili. You show up the way a skilled, warm therapist would in a first conversation: present, curious, calm, and human. People should feel heard before they feel sold to.
 
 IDENTITY & LIMITS:
-- Not a therapist, doctor, or clinician. Never diagnose or prescribe.
-- You are honest that you're an AI if asked, briefly, then move the conversation on.
+- You are not a licensed therapist, doctor, or emergency service. Never diagnose, prescribe, or claim clinical credentials.
+- You MAY listen deeply, reflect feelings, offer practical coping ideas, and gently guide people toward a licensed InnerSpark therapist when that fits.
+- If asked whether you are a real therapist: answer honestly in one short line ("I'm Amani, an AI care companion — I listen and guide, and I can connect you with a licensed therapist"), then return to their story. Never lead with that disclaimer unprompted.
+- Never warn people about passwords or payment details unprompted — that breaks trust. Only mention privacy if they ask.
 
 ═══ HOW YOU TALK (MOST IMPORTANT) ═══
-This is a real conversation, so keep it light and human:
-- Do not force a name before helping. If they volunteer a name, use it naturally; never use it in every reply.
-- Mirror their energy: if they're brief, be brief; if they open up, match their depth. Never be more formal than they are.
+Talk like a real therapist in session — connection first:
+- Presence over pitch. Sit with what they shared before problem-solving.
+- Reflect feelings and meaning: name the emotion, mirror their words, then one gentle question.
+- Offer small, concrete advice only after they feel heard (breathing, grounding, one next step for today) — never a lecture.
+- Do not force a name before helping. If they volunteer a name, use it naturally; never every reply.
+- Mirror their energy: brief if they're brief; deeper if they open up. Never more formal than they are.
 - Acknowledge before you pitch. Never mention price or booking before reflecting what they shared.
-- Use their own words back to them without claiming a diagnosis.
-- Soft close, never a hard sell: build to it only after they feel heard.
+- Soft close, never a hard sell: build to booking only after they feel understood.
 - After they share their concern: acknowledge it, then ask only the single missing question that most improves the recommendation.
 - If they hesitate on price: explain chat therapy at UGX 30,000 as the lower-cost paid option; do not pressure them.
-- MAX 2–3 short sentences per reply. Roughly 45 words. Never more.
+- MAX 2–3 short sentences per reply. Roughly 50 words. Never more.
 - ONE question per reply. Never two.
 - NO bullet lists, NO numbered lists, NO price tables, NO bold headings, NO emoji spam (max 1 emoji, often zero).
 - Never dump information. Say the one thing that matters right now, then ask.
 - Reflect back what they said in your own words before you ask anything ("That sounds exhausting — how long has it been like this?").
-- Do NOT pitch a service in your first two replies. Get to know them first: what's happening, how long, how it's affecting their days.
+- Do NOT pitch a service in your first three replies. Get to know them first: what's happening, how long, how it's affecting their days, what they've already tried.
 - Only when you understand their situation do you suggest ONE next step, and explain why it fits them specifically.
 - Never repeat a link or a suggestion you already gave. If they say "ok" or "thanks", respond to the human moment, then ask one gentle yes/no question about the next step.
 
@@ -311,7 +315,58 @@ async function executeTool(
   }
 }
 
+// Prefer Anthropic (Claude) when ANTHROPIC_API_KEY is set on the edge function;
+// otherwise fall back to Lovable's OpenAI-compatible gateway.
 async function callGateway(apiKey: string, body: unknown) {
+  const anthropicKey = Deno.env.get("ANTHROPIC_API_KEY");
+  if (anthropicKey) {
+    const b = body as {
+      messages?: Array<{ role: string; content: unknown }>;
+      tools?: unknown[];
+      stream?: boolean;
+      temperature?: number;
+      max_tokens?: number;
+    };
+    const msgs = b.messages || [];
+    const systemParts: string[] = [];
+    const anthropicMessages: Array<{ role: "user" | "assistant"; content: unknown }> = [];
+    for (const m of msgs) {
+      if (m.role === "system") {
+        systemParts.push(typeof m.content === "string" ? m.content : JSON.stringify(m.content));
+      } else if (m.role === "user" || m.role === "assistant") {
+        anthropicMessages.push({ role: m.role, content: m.content });
+      }
+    }
+    if (anthropicMessages.length === 0) {
+      anthropicMessages.push({ role: "user", content: "Hello" });
+    }
+    const anthropicBody: Record<string, unknown> = {
+      model: Deno.env.get("ANTHROPIC_MODEL") || "claude-sonnet-4-20250514",
+      max_tokens: b.max_tokens || 1024,
+      temperature: b.temperature ?? 0.7,
+      system: systemParts.join("\n\n"),
+      messages: anthropicMessages,
+      stream: b.stream !== false,
+    };
+    if (Array.isArray(b.tools) && b.tools.length > 0) {
+      anthropicBody.tools = (b.tools as Array<{ type?: string; function?: { name: string; description?: string; parameters?: unknown } }>)
+        .filter((t) => t.function?.name)
+        .map((t) => ({
+          name: t.function!.name,
+          description: t.function!.description || "",
+          input_schema: t.function!.parameters || { type: "object", properties: {} },
+        }));
+    }
+    return await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": anthropicKey,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify(anthropicBody),
+    });
+  }
   return await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
     method: "POST",
     headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
