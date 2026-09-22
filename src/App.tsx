@@ -273,6 +273,7 @@ const App = () => (
                   element={<CorporateWellbeingCheck />}
                 />
                 <Route path="/corporate-admin" element={<CorporateAdmin />} />
+                {/* B2B ops (InnerSpark staff) vs company HR — keep names distinct in product */}
                 <Route path="/check/:slug" element={<CampaignLanding />} />
                 <Route path="/donate-therapy" element={<DonateTherapy />} />
                 <Route path="/wellness-reports" element={<WellnessReports />} />
