@@ -35,6 +35,9 @@ interface Log {
   session_rating: number | null;
   amount_ugx: number | string | null;
   paid_status: string | null;
+  sessions_purchased?: number | null;
+  sessions_used?: number | null;
+  sessions_remaining?: number | null;
 }
 
 interface HomeworkTask {
@@ -94,20 +97,34 @@ const AdminSessionLogsTab = () => {
   const [expanded, setExpanded] = useState<string | null>(null);
   const [homework, setHomework] = useState<HomeworkTask[]>([]);
   const [hwLoading, setHwLoading] = useState(false);
+  const [balances, setBalances] = useState<Record<string, { purchased: number; used: number; remaining: number }>>({});
 
   const load = async () => {
     setLoading(true);
     setErrMsg(null);
-    const { data, error } = await withTimeout<any>(
-      supabase.rpc("admin_list_session_logs" as any),
-      20000,
-      "Loading session logs",
-    );
+    const [{ data, error }, balanceRes] = await Promise.all([
+      withTimeout<any>(supabase.rpc("admin_list_session_logs" as any), 20000, "Loading session logs"),
+      withTimeout<any>(supabase.rpc("admin_client_session_balances" as any), 20000, "Loading session balances").catch(() => ({ data: null, error: null })),
+    ]);
     if (error) {
       setErrMsg(error.message);
       toast.error(error.message);
     } else {
-      setLogs((data as Log[]) || []);
+      const map: Record<string, { purchased: number; used: number; remaining: number }> = {};
+      for (const row of ((balanceRes as any)?.data as any[]) || []) {
+        map[row.client_id] = {
+          purchased: Number(row.sessions_purchased || 0),
+          used: Number(row.sessions_used || 0),
+          remaining: Number(row.sessions_remaining || 0),
+        };
+      }
+      setBalances(map);
+      setLogs(((data as Log[]) || []).map((l) => ({
+        ...l,
+        sessions_purchased: map[l.client_id]?.purchased ?? l.sessions_purchased ?? null,
+        sessions_used: map[l.client_id]?.used ?? l.sessions_used ?? null,
+        sessions_remaining: map[l.client_id]?.remaining ?? l.sessions_remaining ?? null,
+      })));
     }
     setLoading(false);
   };
@@ -247,6 +264,7 @@ const AdminSessionLogsTab = () => {
                     <TableHead className="min-w-[150px]">Session</TableHead>
                     <TableHead className="min-w-[130px]">Progress</TableHead>
                     <TableHead className="w-[110px]">Homework</TableHead>
+                    <TableHead className="min-w-[120px]">Sessions left</TableHead>
                     <TableHead className="min-w-[120px]">Next session</TableHead>
                     <TableHead className="text-right w-[90px]">Details</TableHead>
                   </TableRow>
@@ -298,6 +316,14 @@ const AdminSessionLogsTab = () => {
                                 : <span className="text-muted-foreground">None</span>}
                           </TableCell>
                           <TableCell className="text-xs">
+                            {typeof l.sessions_remaining === "number" ? (
+                              <div>
+                                <span className="font-medium">{l.sessions_remaining}</span>
+                                <div className="text-muted-foreground">{l.sessions_used ?? 0}/{l.sessions_purchased ?? 0} used</div>
+                              </div>
+                            ) : <span className="text-muted-foreground">—</span>}
+                          </TableCell>
+                          <TableCell className="text-xs">
                             <span className="capitalize">{l.next_appt_booked || "—"}</span>
                             {l.next_appt_date && <div className="text-muted-foreground">{l.next_appt_date}</div>}
                           </TableCell>
@@ -310,7 +336,7 @@ const AdminSessionLogsTab = () => {
                         {isOpen && (
                           <TableRow className="bg-muted/20 hover:bg-muted/20">
                             <TableCell />
-                            <TableCell colSpan={8} className="py-4">
+                            <TableCell colSpan={9} className="py-4">
                               <div className="grid md:grid-cols-2 gap-4 max-w-4xl">
                                 <LongField label="Session notes" value={l.notes} />
                                 <LongField
@@ -361,6 +387,7 @@ const AdminSessionLogsTab = () => {
                 <Field label="Client rating" value={detail.session_rating ? `${detail.session_rating}/5` : null} />
                 <Field label="Amount (UGX)" value={detail.amount_ugx ? Number(detail.amount_ugx).toLocaleString() : null} />
                 <Field label="Payment" value={detail.paid_status} />
+                <Field label="Sessions remaining" value={typeof detail.sessions_remaining === "number" ? `${detail.sessions_remaining} left (${detail.sessions_used ?? 0}/${detail.sessions_purchased ?? 0} used)` : null} />
                 <Field label="Next appointment booked" value={detail.next_appt_booked} />
                 <Field label="Next appointment date" value={detail.next_appt_date} />
                 <Field label="Next appointment service" value={detail.next_appt_service} />
