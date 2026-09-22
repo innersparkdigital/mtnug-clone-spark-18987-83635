@@ -666,92 +666,26 @@ export default function CorporateDashboard() {
           </div>
         </div>
 
-        {/* legacy header removed — hero above */}
-        <div className="hidden">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.14em] mb-1" style={{ color: "#3B4FD4" }}>Company admin · aggregate only</p>
-            <h1 className="text-2xl md:text-4xl font-bold tracking-tight" style={{ color: "#1A1A2E" }}>
-              {stats?.company_name || "Corporate wellbeing"}
-            </h1>
-            <div className="mt-3 flex flex-wrap gap-2">
-              <a
-                href="/corporate-assessments"
-                className="inline-flex items-center rounded-xl px-4 py-2 text-sm font-semibold text-white"
-                style={{ background: "#F2994A" }}
-              >
-                Psychometric assessments
-              </a>
-            </div>
-            <p className="text-sm text-muted-foreground mt-1">
-              Welcome, {admin.full_name}. Individual employee answers are never shown here.
-            </p>
-          </div>
-          <Button variant="outline" onClick={() => signOut()}>
-            Sign out
-          </Button>
-        </div>
-
         {statsLoading && (
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Loader2 className="h-4 w-4 animate-spin" /> Loading organisation aggregates…
           </div>
         )}
 
-        {/* Org basics */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          <Card>
-            <CardContent className="pt-5">
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <Users className="h-3.5 w-3.5" /> Enrolled
-              </div>
-              <p className="text-3xl font-bold mt-1">{stats?.enrolled ?? "—"}</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="pt-5">
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <Activity className="h-3.5 w-3.5" /> Completed (latest phase)
-              </div>
-              <p className="text-3xl font-bold mt-1">{stats?.completed ?? 0}</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="pt-5">
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <TrendingUp className="h-3.5 w-3.5" /> Participation
-              </div>
-              <p className="text-3xl font-bold mt-1">
-                {stats?.participation_rate != null ? `${stats.participation_rate}%` : "—"}
-              </p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="pt-5">
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <Activity className="h-3.5 w-3.5" /> Avg WHO-5 %
-              </div>
-              <p className="text-3xl font-bold mt-1">
-                {canShow && stats?.avg_percentage != null ? `${stats.avg_percentage}%` : "—"}
-              </p>
-              {!canShow && (
-                <p className="text-[11px] text-muted-foreground mt-1">Hidden until {minG}+ responses</p>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-
         {stats?.latest_round && (
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs text-muted-foreground px-1">
             Latest phase: <strong>{stats.latest_round.phase_label}</strong> ({stats.latest_round.name}) ·{" "}
             {stats.latest_round.status}
           </p>
         )}
 
+        <div className="grid lg:grid-cols-2 gap-4">
         {/* Risk distribution */}
-        <Card>
+        <Card className="rounded-3xl border shadow-sm" style={{ borderColor: "#E6E8FA" }}>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5" /> Risk distribution
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <span className="h-10 w-10 rounded-xl grid place-items-center bg-red-50"><AlertTriangle className="h-5 w-5 text-red-600" /></span>
+              Risk distribution
             </CardTitle>
             <CardDescription>
               Organisation-wide concern bands from completed WHO-5 screens. Never individual.
@@ -761,7 +695,8 @@ export default function CorporateDashboard() {
             {canShow && stats?.risk ? (
               <RiskBars risk={stats.risk} />
             ) : (
-              <div className="rounded-lg border border-dashed p-6 text-sm text-muted-foreground bg-background">
+              <div className="rounded-2xl border border-dashed p-6 text-sm text-muted-foreground bg-[#F8F9FF] text-center" style={{ borderColor: "#C5CAF5" }}>
+                <ShieldCheck className="h-7 w-7 mx-auto mb-2 text-primary" />
                 Not enough responses yet to show this breakdown while protecting individual privacy (minimum {minG} completed private screens).
               </div>
             )}
@@ -769,24 +704,26 @@ export default function CorporateDashboard() {
         </Card>
 
         {/* Phase trend */}
-        <Card>
+        <Card className="rounded-3xl border shadow-sm" style={{ borderColor: "#E6E8FA" }}>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5" /> Average wellbeing by screening phase
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <span className="h-10 w-10 rounded-xl grid place-items-center bg-indigo-50"><TrendingUp className="h-5 w-5 text-indigo-600" /></span>
+              Average wellbeing by phase
             </CardTitle>
             <CardDescription>
-              Default cadence is about every 3 months. Off-cycle rounds can be requested below.
+              Default cadence ~ every 3 months. Off-cycle rounds on request.
             </CardDescription>
           </CardHeader>
           <CardContent>
             <PhaseTrend phases={stats?.phases || []} minGroup={minG} />
           </CardContent>
         </Card>
+        </div>
 
         {/* Stress drivers */}
-        <Card>
+        <Card className="rounded-3xl border shadow-sm" style={{ borderColor: "#E6E8FA" }}>
           <CardHeader>
-            <CardTitle>Key stress drivers — what the data shows</CardTitle>
+            <CardTitle className="text-lg">Key stress drivers — what the data shows</CardTitle>
             <CardDescription>
               Lowest average WHO-5 dimensions organisation-wide this phase (patterns only).
             </CardDescription>
@@ -826,9 +763,9 @@ export default function CorporateDashboard() {
         </Card>
 
         {/* Why these results make sense */}
-        <Card>
+        <Card className="rounded-3xl border shadow-sm" style={{ borderColor: "#E6E8FA" }}>
           <CardHeader>
-            <CardTitle>Why these results make sense</CardTitle>
+            <CardTitle className="text-lg">Why these results make sense</CardTitle>
             <CardDescription>Plain-language organisational context — not a clinical conclusion.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
@@ -841,21 +778,22 @@ export default function CorporateDashboard() {
         </Card>
 
         {/* Recommended services */}
-        <Card>
+        <Card className="rounded-3xl border shadow-sm" style={{ borderColor: "#E6E8FA" }}>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <BookOpen className="h-5 w-5" /> Recommended InnerSpark services
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <BookOpen className="h-5 w-5 text-primary" /> Recommended InnerSpark services
             </CardTitle>
             <CardDescription>Based on aggregate risk and stress drivers. Request routes to our team — not auto-booked.</CardDescription>
           </CardHeader>
           <CardContent className="grid md:grid-cols-2 gap-3">
             {recommendations.map((r) => (
-              <div key={r.code} className="rounded-xl border p-4 bg-background space-y-3">
+              <div key={r.code} className="rounded-2xl border p-5 bg-background space-y-3 shadow-sm hover:shadow-md transition-shadow" style={{ borderColor: "#E6E8FA" }}>
                 <p className="font-semibold text-sm">{r.title}</p>
                 <p className="text-xs text-muted-foreground leading-relaxed">{r.why}</p>
                 <Button
                   size="sm"
-                  variant="secondary"
+                  className="rounded-xl text-white"
+                  style={{ background: "#3B4FD4" }}
                   disabled={sending}
                   onClick={() => {
                     setRequestType(r.requestType);
@@ -873,10 +811,10 @@ export default function CorporateDashboard() {
 
         {/* Activity */}
         <div className="grid md:grid-cols-2 gap-4">
-          <Card>
+          <Card className="rounded-3xl border shadow-sm" style={{ borderColor: "#E6E8FA" }}>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-base">
-                <CalendarDays className="h-4 w-4" /> Screening activity
+                <CalendarDays className="h-4 w-4 text-primary" /> Screening activity
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
@@ -901,10 +839,10 @@ export default function CorporateDashboard() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="rounded-3xl border shadow-sm" style={{ borderColor: "#E6E8FA" }}>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-base">
-                <BookOpen className="h-4 w-4" /> S.P.A.R.K / training activity
+                <BookOpen className="h-4 w-4 text-amber-600" /> S.P.A.R.K / training activity
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
@@ -928,10 +866,10 @@ export default function CorporateDashboard() {
         </div>
 
         {/* Request form */}
-        <Card>
+        <Card className="rounded-3xl border shadow-sm" style={{ borderColor: "#E6E8FA" }}>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Send className="h-5 w-5" /> Request a screening or training session
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <Send className="h-5 w-5 text-primary" /> Request a screening or training session
             </CardTitle>
             <CardDescription>
               Submits to the InnerSpark team. Not a fully automated booking.
@@ -951,6 +889,7 @@ export default function CorporateDashboard() {
                   key={val}
                   type="button"
                   size="sm"
+                  className="rounded-full"
                   variant={requestType === val ? "default" : "outline"}
                   onClick={() => setRequestType(val)}
                 >
@@ -963,9 +902,10 @@ export default function CorporateDashboard() {
               onChange={(e) => setRequestNote(e.target.value)}
               placeholder="Tell us what you need — timing, audience size, preferred module, off-cycle reason…"
               rows={4}
+              className="rounded-2xl"
             />
-            <Button disabled={sending} onClick={() => submitRequest()}>
-              {sending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+            <Button disabled={sending} className="h-11 rounded-xl text-white" style={{ background: "#F2994A" }} onClick={() => submitRequest()}>
+              {sending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Send className="h-4 w-4 mr-2" />}
               Send request to InnerSpark
             </Button>
           </CardContent>
