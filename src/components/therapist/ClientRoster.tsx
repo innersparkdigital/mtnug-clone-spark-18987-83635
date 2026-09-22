@@ -123,15 +123,14 @@ const ClientRoster = ({ therapistId, therapistName }: Props) => {
       (n, c) => n + (c.week_activity || []).reduce((a, d) => a + (d.completed || 0), 0),
       0,
     );
-    // completion rate: this week's completions / (7 * total active tools) as a light proxy
-    const target = totalActiveTools * 7 || 1;
-    const completionPct = Math.min(100, Math.round((weekCompleted / target) * 100));
-    // "sessions today" proxy: clients with any activity today
-    const today = clients.filter((c) => {
-      const last = c.week_activity?.[c.week_activity.length - 1];
-      return last && last.completed > 0;
-    }).length;
-    return { totalActive, alerts, completionPct, today };
+    const overdueTotal = clients.reduce((n, c) => n + (c.overdue_tools || 0), 0);
+    // Done vs due: completions / (completions + overdue) — not a fake 7× tools rate
+    const duePool = Math.max(weekCompleted + overdueTotal, 1);
+    const completionPct = totalActiveTools === 0 ? 0 : Math.min(100, Math.round((weekCompleted / duePool) * 100));
+    const today = clients.filter((c) =>
+      (c.week_activity || []).some((d) => (d.completed || 0) > 0),
+    ).length;
+    return { totalActive, alerts, completionPct, today, weekCompleted };
   }, [clients]);
 
   const newSubmissions = clients.filter((c) => {
