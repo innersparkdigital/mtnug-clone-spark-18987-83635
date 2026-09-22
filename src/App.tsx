@@ -190,6 +190,10 @@ const LocalizedTherapy = lazy(() => import("./pages/LocalizedTherapy"));
 const Partners = lazy(() => import("./pages/Partners"));
 const WellbeingCheckEmbed = lazy(() => import("./pages/WellbeingCheckEmbed"));
 const CorporateDashboard = lazy(() => import("./pages/CorporateDashboard"));
+const CorporateAssessments = lazy(() => import("./pages/CorporateAssessments"));
+const AssessmentTake = lazy(() => import("./pages/AssessmentTake"));
+const AssessmentDone = lazy(() => import("./pages/AssessmentDone"));
+const AssessmentReport = lazy(() => import("./pages/AssessmentReport"));
 const GlobalLanding = lazy(() => import("./pages/global/GlobalLanding"));
 const KenyaCheck = lazy(() => import("./pages/KenyaCheck"));
 const KenyaReferralRedirect = lazy(
@@ -518,6 +522,10 @@ const App = () => (
                 <Route path="/partners" element={<Partners />} />
                 <Route path="/wellbeing-check/embed" element={<WellbeingCheckEmbed />} />
                 <Route path="/corporate-dashboard" element={<CorporateDashboard />} />
+                <Route path="/corporate-assessments" element={<CorporateAssessments />} />
+                <Route path="/corporate-assessments/report/:token" element={<AssessmentReport />} />
+                <Route path="/assess/:token" element={<AssessmentTake />} />
+                <Route path="/assess/:token/done" element={<AssessmentDone />} />
                 <Route
                   path="/kenya/ref/:slug"
                   element={<KenyaReferralRedirect />}
