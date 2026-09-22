@@ -13,6 +13,8 @@ const FROM = "InnerSpark <noreply@innersparkafrica.com>";
 const RESEND_GATEWAY_URL = "https://connector-gateway.lovable.dev/resend";
 const TZ = "Africa/Nairobi";
 const SUPPORT_WHATSAPP = "+256 792 085 773";
+// Team always gets tomorrow's list on both inboxes
+const TEAM_INBOXES = ["info@innersparkafrica.com", "innersparkrecovery@gmail.com"];
 
 function nowInNairobi(): Date {
   return new Date(new Date().toLocaleString("en-US", { timeZone: TZ }));
@@ -27,9 +29,11 @@ function esc(s: string): string {
   return (s || "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c] as string));
 }
 
-async function sendEmail(to: string, subject: string, html: string): Promise<{ ok: boolean; err?: string }> {
+async function sendEmail(to: string | string[], subject: string, html: string): Promise<{ ok: boolean; err?: string }> {
   const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
   const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+  const recipients = (Array.isArray(to) ? to : [to]).map((e) => String(e || "").trim()).filter(Boolean);
+  if (!recipients.length) return { ok: false, err: "no recipients" };
   try {
     const resp = await fetch(RESEND_API_KEY ? "https://api.resend.com/emails" : `${RESEND_GATEWAY_URL}/emails`, {
       method: "POST",
@@ -39,7 +43,7 @@ async function sendEmail(to: string, subject: string, html: string): Promise<{ o
           ? { Authorization: `Bearer ${RESEND_API_KEY}` }
           : { Authorization: `Bearer ${LOVABLE_API_KEY}`, "X-Connection-Api-Key": Deno.env.get("RESEND_API_KEY") || "" }),
       },
-      body: JSON.stringify({ from: FROM, to: [to], subject, html }),
+      body: JSON.stringify({ from: FROM, to: recipients, reply_to: "info@innersparkafrica.com", subject, html }),
     });
     if (!resp.ok) return { ok: false, err: `${resp.status}: ${(await resp.text()).slice(0, 200)}` };
     return { ok: true };
@@ -85,7 +89,7 @@ Deno.serve(async (req) => {
 
       const { data: clients, error } = await supabase
         .from("therapist_clients")
-        .select("id, full_name, email, session_type, next_session_date, therapist_id, therapist_accounts(full_name)")
+        .select("id, full_name, email, phone, session_type, next_session_date, therapist_id, therapist_accounts(full_name, email)")
         .eq("next_session_date", sessionDate)
         .not("email", "is", null);
       if (error) throw error;
@@ -130,6 +134,37 @@ Deno.serve(async (req) => {
           processed++;
         } else {
           console.error("session reminder send failed", c.id, res.err);
+        }
+
+        // Therapist notice — day-before only
+        if (offset === 1 && c.therapist_accounts?.email) {
+          const tKind = "therapist_1d";
+          const { data: tExisting } = await supabase
+            .from("client_reminder_log")
+            .select("id")
+            .eq("client_id", c.id)
+            .eq("kind", tKind)
+            .eq("sent_for_date", sessionDate)
+            .maybeSingle();
+          if (!tExisting) {
+            const tFirst = String(c.therapist_accounts.full_name || "Therapist").split(" ")[0];
+            const tHtml = shell(`
+              <p>Hi ${esc(tFirst)},</p>
+              <p>You have a session <strong>tomorrow</strong> (${esc(pretty)}) with
+              <strong>${esc(c.full_name || "a client")}</strong>${c.session_type ? ` · ${esc(c.session_type)}` : ""}.</p>
+              <p style="color:#64748b;font-size:12px;">Client: ${esc(c.phone || "—")} · ${esc(c.email || "—")}</p>
+            `);
+            const tRes = await sendEmail(
+              c.therapist_accounts.email,
+              `Tomorrow: session with ${c.full_name || "client"}`,
+              tHtml,
+            );
+            if (tRes.ok) {
+              await supabase.from("client_reminder_log").insert({ client_id: c.id, kind: tKind, sent_for_date: sessionDate });
+            } else {
+              console.error("therapist reminder failed", c.id, tRes.err);
+            }
+          }
         }
       }
     }
@@ -184,7 +219,7 @@ Deno.serve(async (req) => {
           </p>
         `);
         const res = await sendEmail(
-          "info@innersparkafrica.com",
+          TEAM_INBOXES,
           `Tomorrow: ${pending.length} client session${pending.length === 1 ? "" : "s"} (${pretty})`,
           html,
         );
