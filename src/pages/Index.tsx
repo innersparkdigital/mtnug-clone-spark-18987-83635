@@ -88,7 +88,7 @@ const Index = () => {
         "@type": "WebPage",
         "@id": "https://www.innersparkafrica.com/#webpage",
         url: "https://www.innersparkafrica.com/",
-        name: "Mental Wellness & Therapy in Uganda from UGX 30,000 | InnerSpark",
+        name: "Book Licensed Online Therapy Uganda | Video UGX 75,000 | InnerSpark",
         isPartOf: { "@id": "https://www.innersparkafrica.com/#website" },
         about: { "@id": "https://www.innersparkafrica.com/#organization" },
       },
@@ -98,11 +98,11 @@ const Index = () => {
   return (
     <>
       <Helmet>
-        <title>Mental Wellness & Therapy in Uganda from UGX 30,000 | InnerSpark</title>
-        <meta name="description" content="Confidential mental health support from licensed Ugandan therapists by video, voice or chat from UGX 30,000. Pay by MTN or Airtel Money, book in 2 minutes." />
-        <meta property="og:title" content="Mental Wellness & Therapy in Uganda from UGX 30,000 | InnerSpark" />
-        <meta property="og:description" content="Confidential mental health support from licensed Ugandan therapists by video, voice or chat from UGX 30,000. Pay by MTN or Airtel Money, book in 2 minutes." />
-        <meta name="keywords" content="online therapy Uganda, therapist Uganda, therapist Kampala, counsellor Kampala, online counselling Uganda, teletherapy Uganda, private therapy Kampala, confidential therapy Kampala, mental health Uganda, therapy for professionals Uganda, burnout therapy Uganda, anonymous therapy Uganda, corporate mental health Uganda, WHO-5 Uganda, therapist for depression Uganda, therapist for anxiety Uganda, therapist for trauma Uganda, therapist for couples Uganda, therapist for suicidal thoughts Uganda, chat therapy Uganda 30000, affordable chat therapy Uganda, therapy via WhatsApp chat Uganda, evening therapy sessions Uganda, Sunday therapy sessions Uganda, weekend therapist Uganda, same day therapist Uganda, urgent therapy Uganda, emergency counselling Uganda, teen therapist Uganda, therapy for teenagers Kampala, youth mental health Uganda, therapy for students Uganda, online therapy South Sudan, therapist South Sudan, mental health support South Sudan, online counselling East Africa" />
+        <title>Book Licensed Online Therapy Uganda | Video UGX 75,000 | InnerSpark</title>
+        <meta name="description" content="For professionals ready to invest in confidential care. Book a licensed African therapist — video UGX 75,000 or chat UGX 30,000. Mobile Money or card. Uganda, Kenya, Tanzania and beyond." />
+        <meta property="og:title" content="Book Licensed Online Therapy Uganda | Video UGX 75,000 | InnerSpark" />
+        <meta property="og:description" content="Licensed African therapists for people ready to pay for real care. Video UGX 75,000 · Chat UGX 30,000. Book in about two minutes." />
+        <meta name="keywords" content="book therapist Uganda, online therapy Uganda, licensed therapist Kampala, therapy cost Uganda, video therapy UGX 75000, chat therapy UGX 30000, online counselling Uganda, therapy for professionals Uganda, burnout therapy Uganda, couples counselling Uganda, teenage counselling Uganda, book online therapy Kenya, online therapist Nairobi, therapy M-Pesa Kenya, online therapy Tanzania, confidential therapy Africa" />
         <link rel="canonical" href="https://www.innersparkafrica.com/" />
         <script type="application/ld+json">{JSON.stringify(homeSchema)}</script>
       </Helmet>
