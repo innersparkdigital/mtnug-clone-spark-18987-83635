@@ -532,7 +532,7 @@ const Specialists = () => {
   return (
     <>
       <Helmet>
-        <title>Licensed Mental Health Therapists in Uganda | InnerSpark</title>
+        <title>Book Licensed Therapists in Uganda & Kampala | Video UGX 75,000</title>
         <meta
           name="description"
           content="For professionals ready to pay for confidential care. Browse licensed African therapists. Video UGX 75,000 · Chat UGX 30,000. Book in about two minutes."
