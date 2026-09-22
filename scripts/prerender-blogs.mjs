@@ -52,8 +52,8 @@ const SEO_OVERRIDES = {
     description: "Find a licensed psychologist in Kampala and compare credentials, session format, pricing and availability before you book.",
   },
   "find-therapist-kampala": {
-    title: "Find a Licensed Therapist in Kampala | UGX 75,000 Video",
-    description: "Book a licensed Ugandan therapist in Kampala. Confidential video therapy UGX 75,000 or chat UGX 30,000. Mobile Money or card. No waiting room.",
+    title: "Book a Licensed Therapist in Kampala | Video UGX 75,000",
+    description: "For professionals who want confidential care. Book a licensed Ugandan therapist in Kampala — video UGX 75,000 or chat UGX 30,000. Mobile Money or card.",
   },
   "find-a-therapist-in-uganda": {
     title: "Find a Therapist in Uganda: Licensed Online Support",
@@ -186,7 +186,7 @@ const SEO_OVERRIDES = {
 };
 
 const ARTICLE_JOURNEYS = {
-  "find-therapist-kampala": { hook: "You do not need to tell your whole story before you know who will listen. Start with a licensed Ugandan therapist, clear prices and a private session you can book from home.", cta: "Book a licensed Kampala therapist", body: "Compare licensed African therapists who understand local languages and context. Video therapy is UGX 75,000 per session; chat therapy is UGX 30,000. Pay by Mobile Money or card.", label: "Find a licensed therapist in Kampala", href: "/book-therapist" },
+  "find-therapist-kampala": { hook: "You earn enough to invest in your mind — you should not have to wait for a clinic slot or explain your whole life first. Book a licensed Ugandan therapist with clear prices and a private session from home.", cta: "Book a licensed Kampala therapist", body: "Compare licensed African therapists who understand local languages and context. Video therapy is UGX 75,000 per session; chat therapy is UGX 30,000 — clear costs for people ready to pay for real care. Mobile Money or card.", label: "Book a licensed therapist in Kampala", href: "/book-therapist" },
   "spark-framework-mental-wellbeing": { hook: "When life feels scattered, a small routine can give the day somewhere steady to begin. S.P.A.R.K turns wellbeing into five realistic choices.", cta: "Need more than a routine right now?", body: "A licensed therapist can help you work through what is underneath the stress, privately and without judgement.", label: "Talk to a therapist", href: "/book-therapist" },
   "find-a-therapist-in-uganda": { hook: "Finding the right therapist is not about choosing the first name on a list. It is about feeling safe, understood and clear about what happens next.", cta: "Find licensed support that fits you", body: "Compare therapists who understand local languages and context, then book by video or chat with clear pricing.", label: "Browse licensed therapists", href: "/book-therapist" },
   "corporate-wellbeing-screening-uganda": { hook: "People often keep working while silently running out of strength. Confidential screening helps an organisation notice pressure before it becomes absence, conflict or resignation.", cta: "Understand what your team needs", body: "Request a confidential wellbeing screening programme designed for workplaces in Uganda.", label: "Request workplace support", href: "/corporate/service-request" },
