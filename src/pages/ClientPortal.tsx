@@ -402,6 +402,25 @@ const ClientPortalInner = () => {
 
         <GreetingBlock fullName={snapshot.client.full_name} therapistName={snapshot.therapist.full_name} />
 
+        {!activeTool && (
+          <div className="mt-4 flex flex-wrap gap-2">
+            <a
+              href="/book-therapist"
+              className="inline-flex items-center rounded-full border border-primary/30 bg-primary/5 px-3 py-1.5 text-xs font-semibold text-primary hover:bg-primary/10 transition-colors"
+            >
+              Book next session
+            </a>
+            <a
+              href="https://wa.me/256792085773"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center rounded-full border px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-muted/50 transition-colors"
+            >
+              Message support
+            </a>
+          </div>
+        )}
+
         {snapshot.has_red_alert && !activeTool && (
           <div className="mt-6 rounded-2xl border border-destructive/40 bg-destructive/5 p-4 text-sm leading-relaxed">
             Your therapist has been alerted and is reaching out to you. If you need someone right now, please call{" "}
