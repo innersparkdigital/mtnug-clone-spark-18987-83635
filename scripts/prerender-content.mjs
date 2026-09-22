@@ -53,7 +53,7 @@ export const ROUTES = [
   },
   {
     path: "/specialists",
-    title: "Licensed Mental Health Therapists in Uganda | InnerSpark",
+    title: "Licensed Therapists in Uganda & Kampala | UGX 75,000 Video",
     description:
       "Browse licensed Ugandan mental health therapists for anxiety, depression, trauma and relationships. Video, voice or chat from UGX 30,000. Book in 2 minutes.",
     h1: "Find Your Mental Health Professional",
@@ -134,7 +134,7 @@ export const ROUTES = [
   },
   {
     path: "/book-therapist",
-    title: "Book a Therapist Online in Uganda | InnerSpark Africa",
+    title: "Book a Licensed Therapist Online | Video UGX 75,000",
     description:
       "Book a licensed Ugandan therapist in about two minutes. Choose video, voice or chat, pick your time, and pay with MTN or Airtel Money from UGX 30,000.",
     h1: "Book a Therapist Online",
