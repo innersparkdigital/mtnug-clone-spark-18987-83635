@@ -137,20 +137,19 @@ export default function Kenya() {
     : placeholderTestimonials;
 
   const seoKeywords = [
-    "online therapy Kenya",
-    "therapist Kenya",
-    "mental health Kenya",
-    "counselling Nairobi",
-    "online counsellor Nairobi",
-    "depression therapist Kenya",
-    "anxiety counsellor Nairobi",
+    "book online therapy Kenya",
+    "licensed therapist Kenya",
+    "online therapist Nairobi",
+    "therapy cost Kenya",
+    "online counselling Kenya M-Pesa",
+    "book therapist Nairobi",
+    "video therapy Kenya",
+    "therapy for professionals Kenya",
+    "couples counselling Nairobi online",
+    "confidential therapy Kenya",
     "online psychologist Mombasa",
     "therapy Kisumu",
-    "M-Pesa therapy",
-    "Kiswahili therapy",
-    "EAP Kenya",
-    "stress counselling Kenya",
-    "trauma therapist Nairobi",
+    "burnout therapy Nairobi",
     "African therapists online",
     "InnerSpark Africa Kenya",
   ].join(", ");
@@ -158,12 +157,12 @@ export default function Kenya() {
   return (
     <div className="min-h-screen bg-white">
       <Helmet>
-        <title>Online Therapy in Kenya | InnerSpark Africa</title>
-        <meta name="description" content="Online therapy in Kenya with licensed African therapists. Video, voice or chat from KES 2,600, paid via M-Pesa. Book in 2 minutes, fully private." />
+        <title>Book Online Therapy Kenya | Licensed Therapists from KES 2,600</title>
+        <meta name="description" content="For professionals in Kenya ready to pay for confidential care. Book a licensed African therapist — from about KES 2,600 via M-Pesa. Video or chat. Nairobi, Mombasa, Kisumu and beyond." />
         <meta name="keywords" content={seoKeywords} />
         <link rel="canonical" href="https://www.innersparkafrica.com/kenya" />
-        <meta property="og:title" content="Online Therapy in Kenya | InnerSpark Africa" />
-        <meta property="og:description" content="Online therapy in Kenya with licensed African therapists. Video, voice or chat from KES 2,600, paid via M-Pesa. Book in 2 minutes, fully private." />
+        <meta property="og:title" content="Book Online Therapy Kenya | Licensed from KES 2,600" />
+        <meta property="og:description" content="Licensed African therapists for Kenyan professionals. From about KES 2,600. Pay via M-Pesa. Book in about two minutes." />
         <meta property="og:url" content="https://www.innersparkafrica.com/kenya" />
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org",
@@ -230,12 +229,12 @@ export default function Kenya() {
           <div>
             <span className="inline-block mb-4 px-2.5 py-0.5 rounded-xl text-[11px] font-medium" style={{ background: "#EEF0FD", color: "#0C447C", border: "0.5px solid #C5CAF5" }}>Kenya</span>
             <h1 className="font-display text-3xl md:text-5xl font-bold leading-tight">
-              Therapy that understands your world.<br />
-              From wherever you are in Kenya.
+              Book licensed online therapy in Kenya.<br />
+              Clear price. Private. M-Pesa ready.
             </h1>
             <p className="mt-5 text-base" style={{ color: "#C5CAF5" }}>
-              Licensed African therapists. Video sessions.<br />
-              From KES 2,600 · Pay via M-Pesa · Book in 2 minutes.
+              For professionals ready to invest in confidential care.<br />
+              From about KES 2,600 · Pay via M-Pesa · Book in about 2 minutes.
             </p>
             <div className="mt-7 flex flex-col sm:flex-row gap-3">
               <button type="button" onClick={startBooking} className="inline-flex items-center justify-center font-medium text-white rounded-lg px-6 py-3 text-[15px]" style={{ background: WARMTH }}>
