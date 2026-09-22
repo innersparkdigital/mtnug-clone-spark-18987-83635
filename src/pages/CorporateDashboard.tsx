@@ -60,11 +60,12 @@ type DashStats = {
   participation_rate: number | null;
   can_show_breakdown: boolean;
   avg_percentage: number | null;
+  avg_who5?: number | null;
   risk: { low: number; moderate: number; high: number } | null;
   drivers: Driver[];
   phases: Phase[];
-  trainings: Training[];
-  rounds: RoundMeta[];
+  trainings?: Training[];
+  rounds?: RoundMeta[];
 };
 
 type ServiceRec = {
@@ -340,7 +341,23 @@ export default function CorporateDashboard() {
         toast.error(error.message);
       }
     } else {
-      setStats(data as DashStats);
+      const d = data as any;
+      setStats({
+        ...d,
+        avg_percentage: d.avg_percentage ?? d.avg_who5 ?? null,
+        phases: (d.phases || []).map((p: any) => ({
+          id: p.id || p.period,
+          name: p.name || p.period,
+          phase_label: p.phase_label || p.period,
+          starts_at: p.starts_at || p.period,
+          status: p.status || "completed",
+          is_off_cycle: !!p.is_off_cycle,
+          completed: p.completed || 0,
+          avg_percentage: p.avg_percentage ?? p.avg_who5 ?? null,
+        })),
+        trainings: d.trainings || [],
+        rounds: d.rounds || [],
+      } as DashStats);
     }
     setStatsLoading(false);
   };
@@ -671,7 +688,7 @@ export default function CorporateDashboard() {
               <RiskBars risk={stats.risk} />
             ) : (
               <div className="rounded-lg border border-dashed p-6 text-sm text-muted-foreground bg-background">
-                Privacy hold active — not enough responses yet to show this breakdown while protecting individual privacy (minimum {minG} completed private screens).
+                Not enough responses yet to show this breakdown while protecting individual privacy (minimum {minG} completed private screens).
               </div>
             )}
           </CardContent>
