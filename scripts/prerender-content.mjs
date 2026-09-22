@@ -177,9 +177,9 @@ export const ROUTES = [
   },
   {
     path: "/amani-ai",
-    title: "Amani AI Uganda — Free Mental Wellness Chat | InnerSpark",
+    title: "Amani AI: Free Mental Wellness Chat Uganda | InnerSpark",
     description:
-      "Chat with Amani, InnerSpark Africa's free AI wellness guide for stress, sleep, anxiety and relationships. Amani is not a therapist or emergency service.",
+      "Amani is InnerSpark’s free AI mental wellness guide for stress, sleep and anxiety in Uganda. Not a therapist. Video therapy UGX 75,000; chat UGX 30,000.",
     h1: "Meet Amani — your free AI mental wellness guide",
     intro:
       "Use Amani to talk through stress, anxiety, burnout, sleep or relationship concerns and find a practical next step. Amani is an AI guide, not a therapist or emergency service.",
@@ -241,6 +241,28 @@ export const ROUTES = [
     h1: "You should not have to translate your whole life in therapy",
     intro: "Speak with an African therapist who understands migration, family obligations and living between cultures.",
     sections: [{ h2: "The parts of diaspora life others can miss", p: "Homesickness, immigration stress, racial pressure and family expectations back home can overlap." }, { h2: "Support for living between cultures", p: "Talk about adjustment, identity, relationships, grief across distance, student life or workplace stress." }, { h2: "Clear dollar estimates", p: "Video therapy is about USD 22 and chat therapy about USD 9. The final amount is confirmed during payment." }, { h2: "Across US time zones", p: "Share your location and availability so InnerSpark can identify a practical session time." }, { h2: "Important care boundary", p: "InnerSpark is not a US emergency service. If you are in immediate danger, call or text 988 or contact local emergency services." }],
+  },
+  {
+    path: "/whisper",
+    title: "Whisper: Private Mental Health Voice Note Uganda | InnerSpark",
+    description: "Send a free private mental health voice note when typing feels hard. Not emergency care. Licensed video therapy UGX 75,000; chat UGX 30,000.",
+    h1: "Whisper — private mental health voice notes",
+    intro: "Record what you are carrying without a public post. InnerSpark reviews private Whispers. For crisis, WhatsApp +256 792 085 773.",
+    sections: [
+      { h2: "When Whisper helps", p: "Use Whisper when writing feels impossible and you want a private first step before or instead of a full session." },
+      { h2: "What it is not", p: "Whisper is not crisis care, diagnosis or ongoing therapy. Book a licensed therapist for video or chat when you want structured support." },
+    ],
+  },
+  {
+    path: "/wellbeing-check",
+    title: "Free WHO-5 Mental Wellbeing Check Uganda | InnerSpark",
+    description: "Free two-minute WHO-5 wellbeing check. Private score, no account, not a diagnosis. Next steps include licensed therapy from UGX 30,000 chat or UGX 75,000 video.",
+    h1: "Free WHO-5 mental wellbeing check",
+    intro: "Answer five short questions for a private wellbeing snapshot. No account required. Results are a guide, not a medical diagnosis.",
+    sections: [
+      { h2: "What the score means", p: "Lower scores suggest it may help to talk with a licensed therapist. Higher scores can still benefit from support during stressful seasons." },
+      { h2: "What to do next", p: "Book confidential video therapy for UGX 75,000 or chat therapy for UGX 30,000, or WhatsApp InnerSpark on +256 792 085 773." },
+    ],
   },
   {
     path: "/kenya",
