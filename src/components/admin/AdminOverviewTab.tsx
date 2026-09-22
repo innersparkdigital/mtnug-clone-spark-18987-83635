@@ -84,20 +84,40 @@ const AdminOverviewTab = ({ onNavigate }: { onNavigate?: (tab: string) => void }
   ];
 
   const sections = [
-    { key: "all-clients", title: "Client Oversight", desc: "Read-only view of every client, their therapist, homework and safety flags.", icon: Users, color: "from-blue-500/10 to-blue-600/5 border-blue-500/20" },
-    { key: "session-logs", title: "Session Logs", desc: "Every session logged by every therapist. Filter, follow up, spot crises.", icon: Activity, color: "from-indigo-500/10 to-indigo-600/5 border-indigo-500/20" },
-    { key: "enquiries", title: "Enquiries & Leads", desc: "Amani chat, contact form, and WhatsApp callback requests in one feed.", icon: Inbox, color: "from-amber-500/10 to-amber-600/5 border-amber-500/20" },
-    { key: "revenue", title: "Revenue & Performance", desc: "Weekly revenue trend and therapist performance metrics.", icon: TrendingUp, color: "from-emerald-500/10 to-emerald-600/5 border-emerald-500/20" },
+    { key: "upcoming-sessions", title: "Upcoming sessions", desc: "Today and this week’s booked sessions — start here for the clinical day.", icon: Calendar, color: "from-violet-500/10 to-violet-600/5 border-violet-500/20" },
+    { key: "sales-tracking", title: "WhatsApp sales", desc: "Paid booking pipeline from WhatsApp — money in motion.", icon: DollarSign, color: "from-green-500/10 to-green-600/5 border-green-500/20" },
+    { key: "crisis-queue", title: "Crisis queue", desc: "Safety reviews that cannot wait. Open flags first.", icon: AlertOctagon, color: "from-red-500/10 to-red-600/5 border-red-500/20" },
+    { key: "all-clients", title: "Client oversight", desc: "Every client, therapist, homework and safety flag in one place.", icon: Users, color: "from-blue-500/10 to-blue-600/5 border-blue-500/20" },
+    { key: "session-logs", title: "Session logs", desc: "Every session logged by every therapist. Filter and follow up.", icon: Activity, color: "from-indigo-500/10 to-indigo-600/5 border-indigo-500/20" },
+    { key: "enquiries", title: "Enquiries & leads", desc: "Amani chat, contact form, and WhatsApp callbacks in one feed.", icon: Inbox, color: "from-amber-500/10 to-amber-600/5 border-amber-500/20" },
+    { key: "revenue", title: "Revenue & performance", desc: "Weekly revenue trend and therapist performance metrics.", icon: TrendingUp, color: "from-emerald-500/10 to-emerald-600/5 border-emerald-500/20" },
   ];
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-foreground">Welcome back, {firstName}</h2>
-        <p className="text-sm text-muted-foreground">
-          {stats.sessions_today} session{stats.sessions_today === 1 ? "" : "s"} logged today
-          {stats.clients_needing_followup > 0 && ` · ${stats.clients_needing_followup} client${stats.clients_needing_followup === 1 ? "" : "s"} need follow-up`}
-        </p>
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-primary mb-1">Today</p>
+            <h2 className="text-2xl font-bold text-foreground">Welcome back, {firstName}</h2>
+            <p className="text-sm text-muted-foreground mt-1">
+              {stats.sessions_today} session{stats.sessions_today === 1 ? "" : "s"} logged today
+              {stats.clients_needing_followup > 0 && ` · ${stats.clients_needing_followup} client${stats.clients_needing_followup === 1 ? "" : "s"} need follow-up`}
+              {stats.open_safety_flags > 0 && ` · ${stats.open_safety_flags} safety flag${stats.open_safety_flags === 1 ? "" : "s"} open`}
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Button size="sm" variant={stats.open_safety_flags > 0 ? "destructive" : "outline"} onClick={() => onNavigate?.("crisis-queue")}>
+              Crisis queue
+            </Button>
+            <Button size="sm" variant="outline" onClick={() => onNavigate?.("upcoming-sessions")}>
+              Upcoming
+            </Button>
+            <Button size="sm" variant="outline" onClick={() => onNavigate?.("sales-tracking")}>
+              Sales
+            </Button>
+          </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
