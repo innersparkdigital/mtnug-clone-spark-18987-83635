@@ -190,6 +190,7 @@ const LocalizedTherapy = lazy(() => import("./pages/LocalizedTherapy"));
 const Partners = lazy(() => import("./pages/Partners"));
 const WellbeingCheckEmbed = lazy(() => import("./pages/WellbeingCheckEmbed"));
 const CorporateDashboard = lazy(() => import("./pages/CorporateDashboard"));
+const CorporateDashboard = lazy(() => import("./pages/CorporateDashboard"));
 const GlobalLanding = lazy(() => import("./pages/global/GlobalLanding"));
 const KenyaCheck = lazy(() => import("./pages/KenyaCheck"));
 const KenyaReferralRedirect = lazy(
@@ -517,6 +518,7 @@ const App = () => (
                 <Route path="/usa" element={<LocalizedTherapy marketOverride="usa" />} />
                 <Route path="/partners" element={<Partners />} />
                 <Route path="/wellbeing-check/embed" element={<WellbeingCheckEmbed />} />
+                <Route path="/corporate-dashboard" element={<CorporateDashboard />} />
                 <Route path="/corporate-dashboard" element={<CorporateDashboard />} />
                 <Route
                   path="/kenya/ref/:slug"
