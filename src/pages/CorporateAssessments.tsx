@@ -117,24 +117,42 @@ export default function CorporateAssessments() {
   if (authLoading || loading) return <div className="min-h-screen grid place-items-center"><Loader2 className="h-7 w-7 animate-spin" style={{ color: BLUE }} /></div>;
 
   return (
-    <div className="min-h-screen" style={{ background: "linear-gradient(180deg,#F5F6FF 0%,#fff 50%,#FFF8F0 100%)" }}>
+    <div className="min-h-screen" style={{ background: "linear-gradient(180deg,#EEF2FF 0%,#fff 40%,#FFF8F0 100%)" }}>
       <Helmet><title>Psychometric assessments | InnerSpark Corporate</title><meta name="robots" content="noindex" /></Helmet>
+
+      <header className="sticky top-0 z-30 border-b bg-white/90 backdrop-blur-md" style={{ borderColor: "#E6E8FA" }}>
+        <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
+          <Link to="/corporate-dashboard" className="inline-flex items-center gap-1.5 text-sm font-medium" style={{ color: BLUE }}>
+            <ArrowLeft className="h-4 w-4" /> Wellbeing dashboard
+          </Link>
+          <span className="text-[11px] font-medium px-2.5 py-1 rounded-full" style={{ background: "#EEF0FD", color: BLUE }}>Company HR</span>
+        </div>
+      </header>
+
       <div className="max-w-6xl mx-auto px-4 py-8 pb-20 space-y-6">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <Link to="/corporate-dashboard" className="inline-flex items-center gap-1 text-sm mb-2" style={{ color: BLUE }}><ArrowLeft className="h-4 w-4" /> Dashboard</Link>
-            <h1 className="text-3xl font-bold" style={{ color: NIGHT }}>Psychometric assessments</h1>
-            <p className="text-sm mt-1" style={{ color: "#6B7280" }}>Buy seats → unique employee link → downloadable report. Development tools, not clinical diagnoses.</p>
-          </div>
-          <div className="rounded-2xl border bg-white px-5 py-3 shadow-sm" style={{ borderColor: "#E6E8FA" }}>
-            <p className="text-xs" style={{ color: "#6B7280" }}>Credit balance</p>
-            <p className="text-3xl font-bold" style={{ color: BLUE }}>{balance}</p>
+        <div
+          className="relative overflow-hidden rounded-3xl p-6 sm:p-8 text-white shadow-lg"
+          style={{ background: "linear-gradient(135deg,#1e1b4b 0%,#312e81 50%,#1e3a5f 100%)" }}
+        >
+          <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-white/5 blur-2xl pointer-events-none" />
+          <div className="relative flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5">
+            <div className="max-w-xl">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-white/60 mb-2">Paid seats · private links</p>
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Psychometric assessments</h1>
+              <p className="text-sm text-white/70 mt-2 leading-relaxed">
+                Buy seats → unique employee link → downloadable development report. Not clinical diagnoses.
+              </p>
+            </div>
+            <div className="rounded-2xl border border-white/15 bg-white/10 backdrop-blur px-5 py-3 self-start sm:self-auto">
+              <p className="text-[11px] uppercase tracking-wide text-white/60">Credit balance</p>
+              <p className="text-3xl font-bold tracking-tight">{balance}</p>
+            </div>
           </div>
         </div>
 
         <div className="flex flex-wrap gap-2">
           {(["catalog", "buy", "invites", "orders"] as const).map((t) => (
-            <button key={t} type="button" onClick={() => setTab(t)} className="rounded-full px-4 py-2 text-xs font-semibold border capitalize"
+            <button key={t} type="button" onClick={() => setTab(t)} className="rounded-full px-4 py-2 text-xs font-semibold border capitalize shadow-sm transition-colors"
               style={{ background: tab === t ? BLUE : "white", color: tab === t ? "white" : NIGHT, borderColor: tab === t ? BLUE : "#E6E8FA" }}>
               {t === "buy" ? "Buy credits" : t}
             </button>
