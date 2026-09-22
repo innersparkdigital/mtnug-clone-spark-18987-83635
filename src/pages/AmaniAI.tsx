@@ -9,15 +9,17 @@ import amaniAvatar from "@/assets/amani-avatar.jpg";
 import heroImg from "@/assets/blog/amani-ai-hero.jpg";
 
 const URL = "https://www.innersparkafrica.com/amani-ai";
-const TITLE = "Amani AI Uganda — Free Mental Wellness Chat | InnerSpark";
-const DESC = "Chat with Amani, InnerSpark Africa's free AI wellness guide for stress, sleep, anxiety and relationships. Amani is not a therapist or emergency service.";
+const TITLE = "Amani AI: Free Mental Wellness Chat Uganda | InnerSpark";
+const DESC = "Amani is InnerSpark Africa’s free AI mental wellness guide for stress, sleep, anxiety and relationships in Uganda and East Africa. Not a therapist or emergency service. Video therapy UGX 75,000; chat UGX 30,000.";
 
 const faqs = [
-  { q: "Is Amani AI free to use?", a: "Yes. Chatting with Amani is completely free. You can ask questions, get matched to a therapist or take a wellbeing check at no cost." },
-  { q: "Is Amani a real therapist?", a: "No. Amani is a friendly AI wellness assistant trained to listen, share coping strategies and guide you to the right next step — including booking a licensed InnerSpark therapist when you need one." },
-  { q: "Is what I share with Amani private?", a: "Your chat is handled through InnerSpark's service, but no online service can promise absolute privacy. Avoid sharing passwords, financial details or other sensitive identifying information." },
-  { q: "Can Amani help in a crisis?", a: "Amani is not an emergency service. If you may harm yourself or feel unsafe, send an urgent WhatsApp message to InnerSpark on +256 792 085 773." },
-  { q: "What can I ask Amani?", a: "Anything mental-health related — stress, sleep, anxiety, relationship struggles, work burnout, or how to book a therapist. Amani can also guide you to the right free assessment." },
+  { q: "What is Amani AI?", a: "Amani is InnerSpark Africa’s free AI mental wellness guide. It helps people in Uganda, Kenya, Tanzania and the wider African diaspora talk through stress, sleep, anxiety, burnout and relationships, then points them to a free WHO-5 check or a licensed therapist when needed." },
+  { q: "Is Amani AI free to use?", a: "Yes. Chatting with Amani is free. You only pay if you book a licensed InnerSpark therapist: video therapy is UGX 75,000 per session and chat therapy is UGX 30,000." },
+  { q: "Is Amani a real therapist?", a: "No. Amani is an AI wellness guide, not a licensed therapist, doctor or emergency service. It cannot diagnose, prescribe or replace professional care." },
+  { q: "Is what I share with Amani private?", a: "Your chat is handled through InnerSpark’s service, but no online service can promise absolute privacy. Avoid sharing passwords, payment details or other sensitive identifying information." },
+  { q: "Can Amani help in a crisis?", a: "No. Amani is not an emergency service. If you may harm yourself or feel unsafe, send an urgent WhatsApp message to InnerSpark on +256 792 085 773 so a real person can take over." },
+  { q: "How do I book a therapist after chatting with Amani?", a: "Tell Amani you want to book. It can guide you to licensed African therapists. Confirm on WhatsApp at +256 792 085 773. Video sessions cost UGX 75,000; chat sessions cost UGX 30,000. Pay by Mobile Money or card." },
+  { q: "What can I ask Amani?", a: "Everyday mental-health questions — stress, sleep, anxiety, relationship struggles, work burnout, student pressure, or how to choose video vs chat therapy. Amani can also open the free WHO-5 wellbeing check." },
 ];
 
 const softwareSchema = {
