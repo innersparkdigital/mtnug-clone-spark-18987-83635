@@ -134,7 +134,75 @@ Deno.serve(async (req) => {
       }
     }
 
-    return new Response(JSON.stringify({ processed, skipped: skipped.length, today }), {
+    // --- Admin digest: everyone with a session tomorrow (new AND returning) ---
+    let adminDigestSent = 0;
+    {
+      const d = new Date(local);
+      d.setDate(local.getDate() + 1);
+      const sessionDate = isoDate(d);
+
+      const { data: tomorrow } = await supabase
+        .from("therapist_clients")
+        .select("id, full_name, email, phone, client_code, client_type, session_type, next_session_date, therapist_id, therapist_accounts(full_name)")
+        .eq("next_session_date", sessionDate);
+
+      const pending: any[] = [];
+      for (const c of (tomorrow || []) as any[]) {
+        const { data: logged } = await supabase
+          .from("client_reminder_log")
+          .select("id")
+          .eq("client_id", c.id)
+          .eq("kind", "admin_digest_1d")
+          .eq("sent_for_date", sessionDate)
+          .maybeSingle();
+        if (!logged) pending.push(c);
+      }
+
+      if (pending.length > 0) {
+        const pretty = new Date(sessionDate + "T12:00:00").toLocaleDateString("en-GB", {
+          weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: TZ,
+        });
+        const rows = pending.map((c) => `
+          <tr>
+            <td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;font-size:13px;">
+              <strong>${esc(c.full_name || "(unnamed)")}</strong>
+              ${c.client_code ? `<span style="color:#64748b;"> · ${esc(c.client_code)}</span>` : ""}
+              <div style="color:#64748b;font-size:12px;margin-top:2px;">
+                ${esc(c.client_type || "—")} · ${esc(c.session_type || "session")} · with ${esc(c.therapist_accounts?.full_name || "unassigned")}
+              </div>
+              <div style="color:#334155;font-size:12px;margin-top:2px;">
+                ${esc(c.phone || "no phone")} · ${esc(c.email || "no email")}
+              </div>
+            </td>
+          </tr>`).join("");
+
+        const html = shell(`
+          <p><strong>${pending.length} session${pending.length === 1 ? "" : "s"} tomorrow</strong> — ${esc(pretty)}.</p>
+          <table style="width:100%;border-collapse:collapse;margin-top:12px;">${rows}</table>
+          <p style="color:#64748b;font-size:12px;margin-top:18px;">
+            Open Admin → Upcoming Sessions for the live follow-up list.
+          </p>
+        `);
+        const res = await sendEmail(
+          "info@innersparkafrica.com",
+          `Tomorrow: ${pending.length} client session${pending.length === 1 ? "" : "s"} (${pretty})`,
+          html,
+        );
+        if (res.ok) {
+          for (const c of pending) {
+            await supabase.from("client_reminder_log").insert({
+              client_id: c.id, kind: "admin_digest_1d", sent_for_date: sessionDate,
+            });
+          }
+          adminDigestSent = pending.length;
+        } else {
+          console.error("admin digest send failed", res.err);
+        }
+      }
+    }
+
+
+    return new Response(JSON.stringify({ processed, skipped: skipped.length, adminDigestSent, today }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {

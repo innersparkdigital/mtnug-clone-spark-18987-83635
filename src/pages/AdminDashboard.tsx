@@ -320,6 +320,12 @@ const AdminDashboard = () => {
               </TabsTrigger>
             )}
             {isAdmin && (
+              <TabsTrigger value="upcoming-sessions" className="gap-2">
+                <Calendar className="h-4 w-4" />
+                Upcoming Sessions
+              </TabsTrigger>
+            )}
+            {isAdmin && (
               <TabsTrigger value="session-logs" className="gap-2">
                 <Activity className="h-4 w-4" />
                 Session Logs
@@ -501,6 +507,11 @@ const AdminDashboard = () => {
           {isAdmin && (
             <TabsContent value="all-clients">
               <Suspense fallback={<TabFallback />}><AdminClientsTab /></Suspense>
+            </TabsContent>
+          )}
+          {isAdmin && (
+            <TabsContent value="upcoming-sessions">
+              <Suspense fallback={<TabFallback />}><UpcomingSessionsTab /></Suspense>
             </TabsContent>
           )}
           {isAdmin && (
