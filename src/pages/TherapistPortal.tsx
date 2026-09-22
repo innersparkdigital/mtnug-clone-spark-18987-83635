@@ -95,18 +95,19 @@ const TherapistPortal = () => {
     };
 
     return (
-      <div className="min-h-screen grid place-items-center p-4 bg-gradient-to-br from-primary/5 via-background to-primary/5">
-        <Card className="max-w-md w-full shadow-lg">
-          <CardHeader className="text-center">
-            <div className="mx-auto h-12 w-12 rounded-full bg-primary/10 grid place-items-center mb-3">
-              <Stethoscope className="h-6 w-6 text-primary" />
+      <div className="min-h-screen grid place-items-center p-4" style={{ background: "linear-gradient(160deg, #EEF2FF 0%, #F8FAFC 40%, #ECFDF5 100%)" }}>
+        <Card className="max-w-md w-full shadow-xl border-0 overflow-hidden rounded-3xl">
+          <div className="h-1.5 w-full" style={{ background: "linear-gradient(90deg,#3B4FD4,#2E7D5E)" }} />
+          <CardHeader className="text-center pt-8">
+            <div className="mx-auto h-14 w-14 rounded-2xl bg-primary/10 grid place-items-center mb-3 shadow-sm">
+              <Stethoscope className="h-7 w-7 text-primary" />
             </div>
-            <CardTitle>Therapist Portal</CardTitle>
-            <CardDescription>
-              Sign in with the credentials sent to your email by InnerSpark admin.
+            <CardTitle className="text-2xl">Clinical workspace</CardTitle>
+            <CardDescription className="text-sm leading-relaxed">
+              Therapist-only. Sign in with the email and password InnerSpark shared with you.
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pb-8">
             {!resetOpen ? (
               <form onSubmit={handleLogin} className="space-y-4">
                 <div>
@@ -131,9 +132,9 @@ const TherapistPortal = () => {
                     required
                   />
                 </div>
-                <Button type="submit" className="w-full" disabled={signingIn}>
+                <Button type="submit" className="w-full h-11 rounded-xl" disabled={signingIn}>
                   {signingIn && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
-                  Sign in to portal
+                  Sign in
                 </Button>
                 <div className="text-center">
                   <button
