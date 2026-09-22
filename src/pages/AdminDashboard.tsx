@@ -214,13 +214,13 @@ const AdminDashboard = () => {
       <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 pt-20 sm:pt-24">
         {/* Admin Header */}
         <div className="mb-6 sm:mb-8">
-          <Badge className="mb-2 bg-purple-500/10 text-purple-600 border-purple-500/20">
+          <Badge className="mb-2 bg-indigo-500/10 text-indigo-700 border-indigo-500/20 rounded-full px-3">
             Admin · Today first
           </Badge>
-          <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
-            Platform Management
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2 tracking-tight">
+            Platform management
           </h1>
-          <p className="text-sm sm:text-base text-muted-foreground">
+          <p className="text-sm sm:text-base text-muted-foreground max-w-2xl">
             Start on Overview for bookings, crisis and sales — then open the section you need.
           </p>
           {isAdmin && (
