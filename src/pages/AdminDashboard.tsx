@@ -225,24 +225,26 @@ const AdminDashboard = () => {
           </p>
           {isAdmin && (
             <div className="mt-4 flex flex-wrap gap-2">
-              {[
-                ['overview', 'Today overview', Home],
-                ['upcoming-sessions', 'Upcoming sessions', Calendar],
-                ['sales-tracking', 'WhatsApp sales', Target],
-                ['crisis-queue', 'Crisis queue', AlertOctagon],
-                ['all-clients', 'All clients', Users],
-                ['revenue', 'Revenue', DollarSign],
-              ].map(([value, label, Icon]) => (
+              {(
+                [
+                  { value: 'overview', label: 'Today overview', Icon: Home },
+                  { value: 'upcoming-sessions', label: 'Upcoming sessions', Icon: Calendar },
+                  { value: 'sales-tracking', label: 'WhatsApp sales', Icon: Target },
+                  { value: 'crisis-queue', label: 'Crisis queue', Icon: AlertOctagon },
+                  { value: 'all-clients', label: 'All clients', Icon: Users },
+                  { value: 'revenue', label: 'Revenue', Icon: DollarSign },
+                ] as const
+              ).map(({ value, label, Icon }) => (
                 <Button
-                  key={value as string}
+                  key={value}
                   type="button"
                   size="sm"
                   variant={currentTab === value ? 'default' : 'outline'}
                   className="h-9 gap-1.5 rounded-full"
-                  onClick={() => setActiveTab(value as string)}
+                  onClick={() => setActiveTab(value)}
                 >
-                  {(Icon as any) && <(Icon as any) className="h-3.5 w-3.5" />}
-                  {label as string}
+                  <Icon className="h-3.5 w-3.5" />
+                  {label}
                 </Button>
               ))}
               <Button type="button" size="sm" variant="outline" className="h-9 rounded-full" asChild>
