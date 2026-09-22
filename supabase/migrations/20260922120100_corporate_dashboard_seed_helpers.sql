@@ -1,0 +1,40 @@
+-- Optional seed helpers for validating the corporate dashboard.
+-- Run manually in Supabase SQL editor AFTER creating an auth user for the HR admin.
+-- Replace placeholders before running.
+--
+-- 1) Create company
+-- INSERT INTO public.corporate_companies (id, name, industry, country, employee_count_enrolled, context_notes)
+-- VALUES ('11111111-1111-1111-1111-111111111111', 'Demo Co Ltd', 'Technology', 'Uganda', 40,
+--   'Q3 delivery peak and a recent team restructure.');
+--
+-- 2) Link HR admin (user_id = auth.users.id for the HR login)
+-- INSERT INTO public.corporate_company_admins (company_id, user_id, full_name, email, must_change_password, is_active)
+-- VALUES ('11111111-1111-1111-1111-111111111111', '<AUTH_USER_UUID>', 'HR Admin', 'hr@demo.co', false, true);
+--
+-- 3) Screening round
+-- INSERT INTO public.corporate_screening_rounds (id, company_id, name, phase_label, starts_at, status)
+-- VALUES ('22222222-2222-2222-2222-222222222222', '11111111-1111-1111-1111-111111111111',
+--   'Q3 2026 WHO-5', 'Q3 2026', CURRENT_DATE - 14, 'completed');
+--
+-- 4a) ABOVE threshold (10 anonymous responses) — charts should show
+-- INSERT INTO public.corporate_screening_responses
+--   (round_id, company_id, q1_cheerful, q2_calm, q3_active, q4_rested, q5_interest)
+-- SELECT '22222222-2222-2222-2222-222222222222', '11111111-1111-1111-1111-111111111111',
+--   (random()*5)::int, (random()*4)::int, (random()*5)::int, (random()*3)::int, (random()*5)::int
+-- FROM generate_series(1, 10);
+--
+-- 4b) BELOW threshold test: delete down to 3 rows — privacy message should appear
+-- DELETE FROM public.corporate_screening_responses
+-- WHERE round_id = '22222222-2222-2222-2222-222222222222'
+--   AND ctid IN (
+--     SELECT ctid FROM public.corporate_screening_responses
+--     WHERE round_id = '22222222-2222-2222-2222-222222222222'
+--     OFFSET 3
+--   );
+--
+-- 5) Confirm admin cannot SELECT individual rows (should return 0 under RLS as that admin):
+-- SET ROLE authenticated; -- plus jwt claims in real test
+-- SELECT * FROM public.corporate_screening_responses;  -- expect empty / denied
+-- SELECT public.get_corporate_dashboard_stats('11111111-1111-1111-1111-111111111111', 5);
+
+SELECT 1;
