@@ -58,7 +58,7 @@ const howToSchema = {
   step: [
     { "@type": "HowToStep", name: "Open the chat", text: "Tap the blue Amani chat bubble at the bottom-right of any InnerSpark page." },
     { "@type": "HowToStep", name: "Say what's on your mind", text: "Type how you're feeling — a single sentence is enough to begin." },
-    { "@type": "HowToStep", name: "Get your next step", text: "Amani listens, shares coping ideas, and can book a licensed Ugandan therapist for you." },
+    { "@type": "HowToStep", name: "Get your next step", text: "Amani listens, shares general coping ideas, and can guide you to a free wellbeing check or a licensed InnerSpark therapist. Video therapy costs UGX 75,000; chat therapy costs UGX 30,000." },
   ],
 };
 
@@ -100,10 +100,10 @@ const AmaniAI = () => (
               <Sparkles className="w-3.5 h-3.5" /> Free · Available anytime · AI wellness guide
             </span>
             <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-4">
-              Meet <span className="text-primary">Amani</span> — your free AI mental wellness companion
+              Meet <span className="text-primary">Amani</span> — free AI mental wellness chat for Uganda and Africa
             </h1>
             <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
-              Amani is InnerSpark's friendly AI assistant. Chat anytime about stress, anxiety, burnout, sleep or relationships — and get matched to a real Ugandan therapist whenever you're ready.
+              Amani is InnerSpark’s free AI wellness guide for stress, sleep, anxiety, burnout and relationships. It is not a therapist or emergency service. When you want a human, book a licensed African therapist — video UGX 75,000 or chat UGX 30,000.
             </p>
             <div className="flex flex-wrap gap-3">
               <Button size="lg" className="rounded-full" onClick={openAmani}>
