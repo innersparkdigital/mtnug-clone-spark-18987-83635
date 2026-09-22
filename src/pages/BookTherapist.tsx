@@ -90,8 +90,8 @@ const BookTherapist = () => {
         <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.webp" />
         
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Book a Therapist Online | Innerspark" />
-        <meta name="twitter:description" content="Schedule your therapy appointment in minutes. Same-day availability with licensed therapists." />
+        <meta name="twitter:title" content="Book a Licensed Therapist | Video UGX 75,000" />
+        <meta name="twitter:description" content="Licensed African therapists. Video UGX 75,000 · Chat UGX 30,000. Book in about two minutes." />
         
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org",
@@ -130,7 +130,7 @@ const BookTherapist = () => {
             </h1>
             
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Choose a licensed African therapist in about two minutes. Video therapy is UGX 75,000 per session; chat therapy is UGX 30,000. Pay by Mobile Money or card.
+              Built for professionals ready to pay for confidential care. Video therapy UGX 75,000 · Chat UGX 30,000. Kenya from about KES 2,600 · Tanzania TZS 52,000 · Nigeria NGN 27,500. Mobile Money or Visa.
             </p>
             
             <div className="flex gap-4 justify-center flex-wrap mb-8">
@@ -217,8 +217,8 @@ const BookTherapist = () => {
                 },
                 {
                   icon: Heart,
-                  title: "Affordable Rates",
-                  desc: "Quality therapy at accessible prices. Chat sessions start from UGX 30,000"
+                  title: "Clear professional pricing",
+                  desc: "Video UGX 75,000 or chat UGX 30,000 — transparent rates for people ready to invest in real care"
                 },
                 {
                   icon: Globe,
