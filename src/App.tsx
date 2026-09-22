@@ -322,6 +322,8 @@ const App = () => (
                 />
                 <Route path="/admin/finance" element={<AdminFinance />} />
                 <Route path="/therapist" element={<TherapistPortal />} />
+                <Route path="/therapist-portal" element={<Navigate to="/therapist" replace />} />
+                <Route path="/portals" element={<Navigate to="/auth" replace />} />
                 <Route path="/consent/:token" element={<ClientConsent />} />
                 <Route path="/my-progress/:token" element={<ClientPortal />} />
                 <Route path="/my-progress/:slug/:token" element={<ClientPortal />} />
