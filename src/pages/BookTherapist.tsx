@@ -21,8 +21,8 @@ const BookTherapist = () => {
   const pageSchema = {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    "name": "Book a Therapist Online - Schedule Therapy Session Today",
-    "description": "Book a licensed African therapist in about two minutes. Choose video, voice or chat from UGX 30,000.",
+    "name": "Book a Licensed Therapist Online | Video UGX 75,000",
+    "description": "Book a licensed African therapist in about two minutes. Video UGX 75,000 · Chat UGX 30,000. Clear prices in local currencies across East Africa.",
     "url": "https://www.innersparkafrica.com/book-therapist"
   };
 
@@ -30,7 +30,7 @@ const BookTherapist = () => {
     "@context": "https://schema.org",
     "@type": "Service",
     "name": "Book Therapy Appointment",
-    "description": "Book video, voice or chat therapy with a licensed African therapist from UGX 30,000.",
+    "description": "Book video or chat therapy with a licensed African therapist. Video UGX 75,000; chat UGX 30,000.",
     "provider": {
       "@type": "MedicalOrganization",
       "name": "Innerspark Africa",
