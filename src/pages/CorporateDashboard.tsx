@@ -437,43 +437,46 @@ export default function CorporateDashboard() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen grid place-items-center">
-        <Loader2 className="h-6 w-6 animate-spin" />
+      <div className="min-h-screen grid place-items-center" style={{ background: "linear-gradient(180deg,#F5F6FF,#FFF8F0)" }}>
+        <Loader2 className="h-7 w-7 animate-spin" style={{ color: "#3B4FD4" }} />
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="min-h-screen grid place-items-center p-6" style={{ background: "linear-gradient(160deg,#3B4FD4 0%,#1A1A2E 100%)" }}>
+      <div className="min-h-screen grid place-items-center p-6" style={{ background: "linear-gradient(165deg,#EEF2FF 0%,#F8FAFC 45%,#FFF7ED 100%)" }}>
         <Helmet>
           <title>Corporate Wellbeing Dashboard | InnerSpark</title>
           <meta name="robots" content="noindex" />
         </Helmet>
-        <Card className="w-full max-w-md shadow-2xl border-0 overflow-hidden">
-          <div className="h-1.5 w-full" style={{ background: "#F2994A" }} />
-          <CardHeader>
-            <CardTitle className="text-2xl" style={{ color: "#1A1A2E" }}>Company admin login</CardTitle>
-            <CardDescription>
-              Separate from client and therapist portals. Aggregate patterns only — never individual employee answers.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div>
+        <Card className="w-full max-w-md shadow-2xl border-0 overflow-hidden rounded-3xl">
+          <div className="px-8 pt-8 pb-5 text-white" style={{ background: "linear-gradient(135deg,#1e1b4b,#3B4FD4 55%,#1e3a5f)" }}>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-white/70 mb-2">Company HR</p>
+            <h1 className="text-2xl font-bold tracking-tight">Wellbeing dashboard</h1>
+            <p className="text-sm text-white/75 mt-2 leading-relaxed">
+              Aggregate patterns only — never individual employee answers. Separate from client and therapist logins.
+            </p>
+          </div>
+          <CardContent className="space-y-4 p-8">
+            <div className="space-y-1.5">
               <Label>Work email</Label>
-              <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="username" />
+              <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="username" className="h-11 rounded-xl" />
             </div>
-            <div>
+            <div className="space-y-1.5">
               <Label>Password</Label>
               <Input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 autoComplete="current-password"
+                className="h-11 rounded-xl"
+                onKeyDown={(e) => e.key === "Enter" && document.getElementById("corp-hr-login")?.click()}
               />
             </div>
             <Button
-              className="w-full text-white"
+              id="corp-hr-login"
+              className="w-full h-11 text-white rounded-xl"
               style={{ background: "#F2994A" }}
               onClick={async () => {
                 const { error } = await signIn(email.trim().toLowerCase(), password);
@@ -482,6 +485,7 @@ export default function CorporateDashboard() {
             >
               Sign in
             </Button>
+            <p className="text-[11px] text-center text-muted-foreground">Demo: hr@demo.innerspark.local</p>
           </CardContent>
         </Card>
       </div>
@@ -593,7 +597,7 @@ export default function CorporateDashboard() {
   const minG = stats?.min_group ?? MIN_GROUP;
 
   return (
-    <div className="min-h-screen p-4 md:p-6" style={{ background: "linear-gradient(180deg,#F5F6FF 0%,#FFFFFF 45%,#FFF8F0 100%)" }}>
+    <div className="min-h-screen" style={{ background: "linear-gradient(180deg,#EEF2FF 0%,#FFFFFF 35%,#FFF8F0 100%)" }}>
       <Helmet>
         <title>
           {(stats?.company_name ? `${stats.company_name} · ` : "") + "Corporate Wellbeing Dashboard | InnerSpark"}
@@ -601,8 +605,69 @@ export default function CorporateDashboard() {
         <meta name="robots" content="noindex,nofollow" />
       </Helmet>
 
-      <div className="max-w-5xl mx-auto space-y-6 pb-16">
-        <div className="flex items-start justify-between gap-3 flex-wrap">
+      <header className="sticky top-0 z-30 border-b bg-white/90 backdrop-blur-md" style={{ borderColor: "#E6E8FA" }}>
+        <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
+          <div className="flex items-center gap-2 min-w-0">
+            <div className="h-8 w-8 rounded-xl grid place-items-center text-white text-xs font-bold shrink-0" style={{ background: "#3B4FD4" }}>IS</div>
+            <span className="font-semibold text-sm truncate" style={{ color: "#1A1A2E" }}>
+              InnerSpark <span className="font-normal text-muted-foreground">· Company HR</span>
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="hidden sm:inline-flex items-center gap-1.5 text-[11px] font-medium px-2.5 py-1 rounded-full" style={{ background: "#EEF0FD", color: "#3B4FD4" }}>
+              <Lock className="h-3 w-3" /> Aggregate only
+            </span>
+            <Button variant="outline" size="sm" className="rounded-xl h-8" onClick={() => signOut()}>Sign out</Button>
+          </div>
+        </div>
+      </header>
+
+      <div className="max-w-6xl mx-auto px-4 py-8 space-y-6 pb-20">
+        <div
+          className="relative overflow-hidden rounded-3xl border p-6 sm:p-8 text-white shadow-lg"
+          style={{ background: "linear-gradient(135deg,#1e1b4b 0%,#312e81 50%,#1e3a5f 100%)", borderColor: "transparent" }}
+        >
+          <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/5 blur-2xl pointer-events-none" />
+          <div className="relative flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5">
+            <div className="max-w-xl">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-white/60 mb-2">Company admin · aggregate only</p>
+              <h1 className="text-2xl sm:text-4xl font-bold tracking-tight">
+                {stats?.company_name || "Corporate wellbeing"}
+              </h1>
+              <p className="text-sm text-white/70 mt-2 leading-relaxed">
+                Welcome, {admin.full_name}. Individual employee answers are never shown here.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <a
+                href="/corporate-assessments"
+                className="inline-flex items-center rounded-full px-4 py-2 text-sm font-semibold text-indigo-950 bg-white hover:bg-white/90 transition"
+              >
+                Psychometric assessments
+              </a>
+            </div>
+          </div>
+          <div className="relative mt-7 grid grid-cols-2 lg:grid-cols-4 gap-3">
+            {[
+              { label: "Enrolled", value: stats?.enrolled ?? "—", Icon: Users },
+              { label: "Completed screens", value: stats?.completed ?? 0, Icon: Activity },
+              { label: "Participation", value: stats?.participation_rate != null ? `${stats.participation_rate}%` : "—", Icon: TrendingUp },
+              { label: "Avg WHO-5 %", value: canShow && stats?.avg_percentage != null ? `${stats.avg_percentage}%` : "—", Icon: ShieldCheck, hint: !canShow ? `Hidden until ${minG}+` : undefined },
+            ].map((k) => (
+              <div key={k.label} className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[11px] font-medium uppercase tracking-wide text-white/55">{k.label}</span>
+                  <k.Icon className="h-3.5 w-3.5 text-white/70" />
+                </div>
+                <p className="text-2xl font-bold tracking-tight">{k.value}</p>
+                {k.hint && <p className="text-[10px] text-white/45 mt-1">{k.hint}</p>}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* legacy header removed — hero above */}
+        <div className="hidden">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.14em] mb-1" style={{ color: "#3B4FD4" }}>Company admin · aggregate only</p>
             <h1 className="text-2xl md:text-4xl font-bold tracking-tight" style={{ color: "#1A1A2E" }}>
