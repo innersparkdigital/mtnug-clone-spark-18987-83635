@@ -87,12 +87,12 @@ const WellbeingCheck = () => {
   return (
     <>
       <Helmet>
-        <title>Free WHO-5 Mental Wellbeing Check | InnerSpark Africa</title>
-        <meta name="description" content="Take the free WHO-5 mental wellbeing check in about two minutes. Private results, no account and clear next steps without a diagnosis." />
-        <meta name="keywords" content="WHO-5 Uganda, wellbeing check Uganda, free mental health test Uganda, mental health screening Kampala, depression test Uganda, anxiety test Uganda, am I depressed Uganda, online therapy Uganda" />
+        <title>Free WHO-5 Mental Wellbeing Check Uganda | InnerSpark</title>
+        <meta name="description" content="Free WHO-5 mental wellbeing check for Uganda and Africa in about two minutes. Private score, no account, not a diagnosis. Next step: licensed video therapy UGX 75,000 or chat UGX 30,000." />
+        <meta name="keywords" content="WHO-5 Uganda, free mental wellbeing check Africa, free mental health test Uganda, mental health screening Kampala, depression screening Uganda, anxiety test Uganda, online therapy Uganda" />
         <link rel="canonical" href="https://www.innersparkafrica.com/wellbeing-check" />
         <meta property="og:title" content="Free WHO-5 Wellbeing Check Uganda | InnerSpark Africa" />
-        <meta property="og:description" content="2-minute WHO-5 wellbeing screening for Ugandans. Private. Free. No account needed." />
+        <meta property="og:description" content="Two-minute WHO-5 wellbeing check. Free, private, no account. Not a diagnosis. Clear next steps with licensed African therapists." />
         <meta property="og:url" content="https://www.innersparkafrica.com/wellbeing-check" />
         <meta property="og:type" content="website" />
         <script type="application/ld+json">
@@ -103,7 +103,9 @@ const WellbeingCheck = () => {
             {"@type":"Question","name":"How accurate is the WHO-5 for Ugandans?","acceptedAnswer":{"@type":"Answer","text":"The WHO-5 has been validated across more than 30 countries, including studies in sub-Saharan Africa. It is one of the most widely validated wellbeing instruments in the world."}},
             {"@type":"Question","name":"What does my wellbeing score mean?","acceptedAnswer":{"@type":"Answer","text":"Scores 0–28% suggest low wellbeing and we recommend talking to a therapist. 29–50% is below average. 51–75% is moderate wellbeing. 76–100% indicates good wellbeing."}},
             {"@type":"Question","name":"How often should I take the wellbeing check?","acceptedAnswer":{"@type":"Answer","text":"Every 4 weeks is ideal. Trends across multiple checks are far more meaningful than any single score."}},
-            {"@type":"Question","name":"What does therapy cost in Uganda through InnerSpark?","acceptedAnswer":{"@type":"Answer","text":"Video therapy costs UGX 75,000 per session. Chat therapy costs UGX 30,000. Payment is available by Mobile Money or card."}}
+            {"@type":"Question","name":"What does therapy cost in Uganda through InnerSpark?","acceptedAnswer":{"@type":"Answer","text":"Video therapy costs UGX 75,000 per session. Chat therapy costs UGX 30,000. Payment is available by Mobile Money or card."}},
+            {"@type":"Question","name":"Who should use the free WHO-5 wellbeing check?","acceptedAnswer":{"@type":"Answer","text":"Adults in Uganda and across Africa who want a quick private snapshot of wellbeing. It is useful before booking therapy, during stressful seasons, or as a workplace screening tool when used at organisation level."}},
+            {"@type":"Question","name":"What should I do after my WHO-5 score?","acceptedAnswer":{"@type":"Answer","text":"Use the score as a guide, not a diagnosis. If wellbeing is low or life feels hard to carry, book a licensed InnerSpark therapist for video (UGX 75,000) or chat (UGX 30,000), or WhatsApp +256 792 085 773. For immediate danger, contact local emergency services."}}
           ]})}
         </script>
         <script type="application/ld+json">
