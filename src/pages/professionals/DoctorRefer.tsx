@@ -173,14 +173,15 @@ const DoctorRefer = () => {
         {!authLoading && !loadingDoctor && !user && (
           <div className="max-w-md mx-auto">
             <div className="text-center mb-8">
-              <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-primary/10 mb-4">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-4 shadow-sm">
                 <Stethoscope className="w-7 h-7 text-primary" />
               </div>
-              <h1 className="text-3xl font-bold mb-2">Doctor referral desk</h1>
-              <p className="text-muted-foreground">Refer patients, follow stages, and claim commissions — not a full clinical chart.</p>
+              <h1 className="text-3xl font-bold mb-2 tracking-tight">Doctor referral desk</h1>
+              <p className="text-muted-foreground text-sm leading-relaxed max-w-sm mx-auto">Refer patients, follow stages, and claim commissions — not a full clinical chart.</p>
             </div>
-            <Card>
-              <CardHeader>
+            <Card className="rounded-3xl shadow-xl border-0 overflow-hidden">
+              <div className="h-1 w-full bg-gradient-to-r from-primary to-amber-500" />
+              <CardHeader className="pt-6">
                 <CardTitle>Professional login</CardTitle>
                 <CardDescription>
                   Phone + password from InnerSpark, or Google/Apple if your email is already registered as a doctor.
@@ -237,8 +238,8 @@ const DoctorRefer = () => {
                     <Label htmlFor="login-pwd">Password</Label>
                     <Input id="login-pwd" type="password" value={loginPassword} onChange={(e) => setLoginPassword(e.target.value)} required />
                   </div>
-                  <Button type="submit" className="w-full" disabled={submitting}>
-                    {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Login"}
+                  <Button type="submit" className="w-full h-11 rounded-xl" disabled={submitting}>
+                    {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Sign in"}
                   </Button>
                 </form>
                 <p className="text-xs text-muted-foreground mt-4 text-center">
