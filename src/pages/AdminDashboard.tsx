@@ -190,16 +190,22 @@ const AdminDashboard = () => {
     .sort((a, b) => new Date(b.enrolled_at).getTime() - new Date(a.enrolled_at).getTime())
     .slice(0, 10);
 
-  // Weekly activity (simulated based on enrollment dates)
-  const weeklyData = [
-    { day: 'Mon', enrollments: Math.floor(Math.random() * 10) + 1 },
-    { day: 'Tue', enrollments: Math.floor(Math.random() * 10) + 1 },
-    { day: 'Wed', enrollments: Math.floor(Math.random() * 10) + 1 },
-    { day: 'Thu', enrollments: Math.floor(Math.random() * 10) + 1 },
-    { day: 'Fri', enrollments: Math.floor(Math.random() * 10) + 1 },
-    { day: 'Sat', enrollments: Math.floor(Math.random() * 5) },
-    { day: 'Sun', enrollments: Math.floor(Math.random() * 5) },
-  ];
+  // Weekly activity from real enrollment timestamps (last 7 calendar days)
+  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as const;
+  const weeklyBuckets: Record<string, number> = { Mon: 0, Tue: 0, Wed: 0, Thu: 0, Fri: 0, Sat: 0, Sun: 0 };
+  const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+  users.forEach((u) => {
+    u.enrollments.forEach((e: any) => {
+      const t = new Date(e.enrolled_at).getTime();
+      if (!Number.isFinite(t) || t < weekAgo) return;
+      weeklyBuckets[dayNames[new Date(t).getDay()]] += 1;
+    });
+  });
+  const weeklyData = (['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as const).map((day) => ({
+    day,
+    enrollments: weeklyBuckets[day],
+  }));
+  const enrollmentsThisWeek = weeklyData.reduce((n, d) => n + d.enrollments, 0);
 
   return (
     <div className="min-h-screen bg-background">
@@ -209,14 +215,41 @@ const AdminDashboard = () => {
         {/* Admin Header */}
         <div className="mb-6 sm:mb-8">
           <Badge className="mb-2 bg-purple-500/10 text-purple-600 border-purple-500/20">
-            Admin Dashboard
+            Admin · Today first
           </Badge>
           <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
             Platform Management
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground">
-            Manage clients, paid bookings, sessions and day-to-day operations
+            Start on Overview for bookings, crisis and sales — then open the section you need.
           </p>
+          {isAdmin && (
+            <div className="mt-4 flex flex-wrap gap-2">
+              {[
+                ['overview', 'Today overview', Home],
+                ['upcoming-sessions', 'Upcoming sessions', Calendar],
+                ['sales-tracking', 'WhatsApp sales', Target],
+                ['crisis-queue', 'Crisis queue', AlertOctagon],
+                ['all-clients', 'All clients', Users],
+                ['revenue', 'Revenue', DollarSign],
+              ].map(([value, label, Icon]) => (
+                <Button
+                  key={value as string}
+                  type="button"
+                  size="sm"
+                  variant={currentTab === value ? 'default' : 'outline'}
+                  className="h-9 gap-1.5 rounded-full"
+                  onClick={() => setActiveTab(value as string)}
+                >
+                  {(Icon as any) && <(Icon as any) className="h-3.5 w-3.5" />}
+                  {label as string}
+                </Button>
+              ))}
+              <Button type="button" size="sm" variant="outline" className="h-9 rounded-full" asChild>
+                <Link to="/admin/finance">Finance</Link>
+              </Button>
+            </div>
+          )}
         </div>
 
         <Tabs
@@ -543,9 +576,8 @@ const AdminDashboard = () => {
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">Total Learners</p>
                   <p className="text-3xl font-bold">{stats.totalUsers}</p>
-                  <div className="flex items-center text-green-500 text-sm mt-1">
-                    <ArrowUpRight className="h-4 w-4" />
-                    <span>+12% this month</span>
+                  <div className="flex items-center text-muted-foreground text-sm mt-1">
+                    <span>{enrollmentsThisWeek} enrollments last 7 days</span>
                   </div>
                 </div>
                 <div className="p-3 bg-blue-500/20 rounded-lg">
@@ -561,9 +593,8 @@ const AdminDashboard = () => {
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">Total Enrollments</p>
                   <p className="text-3xl font-bold">{stats.totalEnrollments}</p>
-                  <div className="flex items-center text-green-500 text-sm mt-1">
-                    <ArrowUpRight className="h-4 w-4" />
-                    <span>+8% this month</span>
+                  <div className="flex items-center text-muted-foreground text-sm mt-1">
+                    <span>All-time course starts</span>
                   </div>
                 </div>
                 <div className="p-3 bg-purple-500/20 rounded-lg">
