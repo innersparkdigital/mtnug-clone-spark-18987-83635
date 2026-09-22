@@ -100,10 +100,10 @@ const AmaniAI = () => (
               <Sparkles className="w-3.5 h-3.5" /> Free · Available anytime · AI wellness guide
             </span>
             <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-4">
-              Meet <span className="text-primary">Amani</span> — free AI mental wellness chat for Uganda and Africa
+              Meet <span className="text-primary">Amani</span> — someone to talk to, anytime
             </h1>
             <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
-              Amani is InnerSpark’s free AI wellness guide for stress, sleep, anxiety, burnout and relationships. It is not a therapist or emergency service. When you want a human, book a licensed African therapist — video UGX 75,000 or chat UGX 30,000.
+              Amani listens the way a good first session should: calm, private, no rush. Share what’s on your mind — stress, sleep, anxiety, relationships — and get practical guidance. When you’re ready for a human, Amani connects you to a licensed African therapist (video UGX 75,000 · chat UGX 30,000).
             </p>
             <div className="flex flex-wrap gap-3">
               <Button size="lg" className="rounded-full" onClick={openAmani}>
@@ -137,7 +137,7 @@ const AmaniAI = () => (
           <div className="grid md:grid-cols-3 gap-6">
             {[
               { Icon: Clock, title: "Always available", body: "2am, lunch break, Sunday morning — Amani is online whenever you need to talk things through." },
-              { Icon: ShieldCheck, title: "Privacy-aware", body: "Amani is designed for personal wellness conversations. Avoid sharing passwords, payment details or other sensitive identifying information." },
+              { Icon: ShieldCheck, title: "Private & judgement-free", body: "A calm space to talk things through. No signup required to start — just open the chat and speak in your own words." },
               { Icon: Heart, title: "Built for African life", body: "Amani is designed around common East African concerns such as work pressure, family expectations and relationships." },
               { Icon: Sparkles, title: "Smart next step", body: "Whether it's a free assessment, a support group or a licensed therapist, Amani points you to the right help." },
               { Icon: Globe2, title: "English-first", body: "Built for Uganda, Kenya and the wider African diaspora, with simple English that is accessible anywhere with internet." },
