@@ -102,6 +102,7 @@ const AdminClientsTab = () => {
   const [pageSize, setPageSize] = useState(25);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [consentLinkId, setConsentLinkId] = useState<string | null>(null);
+  const [referralLinkId, setReferralLinkId] = useState<string | null>(null);
   const [whatsappSalesId, setWhatsappSalesId] = useState<string | null>(null);
 
   const load = async () => {
@@ -134,6 +135,21 @@ const AdminClientsTab = () => {
     const phone = (r.phone || "").replace(/[^0-9]/g, "");
     window.open(`https://wa.me/${phone}?text=${message}`, "_blank", "noopener,noreferrer");
     toast.success(copied ? "Consent link copied and WhatsApp opened" : "Consent link generated and WhatsApp opened");
+  };
+
+  const generateReferralLink = async (r: Row) => {
+    setReferralLinkId(r.id);
+    const { data, error } = await supabase.rpc("admin_ensure_client_referral_link" as any, { _client_id: r.id });
+    setReferralLinkId(null);
+    if (error || !data) return toast.error(error?.message || "Could not create the referral link.");
+    const url = `${window.location.origin}/book-therapist?ref=${data}`;
+    const copied = await copyToClipboard(url);
+    const message = encodeURIComponent(
+      `Hi ${r.full_name.split(" ")[0]}, share this InnerSpark referral link. When someone books and pays for a session through it, you earn 5% off your next session: ${url}`,
+    );
+    const phone = (r.phone || "").replace(/[^0-9]/g, "");
+    if (phone) window.open(`https://wa.me/${phone}?text=${message}`, "_blank", "noopener,noreferrer");
+    toast.success(copied ? "Referral link copied (5% reward)" : "Referral link ready");
   };
 
   const therapists = useMemo(
@@ -670,7 +686,11 @@ const AdminClientsTab = () => {
                                     </Button>
                                     <Button size="sm" variant="outline" disabled={consentLinkId === r.id} onClick={() => generateConsentLink(r)}>
                                       {consentLinkId === r.id ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Link2 className="h-4 w-4 mr-1" />}
-                                      Generate Link
+                                      Consent link
+                                    </Button>
+                                    <Button size="sm" variant="outline" disabled={referralLinkId === r.id} onClick={() => generateReferralLink(r)}>
+                                      {referralLinkId === r.id ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Link2 className="h-4 w-4 mr-1" />}
+                                      5% referral link
                                     </Button>
                                     {r.receipt_url && (
                                       <Button size="sm" variant="outline" onClick={() => window.open(`https://wa.me/${(r.phone || "").replace(/[^0-9]/g, "")}?text=${encodeURIComponent(`Your InnerSpark receipt: ${r.receipt_url}`)}`, "_blank")}>
