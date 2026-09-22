@@ -176,14 +176,14 @@ const DoctorRefer = () => {
               <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-primary/10 mb-4">
                 <Stethoscope className="w-7 h-7 text-primary" />
               </div>
-              <h1 className="text-3xl font-bold mb-2">Doctor Portal</h1>
-              <p className="text-muted-foreground">Refer patients & track commissions</p>
+              <h1 className="text-3xl font-bold mb-2">Doctor referral desk</h1>
+              <p className="text-muted-foreground">Refer patients, follow stages, and claim commissions — not a full clinical chart.</p>
             </div>
             <Card>
               <CardHeader>
-                <CardTitle>Doctor Login</CardTitle>
+                <CardTitle>Professional login</CardTitle>
                 <CardDescription>
-                  Use the phone number and password issued to you by InnerSpark Africa.
+                  Phone + password from InnerSpark, or Google/Apple if your email is already registered as a doctor.
                 </CardDescription>
               </CardHeader>
               <CardContent>
