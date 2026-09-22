@@ -315,62 +315,182 @@ async function executeTool(
   }
 }
 
-// Prefer Anthropic (Claude) when ANTHROPIC_API_KEY is set on the edge function;
-// otherwise fall back to Lovable's OpenAI-compatible gateway.
+// Prefer Anthropic (Claude) when ANTHROPIC_API_KEY is set on Supabase secrets.
+// Responses are normalized to OpenAI chat-completions shape so the existing
+// tool loop + SSE stream parser keep working unchanged.
 async function callGateway(apiKey: string, body: unknown) {
   const anthropicKey = Deno.env.get("ANTHROPIC_API_KEY");
-  if (anthropicKey) {
-    const b = body as {
-      messages?: Array<{ role: string; content: unknown }>;
-      tools?: unknown[];
-      stream?: boolean;
-      temperature?: number;
-      max_tokens?: number;
-    };
-    const msgs = b.messages || [];
-    const systemParts: string[] = [];
-    const anthropicMessages: Array<{ role: "user" | "assistant"; content: unknown }> = [];
-    for (const m of msgs) {
-      if (m.role === "system") {
-        systemParts.push(typeof m.content === "string" ? m.content : JSON.stringify(m.content));
-      } else if (m.role === "user" || m.role === "assistant") {
-        anthropicMessages.push({ role: m.role, content: m.content });
-      }
-    }
-    if (anthropicMessages.length === 0) {
-      anthropicMessages.push({ role: "user", content: "Hello" });
-    }
-    const anthropicBody: Record<string, unknown> = {
-      model: Deno.env.get("ANTHROPIC_MODEL") || "claude-sonnet-4-20250514",
-      max_tokens: b.max_tokens || 1024,
-      temperature: b.temperature ?? 0.7,
-      system: systemParts.join("\n\n"),
-      messages: anthropicMessages,
-      stream: b.stream !== false,
-    };
-    if (Array.isArray(b.tools) && b.tools.length > 0) {
-      anthropicBody.tools = (b.tools as Array<{ type?: string; function?: { name: string; description?: string; parameters?: unknown } }>)
-        .filter((t) => t.function?.name)
-        .map((t) => ({
-          name: t.function!.name,
-          description: t.function!.description || "",
-          input_schema: t.function!.parameters || { type: "object", properties: {} },
-        }));
-    }
-    return await fetch("https://api.anthropic.com/v1/messages", {
+  const b = body as {
+    messages?: Array<{ role: string; content: unknown; tool_calls?: unknown; tool_call_id?: string; name?: string }>;
+    tools?: Array<{ type?: string; function?: { name: string; description?: string; parameters?: unknown } }>;
+    tool_choice?: unknown;
+    stream?: boolean;
+    temperature?: number;
+    max_tokens?: number;
+    model?: string;
+  };
+
+  if (!anthropicKey) {
+    // Default: Lovable gateway (Gemini). Optionally pass anthropic/* model via LOVABLE if preferred later.
+    return await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": anthropicKey,
-        "anthropic-version": "2023-06-01",
-      },
-      body: JSON.stringify(anthropicBody),
+      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+      body: JSON.stringify(body),
     });
   }
-  return await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+
+  const msgs = b.messages || [];
+  const systemParts: string[] = [];
+  const anthropicMessages: Array<{ role: "user" | "assistant"; content: unknown }> = [];
+
+  for (const m of msgs) {
+    if (m.role === "system") {
+      systemParts.push(typeof m.content === "string" ? m.content : JSON.stringify(m.content));
+      continue;
+    }
+    if (m.role === "tool") {
+      // Fold tool result into a user message Anthropic understands
+      anthropicMessages.push({
+        role: "user",
+        content: [{
+          type: "tool_result",
+          tool_use_id: m.tool_call_id || m.name || "tool",
+          content: typeof m.content === "string" ? m.content : JSON.stringify(m.content),
+        }],
+      });
+      continue;
+    }
+    if (m.role === "assistant" && Array.isArray(m.tool_calls) && m.tool_calls.length > 0) {
+      const blocks: unknown[] = [];
+      if (typeof m.content === "string" && m.content) blocks.push({ type: "text", text: m.content });
+      for (const tc of m.tool_calls as Array<{ id: string; function: { name: string; arguments: string } }>) {
+        let input: unknown = {};
+        try { input = JSON.parse(tc.function.arguments || "{}"); } catch { /* ignore */ }
+        blocks.push({ type: "tool_use", id: tc.id, name: tc.function.name, input });
+      }
+      anthropicMessages.push({ role: "assistant", content: blocks });
+      continue;
+    }
+    if (m.role === "user" || m.role === "assistant") {
+      anthropicMessages.push({
+        role: m.role,
+        content: typeof m.content === "string" ? m.content : (m.content ?? ""),
+      });
+    }
+  }
+  if (anthropicMessages.length === 0) {
+    anthropicMessages.push({ role: "user", content: "Hello" });
+  }
+
+  const wantStream = !!b.stream;
+  const anthropicBody: Record<string, unknown> = {
+    model: Deno.env.get("ANTHROPIC_MODEL") || "claude-sonnet-4-20250514",
+    max_tokens: b.max_tokens || 1024,
+    temperature: b.temperature ?? 0.7,
+    system: systemParts.join("\n\n"),
+    messages: anthropicMessages,
+    stream: wantStream,
+  };
+  if (Array.isArray(b.tools) && b.tools.length > 0) {
+    anthropicBody.tools = b.tools
+      .filter((t) => t.function?.name)
+      .map((t) => ({
+        name: t.function!.name,
+        description: t.function!.description || "",
+        input_schema: t.function!.parameters || { type: "object", properties: {} },
+      }));
+  }
+
+  const raw = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
-    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-    body: JSON.stringify(body),
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": anthropicKey,
+      "anthropic-version": "2023-06-01",
+    },
+    body: JSON.stringify(anthropicBody),
+  });
+
+  if (!raw.ok || wantStream === false) {
+    // Non-stream (tool decision): convert Anthropic JSON → OpenAI choices shape
+    if (!raw.ok) return raw;
+    const j = await raw.json();
+    const blocks = (j.content || []) as Array<{ type: string; text?: string; id?: string; name?: string; input?: unknown }>;
+    const text = blocks.filter((c) => c.type === "text").map((c) => c.text || "").join("");
+    const toolUses = blocks.filter((c) => c.type === "tool_use");
+    const tool_calls = toolUses.map((t) => ({
+      id: t.id || crypto.randomUUID(),
+      type: "function",
+      function: { name: t.name || "", arguments: JSON.stringify(t.input || {}) },
+    }));
+    const openAiShape = {
+      choices: [{
+        message: {
+          role: "assistant",
+          content: text || null,
+          ...(tool_calls.length ? { tool_calls } : {}),
+        },
+        finish_reason: tool_calls.length ? "tool_calls" : (j.stop_reason || "stop"),
+      }],
+    };
+    return new Response(JSON.stringify(openAiShape), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  // Stream: convert Anthropic SSE → OpenAI-style delta chunks the existing parser reads
+  const reader = raw.body!.getReader();
+  const decoder = new TextDecoder();
+  const encoder = new TextEncoder();
+  let buffer = "";
+  const stream = new ReadableStream({
+    async start(controller) {
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          const parts = buffer.split("\n");
+          buffer = parts.pop() || "";
+          let eventName = "";
+          for (const line of parts) {
+            const trimmed = line.trim();
+            if (!trimmed) { eventName = ""; continue; }
+            if (trimmed.startsWith("event:")) {
+              eventName = trimmed.slice(6).trim();
+              continue;
+            }
+            if (!trimmed.startsWith("data:")) continue;
+            const data = trimmed.slice(5).trim();
+            if (!data || data === "[DONE]") continue;
+            try {
+              const evt = JSON.parse(data);
+              // content_block_delta with text
+              if (eventName === "content_block_delta" || evt.type === "content_block_delta") {
+                const text = evt.delta?.text || "";
+                if (text) {
+                  controller.enqueue(encoder.encode(
+                    `data: ${JSON.stringify({ choices: [{ delta: { content: text } }] })}\n\n`,
+                  ));
+                }
+              }
+              if (eventName === "message_stop" || evt.type === "message_stop") {
+                controller.enqueue(encoder.encode("data: [DONE]\n\n"));
+              }
+            } catch { /* ignore */ }
+          }
+        }
+      } catch (e) {
+        console.error("anthropic stream bridge error", e);
+      } finally {
+        controller.close();
+      }
+    },
+  });
+  return new Response(stream, {
+    status: 200,
+    headers: { "Content-Type": "text/event-stream" },
   });
 }
 
@@ -762,10 +882,13 @@ Deno.serve(async (req) => {
 
     // Step 1: ask model (non-streaming) whether it wants to call a tool.
     const toolDecisionResp = await callGateway(LOVABLE_API_KEY, {
-      model: "google/gemini-2.5-flash",
+      // With ANTHROPIC_API_KEY set, callGateway uses Claude and ignores this model string.
+      model: Deno.env.get("ANTHROPIC_API_KEY") ? "anthropic/claude-sonnet" : "google/gemini-2.5-flash",
       messages: baseMessages,
       tools: TOOLS,
       tool_choice: "auto",
+      stream: false,
+      max_tokens: 800,
     });
 
     if (!toolDecisionResp.ok) {
@@ -820,10 +943,10 @@ Deno.serve(async (req) => {
 
     // Step 2: stream the final reply (with tool results in context if applicable).
     const aiResp = await callGateway(LOVABLE_API_KEY, {
-      model: "google/gemini-2.5-flash",
+      model: Deno.env.get("ANTHROPIC_API_KEY") ? "anthropic/claude-sonnet" : "google/gemini-2.5-flash",
       messages: conversation,
       stream: true,
-      max_tokens: 320,
+      max_tokens: 480,
     });
 
     if (!aiResp.ok) {
