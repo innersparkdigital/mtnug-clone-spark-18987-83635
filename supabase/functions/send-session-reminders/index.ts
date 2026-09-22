@@ -202,7 +202,7 @@ Deno.serve(async (req) => {
     }
 
 
-    return new Response(JSON.stringify({ processed, skipped: skipped.length, today }), {
+    return new Response(JSON.stringify({ processed, skipped: skipped.length, adminDigestSent, today }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {
