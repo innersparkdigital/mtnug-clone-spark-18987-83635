@@ -193,8 +193,8 @@ const ClientRoster = ({ therapistId, therapistName }: Props) => {
         <StatCard
           accent="accent-green"
           icon={<CalendarCheck className="h-4 w-4 text-emerald-600" />}
-          label="Homework completion"
-          value={<div className="flex items-center gap-3"><Ring pct={stats.completionPct} color="hsl(var(--success))" /></div>}
+          label="Homework done vs due"
+          value={<div className="flex items-center gap-3"><Ring pct={stats.completionPct} color="hsl(var(--success))" /><span className="text-xs text-muted-foreground">{stats.weekCompleted} done</span></div>}
         />
         <StatCard
           accent="accent-danger"
