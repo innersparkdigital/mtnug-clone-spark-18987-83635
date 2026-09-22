@@ -14,7 +14,7 @@ import BookingFormModal from "@/components/BookingFormModal";
 import { useBookingFlow } from "@/hooks/useBookingFlow";
 
 const ASSISTANT_NAME = "Amani";
-const ASSISTANT_ROLE = "Care Assistant";
+const ASSISTANT_ROLE = "Here to listen";
 
 type Msg = { role: "user" | "assistant"; content: string; flagged?: boolean; tools?: string[] };
 type Chip = { label: string; target: string };
