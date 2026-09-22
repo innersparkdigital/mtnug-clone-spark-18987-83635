@@ -93,76 +93,114 @@ const AdminOverviewTab = ({ onNavigate }: { onNavigate?: (tab: string) => void }
     { key: "revenue", title: "Revenue & performance", desc: "Weekly revenue trend and therapist performance metrics.", icon: TrendingUp, color: "from-emerald-500/10 to-emerald-600/5 border-emerald-500/20" },
   ];
 
+  const hour = new Date().getHours();
+  const hello = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
+
   return (
-    <div className="space-y-6">
-      <div>
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-primary mb-1">Today</p>
-            <h2 className="text-2xl font-bold text-foreground">Welcome back, {firstName}</h2>
-            <p className="text-sm text-muted-foreground mt-1">
+    <div className="space-y-8">
+      <div
+        className="relative overflow-hidden rounded-3xl border p-6 sm:p-8 text-white shadow-lg"
+        style={{ background: "linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e3a5f 100%)" }}
+      >
+        <div className="absolute -right-8 -top-8 h-36 w-36 rounded-full bg-white/5 blur-2xl pointer-events-none" />
+        <div className="relative flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5">
+          <div className="max-w-xl">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-white/60 mb-2">Today</p>
+            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">{hello}, {firstName}</h2>
+            <p className="text-sm text-white/70 mt-2 leading-relaxed">
               {stats.sessions_today} session{stats.sessions_today === 1 ? "" : "s"} logged today
-              {stats.clients_needing_followup > 0 && ` · ${stats.clients_needing_followup} client${stats.clients_needing_followup === 1 ? "" : "s"} need follow-up`}
+              {stats.clients_needing_followup > 0 && ` · ${stats.clients_needing_followup} need follow-up`}
               {stats.open_safety_flags > 0 && ` · ${stats.open_safety_flags} safety flag${stats.open_safety_flags === 1 ? "" : "s"} open`}
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <Button size="sm" variant={stats.open_safety_flags > 0 ? "destructive" : "outline"} onClick={() => onNavigate?.("crisis-queue")}>
+            <Button
+              size="sm"
+              className={`rounded-full h-9 ${stats.open_safety_flags > 0 ? "bg-red-500 hover:bg-red-600 text-white" : "bg-white/15 hover:bg-white/25 text-white border-0"}`}
+              onClick={() => onNavigate?.("crisis-queue")}
+            >
               Crisis queue
             </Button>
-            <Button size="sm" variant="outline" onClick={() => onNavigate?.("upcoming-sessions")}>
+            <Button size="sm" className="rounded-full h-9 bg-white/15 hover:bg-white/25 text-white border-0" onClick={() => onNavigate?.("upcoming-sessions")}>
               Upcoming
             </Button>
-            <Button size="sm" variant="outline" onClick={() => onNavigate?.("sales-tracking")}>
+            <Button size="sm" className="rounded-full h-9 bg-white text-indigo-950 hover:bg-white/90" onClick={() => onNavigate?.("sales-tracking")}>
               Sales
             </Button>
           </div>
         </div>
+
+        <div className="relative mt-7 grid sm:grid-cols-3 gap-3">
+          {[
+            { label: "Revenue this week", value: fmtUGX(stats.revenue_this_week_ugx), sub: `${trend(stats.revenue_this_week_ugx, stats.revenue_last_week_ugx)} vs last week`, go: "revenue", Icon: DollarSign },
+            { label: "Sessions this week", value: String(stats.sessions_this_week), sub: `${stats.sessions_today} today · ${trend(stats.sessions_this_week, stats.sessions_last_week)} vs last week`, go: "upcoming-sessions", Icon: Calendar },
+            { label: "Open safety flags", value: String(stats.open_safety_flags), sub: stats.open_safety_flags > 0 ? "Needs attention" : "All clear", go: "crisis-queue", Icon: AlertOctagon, urgent: stats.open_safety_flags > 0 },
+          ].map((k) => (
+            <button
+              key={k.label}
+              type="button"
+              onClick={() => onNavigate?.(k.go)}
+              className={`text-left rounded-2xl border border-white/10 bg-white/5 backdrop-blur p-4 hover:bg-white/10 transition-colors ${k.urgent ? "ring-1 ring-red-400/60" : ""}`}
+            >
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[11px] font-medium uppercase tracking-wide text-white/55">{k.label}</span>
+                <k.Icon className="h-4 w-4 text-white/80" />
+              </div>
+              <p className="text-xl sm:text-2xl font-bold tracking-tight truncate">{k.value}</p>
+              <p className="text-[11px] text-white/50 mt-1">{k.sub}</p>
+            </button>
+          ))}
+        </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        {cards.map((c) => {
-          const Icon = c.icon;
-          return (
-            <Card key={c.label} className={c.urgent ? "border-red-500/40" : ""}>
-              <CardContent className="pt-5 pb-4">
+      <div>
+        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-3">Snapshot</p>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {cards.map((c) => {
+            const Icon = c.icon;
+            return (
+              <div key={c.label} className={`rounded-2xl border bg-card p-4 shadow-sm hover:shadow-md transition-shadow ${c.urgent ? "border-red-500/40" : ""}`}>
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
-                    <p className="text-xs text-muted-foreground mb-1 truncate">{c.label}</p>
-                    <p className="text-xl md:text-2xl font-bold truncate">{c.value}</p>
+                    <p className="text-[11px] text-muted-foreground mb-1.5 truncate font-medium">{c.label}</p>
+                    <p className="text-xl md:text-2xl font-bold tracking-tight truncate">{c.value}</p>
                     {c.sub && <p className="text-[10px] text-muted-foreground mt-1">{c.sub}</p>}
                   </div>
-                  <div className={`p-2 rounded-lg ${c.color}`}>
+                  <div className={`p-2 rounded-xl shrink-0 ${c.color}`}>
                     <Icon className="h-4 w-4" />
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          );
-        })}
+              </div>
+            );
+          })}
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {sections.map((s) => {
-          const Icon = s.icon;
-          return (
-            <button
-              key={s.key}
-              onClick={() => onNavigate?.(s.key)}
-              className={`text-left rounded-xl border bg-gradient-to-br ${s.color} p-5 hover:shadow-md transition-shadow`}
-            >
-              <div className="flex items-start gap-3">
-                <div className="p-2.5 rounded-lg bg-background/60">
-                  <Icon className="h-5 w-5" />
+      <div>
+        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-3">Jump to</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {sections.map((s) => {
+            const Icon = s.icon;
+            return (
+              <button
+                key={s.key}
+                type="button"
+                onClick={() => onNavigate?.(s.key)}
+                className={`group text-left rounded-2xl border bg-gradient-to-br ${s.color} p-5 hover:shadow-md transition-all hover:scale-[1.01]`}
+              >
+                <div className="flex items-start gap-3">
+                  <div className="p-2.5 rounded-xl bg-background/70 shadow-sm">
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="font-semibold text-foreground">{s.title}</p>
+                    <p className="text-sm text-muted-foreground mt-1 leading-snug">{s.desc}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="font-semibold text-foreground">{s.title}</p>
-                  <p className="text-sm text-muted-foreground mt-1">{s.desc}</p>
-                </div>
-              </div>
-            </button>
-          );
-        })}
+              </button>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
