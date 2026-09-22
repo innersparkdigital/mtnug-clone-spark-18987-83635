@@ -78,13 +78,13 @@ const BookTherapist = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Book a Therapist Online | InnerSpark Africa</title>
-        <meta name="description" content="Book a licensed therapist in minutes. Same-day video, voice or chat sessions from UGX 30,000. Pay by Mobile Money. Private and confidential." />
+        <title>Book a Licensed Therapist Online | Video UGX 75,000</title>
+        <meta name="description" content="Book a licensed African therapist in about two minutes. Video therapy UGX 75,000; chat therapy UGX 30,000. Mobile Money or card. Private and confidential." />
         <meta name="keywords" content="book therapist online, book therapy session, schedule therapy appointment, same day therapy, instant therapy session, therapist available now, talk to therapist now, online therapy, virtual counselling, teletherapy, anxiety help online, depression support online, stress management therapy, relationship counseling online, emotional support online, urgent mental health help, affordable therapy online, low cost counseling, cheap therapy online, video therapy session, chat therapy, phone therapy, messaging therapy, licensed therapist online, certified counselor online, best online therapy, therapist in Uganda online, counseling services Kenya online, therapy services Tanzania, African online therapy, therapist for depression Uganda, therapist for anxiety Uganda, therapist for trauma Uganda, therapist for couples Uganda, therapy for teenagers Kampala, chat therapy Uganda 30000, affordable chat therapy Uganda, evening therapy sessions Uganda, Sunday therapy sessions Uganda, weekend therapist Uganda, same day therapist Uganda, urgent therapy Uganda, emergency counselling Uganda, therapist available today Uganda, online therapy Kenya, therapist Nairobi, private therapy Nairobi, therapy via WhatsApp Kenya, therapy that accepts M-Pesa Kenya, online therapy South Sudan, therapist South Sudan" />
         <link rel="canonical" href="https://www.innersparkafrica.com/book-therapist" />
         
-        <meta property="og:title" content="Book a Therapist Online | InnerSpark Africa" />
-        <meta property="og:description" content="Book a licensed therapist in minutes. Same-day video, voice or chat sessions from UGX 30,000. Pay by Mobile Money. Private and confidential." />
+        <meta property="og:title" content="Book a Licensed Therapist Online | Video UGX 75,000" />
+        <meta property="og:description" content="Book a licensed African therapist in about two minutes. Video therapy UGX 75,000; chat therapy UGX 30,000. Mobile Money or card." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.innersparkafrica.com/book-therapist" />
         <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.webp" />
@@ -126,11 +126,11 @@ const BookTherapist = () => {
             </div>
             
             <h1 className="text-4xl md:text-6xl font-bold mb-6 text-foreground">
-              Book a Therapist <span className="text-primary">Online</span>
+              Book a <span className="text-primary">licensed</span> therapist online
             </h1>
             
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Schedule your therapy appointment in minutes. Get matched with a licensed therapist and start your session today.
+              Choose a licensed African therapist in about two minutes. Video therapy is UGX 75,000 per session; chat therapy is UGX 30,000. Pay by Mobile Money or card.
             </p>
             
             <div className="flex gap-4 justify-center flex-wrap mb-8">
