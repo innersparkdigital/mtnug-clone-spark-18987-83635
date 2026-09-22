@@ -231,7 +231,7 @@ function RiskBars({ risk }: { risk: { low: number; moderate: number; high: numbe
               <span className="text-muted-foreground">{r.n} · {pct}%</span>
             </div>
             <div className="h-3 rounded-full bg-muted overflow-hidden">
-              <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, background: r.color }} />
+              <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, background: r.color }} />
             </div>
           </div>
         );
@@ -259,7 +259,7 @@ function PhaseTrend({ phases, minGroup }: { phases: Phase[]; minGroup: number })
               </span>
               <div
                 className="w-full rounded-t-md"
-                style={{ height: `${h}%`, background: show ? "#3B4FD4" : "#E5E7EB" }}
+                style={{ height: `${h}%`, background: show ? "linear-gradient(180deg,#3B4FD4,#6366F1)" : "#E5E7EB", boxShadow: show ? "0 8px 16px rgba(59,79,212,0.25)" : undefined }}
                 title={show ? `${p.phase_label}: ${p.avg_percentage}%` : `Privacy hold (<${minGroup} responses)`}
               />
               <span className="text-[10px] text-center text-muted-foreground leading-tight">{p.phase_label}</span>
@@ -297,7 +297,7 @@ export default function CorporateDashboard() {
     }
     setLoading(true);
     const { data, error } = await supabase
-      .from("corporate_company_admins" as any)
+      .from("corporate_hr_admins" as any)
       .select("id,company_id,full_name,email,must_change_password,consent_accepted_at,consent_version")
       .eq("user_id", user.id)
       .eq("is_active", true)
@@ -314,7 +314,7 @@ export default function CorporateDashboard() {
   const loadStats = async () => {
     if (!admin?.company_id || needsConsentRenewal(admin)) return;
     setStatsLoading(true);
-    const { data, error } = await supabase.rpc("get_corporate_dashboard_stats" as any, {
+    const { data, error } = await supabase.rpc("get_company_hr_dashboard_stats" as any, {
       _company_id: admin.company_id,
       _min_group: MIN_GROUP,
     });
@@ -355,7 +355,7 @@ export default function CorporateDashboard() {
   const acceptConsent = async () => {
     if (!admin || !consentChecked) return;
     const { error } = await supabase
-      .from("corporate_company_admins" as any)
+      .from("corporate_hr_admins" as any)
       .update({
         consent_accepted_at: new Date().toISOString(),
         consent_version: CONSENT_VERSION,
@@ -371,7 +371,7 @@ export default function CorporateDashboard() {
     const { error } = await supabase.auth.updateUser({ password: newPassword });
     if (error) return toast.error(error.message);
     await supabase
-      .from("corporate_company_admins" as any)
+      .from("corporate_hr_admins" as any)
       .update({ must_change_password: false })
       .eq("id", admin!.id);
     setNewPassword("");
@@ -389,7 +389,7 @@ export default function CorporateDashboard() {
     if (!message.trim()) return toast.error("Add a short note about what you need");
 
     setSending(true);
-    const { error } = await supabase.from("corporate_service_requests" as any).insert({
+    const { error } = await supabase.from("corporate_hr_service_requests" as any).insert({
       company_id: admin.company_id,
       admin_id: admin.id,
       request_type: type,
@@ -428,16 +428,17 @@ export default function CorporateDashboard() {
 
   if (!user) {
     return (
-      <div className="min-h-screen grid place-items-center p-6 bg-muted/20">
+      <div className="min-h-screen grid place-items-center p-6" style={{ background: "linear-gradient(160deg,#3B4FD4 0%,#1A1A2E 100%)" }}>
         <Helmet>
           <title>Corporate Wellbeing Dashboard | InnerSpark</title>
           <meta name="robots" content="noindex" />
         </Helmet>
-        <Card className="w-full max-w-md">
+        <Card className="w-full max-w-md shadow-2xl border-0 overflow-hidden">
+          <div className="h-1.5 w-full" style={{ background: "#F2994A" }} />
           <CardHeader>
-            <CardTitle>Company admin login</CardTitle>
+            <CardTitle className="text-2xl" style={{ color: "#1A1A2E" }}>Company admin login</CardTitle>
             <CardDescription>
-              Separate from client and therapist portals. Use the work email and temporary password InnerSpark shared with HR.
+              Separate from client and therapist portals. Aggregate patterns only — never individual employee answers.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
@@ -455,7 +456,8 @@ export default function CorporateDashboard() {
               />
             </div>
             <Button
-              className="w-full"
+              className="w-full text-white"
+              style={{ background: "#F2994A" }}
               onClick={async () => {
                 const { error } = await signIn(email.trim().toLowerCase(), password);
                 if (error) toast.error(error.message);
@@ -520,10 +522,11 @@ export default function CorporateDashboard() {
           <title>Data-use consent | Corporate Dashboard</title>
           <meta name="robots" content="noindex" />
         </Helmet>
-        <Card className="max-w-2xl w-full">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <ShieldCheck className="h-5 w-5 text-primary" /> Company data-use consent
+        <Card className="max-w-2xl w-full shadow-xl border-0 overflow-hidden">
+          <div className="h-1.5 w-full" style={{ background: "#2E7D5E" }} />
+          <CardHeader className="bg-[#F8F9FF]">
+            <CardTitle className="flex items-center gap-2" style={{ color: "#1A1A2E" }}>
+              <ShieldCheck className="h-5 w-5" style={{ color: "#2E7D5E" }} /> Company data-use consent
             </CardTitle>
             <CardDescription>
               You must accept this before viewing any aggregate wellbeing results. Consent is re-confirmed at least yearly
@@ -556,7 +559,7 @@ export default function CorporateDashboard() {
               </Label>
             </div>
             <div className="flex gap-2">
-              <Button disabled={!consentChecked} onClick={acceptConsent}>
+              <Button disabled={!consentChecked} onClick={acceptConsent} className="text-white" style={{ background: consentChecked ? "#3B4FD4" : undefined }}>
                 Continue to dashboard
               </Button>
               <Button variant="outline" onClick={() => signOut()}>
@@ -573,7 +576,7 @@ export default function CorporateDashboard() {
   const minG = stats?.min_group ?? MIN_GROUP;
 
   return (
-    <div className="min-h-screen bg-muted/30 p-4 md:p-6">
+    <div className="min-h-screen p-4 md:p-6" style={{ background: "linear-gradient(180deg,#F5F6FF 0%,#FFFFFF 45%,#FFF8F0 100%)" }}>
       <Helmet>
         <title>
           {(stats?.company_name ? `${stats.company_name} · ` : "") + "Corporate Wellbeing Dashboard | InnerSpark"}
@@ -584,9 +587,9 @@ export default function CorporateDashboard() {
       <div className="max-w-5xl mx-auto space-y-6 pb-16">
         <div className="flex items-start justify-between gap-3 flex-wrap">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-primary mb-1">Company admin · aggregate only</p>
-            <h1 className="text-2xl md:text-3xl font-bold">
-              {stats?.company_name || "Corporate wellbeing"} dashboard
+            <p className="text-xs font-bold uppercase tracking-[0.14em] mb-1" style={{ color: "#3B4FD4" }}>Company admin · aggregate only</p>
+            <h1 className="text-2xl md:text-4xl font-bold tracking-tight" style={{ color: "#1A1A2E" }}>
+              {stats?.company_name || "Corporate wellbeing"}
             </h1>
             <p className="text-sm text-muted-foreground mt-1">
               Welcome, {admin.full_name}. Individual employee answers are never shown here.
@@ -668,8 +671,7 @@ export default function CorporateDashboard() {
               <RiskBars risk={stats.risk} />
             ) : (
               <div className="rounded-lg border border-dashed p-6 text-sm text-muted-foreground bg-background">
-                Not enough responses yet to show this breakdown while protecting individual privacy (minimum {minG}{" "}
-                completed responses).
+                Privacy hold active — not enough responses yet to show this breakdown while protecting individual privacy (minimum {minG} completed private screens).
               </div>
             )}
           </CardContent>
