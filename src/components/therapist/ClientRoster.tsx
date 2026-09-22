@@ -376,7 +376,7 @@ const ClientRoster = ({ therapistId, therapistName }: Props) => {
 };
 
 const StatCard = ({ accent, icon, label, value }: { accent: string; icon: React.ReactNode; label: string; value: React.ReactNode }) => (
-  <div className={`stat-card ${accent}`}>
+  <div className={`stat-card ${accent} rounded-2xl shadow-sm hover:shadow-md transition-shadow`}>
     <div className="flex items-center justify-between">
       <div className="text-[11px] uppercase tracking-wider text-muted-foreground">{label}</div>
       {icon}
