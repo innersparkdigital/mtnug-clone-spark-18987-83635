@@ -68,6 +68,13 @@ const Index = () => {
           areaServed: ["UG", "KE", "TZ"],
           availableLanguage: ["English", "Luganda", "Swahili"],
         },
+        sameAs: [
+          "https://www.facebook.com/innersparkafrica",
+          "https://www.instagram.com/innersparkafrica",
+          "https://www.linkedin.com/company/innerspark-africa",
+          "https://x.com/innersparkafrica",
+          "https://www.youtube.com/@innersparkafrica",
+        ],
       },
       {
         "@type": "WebSite",
