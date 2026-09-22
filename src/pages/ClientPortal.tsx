@@ -275,15 +275,15 @@ const ClientPortalInner = () => {
       <div className="fixed inset-0 overflow-y-auto bg-background p-4 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
         <div className="absolute top-3 right-3"><CalmThemeToggle /></div>
         <div className="min-h-full flex items-center justify-center py-8">
-          <div className="max-w-md w-full card-calm p-6 fade-in-calm">
+          <div className="max-w-md w-full card-calm p-7 sm:p-8 fade-in-calm rounded-3xl shadow-lg border">
             <div className="text-center">
-              <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 grid place-items-center mb-3">
+              <div className="mx-auto w-14 h-14 rounded-2xl bg-primary/10 grid place-items-center mb-4 shadow-sm">
                 <Lock className="h-6 w-6 text-primary" />
               </div>
-              <h1 className="text-xl font-semibold">Hi {firstName}</h1>
-              <p className="text-sm text-muted-foreground mt-1">
+              <h1 className="text-2xl font-semibold tracking-tight">Hi {firstName}</h1>
+              <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
                 {snapshot.client.has_passcode
-                  ? "This is your private space. Please enter your passcode."
+                  ? "This is your private space. Enter your passcode to continue."
                   : "This is your private space. Set a passcode so only you can open it."}
               </p>
             </div>
@@ -304,7 +304,7 @@ const ClientPortalInner = () => {
               <Button
                 onClick={snapshot.client.has_passcode && !temporaryResetId ? verifyPasscodeFn : setPasscodeFn}
                 disabled={busy}
-                className="w-full"
+                className="w-full h-11 rounded-xl"
               >
                 {busy && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
                 {temporaryResetId ? "Save new passcode and continue" : snapshot.client.has_passcode ? "Open my space" : "Set passcode & continue"}
