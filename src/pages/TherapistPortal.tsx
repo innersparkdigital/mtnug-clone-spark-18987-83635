@@ -262,18 +262,20 @@ const TherapistPortal = () => {
 
   return (
     <CalmThemeRoot className="min-h-screen bg-background">
-      <header className="border-b bg-background">
-        <div className="max-w-5xl mx-auto flex items-center justify-between p-4">
-          <div className="flex items-center gap-2">
-            <Stethoscope className="h-5 w-5 text-primary" />
-            <div>
-              <div className="font-semibold">{account.full_name}</div>
-              <div className="text-xs text-muted-foreground">
-                {account.specialisation || "Therapist"} · InnerSpark Portal
+      <header className="border-b bg-background/95 backdrop-blur sticky top-0 z-30">
+        <div className="max-w-5xl mx-auto flex items-center justify-between p-4 gap-3">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="h-10 w-10 rounded-2xl bg-primary/10 grid place-items-center shrink-0">
+              <Stethoscope className="h-5 w-5 text-primary" />
+            </div>
+            <div className="min-w-0">
+              <div className="font-semibold truncate">{account.full_name}</div>
+              <div className="text-xs text-muted-foreground truncate">
+                {account.specialisation || "Therapist"} · Clinical workspace
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             <CalmThemeToggle />
             <Button variant="ghost" size="sm" onClick={() => signOut()}>
               <LogOut className="h-4 w-4 mr-2" /> Sign out
@@ -281,7 +283,20 @@ const TherapistPortal = () => {
           </div>
         </div>
       </header>
-      <main className="max-w-5xl mx-auto p-6 space-y-6">
+      <main className="max-w-5xl mx-auto p-4 sm:p-6 space-y-6">
+        <div className="rounded-2xl border bg-card p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-primary mb-1">Today</p>
+            <p className="text-sm text-muted-foreground leading-relaxed max-w-xl">
+              Risk-sorted roster below. Open a client for homework, consent and safety flags.
+              Session calendars stay with ops — your clinical tools live here.
+            </p>
+          </div>
+          <span className="inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium text-muted-foreground self-start">
+            <ShieldCheck className="h-3.5 w-3.5 mr-1.5 text-primary" />
+            Private to you
+          </span>
+        </div>
         <ClientRoster therapistId={account.id} therapistName={account.full_name} />
       </main>
     </CalmThemeRoot>
