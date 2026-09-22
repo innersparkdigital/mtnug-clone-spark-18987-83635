@@ -608,6 +608,15 @@ export default function CorporateDashboard() {
             <h1 className="text-2xl md:text-4xl font-bold tracking-tight" style={{ color: "#1A1A2E" }}>
               {stats?.company_name || "Corporate wellbeing"}
             </h1>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <a
+                href="/corporate-assessments"
+                className="inline-flex items-center rounded-xl px-4 py-2 text-sm font-semibold text-white"
+                style={{ background: "#F2994A" }}
+              >
+                Psychometric assessments
+              </a>
+            </div>
             <p className="text-sm text-muted-foreground mt-1">
               Welcome, {admin.full_name}. Individual employee answers are never shown here.
             </p>
