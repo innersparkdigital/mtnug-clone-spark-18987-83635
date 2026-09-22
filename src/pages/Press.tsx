@@ -18,7 +18,7 @@ const facts = [
 
 const talkingPoints = [
   "How digital tools can close Africa&rsquo;s mental-health treatment gap",
-  "Confidential, affordable therapy for young Africans (from UGX 30,000 / KES 1,500)",
+  "Confidential, affordable therapy for Africans (video UGX 75,000; chat UGX 30,000)",
   "Addiction recovery, families and the upcoming SmartSip wearable",
   "Workplace mental wellbeing across African employers",
   "AI in mental-health triage — Amani AI and safe design",
