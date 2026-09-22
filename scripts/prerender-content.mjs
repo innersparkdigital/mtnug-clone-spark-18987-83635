@@ -26,9 +26,9 @@ export const GLOBAL_LINKS = [
 export const ROUTES = [
   {
     path: "/",
-    title: "Mental Health Therapy Uganda from UGX 30,000 | InnerSpark",
+    title: "Book Licensed Online Therapy Uganda | Video UGX 75,000 | InnerSpark",
     description:
-      "Talk to a licensed Ugandan therapist by video, voice or chat from UGX 30,000. Private mental health and wellness support across Africa, bookable in 2 minutes.",
+      "For professionals ready to pay for confidential care. Book a licensed African therapist — video UGX 75,000 or chat UGX 30,000. Mobile Money or card.",
     h1: "Africa's Most Accessible Mental Wellness Platform",
     intro:
       "Connect with licensed African therapists via video, voice or chat. Sessions start from UGX 30,000 (about $8) and are available in Uganda, Kenya, Tanzania and beyond — confidential, judgement-free and bookable in about two minutes.",
