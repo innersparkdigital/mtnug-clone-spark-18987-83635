@@ -37,8 +37,8 @@ type Market = {
 const MARKETS: Record<string, Market> = {
   nigeria: {
     country: "Nigeria", countryLabel: "Nigeria", code: "NG", flag: "🇳🇬", currency: "NGN", video: "about NGN 27,500", chat: "about NGN 11,000",
-    cities: "Lagos, Abuja, Port Harcourt and across Nigeria", title: "Online Therapy in Nigeria — Private African Support", description: "Avoid traffic and talk privately with a licensed African therapist in Nigeria. Video from about NGN 27,500 and chat from NGN 11,000.",
-    h1: "Therapy without Lagos traffic or a waiting room", intro: "Talk privately with a licensed African therapist who understands the pressure to keep performing, providing and appearing fine.",
+    cities: "Lagos, Abuja, Port Harcourt and across Nigeria", title: "Book Online Therapy Nigeria | Licensed from ~NGN 27,500", description: "For Nigerian professionals ready to pay for confidential care. Book a licensed African therapist — video about NGN 27,500 · chat about NGN 11,000. Visa accepted.",
+    h1: "Book licensed therapy without Lagos traffic", intro: "For professionals ready to invest in confidential care. Talk with a licensed African therapist who understands the pressure to keep performing, providing and appearing fine.",
     painHeading: "Support that fits the pace of Nigerian life", pain: "Traffic, long workdays, rising living costs and concern about being seen at a clinic can make support hard to begin. Online sessions let you speak from a private place without adding another journey to your day.",
     context: "career pressure, burnout, relationships, relocation, family expectations, grief and the emotional weight of always needing to be strong", payment: "international Visa card", paymentNote: "Your bank confirms the final naira conversion before payment.",
     concerns: ["Work stress and burnout", "Relationship and marriage strain", "Anxiety and overthinking", "Relocation and diaspora decisions", "Grief and family pressure", "Low mood and loss of motivation"],
@@ -48,8 +48,8 @@ const MARKETS: Record<string, Market> = {
   },
   tanzania: {
     country: "Tanzania", countryLabel: "Tanzania", code: "TZ", flag: "🇹🇿", currency: "TZS", video: "about TZS 52,000", chat: "about TZS 21,000",
-    cities: "Dar es Salaam, Arusha, Mwanza and across Tanzania", title: "Online Therapy in Tanzania — Private, African Care", description: "Private online therapy in Tanzania with licensed African therapists. Video from about TZS 52,000 and chat from TZS 21,000.",
-    h1: "Private therapy that travels less than you do", intro: "Speak with a licensed African therapist from Dar es Salaam, Arusha, Mwanza or wherever you feel safe.",
+    cities: "Dar es Salaam, Arusha, Mwanza and across Tanzania", title: "Book Online Therapy Tanzania | Licensed from ~TZS 52,000", description: "For Tanzanian professionals ready to pay for private care. Book a licensed African therapist — video about TZS 52,000 · chat about TZS 21,000. Visa accepted.",
+    h1: "Book licensed therapy that travels less than you do", intro: "For professionals ready to invest in confidential care. Speak with a licensed African therapist from Dar es Salaam, Arusha, Mwanza or wherever you feel safe.",
     painHeading: "Care without a long journey or public waiting room", pain: "Distance, limited therapist choice outside major cities and concern about being recognised can delay support. Online therapy gives you more choice while keeping sessions private and practical.",
     context: "work pressure, family responsibilities, relationship strain, grief, student stress and changes that feel difficult to discuss openly", payment: "international Visa card", paymentNote: "Your card provider confirms the final shilling conversion before payment.",
     concerns: ["Work and business pressure", "Family responsibilities", "Relationship concerns", "Student and exam stress", "Grief and life changes", "Anxiety and low mood"],
@@ -59,8 +59,8 @@ const MARKETS: Record<string, Market> = {
   },
   gambia: {
     country: "The Gambia", countryLabel: "The Gambia", code: "GM", flag: "🇬🇲", currency: "GMD", video: "about GMD 1,500", chat: "about GMD 600",
-    cities: "Banjul, Kanifing, Brikama and across The Gambia", title: "Online Therapy in The Gambia — Private Support", description: "Private online therapy in The Gambia with licensed African therapists. Video from about GMD 1,500 and chat from GMD 600.",
-    h1: "More therapist choice, without giving up privacy", intro: "Connect with a licensed African therapist from Banjul, Kanifing, Brikama or anywhere you can speak safely.",
+    cities: "Banjul, Kanifing, Brikama and across The Gambia", title: "Book Online Therapy Gambia | Licensed from ~GMD 1,500", description: "For professionals in The Gambia ready to pay for private care. Book a licensed African therapist — video about GMD 1,500 · chat about GMD 600. Visa accepted.",
+    h1: "Book licensed therapy with more choice and full privacy", intro: "For people ready to invest in confidential care. Connect with a licensed African therapist from Banjul, Kanifing, Brikama or anywhere you can speak safely.",
     painHeading: "A wider care network for a close-knit country", pain: "In a smaller community, privacy concerns and a limited local provider network can make asking for help feel exposed. Online therapy widens your options without requiring a clinic visit.",
     context: "family expectations, migration, work pressure, grief, relationships and the loneliness that can sit behind a strong public face", payment: "international Visa card", paymentNote: "Prices are estimates; your bank confirms the final dalasi conversion.",
     concerns: ["Family and relationship pressure", "Migration and separation", "Grief and loss", "Work and money stress", "Anxiety and loneliness", "Confidential personal support"],
@@ -70,8 +70,8 @@ const MARKETS: Record<string, Market> = {
   },
   ghana: {
     country: "Ghana", countryLabel: "Ghana", code: "GH", flag: "🇬🇭", currency: "GHS", video: "about GHS 235", chat: "about GHS 95",
-    cities: "Accra, Kumasi, Takoradi and across Ghana", title: "Online Therapy in Ghana — Confidential African Care", description: "Confidential online therapy in Ghana with licensed African therapists. Video from about GHS 235 and chat from GHS 95.",
-    h1: "Therapy that respects faith, family and your privacy", intro: "Talk with a licensed African therapist from Accra, Kumasi, Takoradi or wherever you feel comfortable.",
+    cities: "Accra, Kumasi, Takoradi and across Ghana", title: "Book Online Therapy Ghana | Licensed from ~GHS 235", description: "For Ghanaian professionals ready to pay for confidential care. Book a licensed African therapist — video about GHS 235 · chat about GHS 95. Visa accepted.",
+    h1: "Book licensed therapy that respects faith, family and privacy", intro: "For professionals ready to invest in confidential care. Talk with a licensed African therapist from Accra, Kumasi, Takoradi or wherever you feel comfortable.",
     painHeading: "Culturally relevant support beyond Accra", pain: "Finding private support outside major cities can take time, while fear of judgement may stop people from trying. Online sessions offer a discreet route to care without losing African context.",
     context: "work, study, relationships, grief, faith, family expectations and the pressure to appear resilient", payment: "international Visa card", paymentNote: "Your card provider confirms the final cedi conversion before payment.",
     concerns: ["Work stress and burnout", "University and exam pressure", "Faith and emotional wellbeing", "Relationship concerns", "Grief and family change", "Anxiety and low mood"],
@@ -81,8 +81,8 @@ const MARKETS: Record<string, Market> = {
   },
   usa: {
     country: "the United States", countryLabel: "United States", code: "US", flag: "🇺🇸", currency: "USD", video: "about USD 22", chat: "about USD 9",
-    cities: "African immigrants, international students and diaspora communities across the United States", title: "Online Therapy for Africans in the USA | InnerSpark", description: "Online support for Africans in the USA with therapists who understand diaspora identity, adjustment and family expectations. From about USD 9.",
-    h1: "You should not have to translate your whole life in therapy", intro: "Speak with an African therapist who understands migration, family obligations and living between cultures.",
+    cities: "African immigrants, international students and diaspora communities across the United States", title: "Book Online Therapy for Africans in the USA | from ~USD 22", description: "For African professionals in the USA ready to pay for culturally grounded care. Licensed African therapists — video about USD 22 · chat about USD 9. Visa accepted.",
+    h1: "Book therapy without translating your whole life first", intro: "For professionals ready to invest in confidential care. Speak with an African therapist who understands migration, family obligations and living between cultures.",
     painHeading: "Support for the parts of diaspora life others can miss", pain: "Homesickness, immigration stress, racial pressure and family expectations back home can overlap. A therapist who understands African context can help you talk without starting every session with a cultural explanation.",
     context: "diaspora identity, adjustment, relationships, grief across distance, international student life, family expectations and workplace stress", payment: "Visa card", paymentNote: "InnerSpark provides cross-border wellbeing support, not US emergency care; suitability may depend on your location and needs.",
     concerns: ["Diaspora identity and belonging", "Homesickness and adjustment", "Family obligations back home", "International student stress", "Relationships across cultures", "Workplace and racial stress"],
