@@ -216,12 +216,12 @@ function WhisperRecorder() {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Whisper: Private Mental Health Voice Note | InnerSpark</title>
-        <meta name="description" content="Record a private voice note for InnerSpark when what you are carrying feels difficult to type. No public post and no long signup form." />
-        <meta name="keywords" content="private mental health voice note Uganda, anonymous mental health support Africa, Whisper InnerSpark, talk to a therapist Uganda" />
+        <title>Whisper: Private Mental Health Voice Note Uganda | InnerSpark</title>
+        <meta name="description" content="Whisper is InnerSpark’s private mental health voice note in Uganda. Record what is hard to type — free, no public post. Not emergency care. Ongoing therapy: video UGX 75,000, chat UGX 30,000." />
+        <meta name="keywords" content="private mental health voice note Uganda, anonymous mental health support Africa, Whisper InnerSpark, talk to a therapist Uganda, free mental health support Uganda" />
         <link rel="canonical" href="https://www.innersparkafrica.com/whisper" />
-        <meta property="og:title" content="Whisper: Private Mental Health Voice Note | InnerSpark" />
-        <meta property="og:description" content="Too difficult to type? Record a private voice note for the InnerSpark team without posting it publicly." />
+        <meta property="og:title" content="Whisper: Private Mental Health Voice Note Uganda | InnerSpark" />
+        <meta property="og:description" content="Too hard to type? Record a private voice note for InnerSpark. Free to send. Not an emergency service. Book licensed therapy when you are ready." />
         <meta property="og:url" content="https://www.innersparkafrica.com/whisper" />
         <meta property="og:type" content="website" />
         <script type="application/ld+json">{JSON.stringify({
@@ -230,10 +230,20 @@ function WhisperRecorder() {
           name: "Whisper — Private Mental Health Voice Note",
           serviceType: "Private mental health support request",
           provider: { "@type": "Organization", name: "InnerSpark Africa", url: "https://www.innersparkafrica.com" },
-          areaServed: ["Uganda", "Africa"],
-          offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+          areaServed: ["Uganda", "Kenya", "Tanzania", "Africa"],
+          offers: { "@type": "Offer", price: "0", priceCurrency: "UGX" },
           url: "https://www.innersparkafrica.com/whisper",
-          description: "Record a short private voice note for review by the InnerSpark team when writing feels difficult.",
+          description: "Record a short private voice note for the InnerSpark team when writing feels difficult. Free to send. Not crisis care. Licensed video therapy is UGX 75,000; chat therapy is UGX 30,000.",
+        })}</script>
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: [
+            { "@type": "Question", name: "What is Whisper on InnerSpark Africa?", acceptedAnswer: { "@type": "Answer", text: "Whisper is a free private voice-note channel on InnerSpark Africa. You record what is weighing on you when typing feels hard. It is not a public post and not a full therapy session." } },
+            { "@type": "Question", name: "Is Whisper free?", acceptedAnswer: { "@type": "Answer", text: "Yes. Sending a Whisper is free. If you later book ongoing care, video therapy costs UGX 75,000 per session and chat therapy costs UGX 30,000." } },
+            { "@type": "Question", name: "Is Whisper an emergency service?", acceptedAnswer: { "@type": "Answer", text: "No. Whisper is not crisis or emergency care. If you may harm yourself or feel unsafe, WhatsApp InnerSpark immediately on +256 792 085 773." } },
+            { "@type": "Question", name: "What happens after I send a Whisper?", acceptedAnswer: { "@type": "Answer", text: "The InnerSpark team reviews private Whispers. You can leave WhatsApp or email for a reply. When you want ongoing support, book a licensed African therapist for video or chat." } },
+          ],
         })}</script>
       </Helmet>
       <div className="fixed inset-0 bg-background flex flex-col z-50 overflow-hidden">
