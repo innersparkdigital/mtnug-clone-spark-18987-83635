@@ -224,7 +224,7 @@ const DoctorDashboard = ({ doctor, onNewReferral }: Props) => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <h2 className="text-xl sm:text-2xl font-bold">Welcome, Dr. {doctor.full_name}</h2>
-          <p className="text-sm text-muted-foreground">{doctor.phone}</p>
+          <p className="text-sm text-muted-foreground">{doctor.phone} · Referral stages: new → contacted → booked → completed → paid</p>
         </div>
         <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
           <Button variant="outline" onClick={() => setPwdOpen(true)} className="w-full sm:w-auto">
