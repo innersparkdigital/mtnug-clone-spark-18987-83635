@@ -100,20 +100,20 @@ function contextualWelcome(pathname: string): Msg {
   const p = pathname.toLowerCase();
   const greeting = getTimeGreeting();
   const dayNote = getDayNote();
-  // Warm, listening-first opener — connection before forms or disclaimers.
-  let content = `${greeting}. I'm Amani. ${dayNote}\n\nI'm here to listen — no rush, no judgement. Whatever is on your mind, you can say it in your own words. What would you like to talk about today?`;
+  // Warm opener: get their name first so the rest of the chat feels personal.
+  let content = `${greeting}. I'm Amani. ${dayNote}\n\nI'm here to listen — no rush, no judgement. Before we begin, what name would you like me to use for you?`;
   if (p.startsWith("/for-business") || p.startsWith("/corporate")) {
-    content = `${greeting}. I'm Amani — I help teams look after their people.\n\nTell me a little about your team and what kind of support you're hoping for.`;
+    content = `${greeting}. I'm Amani — I help teams look after their people.\n\nWhat name should I use for you, and roughly how many people are on the team?`;
   } else if (p.startsWith("/specialists") || p.startsWith("/find-therapist") || p.startsWith("/book-therapist")) {
-    content = `${greeting}. I'm Amani.\n\nFinding the right person to talk to matters. Tell me what's been weighing on you, and I'll help match you with a licensed therapist who fits.`;
+    content = `${greeting}. I'm Amani.\n\nFinding the right person to talk to matters. What name should I call you — then tell me what's been weighing on you.`;
   } else if (p.startsWith("/blog")) {
-    content = `${greeting}. I'm Amani.\n\nIf something in that article stirred something up, I'm here. What's on your mind?`;
+    content = `${greeting}. I'm Amani.\n\nIf something in that article stirred something up, I'm here. What name should I use for you?`;
   } else if (p.startsWith("/whisper")) {
-    content = `${greeting}. I'm Amani.\n\nWhisper is free and anonymous — a real therapist replies within 24 hours. What would you like to share?`;
+    content = `${greeting}. I'm Amani.\n\nWhisper is free and anonymous — a real therapist replies within 24 hours. You can share a first name or stay anonymous. What would you like to share?`;
   } else if (p.startsWith("/kenya")) {
-    content = `Habari. I'm Amani.\n\nI'm here to listen — no rush, no judgement. What's been on your mind lately?`;
+    content = `Habari. I'm Amani.\n\nI'm here to listen — no rush, no judgement. What name would you like me to use for you?`;
   } else if (p.startsWith("/amani")) {
-    content = `${greeting}. I'm Amani — your space to talk things through.\n\nI'll listen carefully, reflect with you, and offer practical next steps. When you're ready for a human therapist, I'll help you book one. What's going on for you right now?`;
+    content = `${greeting}. I'm Amani — your space to talk things through.\n\nI'll listen carefully and offer practical next steps. What name should I call you?`;
   }
   return { role: "assistant", content };
 }
