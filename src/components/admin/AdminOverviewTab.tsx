@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Loader2, Users, Calendar, DollarSign, AlertOctagon, Stethoscope, CheckCircle, Inbox, Moon, TrendingUp, Activity, UserPlus, Repeat } from "lucide-react";
 import { withTimeout } from "@/lib/rpcTimeout";
