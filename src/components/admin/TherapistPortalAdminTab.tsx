@@ -219,8 +219,8 @@ const TherapistPortalAdminTab = () => {
                     <Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="+256 …" />
                   </div>
                   <div>
-                    <Label>Specialisation</Label>
-                    <Input value={form.specialisation} onChange={(e) => setForm({ ...form, specialisation: e.target.value })} placeholder="CBT, Trauma…" />
+                    <Label>Professional title / specialisation</Label>
+                    <Input value={form.specialisation} onChange={(e) => setForm({ ...form, specialisation: e.target.value })} placeholder="Clinical Counselling Psychologist" />
                   </div>
                 </div>
               </div>
