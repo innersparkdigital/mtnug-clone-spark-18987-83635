@@ -486,7 +486,7 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
                   </div>
                   <div className="text-xs text-muted-foreground">{f.detail}</div>
                   <div className="text-xs font-semibold text-primary mt-1">
-                    UGX {f.ugx.toLocaleString()} (~{usd(f.ugx)})
+                    {money(f.ugx)}
                   </div>
                 </button>
               ))}
