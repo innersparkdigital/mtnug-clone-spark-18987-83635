@@ -1,12 +1,11 @@
-import { useCallback, useEffect, useMemo, useState, lazy, Suspense } from "react";
-import { useParams } from "react-router-dom";
+import { useCallback, useEffect, useMemo, useRef, useState, lazy, Suspense } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Loader2, Lock, Quote, Sparkles } from "lucide-react";
+import { Loader2, LogOut, Quote, Sparkles } from "lucide-react";
 import { toast } from "sonner";
+import { CLIENT_IDLE_MS, clearClientSession, getClientSession, isSessionError, logoutClient, onCrossTabLogout } from "@/lib/clientSession";
 import QuietFooter from "@/components/client-portal/QuietFooter";
 import SessionReflectionTool from "@/components/client-portal/SessionReflectionTool";
 import SafetyCheckInTool from "@/components/client-portal/SafetyCheckInTool";
@@ -276,7 +275,7 @@ const ClientPortalInner = () => {
       load();
     };
     const back = () => setActiveToolId(null);
-    const common = { token: token!, assignmentToolId: activeTool.id, onDone: done, onBack: back };
+    const common = { session: session!, assignmentToolId: activeTool.id, onDone: done, onBack: back };
     const scale = getScale(activeTool.tool_key);
     if (scale) return <ScaleTool scale={scale} {...common} />;
     switch (activeTool.tool_key) {
@@ -334,7 +333,7 @@ const ClientPortalInner = () => {
     <div className="fixed inset-0 overflow-y-auto bg-background pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
       <div className="max-w-2xl mx-auto p-4 sm:p-6">
         <div className="flex justify-end items-center gap-2 mb-2">
-          <Button variant="outline" size="sm" onClick={lockPortal}><Lock className="h-4 w-4 mr-1" /> Lock now</Button>
+          <Button variant="outline" size="sm" onClick={() => endSession()}><LogOut className="h-4 w-4 mr-1" /> Log out</Button>
           <CalmThemeToggle />
         </div>
 
