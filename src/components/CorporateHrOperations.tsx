@@ -39,6 +39,14 @@ export default function CorporateHrOperations({ companyId }: { companyId: string
     setName(''); setEmail('');
     await load();
   };
+  const setHrActive = async (account: HrAdmin) => {
+    if (account.is_active && !window.confirm(`Suspend ${account.email}'s company access?`)) return;
+    const { data: changed, error } = await supabase.rpc('admin_set_corporate_hr_active' as any, {
+      _company_id: companyId, _admin_id: account.id, _active: !account.is_active,
+    });
+    if (error || !changed) return toast.error(error?.message || 'Account not found');
+    await load();
+  };
   const updateRequest = async (id: string, status: string) => {
     const { data: changed, error } = await supabase.rpc('admin_update_corporate_request' as any, { _request_id: id, _status: status });
     if (error || !changed) return toast.error(error?.message || 'Request not found');
@@ -63,7 +71,7 @@ export default function CorporateHrOperations({ companyId }: { companyId: string
       <p className="text-sm text-muted-foreground">Only InnerSpark staff can invite company HR. Each account is tied to this company; it does not receive staff admin access.</p>
       <div className="grid gap-3 sm:grid-cols-2"><div><Label htmlFor="hr-name">HR contact name</Label><Input id="hr-name" value={name} onChange={e => setName(e.target.value)} /></div><div><Label htmlFor="hr-email">HR contact email</Label><Input id="hr-email" type="email" value={email} onChange={e => setEmail(e.target.value)} /></div></div>
       <Button disabled={busy} onClick={invite}>Send HR invitation</Button>
-      {data.admins.map(a => <div key={a.id} className="border-t pt-3 text-sm"><strong>{a.full_name}</strong> · {a.email} · {a.is_active ? 'Active' : 'Inactive'}</div>)}
+      {data.admins.map(a => <div key={a.id} className="border-t pt-3 text-sm flex flex-wrap items-center justify-between gap-2"><span><strong>{a.full_name}</strong> · {a.email} · {a.is_active ? 'Active' : 'Inactive'}</span><Button size="sm" variant="outline" onClick={() => setHrActive(a)}>{a.is_active ? 'Suspend access' : 'Restore access'}</Button></div>)}
       {!data.admins.length && <p className="text-sm text-muted-foreground">No HR accounts linked yet.</p>}
     </CardContent></Card>
     <Card><CardHeader><CardTitle className="text-lg">Service requests</CardTitle></CardHeader><CardContent className="space-y-3">
