@@ -81,14 +81,7 @@ export default function CorporateAssessments() {
     if (error) return toast.error(error.message);
     const o = data as any;
     toast.success("Order created — " + fmt(o.amount_ugx));
-    const ok = window.confirm(
-      `Order for ${fmt(o.amount_ugx)} (${o.credits} credits).\n\nPay via Mobile Money/card, then WhatsApp +256 792 085 773 with order id ${String(o.order_id).slice(0, 8)}…\n\nDemo: OK = mark PAID and add credits now.`
-    );
-    if (ok) {
-      const { data: paid, error: pe } = await supabase.rpc("psych_confirm_order_paid" as any, { _order_id: o.order_id, _payment_ref: "mm-" + Date.now() });
-      if (pe) toast.error(pe.message);
-      else toast.success("Credits added. Balance: " + (paid as any).balance);
-    }
+    toast.info(`Order ${String(o.order_id).slice(0, 8)} created. Pay via Mobile Money/card, then send your order reference to InnerSpark for verification. Credits appear only after payment is confirmed.`);
     await load(companyId);
     setTab("invites");
   };
@@ -196,7 +189,7 @@ export default function CorporateAssessments() {
               <div><Label>Mobile Money phone</Label><Input value={payerPhone} onChange={(e) => setPayerPhone(e.target.value)} placeholder="+256…" className="mt-1" /></div>
             </div>
             <Button disabled={buying} className="h-11 text-white rounded-xl" style={{ background: WARM }} onClick={buy}>
-              {buying ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <CreditCard className="h-4 w-4 mr-2" />}Create order & pay
+              {buying ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <CreditCard className="h-4 w-4 mr-2" />}Request credits
             </Button>
           </div>
         )}
