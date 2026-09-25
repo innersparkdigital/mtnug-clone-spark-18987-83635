@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -87,16 +87,27 @@ const BlogsManager = () => {
 
   const LIST_COLUMNS = "id,slug,title,excerpt,category,hero_image_url,status,created_at";
 
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const reqSeq = useRef(0);
+
   const fetchPosts = async () => {
+    const seq = ++reqSeq.current;
     setLoading(true);
     let query = supabase
       .from("blog_posts")
       .select(LIST_COLUMNS, { count: "exact" })
       .order("created_at", { ascending: false });
     if (statusFilter !== "all") query = query.eq("status", statusFilter);
-    if (search.trim()) query = query.or(`title.ilike.%${search.trim()}%,slug.ilike.%${search.trim()}%`);
+    const term = debouncedSearch.trim();
+    if (term) {
+      // Escape ilike wildcards, then double-quote so commas/parens are treated literally.
+      const escaped = term.replace(/[\\%_]/g, (c) => `\\${c}`).replace(/"/g, '\\"');
+      const pattern = `"%${escaped}%"`;
+      query = query.or(`title.ilike.${pattern},slug.ilike.${pattern}`);
+    }
     const from = (page - 1) * pageSize;
     const { data, error, count } = await query.range(from, from + pageSize - 1);
+    if (seq !== reqSeq.current) return;
     if (error) toast.error(error.message);
     else {
       setPosts((data || []) as unknown as BlogPost[]);
@@ -105,16 +116,17 @@ const BlogsManager = () => {
         .from("blog_posts")
         .select("id", { count: "exact", head: true })
         .eq("status", "published");
+      if (seq !== reqSeq.current) return;
       setPublishedCount(pubCount || 0);
     }
     setLoading(false);
   };
 
-  useEffect(() => { fetchPosts(); }, [page, pageSize, statusFilter]);
+  useEffect(() => { fetchPosts(); }, [page, pageSize, statusFilter, debouncedSearch]);
 
   // Debounce the search box so typing doesn't fire a request per keystroke.
   useEffect(() => {
-    const t = setTimeout(() => { setPage(1); fetchPosts(); }, 350);
+    const t = setTimeout(() => { setPage(1); setDebouncedSearch(search); }, 350);
     return () => clearTimeout(t);
   }, [search]);
 
