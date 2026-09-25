@@ -168,25 +168,30 @@ Deno.serve(async (req) => {
       const { data: request } = await admin.from("manual_password_reset_requests").select("*")
         .eq("id", requestId).eq("status", "pending").maybeSingle();
       if (!request || request.revealed_at) return json({ error: "This temporary password was already viewed or is unavailable." }, 409);
-      const { data: claimed } = await admin.rpc("claim_manual_password_reset", { _request_id: request.id, _admin_id: user.id });
-      if (!claimed) return json({ error: "Another administrator already opened this request." }, 409);
       const temporaryPassword = generatePassword();
       if (request.account_type === "client") {
-        const { data: ok, error } = await admin.rpc("admin_set_client_temporary_passcode", {
-          _request_id: request.id, _client_id: request.account_id, _temporary_passcode: temporaryPassword,
+        // One database transaction: never leave the request stuck in processing if issuance fails.
+        const { data: ok, error } = await admin.rpc("issue_client_temporary_passcode", {
+          _request_id: request.id, _admin_id: user.id, _temporary_passcode: temporaryPassword,
         });
-        if (error || !ok) throw error || new Error("Client account not found");
+        if (error) throw error;
+        if (!ok) return json({ error: "This request is unavailable. Refresh before trying again." }, 409);
       } else {
-        if (!request.user_id) throw new Error("Therapist login is not linked");
+        if (!request.user_id) return json({ error: "Therapist login is not linked." }, 409);
+        const { data: claimed, error: claimError } = await admin.rpc("claim_manual_password_reset", { _request_id: request.id, _admin_id: user.id });
+        if (claimError) throw claimError;
+        if (!claimed) return json({ error: "Another administrator already opened this request." }, 409);
         const { error: authError } = await admin.auth.admin.updateUserById(request.user_id, { password: temporaryPassword });
         if (authError) throw authError;
-        await admin.from("therapist_accounts").update({ must_change_password: true }).eq("id", request.account_id);
+        const { error: flagError } = await admin.from("therapist_accounts").update({ must_change_password: true }).eq("id", request.account_id);
+        if (flagError) throw flagError;
         const hash = Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(temporaryPassword))))
           .map((b) => b.toString(16).padStart(2, "0")).join("");
-        await admin.from("manual_password_reset_requests").update({
+        const { data: saved, error: saveError } = await admin.from("manual_password_reset_requests").update({
           temp_secret_hash: hash, status: "ready", revealed_at: new Date().toISOString(), revealed_by: user.id,
           expires_at: new Date(Date.now() + 60 * 60 * 1000).toISOString(), updated_at: new Date().toISOString(),
-        }).eq("id", request.id).eq("status", "processing");
+        }).eq("id", request.id).eq("status", "processing").select("id").maybeSingle();
+        if (saveError || !saved) throw saveError || new Error("Reset state was not saved");
       }
       return json({ temporary_password: temporaryPassword, expires_in_minutes: 60 });
     }
