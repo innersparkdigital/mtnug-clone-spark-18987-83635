@@ -15,6 +15,7 @@ export const useUserRole = () => {
   const { user } = useAuth();
   const [roles, setRoles] = useState<UserRole[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadedFor, setLoadedFor] = useState<string | null | undefined>(undefined);
   const [isAdmin, setIsAdmin] = useState(false);
 
   const fetchRoles = useCallback(async () => {
@@ -22,6 +23,7 @@ export const useUserRole = () => {
       setRoles([]);
       setIsAdmin(false);
       setLoading(false);
+      setLoadedFor(null);
       return;
     }
 
@@ -44,6 +46,7 @@ export const useUserRole = () => {
       setIsAdmin(false);
     } finally {
       setLoading(false);
+      setLoadedFor(user?.id ?? null);
     }
   }, [user]);
 
@@ -57,7 +60,7 @@ export const useUserRole = () => {
 
   return {
     roles,
-    loading,
+    loading: loading || loadedFor !== (user?.id ?? null),
     isAdmin,
     hasRole,
     refetch: fetchRoles
