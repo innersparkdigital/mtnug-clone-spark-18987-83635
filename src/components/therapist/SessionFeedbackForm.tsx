@@ -11,6 +11,7 @@ import { toast } from "sonner";
 
 interface Props {
   clientId: string;
+  onBalanceChange?: () => void;
 }
 
 const PROGRESS: { value: string; label: string }[] = [
@@ -21,10 +22,13 @@ const PROGRESS: { value: string; label: string }[] = [
   { value: "crisis_activated", label: "Crisis activated" },
 ];
 
-const SessionFeedbackForm = ({ clientId }: Props) => {
+type Balance = { sessions_purchased: number; sessions_used: number; sessions_remaining: number };
+
+const SessionFeedbackForm = ({ clientId, onBalanceChange }: Props) => {
   const [history, setHistory] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [balance, setBalance] = useState<Balance | null>(null);
 
   const [sessionDate, setSessionDate] = useState(new Date().toISOString().slice(0, 10));
   const [duration, setDuration] = useState("50 min");
@@ -37,15 +41,41 @@ const SessionFeedbackForm = ({ clientId }: Props) => {
   const [nextBooked, setNextBooked] = useState("no");
   const [nextDate, setNextDate] = useState("");
   const [nextService, setNextService] = useState("");
+  const [sessionsLeft, setSessionsLeft] = useState<string>("");
+
+  const loadBalance = async () => {
+    const { data, error } = await supabase.rpc("therapist_get_session_balance" as any, { _client_id: clientId });
+    if (error) {
+      console.warn(error.message);
+      setBalance(null);
+      return;
+    }
+    const row = Array.isArray(data) ? data[0] : data;
+    if (row) {
+      const b = {
+        sessions_purchased: Number(row.sessions_purchased || 0),
+        sessions_used: Number(row.sessions_used || 0),
+        sessions_remaining: Number(row.sessions_remaining || 0),
+      };
+      setBalance(b);
+      setSessionsLeft(String(b.sessions_remaining));
+    } else {
+      setBalance({ sessions_purchased: 0, sessions_used: 0, sessions_remaining: 0 });
+      setSessionsLeft("");
+    }
+  };
 
   const load = async () => {
     setLoading(true);
-    const { data } = await supabase
-      .from("therapist_session_feedback")
-      .select("*")
-      .eq("client_id", clientId)
-      .order("session_date", { ascending: false })
-      .limit(20);
+    const [{ data }] = await Promise.all([
+      supabase
+        .from("therapist_session_feedback")
+        .select("*")
+        .eq("client_id", clientId)
+        .order("session_date", { ascending: false })
+        .limit(20),
+      loadBalance(),
+    ]);
     setHistory((data as any) || []);
     setLoading(false);
   };
@@ -54,6 +84,15 @@ const SessionFeedbackForm = ({ clientId }: Props) => {
 
   const submit = async () => {
     if (!notes.trim()) return toast.error("Please write short session notes.");
+    const remainingRaw = sessionsLeft.trim();
+    let remaining: number | null = null;
+    if (remainingRaw !== "") {
+      remaining = Number(remainingRaw);
+      if (!Number.isInteger(remaining) || remaining < 0 || remaining > 500) {
+        return toast.error("Sessions left must be a whole number from 0 to 500.");
+      }
+    }
+
     setSaving(true);
     const { error } = await supabase.rpc("log_session_feedback", {
       _client_id: clientId,
@@ -69,20 +108,66 @@ const SessionFeedbackForm = ({ clientId }: Props) => {
       _next_appt_date: nextDate || "",
       _next_appt_service: nextService,
     });
+    if (error) {
+      setSaving(false);
+      return toast.error(error.message);
+    }
+
+    if (remaining !== null) {
+      const { data: balData, error: balErr } = await supabase.rpc("therapist_set_sessions_remaining" as any, {
+        _client_id: clientId,
+        _remaining: remaining,
+      });
+      if (balErr) {
+        setSaving(false);
+        toast.error(`Session logged, but sessions left could not be saved: ${balErr.message}`);
+        load();
+        return;
+      }
+      const row = Array.isArray(balData) ? balData[0] : balData;
+      if (row) {
+        setBalance({
+          sessions_purchased: Number(row.sessions_purchased || 0),
+          sessions_used: Number(row.sessions_used || 0),
+          sessions_remaining: Number(row.sessions_remaining || 0),
+        });
+        setSessionsLeft(String(row.sessions_remaining ?? remaining));
+      }
+      onBalanceChange?.();
+    }
+
     setSaving(false);
-    if (error) return toast.error(error.message);
-    toast.success("Session logged.");
+    toast.success(remaining !== null ? "Session logged. Sessions left updated for admin trackers." : "Session logged.");
     setNotes("");
     setHomeworkText("");
     load();
   };
 
+  const leftTone =
+    balance == null ? "text-muted-foreground"
+    : balance.sessions_remaining <= 0 ? "text-destructive"
+    : balance.sessions_remaining <= 2 ? "text-amber-700 dark:text-amber-300"
+    : "text-emerald-700 dark:text-emerald-400";
+
   return (
     <div className="space-y-4">
-      <Card>
-        <CardHeader>
-          <CardTitle>Log this session</CardTitle>
-          <CardDescription>Structured notes sync to admin for oversight.</CardDescription>
+      <Card className="border-primary/15 shadow-sm">
+        <CardHeader className="pb-3">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+            <div>
+              <CardTitle className="text-lg">Log this session</CardTitle>
+              <CardDescription className="mt-1">Notes sync to InnerSpark admin. Set sessions left so trackers stay accurate.</CardDescription>
+            </div>
+            <div className={`rounded-xl border bg-muted/40 px-3 py-2 text-right shrink-0 ${leftTone}`}>
+              <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Sessions left</div>
+              <div className="text-xl font-semibold tabular-nums">{balance ? balance.sessions_remaining : "—"}</div>
+              {balance && (
+                <div className="text-[11px] text-muted-foreground">
+                  {balance.sessions_used}/{balance.sessions_purchased} used
+                </div>
+              )}
+            </div>
+          </div>
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="grid sm:grid-cols-3 gap-3">
@@ -99,6 +184,26 @@ const SessionFeedbackForm = ({ clientId }: Props) => {
               <Input value={service} onChange={(e) => setService(e.target.value)} />
             </div>
           </div>
+
+          <div className="rounded-xl border border-primary/20 bg-primary/5 p-3 space-y-2">
+            <Label htmlFor="sessions-left" className="text-xs font-medium">Sessions left after this session</Label>
+            <Input
+              id="sessions-left"
+              type="number"
+              min={0}
+              max={500}
+              step={1}
+              inputMode="numeric"
+              placeholder="e.g. 3"
+              value={sessionsLeft}
+              onChange={(e) => setSessionsLeft(e.target.value)}
+              className="max-w-[140px] bg-background"
+            />
+            <p className="text-[11px] text-muted-foreground leading-relaxed">
+              Enter how many paid sessions this client still has. This updates the therapist roster badge and InnerSpark admin Session Logs / client tables. Leave blank only if you are not changing the count.
+            </p>
+          </div>
+
           <div className="flex items-center gap-2">
             <Checkbox id="isNew" checked={isNew} onCheckedChange={(v) => setIsNew(!!v)} />
             <Label htmlFor="isNew" className="text-xs">New client (first session)</Label>
@@ -111,7 +216,7 @@ const SessionFeedbackForm = ({ clientId }: Props) => {
                   key={p.value}
                   type="button"
                   onClick={() => setProgress(p.value)}
-                  className={`text-xs px-3 py-1.5 rounded-full border ${
+                  className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${
                     progress === p.value ? "bg-primary text-primary-foreground border-primary" : "border-border bg-card hover:bg-accent"
                   }`}
                 >
@@ -153,7 +258,7 @@ const SessionFeedbackForm = ({ clientId }: Props) => {
               <Input value={nextService} onChange={(e) => setNextService(e.target.value)} />
             </div>
           </div>
-          <Button onClick={submit} disabled={saving} className="w-full">
+          <Button onClick={submit} disabled={saving} className="w-full h-11 rounded-xl">
             {saving && <Loader2 className="h-4 w-4 animate-spin mr-2" />} Log session
           </Button>
         </CardContent>
@@ -168,11 +273,11 @@ const SessionFeedbackForm = ({ clientId }: Props) => {
         ) : (
           <div className="space-y-2">
             {history.map((h) => (
-              <div key={h.id} className="card-calm text-sm">
-                <div className="flex items-center justify-between">
+              <div key={h.id} className="rounded-xl border bg-card p-3 text-sm shadow-sm">
+                <div className="flex items-center justify-between gap-2">
                   <div className="font-medium">{h.session_date} · {h.service_delivered}</div>
-                  <span className="text-[10px] uppercase px-2 py-0.5 rounded bg-primary/10 text-primary">
-                    {h.progress_status}
+                  <span className="text-[10px] uppercase px-2 py-0.5 rounded-full bg-primary/10 text-primary shrink-0">
+                    {String(h.progress_status || "").replace(/_/g, " ")}
                   </span>
                 </div>
                 <div className="text-xs text-muted-foreground whitespace-pre-wrap mt-1">{h.notes}</div>
