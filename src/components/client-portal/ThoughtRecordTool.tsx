@@ -10,14 +10,14 @@ import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface Props {
-  token: string;
+  session: string;
   assignmentToolId: string;
   initial?: any;
   onDone: () => void;
   onBack: () => void;
 }
 
-const ThoughtRecordTool = ({ token, assignmentToolId, initial, onDone, onBack }: Props) => {
+const ThoughtRecordTool = ({ session, assignmentToolId, initial, onDone, onBack }: Props) => {
   const [situation, setSituation] = useState(initial?.situation || "");
   const [thought, setThought] = useState(initial?.thought || "");
   const [emotion, setEmotion] = useState(initial?.emotion || "");
@@ -39,18 +39,18 @@ const ThoughtRecordTool = ({ token, assignmentToolId, initial, onDone, onBack }:
     if (draftTimer.current) window.clearTimeout(draftTimer.current);
     if (!situation && !thought && !emotion) return;
     draftTimer.current = window.setTimeout(() => {
-      supabase.rpc("save_tool_submission", {
-        _token: token, _assignment_tool_id: assignmentToolId, _payload: payload, _final: false,
+      supabase.rpc("client_session_save_submission", {
+        _session: session, _assignment_tool_id: assignmentToolId, _payload: payload, _final: false,
       });
     }, 30000);
     return () => { if (draftTimer.current) window.clearTimeout(draftTimer.current); };
-  }, [token, assignmentToolId, payload, situation, thought, emotion]);
+  }, [session, assignmentToolId, payload, situation, thought, emotion]);
 
   const submit = async () => {
     if (!situation.trim() || !thought.trim()) return toast.error("Please describe the situation and thought first.");
     setSaving(true);
-    const { error } = await supabase.rpc("save_tool_submission", {
-      _token: token, _assignment_tool_id: assignmentToolId, _payload: payload, _final: true,
+    const { error } = await supabase.rpc("client_session_save_submission", {
+      _session: session, _assignment_tool_id: assignmentToolId, _payload: payload, _final: true,
     });
     setSaving(false);
     if (error) return toast.error(error.message);

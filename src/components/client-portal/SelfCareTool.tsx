@@ -11,14 +11,14 @@ import { toast } from "sonner";
 const MOODS = ["😃 Great", "🙂 Okay", "😐 Meh", "😔 Low", "😢 Heavy"];
 
 interface Props {
-  token: string;
+  session: string;
   assignmentToolId: string;
   initial?: any;
   onDone: () => void;
   onBack: () => void;
 }
 
-const SelfCareTool = ({ token, assignmentToolId, initial, onDone, onBack }: Props) => {
+const SelfCareTool = ({ session, assignmentToolId, initial, onDone, onBack }: Props) => {
   const [sleep, setSleep] = useState<string>(initial?.sleep_hours ?? "");
   const [water, setWater] = useState<string>(initial?.water_glasses ?? "");
   const [movement, setMovement] = useState<string>(initial?.movement ?? "");
@@ -31,8 +31,8 @@ const SelfCareTool = ({ token, assignmentToolId, initial, onDone, onBack }: Prop
   const submit = async () => {
     if (!mood) return toast.error("Please pick a mood for today.");
     setSaving(true);
-    const { error } = await supabase.rpc("save_tool_submission", {
-      _token: token,
+    const { error } = await supabase.rpc("client_session_save_submission", {
+      _session: session,
       _assignment_tool_id: assignmentToolId,
       _payload: { sleep_hours: sleep, water_glasses: water, movement, meals, mood, notes },
       _final: true,

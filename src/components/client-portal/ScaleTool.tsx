@@ -11,13 +11,13 @@ import { SUPPORT_PHONE_DISPLAY, SUPPORT_PHONE_TEL } from "@/lib/supportContact";
 
 interface Props {
   scale: ScreeningScale;
-  token: string;
+  session: string;
   assignmentToolId: string;
   onDone: () => void;
   onBack: () => void;
 }
 
-const ScaleTool = ({ scale, token, assignmentToolId, onDone, onBack }: Props) => {
+const ScaleTool = ({ scale, session, assignmentToolId, onDone, onBack }: Props) => {
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [followUp, setFollowUp] = useState<number | null>(null);
   const [notes, setNotes] = useState("");
@@ -33,8 +33,8 @@ const ScaleTool = ({ scale, token, assignmentToolId, onDone, onBack }: Props) =>
   const submit = async () => {
     if (!complete) return toast.error("Please answer every question.");
     setSaving(true);
-    const { error } = await supabase.rpc("save_tool_submission", {
-      _token: token,
+    const { error } = await supabase.rpc("client_session_save_submission", {
+      _session: session,
       _assignment_tool_id: assignmentToolId,
       _payload: {
         variant: scale.key,

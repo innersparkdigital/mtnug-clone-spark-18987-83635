@@ -10,14 +10,14 @@ const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const SLOTS = ["Morning", "Afternoon", "Evening"] as const;
 
 interface Props {
-  token: string;
+  session: string;
   assignmentToolId: string;
   initial?: any;
   onDone: () => void;
   onBack: () => void;
 }
 
-const ActivityScheduleTool = ({ token, assignmentToolId, initial, onDone, onBack }: Props) => {
+const ActivityScheduleTool = ({ session, assignmentToolId, initial, onDone, onBack }: Props) => {
   const [grid, setGrid] = useState<Record<string, { activity: string; mood: string }>>(initial?.grid || {});
   const [saving, setSaving] = useState(false);
 
@@ -26,8 +26,8 @@ const ActivityScheduleTool = ({ token, assignmentToolId, initial, onDone, onBack
 
   const submit = async () => {
     setSaving(true);
-    const { error } = await supabase.rpc("save_tool_submission", {
-      _token: token,
+    const { error } = await supabase.rpc("client_session_save_submission", {
+      _session: session,
       _assignment_tool_id: assignmentToolId,
       _payload: { grid },
       _final: true,

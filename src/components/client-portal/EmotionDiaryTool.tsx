@@ -14,14 +14,14 @@ const EMOTION_OPTIONS = [
 ];
 
 interface Props {
-  token: string;
+  session: string;
   assignmentToolId: string;
   initial?: any;
   onDone: () => void;
   onBack: () => void;
 }
 
-const EmotionDiaryTool = ({ token, assignmentToolId, initial, onDone, onBack }: Props) => {
+const EmotionDiaryTool = ({ session, assignmentToolId, initial, onDone, onBack }: Props) => {
   const [situation, setSituation] = useState(initial?.situation || "");
   const [emotions, setEmotions] = useState<string[]>(initial?.emotions || []);
   const [intensity, setIntensity] = useState<number>(initial?.intensity ?? 50);
@@ -37,12 +37,12 @@ const EmotionDiaryTool = ({ token, assignmentToolId, initial, onDone, onBack }: 
   useEffect(() => {
     const t = window.setTimeout(() => {
       if (!situation && emotions.length === 0) return;
-      supabase.rpc("save_tool_submission", {
-        _token: token, _assignment_tool_id: assignmentToolId, _payload: payload as any, _final: false,
+      supabase.rpc("client_session_save_submission", {
+        _session: session, _assignment_tool_id: assignmentToolId, _payload: payload as any, _final: false,
       });
     }, 20000);
     return () => window.clearTimeout(t);
-  }, [token, assignmentToolId, payload, situation, emotions]);
+  }, [session, assignmentToolId, payload, situation, emotions]);
 
   const toggleEmotion = (e: string) => {
     setEmotions((prev) => prev.includes(e) ? prev.filter((x) => x !== e) : [...prev, e]);
@@ -51,8 +51,8 @@ const EmotionDiaryTool = ({ token, assignmentToolId, initial, onDone, onBack }: 
   const submit = async () => {
     if (!situation.trim() || emotions.length === 0) return toast.error("Add the situation and pick at least one feeling.");
     setSaving(true);
-    const { error } = await supabase.rpc("save_tool_submission", {
-      _token: token, _assignment_tool_id: assignmentToolId, _payload: payload as any, _final: true,
+    const { error } = await supabase.rpc("client_session_save_submission", {
+      _session: session, _assignment_tool_id: assignmentToolId, _payload: payload as any, _final: true,
     });
     setSaving(false);
     if (error) return toast.error(error.message);
