@@ -2,7 +2,7 @@
 -- A failed lookup or hashing operation must leave both the account and request untouched.
 create or replace function public.issue_client_temporary_passcode(
   _request_id uuid, _admin_id uuid, _temporary_passcode text
-) returns boolean language plpgsql security definer set search_path = public as $$
+) returns boolean language plpgsql security definer set search_path = public, extensions as $$
 declare r public.manual_password_reset_requests%rowtype;
 begin
   select * into r from public.manual_password_reset_requests where id = _request_id for update;
@@ -27,4 +27,10 @@ begin
 end; $$;
 revoke all on function public.issue_client_temporary_passcode(uuid,uuid,text) from public, anon, authenticated;
 grant execute on function public.issue_client_temporary_passcode(uuid,uuid,text) to service_role;
+-- pgcrypto is installed in extensions in the live Cloud database. Include it in
+-- the fixed search path for issuing, verifying, and completing client passcodes.
+alter function public.admin_set_client_temporary_passcode(uuid,uuid,text) set search_path = public, extensions;
+alter function public.verify_client_portal_credential(text,text) set search_path = public, extensions;
+alter function public.complete_client_temporary_reset(text,uuid,text) set search_path = public, extensions;
+alter function public.set_or_complete_client_passcode(text,text) set search_path = public, extensions;
 notify pgrst, 'reload schema';
