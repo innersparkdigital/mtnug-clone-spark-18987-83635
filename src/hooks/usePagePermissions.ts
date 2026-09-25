@@ -29,6 +29,7 @@ export const usePagePermissions = () => {
       setLoading(false);
       return;
     }
+    setLoading(true);
     const { data, error } = await supabase
       .from("admin_page_permissions")
       .select("page_key")
