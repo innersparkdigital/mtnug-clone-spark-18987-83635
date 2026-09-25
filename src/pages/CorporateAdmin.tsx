@@ -22,6 +22,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { generateCompanyReportPdf } from '@/lib/companyReportPdf';
 import CampaignSettingsCard from '@/components/business/CampaignSettingsCard';
+import CorporateHrOperations from '@/components/CorporateHrOperations';
 import { Loader2 } from 'lucide-react';
 import { answerMapFromStored, answerMapFromLegacy, aggregateCompany, computeAggregate, getAnswerLabel, getRiskCategory, RISK_LABEL, QUESTION_INTELLIGENCE, QUESTION_ORDER, CLUSTER_INFO } from '@/lib/wellbeingIntelligence';
 import { CompanyTriggersDashboard, CompanyActionPlan } from '@/components/business/CompanyInsights';
@@ -833,7 +834,12 @@ const CorporateAdmin = () => {
                 <TabsTrigger value="report"><FileText className="w-4 h-4 mr-1" /> Report</TabsTrigger>
                 <TabsTrigger value="interests"><Activity className="w-4 h-4 mr-1" /> Service Interests ({serviceInterests.filter(i => i.company_id === selectedCompany.id).length})</TabsTrigger>
                 <TabsTrigger value="campaign"><Mail className="w-4 h-4 mr-1" /> Campaign</TabsTrigger>
+                <TabsTrigger value="hr-accounts"><Users className="w-4 h-4 mr-1" /> HR accounts & credits</TabsTrigger>
               </TabsList>
+
+              <TabsContent value="hr-accounts">
+                <CorporateHrOperations key={selectedCompany.id} companyId={selectedCompany.id} />
+              </TabsContent>
 
               <TabsContent value="campaign">
                 <CampaignSettingsCard
