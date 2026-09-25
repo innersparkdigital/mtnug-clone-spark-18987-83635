@@ -29,7 +29,7 @@ const notifyAdmin = async (requestId: string, accountType: string, identifierMas
       to: ["info@innersparkafrica.com"],
       reply_to: "info@innersparkafrica.com",
       subject: "Password reset request awaiting staff review",
-      text: `A ${accountType} requested a manual password reset. Registered contact: ${identifierMasked}. Open https://www.innersparkafrica.com/admin?tab=password-resets and verify identity before sharing a temporary credential. Do not reply with a password to this automated alert.`,
+      text: `A ${accountType} requested a manual password reset. Registered contact: ${identifierMasked}. Open https://www.innersparkafrica.com/learning/admin-dashboard, then choose Password Resets and verify identity before sharing a temporary credential. Do not reply with a password to this automated alert.`,
     }),
   });
   const result = await res.json().catch(() => ({}));
