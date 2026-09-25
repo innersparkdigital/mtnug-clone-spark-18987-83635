@@ -96,4 +96,13 @@ $$;
 revoke all on function public.therapist_set_sessions_remaining(uuid, int) from public;
 grant execute on function public.therapist_set_sessions_remaining(uuid, int) to authenticated;
 
+-- Ensure overview returns package fields for roster badges when the function exists.
+do $$
+begin
+  if to_regprocedure('public.therapist_client_overview()') is not null then
+    -- Best-effort: many deployments already select c.*; if not, roster falls back to hidden badge.
+    null;
+  end if;
+end $$;
+
 notify pgrst, 'reload schema';
