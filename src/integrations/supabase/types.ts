@@ -952,6 +952,66 @@ export type Database = {
           },
         ]
       }
+      client_referral_events: {
+        Row: {
+          created_at: string
+          id: string
+          notes: string | null
+          referred_client_id: string | null
+          referred_name: string | null
+          referred_phone: string | null
+          referrer_client_id: string
+          reward_amount_ugx: number | null
+          reward_percent: number
+          rewarded_at: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          notes?: string | null
+          referred_client_id?: string | null
+          referred_name?: string | null
+          referred_phone?: string | null
+          referrer_client_id: string
+          reward_amount_ugx?: number | null
+          reward_percent?: number
+          rewarded_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          notes?: string | null
+          referred_client_id?: string | null
+          referred_name?: string | null
+          referred_phone?: string | null
+          referrer_client_id?: string
+          reward_amount_ugx?: number | null
+          reward_percent?: number
+          rewarded_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_referral_events_referred_client_id_fkey"
+            columns: ["referred_client_id"]
+            isOneToOne: false
+            referencedRelation: "therapist_clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "client_referral_events_referrer_client_id_fkey"
+            columns: ["referrer_client_id"]
+            isOneToOne: false
+            referencedRelation: "therapist_clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       client_reminder_log: {
         Row: {
           assignment_tool_id: string | null
@@ -3608,6 +3668,7 @@ export type Database = {
           is_active: boolean
           must_change_password: boolean
           phone: string | null
+          professional_title: string | null
           specialisation: string | null
           updated_at: string
           user_id: string
@@ -3620,6 +3681,7 @@ export type Database = {
           is_active?: boolean
           must_change_password?: boolean
           phone?: string | null
+          professional_title?: string | null
           specialisation?: string | null
           updated_at?: string
           user_id: string
@@ -3632,6 +3694,7 @@ export type Database = {
           is_active?: boolean
           must_change_password?: boolean
           phone?: string | null
+          professional_title?: string | null
           specialisation?: string | null
           updated_at?: string
           user_id?: string
@@ -3664,9 +3727,14 @@ export type Database = {
           receipt_number: string | null
           receipt_sent_at: string | null
           receipt_url: string | null
+          referral_code: string | null
+          referral_discount_percent: number
+          referred_by_client_id: string | null
           session_rating: number | null
           session_type: string | null
           session_type_needs_review: boolean
+          sessions_purchased: number
+          sessions_used: number
           therapist_id: string
           therapist_paid: boolean
           therapist_paid_at: string | null
@@ -3700,9 +3768,14 @@ export type Database = {
           receipt_number?: string | null
           receipt_sent_at?: string | null
           receipt_url?: string | null
+          referral_code?: string | null
+          referral_discount_percent?: number
+          referred_by_client_id?: string | null
           session_rating?: number | null
           session_type?: string | null
           session_type_needs_review?: boolean
+          sessions_purchased?: number
+          sessions_used?: number
           therapist_id: string
           therapist_paid?: boolean
           therapist_paid_at?: string | null
@@ -3736,9 +3809,14 @@ export type Database = {
           receipt_number?: string | null
           receipt_sent_at?: string | null
           receipt_url?: string | null
+          referral_code?: string | null
+          referral_discount_percent?: number
+          referred_by_client_id?: string | null
           session_rating?: number | null
           session_type?: string | null
           session_type_needs_review?: boolean
+          sessions_purchased?: number
+          sessions_used?: number
           therapist_id?: string
           therapist_paid?: boolean
           therapist_paid_at?: string | null
@@ -3748,6 +3826,13 @@ export type Database = {
           would_rebook?: boolean | null
         }
         Relationships: [
+          {
+            foreignKeyName: "therapist_clients_referred_by_client_id_fkey"
+            columns: ["referred_by_client_id"]
+            isOneToOne: false
+            referencedRelation: "therapist_clients"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "therapist_clients_therapist_id_fkey"
             columns: ["therapist_id"]
@@ -4356,6 +4441,15 @@ export type Database = {
       }
       admin_client_detail: { Args: { _client_id: string }; Returns: Json }
       admin_client_homework: { Args: { _client_id: string }; Returns: Json }
+      admin_client_session_balances: {
+        Args: never
+        Returns: {
+          client_id: string
+          sessions_purchased: number
+          sessions_remaining: number
+          sessions_used: number
+        }[]
+      }
       admin_corporate_account_overview: {
         Args: { _company_id: string }
         Returns: Json
@@ -4403,15 +4497,37 @@ export type Database = {
             Returns: string
           }
       admin_delete_client: { Args: { _client_id: string }; Returns: boolean }
+      admin_ensure_client_referral_link: {
+        Args: { _client_id: string }
+        Returns: string
+      }
       admin_generate_client_consent_token: {
         Args: { _client_id: string }
         Returns: string
       }
       admin_list_ad_sales_leads: { Args: never; Returns: Json }
       admin_list_all_clients: { Args: never; Returns: Json }
+      admin_list_client_referrals: {
+        Args: never
+        Returns: {
+          created_at: string
+          id: string
+          referred_name: string
+          referred_phone: string
+          referrer_code: string
+          referrer_name: string
+          reward_amount_ugx: number
+          reward_percent: number
+          status: string
+        }[]
+      }
       admin_list_enquiries: { Args: never; Returns: Json }
       admin_list_referral_rewards: { Args: never; Returns: Json }
       admin_list_session_logs: { Args: never; Returns: Json }
+      admin_mark_client_referral_rewarded: {
+        Args: { _amount_ugx: number; _event_id: string }
+        Returns: boolean
+      }
       admin_overview_stats: { Args: never; Returns: Json }
       admin_revenue_by_session_type: { Args: never; Returns: Json }
       admin_send_paid_client_to_whatsapp_sales: {
@@ -4425,6 +4541,14 @@ export type Database = {
           _phone: string
         }
         Returns: string
+      }
+      admin_set_client_session_balance: {
+        Args: {
+          _client_id: string
+          _sessions_purchased: number
+          _sessions_used: number
+        }
+        Returns: boolean
       }
       admin_set_corporate_hr_active: {
         Args: { _active: boolean; _admin_id: string; _company_id: string }
@@ -4454,6 +4578,16 @@ export type Database = {
           _paid_amount_ugx?: number
           _paid_at?: string
           _status: string
+        }
+        Returns: boolean
+      }
+      admin_update_client_identity: {
+        Args: {
+          _client_id: string
+          _country?: string
+          _email?: string
+          _full_name: string
+          _phone?: string
         }
         Returns: boolean
       }

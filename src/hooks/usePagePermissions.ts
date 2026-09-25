@@ -22,19 +22,23 @@ export const usePagePermissions = () => {
   const { isAdmin, loading: roleLoading } = useUserRole();
   const [pages, setPages] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadedFor, setLoadedFor] = useState<string | null | undefined>(undefined);
 
   const fetchPages = useCallback(async () => {
     if (!user) {
       setPages([]);
       setLoading(false);
+      setLoadedFor(null);
       return;
     }
+    setLoading(true);
     const { data, error } = await supabase
       .from("admin_page_permissions")
       .select("page_key")
       .eq("user_id", user.id);
     if (!error && data) setPages(data.map((r) => r.page_key));
     setLoading(false);
+    setLoadedFor(user?.id ?? null);
   }, [user]);
 
   useEffect(() => {
@@ -54,7 +58,7 @@ export const usePagePermissions = () => {
 
   return {
     isAdmin,
-    loading: loading || roleLoading,
+    loading: loading || roleLoading || loadedFor !== (user?.id ?? null),
     pages,
     hasPageAccess,
     refetch: fetchPages,
