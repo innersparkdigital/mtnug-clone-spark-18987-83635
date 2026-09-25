@@ -1,4 +1,5 @@
 import { Fragment, useEffect, useMemo, useState } from "react";
+import ClientSetupInviteButton from "@/components/ClientSetupInviteButton";
 import { supabase } from "@/integrations/supabase/client";
 import { SESSION_TYPES, normalizeSessionType } from "@/lib/sessionTypes";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
