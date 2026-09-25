@@ -58,10 +58,12 @@ Deno.serve(async (req) => {
       const needle = normalize(identifier);
       let account: { id: string; user_id?: string | null; email?: string | null; phone?: string | null } | undefined;
       if (accountType === "therapist") {
-        const { data } = await admin.from("therapist_accounts").select("id,user_id,email,phone").eq("is_active", true).limit(1000);
+        const { data, error } = await admin.from("therapist_accounts").select("id,user_id,email,phone").eq("is_active", true).limit(1000);
+        if (error) throw error;
         account = data?.find((r) => [r.email, r.phone].some((v) => v && normalize(v) === needle));
       } else {
-        const { data } = await admin.from("therapist_clients").select("id,email,phone").limit(2000);
+        const { data, error } = await admin.from("therapist_clients").select("id,email,phone").limit(2000);
+        if (error) throw error;
         account = data?.find((r) => [r.email, r.phone].some((v) => v && normalize(v) === needle));
       }
       if (account) {
