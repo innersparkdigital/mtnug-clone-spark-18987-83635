@@ -43,3 +43,5 @@ project_id = "hnjpsvpudwwyzrrwzbpa"
     verify_jwt = false
   [functions.manual-password-reset]
     verify_jwt = false
+  [functions.admin-invite-corporate-hr]
+    verify_jwt = true
