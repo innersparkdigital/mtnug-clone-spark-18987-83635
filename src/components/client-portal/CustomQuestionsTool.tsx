@@ -13,7 +13,7 @@ import { maxScoreForSet, totalScore, type ScoredQuestion } from "@/lib/questionS
 export type CustomQuestion = ScoredQuestion;
 
 interface Props {
-  token: string;
+  session: string;
   assignmentToolId: string;
   config?: { questions?: CustomQuestion[]; intro?: string; scoring_enabled?: boolean; max_score?: number };
   initial?: any;
@@ -21,7 +21,7 @@ interface Props {
   onBack: () => void;
 }
 
-const CustomQuestionsTool = ({ token, assignmentToolId, config, initial, onDone, onBack }: Props) => {
+const CustomQuestionsTool = ({ session, assignmentToolId, config, initial, onDone, onBack }: Props) => {
   const questions: CustomQuestion[] = config?.questions || [];
   const [answers, setAnswers] = useState<Record<string, any>>(initial?.answers || {});
   const [saving, setSaving] = useState(false);
@@ -36,8 +36,8 @@ const CustomQuestionsTool = ({ token, assignmentToolId, config, initial, onDone,
     }
     setSaving(true);
     const score = totalScore(questions, answers);
-    const { error } = await supabase.rpc("save_tool_submission", {
-      _token: token,
+    const { error } = await supabase.rpc("client_session_save_submission", {
+      _session: session,
       _assignment_tool_id: assignmentToolId,
       _payload: {
         answers,

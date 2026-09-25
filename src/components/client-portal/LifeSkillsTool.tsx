@@ -8,7 +8,7 @@ import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface Props {
-  token: string;
+  session: string;
   assignmentToolId: string;
   config?: any;
   initial?: any;
@@ -16,7 +16,7 @@ interface Props {
   onBack: () => void;
 }
 
-const LifeSkillsTool = ({ token, assignmentToolId, config, initial, onDone, onBack }: Props) => {
+const LifeSkillsTool = ({ session, assignmentToolId, config, initial, onDone, onBack }: Props) => {
   const skill = config?.skill || "The skill your therapist set for this week.";
   const [tried, setTried] = useState<string>(initial?.tried || "");
   const [what_happened, setWhatHappened] = useState(initial?.what_happened || "");
@@ -27,8 +27,8 @@ const LifeSkillsTool = ({ token, assignmentToolId, config, initial, onDone, onBa
   const submit = async () => {
     if (!tried) return toast.error("Please choose an option for 'Did you try it?'");
     setSaving(true);
-    const { error } = await supabase.rpc("save_tool_submission", {
-      _token: token,
+    const { error } = await supabase.rpc("client_session_save_submission", {
+      _session: session,
       _assignment_tool_id: assignmentToolId,
       _payload: { skill, tried, what_happened, what_made_hard, next_time },
       _final: true,

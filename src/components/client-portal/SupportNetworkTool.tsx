@@ -9,14 +9,14 @@ import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface Props {
-  token: string;
+  session: string;
   assignmentToolId: string;
   initial?: any;
   onDone: () => void;
   onBack: () => void;
 }
 
-const SupportNetworkTool = ({ token, assignmentToolId, initial, onDone, onBack }: Props) => {
+const SupportNetworkTool = ({ session, assignmentToolId, initial, onDone, onBack }: Props) => {
   const [p1, setP1] = useState(initial?.people?.[0] || "");
   const [p2, setP2] = useState(initial?.people?.[1] || "");
   const [p3, setP3] = useState(initial?.people?.[2] || "");
@@ -31,8 +31,8 @@ const SupportNetworkTool = ({ token, assignmentToolId, initial, onDone, onBack }
   const submit = async () => {
     if (!p1.trim() && !p2.trim() && !p3.trim()) return toast.error("Name at least one person you trust.");
     setSaving(true);
-    const { error } = await supabase.rpc("save_tool_submission", {
-      _token: token,
+    const { error } = await supabase.rpc("client_session_save_submission", {
+      _session: session,
       _assignment_tool_id: assignmentToolId,
       _payload: {
         people: [p1, p2, p3].filter(Boolean),

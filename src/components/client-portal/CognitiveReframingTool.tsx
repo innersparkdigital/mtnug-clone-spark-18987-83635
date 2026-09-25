@@ -9,14 +9,14 @@ import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface Props {
-  token: string;
+  session: string;
   assignmentToolId: string;
   initial?: any;
   onDone: () => void;
   onBack: () => void;
 }
 
-const CognitiveReframingTool = ({ token, assignmentToolId, initial, onDone, onBack }: Props) => {
+const CognitiveReframingTool = ({ session, assignmentToolId, initial, onDone, onBack }: Props) => {
   const [thought, setThought] = useState(initial?.thought || "");
   const [why_true, setWhyTrue] = useState(initial?.why_true || "");
   const [evidence_against, setEvidenceAgainst] = useState(initial?.evidence_against || "");
@@ -27,8 +27,8 @@ const CognitiveReframingTool = ({ token, assignmentToolId, initial, onDone, onBa
   const submit = async () => {
     if (!thought.trim() || !balanced.trim()) return toast.error("Please fill in the thought and a balanced view.");
     setSaving(true);
-    const { error } = await supabase.rpc("save_tool_submission", {
-      _token: token,
+    const { error } = await supabase.rpc("client_session_save_submission", {
+      _session: session,
       _assignment_tool_id: assignmentToolId,
       _payload: { thought, why_true, evidence_against, balanced, feel_now: feel_now[0] },
       _final: true,

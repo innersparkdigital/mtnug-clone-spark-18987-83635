@@ -450,3 +450,12 @@ All colors MUST be HSL.
   font-size: 1.15rem;
   line-height: 1.5;
 }
+
+/* Client portal brand teal (#4A90A4) — scoped to client login, invite and dashboard */
+.client-teal,
+.calm-theme.client-teal,
+.calm-theme.calm-dark.client-teal {
+  --primary: 193 38% 47%;
+  --primary-foreground: 0 0% 100%;
+  --ring: 193 38% 47%;
+}

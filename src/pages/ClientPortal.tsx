@@ -1,12 +1,11 @@
-import { useCallback, useEffect, useMemo, useState, lazy, Suspense } from "react";
-import { useParams } from "react-router-dom";
+import { useCallback, useEffect, useMemo, useRef, useState, lazy, Suspense } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Loader2, Lock, Quote, Sparkles } from "lucide-react";
+import { Loader2, LogOut, Quote, Sparkles } from "lucide-react";
 import { toast } from "sonner";
+import { CLIENT_IDLE_MS, clearClientSession, getClientSession, isSessionError, logoutClient, onCrossTabLogout } from "@/lib/clientSession";
 import QuietFooter from "@/components/client-portal/QuietFooter";
 import SessionReflectionTool from "@/components/client-portal/SessionReflectionTool";
 import SafetyCheckInTool from "@/components/client-portal/SafetyCheckInTool";
@@ -85,57 +84,74 @@ const scheduleMatchesDate = (s: Schedule | null | undefined, iso: string): boole
 };
 
 const ClientPortalInner = () => {
-  const { token } = useParams<{ token: string }>();
+  const navigate = useNavigate();
+  const [session] = useState<string | null>(() => getClientSession());
   const [snapshot, setSnapshot] = useState<Snapshot | null>(null);
   const [loading, setLoading] = useState(true);
-  const [unlocked, setUnlocked] = useState(false);
-  const [passcode, setPasscode] = useState("");
-  const [confirmPasscode, setConfirmPasscode] = useState("");
-  const [busy, setBusy] = useState(false);
+  const [loadFailed, setLoadFailed] = useState(false);
   const [activeToolId, setActiveToolId] = useState<string | null>(null);
   const [selectedIso, setSelectedIso] = useState<string>("");
   const [view, setView] = useState<"today" | "all">("today");
-  const [resetOpen, setResetOpen] = useState(false);
-  const [temporaryResetId, setTemporaryResetId] = useState<string | null>(null);
+  const lastServerCheck = useRef(0);
+
+  const endSession = useCallback(async (message?: string) => {
+    setSnapshot(null);
+    setActiveToolId(null);
+    await logoutClient();
+    if (message) toast.info(message);
+    navigate("/client-login", { replace: true });
+  }, [navigate]);
 
   const load = useCallback(async () => {
-    if (!token) return;
-    const { data, error } = await supabase.rpc("client_snapshot", { _token: token });
-    if (error) console.error(error);
-    const snap = (data as unknown as Snapshot) ?? null;
+    if (!session) return;
+    lastServerCheck.current = Date.now();
+    const { data, error } = await supabase.rpc("client_session_snapshot", { _session: session });
+    if (error || !data) {
+      if (!error || isSessionError(error)) return endSession("Please sign in again.");
+      setLoadFailed(true);
+      setLoading(false);
+      return;
+    }
+    const snap = data as unknown as Snapshot;
     setSnapshot(snap);
-    if (snap?.today && !selectedIso) setSelectedIso(snap.today);
+    setLoadFailed(false);
+    setSelectedIso((cur) => cur || snap.today);
     setLoading(false);
-  }, [token, selectedIso]);
-
-  useEffect(() => { load(); }, [load]);
-
-  const lockPortal = useCallback(() => {
-    setUnlocked(false);
-    setActiveToolId(null);
-    setPasscode("");
-    setConfirmPasscode("");
-    setTemporaryResetId(null);
-  }, []);
+  }, [session, endSession]);
 
   useEffect(() => {
-    if (!unlocked) return;
+    if (!session) { navigate("/client-login", { replace: true }); return; }
+    load();
+  }, [session, load, navigate]);
+
+  // Cross-tab logout, visibility recheck, 30-minute inactivity.
+  useEffect(() => {
+    if (!session) return;
     let last = Date.now();
-    const bump = () => { last = Date.now(); };
+    const bump = () => {
+      last = Date.now();
+      // keep the server-side idle timer in step with real activity
+      if (Date.now() - lastServerCheck.current > 10 * 60 * 1000) load();
+    };
     const timer = window.setInterval(() => {
-      if (Date.now() - last > IDLE_MS) {
-        lockPortal();
-        toast.info("Locked after 30 minutes of quiet.");
-      }
-    }, 60000);
-    window.addEventListener("click", bump);
-    window.addEventListener("keydown", bump);
+      if (Date.now() - last > CLIENT_IDLE_MS) endSession("Signed out after 30 minutes of quiet.");
+    }, 30000);
+    const onVisible = () => {
+      if (document.visibilityState !== "visible") return;
+      if (Date.now() - last > CLIENT_IDLE_MS) endSession("Signed out after 30 minutes of quiet.");
+      else load();
+    };
+    const offTabs = onCrossTabLogout(() => { clearClientSession(); setSnapshot(null); navigate("/client-login", { replace: true }); });
+    const evts = ["click", "keydown", "touchstart", "scroll"] as const;
+    evts.forEach((e) => window.addEventListener(e, bump, { passive: true }));
+    document.addEventListener("visibilitychange", onVisible);
     return () => {
       window.clearInterval(timer);
-      window.removeEventListener("click", bump);
-      window.removeEventListener("keydown", bump);
+      evts.forEach((e) => window.removeEventListener(e, bump));
+      document.removeEventListener("visibilitychange", onVisible);
+      offTabs();
     };
-  }, [unlocked, lockPortal]);
+  }, [session, load, endSession, navigate]);
 
   const today = useMemo(() => new Date(), []);
   const weekDates = useWeekWindow(today);
@@ -214,7 +230,7 @@ const ClientPortalInner = () => {
     [tools, activeToolId],
   );
 
-  if (loading) {
+  if (loading || (!snapshot && !loadFailed)) {
     return (
       <div className="fixed inset-0 grid place-items-center bg-background">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -227,108 +243,21 @@ const ClientPortalInner = () => {
       <div className="fixed inset-0 grid place-items-center bg-background p-6">
         <Card className="max-w-md w-full card-calm">
           <CardHeader>
-            <CardTitle>This link isn't valid</CardTitle>
+            <CardTitle>We couldn't load your space</CardTitle>
             <CardDescription>
-              This private space couldn't be found. Please check the link your therapist sent you, or contact info@innersparkafrica.com.
+              Please check your connection and try again, or contact info@innersparkafrica.com.
             </CardDescription>
           </CardHeader>
+          <div className="px-6 pb-6 flex gap-2">
+            <Button onClick={() => { setLoading(true); load(); }}>Try again</Button>
+            <Button variant="outline" onClick={() => endSession()}>Log out</Button>
+          </div>
         </Card>
       </div>
     );
   }
 
   const firstName = snapshot.client.full_name.split(" ")[0];
-
-  const setPasscodeFn = async () => {
-    if (passcode.length < 6) return toast.error("Passcode must be at least 6 characters.");
-    if (passcode !== confirmPasscode) return toast.error("Passcodes don't match.");
-    setBusy(true);
-    let result = await (supabase.rpc as any)("set_or_complete_client_passcode", { _token: token!, _new_passcode: passcode });
-    if (result.error?.message?.includes("set_or_complete_client_passcode") && !temporaryResetId) {
-      result = await supabase.rpc("set_client_passcode", { _token: token!, _passcode: passcode });
-    }
-    setBusy(false);
-    if (result.error || !result.data) return toast.error(result.error?.message || "Could not set passcode.");
-    setTemporaryResetId(null);
-    setUnlocked(true);
-    await load();
-  };
-
-  const verifyPasscodeFn = async () => {
-    setBusy(true);
-    let { data, error } = await (supabase.rpc as any)("verify_client_portal_credential", { _token: token!, _passcode: passcode });
-    // Keep existing client accounts usable while the new one-time reset
-    // database function is rolling out.
-    if (error?.message?.includes("verify_client_portal_credential")) {
-      const legacy = await supabase.rpc("verify_client_passcode", { _token: token!, _passcode: passcode });
-      data = { valid: !!legacy.data, temporary: false };
-      error = legacy.error;
-    }
-    setBusy(false);
-    if (error) return toast.error(error.message);
-    const result = data as unknown as { valid: boolean; temporary: boolean; expired?: boolean; request_id?: string };
-    if (!result?.valid) return toast.error(result?.expired ? "That temporary passcode expired. Please request another one." : "That passcode doesn't match.");
-    if (result.temporary && result.request_id) {
-      setPasscode("");
-      setConfirmPasscode("");
-      setTemporaryResetId(result.request_id);
-      return;
-    }
-    setUnlocked(true);
-  };
-
-  if (!unlocked) {
-    return (
-      <div className="fixed inset-0 overflow-y-auto bg-background p-4 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
-        <div className="absolute top-3 right-3"><CalmThemeToggle /></div>
-        <div className="min-h-full flex items-center justify-center py-8">
-          <div className="max-w-md w-full card-calm p-7 sm:p-8 fade-in-calm rounded-3xl shadow-lg border">
-            <div className="text-center">
-              <div className="mx-auto w-14 h-14 rounded-2xl bg-primary/10 grid place-items-center mb-4 shadow-sm">
-                <Lock className="h-6 w-6 text-primary" />
-              </div>
-              <h1 className="text-2xl font-semibold tracking-tight">Hi {firstName}</h1>
-              <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
-                {snapshot.client.has_passcode
-                  ? "This is your private space. Enter your passcode to continue."
-                  : "This is your private space. Set a passcode so only you can open it."}
-              </p>
-            </div>
-            <div className="space-y-3 mt-6">
-              {resetOpen ? (
-                <ManualResetRequestForm accountType="client" onBack={() => setResetOpen(false)} />
-              ) : <>
-              <div>
-                <Label>{temporaryResetId ? "Choose a new permanent passcode" : snapshot.client.has_passcode ? "Passcode" : "Choose a passcode (min 6 characters)"}</Label>
-                <Input type="password" value={passcode} onChange={(e) => setPasscode(e.target.value)} autoFocus />
-              </div>
-              {(!snapshot.client.has_passcode || temporaryResetId) && (
-                <div>
-                  <Label>Confirm passcode</Label>
-                  <Input type="password" value={confirmPasscode} onChange={(e) => setConfirmPasscode(e.target.value)} />
-                </div>
-              )}
-              <Button
-                onClick={snapshot.client.has_passcode && !temporaryResetId ? verifyPasscodeFn : setPasscodeFn}
-                disabled={busy}
-                className="w-full h-11 rounded-xl"
-              >
-                {busy && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
-                {temporaryResetId ? "Save new passcode and continue" : snapshot.client.has_passcode ? "Open my space" : "Set passcode & continue"}
-              </Button>
-              {snapshot.client.has_passcode && !temporaryResetId && (
-                <button type="button" className="w-full text-sm text-primary hover:underline" onClick={() => setResetOpen(true)}>
-                  Forgot passcode?
-                </button>
-              )}
-              <QuietFooter />
-              </>}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   const renderActiveTool = () => {
     if (!activeTool) return null;
@@ -346,7 +275,7 @@ const ClientPortalInner = () => {
       load();
     };
     const back = () => setActiveToolId(null);
-    const common = { token: token!, assignmentToolId: activeTool.id, onDone: done, onBack: back };
+    const common = { session: session!, assignmentToolId: activeTool.id, onDone: done, onBack: back };
     const scale = getScale(activeTool.tool_key);
     if (scale) return <ScaleTool scale={scale} {...common} />;
     switch (activeTool.tool_key) {
@@ -404,7 +333,7 @@ const ClientPortalInner = () => {
     <div className="fixed inset-0 overflow-y-auto bg-background pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
       <div className="max-w-2xl mx-auto p-4 sm:p-6">
         <div className="flex justify-end items-center gap-2 mb-2">
-          <Button variant="outline" size="sm" onClick={lockPortal}><Lock className="h-4 w-4 mr-1" /> Lock now</Button>
+          <Button variant="outline" size="sm" onClick={() => endSession()}><LogOut className="h-4 w-4 mr-1" /> Log out</Button>
           <CalmThemeToggle />
         </div>
 

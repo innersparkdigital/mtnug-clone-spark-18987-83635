@@ -1,4 +1,5 @@
 import { Fragment, useEffect, useMemo, useState } from "react";
+import ClientSetupInviteButton from "@/components/ClientSetupInviteButton";
 import { supabase } from "@/integrations/supabase/client";
 import { SESSION_TYPES, normalizeSessionType } from "@/lib/sessionTypes";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -688,6 +689,7 @@ const AdminClientsTab = () => {
                                       {consentLinkId === r.id ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Link2 className="h-4 w-4 mr-1" />}
                                       Consent link
                                     </Button>
+                                    <ClientSetupInviteButton clientId={r.id} clientName={r.full_name} />
                                     <Button size="sm" variant="outline" disabled={referralLinkId === r.id} onClick={() => generateReferralLink(r)}>
                                       {referralLinkId === r.id ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Link2 className="h-4 w-4 mr-1" />}
                                       5% referral link

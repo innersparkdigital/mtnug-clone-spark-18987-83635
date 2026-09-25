@@ -144,6 +144,7 @@ const ClientPortal = lazy(
   () => import(/* webpackChunkName: "client-portal" */ "./pages/ClientPortal"),
 );
 const ClientLogin = lazy(() => import("./pages/ClientLogin"));
+const ClientInvite = lazy(() => import("./pages/ClientInvite"));
 const ClientConsent = lazy(() => import("./pages/ClientConsent"));
 const MindCheckAnalytics = lazy(
   () => import(/* webpackChunkName: "admin" */ "./pages/MindCheckAnalytics"),
@@ -328,8 +329,10 @@ const App = () => (
                 <Route path="/portals" element={<Navigate to="/auth" replace />} />
                 <Route path="/consent/:token" element={<ClientConsent />} />
                 <Route path="/client-login" element={<ClientLogin />} />
-                <Route path="/my-progress/:token" element={<ClientPortal />} />
-                <Route path="/my-progress/:slug/:token" element={<ClientPortal />} />
+                <Route path="/client-invite/:invite" element={<ClientInvite />} />
+                <Route path="/client-dashboard" element={<ClientPortal />} />
+                {/* Old permanent links: never read the token, always send to sign-in */}
+                <Route path="/my-progress/*" element={<Navigate to="/client-login" replace />} />
                 <Route path="/learning/:courseId" element={<CourseDetail />} />
                 <Route
                   path="/learning/:courseId/certificate"

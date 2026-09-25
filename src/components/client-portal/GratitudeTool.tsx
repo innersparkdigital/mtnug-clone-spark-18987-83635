@@ -8,14 +8,14 @@ import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface Props {
-  token: string;
+  session: string;
   assignmentToolId: string;
   initial?: any;
   onDone: () => void;
   onBack: () => void;
 }
 
-const GratitudeTool = ({ token, assignmentToolId, initial, onDone, onBack }: Props) => {
+const GratitudeTool = ({ session, assignmentToolId, initial, onDone, onBack }: Props) => {
   const [g1, setG1] = useState(initial?.g1 || "");
   const [g2, setG2] = useState(initial?.g2 || "");
   const [g3, setG3] = useState(initial?.g3 || "");
@@ -26,8 +26,8 @@ const GratitudeTool = ({ token, assignmentToolId, initial, onDone, onBack }: Pro
   const submit = async () => {
     if (!g1.trim() && !g2.trim() && !g3.trim()) return toast.error("Please write at least one thing.");
     setSaving(true);
-    const { error } = await supabase.rpc("save_tool_submission", {
-      _token: token,
+    const { error } = await supabase.rpc("client_session_save_submission", {
+      _session: session,
       _assignment_tool_id: assignmentToolId,
       _payload: { g1, g2, g3, strength, proud },
       _final: true,

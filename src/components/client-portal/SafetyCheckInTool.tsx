@@ -9,13 +9,13 @@ import { SUPPORT_PHONE_DISPLAY, SUPPORT_PHONE_TEL } from "@/lib/supportContact";
 type Answer = "no" | "passed" | "still";
 
 interface Props {
-  token: string;
+  session: string;
   assignmentToolId: string;
   onDone: () => void;
   onBack: () => void;
 }
 
-const SafetyCheckInTool = ({ token, assignmentToolId, onDone, onBack }: Props) => {
+const SafetyCheckInTool = ({ session, assignmentToolId, onDone, onBack }: Props) => {
   const [answer, setAnswer] = useState<Answer | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -30,8 +30,8 @@ const SafetyCheckInTool = ({ token, assignmentToolId, onDone, onBack }: Props) =
       severity,
       crisis_message_shown: a === "still",
     };
-    const { error } = await supabase.rpc("save_tool_submission", {
-      _token: token,
+    const { error } = await supabase.rpc("client_session_save_submission", {
+      _session: session,
       _assignment_tool_id: assignmentToolId,
       _payload: payload,
       _final: true,

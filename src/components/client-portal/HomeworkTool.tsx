@@ -12,7 +12,7 @@ type Status = "not_started" | "in_progress" | "done";
 interface Task { id: string; text: string; status: Status; }
 
 interface Props {
-  token: string;
+  session: string;
   assignmentToolId: string;
   config: any;
   initial?: any;
@@ -29,7 +29,7 @@ const seedTasks = (config: any, initial: any): Task[] => {
   return items.map((t, i) => ({ id: String(i + 1), text: t, status: "not_started" as Status }));
 };
 
-const HomeworkTool = ({ token, assignmentToolId, config, initial, onDone, onBack }: Props) => {
+const HomeworkTool = ({ session, assignmentToolId, config, initial, onDone, onBack }: Props) => {
   const [tasks, setTasks] = useState<Task[]>(() => seedTasks(config, initial));
   const [helped, setHelped] = useState(initial?.what_helped || "");
   const [obstacles, setObstacles] = useState(initial?.obstacles || "");
@@ -42,12 +42,12 @@ const HomeworkTool = ({ token, assignmentToolId, config, initial, onDone, onBack
 
   useEffect(() => {
     const t = window.setTimeout(() => {
-      supabase.rpc("save_tool_submission", {
-        _token: token, _assignment_tool_id: assignmentToolId, _payload: payload as any, _final: false,
+      supabase.rpc("client_session_save_submission", {
+        _session: session, _assignment_tool_id: assignmentToolId, _payload: payload as any, _final: false,
       });
     }, 15000);
     return () => window.clearTimeout(t);
-  }, [token, assignmentToolId, payload]);
+  }, [session, assignmentToolId, payload]);
 
   const cycleStatus = (id: string) => {
     setTasks((prev) => prev.map((t) => {
@@ -59,8 +59,8 @@ const HomeworkTool = ({ token, assignmentToolId, config, initial, onDone, onBack
 
   const submit = async () => {
     setSaving(true);
-    const { error } = await supabase.rpc("save_tool_submission", {
-      _token: token, _assignment_tool_id: assignmentToolId, _payload: payload as any, _final: true,
+    const { error } = await supabase.rpc("client_session_save_submission", {
+      _session: session, _assignment_tool_id: assignmentToolId, _payload: payload as any, _final: true,
     });
     setSaving(false);
     if (error) return toast.error(error.message);
