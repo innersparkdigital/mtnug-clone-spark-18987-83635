@@ -11,6 +11,30 @@ const normalize = (value: string) => value.trim().toLowerCase().replace(/[\s()+-
 const mask = (value: string) => value.includes("@")
   ? value.replace(/^(.{2}).*(@.*)$/, "$1••••$2")
   : `••••${normalize(value).slice(-4)}`;
+// Notify staff only after a matched request has been stored. Never email a credential.
+const notifyAdmin = async (requestId: string, accountType: string, identifierMasked: string): Promise<void> => {
+  const lovableKey = Deno.env.get("LOVABLE_API_KEY");
+  const resendKey = Deno.env.get("RESEND_API_KEY");
+  if (!lovableKey || !resendKey) throw new Error("Admin email is not configured");
+  const res = await fetch("https://connector-gateway.lovable.dev/resend/emails", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${lovableKey}`,
+      "X-Connection-Api-Key": resendKey,
+      "Idempotency-Key": `manual-reset-${requestId}`,
+    },
+    body: JSON.stringify({
+      from: "InnerSpark Alerts <noreply@innersparkafrica.com>",
+      to: ["info@innersparkafrica.com"],
+      reply_to: "info@innersparkafrica.com",
+      subject: "Password reset request awaiting staff review",
+      text: `A ${accountType} requested a manual password reset. Registered contact: ${identifierMasked}. Open https://www.innersparkafrica.com/admin?tab=password-resets and verify identity before sharing a temporary credential. Do not reply with a password to this automated alert.`,
+    }),
+  });
+  const result = await res.json().catch(() => ({}));
+  if (!res.ok || !result?.id) throw new Error(`Admin email not accepted (${res.status})`);
+};
 const generatePassword = () => {
   const chars = "ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789";
   const bytes = crypto.getRandomValues(new Uint8Array(12));
@@ -41,15 +65,33 @@ Deno.serve(async (req) => {
         account = data?.find((r) => [r.email, r.phone].some((v) => v && normalize(v) === needle));
       }
       if (account) {
-        const { data: existing } = await admin.from("manual_password_reset_requests")
-          .select("id,status,expires_at").eq("account_type", accountType).eq("account_id", account.id)
+        const { data: existing, error: lookupError } = await admin.from("manual_password_reset_requests")
+          .select("id,status,expires_at,admin_notified_at").eq("account_type", accountType).eq("account_id", account.id)
           .in("status", ["pending", "ready", "sent"]).order("requested_at", { ascending: false }).limit(1).maybeSingle();
+        if (lookupError) throw lookupError;
         const stillActive = existing && (existing.status === "pending" || !existing.expires_at || new Date(existing.expires_at) > new Date());
-        if (!stillActive) {
-          await admin.from("manual_password_reset_requests").insert({
+        let reset = stillActive ? existing : null;
+        if (!reset) {
+          const { data: inserted, error: insertError } = await admin.from("manual_password_reset_requests").insert({
             account_type: accountType, account_id: account.id, user_id: account.user_id || null,
             identifier_masked: mask(identifier), status: "pending",
-          });
+          }).select("id,status,admin_notified_at").single();
+          if (insertError || !inserted) throw insertError || new Error("Reset request was not stored");
+          reset = inserted;
+        }
+        if (reset.status === "pending" && !reset.admin_notified_at) {
+          try {
+            await notifyAdmin(reset.id, accountType, mask(identifier));
+            const { error: saved } = await admin.from("manual_password_reset_requests")
+              .update({ admin_notified_at: new Date().toISOString(), admin_notification_error: null })
+              .eq("id", reset.id);
+            if (saved) throw saved;
+          } catch (notificationError) {
+            console.error("Reset request stored but staff alert failed", reset.id, notificationError);
+            await admin.from("manual_password_reset_requests")
+              .update({ admin_notification_error: "Delivery failed; retry from the admin queue" })
+              .eq("id", reset.id);
+          }
         }
       }
       return json({ ok: true, message: "If the details match an account, your request has been received for admin review." });
@@ -89,6 +131,19 @@ Deno.serve(async (req) => {
     const { data: isAdmin } = await admin.rpc("has_role", { _user_id: user.id, _role: "admin" });
     if (!isAdmin) return json({ error: "Admin access required" }, 403);
 
+    if (action === "retry_notification") {
+      const requestId = String(body.request_id || "");
+      const { data: reset, error: lookupError } = await admin.from("manual_password_reset_requests")
+        .select("id,account_type,identifier_masked,status,admin_notified_at").eq("id", requestId).maybeSingle();
+      if (lookupError || !reset || reset.status !== "pending") return json({ error: "Pending request not found" }, 404);
+      if (reset.admin_notified_at) return json({ ok: true, already_notified: true });
+      await notifyAdmin(reset.id, reset.account_type, reset.identifier_masked);
+      const { error: updateError } = await admin.from("manual_password_reset_requests")
+        .update({ admin_notified_at: new Date().toISOString(), admin_notification_error: null }).eq("id", reset.id);
+      if (updateError) throw updateError;
+      return json({ ok: true });
+    }
+
     if (action === "mark_sent") {
       const requestId = String(body.request_id || "");
       await admin.from("manual_password_reset_requests").update({ status: "sent", updated_at: new Date().toISOString() })
@@ -100,7 +155,7 @@ Deno.serve(async (req) => {
       await admin.from("manual_password_reset_requests").update({ status: "expired", updated_at: new Date().toISOString() })
         .in("status", ["ready", "sent"]).lt("expires_at", new Date().toISOString());
       const { data, error } = await admin.from("manual_password_reset_requests")
-        .select("id,account_type,identifier_masked,status,requested_at,expires_at,revealed_at,consumed_at,completed_at")
+        .select("id,account_type,identifier_masked,status,requested_at,expires_at,revealed_at,consumed_at,completed_at,admin_notified_at,admin_notification_error")
         .order("requested_at", { ascending: false }).limit(200);
       if (error) throw error;
       return json({ requests: data || [] });
