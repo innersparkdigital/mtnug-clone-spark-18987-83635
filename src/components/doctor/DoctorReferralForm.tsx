@@ -1,4 +1,6 @@
 import { useState } from "react";
+import PhoneField from "@/components/PhoneField";
+import { isValidE164 } from "@/lib/phoneCountries";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -37,6 +39,7 @@ const DoctorReferralForm = ({ doctor, onBack, onSubmitted }: Props) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isValidE164(patientPhone)) { toast({ title: "Please pick your country and enter a valid phone number", variant: "destructive" }); return; }
     if (!consent) {
       toast({ title: "Consent required", description: "Please confirm patient consent.", variant: "destructive" });
       return;
@@ -140,7 +143,7 @@ const DoctorReferralForm = ({ doctor, onBack, onSubmitted }: Props) => {
           </div>
           <div>
             <Label htmlFor="patient-phone">Patient Phone Number *</Label>
-            <Input id="patient-phone" type="tel" value={patientPhone} onChange={(e) => setPatientPhone(e.target.value)} required />
+            <PhoneField id="patient-phone" value={patientPhone} onChange={setPatientPhone} />
           </div>
           <div>
             <Label htmlFor="location">Location</Label>

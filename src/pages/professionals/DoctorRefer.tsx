@@ -13,6 +13,8 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Loader2, Stethoscope, LogOut } from "lucide-react";
 import { z } from "zod";
+import PhoneField from "@/components/PhoneField";
+import { splitE164, detectDefaultDial } from "@/lib/phoneCountries";
 import DoctorDashboard from "@/components/doctor/DoctorDashboard";
 import DoctorReferralForm from "@/components/doctor/DoctorReferralForm";
 
@@ -128,8 +130,16 @@ const DoctorRefer = () => {
     }
     setSubmitting(true);
     try {
-      const { data: emailRes, error: rpcError } = await supabase.rpc("get_doctor_email_by_phone", { _phone: loginPhone.trim() });
-      if (rpcError) throw rpcError;
+      // Doctors may be registered with E.164 or older local formats — try each.
+      const { dial, local } = splitE164(loginPhone, detectDefaultDial());
+      const digits = local.replace(/\D/g, "").replace(/^0+/, "");
+      const candidates = Array.from(new Set([loginPhone, `${dial}${digits}`, `0${digits}`, digits, `+${dial} ${digits}`]));
+      let emailRes: string | null = null;
+      for (const c of candidates) {
+        const { data, error: rpcError } = await supabase.rpc("get_doctor_email_by_phone", { _phone: c });
+        if (rpcError) throw rpcError;
+        if (data) { emailRes = data as string; break; }
+      }
       if (!emailRes) {
         toast({
           title: "Phone not registered",
@@ -232,7 +242,7 @@ const DoctorRefer = () => {
                 <form onSubmit={handleLogin} className="space-y-4">
                   <div>
                     <Label htmlFor="login-phone">Phone Number</Label>
-                    <Input id="login-phone" type="tel" value={loginPhone} onChange={(e) => setLoginPhone(e.target.value)} placeholder="+256 700 000 000" required />
+                    <PhoneField id="login-phone" value={loginPhone} onChange={setLoginPhone} />
                   </div>
                   <div>
                     <Label htmlFor="login-pwd">Password</Label>

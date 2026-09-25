@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import PhoneField from "@/components/PhoneField";
+import { isValidE164 } from "@/lib/phoneCountries";
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -30,6 +32,7 @@ const B2BScreeningBookingSection = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (form.contact_phone && !isValidE164(form.contact_phone)) { toast({ title: "Please pick your country and enter a valid phone number", variant: "destructive" }); return; }
     if (!form.company_name || !form.contact_name || !form.contact_email) {
       toast({ title: 'Missing details', description: 'Please fill in company, contact name and email.', variant: 'destructive' });
       return;
@@ -142,7 +145,7 @@ const B2BScreeningBookingSection = () => {
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="b2b-phone">Phone</Label>
-                  <Input id="b2b-phone" type="tel" value={form.contact_phone} onChange={(e) => update('contact_phone', e.target.value)} placeholder="+256..." />
+                  <PhoneField id="b2b-phone" value={form.contact_phone} onChange={(v) => update('contact_phone', v)} />
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="b2b-count">Approx. employees</Label>

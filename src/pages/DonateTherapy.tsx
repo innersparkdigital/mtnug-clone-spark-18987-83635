@@ -1,4 +1,6 @@
 import { Helmet } from "react-helmet";
+import PhoneField from "@/components/PhoneField";
+import { isValidE164 } from "@/lib/phoneCountries";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -76,6 +78,7 @@ const DonateTherapy = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isValidE164(formData.phone)) { toast({ title: "Please pick your country and enter a valid phone number", variant: "destructive" }); return; }
     
     if (!formData.name || !formData.phone || !formData.paymentMethod) {
       toast({
@@ -348,13 +351,10 @@ const DonateTherapy = () => {
 
             <div className="space-y-2">
               <Label htmlFor="phone">Phone Number *</Label>
-              <Input
+              <PhoneField
                 id="phone"
-                type="tel"
-                placeholder="e.g., 0780123456"
                 value={formData.phone}
-                onChange={(e) => handleInputChange("phone", e.target.value)}
-                required
+                onChange={(v) => handleInputChange("phone", v)}
               />
             </div>
 

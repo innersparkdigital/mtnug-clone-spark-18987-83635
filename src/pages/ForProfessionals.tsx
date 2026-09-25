@@ -1,4 +1,6 @@
 import { Helmet } from "react-helmet";
+import PhoneField from "@/components/PhoneField";
+import { isValidE164 } from "@/lib/phoneCountries";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -65,6 +67,7 @@ const ForProfessionals = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isValidE164(formData.phone)) { toast({ title: "Please pick your country and enter a valid phone number", variant: "destructive" }); return; }
     
     // Send confirmation email via Resend
     try {
@@ -452,13 +455,9 @@ const ForProfessionals = () => {
                     <div className="grid md:grid-cols-2 gap-6">
                       <div>
                         <label className="block text-sm font-medium text-foreground mb-2">Phone Number *</label>
-                        <Input
-                          type="tel"
-                          required
+                        <PhoneField
                           value={formData.phone}
-                          onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                          placeholder="+256 700 000 000"
-                          className="bg-background"
+                          onChange={(v) => setFormData((p) => ({ ...p, phone: v }))}
                         />
                       </div>
                       <div>
