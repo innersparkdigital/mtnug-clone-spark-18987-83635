@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 type Props = { accountType: "client" | "therapist"; onBack: () => void };
 
@@ -16,17 +17,26 @@ const ManualResetRequestForm = ({ accountType, onBack }: Props) => {
     event.preventDefault();
     if (!identifier.trim()) return;
     setBusy(true);
-    await supabase.functions.invoke("manual-password-reset", {
-      body: { action: "request", account_type: accountType, identifier: identifier.trim() },
-    });
-    setBusy(false);
-    setDone(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("manual-password-reset", {
+        body: { action: "request", account_type: accountType, identifier: identifier.trim() },
+      });
+      if (error || !data?.ok) {
+        toast.error("We couldn't submit your request. Please try again or contact InnerSpark directly.");
+        return;
+      }
+      setDone(true);
+    } catch {
+      toast.error("We couldn't submit your request. Please try again or contact InnerSpark directly.");
+    } finally {
+      setBusy(false);
+    }
   };
 
   if (done) return (
     <div className="space-y-4 text-center">
       <p className="font-semibold">Your request has been received.</p>
-      <p className="text-sm text-muted-foreground">If the details match an account, an InnerSpark administrator will contact you directly with a temporary password or passcode.</p>
+      <p className="text-sm text-muted-foreground">If the details match an account, InnerSpark staff will review the request and contact you directly. No passcode is sent automatically.</p>
       <Button type="button" variant="outline" className="w-full" onClick={onBack}>Back to sign in</Button>
     </div>
   );
