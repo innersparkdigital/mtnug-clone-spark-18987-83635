@@ -89,7 +89,23 @@ const ClientRoster = ({ therapistId, therapistName }: Props) => {
     setLoading(true);
     const { data, error } = await supabase.rpc("therapist_client_overview" as any);
     if (error) toast.error(error.message);
-    setClients(((data as unknown) as Client[]) || []);
+    let rows = ((data as unknown) as Client[]) || [];
+    // Fill sessions package fields when overview omits them (admin trackers use the same columns).
+    if (rows.length && rows.every((c) => c.sessions_purchased == null && c.sessions_used == null)) {
+      const { data: packs } = await supabase
+        .from("therapist_clients")
+        .select("id, sessions_purchased, sessions_used")
+        .eq("therapist_id", therapistId);
+      if (packs?.length) {
+        const map = Object.fromEntries((packs as any[]).map((p) => [p.id, p]));
+        rows = rows.map((c) => ({
+          ...c,
+          sessions_purchased: map[c.id]?.sessions_purchased ?? c.sessions_purchased,
+          sessions_used: map[c.id]?.sessions_used ?? c.sessions_used,
+        }));
+      }
+    }
+    setClients(rows);
     setLoading(false);
   };
 
