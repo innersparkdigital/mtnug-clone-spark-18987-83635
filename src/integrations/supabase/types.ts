@@ -77,6 +77,87 @@ export type Database = {
         }
         Relationships: []
       }
+      ad_sales_leads: {
+        Row: {
+          booking_type: string | null
+          created_at: string
+          email: string | null
+          expected_value_ugx: number
+          exported_at: string | null
+          gbraid: string | null
+          gclid: string | null
+          id: string
+          landing_path: string | null
+          lead_reference: string
+          name: string | null
+          paid_amount_ugx: number | null
+          paid_at: string | null
+          phone: string | null
+          session_format: string | null
+          source_client_id: string | null
+          status: string
+          updated_at: string
+          utm_campaign: string | null
+          utm_content: string | null
+          utm_medium: string | null
+          utm_source: string | null
+          utm_term: string | null
+          wbraid: string | null
+        }
+        Insert: {
+          booking_type?: string | null
+          created_at?: string
+          email?: string | null
+          expected_value_ugx?: number
+          exported_at?: string | null
+          gbraid?: string | null
+          gclid?: string | null
+          id?: string
+          landing_path?: string | null
+          lead_reference: string
+          name?: string | null
+          paid_amount_ugx?: number | null
+          paid_at?: string | null
+          phone?: string | null
+          session_format?: string | null
+          source_client_id?: string | null
+          status?: string
+          updated_at?: string
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+          wbraid?: string | null
+        }
+        Update: {
+          booking_type?: string | null
+          created_at?: string
+          email?: string | null
+          expected_value_ugx?: number
+          exported_at?: string | null
+          gbraid?: string | null
+          gclid?: string | null
+          id?: string
+          landing_path?: string | null
+          lead_reference?: string
+          name?: string | null
+          paid_amount_ugx?: number | null
+          paid_at?: string | null
+          phone?: string | null
+          session_format?: string | null
+          source_client_id?: string | null
+          status?: string
+          updated_at?: string
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+          wbraid?: string | null
+        }
+        Relationships: []
+      }
       admin_clients: {
         Row: {
           address: string | null
@@ -3806,12 +3887,25 @@ export type Database = {
         Args: { _client_id: string }
         Returns: string
       }
+      admin_list_ad_sales_leads: { Args: never; Returns: Json }
       admin_list_all_clients: { Args: never; Returns: Json }
       admin_list_enquiries: { Args: never; Returns: Json }
       admin_list_referral_rewards: { Args: never; Returns: Json }
       admin_list_session_logs: { Args: never; Returns: Json }
       admin_overview_stats: { Args: never; Returns: Json }
       admin_revenue_by_session_type: { Args: never; Returns: Json }
+      admin_send_paid_client_to_whatsapp_sales: {
+        Args: {
+          _amount_ugx: number
+          _booking_type?: string
+          _client_id: string
+          _country?: string
+          _name: string
+          _paid_at: string
+          _phone: string
+        }
+        Returns: string
+      }
       admin_set_referral_reward_status: {
         Args: {
           _amount?: number
@@ -3830,6 +3924,15 @@ export type Database = {
         Returns: Json
       }
       admin_therapist_performance: { Args: never; Returns: Json }
+      admin_update_ad_sales_lead: {
+        Args: {
+          _id: string
+          _paid_amount_ugx?: number
+          _paid_at?: string
+          _status: string
+        }
+        Returns: boolean
+      }
       admin_update_client_tracker: {
         Args: {
           _amount_ugx?: number
@@ -3860,6 +3963,27 @@ export type Database = {
         Returns: boolean
       }
       confirm_client_consent: { Args: { _token: string }; Returns: Json }
+      create_ad_sales_lead: {
+        Args: {
+          _booking_type?: string
+          _email?: string
+          _expected_value_ugx?: number
+          _gbraid?: string
+          _gclid?: string
+          _landing_path?: string
+          _lead_reference: string
+          _name?: string
+          _phone?: string
+          _session_format?: string
+          _utm_campaign?: string
+          _utm_content?: string
+          _utm_medium?: string
+          _utm_source?: string
+          _utm_term?: string
+          _wbraid?: string
+        }
+        Returns: string
+      }
       create_assignment_schedule: {
         Args: {
           _assignment_tool_id: string
