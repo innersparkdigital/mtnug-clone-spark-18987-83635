@@ -10,6 +10,7 @@ type ResetRow = {
   id: string; account_type: "client" | "therapist"; identifier_masked: string;
   status: "pending" | "processing" | "ready" | "sent" | "used" | "completed" | "expired" | "cancelled";
   requested_at: string; expires_at: string | null;
+  admin_notified_at: string | null; admin_notification_error: string | null;
 };
 
 const statusLabel: Record<ResetRow["status"], string> = {
@@ -55,6 +56,13 @@ const PasswordResetRequestsTab = () => {
     load();
   };
 
+  const retryNotification = async (id: string) => {
+    const { data, error } = await supabase.functions.invoke("manual-password-reset", { body: { action: "retry_notification", request_id: id } });
+    if (error || data?.error) return toast.error(data?.error || error?.message || "Could not alert staff");
+    toast.success("Staff alert accepted for delivery");
+    await load();
+  };
+
   const markSent = async (id: string) => {
     const { data, error } = await supabase.functions.invoke("manual-password-reset", { body: { action: "mark_sent", request_id: id } });
     if (error || data?.error) return toast.error(data?.error || error?.message || "Could not update request");
@@ -87,13 +95,15 @@ const PasswordResetRequestsTab = () => {
             <div>
               <div className="flex items-center gap-2"><span className="font-medium capitalize">{row.account_type}</span><Badge variant="outline">{statusLabel[row.status]}</Badge></div>
               <p className="text-sm text-muted-foreground mt-1">{row.identifier_masked} · {new Date(row.requested_at).toLocaleString()}</p>
+              {row.status === "pending" && <p className={`text-xs mt-1 ${row.admin_notified_at ? "text-emerald-700" : "text-amber-700"}`}>{row.admin_notified_at ? "Staff email accepted for delivery" : "Staff email not confirmed — request is in this queue"}</p>}
               {row.expires_at && row.status === "sent" && <p className="text-xs text-amber-700 mt-1">Expires {new Date(row.expires_at).toLocaleString()}</p>}
             </div>
-            {row.status === "pending" && (
+            {row.status === "pending" && <div className="flex flex-wrap gap-2">
+              {!row.admin_notified_at && <Button variant="outline" onClick={() => retryNotification(row.id)}>Retry staff alert</Button>}
               <Button onClick={() => reveal(row.id)} disabled={!!revealing || !!secret}>
                 {revealing === row.id && <Loader2 className="h-4 w-4 animate-spin mr-2" />}Generate and view once
               </Button>
-            )}
+            </div>}
             {row.status === "ready" && <Button variant="outline" onClick={() => markSent(row.id)}>Mark as sent</Button>}
           </div>
         ))}
