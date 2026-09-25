@@ -39,6 +39,7 @@ const DoctorReferralForm = ({ doctor, onBack, onSubmitted }: Props) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isValidE164(patientPhone)) { toast({ title: "Please pick your country and enter a valid phone number", variant: "destructive" }); return; }
     if (!consent) {
       toast({ title: "Consent required", description: "Please confirm patient consent.", variant: "destructive" });
       return;

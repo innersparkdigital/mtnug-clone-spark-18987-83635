@@ -32,6 +32,7 @@ const B2BScreeningBookingSection = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (form.contact_phone && !isValidE164(form.contact_phone)) { toast({ title: "Please pick your country and enter a valid phone number", variant: "destructive" }); return; }
     if (!form.company_name || !form.contact_name || !form.contact_email) {
       toast({ title: 'Missing details', description: 'Please fill in company, contact name and email.', variant: 'destructive' });
       return;

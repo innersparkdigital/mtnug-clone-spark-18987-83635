@@ -67,6 +67,7 @@ const ForProfessionals = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isValidE164(formData.phone)) { toast({ title: "Please pick your country and enter a valid phone number", variant: "destructive" }); return; }
     
     // Send confirmation email via Resend
     try {

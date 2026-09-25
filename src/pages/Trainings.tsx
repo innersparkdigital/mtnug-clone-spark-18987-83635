@@ -114,6 +114,7 @@ const Trainings = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isValidE164(formData.phone_number)) { toast({ title: "Please pick your country and enter a valid phone number", variant: "destructive" }); return; }
     if (!selectedTraining) return;
 
     if (!formData.full_name.trim() || !formData.email.trim() || !formData.phone_number.trim()) {

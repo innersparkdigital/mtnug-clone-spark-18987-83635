@@ -99,6 +99,7 @@ const Contact = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (formData.phone && !isValidE164(formData.phone)) { toast({ title: "Please pick your country and enter a valid phone number", variant: "destructive" }); return; }
     setIsSubmitting(true);
 
     try {

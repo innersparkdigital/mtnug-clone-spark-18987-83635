@@ -78,6 +78,7 @@ const DonateTherapy = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isValidE164(formData.phone)) { toast({ title: "Please pick your country and enter a valid phone number", variant: "destructive" }); return; }
     
     if (!formData.name || !formData.phone || !formData.paymentMethod) {
       toast({
