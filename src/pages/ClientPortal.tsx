@@ -110,14 +110,21 @@ const ClientPortalInner = () => {
 
   useEffect(() => { load(); }, [load]);
 
+  const lockPortal = useCallback(() => {
+    setUnlocked(false);
+    setActiveToolId(null);
+    setPasscode("");
+    setConfirmPasscode("");
+    setTemporaryResetId(null);
+  }, []);
+
   useEffect(() => {
     if (!unlocked) return;
     let last = Date.now();
     const bump = () => { last = Date.now(); };
     const timer = window.setInterval(() => {
       if (Date.now() - last > IDLE_MS) {
-        setUnlocked(false);
-        setPasscode("");
+        lockPortal();
         toast.info("Locked after 30 minutes of quiet.");
       }
     }, 60000);
@@ -128,7 +135,7 @@ const ClientPortalInner = () => {
       window.removeEventListener("click", bump);
       window.removeEventListener("keydown", bump);
     };
-  }, [unlocked]);
+  }, [unlocked, lockPortal]);
 
   const today = useMemo(() => new Date(), []);
   const weekDates = useWeekWindow(today);
@@ -396,7 +403,8 @@ const ClientPortalInner = () => {
   return (
     <div className="fixed inset-0 overflow-y-auto bg-background pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
       <div className="max-w-2xl mx-auto p-4 sm:p-6">
-        <div className="flex justify-end mb-2">
+        <div className="flex justify-end items-center gap-2 mb-2">
+          <Button variant="outline" size="sm" onClick={lockPortal}><Lock className="h-4 w-4 mr-1" /> Lock now</Button>
           <CalmThemeToggle />
         </div>
 
