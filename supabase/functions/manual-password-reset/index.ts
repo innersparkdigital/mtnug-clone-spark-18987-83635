@@ -81,7 +81,7 @@ Deno.serve(async (req) => {
           if (insertError || !inserted) throw insertError || new Error("Reset request was not stored");
           reset = inserted;
         }
-        if (reset.status === "pending" && !reset.admin_notified_at) {
+        if (reset && reset.status === "pending" && !reset.admin_notified_at) {
           try {
             await notifyAdmin(reset.id, accountType, mask(identifier));
             const { error: saved } = await admin.from("manual_password_reset_requests")
