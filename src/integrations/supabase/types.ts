@@ -4801,6 +4801,14 @@ export type Database = {
         Args: { _company_id: string }
         Returns: boolean
       }
+      issue_client_temporary_passcode: {
+        Args: {
+          _admin_id: string
+          _request_id: string
+          _temporary_passcode: string
+        }
+        Returns: boolean
+      }
       lock_campaign_slug: { Args: { _slug: string }; Returns: undefined }
       log_referral_click: {
         Args: { _ip_hash?: string; _slug: string; _user_agent?: string }
