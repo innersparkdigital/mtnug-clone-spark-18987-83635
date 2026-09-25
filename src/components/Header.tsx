@@ -258,7 +258,7 @@ const Header = () => {
                 </DropdownMenu>
               )}
 
-              {/* Client entry; the login page remains a safe holding screen until server access is ready. */}
+              {/* Client entry: email/phone + passcode sign-in (no permanent shared link). */}
               <Link to="/client-login" className="inline-flex text-xs md:text-sm font-medium text-primary hover:underline whitespace-nowrap">
                 Client login
               </Link>
