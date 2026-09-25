@@ -5,10 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { Loader2, UserPlus, Copy, AlertCircle, Users, CalendarCheck, ShieldAlert, Activity, CheckCircle2, Clock3 } from "lucide-react";
+import { Loader2, UserPlus, AlertCircle, Users, CalendarCheck, ShieldAlert, Activity, CheckCircle2, Clock3 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { copyToClipboard } from "@/lib/copyToClipboard";
-import { buildClientPortalUrl } from "@/lib/clientPortalLink";
 import MiniSparkline from "./MiniSparkline";
 import ClientDetailPanel from "./ClientDetailPanel";
 import ClientSetupInviteButton from "@/components/ClientSetupInviteButton";
@@ -158,13 +156,6 @@ const ClientRoster = ({ therapistId, therapistName }: Props) => {
     setAddOpen(false);
     toast.success("Client added.");
     load();
-  };
-
-  const copyLink = async (c: Client) => {
-    const url = buildClientPortalUrl(c.full_name, c.access_token);
-    const ok = await copyToClipboard(url);
-    if (ok) toast.success("Private link copied");
-    else toast.error("Couldn't copy — please copy manually.");
   };
 
   const openDetail = (c: Client) => { setDetailFor(c); setDetailOpen(true); };
@@ -344,9 +335,6 @@ const ClientRoster = ({ therapistId, therapistName }: Props) => {
                 </div>
 
                 <div className="mt-3 flex items-center gap-2 flex-wrap" onClick={(e) => e.stopPropagation()} onKeyDown={(e) => e.stopPropagation()}>
-                  <Button type="button" size="sm" variant="outline" onClick={() => copyLink(c)}>
-                    <Copy className="h-3 w-3 mr-1" /> Copy login link
-                  </Button>
                   <ClientSetupInviteButton clientId={c.id} clientName={c.full_name} />
                   <span className="text-xs text-primary ml-auto">View full analysis →</span>
                 </div>
