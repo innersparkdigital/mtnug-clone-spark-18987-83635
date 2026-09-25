@@ -4356,6 +4356,10 @@ export type Database = {
       }
       admin_client_detail: { Args: { _client_id: string }; Returns: Json }
       admin_client_homework: { Args: { _client_id: string }; Returns: Json }
+      admin_corporate_account_overview: {
+        Args: { _company_id: string }
+        Returns: Json
+      }
       admin_create_client:
         | {
             Args: {
@@ -4422,6 +4426,10 @@ export type Database = {
         }
         Returns: string
       }
+      admin_set_corporate_hr_active: {
+        Args: { _active: boolean; _admin_id: string; _company_id: string }
+        Returns: boolean
+      }
       admin_set_referral_reward_status: {
         Args: {
           _amount?: number
@@ -4467,6 +4475,10 @@ export type Database = {
           _therapist_share_ugx?: number
           _would_rebook?: boolean
         }
+        Returns: boolean
+      }
+      admin_update_corporate_request: {
+        Args: { _request_id: string; _status: string }
         Returns: boolean
       }
       clear_mindcheck_data: {
