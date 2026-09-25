@@ -1125,6 +1125,7 @@ export type Database = {
           contact_person: string | null
           contact_phone: string | null
           context_notes: string | null
+          country: string | null
           created_at: string
           created_by: string | null
           employee_count: number | null
@@ -1148,6 +1149,7 @@ export type Database = {
           contact_person?: string | null
           contact_phone?: string | null
           context_notes?: string | null
+          country?: string | null
           created_at?: string
           created_by?: string | null
           employee_count?: number | null
@@ -1171,6 +1173,7 @@ export type Database = {
           contact_person?: string | null
           contact_phone?: string | null
           context_notes?: string | null
+          country?: string | null
           created_at?: string
           created_by?: string | null
           employee_count?: number | null
@@ -1250,11 +1253,14 @@ export type Database = {
           access_code: string
           company_id: string
           created_at: string
+          department: string | null
           email: string
+          employee_code: string | null
           gender: string | null
           id: string
           invitation_sent: boolean
           invitation_sent_at: string | null
+          is_active: boolean
           name: string
           phone: string | null
           screening_completed: boolean
@@ -1265,11 +1271,14 @@ export type Database = {
           access_code?: string
           company_id: string
           created_at?: string
+          department?: string | null
           email: string
+          employee_code?: string | null
           gender?: string | null
           id?: string
           invitation_sent?: boolean
           invitation_sent_at?: string | null
+          is_active?: boolean
           name: string
           phone?: string | null
           screening_completed?: boolean
@@ -1280,11 +1289,14 @@ export type Database = {
           access_code?: string
           company_id?: string
           created_at?: string
+          department?: string | null
           email?: string
+          employee_code?: string | null
           gender?: string | null
           id?: string
           invitation_sent?: boolean
           invitation_sent_at?: string | null
+          is_active?: boolean
           name?: string
           phone?: string | null
           screening_completed?: boolean
@@ -1294,6 +1306,104 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "corporate_employees_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "corporate_companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      corporate_hr_admins: {
+        Row: {
+          company_id: string
+          consent_accepted_at: string | null
+          consent_version: string | null
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          is_active: boolean
+          must_change_password: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          company_id: string
+          consent_accepted_at?: string | null
+          consent_version?: string | null
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          is_active?: boolean
+          must_change_password?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          company_id?: string
+          consent_accepted_at?: string | null
+          consent_version?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          is_active?: boolean
+          must_change_password?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "corporate_hr_admins_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "corporate_companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      corporate_hr_service_requests: {
+        Row: {
+          admin_id: string | null
+          company_id: string
+          created_at: string
+          id: string
+          message: string
+          request_type: string
+          service_code: string | null
+          status: string
+        }
+        Insert: {
+          admin_id?: string | null
+          company_id: string
+          created_at?: string
+          id?: string
+          message: string
+          request_type: string
+          service_code?: string | null
+          status?: string
+        }
+        Update: {
+          admin_id?: string | null
+          company_id?: string
+          created_at?: string
+          id?: string
+          message?: string
+          request_type?: string
+          service_code?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "corporate_hr_service_requests_admin_id_fkey"
+            columns: ["admin_id"]
+            isOneToOne: false
+            referencedRelation: "corporate_hr_admins"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "corporate_hr_service_requests_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "corporate_companies"
@@ -1558,6 +1668,53 @@ export type Database = {
           user_agent?: string | null
         }
         Relationships: []
+      }
+      corporate_trainings: {
+        Row: {
+          attendees_count: number | null
+          company_id: string
+          completed_at: string | null
+          created_at: string
+          id: string
+          module_code: string | null
+          notes: string | null
+          scheduled_at: string | null
+          status: string
+          title: string
+        }
+        Insert: {
+          attendees_count?: number | null
+          company_id: string
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          module_code?: string | null
+          notes?: string | null
+          scheduled_at?: string | null
+          status?: string
+          title: string
+        }
+        Update: {
+          attendees_count?: number | null
+          company_id?: string
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          module_code?: string | null
+          notes?: string | null
+          scheduled_at?: string | null
+          status?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "corporate_trainings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "corporate_companies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       course_enrollments: {
         Row: {
@@ -2386,6 +2543,365 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      psych_assessment_catalog: {
+        Row: {
+          category: string
+          credit_cost: number
+          description: string
+          duration_minutes: number
+          id: string
+          is_active: boolean
+          name: string
+          question_count: number
+          short_name: string
+          sort_order: number
+          unit_price_ugx: number
+        }
+        Insert: {
+          category: string
+          credit_cost?: number
+          description: string
+          duration_minutes?: number
+          id: string
+          is_active?: boolean
+          name: string
+          question_count?: number
+          short_name: string
+          sort_order?: number
+          unit_price_ugx?: number
+        }
+        Update: {
+          category?: string
+          credit_cost?: number
+          description?: string
+          duration_minutes?: number
+          id?: string
+          is_active?: boolean
+          name?: string
+          question_count?: number
+          short_name?: string
+          sort_order?: number
+          unit_price_ugx?: number
+        }
+        Relationships: []
+      }
+      psych_company_wallets: {
+        Row: {
+          company_id: string
+          credit_balance: number
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          credit_balance?: number
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          credit_balance?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "psych_company_wallets_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "corporate_companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      psych_credit_ledger: {
+        Row: {
+          balance_after: number
+          company_id: string
+          created_at: string
+          created_by: string | null
+          delta: number
+          id: string
+          invite_id: string | null
+          order_id: string | null
+          reason: string
+        }
+        Insert: {
+          balance_after: number
+          company_id: string
+          created_at?: string
+          created_by?: string | null
+          delta: number
+          id?: string
+          invite_id?: string | null
+          order_id?: string | null
+          reason: string
+        }
+        Update: {
+          balance_after?: number
+          company_id?: string
+          created_at?: string
+          created_by?: string | null
+          delta?: number
+          id?: string
+          invite_id?: string | null
+          order_id?: string | null
+          reason?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "psych_credit_ledger_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "corporate_companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "psych_credit_ledger_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "psych_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      psych_credit_packs: {
+        Row: {
+          credits: number
+          id: string
+          is_active: boolean
+          name: string
+          price_ugx: number
+          price_usd: number | null
+          sort_order: number
+        }
+        Insert: {
+          credits: number
+          id: string
+          is_active?: boolean
+          name: string
+          price_ugx: number
+          price_usd?: number | null
+          sort_order?: number
+        }
+        Update: {
+          credits?: number
+          id?: string
+          is_active?: boolean
+          name?: string
+          price_ugx?: number
+          price_usd?: number | null
+          sort_order?: number
+        }
+        Relationships: []
+      }
+      psych_invites: {
+        Row: {
+          admin_id: string | null
+          catalog_id: string
+          company_id: string
+          completed_at: string | null
+          created_at: string
+          credits_charged: number
+          department: string | null
+          employee_email: string | null
+          employee_name: string
+          employee_role: string | null
+          expires_at: string
+          id: string
+          opened_at: string | null
+          status: string
+          token: string
+        }
+        Insert: {
+          admin_id?: string | null
+          catalog_id: string
+          company_id: string
+          completed_at?: string | null
+          created_at?: string
+          credits_charged?: number
+          department?: string | null
+          employee_email?: string | null
+          employee_name: string
+          employee_role?: string | null
+          expires_at?: string
+          id?: string
+          opened_at?: string | null
+          status?: string
+          token?: string
+        }
+        Update: {
+          admin_id?: string | null
+          catalog_id?: string
+          company_id?: string
+          completed_at?: string | null
+          created_at?: string
+          credits_charged?: number
+          department?: string | null
+          employee_email?: string | null
+          employee_name?: string
+          employee_role?: string | null
+          expires_at?: string
+          id?: string
+          opened_at?: string | null
+          status?: string
+          token?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "psych_invites_admin_id_fkey"
+            columns: ["admin_id"]
+            isOneToOne: false
+            referencedRelation: "corporate_hr_admins"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "psych_invites_catalog_id_fkey"
+            columns: ["catalog_id"]
+            isOneToOne: false
+            referencedRelation: "psych_assessment_catalog"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "psych_invites_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "corporate_companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      psych_orders: {
+        Row: {
+          admin_id: string | null
+          amount_ugx: number
+          company_id: string
+          created_at: string
+          credits: number
+          currency: string
+          id: string
+          notes: string | null
+          pack_id: string | null
+          paid_at: string | null
+          payer_email: string | null
+          payer_name: string | null
+          payer_phone: string | null
+          payment_method: string | null
+          payment_ref: string | null
+          status: string
+        }
+        Insert: {
+          admin_id?: string | null
+          amount_ugx: number
+          company_id: string
+          created_at?: string
+          credits: number
+          currency?: string
+          id?: string
+          notes?: string | null
+          pack_id?: string | null
+          paid_at?: string | null
+          payer_email?: string | null
+          payer_name?: string | null
+          payer_phone?: string | null
+          payment_method?: string | null
+          payment_ref?: string | null
+          status?: string
+        }
+        Update: {
+          admin_id?: string | null
+          amount_ugx?: number
+          company_id?: string
+          created_at?: string
+          credits?: number
+          currency?: string
+          id?: string
+          notes?: string | null
+          pack_id?: string | null
+          paid_at?: string | null
+          payer_email?: string | null
+          payer_name?: string | null
+          payer_phone?: string | null
+          payment_method?: string | null
+          payment_ref?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "psych_orders_admin_id_fkey"
+            columns: ["admin_id"]
+            isOneToOne: false
+            referencedRelation: "corporate_hr_admins"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "psych_orders_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "corporate_companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "psych_orders_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: false
+            referencedRelation: "psych_credit_packs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      psych_responses: {
+        Row: {
+          answers: Json
+          catalog_id: string
+          company_id: string
+          completed_at: string
+          id: string
+          invite_id: string
+          report: Json
+          scores: Json
+        }
+        Insert: {
+          answers?: Json
+          catalog_id: string
+          company_id: string
+          completed_at?: string
+          id?: string
+          invite_id: string
+          report?: Json
+          scores?: Json
+        }
+        Update: {
+          answers?: Json
+          catalog_id?: string
+          company_id?: string
+          completed_at?: string
+          id?: string
+          invite_id?: string
+          report?: Json
+          scores?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "psych_responses_catalog_id_fkey"
+            columns: ["catalog_id"]
+            isOneToOne: false
+            referencedRelation: "psych_assessment_catalog"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "psych_responses_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "corporate_companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "psych_responses_invite_id_fkey"
+            columns: ["invite_id"]
+            isOneToOne: true
+            referencedRelation: "psych_invites"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       referral_clicks: {
         Row: {
@@ -4018,6 +4534,10 @@ export type Database = {
       get_client_by_token: { Args: { _token: string }; Returns: Json }
       get_client_consent: { Args: { _token: string }; Returns: Json }
       get_client_reactions_by_token: { Args: { _token: string }; Returns: Json }
+      get_company_hr_dashboard_stats: {
+        Args: { _company_id: string; _min_group?: number }
+        Returns: Json
+      }
       get_company_public: {
         Args: { p_company_id: string }
         Returns: {
@@ -4055,6 +4575,10 @@ export type Database = {
         Returns: boolean
       }
       is_client_therapist: { Args: { _client_id: string }; Returns: boolean }
+      is_corporate_hr_admin_for: {
+        Args: { _company_id: string }
+        Returns: boolean
+      }
       lock_campaign_slug: { Args: { _slug: string }; Returns: undefined }
       log_referral_click: {
         Args: { _ip_hash?: string; _slug: string; _user_agent?: string }
@@ -4092,6 +4616,38 @@ export type Database = {
           source_queue: string
         }
         Returns: number
+      }
+      psych_confirm_order_paid: {
+        Args: { _order_id: string; _payment_ref?: string }
+        Returns: Json
+      }
+      psych_create_invite: {
+        Args: {
+          _catalog_id: string
+          _company_id: string
+          _department?: string
+          _employee_email?: string
+          _employee_name: string
+          _employee_role?: string
+        }
+        Returns: Json
+      }
+      psych_create_order: {
+        Args: {
+          _company_id: string
+          _pack_id: string
+          _payer_email?: string
+          _payer_name?: string
+          _payer_phone?: string
+          _payment_method?: string
+        }
+        Returns: Json
+      }
+      psych_get_invite_public: { Args: { _token: string }; Returns: Json }
+      psych_hr_overview: { Args: { _company_id: string }; Returns: Json }
+      psych_submit_response: {
+        Args: { _answers: Json; _report: Json; _scores: Json; _token: string }
+        Returns: Json
       }
       read_email_batch: {
         Args: { batch_size: number; queue_name: string; vt: number }
