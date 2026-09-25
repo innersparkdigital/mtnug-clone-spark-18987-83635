@@ -2443,6 +2443,66 @@ export type Database = {
         }
         Relationships: []
       }
+      manual_password_reset_requests: {
+        Row: {
+          account_id: string
+          account_type: string
+          admin_notification_error: string | null
+          admin_notified_at: string | null
+          completed_at: string | null
+          consumed_at: string | null
+          created_at: string
+          expires_at: string | null
+          id: string
+          identifier_masked: string
+          requested_at: string
+          revealed_at: string | null
+          revealed_by: string | null
+          status: string
+          temp_secret_hash: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          account_id: string
+          account_type: string
+          admin_notification_error?: string | null
+          admin_notified_at?: string | null
+          completed_at?: string | null
+          consumed_at?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          identifier_masked: string
+          requested_at?: string
+          revealed_at?: string | null
+          revealed_by?: string | null
+          status?: string
+          temp_secret_hash?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          account_id?: string
+          account_type?: string
+          admin_notification_error?: string | null
+          admin_notified_at?: string | null
+          completed_at?: string | null
+          consumed_at?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          identifier_masked?: string
+          requested_at?: string
+          revealed_at?: string | null
+          revealed_by?: string | null
+          status?: string
+          temp_secret_hash?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       mindcheck_page_visits: {
         Row: {
           device_type: string | null
@@ -4550,6 +4610,14 @@ export type Database = {
         }
         Returns: boolean
       }
+      admin_set_client_temporary_passcode: {
+        Args: {
+          _client_id: string
+          _request_id: string
+          _temporary_passcode: string
+        }
+        Returns: boolean
+      }
       admin_set_corporate_hr_active: {
         Args: { _active: boolean; _admin_id: string; _company_id: string }
         Returns: boolean
@@ -4615,11 +4683,19 @@ export type Database = {
         Args: { _request_id: string; _status: string }
         Returns: boolean
       }
+      claim_manual_password_reset: {
+        Args: { _admin_id: string; _request_id: string }
+        Returns: boolean
+      }
       clear_mindcheck_data: {
         Args: { tables_to_clear: string[] }
         Returns: Json
       }
       client_snapshot: { Args: { _token: string }; Returns: Json }
+      complete_client_temporary_reset: {
+        Args: { _new_passcode: string; _request_id: string; _token: string }
+        Returns: boolean
+      }
       complete_employee_screening: {
         Args: { _employee_id: string; _gender?: string }
         Returns: boolean
@@ -4834,6 +4910,10 @@ export type Database = {
         Args: { _passcode: string; _token: string }
         Returns: boolean
       }
+      set_or_complete_client_passcode: {
+        Args: { _new_passcode: string; _token: string }
+        Returns: boolean
+      }
       slugify_company_name: { Args: { _name: string }; Returns: string }
       submit_chat_lead: {
         Args: {
@@ -4887,6 +4967,10 @@ export type Database = {
       verify_client_passcode: {
         Args: { _passcode: string; _token: string }
         Returns: boolean
+      }
+      verify_client_portal_credential: {
+        Args: { _passcode: string; _token: string }
+        Returns: Json
       }
     }
     Enums: {
