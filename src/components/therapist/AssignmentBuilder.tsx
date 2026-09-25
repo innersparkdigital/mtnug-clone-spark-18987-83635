@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,7 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { WELLBEING_TOOLS } from "@/lib/wellbeingToolsCatalog";
 import { copyToClipboard } from "@/lib/copyToClipboard";
-import { buildClientPortalUrl } from "@/lib/clientPortalLink";
+import ClientSetupInviteButton from "@/components/ClientSetupInviteButton";
 import ToolPreviewDialog from "./ToolPreviewDialog";
 import { toast } from "sonner";
 import { Loader2, Copy, Mail } from "lucide-react";
@@ -62,10 +62,7 @@ const AssignmentBuilder = ({ client, therapistName, onDone }: Props) => {
   const { sets, loading: setsLoading } = useQuestionSets();
   const activeSets = sets.filter((s) => s.is_active);
 
-  const portalUrl = useMemo(
-    () => buildClientPortalUrl(client.full_name, client.access_token),
-    [client.full_name, client.access_token],
-  );
+  const portalUrl = `${window.location.origin}/client-login`;
 
   const toggle = (key: string) => {
     setSelected((prev) => {
@@ -200,7 +197,7 @@ const AssignmentBuilder = ({ client, therapistName, onDone }: Props) => {
         <CardHeader>
           <CardTitle>Assignment ready 💙</CardTitle>
           <CardDescription>
-            Send the private link to {client.full_name} by email, or copy it to share another way.
+Ask {client.full_name} to use Client login. If they have not set a passcode yet, create a one-time setup invitation first.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
@@ -217,10 +214,11 @@ const AssignmentBuilder = ({ client, therapistName, onDone }: Props) => {
             <Button variant="outline" onClick={copyLink}>
               <Copy className="h-4 w-4 mr-2" /> Copy link
             </Button>
+            <ClientSetupInviteButton clientId={client.id} clientName={client.full_name} />
             <Button variant="ghost" onClick={onDone}>Done</Button>
           </div>
           {!client.email && (
-            <p className="text-xs text-muted-foreground">No email on file — copy the link and share it via WhatsApp.</p>
+            <p className="text-xs text-muted-foreground">No email on file — privately share the one-time setup invitation if this client needs to set a passcode.</p>
           )}
         </CardContent>
       </Card>
