@@ -347,7 +347,7 @@ const ClientDetailPanel = ({ open, onOpenChange, client, therapistName, onAssign
                   </TabsContent>
 
                   <TabsContent value="sessions" className="mt-0">
-                    <SessionFeedbackForm clientId={client.id} />
+                    <SessionFeedbackForm clientId={client.id} onBalanceChange={onAssignmentSaved} />
                   </TabsContent>
 
                   <TabsContent value="assign" className="mt-0">
