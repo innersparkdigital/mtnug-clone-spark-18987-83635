@@ -258,6 +258,10 @@ const Header = () => {
                 </DropdownMenu>
               )}
 
+              {/* Client entry; the login page remains a safe holding screen until server access is ready. */}
+              <Link to="/client-login" className="inline-flex text-xs md:text-sm font-medium text-primary hover:underline whitespace-nowrap">
+                Client login
+              </Link>
               {/* Always-visible primary CTA */}
               <Link to="/specialists">
                 <Button
@@ -284,6 +288,7 @@ const Header = () => {
           {/* Mobile menu */}
           {isMenuOpen && (
             <nav className="lg:hidden py-2 border-t border-border">
+              <Link to="/client-login" onClick={closeMobile} className="block py-3 text-sm font-semibold text-primary">Client login</Link>
               <MobileMegaSection title="For Individuals" items={individualsItems} onNavigate={closeMobile} />
               <MobileMegaSection title="For Business" items={businessItems} onNavigate={closeMobile} />
               <MobileMegaSection title="For Professionals" items={professionalsItems} onNavigate={closeMobile} />
