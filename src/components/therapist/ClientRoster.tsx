@@ -27,6 +27,8 @@ interface Client {
   week_activity?: Array<{ date: string; completed: number }>;
   consent_signed: boolean;
   consent_signed_at: string | null;
+  sessions_purchased?: number | null;
+  sessions_used?: number | null;
 }
 
 interface Props {
@@ -305,6 +307,22 @@ const ClientRoster = ({ therapistId, therapistName }: Props) => {
                         {c.consent_signed ? <CheckCircle2 className="mr-1 h-3 w-3" /> : <Clock3 className="mr-1 h-3 w-3" />}
                         Consent: {c.consent_signed ? "Signed" : "Pending"}
                       </Badge>
+                      {(() => {
+                        const purchased = Number(c.sessions_purchased || 0);
+                        const used = Number(c.sessions_used || 0);
+                        if (purchased <= 0 && used <= 0) return null;
+                        const left = Math.max(purchased - used, 0);
+                        const tone = left <= 0
+                          ? "bg-destructive/10 text-destructive border-destructive/20"
+                          : left <= 2
+                            ? "bg-amber-500/10 text-amber-800 dark:text-amber-300 border-amber-500/20"
+                            : "bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border-emerald-500/20";
+                        return (
+                          <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full border ${tone}`}>
+                            {left} session{left === 1 ? "" : "s"} left
+                          </span>
+                        );
+                      })()}
                     </div>
                     <div className="text-xs text-muted-foreground mt-0.5 truncate">
                       {c.presenting_concern || "No concern recorded"}
