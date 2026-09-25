@@ -11,6 +11,7 @@ import { copyToClipboard } from "@/lib/copyToClipboard";
 import { buildClientPortalUrl } from "@/lib/clientPortalLink";
 import MiniSparkline from "./MiniSparkline";
 import ClientDetailPanel from "./ClientDetailPanel";
+import ClientSetupInviteButton from "@/components/ClientSetupInviteButton";
 import QuestionBankManager, { useQuestionSets } from "./QuestionBankManager";
 
 interface Client {
@@ -288,10 +289,13 @@ const ClientRoster = ({ therapistId, therapistName }: Props) => {
             const targetThisWeek = active * 7 || Math.max(active, 1);
             const hwPct = Math.min(100, Math.round((doneThisWeek / targetThisWeek) * 100));
             return (
-              <button
+              <div
                 key={c.id}
+                role="button"
+                tabIndex={0}
                 onClick={() => openDetail(c)}
-                className="card-calm hover-lift stagger-item text-left w-full"
+                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openDetail(c); } }}
+                className="card-calm hover-lift stagger-item text-left w-full cursor-pointer"
               >
                 <div className="flex items-start gap-3">
                   <div className="h-11 w-11 rounded-full bg-primary/10 text-primary grid place-items-center font-semibold shrink-0">
@@ -339,17 +343,14 @@ const ClientRoster = ({ therapistId, therapistName }: Props) => {
                   </div>
                 </div>
 
-                <div className="mt-3 flex items-center gap-2">
-                  <span
-                    onClick={(e) => { e.stopPropagation(); copyLink(c); }}
-                    role="button"
-                    className="inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full border border-border hover:bg-accent"
-                  >
-                    <Copy className="h-3 w-3" /> Copy link
-                  </span>
+                <div className="mt-3 flex items-center gap-2 flex-wrap" onClick={(e) => e.stopPropagation()} onKeyDown={(e) => e.stopPropagation()}>
+                  <Button type="button" size="sm" variant="outline" onClick={() => copyLink(c)}>
+                    <Copy className="h-3 w-3 mr-1" /> Copy login link
+                  </Button>
+                  <ClientSetupInviteButton clientId={c.id} clientName={c.full_name} />
                   <span className="text-xs text-primary ml-auto">View full analysis →</span>
                 </div>
-              </button>
+              </div>
             );
           })}
         </div>
