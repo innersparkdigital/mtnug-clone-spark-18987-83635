@@ -952,6 +952,115 @@ export type Database = {
           },
         ]
       }
+      client_login_attempts: {
+        Row: {
+          attempted_at: string
+          id: string
+          key_hash: string
+          success: boolean
+        }
+        Insert: {
+          attempted_at?: string
+          id?: string
+          key_hash: string
+          success: boolean
+        }
+        Update: {
+          attempted_at?: string
+          id?: string
+          key_hash?: string
+          success?: boolean
+        }
+        Relationships: []
+      }
+      client_portal_invites: {
+        Row: {
+          client_id: string
+          created_at: string
+          expires_at: string
+          id: string
+          issued_by: string
+          revoked_at: string | null
+          token_hash: string
+          used_at: string | null
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          expires_at: string
+          id?: string
+          issued_by: string
+          revoked_at?: string | null
+          token_hash: string
+          used_at?: string | null
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          issued_by?: string
+          revoked_at?: string | null
+          token_hash?: string
+          used_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_portal_invites_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "therapist_clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      client_portal_sessions: {
+        Row: {
+          client_id: string
+          created_at: string
+          expires_at: string
+          id: string
+          last_seen_at: string
+          purpose: string
+          reset_request_id: string | null
+          revoked_at: string | null
+          revoked_reason: string | null
+          token_hash: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          expires_at: string
+          id?: string
+          last_seen_at?: string
+          purpose?: string
+          reset_request_id?: string | null
+          revoked_at?: string | null
+          revoked_reason?: string | null
+          token_hash: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          last_seen_at?: string
+          purpose?: string
+          reset_request_id?: string | null
+          revoked_at?: string | null
+          revoked_reason?: string | null
+          token_hash?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_portal_sessions_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "therapist_clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       client_referral_events: {
         Row: {
           created_at: string
@@ -4495,6 +4604,21 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      _cp_create_session: {
+        Args: {
+          _client_id: string
+          _purpose: string
+          _reset_request_id?: string
+        }
+        Returns: string
+      }
+      _cp_hash: { Args: { _v: string }; Returns: string }
+      _cp_new_token: { Args: never; Returns: string }
+      _cp_norm_phone: { Args: { _p: string }; Returns: string }
+      _cp_session_client: {
+        Args: { _purpose?: string; _session: string }
+        Returns: string
+      }
       add_submission_reaction: {
         Args: { _emoji: string; _note: string; _submission_id: string }
         Returns: string
@@ -4691,6 +4815,34 @@ export type Database = {
         Args: { tables_to_clear: string[] }
         Returns: Json
       }
+      client_accept_invite: {
+        Args: { _invite: string; _new_passcode: string }
+        Returns: Json
+      }
+      client_complete_reset: {
+        Args: { _new_passcode: string; _session: string }
+        Returns: Json
+      }
+      client_login: {
+        Args: { _contact: string; _passcode: string }
+        Returns: Json
+      }
+      client_logout: { Args: { _session: string }; Returns: boolean }
+      client_session_reactions: { Args: { _session: string }; Returns: Json[] }
+      client_session_save_submission: {
+        Args: {
+          _assignment_tool_id: string
+          _final: boolean
+          _mood_score?: number
+          _payload: Json
+          _safety_flag?: boolean
+          _screening_score?: number
+          _screening_severity?: string
+          _session: string
+        }
+        Returns: Json
+      }
+      client_session_snapshot: { Args: { _session: string }; Returns: Json }
       client_snapshot: { Args: { _token: string }; Returns: Json }
       complete_client_temporary_reset: {
         Args: { _new_passcode: string; _request_id: string; _token: string }
@@ -4801,6 +4953,7 @@ export type Database = {
         Args: { _company_id: string }
         Returns: boolean
       }
+      issue_client_invite: { Args: { _client_id: string }; Returns: Json }
       issue_client_temporary_passcode: {
         Args: {
           _admin_id: string
@@ -4901,6 +5054,7 @@ export type Database = {
         }
         Returns: string
       }
+      revoke_client_sessions: { Args: { _client_id: string }; Returns: number }
       save_tool_submission: {
         Args: {
           _assignment_tool_id: string
