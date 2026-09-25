@@ -85,57 +85,74 @@ const scheduleMatchesDate = (s: Schedule | null | undefined, iso: string): boole
 };
 
 const ClientPortalInner = () => {
-  const { token } = useParams<{ token: string }>();
+  const navigate = useNavigate();
+  const [session] = useState<string | null>(() => getClientSession());
   const [snapshot, setSnapshot] = useState<Snapshot | null>(null);
   const [loading, setLoading] = useState(true);
-  const [unlocked, setUnlocked] = useState(false);
-  const [passcode, setPasscode] = useState("");
-  const [confirmPasscode, setConfirmPasscode] = useState("");
-  const [busy, setBusy] = useState(false);
+  const [loadFailed, setLoadFailed] = useState(false);
   const [activeToolId, setActiveToolId] = useState<string | null>(null);
   const [selectedIso, setSelectedIso] = useState<string>("");
   const [view, setView] = useState<"today" | "all">("today");
-  const [resetOpen, setResetOpen] = useState(false);
-  const [temporaryResetId, setTemporaryResetId] = useState<string | null>(null);
+  const lastServerCheck = useRef(0);
+
+  const endSession = useCallback(async (message?: string) => {
+    setSnapshot(null);
+    setActiveToolId(null);
+    await logoutClient();
+    if (message) toast.info(message);
+    navigate("/client-login", { replace: true });
+  }, [navigate]);
 
   const load = useCallback(async () => {
-    if (!token) return;
-    const { data, error } = await supabase.rpc("client_snapshot", { _token: token });
-    if (error) console.error(error);
-    const snap = (data as unknown as Snapshot) ?? null;
+    if (!session) return;
+    lastServerCheck.current = Date.now();
+    const { data, error } = await supabase.rpc("client_session_snapshot", { _session: session });
+    if (error || !data) {
+      if (!error || isSessionError(error)) return endSession("Please sign in again.");
+      setLoadFailed(true);
+      setLoading(false);
+      return;
+    }
+    const snap = data as unknown as Snapshot;
     setSnapshot(snap);
-    if (snap?.today && !selectedIso) setSelectedIso(snap.today);
+    setLoadFailed(false);
+    setSelectedIso((cur) => cur || snap.today);
     setLoading(false);
-  }, [token, selectedIso]);
-
-  useEffect(() => { load(); }, [load]);
-
-  const lockPortal = useCallback(() => {
-    setUnlocked(false);
-    setActiveToolId(null);
-    setPasscode("");
-    setConfirmPasscode("");
-    setTemporaryResetId(null);
-  }, []);
+  }, [session, endSession]);
 
   useEffect(() => {
-    if (!unlocked) return;
+    if (!session) { navigate("/client-login", { replace: true }); return; }
+    load();
+  }, [session, load, navigate]);
+
+  // Cross-tab logout, visibility recheck, 30-minute inactivity.
+  useEffect(() => {
+    if (!session) return;
     let last = Date.now();
-    const bump = () => { last = Date.now(); };
+    const bump = () => {
+      last = Date.now();
+      // keep the server-side idle timer in step with real activity
+      if (Date.now() - lastServerCheck.current > 10 * 60 * 1000) load();
+    };
     const timer = window.setInterval(() => {
-      if (Date.now() - last > IDLE_MS) {
-        lockPortal();
-        toast.info("Locked after 30 minutes of quiet.");
-      }
-    }, 60000);
-    window.addEventListener("click", bump);
-    window.addEventListener("keydown", bump);
+      if (Date.now() - last > CLIENT_IDLE_MS) endSession("Signed out after 30 minutes of quiet.");
+    }, 30000);
+    const onVisible = () => {
+      if (document.visibilityState !== "visible") return;
+      if (Date.now() - last > CLIENT_IDLE_MS) endSession("Signed out after 30 minutes of quiet.");
+      else load();
+    };
+    const offTabs = onCrossTabLogout(() => { clearClientSession(); setSnapshot(null); navigate("/client-login", { replace: true }); });
+    const evts = ["click", "keydown", "touchstart", "scroll"] as const;
+    evts.forEach((e) => window.addEventListener(e, bump, { passive: true }));
+    document.addEventListener("visibilitychange", onVisible);
     return () => {
       window.clearInterval(timer);
-      window.removeEventListener("click", bump);
-      window.removeEventListener("keydown", bump);
+      evts.forEach((e) => window.removeEventListener(e, bump));
+      document.removeEventListener("visibilitychange", onVisible);
+      offTabs();
     };
-  }, [unlocked, lockPortal]);
+  }, [session, load, endSession, navigate]);
 
   const today = useMemo(() => new Date(), []);
   const weekDates = useWeekWindow(today);
