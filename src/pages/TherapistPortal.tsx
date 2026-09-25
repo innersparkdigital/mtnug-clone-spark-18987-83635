@@ -264,36 +264,37 @@ const TherapistPortal = () => {
   return (
     <CalmThemeRoot className="min-h-screen bg-background">
       <header className="border-b bg-background/95 backdrop-blur sticky top-0 z-30">
-        <div className="max-w-5xl mx-auto flex items-center justify-between p-4 gap-3">
+        <div className="max-w-5xl mx-auto flex items-center justify-between px-4 sm:px-6 py-3.5 gap-3">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="h-10 w-10 rounded-2xl bg-primary/10 grid place-items-center shrink-0">
+            <div className="h-11 w-11 rounded-2xl bg-primary/10 grid place-items-center shrink-0 ring-1 ring-primary/10">
               <Stethoscope className="h-5 w-5 text-primary" />
             </div>
             <div className="min-w-0">
-              <div className="font-semibold truncate">{account.full_name}</div>
+              <div className="font-semibold truncate tracking-tight">{account.full_name}</div>
               <div className="text-xs text-muted-foreground truncate">
                 {account.specialisation || "Therapist"} · Clinical workspace
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             <CalmThemeToggle />
-            <Button variant="ghost" size="sm" onClick={() => signOut()}>
-              <LogOut className="h-4 w-4 mr-2" /> Sign out
+            <Button variant="ghost" size="sm" className="rounded-xl" onClick={() => signOut()}>
+              <LogOut className="h-4 w-4 sm:mr-2" />
+              <span className="hidden sm:inline">Sign out</span>
             </Button>
           </div>
         </div>
       </header>
-      <main className="max-w-5xl mx-auto p-4 sm:p-6 space-y-6">
-        <div className="rounded-2xl border bg-card p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-primary mb-1">Today</p>
+      <main className="max-w-5xl mx-auto p-4 sm:p-6 space-y-5">
+        <div className="rounded-2xl border border-primary/10 bg-gradient-to-br from-primary/[0.06] via-card to-card p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-3 justify-between shadow-sm">
+          <div className="min-w-0">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-primary mb-1">Your caseload</p>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-xl">
-              Risk-sorted roster below. Open a client for homework, consent and safety flags.
-              Session calendars stay with ops — your clinical tools live here.
+              Clients are sorted by risk. Open anyone for sessions, homework and consent.
+              When you log a session, set sessions left so admin trackers stay in sync.
             </p>
           </div>
-          <span className="inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium text-muted-foreground self-start">
+          <span className="inline-flex items-center rounded-full border bg-background/80 px-3 py-1.5 text-xs font-medium text-muted-foreground self-start shadow-sm">
             <ShieldCheck className="h-3.5 w-3.5 mr-1.5 text-primary" />
             Private to you
           </span>
