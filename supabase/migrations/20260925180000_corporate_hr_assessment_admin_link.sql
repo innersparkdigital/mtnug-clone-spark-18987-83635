@@ -49,6 +49,16 @@ DROP POLICY IF EXISTS psych_invites_hr_upd ON public.psych_invites;
 REVOKE UPDATE ON public.corporate_hr_admins FROM authenticated;
 GRANT UPDATE (consent_accepted_at, consent_version, must_change_password) ON public.corporate_hr_admins TO authenticated;
 
+CREATE OR REPLACE FUNCTION public.admin_set_corporate_hr_active(_company_id uuid, _admin_id uuid, _active boolean)
+RETURNS boolean LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
+BEGIN
+  IF NOT COALESCE(public.has_role(auth.uid(), 'admin'), false) THEN RAISE EXCEPTION 'not authorized'; END IF;
+  UPDATE public.corporate_hr_admins SET is_active = _active, updated_at = now() WHERE id = _admin_id AND company_id = _company_id;
+  RETURN FOUND;
+END; $$;
+REVOKE ALL ON FUNCTION public.admin_set_corporate_hr_active(uuid, uuid, boolean) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.admin_set_corporate_hr_active(uuid, uuid, boolean) TO authenticated;
+
 CREATE OR REPLACE FUNCTION public.admin_update_corporate_request(_request_id uuid, _status text)
 RETURNS boolean LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
 BEGIN
