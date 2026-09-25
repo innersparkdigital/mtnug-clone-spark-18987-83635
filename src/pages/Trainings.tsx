@@ -1,4 +1,6 @@
 import { Helmet } from "react-helmet";
+import PhoneField from "@/components/PhoneField";
+import { isValidE164 } from "@/lib/phoneCountries";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Calendar, Clock, Users, MapPin, CheckCircle, AlertCircle, ArrowRight, Phone } from "lucide-react";
@@ -403,13 +405,10 @@ const Trainings = () => {
                     </div>
                     <div className="sm:col-span-2">
                       <Label htmlFor="phone_number">Phone Number *</Label>
-                      <Input
+                      <PhoneField
                         id="phone_number"
-                        type="tel"
                         value={formData.phone_number}
-                        onChange={(e) => setFormData({ ...formData, phone_number: e.target.value })}
-                        required
-                        maxLength={20}
+                        onChange={(v) => setFormData((p) => ({ ...p, phone_number: v }))}
                       />
                     </div>
                   </div>

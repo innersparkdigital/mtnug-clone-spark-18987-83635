@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import PhoneField from "@/components/PhoneField";
+import { isValidE164 } from "@/lib/phoneCountries";
 import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
@@ -293,13 +295,10 @@ const Contact = () => {
                   <label htmlFor="phone" className="block text-sm font-medium text-foreground mb-2">
                     {t.phoneNumber}
                   </label>
-                  <Input
+                  <PhoneField
                     id="phone"
-                    name="phone"
-                    type="tel"
                     value={formData.phone}
-                    onChange={handleChange}
-                    placeholder={t.phonePlaceholder}
+                    onChange={(v) => setFormData((p: any) => ({ ...p, phone: v }))}
                   />
                 </div>
 

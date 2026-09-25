@@ -1,4 +1,6 @@
 import { Helmet } from "react-helmet";
+import PhoneField from "@/components/PhoneField";
+import { isValidE164 } from "@/lib/phoneCountries";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -452,13 +454,9 @@ const ForProfessionals = () => {
                     <div className="grid md:grid-cols-2 gap-6">
                       <div>
                         <label className="block text-sm font-medium text-foreground mb-2">Phone Number *</label>
-                        <Input
-                          type="tel"
-                          required
+                        <PhoneField
                           value={formData.phone}
-                          onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                          placeholder="+256 700 000 000"
-                          className="bg-background"
+                          onChange={(v) => setFormData((p) => ({ ...p, phone: v }))}
                         />
                       </div>
                       <div>

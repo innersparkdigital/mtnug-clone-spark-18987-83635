@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import PhoneField from "@/components/PhoneField";
+import { isValidE164 } from "@/lib/phoneCountries";
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -142,7 +144,7 @@ const B2BScreeningBookingSection = () => {
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="b2b-phone">Phone</Label>
-                  <Input id="b2b-phone" type="tel" value={form.contact_phone} onChange={(e) => update('contact_phone', e.target.value)} placeholder="+256..." />
+                  <PhoneField id="b2b-phone" value={form.contact_phone} onChange={(v) => update('contact_phone', v)} />
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="b2b-count">Approx. employees</Label>
