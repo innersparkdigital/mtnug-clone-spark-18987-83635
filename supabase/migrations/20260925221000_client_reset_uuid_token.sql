@@ -44,10 +44,13 @@ returns boolean language plpgsql security definer set search_path = public, exte
 declare cid uuid; rid uuid;
 begin
   if length(_new_passcode) < 6 then return false; end if;
-  select id into cid from public.therapist_clients where access_token::text = _token limit 1;
+  select id into cid from public.therapist_clients where access_token::text = _token and passcode_hash is null limit 1;
   if cid is null then return false; end if;
   select id into rid from public.manual_password_reset_requests
     where account_type='client' and account_id=cid and status='used' order by consumed_at desc limit 1;
+  -- Never let possession of a portal URL overwrite an existing passcode or an active reset.
+  if rid is null and exists (select 1 from public.manual_password_reset_requests
+    where account_type='client' and account_id=cid) then return false; end if;
   update public.therapist_clients set passcode_hash=crypt(_new_passcode, gen_salt('bf')) where id=cid;
   if rid is not null then
     update public.manual_password_reset_requests set status='completed', completed_at=now(), updated_at=now()
