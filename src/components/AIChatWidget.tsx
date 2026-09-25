@@ -417,14 +417,14 @@ const AIChatWidget = () => {
     setReminderSubmitting(true);
     setLeadError(null);
     try {
-      await supabase.from("chat_leads").insert({
-        session_id: sessionId,
-        anonymous_id: getAnonId(),
-        phone,
-        intent: "whatsapp_reminder",
-        source_path: window.location.pathname,
-        message: "User asked for a WhatsApp reminder when ready.",
+      const { error } = await supabase.rpc("submit_chat_lead", {
+        _session_id: sessionId,
+        _anonymous_id: getAnonId(),
+        _phone: phone,
+        _intent: "whatsapp_reminder",
+        _source_path: window.location.pathname,
       });
+      if (error) throw error;
       setReminderSubmitted(true);
       logEvent("reminder_captured", { phone });
       trackEvent("ai_chat_reminder_captured");

@@ -209,7 +209,7 @@ const AdminClientsTab = () => {
       }
     }
     const amount = Number(val(r, "amount_ugx") || 0);
-    const therapistShare = e.therapist_share_ugx ?? r.therapist_share_ugx ?? (amount ? Math.round(amount * 0.6) : null);
+    const therapistShare = e.therapist_share_ugx ?? r.therapist_share_ugx ?? (amount ? Math.round(amount * 0.85) : null);
     const { error } = await supabase.rpc("admin_update_client_tracker" as any, {
       _client_id: r.id,
       _session_type: val(r, "session_type") ?? null,
@@ -489,7 +489,7 @@ const AdminClientsTab = () => {
                     const dirty = !!edits[r.id];
                     const open = expandedId === r.id;
                     const amount = Number(val(r, "amount_ugx") || 0);
-                    const tShare = Number(val(r, "therapist_share_ugx") ?? (amount ? Math.round(amount * 0.6) : 0));
+                    const tShare = Number(val(r, "therapist_share_ugx") ?? (amount ? Math.round(amount * 0.85) : 0));
                     const paid = (val(r, "paid_status") as string) || "";
                     const clientType = (val(r, "client_type") as string) || "new";
                     return (
@@ -661,7 +661,7 @@ const AdminClientsTab = () => {
                                   <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Money & actions</p>
                                   <div>
                                     <Label className="text-[11px] text-muted-foreground">Therapist share (UGX)</Label>
-                                    <Input type="number" className="h-8 text-xs mt-1" value={(val(r, "therapist_share_ugx") as number) ?? (amount ? Math.round(amount * 0.6) : "")} onChange={(e) => setVal(r.id, "therapist_share_ugx", e.target.value)} />
+                                    <Input type="number" className="h-8 text-xs mt-1" value={(val(r, "therapist_share_ugx") as number) ?? (amount ? Math.round(amount * 0.85) : "")} onChange={(e) => setVal(r.id, "therapist_share_ugx", e.target.value)} />
                                   </div>
                                   <p><span className="text-muted-foreground">InnerSpark share:</span> {amount ? fmtUGX(amount - tShare) : "—"}</p>
                                   <p>
