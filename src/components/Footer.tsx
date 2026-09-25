@@ -45,6 +45,7 @@ const Footer = () => {
               <li><Link to="/blog/corporate-wellbeing-screening-uganda" className="hover:text-primary transition-colors">Corporate Screening — UGX 7,500</Link></li>
               <li><Link to="/learning" className="hover:text-primary transition-colors">Learning Hub</Link></li>
               <li><Link to="/corporate-wellbeing-check" className="hover:text-primary transition-colors">Corporate Screening</Link></li>
+              <li><Link to="/corporate-assessments" className="hover:text-primary transition-colors">Psychometric Assessments</Link></li>
               <li><Link to="/events-training/trainings" className="hover:text-primary transition-colors">S.P.A.R.K Training</Link></li>
             </ul>
             <h4 className="font-display text-base font-semibold mt-6 mb-3">For Therapists</h4>

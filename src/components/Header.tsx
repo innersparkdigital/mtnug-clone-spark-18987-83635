@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Menu, X, User, LogOut, Phone, MessageCircle, Shield, ChevronDown, ChevronRight, Heart, Users, Brain, GraduationCap, Building2, Stethoscope, FileText, Smartphone, MessagesSquare, ClipboardCheck, BookOpen, HandHeart } from "lucide-react";
+import { Menu, X, User, LogOut, Phone, MessageCircle, Shield, ChevronDown, ChevronRight, Heart, Users, Brain, GraduationCap, Building2, Stethoscope, FileText, Smartphone, MessagesSquare, ClipboardCheck, BookOpen, HandHeart, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import logo from "@/assets/innerspark-logo.webp";
@@ -35,6 +35,7 @@ const businessItems: MegaItem[] = [
   { label: "Corporate Wellness", description: "EAP & employee mental health plans", to: "/for-business", icon: Building2 },
   { label: "S.P.A.R.K Training", description: "In-person & virtual workplace training", to: "/events-training/trainings", icon: GraduationCap },
   { label: "Employee Screening", description: "Confidential corporate wellbeing checks", to: "/corporate-wellbeing-check", icon: ClipboardCheck },
+  { label: "Psychometric Assessments", description: "Licensed workplace tests — buy credits, invite staff", to: "/corporate-assessments", icon: BarChart3 },
   { label: "Learning Hub", description: "Self-paced workplace mental health courses", to: "/learning", icon: BookOpen },
   { label: "Request Proposal", description: "Custom plan for your organisation", to: "/contact?type=corporate", icon: FileText },
   { label: "Donate Therapy", description: "Sponsor sessions for those in need", to: "/donate-therapy", icon: HandHeart },
