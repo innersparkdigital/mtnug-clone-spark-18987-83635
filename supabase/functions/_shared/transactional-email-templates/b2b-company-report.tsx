@@ -230,7 +230,7 @@ const Email = ({
               <Section style={listBox}>
                 <Text style={listItem}>Total enrolled: <strong>{total_employees}</strong> · Completed: <strong>{total_completed}</strong> · Pending: <strong>{Math.max(0, (total_employees || 0) - (total_completed || 0))}</strong> · Rate: <strong>{completion_rate}%</strong></Text>
                 <Text style={{ ...listItem, fontWeight: 700 as const, marginTop: '8px' }}>Gender breakdown (enrolled / completed)</Text>
-                {gender_breakdown.map((g) => (
+                {(gender_breakdown ?? []).map((g) => (
                   <Text key={g.label} style={listItem}>• {g.label}: {g.enrolled} enrolled / {g.completed} completed</Text>
                 ))}
               </Section>
@@ -244,7 +244,7 @@ const Email = ({
               <Heading as="h3" style={h3}>📋 Per-question averages</Heading>
               {ov('per_question') ? <OverrideBlock text={ov('per_question')!} /> : (
               <Section style={listBox}>
-                {question_averages.map((q) => (
+                {(question_averages ?? []).map((q) => (
                   <Text key={q.short_label} style={listItem}>
                     {dotFor(q.status)} <strong>{q.short_label}</strong> — {q.avg}% <span style={{ fontSize: '11px', color: '#888' }}>({q.flag_name})</span>
                   </Text>
