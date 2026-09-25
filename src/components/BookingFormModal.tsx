@@ -38,6 +38,7 @@ import { trackGadsBookingConversion, trackGadsWhatsAppClick, trackGadsThankYouCo
 import { supabase } from "@/integrations/supabase/client";
 import { getReferralCookie } from "@/lib/referralCookie";
 import { captureAdAttribution } from "@/lib/adAttribution";
+import { MARKET_LANDINGS } from "@/data/marketLandings";
 
 interface BookingFormModalProps {
   isOpen: boolean;
@@ -48,9 +49,9 @@ interface BookingFormModalProps {
 type TherapyType = "individual" | "couples" | "teen";
 
 const THERAPY_OPTIONS: { id: TherapyType; title: string; subtitle: string; icon: any; color: string; ugx: number; fromUgx: number }[] = [
-  { id: "individual", title: "Individual", subtitle: "For myself", icon: User, color: "from-emerald-500 to-emerald-600", ugx: 75000, fromUgx: 30000 },
+  { id: "individual", title: "Individual", subtitle: "For myself", icon: User, color: "from-emerald-500 to-emerald-600", ugx: 75000, fromUgx: 75000 },
   { id: "couples", title: "Couples", subtitle: "For me and my partner", icon: Heart, color: "from-sky-500 to-sky-600", ugx: 120000, fromUgx: 120000 },
-  { id: "teen", title: "Teen", subtitle: "For my child", icon: Users, color: "from-amber-500 to-amber-600", ugx: 75000, fromUgx: 30000 },
+  { id: "teen", title: "Teen", subtitle: "For my child", icon: Users, color: "from-amber-500 to-amber-600", ugx: 75000, fromUgx: 75000 },
 ];
 
 const GENDER_OPTIONS = ["Woman", "Man", "Non-binary", "Prefer not to say"];
@@ -146,22 +147,35 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
     }
   }, [isOpen]);
 
-  const isKenya = useMemo(
-    () => /^\/(kenya|check\/kenya)/i.test(location.pathname),
-    [location.pathname]
-  );
+  // Local currency for country pages (e.g. /nigeria, /kenya, ?market=ghana)
+  const localMarket = useMemo(() => {
+    const fromPath = location.pathname.match(/^\/(?:check\/)?([a-z]+)/i)?.[1]?.toLowerCase() || "";
+    const fromQuery = new URLSearchParams(location.search).get("market")?.toLowerCase() || "";
+    const key = [fromQuery, fromPath].find((k) => k === "kenya" || (k && MARKET_LANDINGS[k])) || "";
+    if (key === "kenya") return { currency: "KES", perUgx: 2600 / 75000 };
+    const m = key ? MARKET_LANDINGS[key] : undefined;
+    if (!m || m.currency === "UGX") return null;
+    return { currency: m.currency, perUgx: m.videoAmount / 75000 };
+  }, [location.pathname, location.search]);
+  const isKenya = localMarket?.currency === "KES";
 
-  const therapyPriceLabel = isKenya
-    ? "from KES 1,000 / session"
-    : `from UGX 30,000 (~${usd(30000)}) / session`;
-  const groupPriceLabel = isKenya ? "KES 1,000 (~$8) / week" : `UGX 25,000 (~${usd(25000)}) / week`;
+  const money = (ugx: number) => {
+    if (!localMarket) return `UGX ${ugx.toLocaleString()} (~${usd(ugx)})`;
+    const raw = ugx * localMarket.perUgx;
+    const step = raw >= 10000 ? 500 : raw >= 1000 ? 100 : 1;
+    const amt = Math.round(raw / step) * step;
+    return localMarket.currency === "USD" ? `$${amt.toLocaleString()}` : `${localMarket.currency} ${amt.toLocaleString()}`;
+  };
+
+  const therapyPriceLabel = `from ${money(30000)} / session`;
+  const groupPriceLabel = `${money(25000)} / week`;
 
   const selectedFormat = SESSION_FORMATS.find((f) => f.id === data.sessionFormat);
 
   const priceLabel = useMemo(() => {
     if (isGroup) return groupPriceLabel;
     if (isConsultation) return "FREE Consultation";
-    if (selectedFormat) return `UGX ${selectedFormat.ugx.toLocaleString()} (~${usd(selectedFormat.ugx)}) · ${selectedFormat.detail}`;
+    if (selectedFormat) return `${money(selectedFormat.ugx)} · ${selectedFormat.detail}`;
     return therapyPriceLabel;
   }, [isGroup, isConsultation, therapyPriceLabel, groupPriceLabel, selectedFormat]);
 
@@ -374,9 +388,7 @@ const BookingFormModal = ({ isOpen, onClose, formType }: BookingFormModalProps) 
                     <div className="text-lg font-bold">{opt.title}</div>
                     <div className="text-xs opacity-90 mb-2">{opt.subtitle}</div>
                     <div className="text-xs font-semibold bg-white/20 rounded px-2 py-1 inline-block">
-                      {isKenya
-                        ? therapyPriceLabel
-                        : `from UGX ${opt.fromUgx.toLocaleString()} (~${usd(opt.fromUgx)}) / session`}
+                      {`${money(opt.fromUgx)} / session`}
                     </div>
                     {selected && (
                       <CheckCircle className="absolute top-2 right-2 h-5 w-5" />
