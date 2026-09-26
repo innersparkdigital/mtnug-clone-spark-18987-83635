@@ -552,7 +552,7 @@ const CorporateAdmin = () => {
                   {selectedCompany ? selectedCompany.name : 'Corporate Wellbeing Admin'}
                 </h1>
                 <p className="text-sm text-muted-foreground">
-                  {selectedCompany ? `${selectedCompany.industry || 'Company'} • ${totalEmployees} employees` : 'Manage companies, employees, and screening analytics'}
+                  {selectedCompany ? `${selectedCompany.industry || 'Company'} • ${totalEmployees} employees` : 'Manage companies, company dashboards, employees, and screening analytics'}
                 </p>
                 {selectedCompany?.context_notes && (
                   <details className="mt-2 max-w-3xl">
