@@ -78,8 +78,7 @@ import {
   DollarSign,
   Link2,
   Globe,
-  KeyRound,
-  Building2
+  KeyRound
 } from 'lucide-react';
 import {
   ChartContainer,
