@@ -577,6 +577,7 @@ const CorporateAdmin = () => {
                 <DialogTrigger asChild>
                   <Button><Plus className="w-4 h-4 mr-2" /> Create Company</Button>
                 </DialogTrigger>
+                {/* form dialog: scrollable body + sticky Create button */}
                 <DialogContent>
                   <DialogHeader><DialogTitle>Create Company</DialogTitle></DialogHeader>
                   <div className="space-y-3">
