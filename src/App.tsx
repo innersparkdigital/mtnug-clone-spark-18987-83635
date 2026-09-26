@@ -591,6 +591,21 @@ const App = () => (
                 <Route path="/online-therapy-ghana" element={<GlobalLanding slug="online-therapy-ghana" />} />
                 <Route path="/online-therapy-south-africa" element={<GlobalLanding slug="online-therapy-south-africa" />} />
                 <Route path="/online-therapy-tanzania" element={<GlobalLanding slug="online-therapy-tanzania" />} />
+                {/* Keyword aliases → local-currency market pages */}
+                <Route path="/therapy-in-nigeria" element={<Navigate to="/nigeria" replace />} />
+                <Route path="/therapy-in-ghana" element={<Navigate to="/ghana" replace />} />
+                <Route path="/therapy-in-tanzania" element={<Navigate to="/tanzania" replace />} />
+                <Route path="/therapy-in-kenya" element={<Navigate to="/kenya" replace />} />
+                <Route path="/therapy-in-gambia" element={<Navigate to="/gambia" replace />} />
+                <Route path="/therapy-in-the-gambia" element={<Navigate to="/gambia" replace />} />
+                <Route path="/therapy-in-south-africa" element={<Navigate to="/online-therapy-south-africa" replace />} />
+                <Route path="/therapy-for-africans-abroad" element={<Navigate to="/online-therapy-diaspora" replace />} />
+                <Route path="/therapy-for-africans-in-the-usa" element={<Navigate to="/usa" replace />} />
+                <Route path="/therapy-for-students-africa" element={<GlobalLanding slug="therapy-for-students-africa" />} />
+                <Route path="/online-therapy-nigeria" element={<GlobalLanding slug="online-therapy-nigeria" />} />
+                <Route path="/online-therapy-ghana" element={<GlobalLanding slug="online-therapy-ghana" />} />
+                <Route path="/online-therapy-south-africa" element={<GlobalLanding slug="online-therapy-south-africa" />} />
+                <Route path="/online-therapy-tanzania" element={<GlobalLanding slug="online-therapy-tanzania" />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
               </Suspense>
