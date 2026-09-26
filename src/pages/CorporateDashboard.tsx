@@ -11,8 +11,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Loader2, ShieldCheck, Users, Activity, TrendingUp, AlertTriangle,
-  CalendarDays, BookOpen, Send, Lock, ArrowLeft, Home,
+  CalendarDays, BookOpen, Send, Lock, ArrowLeft, Home, ClipboardList, Lightbulb,
 } from "lucide-react";
+import { HR_FOCUS_STRATEGIES } from "@/lib/hrFocusStrategies";
 import { toast } from "sonner";
 
 const CONSENT_VERSION = "corporate-dashboard-v1";
