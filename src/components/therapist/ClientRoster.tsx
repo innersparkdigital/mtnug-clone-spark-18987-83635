@@ -81,7 +81,22 @@ const ClientRoster = ({ therapistId, therapistName }: Props) => {
   const [loading, setLoading] = useState(true);
   const [addOpen, setAddOpen] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [form, setForm] = useState({ full_name: "", email: "", phone: "", presenting_concern: "" });
+  const [form, setForm] = useState({
+    full_name: "",
+    email: "",
+    phone: "",
+    presenting_concern: "",
+    client_category: "adult" as "adult" | "child",
+    date_of_birth: "",
+    age: "",
+    parent_name: "",
+    parent_relationship: "",
+    parent_contact: "",
+    parent_email: "",
+    emergency_contact_name: "",
+    emergency_contact_relationship: "",
+    emergency_contact_phone: "",
+  });
   const [detailFor, setDetailFor] = useState<Client | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
 
@@ -160,6 +175,10 @@ const ClientRoster = ({ therapistId, therapistName }: Props) => {
 
   const addClient = async () => {
     if (!form.full_name.trim()) return toast.error("Client name required.");
+    const isMinor = form.client_category === "child";
+    if (isMinor && !form.parent_name.trim()) {
+      return toast.error("Parent / guardian name is required for a child client.");
+    }
     setBusy(true);
     const { error } = await supabase.from("therapist_clients").insert({
       therapist_id: therapistId,
@@ -167,12 +186,41 @@ const ClientRoster = ({ therapistId, therapistName }: Props) => {
       email: form.email.trim() || null,
       phone: form.phone.trim() || null,
       presenting_concern: form.presenting_concern.trim() || null,
+      is_minor: isMinor,
+      date_of_birth: form.date_of_birth || null,
+      age: form.age ? Number(form.age) : null,
+      parent_name: isMinor ? form.parent_name.trim() : null,
+      parent_relationship: isMinor ? form.parent_relationship.trim() || null : null,
+      parent_contact: isMinor ? form.parent_contact.trim() || null : null,
+      parent_email: isMinor ? form.parent_email.trim() || null : null,
+      emergency_contact_name: form.emergency_contact_name.trim() || null,
+      emergency_contact_relationship: form.emergency_contact_relationship.trim() || null,
+      emergency_contact_phone: form.emergency_contact_phone.trim() || null,
     });
     setBusy(false);
     if (error) return toast.error(error.message);
-    setForm({ full_name: "", email: "", phone: "", presenting_concern: "" });
+    setForm({
+      full_name: "",
+      email: "",
+      phone: "",
+      presenting_concern: "",
+      client_category: "adult",
+      date_of_birth: "",
+      age: "",
+      parent_name: "",
+      parent_relationship: "",
+      parent_contact: "",
+      parent_email: "",
+      emergency_contact_name: "",
+      emergency_contact_relationship: "",
+      emergency_contact_phone: "",
+    });
     setAddOpen(false);
-    toast.success("Client added.");
+    toast.success(
+      isMinor
+        ? "Child client added. Consent link will ask the parent/guardian to sign."
+        : "Client added.",
+    );
     load();
   };
 
@@ -255,22 +303,91 @@ const ClientRoster = ({ therapistId, therapistName }: Props) => {
               <DialogTitle>Add a client</DialogTitle>
               <DialogDescription>Only you can see this client's information.</DialogDescription>
             </DialogHeader>
-            <div className="space-y-3">
+            <div className="space-y-3 max-h-[70vh] overflow-y-auto pr-1">
               <div>
-                <Label>Full name</Label>
-                <Input value={form.full_name} onChange={(e) => setForm({ ...form, full_name: e.target.value })} />
+                <Label>Client type</Label>
+                <div className="mt-1.5 inline-flex rounded-lg border p-1 bg-muted/40 w-full">
+                  {(["adult", "child"] as const).map((m) => (
+                    <button
+                      key={m}
+                      type="button"
+                      onClick={() => setForm({ ...form, client_category: m })}
+                      className={`flex-1 px-3 py-1.5 text-sm rounded-md transition ${
+                        form.client_category === m ? "bg-background shadow font-medium" : "text-muted-foreground"
+                      }`}
+                    >
+                      {m === "adult" ? "Adult (18+)" : "Child / minor"}
+                    </button>
+                  ))}
+                </div>
               </div>
               <div>
-                <Label>Email (optional)</Label>
+                <Label>{form.client_category === "child" ? "Child's full name" : "Full name"}</Label>
+                <Input value={form.full_name} onChange={(e) => setForm({ ...form, full_name: e.target.value })} />
+              </div>
+              {form.client_category === "child" && (
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <Label>Date of birth</Label>
+                    <Input type="date" value={form.date_of_birth} onChange={(e) => setForm({ ...form, date_of_birth: e.target.value })} />
+                  </div>
+                  <div>
+                    <Label>Age</Label>
+                    <Input type="number" min={0} max={17} value={form.age} onChange={(e) => setForm({ ...form, age: e.target.value })} />
+                  </div>
+                </div>
+              )}
+              <div>
+                <Label>{form.client_category === "child" ? "Child email (optional)" : "Email (optional)"}</Label>
                 <Input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
               </div>
               <div>
-                <Label>Phone / WhatsApp (optional)</Label>
+                <Label>{form.client_category === "child" ? "Child phone (optional)" : "Phone / WhatsApp (optional)"}</Label>
                 <Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
               </div>
+              {form.client_category === "child" && (
+                <div className="space-y-3 rounded-lg border p-3 bg-muted/20">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    Parent / guardian (required for consent)
+                  </p>
+                  <div>
+                    <Label>Parent's full name *</Label>
+                    <Input value={form.parent_name} onChange={(e) => setForm({ ...form, parent_name: e.target.value })} />
+                  </div>
+                  <div>
+                    <Label>Relationship</Label>
+                    <Input placeholder="Mother / Father / Guardian…" value={form.parent_relationship} onChange={(e) => setForm({ ...form, parent_relationship: e.target.value })} />
+                  </div>
+                  <div>
+                    <Label>Parent phone / WhatsApp</Label>
+                    <Input value={form.parent_contact} onChange={(e) => setForm({ ...form, parent_contact: e.target.value })} />
+                  </div>
+                  <div>
+                    <Label>Parent email</Label>
+                    <Input type="email" value={form.parent_email} onChange={(e) => setForm({ ...form, parent_email: e.target.value })} />
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    The consent link will show the <strong>parent informed consent</strong> form for the guardian to sign.
+                  </p>
+                </div>
+              )}
               <div>
                 <Label>Presenting concern (optional)</Label>
                 <Input value={form.presenting_concern} onChange={(e) => setForm({ ...form, presenting_concern: e.target.value })} />
+              </div>
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+                <div>
+                  <Label>Emergency contact</Label>
+                  <Input value={form.emergency_contact_name} onChange={(e) => setForm({ ...form, emergency_contact_name: e.target.value })} />
+                </div>
+                <div>
+                  <Label>Relationship</Label>
+                  <Input value={form.emergency_contact_relationship} onChange={(e) => setForm({ ...form, emergency_contact_relationship: e.target.value })} />
+                </div>
+                <div>
+                  <Label>Emergency phone</Label>
+                  <Input value={form.emergency_contact_phone} onChange={(e) => setForm({ ...form, emergency_contact_phone: e.target.value })} />
+                </div>
               </div>
               <Button onClick={addClient} disabled={busy} className="w-full">
                 {busy && <Loader2 className="h-4 w-4 animate-spin mr-2" />} Save client
