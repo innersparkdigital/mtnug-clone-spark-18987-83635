@@ -623,6 +623,7 @@ export default function CorporateDashboard() {
         <meta name="robots" content="noindex,nofollow" />
       </Helmet>
 
+      {/* header starts below — back-to-home is injected via class on first nav row */}
       <header className="sticky top-0 z-30 border-b bg-white/90 backdrop-blur-md" style={{ borderColor: "#E6E8FA" }}>
         <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-2 min-w-0">
