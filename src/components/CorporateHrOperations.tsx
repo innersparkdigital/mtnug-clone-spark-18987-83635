@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ExternalLink, KeyRound, Loader2, Shield } from 'lucide-react';
+import { ClipboardList, CreditCard, ExternalLink, KeyRound, Loader2, Shield } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -233,6 +233,57 @@ export default function CorporateHrOperations({ companyId, companyName }: { comp
           {!data.requests.length && (
             <p className="text-sm text-muted-foreground">No requests from this company yet.</p>
           )}
+        </CardContent>
+      </Card>
+
+      <Card className="border-orange-200/80 bg-orange-50/40">
+        <CardHeader>
+          <CardTitle className="text-lg flex items-center gap-2">
+            <ClipboardList className="h-5 w-5 text-orange-700" />
+            Psychometric assessments for this company
+          </CardTitle>
+          <CardDescription>
+            HR buys seats, sends unique employee links, and downloads development reports. Separate from the free WHO-5
+            wellbeing screen. Latest catalog lives on the company assessments hub.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="flex flex-wrap items-center gap-3 text-sm">
+            <Badge variant="secondary" className="text-sm px-3 py-1">
+              <CreditCard className="h-3.5 w-3.5 mr-1.5" />
+              {data.credit_balance} credits available
+            </Badge>
+            <span className="text-muted-foreground text-xs">
+              {data.assessment_invites?.issued || 0} links issued · {data.assessment_invites?.completed || 0} completed
+            </span>
+          </div>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            Current catalog (1–2 credits each): Workplace Personality, Stress Resilience, Leadership Style, Team
+            Collaboration, Role Fit, Workplace Aptitude Lite. Packs from UGX 45,000 (1 seat) to UGX 800,000 (25 seats).
+          </p>
+          <div className="flex flex-wrap gap-2">
+            <Button asChild className="gap-1.5">
+              <Link to="/corporate-assessments" target="_blank" rel="noopener noreferrer">
+                <ExternalLink className="h-4 w-4" />
+                Open HR psychometric hub
+              </Link>
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={async () => {
+                const url = `${typeof window !== 'undefined' ? window.location.origin : ''}/corporate-assessments`;
+                const ok = await copyToClipboard(url);
+                toast.success(ok ? 'Psychometric hub link copied — share with company admin after they log in' : url);
+              }}
+            >
+              Copy assessments link for HR
+            </Button>
+          </div>
+          <p className="text-[11px] text-muted-foreground">
+            Company admins must be logged in at /corporate-dashboard first; the hub only works for linked HR accounts.
+            Confirm credit payments below after Mobile Money / card is verified.
+          </p>
         </CardContent>
       </Card>
 
