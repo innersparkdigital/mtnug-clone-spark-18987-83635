@@ -141,6 +141,9 @@ export default function CorporateAssessments() {
             <div className="rounded-2xl border border-white/15 bg-white/10 backdrop-blur px-5 py-3 self-start sm:self-auto">
               <p className="text-[11px] uppercase tracking-wide text-white/60">Credit balance</p>
               <p className="text-3xl font-bold tracking-tight">{balance}</p>
+              {creditsSuspended && (
+                <p className="text-[11px] font-semibold text-amber-200 mt-1">Suspended — contact InnerSpark</p>
+              )}
             </div>
           </div>
         </div>
@@ -213,7 +216,12 @@ export default function CorporateAssessments() {
                 <div><Label>Role</Label><Input value={empRole} onChange={(e) => setEmpRole(e.target.value)} className="mt-1" /></div>
                 <div><Label>Department</Label><Input value={empDept} onChange={(e) => setEmpDept(e.target.value)} className="mt-1" /></div>
               </div>
-              <Button disabled={inviting || balance < 1} className="text-white rounded-xl" style={{ background: BLUE }} onClick={createInvite}>
+              {creditsSuspended && (
+                <p className="text-sm text-amber-800 bg-amber-50 border border-amber-200 rounded-xl p-3">
+                  Credits are suspended for this company. Contact InnerSpark to restore access before sending new assessment links.
+                </p>
+              )}
+              <Button disabled={inviting || balance < 1 || creditsSuspended} className="text-white rounded-xl" style={{ background: BLUE }} onClick={createInvite}>
                 {inviting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <ClipboardList className="h-4 w-4 mr-2" />}Generate unique link
               </Button>
               {lastLink && (
