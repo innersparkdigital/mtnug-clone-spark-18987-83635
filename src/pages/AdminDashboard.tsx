@@ -78,7 +78,8 @@ import {
   DollarSign,
   Link2,
   Globe,
-  KeyRound
+  KeyRound,
+  Building2
 } from 'lucide-react';
 import {
   ChartContainer,
@@ -249,6 +250,12 @@ const AdminDashboard = () => {
               ))}
               <Button type="button" size="sm" variant="outline" className="h-9 rounded-full" asChild>
                 <Link to="/admin/finance">Finance</Link>
+              </Button>
+              <Button type="button" size="sm" variant="outline" className="h-9 rounded-full gap-1.5" asChild>
+                <Link to="/corporate-admin">
+                  <Building2 className="h-3.5 w-3.5" />
+                  Corporate Wellbeing Admin
+                </Link>
               </Button>
             </div>
           )}
