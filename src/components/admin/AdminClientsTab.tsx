@@ -316,7 +316,7 @@ const AdminClientsTab = () => {
     if (paidStatus !== "paid") return toast.error("Mark the client Paid first.");
     if (amount <= 0) return toast.error("Enter the amount paid first.");
 
-    const sessionDate = (val(r, "last_session_date") as string) || new Date().toISOString().slice(0, 10);
+    const sessionDate = toDateInput(val(r, "last_session_date") as string) || new Date().toISOString().slice(0, 10);
     const paidAt = `${sessionDate}T12:00:00+03:00`;
     const phoneDigits = (r.phone || "").replace(/[^0-9]/g, "");
     const fallbackReference = `ISA-${r.id.replace(/-/g, "").slice(0, 8).toUpperCase()}`;
@@ -387,7 +387,7 @@ const AdminClientsTab = () => {
       clientPhone: r.phone,
       clientEmail: r.email,
       therapistName: r.therapist_name,
-      sessionDate: (val(r, "last_session_date") as string) || new Date().toISOString().slice(0, 10),
+      sessionDate: toDateInput(val(r, "last_session_date") as string) || new Date().toISOString().slice(0, 10),
       sessionType: val(r, "session_type") as string,
       durationMins: val(r, "duration_mins") as number,
       amountUgx: amount,
@@ -403,7 +403,7 @@ const AdminClientsTab = () => {
         receipt_number: receiptNumber,
         amount_ugx: amount,
         session_type: val(r, "session_type"),
-        session_date: val(r, "last_session_date"),
+        session_date: toDateInput(val(r, "last_session_date") as string) || null,
         client_id: r.id,
         send_email: !!r.email,
       },
