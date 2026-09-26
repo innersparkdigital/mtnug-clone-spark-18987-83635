@@ -26,6 +26,7 @@ export default function CorporateAssessments() {
   const [companyId, setCompanyId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [balance, setBalance] = useState(0);
+  const [creditsSuspended, setCreditsSuspended] = useState(false);
   const [catalog, setCatalog] = useState<Cat[]>([]);
   const [packs, setPacks] = useState<Pack[]>([]);
   const [invites, setInvites] = useState<Invite[]>([]);
@@ -51,6 +52,7 @@ export default function CorporateAssessments() {
     }
     const d = data as any;
     setBalance(d.credit_balance || 0);
+    setCreditsSuspended(!!d.credits_suspended);
     setCatalog(d.catalog || []);
     setPacks(d.packs || []);
     setInvites(d.invites || []);
