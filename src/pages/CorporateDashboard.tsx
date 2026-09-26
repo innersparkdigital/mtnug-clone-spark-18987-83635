@@ -160,6 +160,32 @@ function buildRecommendations(stats: DashStats): ServiceRec[] {
   return recs.filter((r) => (seen.has(r.code) ? false : (seen.add(r.code), true))).slice(0, 4);
 }
 
+function focusPlaybooksFromDrivers(stats: DashStats) {
+  const items: { title: string; thisWeek: string[]; teamCoping: string[]; managerScript: string }[] = [];
+  const drivers = stats.drivers || [];
+  for (const d of drivers.slice(0, 3)) {
+    const dim = (d.dimension || "").toLowerCase();
+    let key: keyof typeof HR_FOCUS_STRATEGIES | null = null;
+    if (dim.includes("rest") || dim.includes("sleep") || dim.includes("fresh")) key = "q4";
+    else if (dim.includes("calm") || dim.includes("relax")) key = "q2";
+    else if (dim.includes("active") || dim.includes("vigor") || dim.includes("energy")) key = "q3";
+    else if (dim.includes("cheer") || dim.includes("spirit") || dim.includes("mood")) key = "q1";
+    else if (dim.includes("interest")) key = "q5";
+    else if (dim.includes("workload") || dim.includes("manageable")) key = "q6";
+    else if (dim.includes("support")) key = "q7";
+    else if (dim.includes("overwhelm")) key = "q8";
+    if (!key) continue;
+    const play = HR_FOCUS_STRATEGIES[key];
+    items.push({
+      title: play.title,
+      thisWeek: play.thisWeek,
+      teamCoping: play.teamCoping,
+      managerScript: play.managerScript,
+    });
+  }
+  return items;
+}
+
 function interpretiveNotes(stats: DashStats): string[] {
   const notes: string[] = [];
   if (!stats.can_show_breakdown) {
