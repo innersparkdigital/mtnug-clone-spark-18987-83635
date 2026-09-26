@@ -826,19 +826,25 @@ const CorporateAdmin = () => {
             </div>
           ) : (
             /* =================== COMPANY DETAIL VIEW =================== */
-            <Tabs defaultValue="analytics">
-              <TabsList className="mb-4">
+            <Tabs defaultValue="company-dashboard">
+              <TabsList className="mb-4 flex flex-wrap h-auto gap-1">
+                <TabsTrigger value="company-dashboard" className="gap-1">
+                  <Building2 className="w-4 h-4" /> Company dashboard
+                </TabsTrigger>
                 <TabsTrigger value="analytics"><BarChart3 className="w-4 h-4 mr-1" /> Analytics</TabsTrigger>
                 <TabsTrigger value="insights"><Activity className="w-4 h-4 mr-1" /> Insights</TabsTrigger>
                 <TabsTrigger value="employees"><Users className="w-4 h-4 mr-1" /> Employees ({totalEmployees})</TabsTrigger>
                 <TabsTrigger value="report"><FileText className="w-4 h-4 mr-1" /> Report</TabsTrigger>
                 <TabsTrigger value="interests"><Activity className="w-4 h-4 mr-1" /> Service Interests ({serviceInterests.filter(i => i.company_id === selectedCompany.id).length})</TabsTrigger>
                 <TabsTrigger value="campaign"><Mail className="w-4 h-4 mr-1" /> Campaign</TabsTrigger>
-                <TabsTrigger value="hr-accounts"><Users className="w-4 h-4 mr-1" /> HR accounts & credits</TabsTrigger>
               </TabsList>
 
-              <TabsContent value="hr-accounts">
-                <CorporateHrOperations key={selectedCompany.id} companyId={selectedCompany.id} />
+              <TabsContent value="company-dashboard">
+                <CorporateHrOperations
+                  key={selectedCompany.id}
+                  companyId={selectedCompany.id}
+                  companyName={selectedCompany.name}
+                />
               </TabsContent>
 
               <TabsContent value="campaign">
