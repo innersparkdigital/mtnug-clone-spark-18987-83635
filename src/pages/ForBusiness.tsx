@@ -1,5 +1,5 @@
 import { Helmet } from "react-helmet";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { autoSubscribeNewsletter } from "@/lib/autoSubscribe";
 import Header from "@/components/Header";
@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Link } from "react-router-dom";
 import { Brain, Cog, Users, Calendar, Video, BookOpen, GraduationCap, BarChart3, UserCheck, MessageSquare, TrendingDown, TrendingUp, ArrowRight, ClipboardList } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
