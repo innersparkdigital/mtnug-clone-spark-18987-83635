@@ -252,6 +252,10 @@ const ClientDetailPanel = ({ open, onOpenChange, client, therapistName, onAssign
                             clientName: client.full_name,
                             therapistName,
                             consentSignedAt: client.consent_signed_at!,
+                            isMinor: !!(client as any).is_minor,
+                            age: (client as any).age ?? null,
+                            parentName: (client as any).parent_name ?? null,
+                            sessionMinutes: 60,
                           });
                           toast.success("Consent form downloaded");
                         } catch {
