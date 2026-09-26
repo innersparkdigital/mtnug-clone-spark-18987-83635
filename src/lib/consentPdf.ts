@@ -9,6 +9,16 @@ export interface ConsentPdfData {
   sessionMinutes?: number | null;
   consentSignedAt: string;
   generatedAt?: string | null;
+  isMinor?: boolean;
+  dateOfBirth?: string | null;
+  age?: number | null;
+  parentName?: string | null;
+  parentRelationship?: string | null;
+  parentContact?: string | null;
+  parentEmail?: string | null;
+  emergencyContactName?: string | null;
+  emergencyContactRelationship?: string | null;
+  emergencyContactPhone?: string | null;
 }
 
 const LOGO_URL = "/innerspark-logo.webp";
@@ -45,7 +55,7 @@ const money = (n?: number | null) =>
 
 const isChat = (sessionType?: string | null) => /chat/i.test(sessionType || "");
 
-/** Builds a multi-page archive PDF of the 2026 Counselling Informed Consent and Service Agreement. */
+/** Builds archive PDF — adult counselling agreement or parent informed consent for minors. */
 export async function buildConsentPdf(d: ConsentPdfData) {
   const doc = new jsPDF({ unit: "mm", format: "a4" });
   const pageW = doc.internal.pageSize.getWidth();
@@ -53,6 +63,7 @@ export async function buildConsentPdf(d: ConsentPdfData) {
   const margin = 16;
   const maxW = pageW - margin * 2;
   let y = 16;
+  const parentForm = !!d.isMinor;
 
   const ensureSpace = (need = 12) => {
     if (y + need > pageH - 18) {
@@ -123,14 +134,20 @@ export async function buildConsentPdf(d: ConsentPdfData) {
   doc.text("InnerSpark Africa", logo ? margin + 16 : margin, 12);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
-  doc.text("Counselling Informed Consent and Service Agreement · 2026", logo ? margin + 16 : margin, 19);
+  doc.text(
+    parentForm
+      ? "Parent Informed Consent for Psychological Services · 2026"
+      : "Counselling Informed Consent and Service Agreement · 2026",
+    logo ? margin + 16 : margin,
+    19,
+  );
   doc.setFontSize(8);
   doc.text("Archive copy for clinical records", logo ? margin + 16 : margin, 24);
 
   y = 36;
 
   const deliveryMode = isChat(d.sessionType) ? "chat" : "video";
-  const minutes = d.sessionMinutes ?? (deliveryMode === "chat" ? 45 : 50);
+  const minutes = d.sessionMinutes ?? (deliveryMode === "chat" ? 45 : 60);
   const price =
     typeof d.sessionPriceUgx === "number"
       ? d.sessionPriceUgx
@@ -145,15 +162,104 @@ export async function buildConsentPdf(d: ConsentPdfData) {
   row("Professional title", title);
   row("Practice", "InnerSpark Africa");
   row("Contact", "WhatsApp +256 792 085 773 · info@innersparkafrica.com");
-  row("Client", d.clientName);
+  row(parentForm ? "Minor (client)" : "Client", d.clientName);
+  if (parentForm) {
+    if (d.dateOfBirth) row("Date of birth", String(d.dateOfBirth));
+    if (d.age != null) row("Age", String(d.age));
+    row("Parent / guardian", d.parentName || "—");
+    if (d.parentRelationship) row("Relationship", d.parentRelationship);
+    if (d.parentContact) row("Parent contact", d.parentContact);
+    if (d.parentEmail) row("Parent email", d.parentEmail);
+    if (d.emergencyContactName) {
+      row(
+        "Emergency contact",
+        `${d.emergencyContactName}${d.emergencyContactRelationship ? ` (${d.emergencyContactRelationship})` : ""}${d.emergencyContactPhone ? ` · ${d.emergencyContactPhone}` : ""}`,
+      );
+    }
+  }
   row("Service", service);
   row("Session fee", money(price));
+  row("Session length", `${minutes} minutes`);
   row("Agreement generated", fmt(d.generatedAt));
   row("Electronically signed", fmt(d.consentSignedAt));
   y += 2;
   doc.setDrawColor(226, 232, 240);
   doc.line(margin, y, pageW - margin, y);
   y += 8;
+
+  if (parentForm) {
+    heading("1. Purpose and nature of services");
+    para(
+      "Psychological services are provided to support the child's emotional, behavioural, psychological, social, academic, and/or family concerns. Services may include clinical interviewing, assessment, counselling/psychotherapy, psychoeducation, coping-skills development, parent consultation, and/or appropriate collaboration with other professionals. Treatment usually involves progress over time and results may vary.",
+    );
+    heading("2. Session length");
+    para(
+      `Each session will normally last approximately ${minutes} minutes (one hour). Late arrival may reduce available time. The full fee may remain payable.`,
+    );
+    heading("3. Voluntary participation");
+    para(
+      "Participation is voluntary, subject to applicable law and professional requirements. The parent/guardian may ask questions or discuss concerns about treatment at any time and may request discontinuation of services, subject to applicable legal, ethical, safeguarding, or clinical requirements.",
+    );
+    heading("4. Confidentiality and privacy");
+    para(
+      "Information shared during sessions will generally remain confidential and will be handled according to applicable law and professional standards. Confidentiality may be limited when disclosure is required or permitted by law, including serious safety concerns, suspected abuse or neglect, legal requirements, or other safeguarding circumstances.",
+    );
+    para(
+      "Because the client is a minor, the clinician will balance parental rights with the child's developing privacy and autonomy. The clinician may provide general information about treatment progress, recommendations, and significant safety concerns without unnecessarily disclosing private session details. Specific arrangements regarding confidentiality and parental communication will be discussed with the parent and adolescent where appropriate.",
+    );
+    heading("5. Risks, benefits and safety");
+    para(
+      "Psychological services may help improve coping, emotional awareness, communication, relationships, and well-being. Discussing difficult experiences may temporarily cause distress or discomfort. If there is an immediate risk of serious harm to the child or another person, appropriate emergency, medical, safeguarding, or other professional services may be contacted as required or permitted by law.",
+    );
+    para(
+      `Emergency / crisis support coordination: WhatsApp +256 792 085 773. This is not a substitute for local emergency services.${d.emergencyContactName ? ` Named emergency contact on file: ${d.emergencyContactName}.` : ""}`,
+    );
+    heading("6. Records and information sharing");
+    para(
+      "Appropriate clinical records will be maintained and securely handled according to applicable law and professional standards, including the Uganda Data Protection and Privacy Act 2019 where it applies. Information may be shared with another professional, school, healthcare provider, or organisation only with appropriate authorisation or when otherwise permitted/required by law.",
+    );
+    heading("7. Fees");
+    bullet([
+      `Session fee for this service (${service}): ${money(price)}, payable as arranged (including insurer cover where applicable).`,
+      `Session length: approximately ${minutes} minutes.`,
+      "Please give at least 24 hours' notice to cancel or reschedule. Late cancellations or missed sessions may be charged in full unless InnerSpark Africa agrees otherwise in writing.",
+    ]);
+    heading("8. Consent");
+    para("By confirming electronically, the parent/guardian confirmed that:");
+    bullet([
+      "They had the opportunity to ask questions and understand the purpose and nature of the proposed psychological services, confidentiality and its limits, potential benefits and risks, and applicable communication arrangements",
+      `They are the parent/legal guardian of ${d.clientName}`,
+      `They consent to psychological services being provided to their child by ${d.therapistName} through InnerSpark Africa, subject to applicable law and professional standards`,
+      "Consent may be withdrawn at any time, subject to applicable legal and clinical requirements",
+    ]);
+
+    ensureSpace(36);
+    y += 4;
+    doc.setDrawColor(226, 232, 240);
+    doc.line(margin, y, pageW - margin, y);
+    y += 8;
+    heading("Electronic signature record");
+    para(
+      `Parent/guardian: ${d.parentName || "—"}. On behalf of minor: ${d.clientName}. Electronic confirmation recorded on ${fmt(d.consentSignedAt)} (Africa/Kampala). This PDF is an archive copy of the parent informed consent presented on the InnerSpark Africa consent link at the time of signing.`,
+    );
+    para("Clinician: " + d.therapistName + (title ? ` · ${title}` : ""));
+    para("Practice: InnerSpark Africa · www.innersparkafrica.com · info@innersparkafrica.com");
+
+    const totalP = doc.getNumberOfPages();
+    for (let i = 1; i <= totalP; i++) {
+      doc.setPage(i);
+      doc.setFontSize(8);
+      doc.setTextColor(148, 163, 184);
+      doc.text(`InnerSpark Africa · Parent consent archive · Page ${i} of ${totalP}`, pageW / 2, pageH - 8, {
+        align: "center",
+      });
+    }
+
+    const safeNameP =
+      (d.parentName || d.clientName).replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").toLowerCase() || "parent";
+    const dateStampP = (d.consentSignedAt || new Date().toISOString()).slice(0, 10);
+    return { doc, filename: `innerspark-parent-consent-${safeNameP}-${dateStampP}.pdf` };
+  }
 
   heading("1. Purpose of counselling");
   para(
@@ -280,22 +386,16 @@ export async function buildConsentPdf(d: ConsentPdfData) {
     doc.setPage(i);
     doc.setFontSize(8);
     doc.setTextColor(148, 163, 184);
-    doc.text(
-      `InnerSpark Africa · Consent archive · Page ${i} of ${total}`,
-      pageW / 2,
-      pageH - 8,
-      { align: "center" },
-    );
+    doc.text(`InnerSpark Africa · Consent archive · Page ${i} of ${total}`, pageW / 2, pageH - 8, {
+      align: "center",
+    });
   }
 
   const safeName = d.clientName.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").toLowerCase() || "client";
   const dateStamp = (d.consentSignedAt || new Date().toISOString()).slice(0, 10);
-  const filename = `innerspark-consent-${safeName}-${dateStamp}.pdf`;
-
-  return { doc, filename };
+  return { doc, filename: `innerspark-consent-${safeName}-${dateStamp}.pdf` };
 }
 
-/** Build and trigger a browser download of the signed consent PDF. */
 export async function downloadConsentPdf(d: ConsentPdfData) {
   const { doc, filename } = await buildConsentPdf(d);
   doc.save(filename);
