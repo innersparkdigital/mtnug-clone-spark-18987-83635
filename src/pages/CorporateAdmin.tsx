@@ -587,7 +587,7 @@ const CorporateAdmin = () => {
                   </DialogHeader>
                   <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4 min-h-0">
                     <div className="space-y-1.5"><Label htmlFor="co-name">Company name *</Label><Input id="co-name" value={companyForm.name} onChange={e => setCompanyForm(p => ({ ...p, name: e.target.value }))} placeholder="e.g. Acme Uganda Ltd" /></div>
-                    <div><Label>Industry</Label><Input value={companyForm.industry} onChange={e => setCompanyForm(p => ({ ...p, industry: e.target.value }))} /></div>
+                    <div className="space-y-1.5"><Label htmlFor="co-industry">Industry</Label><Input id="co-industry" value={companyForm.industry} onChange={e => setCompanyForm(p => ({ ...p, industry: e.target.value }))} placeholder="Banking, NGO, Tech…" /></div>
                     <div><Label>Number of Employees</Label><Input type="number" value={companyForm.employee_count} onChange={e => setCompanyForm(p => ({ ...p, employee_count: e.target.value }))} /></div>
                     <div><Label>Contact Person</Label><Input value={companyForm.contact_person} onChange={e => setCompanyForm(p => ({ ...p, contact_person: e.target.value }))} /></div>
                     <div><Label>Contact Email</Label><Input type="email" value={companyForm.contact_email} onChange={e => setCompanyForm(p => ({ ...p, contact_email: e.target.value }))} /></div>
