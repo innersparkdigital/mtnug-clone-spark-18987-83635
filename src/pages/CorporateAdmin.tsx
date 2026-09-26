@@ -835,7 +835,7 @@ const CorporateAdmin = () => {
             <Tabs defaultValue="company-dashboard">
               <TabsList className="mb-4 flex flex-wrap h-auto gap-1">
                 <TabsTrigger value="company-dashboard" className="gap-1">
-                  <Building2 className="w-4 h-4" /> Company dashboard
+                  <Building2 className="w-4 h-4" /> Company dashboard & psychometrics
                 </TabsTrigger>
                 <TabsTrigger value="analytics"><BarChart3 className="w-4 h-4 mr-1" /> Analytics</TabsTrigger>
                 <TabsTrigger value="insights"><Activity className="w-4 h-4 mr-1" /> Insights</TabsTrigger>
