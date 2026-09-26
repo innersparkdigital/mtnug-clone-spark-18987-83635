@@ -844,6 +844,53 @@ export default function CorporateDashboard() {
             <CardDescription>Based on aggregate risk and stress drivers. Request routes to our team — not auto-booked.</CardDescription>
           </CardHeader>
           <CardContent className="grid md:grid-cols-2 gap-3">
+            {focusPlaybooks.length > 0 && (
+              <div className="md:col-span-2 space-y-3 rounded-2xl border p-5" style={{ borderColor: "#FDE68A", background: "#FFFBEB" }}>
+                <div className="flex items-center gap-2">
+                  <Lightbulb className="h-4 w-4 text-amber-600" />
+                  <h3 className="font-semibold text-sm" style={{ color: "#1A1A2E" }}>
+                    Action strategies for your lowest focus areas
+                  </h3>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Practical this-week steps and team coping ideas based on screening patterns — organisation-wide only.
+                </p>
+                <div className="grid md:grid-cols-2 gap-3">
+                  {focusPlaybooks.map((p) => (
+                    <div key={p.title} className="rounded-xl border bg-white p-4 space-y-2" style={{ borderColor: "#FDE68A" }}>
+                      <p className="text-sm font-semibold">{p.title}</p>
+                      <p className="text-[11px] font-semibold uppercase tracking-wide text-amber-800">This week</p>
+                      <ul className="text-xs space-y-1 list-disc pl-4 text-foreground/85">
+                        {p.thisWeek.map((t, i) => (
+                          <li key={i}>{t}</li>
+                        ))}
+                      </ul>
+                      <p className="text-[11px] font-semibold uppercase tracking-wide text-emerald-800 pt-1">Team coping</p>
+                      <ul className="text-xs space-y-1 list-disc pl-4 text-foreground/85">
+                        {p.teamCoping.map((t, i) => (
+                          <li key={i}>{t}</li>
+                        ))}
+                      </ul>
+                      <p className="text-xs italic text-muted-foreground border-t pt-2">“{p.managerScript}”</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            <div className="md:col-span-2 rounded-2xl border p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3" style={{ borderColor: "#E6E8FA", background: "#F8F9FF" }}>
+              <div>
+                <p className="font-semibold text-sm flex items-center gap-2" style={{ color: "#1A1A2E" }}>
+                  <ClipboardList className="h-4 w-4" style={{ color: "#3B4FD4" }} />
+                  Psychometric assessments
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Buy seats, send private employee links, download development reports (personality, stress resilience, leadership, and more).
+                </p>
+              </div>
+              <Button className="text-white rounded-xl shrink-0" style={{ background: "#3B4FD4" }} asChild>
+                <Link to="/corporate-assessments">Open psychometrics hub</Link>
+              </Button>
+            </div>
             {recommendations.map((r) => (
               <div key={r.code} className="rounded-2xl border p-5 bg-background space-y-3 shadow-sm hover:shadow-md transition-shadow" style={{ borderColor: "#E6E8FA" }}>
                 <p className="font-semibold text-sm">{r.title}</p>
