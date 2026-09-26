@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Loader2, Users, Calendar, DollarSign, AlertOctagon, Stethoscope, CheckCircle, Inbox, Moon, TrendingUp, Activity, UserPlus, Repeat } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Loader2, Users, Calendar, DollarSign, AlertOctagon, Stethoscope, CheckCircle, Inbox, Moon, TrendingUp, Activity, UserPlus, Repeat, Building2 } from "lucide-react";
 import { withTimeout } from "@/lib/rpcTimeout";
 
 interface Stats {
@@ -90,6 +91,16 @@ const AdminOverviewTab = ({ onNavigate }: { onNavigate?: (tab: string) => void }
     { key: "session-logs", title: "Session logs", desc: "Every session logged by every therapist. Filter and follow up.", icon: Activity, color: "from-indigo-500/10 to-indigo-600/5 border-indigo-500/20" },
     { key: "enquiries", title: "Enquiries & leads", desc: "Amani chat, contact form, and WhatsApp callbacks in one feed.", icon: Inbox, color: "from-amber-500/10 to-amber-600/5 border-amber-500/20" },
     { key: "revenue", title: "Revenue & performance", desc: "Weekly revenue trend and therapist performance metrics.", icon: TrendingUp, color: "from-emerald-500/10 to-emerald-600/5 border-emerald-500/20" },
+  ];
+
+  const externalTools = [
+    {
+      to: "/corporate-admin",
+      title: "Corporate Wellbeing Admin",
+      desc: "Manage companies, employees, and screening analytics (InnerSpark staff).",
+      Icon: Building2,
+      color: "from-orange-500/10 to-orange-600/5 border-orange-500/20",
+    },
   ];
 
   const hour = new Date().getHours();
@@ -197,6 +208,27 @@ const AdminOverviewTab = ({ onNavigate }: { onNavigate?: (tab: string) => void }
                   </div>
                 </div>
               </button>
+            );
+          })}
+          {externalTools.map((t) => {
+            const Icon = t.Icon;
+            return (
+              <Link
+                key={t.to}
+                to={t.to}
+                className={`group text-left rounded-2xl border bg-gradient-to-br ${t.color} p-5 hover:shadow-md transition-all hover:scale-[1.01]`}
+              >
+                <div className="flex items-start gap-3">
+                  <div className="p-2.5 rounded-xl bg-background/70 shadow-sm">
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="font-semibold text-foreground">{t.title}</p>
+                    <p className="text-sm text-muted-foreground mt-1 leading-snug">{t.desc}</p>
+                    <p className="text-xs text-primary mt-2 font-medium">{t.to}</p>
+                  </div>
+                </div>
+              </Link>
             );
           })}
         </div>
