@@ -62,6 +62,37 @@ interface Row {
 
 const fmtUGX = (n: number | null) => (n ? `UGX ${Math.round(Number(n)).toLocaleString()}` : "—");
 
+/** Normalize DB date / ISO / dd-mm-yyyy into YYYY-MM-DD for <input type="date">. */
+const toDateInput = (raw: string | null | undefined): string => {
+  if (!raw) return "";
+  const s = String(raw).trim();
+  if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0, 10);
+  // dd/mm/yyyy or dd-mm-yyyy
+  const dmy = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+  if (dmy) {
+    const dd = dmy[1].padStart(2, "0");
+    const mm = dmy[2].padStart(2, "0");
+    return `${dmy[3]}-${mm}-${dd}`;
+  }
+  const t = Date.parse(s);
+  if (!Number.isNaN(t)) {
+    const d = new Date(t);
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const dd = String(d.getDate()).padStart(2, "0");
+    return `${yyyy}-${mm}-${dd}`;
+  }
+  return "";
+};
+
+/** Display as dd/mm/yyyy for East Africa staff. */
+const fmtDMY = (raw: string | null | undefined): string => {
+  const iso = toDateInput(raw);
+  if (!iso) return "";
+  const [y, m, d] = iso.split("-");
+  return `${d}/${m}/${y}`;
+};
+
 const RatingStars = ({ value }: { value: number | null }) => {
   if (!value) return <span className="text-muted-foreground text-[11px]">—</span>;
   return (
@@ -255,13 +286,13 @@ const AdminClientsTab = () => {
       _session_type: val(r, "session_type") ?? null,
       _duration_mins: val(r, "duration_mins") ? Number(val(r, "duration_mins")) : null,
       _session_rating: val(r, "session_rating") ? Number(val(r, "session_rating")) : null,
-      _next_session_date: val(r, "next_session_date") || null,
+      _next_session_date: toDateInput(val(r, "next_session_date") as string) || null,
       _would_rebook: val(r, "would_rebook") ?? null,
       _amount_ugx: amount || null,
       _therapist_share_ugx: therapistShare,
       _innerspark_share_ugx: amount ? amount - Number(therapistShare || 0) : null,
       _paid_status: val(r, "paid_status") ?? null,
-      _last_session_date: val(r, "last_session_date") || null,
+      _last_session_date: toDateInput(val(r, "last_session_date") as string) || null,
       _country: val(r, "country") ?? null,
       _receipt_number: r.receipt_number,
       _receipt_url: r.receipt_url,
@@ -537,14 +568,22 @@ const AdminClientsTab = () => {
                         <TableRow className={dirty ? "bg-primary/5" : open ? "bg-muted/30" : undefined}>
                           <TableCell className="text-muted-foreground">{i + 1}</TableCell>
                           <TableCell>
-                            <div className="relative w-[110px]">
-                              <Calendar className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
-                              <Input
-                                type="date"
-                                className="h-8 w-[110px] text-xs pl-7 pr-1.5 [color-scheme:light] dark:[color-scheme:dark]"
-                                value={(val(r, "last_session_date") as string) || ""}
-                                onChange={(e) => setVal(r.id, "last_session_date", e.target.value)}
-                              />
+                            <div className="flex flex-col gap-0.5 min-w-[138px]">
+                              <div className="relative">
+                                <Calendar className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
+                                <Input
+                                  type="date"
+                                  title="Session date — click to change"
+                                  className="h-8 w-[138px] text-xs pl-7 pr-1 [color-scheme:light] dark:[color-scheme:dark] cursor-pointer"
+                                  value={toDateInput(val(r, "last_session_date") as string)}
+                                  onChange={(e) => setVal(r.id, "last_session_date", e.target.value || null)}
+                                />
+                              </div>
+                              {toDateInput(val(r, "last_session_date") as string) ? (
+                                <span className="text-[10px] text-muted-foreground pl-1">{fmtDMY(val(r, "last_session_date") as string)}</span>
+                              ) : (
+                                <span className="text-[10px] text-amber-600 pl-1">Set date</span>
+                              )}
                             </div>
                           </TableCell>
                           <TableCell>
@@ -662,6 +701,30 @@ const AdminClientsTab = () => {
                                   <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Session detail</p>
                                   <div className="grid grid-cols-2 gap-2">
                                     <div>
+                                      <Label className="text-[11px] text-muted-foreground">Session date (dd/mm/yyyy)</Label>
+                                      <Input
+                                        type="date"
+                                        className="h-8 text-xs mt-1 cursor-pointer"
+                                        value={toDateInput(val(r, "last_session_date") as string)}
+                                        onChange={(e) => setVal(r.id, "last_session_date", e.target.value || null)}
+                                      />
+                                      {toDateInput(val(r, "last_session_date") as string) && (
+                                        <p className="text-[10px] text-muted-foreground mt-0.5">{fmtDMY(val(r, "last_session_date") as string)}</p>
+                                      )}
+                                    </div>
+                                    <div>
+                                      <Label className="text-[11px] text-muted-foreground">Next session</Label>
+                                      <Input
+                                        type="date"
+                                        className="h-8 text-xs mt-1 cursor-pointer"
+                                        value={toDateInput(val(r, "next_session_date") as string)}
+                                        onChange={(e) => setVal(r.id, "next_session_date", e.target.value || null)}
+                                      />
+                                      {toDateInput(val(r, "next_session_date") as string) && (
+                                        <p className="text-[10px] text-muted-foreground mt-0.5">{fmtDMY(val(r, "next_session_date") as string)}</p>
+                                      )}
+                                    </div>
+                                    <div>
                                       <Label className="text-[11px] text-muted-foreground">Client type</Label>
                                       <Select value={clientType} onValueChange={(v) => setVal(r.id, "client_type", v)}>
                                         <SelectTrigger className="h-8 text-xs mt-1"><SelectValue /></SelectTrigger>
@@ -674,10 +737,6 @@ const AdminClientsTab = () => {
                                     <div>
                                       <Label className="text-[11px] text-muted-foreground">Duration (mins)</Label>
                                       <Input type="number" className="h-8 text-xs mt-1" value={(val(r, "duration_mins") as number) ?? ""} onChange={(e) => setVal(r.id, "duration_mins", e.target.value)} />
-                                    </div>
-                                    <div>
-                                      <Label className="text-[11px] text-muted-foreground">Next session</Label>
-                                      <Input type="date" className="h-8 text-xs mt-1" value={(val(r, "next_session_date") as string) || ""} onChange={(e) => setVal(r.id, "next_session_date", e.target.value)} />
                                     </div>
                                     <div>
                                       <Label className="text-[11px] text-muted-foreground">Rating (1–5) · auto from client feedback</Label>
