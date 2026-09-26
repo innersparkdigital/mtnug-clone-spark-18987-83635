@@ -345,4 +345,39 @@ grant execute on function public.admin_psych_renew_pack(uuid, text, text) to aut
 revoke all on function public.admin_psych_reject_order(uuid, text) from public;
 grant execute on function public.admin_psych_reject_order(uuid, text) to authenticated;
 
+-- HR overview also returns suspended flag
+create or replace function public.psych_hr_overview(_company_id uuid)
+returns jsonb language plpgsql stable security definer set search_path = public as $$
+declare
+  _ok boolean; _bal integer := 0; _suspended boolean := false;
+  _invites jsonb; _orders jsonb; _catalog jsonb; _packs jsonb;
+begin
+  select public.is_corporate_hr_admin_for(_company_id) into _ok;
+  if not _ok then raise exception 'not authorized'; end if;
+  select coalesce(credit_balance, 0), coalesce(credits_suspended, false)
+    into _bal, _suspended from public.psych_company_wallets where company_id = _company_id;
+  select coalesce(jsonb_agg(to_jsonb(i) order by i.created_at desc), '[]'::jsonb) into _invites from (
+    select inv.id, inv.token, inv.employee_name, inv.employee_email, inv.employee_role, inv.department, inv.status,
+      inv.created_at, inv.completed_at, inv.expires_at, inv.catalog_id, c.name as assessment_name, c.short_name,
+      r.scores, r.report, r.id as response_id
+    from public.psych_invites inv
+    join public.psych_assessment_catalog c on c.id = inv.catalog_id
+    left join public.psych_responses r on r.invite_id = inv.id
+    where inv.company_id = _company_id
+  ) i;
+  select coalesce(jsonb_agg(to_jsonb(o) order by o.created_at desc), '[]'::jsonb) into _orders from (
+    select id, pack_id, credits, amount_ugx, status, payment_method, payment_ref, created_at, paid_at
+    from public.psych_orders where company_id = _company_id
+  ) o;
+  select coalesce(jsonb_agg(to_jsonb(c) order by c.sort_order), '[]'::jsonb) into _catalog
+    from public.psych_assessment_catalog c where c.is_active;
+  select coalesce(jsonb_agg(to_jsonb(p) order by p.sort_order), '[]'::jsonb) into _packs
+    from public.psych_credit_packs p where p.is_active;
+  return jsonb_build_object(
+    'credit_balance', coalesce(_bal, 0),
+    'credits_suspended', coalesce(_suspended, false),
+    'invites', _invites, 'orders', _orders, 'catalog', _catalog, 'packs', _packs
+  );
+end; $$;
+
 notify pgrst, 'reload schema';
