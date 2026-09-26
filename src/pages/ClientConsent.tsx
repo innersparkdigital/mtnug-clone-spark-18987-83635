@@ -41,7 +41,7 @@ export default function ClientConsent() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    document.title = "Teletherapy Informed Consent | InnerSpark Africa";
+    document.title = "Counselling Informed Consent and Service Agreement | InnerSpark Africa";
     if (!token || !UUID_PATTERN.test(token)) {
       setError("This consent link is invalid or has expired.");
       setLoading(false);
@@ -58,9 +58,9 @@ export default function ClientConsent() {
   }, [token]);
 
   const serviceLabel = useMemo(() => {
-    if (!record) return "Individual Therapy";
+    if (!record) return "Individual counselling";
     if (record.session_type) return record.session_type;
-    return "Individual Therapy — Video Session";
+    return "Individual counselling — video session";
   }, [record]);
 
   const deliveryMode = isChatSession(record?.session_type) ? "chat" : "video";
@@ -71,6 +71,9 @@ export default function ClientConsent() {
         ? 30000
         : 75000;
 
+  const therapistTitle = record?.professional_title || "Licensed mental health professional";
+  const sessionMinutes = deliveryMode === "chat" ? 45 : 50;
+
   const confirm = async () => {
     if (!token || !agreed || submitting) return;
     setSubmitting(true);
@@ -78,7 +81,9 @@ export default function ClientConsent() {
     const { data, error: confirmError } = await supabase.rpc("confirm_client_consent", { _token: token });
     setSubmitting(false);
     if (confirmError || !data) {
-      setError("We could not record your consent. Please try again or contact InnerSpark Africa on WhatsApp +256 792 085 773.");
+      setError(
+        "We could not record your consent. Please try again or contact InnerSpark Africa on WhatsApp +256 792 085 773.",
+      );
       return;
     }
     const result = data as unknown as Pick<ConsentRecord, "consent_signed" | "consent_signed_at">;
@@ -112,12 +117,28 @@ export default function ClientConsent() {
               <div className="mb-2 flex h-11 w-11 items-center justify-center rounded-full bg-primary/10 text-primary">
                 <FileCheck2 className="h-5 w-5" />
               </div>
-              <CardTitle className="text-xl sm:text-2xl">InnerSpark Africa — Teletherapy Informed Consent</CardTitle>
-              <div className="mt-3 space-y-1 text-sm text-muted-foreground">
-                <p><span className="font-medium text-foreground">Consent Form for:</span> {record.client_name}</p>
-                <p><span className="font-medium text-foreground">Session with:</span> {record.therapist_name}, {record.professional_title || "Licensed mental health professional"}</p>
-                <p><span className="font-medium text-foreground">Service:</span> {serviceLabel}</p>
-                <p><span className="font-medium text-foreground">Date generated:</span> {formatDate(record.generated_at || new Date().toISOString())}</p>
+              <CardTitle className="text-xl sm:text-2xl">
+                Counselling Informed Consent and Service Agreement
+              </CardTitle>
+              <p className="text-sm text-muted-foreground">2026 · InnerSpark Africa</p>
+              <div className="mt-4 grid gap-3 rounded-md border bg-muted/40 p-4 text-sm sm:grid-cols-2">
+                <div className="space-y-1">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Therapist / counsellor</p>
+                  <p className="font-medium text-foreground">{record.therapist_name}</p>
+                  <p className="text-muted-foreground">{therapistTitle}</p>
+                  <p className="text-muted-foreground">Practice: InnerSpark Africa</p>
+                  <p className="text-muted-foreground">WhatsApp / phone: +256 792 085 773</p>
+                  <p className="text-muted-foreground">Email: info@innersparkafrica.com</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Client</p>
+                  <p className="font-medium text-foreground">{record.client_name}</p>
+                  <p className="text-muted-foreground">Service: {serviceLabel}</p>
+                  <p className="text-muted-foreground">
+                    Session fee: <strong className="text-foreground">UGX {price.toLocaleString()}</strong>
+                  </p>
+                  <p className="text-muted-foreground">Agreement date: {formatDate(record.generated_at || new Date().toISOString())}</p>
+                </div>
               </div>
             </CardHeader>
             <CardContent className="space-y-6 pt-6 text-sm leading-6">
@@ -125,104 +146,235 @@ export default function ClientConsent() {
                 <div className="rounded-md border border-primary/30 bg-primary/5 p-5 text-center" aria-live="polite">
                   <CheckCircle2 className="mx-auto mb-3 h-9 w-9 text-primary" />
                   <h2 className="font-semibold">Consent confirmed</h2>
-                  <p className="mt-1 text-sm text-muted-foreground">Recorded on {formatDate(record.consent_signed_at)}</p>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    Recorded on {formatDate(record.consent_signed_at)} for {record.client_name}
+                  </p>
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    Your therapist and InnerSpark’s admin team can see that this agreement is signed.
+                  </p>
                 </div>
               ) : (
                 <>
-                  <p>Please read the information below carefully before confirming. If anything is unclear, you can ask your therapist about it before or during your first session.</p>
+                  <p>
+                    Please read this agreement carefully before confirming. If anything is unclear, ask{" "}
+                    <strong>{record.therapist_name}</strong> before or during your first session. Confirming below is
+                    your electronic signature for this agreement.
+                  </p>
 
                   <section className="space-y-2">
-                    <h2 className="font-semibold text-base">1. Who is providing this service</h2>
-                    <p>You are being connected with <strong>{record.therapist_name}</strong>, a licensed mental health professional working with InnerSpark Africa. InnerSpark Africa is a digital mental health platform based in Kampala, Uganda, providing video, chat and voice therapy sessions.</p>
+                    <h2 className="text-base font-semibold">1. Purpose of counselling</h2>
+                    <p>
+                      Counselling is a confidential and collaborative process to explore concerns, improve emotional
+                      wellbeing, develop coping strategies, and work toward personally meaningful goals. Counselling does
+                      not guarantee a particular result and is not a substitute for emergency or specialist medical care
+                      when such care is required.
+                    </p>
                   </section>
 
                   <section className="space-y-2">
-                    <h2 className="font-semibold text-base">2. What this service is</h2>
-                    <p>This is a mental health counselling/therapy session, delivered remotely by <strong>{deliveryMode === "chat" ? "chat" : "video call"}</strong>. Sessions typically run 45–60 minutes. This is <strong>not</strong> a psychiatric or medical service — InnerSpark does not prescribe medication directly, though a referral to a psychiatrist can be arranged separately if needed.</p>
+                    <h2 className="text-base font-semibold">2. Session length and expected number of sessions</h2>
+                    <p>
+                      Each counselling session will normally last approximately <strong>{sessionMinutes} minutes</strong>.
+                      This includes time for discussion, assessment, interventions, and planning. Late arrival may reduce
+                      the available session time, and the full fee may remain payable.
+                    </p>
+                    <p>
+                      The initial counselling plan is typically for a small block of sessions (often about 4–6), scheduled
+                      weekly or fortnightly as you and your therapist agree. This is an estimate rather than a fixed
+                      commitment. The actual number of sessions may change depending on your needs, progress, goals,
+                      availability, and clinical recommendations.
+                    </p>
+                    <p>
+                      Progress and goals will be reviewed after the first few sessions and periodically thereafter.
+                      Following review, you and your therapist may agree to:
+                    </p>
+                    <ul className="list-disc space-y-1 pl-5">
+                      <li>Continue for additional sessions</li>
+                      <li>Change the frequency or focus of counselling</li>
+                      <li>Conclude counselling and develop a follow-up plan</li>
+                      <li>Arrange referral or additional support where appropriate</li>
+                    </ul>
+                    <p>
+                      You may request a review or end counselling at any time. Any extension will be discussed and agreed
+                      before additional sessions begin.
+                    </p>
                   </section>
 
                   <section className="space-y-2">
-                    <h2 className="font-semibold text-base">3. Confidentiality</h2>
-                    <p>What you share with your therapist is kept confidential between you and them, with the following exceptions grounded in Ugandan professional and legal duties:</p>
-                    <ul className="list-disc pl-5 space-y-1">
-                      <li>If your therapist believes you are at serious risk of harming yourself or someone else and disclosure is needed to protect life or safety.</li>
-                      <li>If there is reasonable concern about the abuse or neglect of a child or vulnerable person, where reporting duties apply under child-protection and related laws.</li>
-                      <li>If disclosure is required by a valid court order, summons or other lawful process.</li>
-                      <li>Where the Uganda Data Protection and Privacy Act 2019 and related guidance allow or require processing/disclosure for legal obligation, vital interests or public interest, with appropriate safeguards.</li>
+                    <h2 className="text-base font-semibold">3. Voluntary participation</h2>
+                    <p>
+                      Participation is voluntary. You may ask questions, decline to answer questions, discuss concerns
+                      about therapy, request a referral, or end counselling at any time. You are encouraged to attend
+                      punctually, participate as comfortable, practise agreed strategies, and communicate relevant
+                      concerns or changes.
+                    </p>
+                  </section>
+
+                  <section className="space-y-2">
+                    <h2 className="text-base font-semibold">4. Confidentiality</h2>
+                    <p>
+                      Information shared during counselling will remain confidential except where disclosure is required
+                      or permitted by law or professional ethical standards, including:
+                    </p>
+                    <ul className="list-disc space-y-1 pl-5">
+                      <li>A serious and foreseeable risk of harm to you or another person</li>
+                      <li>Abuse, neglect, exploitation, or safeguarding concerns where mandatory reporting applies</li>
+                      <li>A court order or other legal obligation</li>
+                      <li>An emergency requiring information to be shared to protect safety</li>
+                      <li>Limited professional consultation or supervision where legally and ethically permitted</li>
+                    </ul>
+                    <p>
+                      Where possible, your therapist will discuss the limits of confidentiality with you before disclosure
+                      and will share only information reasonably necessary for the relevant purpose.
+                    </p>
+                  </section>
+
+                  <section className="space-y-2">
+                    <h2 className="text-base font-semibold">5. Records and privacy</h2>
+                    <p>
+                      Your therapist may keep clinical and administrative records as required by law, professional
+                      standards, or insurance requirements. Records are handled with reasonable privacy and security
+                      measures and retained for the period required by applicable law, including the Uganda Data Protection
+                      and Privacy Act 2019 where it applies. You may request access to or correction of your information,
+                      subject to lawful limitations, by emailing <strong>info@innersparkafrica.com</strong>.
+                    </p>
+                    <p>
+                      Electronic communications may not be completely secure and are not monitored continuously. Please
+                      avoid sending highly sensitive information by ordinary email or text message.
+                    </p>
+                  </section>
+
+                  <section className="space-y-2">
+                    <h2 className="text-base font-semibold">6. Therapist responsibilities</h2>
+                    <p>
+                      Your therapist will provide respectful, ethical, professional, and culturally responsive care;
+                      maintain appropriate boundaries; protect privacy; collaborate on goals; use evidence-informed
+                      interventions; review progress; and recommend referral or additional support when appropriate.
+                    </p>
+                  </section>
+
+                  <section className="space-y-2">
+                    <h2 className="text-base font-semibold">7. Appointments, fees, and cancellation</h2>
+                    <ul className="list-disc space-y-1 pl-5">
+                      <li>
+                        The session fee for this service ({serviceLabel}) is{" "}
+                        <strong>UGX {price.toLocaleString()}</strong>, payable via MTN or Airtel Mobile Money, or card where
+                        available, before or as arranged for the session.
+                      </li>
+                      <li>
+                        Please give at least <strong>24 hours’ notice</strong> to cancel or reschedule.
+                      </li>
+                      <li>
+                        Sessions cancelled with less than 24 hours’ notice, or missed without notice, may be charged in
+                        full unless InnerSpark Africa agrees otherwise in writing.
+                      </li>
+                      <li>Any changes to fees or policies will be communicated in advance where reasonably practicable.</li>
                     </ul>
                   </section>
 
                   <section className="space-y-2">
-                    <h2 className="font-semibold text-base">4. Things to know about online therapy specifically</h2>
-                    <ul className="list-disc pl-5 space-y-1">
-                      <li>Online therapy can be as effective as in-person therapy for many people, but it is not the right fit for every situation.</li>
-                      <li>Your session depends on a stable internet or phone connection — occasional technical interruptions can happen.</li>
-                      <li>If your situation involves a level of risk that online sessions alone cannot safely address, your therapist may recommend additional or different support.</li>
+                    <h2 className="text-base font-semibold">8. Online counselling</h2>
+                    <p>For video, voice, or chat sessions, you agree to:</p>
+                    <ul className="list-disc space-y-1 pl-5">
+                      <li>Attend from a private location</li>
+                      <li>Use a secure connection where possible</li>
+                      <li>Inform your therapist if anyone else is present</li>
+                      <li>Not record the session without prior agreement</li>
+                    </ul>
+                    <p>Technical disruptions may occur.</p>
+                    <p>
+                      <strong>Reconnection procedure:</strong> if the call drops, stay available on the same device and
+                      wait for your therapist to reconnect, or message InnerSpark on WhatsApp{" "}
+                      <strong>+256 792 085 773</strong>. If connection cannot be restored within a reasonable time, the
+                      session may be rescheduled.
+                    </p>
+                    <p>
+                      At the start of each online session, your therapist may ask you to confirm your current location for
+                      safety and continuity of care.
+                    </p>
+                  </section>
+
+                  <section className="space-y-2">
+                    <h2 className="text-base font-semibold">9. Risks, benefits, and emergencies</h2>
+                    <p>
+                      Potential benefits may include improved emotional understanding, coping skills, self-awareness,
+                      problem-solving, relationships, and resilience. Possible risks include temporary emotional discomfort
+                      when discussing difficult experiences or making changes.
+                    </p>
+                    <p>
+                      Counselling is <strong>not an emergency service</strong>. If you are in immediate danger or at risk of
+                      serious harm:
+                    </p>
+                    <ul className="list-disc space-y-1 pl-5">
+                      <li>Contact local emergency services or attend the nearest emergency department</li>
+                      <li>Contact an appropriate crisis service available in your area</li>
+                      <li>
+                        Message InnerSpark Africa on WhatsApp: <strong>+256 792 085 773</strong> (support and coordination;
+                        not a substitute for emergency services)
+                      </li>
                     </ul>
                   </section>
 
                   <section className="space-y-2">
-                    <h2 className="font-semibold text-base">5. If you are in a mental health emergency</h2>
-                    <p>Online therapy is <strong>not</strong> an emergency service. If you are in crisis or in immediate danger:</p>
-                    <ul className="list-disc pl-5 space-y-1">
-                      <li>Message InnerSpark on WhatsApp: <strong>+256 792 085 773</strong></li>
-                      <li>Contact local emergency services immediately</li>
-                      <li>If available to you, use local hospital emergency care</li>
-                    </ul>
+                    <h2 className="text-base font-semibold">10. Boundaries, concerns, and ending therapy</h2>
+                    <p>
+                      The therapeutic relationship is professional. Your therapist will maintain appropriate boundaries.
+                      Contact outside sessions should generally be limited to appointments, administration, or safety
+                      matters. You are encouraged to raise concerns directly with your therapist.
+                    </p>
+                    <p>
+                      Your therapist may end or pause counselling where it is clinically inappropriate, safety requires it,
+                      boundaries cannot be maintained, or another lawful and ethical reason applies. Appropriate referral
+                      will be considered where possible.
+                    </p>
                   </section>
 
                   <section className="space-y-2">
-                    <h2 className="font-semibold text-base">6. Your information and privacy</h2>
-                    <ul className="list-disc pl-5 space-y-1">
-                      <li>Session notes are recorded by your therapist for continuity of care and may be visible to InnerSpark’s clinical oversight team.</li>
-                      <li>Your information is stored securely and is not shared outside InnerSpark except as described in Section 3.</li>
-                      <li>You can request a copy of your records or ask how your data is stored by emailing <strong>info@innersparkafrica.com</strong>.</li>
+                    <h2 className="text-base font-semibold">11. Consent and agreement</h2>
+                    <p>By checking the box below and confirming, you confirm that:</p>
+                    <ul className="list-disc space-y-1 pl-5">
+                      <li>
+                        The counselling process, session length, estimated number of sessions, review process, fees, risks,
+                        benefits, alternatives, and confidentiality limits have been explained in this agreement
+                      </li>
+                      <li>You have had a chance to ask questions, or know you can ask your therapist before continuing</li>
+                      <li>Participation is voluntary</li>
+                      <li>You understand that counselling is not an emergency service</li>
+                      <li>You agree to this Agreement and consent to begin counselling with {record.therapist_name}</li>
+                      <li>Consent may be withdrawn at any time</li>
                     </ul>
-                  </section>
-
-                  <section className="space-y-2">
-                    <h2 className="font-semibold text-base">7. Cost and payment</h2>
-                    <ul className="list-disc pl-5 space-y-1">
-                      <li>This session type ({serviceLabel}) costs <strong>UGX {price.toLocaleString()}</strong>, payable via MTN or Airtel Mobile Money or card where available.</li>
-                      <li>Sessions cancelled with less than 24 hours’ notice may be charged in full unless InnerSpark agrees otherwise in writing.</li>
-                    </ul>
-                  </section>
-
-                  <section className="space-y-2">
-                    <h2 className="font-semibold text-base">8. Your rights</h2>
-                    <ul className="list-disc pl-5 space-y-1">
-                      <li>You can choose to stop therapy at any time, for any reason.</li>
-                      <li>You can ask to be matched with a different therapist if this pairing is not the right fit.</li>
-                      <li>You can ask your therapist questions about their approach, experience or how sessions will work before continuing.</li>
-                    </ul>
-                  </section>
-
-                  <section className="space-y-2">
-                    <h2 className="font-semibold text-base">9. Your consent</h2>
-                    <p>By checking the box below, you confirm that:</p>
-                    <ul className="list-disc pl-5 space-y-1">
-                      <li>You have read and understood the information above</li>
-                      <li>You are voluntarily choosing to participate in this therapy session</li>
-                      <li>You understand the limits of confidentiality described in Section 3</li>
-                      <li>You know what to do in a mental health emergency, as described in Section 5</li>
-                    </ul>
+                    <p className="text-xs text-muted-foreground">
+                      If you are under 18, a parent, guardian, or authorised decision-maker should also review this
+                      agreement and arrange consent with InnerSpark before sessions begin.
+                    </p>
                   </section>
 
                   <div className="flex items-start gap-3 rounded-md border p-4">
-                    <Checkbox id="consent-confirmation" checked={agreed} onCheckedChange={(value) => setAgreed(value === true)} />
+                    <Checkbox
+                      id="consent-confirmation"
+                      checked={agreed}
+                      onCheckedChange={(value) => setAgreed(value === true)}
+                    />
                     <Label htmlFor="consent-confirmation" className="cursor-pointer text-sm font-normal leading-5">
-                      I have read and understood the above, and I consent to proceed with this {deliveryMode} therapy session
+                      I, {record.client_name}, have read and understood this Counselling Informed Consent and Service
+                      Agreement, and I consent to proceed with counselling / therapy sessions with{" "}
+                      {record.therapist_name} through InnerSpark Africa.
                     </Label>
                   </div>
 
-                  {error && <p className="text-sm text-destructive" role="alert">{error}</p>}
+                  {error && (
+                    <p className="text-sm text-destructive" role="alert">
+                      {error}
+                    </p>
+                  )}
 
                   <Button className="w-full" disabled={!agreed || submitting} onClick={confirm}>
                     {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    Confirm consent
+                    Confirm and sign agreement
                   </Button>
                   <p className="text-center text-xs text-muted-foreground">
-                    Your confirmation time will be recorded and shared with your therapist and InnerSpark’s admin team for scheduling.
+                    Your confirmation time is recorded as your electronic signature and shared with your therapist and
+                    InnerSpark’s admin team.
                   </p>
                 </>
               )}
