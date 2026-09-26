@@ -578,10 +578,15 @@ const CorporateAdmin = () => {
                   <Button><Plus className="w-4 h-4 mr-2" /> Create Company</Button>
                 </DialogTrigger>
                 {/* form dialog: scrollable body + sticky Create button */}
-                <DialogContent>
-                  <DialogHeader><DialogTitle>Create Company</DialogTitle></DialogHeader>
-                  <div className="space-y-3">
-                    <div><Label>Company Name *</Label><Input value={companyForm.name} onChange={e => setCompanyForm(p => ({ ...p, name: e.target.value }))} /></div>
+                <DialogContent className="sm:max-w-lg max-h-[90vh] flex flex-col gap-0 p-0 overflow-hidden">
+                  <DialogHeader className="px-6 pt-6 pb-3 border-b shrink-0">
+                    <DialogTitle>Onboard new company</DialogTitle>
+                    <DialogDescription>
+                      Create the company, then open it for dashboard admins, psychometric credits, and screenings.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4 min-h-0">
+                    <div className="space-y-1.5"><Label htmlFor="co-name">Company name *</Label><Input id="co-name" value={companyForm.name} onChange={e => setCompanyForm(p => ({ ...p, name: e.target.value }))} placeholder="e.g. Acme Uganda Ltd" /></div>
                     <div><Label>Industry</Label><Input value={companyForm.industry} onChange={e => setCompanyForm(p => ({ ...p, industry: e.target.value }))} /></div>
                     <div><Label>Number of Employees</Label><Input type="number" value={companyForm.employee_count} onChange={e => setCompanyForm(p => ({ ...p, employee_count: e.target.value }))} /></div>
                     <div><Label>Contact Person</Label><Input value={companyForm.contact_person} onChange={e => setCompanyForm(p => ({ ...p, contact_person: e.target.value }))} /></div>
