@@ -18,6 +18,17 @@ interface ConsentRecord {
   consent_signed: boolean;
   consent_signed_at: string | null;
   generated_at?: string | null;
+  is_minor?: boolean;
+  date_of_birth?: string | null;
+  age?: number | null;
+  parent_name?: string | null;
+  parent_relationship?: string | null;
+  parent_contact?: string | null;
+  parent_email?: string | null;
+  emergency_contact_name?: string | null;
+  emergency_contact_relationship?: string | null;
+  emergency_contact_phone?: string | null;
+  duration_mins?: number | null;
 }
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -43,7 +54,6 @@ export default function ClientConsent() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    document.title = "Counselling Informed Consent and Service Agreement | InnerSpark Africa";
     if (!token || !UUID_PATTERN.test(token)) {
       setError("This consent link is invalid or has expired.");
       setLoading(false);
@@ -53,7 +63,13 @@ export default function ClientConsent() {
     const loadConsent = async () => {
       const { data, error: loadError } = await supabase.rpc("get_client_consent", { _token: token });
       if (loadError || !data) setError("This consent link is invalid or has expired.");
-      else setRecord(data as unknown as ConsentRecord);
+      else {
+        const rec = data as unknown as ConsentRecord;
+        setRecord(rec);
+        document.title = rec.is_minor
+          ? "Parent Informed Consent for Psychological Services | InnerSpark Africa"
+          : "Counselling Informed Consent and Service Agreement | InnerSpark Africa";
+      }
       setLoading(false);
     };
     loadConsent();
@@ -74,7 +90,13 @@ export default function ClientConsent() {
         : 75000;
 
   const therapistTitle = record?.professional_title || "Licensed mental health professional";
-  const sessionMinutes = deliveryMode === "chat" ? 45 : 50;
+  const sessionMinutes =
+    typeof record?.duration_mins === "number"
+      ? record.duration_mins
+      : deliveryMode === "chat"
+        ? 45
+        : 60;
+  const isMinor = !!record?.is_minor;
 
   const confirm = async () => {
     if (!token || !agreed || submitting) return;
@@ -106,6 +128,16 @@ export default function ClientConsent() {
         sessionMinutes,
         consentSignedAt: record.consent_signed_at,
         generatedAt: record.generated_at,
+        isMinor,
+        dateOfBirth: record.date_of_birth,
+        age: record.age,
+        parentName: record.parent_name,
+        parentRelationship: record.parent_relationship,
+        parentContact: record.parent_contact,
+        parentEmail: record.parent_email,
+        emergencyContactName: record.emergency_contact_name,
+        emergencyContactRelationship: record.emergency_contact_relationship,
+        emergencyContactPhone: record.emergency_contact_phone,
       });
     } catch {
       setError("Could not prepare the PDF. Please try again.");
@@ -142,7 +174,9 @@ export default function ClientConsent() {
                 <FileCheck2 className="h-5 w-5" />
               </div>
               <CardTitle className="text-xl sm:text-2xl">
-                Counselling Informed Consent and Service Agreement
+                {isMinor
+                  ? "Parent Informed Consent for Psychological Services"
+                  : "Counselling Informed Consent and Service Agreement"}
               </CardTitle>
               <p className="text-sm text-muted-foreground">2026 · InnerSpark Africa</p>
               <div className="mt-4 grid gap-3 rounded-md border bg-muted/40 p-4 text-sm sm:grid-cols-2">
@@ -155,11 +189,34 @@ export default function ClientConsent() {
                   <p className="text-muted-foreground">Email: info@innersparkafrica.com</p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Client</p>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    {isMinor ? "Minor (client)" : "Client"}
+                  </p>
                   <p className="font-medium text-foreground">{record.client_name}</p>
+                  {isMinor && record.age != null && (
+                    <p className="text-muted-foreground">Age: {record.age}</p>
+                  )}
+                  {isMinor && record.date_of_birth && (
+                    <p className="text-muted-foreground">Date of birth: {record.date_of_birth}</p>
+                  )}
+                  {isMinor && (
+                    <>
+                      <p className="pt-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                        Parent / guardian
+                      </p>
+                      <p className="font-medium text-foreground">{record.parent_name || "—"}</p>
+                      {record.parent_relationship && (
+                        <p className="text-muted-foreground">Relationship: {record.parent_relationship}</p>
+                      )}
+                      {record.parent_contact && (
+                        <p className="text-muted-foreground">Contact: {record.parent_contact}</p>
+                      )}
+                    </>
+                  )}
                   <p className="text-muted-foreground">Service: {serviceLabel}</p>
                   <p className="text-muted-foreground">
-                    Session fee: <strong className="text-foreground">UGX {price.toLocaleString()}</strong>
+                    Session: ~{sessionMinutes} min · Fee:{" "}
+                    <strong className="text-foreground">UGX {price.toLocaleString()}</strong>
                   </p>
                   <p className="text-muted-foreground">Agreement date: {formatDate(record.generated_at || new Date().toISOString())}</p>
                 </div>
@@ -192,10 +249,142 @@ export default function ClientConsent() {
                 <>
                   <p>
                     Please read this agreement carefully before confirming. If anything is unclear, ask{" "}
-                    <strong>{record.therapist_name}</strong> before or during your first session. Confirming below is
-                    your electronic signature for this agreement.
+                    <strong>{record.therapist_name}</strong> before or during the first session. Confirming below is
+                    your electronic signature for this agreement
+                    {isMinor ? " as parent/legal guardian" : ""}.
                   </p>
 
+                  {isMinor ? (
+                    <>
+                      <section className="space-y-2">
+                        <h2 className="text-base font-semibold">1. Purpose and nature of services</h2>
+                        <p>
+                          Psychological services are provided to support your child’s emotional, behavioural,
+                          psychological, social, academic, and/or family concerns. Services may include clinical
+                          interviewing, assessment, counselling/psychotherapy, psychoeducation, coping-skills
+                          development, parent consultation, and/or appropriate collaboration with other professionals.
+                          Treatment usually involves progress over time and results may vary.
+                        </p>
+                      </section>
+                      <section className="space-y-2">
+                        <h2 className="text-base font-semibold">2. Session length</h2>
+                        <p>
+                          Each session will normally last approximately <strong>{sessionMinutes} minutes</strong> (one
+                          hour). Late arrival may reduce available time; the full fee may remain payable.
+                        </p>
+                      </section>
+                      <section className="space-y-2">
+                        <h2 className="text-base font-semibold">3. Voluntary participation</h2>
+                        <p>
+                          Participation is voluntary, subject to applicable law and professional requirements. You may ask
+                          questions or discuss concerns about treatment at any time and may request discontinuation of
+                          services, subject to applicable legal, ethical, safeguarding, or clinical requirements.
+                        </p>
+                      </section>
+                      <section className="space-y-2">
+                        <h2 className="text-base font-semibold">4. Confidentiality and privacy</h2>
+                        <p>
+                          Information shared during sessions will generally remain confidential and will be handled
+                          according to applicable law and professional standards. Confidentiality may be limited when
+                          disclosure is required or permitted by law, including serious safety concerns, suspected abuse or
+                          neglect, legal requirements, or other safeguarding circumstances.
+                        </p>
+                        <p>
+                          Because your child is a minor, the clinician will balance parental rights with your child’s
+                          developing privacy and autonomy. The clinician may provide general information about treatment
+                          progress, recommendations, and significant safety concerns without unnecessarily disclosing
+                          private session details. Specific arrangements regarding confidentiality and parental
+                          communication will be discussed with you and your child where appropriate.
+                        </p>
+                      </section>
+                      <section className="space-y-2">
+                        <h2 className="text-base font-semibold">5. Risks, benefits and safety</h2>
+                        <p>
+                          Psychological services may help improve coping, emotional awareness, communication,
+                          relationships, and well-being. Discussing difficult experiences may temporarily cause distress or
+                          discomfort. If there is an immediate risk of serious harm to your child or another person,
+                          appropriate emergency, medical, safeguarding, or other professional services may be contacted as
+                          required or permitted by law.
+                        </p>
+                        <p>
+                          Emergency coordination (not a substitute for emergency services): WhatsApp{" "}
+                          <strong>+256 792 085 773</strong>
+                          {record.emergency_contact_name
+                            ? `. Named emergency contact on file: ${record.emergency_contact_name}.`
+                            : "."}
+                        </p>
+                      </section>
+                      <section className="space-y-2">
+                        <h2 className="text-base font-semibold">6. Records and information sharing</h2>
+                        <p>
+                          Appropriate clinical records will be maintained and securely handled according to applicable law
+                          and professional standards. Information may be shared with another professional, school,
+                          healthcare provider, or organisation only with appropriate authorisation or when otherwise
+                          permitted/required by law.
+                        </p>
+                      </section>
+                      <section className="space-y-2">
+                        <h2 className="text-base font-semibold">7. Fees</h2>
+                        <ul className="list-disc space-y-1 pl-5">
+                          <li>
+                            Session fee: <strong>UGX {price.toLocaleString()}</strong> for {serviceLabel}, payable as
+                            arranged (including insurer cover where applicable).
+                          </li>
+                          <li>Session length: approximately {sessionMinutes} minutes.</li>
+                          <li>Please give at least <strong>24 hours’ notice</strong> to cancel or reschedule.</li>
+                        </ul>
+                      </section>
+                      <section className="space-y-2">
+                        <h2 className="text-base font-semibold">8. Consent</h2>
+                        <p>By checking the box below and confirming, you confirm that:</p>
+                        <ul className="list-disc space-y-1 pl-5">
+                          <li>
+                            You have had the opportunity to ask questions and understand the purpose and nature of the
+                            proposed psychological services, confidentiality and its limits, potential benefits and risks,
+                            and applicable communication arrangements
+                          </li>
+                          <li>
+                            You are the parent/legal guardian of <strong>{record.client_name}</strong>
+                          </li>
+                          <li>
+                            You consent to psychological services being provided to your child by{" "}
+                            <strong>{record.therapist_name}</strong> through InnerSpark Africa, subject to applicable law
+                            and professional standards
+                          </li>
+                          <li>Consent may be withdrawn at any time, subject to applicable legal and clinical requirements</li>
+                        </ul>
+                      </section>
+
+                      <div className="flex items-start gap-3 rounded-md border p-4">
+                        <Checkbox
+                          id="consent-confirmation"
+                          checked={agreed}
+                          onCheckedChange={(value) => setAgreed(value === true)}
+                        />
+                        <Label htmlFor="consent-confirmation" className="cursor-pointer text-sm font-normal leading-5">
+                          I, {record.parent_name || "the parent/guardian"}, am the parent/legal guardian of{" "}
+                          {record.client_name}. I have read and understood this Parent Informed Consent, and I consent to
+                          psychological services for my child with {record.therapist_name} through InnerSpark Africa.
+                        </Label>
+                      </div>
+
+                      {error && (
+                        <p className="text-sm text-destructive" role="alert">
+                          {error}
+                        </p>
+                      )}
+
+                      <Button className="w-full" disabled={!agreed || submitting} onClick={confirm}>
+                        {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        Confirm and sign as parent/guardian
+                      </Button>
+                      <p className="text-center text-xs text-muted-foreground">
+                        Your confirmation time is recorded as your electronic signature and shared with the clinician and
+                        InnerSpark’s admin team.
+                      </p>
+                    </>
+                  ) : (
+                    <>
                   <section className="space-y-2">
                     <h2 className="text-base font-semibold">1. Purpose of counselling</h2>
                     <p>
@@ -411,6 +600,8 @@ export default function ClientConsent() {
                     Your confirmation time is recorded as your electronic signature and shared with your therapist and
                     InnerSpark’s admin team.
                   </p>
+                    </>
+                  )}
                 </>
               )}
             </CardContent>
