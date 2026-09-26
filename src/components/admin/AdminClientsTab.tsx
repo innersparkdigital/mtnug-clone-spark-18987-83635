@@ -132,10 +132,15 @@ const AdminClientsTab = () => {
 
     const url = `${window.location.origin}/consent/${data}`;
     const copied = await copyToClipboard(url);
+    const isMinor = !!(r as any).is_minor;
+    const parentName = (r as any).parent_name as string | undefined;
+    const greet = isMinor && parentName ? parentName.split(" ")[0] : r.full_name.split(" ")[0];
     const message = encodeURIComponent(
-      `Hi ${r.full_name.split(" ")[0]}, please review and confirm your InnerSpark consent form before your session with ${r.therapist_name}: ${url}`,
+      isMinor
+        ? `Hi ${greet}, please review and sign the InnerSpark parent consent form for ${r.full_name} before the session with ${r.therapist_name}: ${url}`
+        : `Hi ${greet}, please review and confirm your InnerSpark consent form before your session with ${r.therapist_name}: ${url}`,
     );
-    const phone = (r.phone || "").replace(/[^0-9]/g, "");
+    const phone = ((isMinor && (r as any).parent_contact) || r.phone || "").replace(/[^0-9]/g, "");
     window.open(`https://wa.me/${phone}?text=${message}`, "_blank", "noopener,noreferrer");
     toast.success(copied ? "Consent link copied and WhatsApp opened" : "Consent link generated and WhatsApp opened");
   };
@@ -151,8 +156,18 @@ const AdminClientsTab = () => {
         therapistName: r.therapist_name,
         sessionType: r.session_type,
         sessionPriceUgx: r.amount_ugx,
-        sessionMinutes: r.duration_mins,
+        sessionMinutes: r.duration_mins || 60,
         consentSignedAt: r.consent_signed_at,
+        isMinor: !!(r as any).is_minor,
+        dateOfBirth: (r as any).date_of_birth ?? null,
+        age: (r as any).age ?? null,
+        parentName: (r as any).parent_name ?? null,
+        parentRelationship: (r as any).parent_relationship ?? null,
+        parentContact: (r as any).parent_contact ?? null,
+        parentEmail: (r as any).parent_email ?? null,
+        emergencyContactName: (r as any).emergency_contact_name ?? null,
+        emergencyContactRelationship: (r as any).emergency_contact_relationship ?? null,
+        emergencyContactPhone: (r as any).emergency_contact_phone ?? null,
       });
       toast.success("Consent form downloaded");
     } catch {
