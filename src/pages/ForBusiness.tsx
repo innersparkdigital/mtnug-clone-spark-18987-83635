@@ -8,7 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Brain, Cog, Users, Calendar, Video, BookOpen, GraduationCap, BarChart3, UserCheck, MessageSquare, TrendingDown, TrendingUp, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Brain, Cog, Users, Calendar, Video, BookOpen, GraduationCap, BarChart3, UserCheck, MessageSquare, TrendingDown, TrendingUp, ArrowRight, ClipboardList } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import B2BScreeningBookingSection from "@/components/business/B2BScreeningBookingSection";
@@ -443,6 +444,66 @@ const ForBusiness = () => {
                   <p className="text-sm text-muted-foreground">{t.afterProgram}</p>
                 </div>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Psychometric assessments CTA */}
+        <section className="py-16 md:py-20 bg-gradient-to-br from-primary/5 via-background to-orange-50/40 border-y border-border">
+          <div className="container mx-auto px-4">
+            <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-10 items-center">
+              <div className="space-y-4">
+                <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 text-primary px-3 py-1 text-xs font-semibold uppercase tracking-wide">
+                  <ClipboardList className="h-3.5 w-3.5" /> New for HR and L&D
+                </span>
+                <h2 className="text-3xl md:text-4xl font-bold text-foreground">
+                  Psychometric assessments for your workforce
+                </h2>
+                <p className="text-muted-foreground leading-relaxed">
+                  Buy credits, send private employee links, and download development reports — personality, stress
+                  resilience, leadership style, team collaboration, role fit, and aptitude. Separate from the free
+                  aggregate wellbeing screen. Not a clinical diagnosis.
+                </p>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li className="flex gap-2"><span className="text-primary">✓</span> Packs from UGX 45,000 (1 seat) to UGX 800,000 (25 seats)</li>
+                  <li className="flex gap-2"><span className="text-primary">✓</span> Mobile Money friendly · private links · printable reports</li>
+                  <li className="flex gap-2"><span className="text-primary">✓</span> Built for hiring, promotions, team design, and coaching</li>
+                </ul>
+                <div className="flex flex-wrap gap-3 pt-2">
+                  <Button size="lg" className="bg-primary hover:bg-primary/90" asChild>
+                    <Link to="/for-business/psychometric-assessments">
+                      Explore psychometric assessments
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </Link>
+                  </Button>
+                  <Button size="lg" variant="outline" asChild>
+                    <Link to="/corporate-dashboard">Company admin login</Link>
+                  </Button>
+                </div>
+              </div>
+              <Card className="border-primary/20 shadow-lg bg-background">
+                <CardContent className="pt-8 pb-8 space-y-4">
+                  <p className="text-sm font-semibold text-primary uppercase tracking-wide">What is included</p>
+                  {[
+                    "Workplace Personality Profile",
+                    "Stress Resilience at Work",
+                    "Leadership Style Snapshot",
+                    "Team Collaboration Style",
+                    "Role Fit and Interest Map",
+                    "Workplace Aptitude Lite",
+                  ].map((name) => (
+                    <div key={name} className="flex items-center gap-3 text-sm text-foreground">
+                      <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                        <ClipboardList className="h-4 w-4 text-primary" />
+                      </div>
+                      {name}
+                    </div>
+                  ))}
+                  <Button variant="secondary" className="w-full mt-2" asChild>
+                    <Link to="/for-business/psychometric-assessments">See full page, pricing and FAQ</Link>
+                  </Button>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </section>
