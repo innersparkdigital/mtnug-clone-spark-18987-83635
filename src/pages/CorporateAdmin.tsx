@@ -603,7 +603,7 @@ const CorporateAdmin = () => {
                       />
                       <p className="text-[11px] text-muted-foreground">This is shown to consultants and fed into AI when drafting observations &amp; the action plan.</p>
                     </div>
-                    <Button onClick={createCompany} className="w-full">Create Company</Button>
+                    <Button onClick={createCompany} className="w-full sm:w-auto" disabled={!companyForm.name.trim()}>Create company</Button>
                   </div>
                 </DialogContent>
               </Dialog>
