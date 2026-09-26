@@ -3,8 +3,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SessionFeedbackForm from "./SessionFeedbackForm";
-import { Loader2, AlertTriangle, TrendingDown, TrendingUp, Minus, CheckCircle2, Clock3 } from "lucide-react";
+import { Loader2, AlertTriangle, TrendingDown, TrendingUp, Minus, CheckCircle2, Clock3, Download } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { downloadConsentPdf } from "@/lib/consentPdf";
+import { toast } from "sonner";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -78,6 +81,7 @@ const ClientDetailPanel = ({ open, onOpenChange, client, therapistName, onAssign
   const [subs, setSubs] = useState<Submission[]>([]);
   const [tab, setTab] = useState("overview");
   const [moodRange, setMoodRange] = useState<30 | 60 | 90>(30);
+  const [downloadingConsent, setDownloadingConsent] = useState(false);
 
   useEffect(() => {
     if (!open || !client) return;
@@ -229,10 +233,43 @@ const ClientDetailPanel = ({ open, onOpenChange, client, therapistName, onAssign
                   <span className={`risk-dot risk-${riskLevel}`} />
                   <span className="text-xs capitalize">{riskLevel} risk · {riskReason}</span>
                 </div>
-                <Badge variant={client.consent_signed ? "default" : "outline"} className="mt-2 text-[10px]">
-                  {client.consent_signed ? <CheckCircle2 className="mr-1 h-3 w-3" /> : <Clock3 className="mr-1 h-3 w-3" />}
-                  Consent: {client.consent_signed ? "Signed" : "Pending"}
-                </Badge>
+                <div className="mt-2 flex flex-wrap items-center gap-2">
+                  <Badge variant={client.consent_signed ? "default" : "outline"} className="text-[10px]">
+                    {client.consent_signed ? <CheckCircle2 className="mr-1 h-3 w-3" /> : <Clock3 className="mr-1 h-3 w-3" />}
+                    Consent: {client.consent_signed ? "Signed" : "Pending"}
+                  </Badge>
+                  {client.consent_signed && client.consent_signed_at && (
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      className="h-7 text-xs"
+                      disabled={downloadingConsent}
+                      onClick={async () => {
+                        setDownloadingConsent(true);
+                        try {
+                          await downloadConsentPdf({
+                            clientName: client.full_name,
+                            therapistName,
+                            consentSignedAt: client.consent_signed_at!,
+                          });
+                          toast.success("Consent form downloaded");
+                        } catch {
+                          toast.error("Could not download consent form");
+                        } finally {
+                          setDownloadingConsent(false);
+                        }
+                      }}
+                    >
+                      {downloadingConsent ? (
+                        <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+                      ) : (
+                        <Download className="mr-1.5 h-3.5 w-3.5" />
+                      )}
+                      Download PDF
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
           </SheetHeader>
