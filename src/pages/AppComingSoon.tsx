@@ -18,8 +18,8 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 
-const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.innersparkafrica.app";
-const APP_STORE_URL = "https://apps.apple.com/app/innerspark";
+const PLAY_STORE_URL =
+  "https://play.google.com/store/apps/details?id=com.innersparkafrica.app&hl=en";
 
 const AppComingSoon = () => {
   const features = [
@@ -48,17 +48,34 @@ const AppComingSoon = () => {
   return (
     <>
       <Helmet>
-        <title>Download the InnerSpark Therapy App | Africa</title>
+        <title>Download the InnerSpark Therapy App | Google Play</title>
         <meta
           name="description"
-          content="The InnerSpark mental health app is now live on Google Play and the Apple App Store. Book therapy, track mood, join support groups. Built for Uganda & Africa."
+          content="Download the InnerSpark mental health app on Google Play. Book licensed African therapists, track mood, join support groups. Free to install — sessions from UGX 30,000."
         />
-        <meta name="keywords" content="innerspark app download, mental health app Uganda, therapy app Africa, mood tracker app, online counseling app, google play, app store" />
+        <meta name="keywords" content="innerspark app download, mental health app Uganda, therapy app Africa, mood tracker app, online counseling app, google play" />
         <link rel="canonical" href="https://www.innersparkafrica.com/app-coming-soon" />
-        <meta property="og:title" content="Download the InnerSpark Therapy App | Africa" />
-        <meta property="og:description" content="Mental health support in your pocket. Book therapy, track mood, join groups. Available on iOS & Android." />
+        <meta property="og:title" content="Download the InnerSpark Therapy App | Google Play" />
+        <meta property="og:description" content="Mental health support in your pocket. Book therapy, track mood, join groups. Free on Google Play." />
         <meta property="og:url" content="https://www.innersparkafrica.com/app-coming-soon" />
         <meta property="og:type" content="website" />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "SoftwareApplication",
+          name: "Innerspark",
+          operatingSystem: "Android",
+          applicationCategory: "HealthApplication",
+          offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+          url: PLAY_STORE_URL,
+          downloadUrl: PLAY_STORE_URL,
+          publisher: {
+            "@type": "Organization",
+            name: "InnerSpark Africa",
+            url: "https://www.innersparkafrica.com",
+          },
+          description:
+            "Book licensed African therapists, track mood, join support groups. Free to install on Google Play.",
+        })}</script>
       </Helmet>
 
       <div className="min-h-screen bg-background">
@@ -95,27 +112,20 @@ const AppComingSoon = () => {
                       className="h-14 hover:scale-105 transition-transform"
                     />
                   </a>
-                  <a href={APP_STORE_URL} target="_blank" rel="noopener noreferrer">
-                    <img
-                      src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg"
-                      alt="Download InnerSpark on the App Store"
-                      className="h-14 hover:scale-105 transition-transform"
-                    />
-                  </a>
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <CheckCircle className="w-5 h-5 text-primary" />
-                    <span>iOS & Android</span>
+                    <span>Android · Google Play</span>
                   </div>
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <CheckCircle className="w-5 h-5 text-primary" />
-                    <span>Free to Download</span>
+                    <span>Free to download</span>
                   </div>
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <CheckCircle className="w-5 h-5 text-primary" />
-                    <span>Live Now</span>
+                    <span>Live now</span>
                   </div>
                 </div>
               </motion.div>
@@ -144,12 +154,9 @@ const AppComingSoon = () => {
                           <ArrowRight className="w-4 h-4" />
                         </Button>
                       </a>
-                      <a href={APP_STORE_URL} target="_blank" rel="noopener noreferrer">
-                        <Button variant="outline" className="w-full gap-2" size="lg">
-                          Download on the App Store
-                          <ArrowRight className="w-4 h-4" />
-                        </Button>
-                      </a>
+                      <p className="text-xs text-muted-foreground">
+                        iPhone / App Store listing coming soon. Book on the web anytime.
+                      </p>
                     </div>
                   </CardContent>
                 </Card>
@@ -211,19 +218,12 @@ const AppComingSoon = () => {
 
                 {/* App Store Badges */}
                 <div className="bg-muted/50 rounded-xl p-6 text-center">
-                  <p className="text-sm text-muted-foreground mb-4">Available now on</p>
+                  <p className="text-sm text-muted-foreground mb-4">Available now on Google Play</p>
                   <div className="flex justify-center gap-4">
                     <a href={PLAY_STORE_URL} target="_blank" rel="noopener noreferrer">
                       <img
                         src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
-                        alt="Get it on Google Play"
-                        className="h-10 hover:scale-105 transition-transform"
-                      />
-                    </a>
-                    <a href={APP_STORE_URL} target="_blank" rel="noopener noreferrer">
-                      <img
-                        src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg"
-                        alt="Download on the App Store"
+                        alt="Get InnerSpark on Google Play"
                         className="h-10 hover:scale-105 transition-transform"
                       />
                     </a>
