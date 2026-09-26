@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import { CheckCircle2, FileCheck2, Loader2, ShieldCheck } from "lucide-react";
+import { CheckCircle2, Download, FileCheck2, Loader2, ShieldCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import NoIndex from "@/components/seo/NoIndex";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { downloadConsentPdf } from "@/lib/consentPdf";
 
 interface ConsentRecord {
   client_name: string;
@@ -38,6 +39,7 @@ export default function ClientConsent() {
   const [agreed, setAgreed] = useState(false);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [downloading, setDownloading] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -88,6 +90,28 @@ export default function ClientConsent() {
     }
     const result = data as unknown as Pick<ConsentRecord, "consent_signed" | "consent_signed_at">;
     setRecord((current) => (current ? { ...current, ...result } : current));
+  };
+
+  const downloadArchive = async () => {
+    if (!record?.consent_signed || !record.consent_signed_at || downloading) return;
+    setDownloading(true);
+    setError("");
+    try {
+      await downloadConsentPdf({
+        clientName: record.client_name,
+        therapistName: record.therapist_name,
+        professionalTitle: therapistTitle,
+        sessionType: serviceLabel,
+        sessionPriceUgx: price,
+        sessionMinutes,
+        consentSignedAt: record.consent_signed_at,
+        generatedAt: record.generated_at,
+      });
+    } catch {
+      setError("Could not prepare the PDF. Please try again.");
+    } finally {
+      setDownloading(false);
+    }
   };
 
   return (
@@ -143,15 +167,26 @@ export default function ClientConsent() {
             </CardHeader>
             <CardContent className="space-y-6 pt-6 text-sm leading-6">
               {record.consent_signed && record.consent_signed_at ? (
-                <div className="rounded-md border border-primary/30 bg-primary/5 p-5 text-center" aria-live="polite">
-                  <CheckCircle2 className="mx-auto mb-3 h-9 w-9 text-primary" />
-                  <h2 className="font-semibold">Consent confirmed</h2>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    Recorded on {formatDate(record.consent_signed_at)} for {record.client_name}
-                  </p>
-                  <p className="mt-2 text-xs text-muted-foreground">
-                    Your therapist and InnerSpark’s admin team can see that this agreement is signed.
-                  </p>
+                <div className="rounded-md border border-primary/30 bg-primary/5 p-5 text-center space-y-4" aria-live="polite">
+                  <CheckCircle2 className="mx-auto h-9 w-9 text-primary" />
+                  <div>
+                    <h2 className="font-semibold">Consent confirmed</h2>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      Recorded on {formatDate(record.consent_signed_at)} for {record.client_name}
+                    </p>
+                    <p className="mt-2 text-xs text-muted-foreground">
+                      Your therapist and InnerSpark’s admin team can see that this agreement is signed. Download a PDF copy for your records.
+                    </p>
+                  </div>
+                  <Button className="w-full sm:w-auto" variant="outline" onClick={downloadArchive} disabled={downloading}>
+                    {downloading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
+                    Download consent form (PDF)
+                  </Button>
+                  {error && (
+                    <p className="text-sm text-destructive" role="alert">
+                      {error}
+                    </p>
+                  )}
                 </div>
               ) : (
                 <>
