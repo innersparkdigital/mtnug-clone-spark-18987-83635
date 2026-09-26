@@ -19,6 +19,7 @@ import { toast } from "sonner";
 import AdminClientDetailDialog from "./AdminClientDetailDialog";
 import AddClientDialog from "./AddClientDialog";
 import { buildReceiptPdf, makeReceiptNumber } from "@/lib/receiptPdf";
+import { downloadConsentPdf } from "@/lib/consentPdf";
 import * as XLSX from "xlsx";
 import { copyToClipboard } from "@/lib/copyToClipboard";
 
@@ -103,6 +104,7 @@ const AdminClientsTab = () => {
   const [pageSize, setPageSize] = useState(25);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [consentLinkId, setConsentLinkId] = useState<string | null>(null);
+  const [consentDownloadId, setConsentDownloadId] = useState<string | null>(null);
   const [referralLinkId, setReferralLinkId] = useState<string | null>(null);
   const [whatsappSalesId, setWhatsappSalesId] = useState<string | null>(null);
 
@@ -136,6 +138,28 @@ const AdminClientsTab = () => {
     const phone = (r.phone || "").replace(/[^0-9]/g, "");
     window.open(`https://wa.me/${phone}?text=${message}`, "_blank", "noopener,noreferrer");
     toast.success(copied ? "Consent link copied and WhatsApp opened" : "Consent link generated and WhatsApp opened");
+  };
+
+  const downloadSignedConsent = async (r: Row) => {
+    if (!r.consent_signed || !r.consent_signed_at) {
+      return toast.error("Consent is not signed yet.");
+    }
+    setConsentDownloadId(r.id);
+    try {
+      await downloadConsentPdf({
+        clientName: r.full_name,
+        therapistName: r.therapist_name,
+        sessionType: r.session_type,
+        sessionPriceUgx: r.amount_ugx,
+        sessionMinutes: r.duration_mins,
+        consentSignedAt: r.consent_signed_at,
+      });
+      toast.success("Consent form downloaded");
+    } catch {
+      toast.error("Could not download the consent form.");
+    } finally {
+      setConsentDownloadId(null);
+    }
   };
 
   const generateReferralLink = async (r: Row) => {
@@ -689,6 +713,22 @@ const AdminClientsTab = () => {
                                       {consentLinkId === r.id ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Link2 className="h-4 w-4 mr-1" />}
                                       Consent link
                                     </Button>
+                                    {r.consent_signed && r.consent_signed_at && (
+                                      <Button
+                                        size="sm"
+                                        variant="outline"
+                                        disabled={consentDownloadId === r.id}
+                                        onClick={() => downloadSignedConsent(r)}
+                                        title="Download signed consent PDF for archives"
+                                      >
+                                        {consentDownloadId === r.id ? (
+                                          <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+                                        ) : (
+                                          <Download className="h-4 w-4 mr-1" />
+                                        )}
+                                        Consent PDF
+                                      </Button>
+                                    )}
                                     <ClientSetupInviteButton clientId={r.id} clientName={r.full_name} />
                                     <Button size="sm" variant="outline" disabled={referralLinkId === r.id} onClick={() => generateReferralLink(r)}>
                                       {referralLinkId === r.id ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Link2 className="h-4 w-4 mr-1" />}
