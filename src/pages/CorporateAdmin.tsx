@@ -158,7 +158,7 @@ const CorporateAdmin = () => {
     return activeDir === 'asc' ? <ArrowUp className="w-3 h-3 ml-1" /> : <ArrowDown className="w-3 h-3 ml-1" />;
   };
   useEffect(() => {
-    if (!roleLoading && !isAdmin) navigate('/auth');
+    if (!roleLoading && !isAdmin) navigate('/auth?redirect=/corporate-admin');
   }, [isAdmin, roleLoading, navigate]);
 
   useEffect(() => {
