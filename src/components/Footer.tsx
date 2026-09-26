@@ -105,11 +105,10 @@ const Footer = () => {
               </a>
               <Link
                 to="/app-coming-soon"
-                aria-label="Download on the App Store"
-                className="inline-flex items-center gap-2 rounded-md bg-foreground text-background px-3 py-1.5 text-xs font-medium hover:opacity-90 transition"
+                aria-label="InnerSpark app details"
+                className="inline-flex items-center gap-2 rounded-md border border-border px-3 py-1.5 text-xs font-medium hover:text-primary transition"
               >
-                <span className="text-[10px] opacity-80 leading-none">Download on the</span>
-                <span className="font-semibold">App Store</span>
+                <span className="font-semibold">App details</span>
               </Link>
             </div>
 
