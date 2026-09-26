@@ -44,6 +44,16 @@ const empty = {
   paid_status: "pending",
   session_rating: "",
   would_rebook: "",
+  client_category: "adult" as "adult" | "child",
+  date_of_birth: "",
+  age: "",
+  parent_name: "",
+  parent_relationship: "",
+  parent_contact: "",
+  parent_email: "",
+  emergency_contact_name: "",
+  emergency_contact_relationship: "",
+  emergency_contact_phone: "",
 };
 
 const AddClientDialog = ({
@@ -122,6 +132,10 @@ const AddClientDialog = ({
   const submit = async () => {
     if (!form.full_name.trim()) return toast.error("Client name is required");
     if (!form.therapist_id) return toast.error("Select a therapist");
+    const isMinor = form.client_category === "child";
+    if (isMinor && !form.parent_name.trim()) {
+      return toast.error("Parent / guardian name is required for a child client");
+    }
     setSaving(true);
     const { error } = await supabase.rpc("admin_create_client" as any, {
       _therapist_id: form.therapist_id,
@@ -141,9 +155,49 @@ const AddClientDialog = ({
       _would_rebook: form.would_rebook === "" ? null : form.would_rebook === "yes",
       _client_type: mode,
     });
+    if (error) {
+      setSaving(false);
+      return toast.error(error.message);
+    }
+
+    // Attach guardian / minor fields on the newest matching client row
+    const { data: listed } = await supabase.rpc("admin_list_all_clients" as any);
+    const rows = ((listed as any[]) || []).filter(
+      (r) =>
+        r.therapist_id === form.therapist_id &&
+        String(r.full_name || "").trim().toLowerCase() === form.full_name.trim().toLowerCase(),
+    );
+    rows.sort((a, b) => String(b.created_at || "").localeCompare(String(a.created_at || "")));
+    const created = rows[0];
+    if (created?.id) {
+      const { error: gErr } = await supabase.rpc("admin_set_client_guardian" as any, {
+        _client_id: created.id,
+        _is_minor: isMinor,
+        _date_of_birth: form.date_of_birth || null,
+        _age: form.age ? Number(form.age) : null,
+        _parent_name: isMinor ? form.parent_name.trim() : null,
+        _parent_relationship: isMinor ? form.parent_relationship.trim() || null : null,
+        _parent_contact: isMinor ? form.parent_contact.trim() || null : null,
+        _parent_email: isMinor ? form.parent_email.trim() || null : null,
+        _emergency_contact_name: form.emergency_contact_name.trim() || null,
+        _emergency_contact_relationship: form.emergency_contact_relationship.trim() || null,
+        _emergency_contact_phone: form.emergency_contact_phone.trim() || null,
+      });
+      if (gErr) {
+        setSaving(false);
+        toast.error(`Client saved, but guardian details failed: ${gErr.message}`);
+        onOpenChange(false);
+        onCreated();
+        return;
+      }
+    }
+
     setSaving(false);
-    if (error) return toast.error(error.message);
-    toast.success("Client added");
+    toast.success(
+      isMinor
+        ? "Child client added — consent link will use parent form"
+        : "Client added",
+    );
     setForm({ ...empty });
     setMode("new");
     setSelectedId("");
@@ -210,8 +264,30 @@ const AddClientDialog = ({
           )}
         </div>
         <div className="grid md:grid-cols-2 gap-3 overflow-y-auto px-6 py-4 flex-1">
+          <div className="md:col-span-2">
+            <Label>Client age group</Label>
+            <div className="mt-1.5 inline-flex rounded-lg border p-1 bg-muted/40">
+              {(["adult", "child"] as const).map((m) => (
+                <button
+                  key={m}
+                  type="button"
+                  onClick={() => set("client_category", m)}
+                  className={`px-4 py-1.5 text-sm rounded-md transition ${
+                    form.client_category === m ? "bg-background shadow font-medium" : "text-muted-foreground"
+                  }`}
+                >
+                  {m === "adult" ? "Adult (18+)" : "Child / minor"}
+                </button>
+              ))}
+            </div>
+            {form.client_category === "child" && (
+              <p className="text-xs text-muted-foreground mt-1.5">
+                Consent link will open the <strong>parent informed consent</strong> form for the guardian to sign.
+              </p>
+            )}
+          </div>
           <div>
-            <Label>Client name *</Label>
+            <Label>{form.client_category === "child" ? "Child’s name *" : "Client name *"}</Label>
             <Input value={form.full_name} onChange={(e) => set("full_name", e.target.value)} />
           </div>
           <div>
@@ -239,9 +315,63 @@ const AddClientDialog = ({
               <SelectContent>{SESSION_TYPES.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
             </Select>
           </div>
+          {form.client_category === "child" && (
+            <>
+              <div>
+                <Label>Date of birth</Label>
+                <Input type="date" value={form.date_of_birth} onChange={(e) => set("date_of_birth", e.target.value)} />
+              </div>
+              <div>
+                <Label>Age</Label>
+                <Input type="number" min={0} max={17} value={form.age} onChange={(e) => set("age", e.target.value)} />
+              </div>
+              <div className="md:col-span-2 rounded-lg border p-3 space-y-3 bg-muted/20">
+                <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                  Parent / guardian
+                </p>
+                <div className="grid md:grid-cols-2 gap-3">
+                  <div>
+                    <Label>Parent’s name *</Label>
+                    <Input value={form.parent_name} onChange={(e) => set("parent_name", e.target.value)} />
+                  </div>
+                  <div>
+                    <Label>Relationship</Label>
+                    <Input
+                      placeholder="Mother / Father / Guardian…"
+                      value={form.parent_relationship}
+                      onChange={(e) => set("parent_relationship", e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <Label>Parent phone</Label>
+                    <Input value={form.parent_contact} onChange={(e) => set("parent_contact", e.target.value)} />
+                  </div>
+                  <div>
+                    <Label>Parent email</Label>
+                    <Input type="email" value={form.parent_email} onChange={(e) => set("parent_email", e.target.value)} />
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
           <div className="md:col-span-2">
             <Label>Presenting concern</Label>
             <Textarea rows={2} value={form.presenting_concern} onChange={(e) => set("presenting_concern", e.target.value)} />
+          </div>
+          <div>
+            <Label>Emergency contact name</Label>
+            <Input value={form.emergency_contact_name} onChange={(e) => set("emergency_contact_name", e.target.value)} />
+          </div>
+          <div>
+            <Label>Emergency relationship</Label>
+            <Input
+              value={form.emergency_contact_relationship}
+              onChange={(e) => set("emergency_contact_relationship", e.target.value)}
+            />
+          </div>
+          <div className="md:col-span-2">
+            <Label>Emergency phone</Label>
+            <Input value={form.emergency_contact_phone} onChange={(e) => set("emergency_contact_phone", e.target.value)} />
           </div>
           <div><Label>Session date</Label><Input type="date" value={form.last_session_date} onChange={(e) => set("last_session_date", e.target.value)} /></div>
           <div><Label>Next session</Label><Input type="date" value={form.next_session_date} onChange={(e) => set("next_session_date", e.target.value)} /></div>
