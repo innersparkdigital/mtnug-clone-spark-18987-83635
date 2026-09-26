@@ -396,6 +396,7 @@ export default function CorporateDashboard() {
 
   const recommendations = useMemo(() => (stats ? buildRecommendations(stats) : []), [stats]);
   const notes = useMemo(() => (stats ? interpretiveNotes(stats) : []), [stats]);
+  const focusPlaybooks = useMemo(() => (stats ? focusPlaybooksFromDrivers(stats) : []), [stats]);
 
   const acceptConsent = async () => {
     if (!admin || !consentChecked) return;
@@ -668,6 +669,12 @@ export default function CorporateDashboard() {
             <span className="hidden sm:inline-flex items-center gap-1.5 text-[11px] font-medium px-2.5 py-1 rounded-full" style={{ background: "#EEF0FD", color: "#3B4FD4" }}>
               <Lock className="h-3 w-3" /> Aggregate only
             </span>
+            <Button size="sm" className="rounded-xl h-8 gap-1 text-white" style={{ background: "#F2994A" }} asChild>
+              <Link to="/corporate-assessments">
+                <ClipboardList className="h-3.5 w-3.5" />
+                Psychometrics
+              </Link>
+            </Button>
             <Button variant="outline" size="sm" className="rounded-xl h-8" onClick={() => signOut()}>Sign out</Button>
           </div>
         </div>
