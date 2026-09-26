@@ -96,6 +96,7 @@ BEGIN
   SELECT public.is_corporate_hr_admin_for(_company_id) INTO _ok;
   IF NOT _ok THEN RAISE EXCEPTION 'not authorized'; END IF;
   SELECT COALESCE(credit_balance, 0) INTO _bal FROM public.psych_company_wallets WHERE company_id = _company_id;
+  -- credits_suspended column added in later migration; overview still returns balance only here
   SELECT COALESCE(jsonb_agg(to_jsonb(i) ORDER BY i.created_at DESC), '[]'::jsonb) INTO _invites FROM (
     SELECT inv.id, inv.token, inv.employee_name, inv.employee_email, inv.employee_role, inv.department, inv.status,
       inv.created_at, inv.completed_at, inv.expires_at, inv.catalog_id, c.name AS assessment_name, c.short_name,
