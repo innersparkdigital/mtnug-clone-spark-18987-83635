@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet";
+import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -10,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Loader2, ShieldCheck, Users, Activity, TrendingUp, AlertTriangle,
-  CalendarDays, BookOpen, Send, Lock,
+  CalendarDays, BookOpen, Send, Lock, ArrowLeft, Home,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -450,44 +451,54 @@ export default function CorporateDashboard() {
           <title>Corporate Wellbeing Dashboard | InnerSpark</title>
           <meta name="robots" content="noindex" />
         </Helmet>
-        <Card className="w-full max-w-md shadow-2xl border-0 overflow-hidden rounded-3xl">
-          <div className="px-8 pt-8 pb-5 text-white" style={{ background: "linear-gradient(135deg,#1e1b4b,#3B4FD4 55%,#1e3a5f)" }}>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-white/70 mb-2">Company HR</p>
-            <h1 className="text-2xl font-bold tracking-tight">Wellbeing dashboard</h1>
-            <p className="text-sm text-white/75 mt-2 leading-relaxed">
-              Aggregate patterns only — never individual employee answers. Separate from client and therapist logins.
-            </p>
-          </div>
-          <CardContent className="space-y-4 p-8">
-            <div className="space-y-1.5">
-              <Label>Work email</Label>
-              <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="username" className="h-11 rounded-xl" />
+        <div className="w-full max-w-md space-y-4">
+          <Button variant="ghost" asChild className="gap-2 text-muted-foreground hover:text-foreground -ml-2">
+            <Link to="/">
+              <ArrowLeft className="h-4 w-4" />
+              Back to InnerSpark home
+            </Link>
+          </Button>
+          <Card className="w-full shadow-2xl border-0 overflow-hidden rounded-3xl">
+            <div className="px-8 pt-8 pb-5 text-white" style={{ background: "linear-gradient(135deg,#1e1b4b,#3B4FD4 55%,#1e3a5f)" }}>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-white/70 mb-2">Company / organisation</p>
+              <h1 className="text-2xl font-bold tracking-tight">Wellbeing dashboard</h1>
+              <p className="text-sm text-white/75 mt-2 leading-relaxed">
+                For company or organisation administrators. Aggregate patterns only — never individual employee answers.
+              </p>
             </div>
-            <div className="space-y-1.5">
-              <Label>Password</Label>
-              <Input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                autoComplete="current-password"
-                className="h-11 rounded-xl"
-                onKeyDown={(e) => e.key === "Enter" && document.getElementById("corp-hr-login")?.click()}
-              />
-            </div>
-            <Button
-              id="corp-hr-login"
-              className="w-full h-11 text-white rounded-xl"
-              style={{ background: "#F2994A" }}
-              onClick={async () => {
-                const { error } = await signIn(email.trim().toLowerCase(), password);
-                if (error) toast.error(error.message);
-              }}
-            >
-              Sign in
-            </Button>
-            <p className="text-[11px] text-center text-muted-foreground">Demo: hr@demo.innerspark.local</p>
-          </CardContent>
-        </Card>
+            <CardContent className="space-y-4 p-8">
+              <div className="space-y-1.5">
+                <Label>Work email</Label>
+                <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="username" className="h-11 rounded-xl" />
+              </div>
+              <div className="space-y-1.5">
+                <Label>Password</Label>
+                <Input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  autoComplete="current-password"
+                  className="h-11 rounded-xl"
+                  onKeyDown={(e) => e.key === "Enter" && document.getElementById("corp-hr-login")?.click()}
+                />
+              </div>
+              <Button
+                id="corp-hr-login"
+                className="w-full h-11 text-white rounded-xl"
+                style={{ background: "#F2994A" }}
+                onClick={async () => {
+                  const { error } = await signIn(email.trim().toLowerCase(), password);
+                  if (error) toast.error(error.message);
+                }}
+              >
+                Sign in
+              </Button>
+              <p className="text-[11px] text-center text-muted-foreground">
+                InnerSpark staff who manage all companies use the internal Corporate Wellbeing Admin tool.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     );
   }
@@ -503,9 +514,16 @@ export default function CorporateDashboard() {
               Ask InnerSpark to create a corporate admin account for your organisation. Individual client and therapist
               accounts cannot open this view.
             </p>
-            <Button variant="outline" onClick={() => signOut()}>
-              Sign out
-            </Button>
+            <div className="flex flex-wrap gap-2 justify-center pt-2">
+              <Button variant="outline" asChild>
+                <Link to="/">
+                  <Home className="h-4 w-4 mr-1" /> Back to home
+                </Link>
+              </Button>
+              <Button variant="outline" onClick={() => signOut()}>
+                Sign out
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>
