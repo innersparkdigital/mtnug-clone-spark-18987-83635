@@ -118,6 +118,7 @@ const ImposterSyndromeTest = lazy(
 );
 const SADTest = lazy(() => import("./pages/tests/SADTest"));
 const ForBusiness = lazy(() => import("./pages/ForBusiness"));
+const PsychometricAssessments = lazy(() => import("./pages/PsychometricAssessments"));
 const ForProfessionals = lazy(() => import("./pages/ForProfessionals"));
 const DoctorRefer = lazy(() => import("./pages/professionals/DoctorRefer"));
 const SpecialistProfile = lazy(() => import("./pages/SpecialistProfile"));
@@ -297,6 +298,8 @@ const App = () => (
                 <Route path="/contact" element={<Contact />} />
                 {/* <Route path="/careers" element={<Careers />} /> */}
                 <Route path="/for-business" element={<ForBusiness />} />
+                <Route path="/for-business/psychometric-assessments" element={<PsychometricAssessments />} />
+                <Route path="/psychometric-assessments" element={<Navigate to="/for-business/psychometric-assessments" replace />} />
                 <Route
                   path="/for-professionals"
                   element={<ForProfessionals />}
