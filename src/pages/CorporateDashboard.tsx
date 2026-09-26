@@ -623,13 +623,18 @@ export default function CorporateDashboard() {
         <meta name="robots" content="noindex,nofollow" />
       </Helmet>
 
-      {/* header starts below — back-to-home is injected via class on first nav row */}
       <header className="sticky top-0 z-30 border-b bg-white/90 backdrop-blur-md" style={{ borderColor: "#E6E8FA" }}>
-        <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 min-w-0">
+            <Button variant="ghost" size="sm" asChild className="h-8 px-2 text-muted-foreground shrink-0">
+              <Link to="/" title="Back to website home">
+                <ArrowLeft className="h-4 w-4 mr-1" />
+                <span className="hidden sm:inline">Home</span>
+              </Link>
+            </Button>
             <div className="h-8 w-8 rounded-xl grid place-items-center text-white text-xs font-bold shrink-0" style={{ background: "#3B4FD4" }}>IS</div>
             <span className="font-semibold text-sm truncate" style={{ color: "#1A1A2E" }}>
-              InnerSpark <span className="font-normal text-muted-foreground">· Company HR</span>
+              InnerSpark <span className="font-normal text-muted-foreground">· Company admin</span>
             </span>
           </div>
           <div className="flex items-center gap-2">
