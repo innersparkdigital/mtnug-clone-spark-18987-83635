@@ -94,7 +94,7 @@ const Footer = () => {
             {/* App badges */}
             <div className="mt-4 flex flex-wrap gap-2">
               <a
-                href="https://play.google.com/store/apps/details?id=com.innerspark.africa"
+                href="https://play.google.com/store/apps/details?id=com.innersparkafrica.app&hl=en"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Get it on Google Play"
