@@ -62,10 +62,21 @@ export default function MarketLandingPage({ market: m }: { market: MarketLanding
       <Helmet>
         <title>{m.title}</title>
         <meta name="description" content={m.description} />
+        <meta
+          name="keywords"
+          content={`therapy in ${m.countryLabel}, online therapy ${m.countryLabel}, book therapist ${m.countryLabel}, counselling ${m.countryLabel}, licensed African therapist, mental health support ${m.countryLabel}, ${m.cities.map((c) => c.kw).join(", ")}`}
+        />
         <link rel="canonical" href={`${url}/`} />
         <meta property="og:title" content={m.title} />
         <meta property="og:description" content={m.description} />
         <meta property="og:url" content={url} />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://www.innersparkafrica.com/og-image.jpg" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={m.title} />
+        <meta name="twitter:description" content={m.description} />
+        <meta name="geo.region" content={m.code} />
+        <meta name="geo.placename" content={m.countryLabel} />
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org",
           "@type": "MedicalBusiness",
