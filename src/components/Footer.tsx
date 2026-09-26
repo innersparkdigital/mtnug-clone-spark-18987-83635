@@ -52,6 +52,14 @@ const Footer = () => {
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li><Link to="/therapist" className="hover:text-primary transition-colors">Therapist Portal login</Link></li>
             </ul>
+            <h4 className="font-display text-base font-semibold mt-6 mb-3">For Companies</h4>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li>
+                <Link to="/corporate-dashboard" className="hover:text-primary transition-colors">
+                  For company or organisation administrators
+                </Link>
+              </li>
+            </ul>
           </div>
 
           {/* Column 4 — Contact */}
