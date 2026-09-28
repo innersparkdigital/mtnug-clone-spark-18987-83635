@@ -11,12 +11,12 @@ const TherapyInKampala = () => {
   return (
     <>
       <Helmet>
-        <title>Therapy in Kampala | Find a Therapist Near You</title>
-        <meta name="description" content="Find a therapist in Kampala for depression, anxiety, trauma and couples counselling. Online or in-person sessions, booked in minutes." />
-        <meta name="keywords" content="therapy in Kampala, therapist Kampala, counsellor Kampala, psychologist Kampala, mental health Kampala, counselling near me Kampala, therapy near me Uganda" />
+        <title>Find a Therapist in Kampala | Book Online from UGX 30,000</title>
+        <meta name="description" content="Book a licensed therapist in Kampala today — video UGX 75,000 or chat UGX 30,000. Mobile Money. Confidential. Same-day slots often available. WhatsApp +256 792 085 773." />
+        <meta name="keywords" content="therapist kampala, find therapist kampala, therapy in kampala, counsellor kampala, psychologist kampala, counselling services uganda, therapist in uganda, book therapist kampala, online therapy uganda" />
         <link rel="canonical" href="https://www.innersparkafrica.com/therapy-in-kampala" />
-        <meta property="og:title" content="Therapy in Kampala | Find a Therapist Near You" />
-        <meta property="og:description" content="Find a therapist in Kampala for depression, anxiety, trauma and couples counselling. Online or in-person sessions, booked in minutes." />
+        <meta property="og:title" content="Find a Therapist in Kampala | from UGX 30,000" />
+        <meta property="og:description" content="Book a licensed therapist in Kampala — video UGX 75,000 or chat UGX 30,000. Mobile Money. Confidential." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.innersparkafrica.com/therapy-in-kampala" />
         <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.webp" />
@@ -53,21 +53,21 @@ const TherapyInKampala = () => {
                 <span className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Kampala, Uganda</span>
               </div>
               <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-                <T>Therapy in Kampala</T>
+                <T>Find a therapist in Kampala. Book online from UGX 30,000.</T>
               </h1>
               <p className="text-lg md:text-xl text-muted-foreground mb-8">
-                <T>Connect with licensed therapists based in Kampala. No traffic, no waiting rooms — get professional mental health support from your phone or laptop. Sessions from UGX 50,000.</T>
+                <T>Licensed therapists for depression, anxiety, trauma and couples. Video UGX 75,000 · Chat UGX 30,000. Mobile Money. No traffic, no waiting room — book in about two minutes.</T>
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link to="/specialists">
+                <Link to="/book-therapist">
                   <Button size="lg" className="w-full sm:w-auto text-lg px-8 py-6 rounded-full">
-                    <T>Find a Therapist in Kampala</T>
+                    <T>Book a session now</T>
                   </Button>
                 </Link>
-                <a href="https://wa.me/256792085773?text=Hi,%20I%20need%20therapy%20in%20Kampala" target="_blank" rel="noopener noreferrer">
+                <a href="https://wa.me/256792085773?text=Hi%20InnerSpark%2C%20I%20want%20to%20book%20a%20therapist%20in%20Kampala" target="_blank" rel="noopener noreferrer">
                   <Button size="lg" variant="outline" className="w-full sm:w-auto text-lg px-8 py-6 rounded-full">
                     <MessageCircle className="mr-2 h-5 w-5" />
-                    <T>WhatsApp Us</T>
+                    <T>WhatsApp to book</T>
                   </Button>
                 </a>
               </div>
