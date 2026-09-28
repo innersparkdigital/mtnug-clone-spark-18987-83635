@@ -127,21 +127,21 @@ const TherapyInUganda = () => {
                 <span className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Uganda's #1 Online Therapy Platform</span>
               </div>
               <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-                <T>Therapy in Uganda</T>
+                <T>Book online therapy in Uganda. From UGX 30,000.</T>
               </h1>
               <p className="text-lg md:text-xl text-muted-foreground mb-8">
-                <T>Talk to a licensed Ugandan therapist from the comfort of your home. Affordable, private, and professional mental health support — starting from UGX 50,000 per session.</T>
+                <T>Licensed Ugandan therapists by video (UGX 75,000) or chat (UGX 30,000). Mobile Money. Private. Book in about two minutes — Kampala, Jinja, Mbarara, Gulu and beyond.</T>
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link to="/specialists">
+                <Link to="/book-therapist">
                   <Button size="lg" className="w-full sm:w-auto text-lg px-8 py-6 rounded-full">
-                    <T>Find a Therapist in Uganda</T>
+                    <T>Book a session now</T>
                   </Button>
                 </Link>
-                <a href="https://wa.me/256792085773?text=Hi,%20I%20need%20therapy%20in%20Uganda" target="_blank" rel="noopener noreferrer">
+                <a href="https://wa.me/256792085773?text=Hi%20InnerSpark%2C%20I%20want%20to%20book%20therapy%20in%20Uganda" target="_blank" rel="noopener noreferrer">
                   <Button size="lg" variant="outline" className="w-full sm:w-auto text-lg px-8 py-6 rounded-full">
                     <MessageCircle className="mr-2 h-5 w-5" />
-                    <T>WhatsApp Us</T>
+                    <T>WhatsApp to book</T>
                   </Button>
                 </a>
               </div>
