@@ -50,11 +50,11 @@ const TherapyInUganda = () => {
     <>
       <Helmet>
         <title>Confidential Therapy &amp; Counselling in Uganda | InnerSpark</title>
-        <meta name="description" content="How much is therapy in Uganda? Chat from UGX 30,000 · video UGX 75,000. Licensed therapists. Mobile Money. Book or WhatsApp +256 792 085 773." />
+        <meta name="description" content="How much is a therapy session in Uganda? Chat UGX 30,000 · video UGX 75,000. Therapists in Kampala and online. Mobile Money. Book or WhatsApp +256 792 085 773." />
         <meta name="keywords" content="therapy in Uganda, therapist in Kampala, counsellor in Kampala, online therapy Uganda, psychologist Kampala, counselling Jinja, therapist Mbarara, therapy Gulu, mental health Uganda, online counselling Uganda, Luganda therapist, affordable therapy Uganda, depression therapist Uganda, anxiety counsellor Kampala, trauma therapy Gulu" />
         <link rel="canonical" href="https://www.innersparkafrica.com/therapy-in-uganda" />
         <meta property="og:title" content="Confidential Therapy &amp; Counselling in Uganda | InnerSpark" />
-        <meta property="og:description" content="How much is therapy in Uganda? Chat from UGX 30,000 · video UGX 75,000. Licensed therapists. Mobile Money. Book or WhatsApp +256 792 085 773." />
+        <meta property="og:description" content="How much is a therapy session in Uganda? Chat UGX 30,000 · video UGX 75,000. Therapists in Kampala and online. Mobile Money. Book or WhatsApp +256 792 085 773." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.innersparkafrica.com/therapy-in-uganda" />
         <meta property="og:image" content="https://www.innersparkafrica.com/innerspark-logo.webp" />
@@ -127,7 +127,7 @@ const TherapyInUganda = () => {
                 <span className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Uganda's #1 Online Therapy Platform</span>
               </div>
               <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-                <T>Book online therapy in Uganda. From UGX 30,000.</T>
+                <T>Book a therapist in Uganda. From UGX 30,000.</T>
               </h1>
               <p className="text-lg md:text-xl text-muted-foreground mb-8">
                 <T>Licensed Ugandan therapists by video (UGX 75,000) or chat (UGX 30,000). Mobile Money. Private. Book in about two minutes — Kampala, Jinja, Mbarara, Gulu and beyond.</T>
