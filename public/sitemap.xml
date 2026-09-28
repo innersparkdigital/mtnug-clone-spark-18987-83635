@@ -10,9 +10,6 @@
     <loc>https://www.innersparkafrica.com/book-therapist</loc>
   </url>
   <url>
-    <loc>https://www.innersparkafrica.com/app-coming-soon</loc>
-  </url>
-  <url>
     <loc>https://www.innersparkafrica.com/chat-therapy</loc>
   </url>
   <url>
@@ -70,6 +67,9 @@
     <loc>https://www.innersparkafrica.com/for-business/psychometric-assessments</loc>
   </url>
   <url>
+    <loc>https://www.innersparkafrica.com/psychometric-assessments</loc>
+  </url>
+  <url>
     <loc>https://www.innersparkafrica.com/for-professionals</loc>
   </url>
   <url>
@@ -86,6 +86,15 @@
   </url>
   <url>
     <loc>https://www.innersparkafrica.com/portals</loc>
+  </url>
+  <url>
+    <loc>https://www.innersparkafrica.com/client-login</loc>
+  </url>
+  <url>
+    <loc>https://www.innersparkafrica.com/client-dashboard</loc>
+  </url>
+  <url>
+    <loc>https://www.innersparkafrica.com/my-progress/*</loc>
   </url>
   <url>
     <loc>https://www.innersparkafrica.com/blog</loc>
@@ -326,5 +335,32 @@
   </url>
   <url>
     <loc>https://www.innersparkafrica.com/online-therapy-tanzania</loc>
+  </url>
+  <url>
+    <loc>https://www.innersparkafrica.com/therapy-in-nigeria</loc>
+  </url>
+  <url>
+    <loc>https://www.innersparkafrica.com/therapy-in-ghana</loc>
+  </url>
+  <url>
+    <loc>https://www.innersparkafrica.com/therapy-in-tanzania</loc>
+  </url>
+  <url>
+    <loc>https://www.innersparkafrica.com/therapy-in-kenya</loc>
+  </url>
+  <url>
+    <loc>https://www.innersparkafrica.com/therapy-in-gambia</loc>
+  </url>
+  <url>
+    <loc>https://www.innersparkafrica.com/therapy-in-the-gambia</loc>
+  </url>
+  <url>
+    <loc>https://www.innersparkafrica.com/therapy-in-south-africa</loc>
+  </url>
+  <url>
+    <loc>https://www.innersparkafrica.com/therapy-for-africans-abroad</loc>
+  </url>
+  <url>
+    <loc>https://www.innersparkafrica.com/therapy-for-africans-in-the-usa</loc>
   </url>
 </urlset>
