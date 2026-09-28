@@ -34,7 +34,12 @@ const PasswordResetRequestsTab = () => {
     setLoading(true);
     const { data, error } = await supabase.functions.invoke("manual-password-reset", { body: { action: "list" } });
     setLoading(false);
-    if (error || data?.error) return toast.error(data?.error || error?.message || "Could not load requests");
+    if (error || data?.error) {
+      const raw = String(data?.error || error?.message || "Could not load requests");
+      return toast.error(/non-2xx|Edge Function/i.test(raw)
+        ? "Could not reach the reset service. Deploy the function and refresh."
+        : raw);
+    }
     setRows(data.requests || []);
   }, []);
   useEffect(() => { load(); }, [load]);
@@ -43,7 +48,12 @@ const PasswordResetRequestsTab = () => {
     setRevealing(id);
     const { data, error } = await supabase.functions.invoke("manual-password-reset", { body: { action: "reveal", request_id: id } });
     setRevealing(null);
-    if (error || data?.error) return toast.error(data?.error || error?.message || "Could not generate password");
+    if (error || data?.error) {
+      const raw = String(data?.error || error?.message || "Could not generate password");
+      return toast.error(/non-2xx|Edge Function/i.test(raw)
+        ? "Could not generate the temporary password. Try again or check function logs."
+        : raw);
+    }
     setSecret({ requestId: id, value: data.temporary_password });
     load();
   };
