@@ -39,23 +39,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     );
 
-    // THEN check for existing session. If the stored refresh token is invalid
-    // (common after switching between preview/published domains), clear it so
-    // the app renders cleanly on the first load instead of requiring a second refresh.
+    // THEN check for existing session.
+    // If the stored refresh token is invalid (common after switching domains),
+    // clear local state only — do NOT call signOut(). That broadcasts and can
+    // re-trigger auth listeners so the site feels like it keeps refreshing
+    // when you return from another browser/tab.
     (async () => {
       try {
         const { data, error } = await supabase.auth.getSession();
+        if (!mounted) return;
         if (error) {
-          await supabase.auth.signOut().catch(() => {});
-          if (!mounted) return;
           setSession(null);
           setUser(null);
-        } else if (mounted) {
+        } else {
           setSession(data.session);
           setUser(data.session?.user ?? null);
         }
       } catch {
-        await supabase.auth.signOut().catch(() => {});
         if (!mounted) return;
         setSession(null);
         setUser(null);
@@ -95,7 +95,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    await supabase.auth.signOut({ scope: 'local' });
   };
 
   const value = {
