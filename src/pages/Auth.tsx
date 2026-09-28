@@ -426,16 +426,25 @@ const Auth = () => {
                 onSubmit={async (e) => {
                   e.preventDefault();
                   setForgotSubmitting(true);
-                  const { error } = await supabase.auth.resetPasswordForEmail(forgotEmail, {
-                    redirectTo: `${window.location.origin}/reset-password`,
-                  });
-                  setForgotSubmitting(false);
-                  if (error) {
-                    toast.error(error.message);
-                  } else {
-                    toast.success('Password reset link sent! Check your email.');
-                    setShowForgotPassword(false);
-                    setForgotEmail('');
+                  try {
+                    const { error } = await supabase.auth.resetPasswordForEmail(forgotEmail.trim(), {
+                      redirectTo: `${window.location.origin}/reset-password`,
+                    });
+                    if (error) {
+                      // Auth email hook failures often surface as generic edge errors
+                      const msg = /non-2xx|edge function|hook|email/i.test(error.message)
+                        ? 'We could not send the reset email automatically. WhatsApp +256 792 085 773 and we will help you reset securely.'
+                        : error.message;
+                      toast.error(msg);
+                    } else {
+                      toast.success('If that email is registered, a reset link is on its way. Check your inbox and spam folder.');
+                      setShowForgotPassword(false);
+                      setForgotEmail('');
+                    }
+                  } catch {
+                    toast.error('We could not send the reset email. WhatsApp +256 792 085 773 for help.');
+                  } finally {
+                    setForgotSubmitting(false);
                   }
                 }}
                 className="space-y-4"
