@@ -139,12 +139,22 @@ export default function GlobalLandingPage(props: GlobalLandingProps) {
             <div className="flex flex-wrap gap-3 justify-center">
               <Link to="/book-therapist">
                 <Button size="lg" className="rounded-full px-8">
-                  Book a Session — {props.ctaPrice}
+                  Book a session — {props.ctaPrice}
                 </Button>
               </Link>
+              <a
+                href={`https://wa.me/256792085773?text=${encodeURIComponent(`Hi InnerSpark, I want to book therapy (${props.slug}). Please confirm price and a therapist.`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Button size="lg" className="rounded-full px-8 bg-[#25D366] hover:bg-[#1ebe5b] text-white">
+                  <MessageCircle className="w-4 h-4 mr-2" />
+                  WhatsApp to book
+                </Button>
+              </a>
               <Link to="/specialists">
                 <Button size="lg" variant="outline" className="rounded-full px-8">
-                  Meet Our Therapists
+                  Meet our therapists
                 </Button>
               </Link>
             </div>
@@ -228,9 +238,20 @@ export default function GlobalLandingPage(props: GlobalLandingProps) {
               Book in under 2 minutes. Pay by card, mobile money or bank transfer —
               wherever in the world you are.
             </p>
-            <Link to="/book-therapist">
-              <Button size="lg" className="rounded-full px-8">Book Your Session Now</Button>
-            </Link>
+            <div className="flex flex-wrap gap-3 justify-center">
+              <Link to="/book-therapist">
+                <Button size="lg" className="rounded-full px-8">Book a session now — {props.ctaPrice}</Button>
+              </Link>
+              <a
+                href={`https://wa.me/256792085773?text=${encodeURIComponent(`Hi InnerSpark, I want to book a paid therapy session (${props.slug}).`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Button size="lg" className="rounded-full px-8 bg-[#25D366] hover:bg-[#1ebe5b] text-white">
+                  WhatsApp +256 792 085 773
+                </Button>
+              </a>
+            </div>
           </div>
         </section>
       </main>
