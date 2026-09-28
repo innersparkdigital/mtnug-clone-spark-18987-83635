@@ -392,12 +392,12 @@ export const GLOBAL_LANDING_PAGES = {
 
   "online-therapy-nigeria": {
     slug: "online-therapy-nigeria",
-    title: "Therapist in Nigeria Online — Lagos & Abuja Sessions from $22",
+    title: "Book Online Therapy Nigeria | Licensed from ~NGN 27,500 · $22",
     metaDescription:
-      "See a licensed therapist online in Nigeria without joining a Lagos clinic waiting list. Video, voice or chat from $22, paid by transfer or card, evenings and weekends.",
+      "Book a licensed therapist online in Nigeria. Video ~NGN 27,500 / $22 · chat from $9. Lagos, Abuja, Port Harcourt. Card or transfer. WhatsApp +256 792 085 773.",
     keywords:
-      "online therapy Nigeria, therapist in Lagos, counselling Nigeria, psychologist Nigeria online, therapy in Abuja, affordable therapy Nigeria, mental health Nigeria",
-    h1: "See a Therapist in Nigeria Without Joining a Clinic Waiting List",
+      "book online therapy Nigeria, online therapy Nigeria, therapist in Lagos, counselling Nigeria, psychologist Nigeria online, therapy in Abuja, affordable therapy Nigeria, book therapist Nigeria",
+    h1: "Book online therapy in Nigeria. From about NGN 27,500.",
     intro:
       "Nigeria has roughly 250 psychiatrists for more than 200 million people, nearly all of them in Lagos, Abuja and a few teaching hospitals. InnerSpark puts a licensed therapist on your phone instead — video, voice or chat, from Lagos to Maiduguri.",
     areaServed: ["Nigeria"],
