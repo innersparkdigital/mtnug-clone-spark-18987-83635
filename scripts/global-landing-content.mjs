@@ -47,12 +47,12 @@ const PRICE_BULLETS = [
 export const GLOBAL_LANDING_PAGES = {
   "online-therapy-africa": {
     slug: "online-therapy-africa",
-    title: "Online Therapy in Africa — Licensed African Therapists from $22",
+    title: "Book Online Therapy in Africa | Licensed Therapists from $22",
     metaDescription:
-      "Talk to a licensed African therapist online from anywhere in Africa. Video, voice or chat sessions from USD 22. Confidential, same-week appointments, pay by card or mobile money.",
+      "Book a licensed African therapist online from $22. Kenya, Nigeria, Ghana, SA and beyond. Video, voice or chat. WhatsApp +256 792 085 773.",
     keywords:
-      "online therapy Africa, African therapist online, therapy in Africa, online counselling Africa, black therapist online, mental health support Africa, therapist who understands African culture",
-    h1: "Online Therapy Across Africa — With Therapists Who Understand Your World",
+      "book online therapy Africa, online therapy Africa, African therapist online, therapy in Africa, book African therapist",
+    h1: "Book online therapy across Africa. From $22.",
     intro:
       "InnerSpark connects you with licensed African therapists by video, voice call or chat — from Nairobi to Lagos, Accra to Johannesburg, Kigali to Banjul. Culturally grounded care, private, and available this week.",
     areaServed: [
@@ -138,12 +138,12 @@ export const GLOBAL_LANDING_PAGES = {
 
   "online-therapy-diaspora": {
     slug: "online-therapy-diaspora",
-    title: "Therapy for Africans Abroad — African Therapists Online from $22",
+    title: "Book Therapy with an African Therapist Abroad | from $22",
     metaDescription:
-      "Therapy for Africans in the USA, UK, Canada and the Gulf with licensed African therapists online. Culturally grounded care, evening and weekend slots, from USD 22 a session.",
+      "Book a licensed African therapist online from the USA, UK, Canada or Gulf. From USD 22. Cultural fit. Visa. WhatsApp +256 792 085 773.",
     keywords:
-      "African therapist in USA, African therapist UK, therapy for African diaspora, black therapist online, therapy for immigrants, Nigerian therapist online, Kenyan therapist online, culturally sensitive therapy",
-    h1: "Therapy for Africans Living Abroad",
+      "book African therapist USA, African therapist UK, therapy for African diaspora, black therapist online, Nigerian therapist online, Kenyan therapist online",
+    h1: "Book therapy with an African therapist — from $22.",
     intro:
       "If you are African and living in the US, UK, Canada, Europe or the Gulf, you already know how tiring it is to explain your family, your faith and your obligations before therapy can even begin. Our licensed African therapists start where you actually are.",
     areaServed: [
@@ -402,7 +402,7 @@ export const GLOBAL_LANDING_PAGES = {
       "Nigeria has roughly 250 psychiatrists for more than 200 million people, nearly all of them in Lagos, Abuja and a few teaching hospitals. InnerSpark puts a licensed therapist on your phone instead — video, voice or chat, from Lagos to Maiduguri.",
     areaServed: ["Nigeria"],
     heroBadge: "Licensed therapists · Nigeria-wide · Confidential",
-    ctaPrice: "from USD 22",
+    ctaPrice: "from ~NGN 27,500 · $22",
     serviceName: "Online Therapy and Counselling in Nigeria",
     bodySections: [
       {
@@ -475,17 +475,17 @@ export const GLOBAL_LANDING_PAGES = {
 
   "online-therapy-ghana": {
     slug: "online-therapy-ghana",
-    title: "Online Counselling in Ghana — Accra & Kumasi Sessions from $22",
+    title: "Book Online Therapy Ghana | from ~GHS 235 · $22 · MTN MoMo",
     metaDescription:
-      "Licensed online counselling in Ghana by video, voice or chat from $22 a session. Pay with MTN or Telecel mobile money, book evenings and weekends, nothing shared with anyone.",
+      "Book a licensed therapist online in Ghana. Video ~GHS 235 / $22 · chat from $9. Accra, Kumasi. MTN or Telecel Mobile Money. WhatsApp +256 792 085 773.",
     keywords:
-      "online therapy Ghana, therapist in Accra, counselling Ghana, psychologist Ghana, therapy Kumasi, mental health Ghana, affordable therapy Ghana",
-    h1: "Online Counselling in Ghana, Paid With Mobile Money",
+      "book online therapy Ghana, online therapy Ghana, therapist in Accra, counselling Ghana, psychologist Ghana, therapy Kumasi, book therapist Accra, affordable therapy Ghana",
+    h1: "Book online therapy in Ghana. From about GHS 235.",
     intro:
       "Ghana has fewer than 100 practising clinical psychologists for over 30 million people, and most sit in Accra. InnerSpark gives you a licensed therapist on WhatsApp instead — from Accra, Kumasi, Takoradi, Tamale or a village with one bar of signal.",
     areaServed: ["Ghana"],
     heroBadge: "Licensed therapists · Ghana-wide · Confidential",
-    ctaPrice: "from USD 22",
+    ctaPrice: "from ~GHS 235 · $22",
     serviceName: "Online Therapy and Counselling in Ghana",
     bodySections: [
       {
@@ -556,12 +556,12 @@ export const GLOBAL_LANDING_PAGES = {
 
   "online-therapy-south-africa": {
     slug: "online-therapy-south-africa",
-    title: "Online Therapy South Africa — No Medical Aid Needed, from $22",
+    title: "Book Online Therapy South Africa | from $22 · No Medical Aid Needed",
     metaDescription:
-      "Online therapy in South Africa without medical aid, a referral or a claim record. Licensed therapists by video, voice or chat from $22 — far below private psychologist rates.",
+      "Book a licensed therapist online in South Africa from $22. No medical aid, no claim record. Johannesburg, Cape Town, Durban. WhatsApp +256 792 085 773.",
     keywords:
-      "online therapy South Africa, therapist Johannesburg online, counselling Cape Town online, psychologist South Africa online, affordable therapy South Africa, therapy without medical aid",
-    h1: "Online Therapy in South Africa — Without Medical Aid or a Claim Record",
+      "book online therapy South Africa, online therapy South Africa, therapist Johannesburg online, counselling Cape Town, affordable therapy South Africa, therapy without medical aid",
+    h1: "Book online therapy in South Africa. From $22 — no medical aid needed.",
     intro:
       "Private psychologists here charge R900 to R1,600 a session and most medical aid mental health benefits run dry by mid-year. InnerSpark sessions are USD 22 for a full 60 minutes, paid directly, with no scheme, no referral and no record on your benefits.",
     areaServed: ["South Africa"],
@@ -633,17 +633,17 @@ export const GLOBAL_LANDING_PAGES = {
 
   "online-therapy-tanzania": {
     slug: "online-therapy-tanzania",
-    title: "Online Therapy in Tanzania | Licensed African Therapists",
+    title: "Book Online Therapy Tanzania | from ~TZS 52,000 · Licensed",
     metaDescription:
-      "Private online therapy in Tanzania with licensed African therapists. Video, voice or chat, local-context care, Visa payment, and clear pricing before booking.",
+      "Book a licensed therapist online in Tanzania. Video ~TZS 52,000 · chat ~TZS 21,000. Dar es Salaam, Arusha, Mwanza. Visa. WhatsApp +256 792 085 773.",
     keywords:
-      "online therapy Tanzania, therapist Dar es Salaam, counselling Tanzania online, psychologist Tanzania online, Swahili therapist online, affordable therapy Tanzania",
-    h1: "Online Therapy in Tanzania With Licensed African Therapists",
+      "book online therapy Tanzania, online therapy Tanzania, therapist Dar es Salaam, counselling Tanzania, Swahili therapist online, book therapist Tanzania",
+    h1: "Book online therapy in Tanzania. From about TZS 52,000.",
     intro:
       "Talk privately with a licensed African therapist by video, voice or chat from Dar es Salaam, Arusha, Mwanza, Dodoma, Zanzibar or anywhere else in Tanzania.",
     areaServed: ["Tanzania"],
     heroBadge: "Licensed African therapists · Tanzania-wide · Confidential",
-    ctaPrice: "clear price before booking",
+    ctaPrice: "from ~TZS 52,000",
     serviceName: "Online Therapy and Counselling in Tanzania",
     bodySections: [
       {
