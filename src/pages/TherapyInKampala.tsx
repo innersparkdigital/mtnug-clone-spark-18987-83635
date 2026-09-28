@@ -12,8 +12,8 @@ const TherapyInKampala = () => {
     <>
       <Helmet>
         <title>Find a Therapist in Kampala | Book Online from UGX 30,000</title>
-        <meta name="description" content="Book a licensed therapist in Kampala today — video UGX 75,000 or chat UGX 30,000. Mobile Money. Confidential. Same-day slots often available. WhatsApp +256 792 085 773." />
-        <meta name="keywords" content="therapist kampala, find therapist kampala, therapy in kampala, counsellor kampala, psychologist kampala, counselling services uganda, therapist in uganda, book therapist kampala, online therapy uganda" />
+        <meta name="description" content="How much is a therapist in Kampala? Book licensed care — video UGX 75,000 · chat UGX 30,000. Mobile Money. Confidential. WhatsApp +256 792 085 773." />
+        <meta name="keywords" content="therapist kampala, therapists in kampala, find therapist kampala, how much is a therapist in uganda, psychiatrist kampala, counsellor kampala, psychologist kampala, counselling services in uganda, teenage counselling, book therapist kampala, online therapy uganda" />
         <link rel="canonical" href="https://www.innersparkafrica.com/therapy-in-kampala" />
         <meta property="og:title" content="Find a Therapist in Kampala | from UGX 30,000" />
         <meta property="og:description" content="Book a licensed therapist in Kampala — video UGX 75,000 or chat UGX 30,000. Mobile Money. Confidential." />
