@@ -34,15 +34,42 @@ const BookTherapist = () => {
     "provider": {
       "@type": "MedicalOrganization",
       "name": "Innerspark Africa",
-      "url": "https://www.innersparkafrica.com"
+      "url": "https://www.innersparkafrica.com",
+      "telephone": "+256792085773",
     },
     "serviceType": "Therapy Appointment Booking",
     "areaServed": [
       { "@type": "Country", "name": "Uganda" },
       { "@type": "Country", "name": "Kenya" },
-      { "@type": "Country", "name": "Tanzania" }
-    ]
+      { "@type": "Country", "name": "Tanzania" },
+      { "@type": "Country", "name": "Nigeria" },
+      { "@type": "Country", "name": "Ghana" },
+    ],
+    "offers": [
+      {
+        "@type": "Offer",
+        "name": "Video therapy session",
+        "price": "75000",
+        "priceCurrency": "UGX",
+        "availability": "https://schema.org/InStock",
+        "url": "https://www.innersparkafrica.com/book-therapist",
+      },
+      {
+        "@type": "Offer",
+        "name": "Chat therapy session",
+        "price": "30000",
+        "priceCurrency": "UGX",
+        "availability": "https://schema.org/InStock",
+        "url": "https://www.innersparkafrica.com/book-therapist",
+      },
+    ],
   };
+
+  const WHATSAPP_BOOK =
+    "https://wa.me/256792085773?text=" +
+    encodeURIComponent("Hi InnerSpark, I want to book a paid therapy session. Please help me choose a therapist and time.");
+  const PLAY_STORE =
+    "https://play.google.com/store/apps/details?id=com.innersparkafrica.app&hl=en";
 
   const faqSchema = {
     "@context": "https://schema.org",
@@ -138,12 +165,25 @@ const BookTherapist = () => {
                 <Calendar className="w-5 h-5" />
                 Book Appointment Now
               </Button>
+              <Button size="lg" className="gap-2 text-lg px-8 py-6 bg-[#25D366] hover:bg-[#1ebe5b] text-white" asChild>
+                <a href={WHATSAPP_BOOK} target="_blank" rel="noopener noreferrer">
+                  <MessageSquare className="w-5 h-5" />
+                  WhatsApp to book
+                </a>
+              </Button>
               <Link to="/specialists">
                 <Button size="lg" variant="outline" className="text-lg px-8 py-6">
                   Browse Therapists
                 </Button>
               </Link>
             </div>
+            <p className="text-sm text-muted-foreground mb-6">
+              Prefer the app?{" "}
+              <a href={PLAY_STORE} target="_blank" rel="noopener noreferrer" className="text-primary font-medium underline-offset-2 hover:underline">
+                Get InnerSpark on Google Play
+              </a>
+              {" "}· WhatsApp +256 792 085 773
+            </p>
             
             {/* Trust Indicators */}
             <div className="flex flex-wrap justify-center gap-6 text-sm text-muted-foreground">
@@ -292,6 +332,11 @@ const BookTherapist = () => {
           <div className="flex gap-4 justify-center flex-wrap">
             <Button size="lg" variant="secondary" className="text-lg px-8 py-6" onClick={startBooking}>
               Book Now
+            </Button>
+            <Button size="lg" className="text-lg px-8 py-6 bg-[#25D366] hover:bg-[#1ebe5b] text-white" asChild>
+              <a href={WHATSAPP_BOOK} target="_blank" rel="noopener noreferrer">
+                WhatsApp +256 792 085 773
+              </a>
             </Button>
             <Link to="/specialists">
               <Button size="lg" variant="outline" className="text-lg px-8 py-6 border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary">
