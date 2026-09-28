@@ -105,8 +105,8 @@ const BookTherapist = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Book a Licensed Therapist Online | Video UGX 75,000</title>
-        <meta name="description" content="Book a licensed African therapist in about two minutes. Video therapy UGX 75,000; chat therapy UGX 30,000. Mobile Money or card. Private and confidential." />
+        <title>Book a Therapist Online Now | Video UGX 75,000 · Chat UGX 30,000</title>
+        <meta name="description" content="Ready to pay for therapy? Book a licensed African therapist in about two minutes. Video UGX 75,000 · chat UGX 30,000. Mobile Money. Or WhatsApp +256 792 085 773." />
         <meta name="keywords" content="book licensed therapist Uganda, book online therapy, video therapy UGX 75000, chat therapy UGX 30000, therapy for professionals Uganda, book therapist Kampala, online counselling Kenya M-Pesa, book therapist Nairobi, online therapy Tanzania, licensed African therapist, couples counselling online, teenage counselling Uganda, confidential video therapy Africa" />
         <link rel="canonical" href="https://www.innersparkafrica.com/book-therapist" />
         
