@@ -240,10 +240,30 @@ export default function Kenya() {
               <button type="button" onClick={startBooking} className="inline-flex items-center justify-center font-medium text-white rounded-lg px-6 py-3 text-[15px]" style={{ background: WARMTH }}>
                 Book a session
               </button>
+              <a
+                href="https://wa.me/256792085773?text=Hi%20InnerSpark%2C%20I%20want%20to%20book%20therapy%20in%20Kenya.%20Please%20confirm%20price%20and%20a%20therapist."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center font-medium text-white rounded-lg px-6 py-3 text-[15px]"
+                style={{ background: "#25D366" }}
+              >
+                WhatsApp to book
+              </a>
               <Link to="/check/kenya" className="inline-flex items-center justify-center font-medium rounded-lg px-6 py-3 text-[15px] text-white border-[1.5px]" style={{ borderColor: "rgba(255,255,255,0.5)" }}>
                 Try free wellbeing check
               </Link>
             </div>
+            <p className="mt-4 text-sm" style={{ color: "#C5CAF5" }}>
+              Android app:{" "}
+              <a
+                href="https://play.google.com/store/apps/details?id=com.innersparkafrica.app&hl=en"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-2 hover:text-white"
+              >
+                Get InnerSpark on Google Play
+              </a>
+            </p>
           </div>
           <div className="hidden md:block">
             <div className="rounded-2xl overflow-hidden aspect-[4/3]" style={{ background: "#2A3AAF" }}>
