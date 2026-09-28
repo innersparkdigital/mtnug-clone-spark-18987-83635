@@ -7,7 +7,13 @@ const corsHeaders = {
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), {
   status, headers: { ...corsHeaders, "Content-Type": "application/json" },
 });
-const normalize = (value: string) => value.trim().toLowerCase().replace(/[\s()+-]/g, "");
+// Emails compare lowercase; phones compare the last 9 digits so 07…, 2567… and +256 7… all match.
+const normalize = (value: string) => {
+  const v = value.trim().toLowerCase();
+  if (v.includes("@")) return v;
+  const digits = v.replace(/\D/g, "");
+  return digits.length >= 9 ? digits.slice(-9) : digits;
+};
 const mask = (value: string) => value.includes("@")
   ? value.replace(/^(.{2}).*(@.*)$/, "$1••••$2")
   : `••••${normalize(value).slice(-4)}`;
@@ -25,10 +31,10 @@ const notifyAdmin = async (requestId: string, accountType: string, identifierMas
       "Idempotency-Key": `manual-reset-${requestId}`,
     },
     body: JSON.stringify({
-      from: "InnerSpark Alerts <noreply@innersparkafrica.com>",
+      from: "InnerSpark Africa <info@innersparkafrica.com>",
       to: ["info@innersparkafrica.com"],
       reply_to: "info@innersparkafrica.com",
-      subject: "Password reset request awaiting staff review",
+      subject: `Action needed: ${accountType} password reset request (${identifierMasked})`,
       text: `A ${accountType} requested a manual password reset. Registered contact: ${identifierMasked}. Open https://www.innersparkafrica.com/learning/admin-dashboard, then choose Password Resets and verify identity before sharing a temporary credential. Do not reply with a password to this automated alert.`,
     }),
   });
