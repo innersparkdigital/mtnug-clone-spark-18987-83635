@@ -1,6 +1,17 @@
 import { createRoot } from "react-dom/client";
 import "./index.css";
 
+// Strip one-shot cache-bust param from chunk-error recovery so the URL stays clean.
+try {
+  const u = new URL(window.location.href);
+  if (u.searchParams.has("_r")) {
+    u.searchParams.delete("_r");
+    window.history.replaceState(null, "", u.pathname + u.search + u.hash);
+  }
+} catch {
+  /* ignore */
+}
+
 const root = document.getElementById("root");
 if (!root) throw new Error("InnerSpark app root was not found.");
 
