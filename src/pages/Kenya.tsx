@@ -157,11 +157,11 @@ export default function Kenya() {
   return (
     <div className="min-h-screen bg-white">
       <Helmet>
-        <title>Book Online Therapy Kenya | Licensed Therapists from KES 2,600</title>
-        <meta name="description" content="For professionals in Kenya ready to pay for confidential care. Book a licensed African therapist — from about KES 2,600 via M-Pesa. Video or chat. Nairobi, Mombasa, Kisumu and beyond." />
+        <title>Book Online Therapy Kenya | Therapist Nairobi from KES 2,600</title>
+        <meta name="description" content="Where can I find an online therapist in Kenya? Book licensed care from KES 2,600 via M-Pesa. Nairobi, Mombasa, Kisumu. Video or chat. WhatsApp +256 792 085 773." />
         <meta name="keywords" content={seoKeywords} />
         <link rel="canonical" href="https://www.innersparkafrica.com/kenya" />
-        <meta property="og:title" content="Book Online Therapy Kenya | Licensed from KES 2,600" />
+        <meta property="og:title" content="Book Online Therapy Kenya | Therapist Nairobi from KES 2,600" />
         <meta property="og:description" content="Licensed African therapists for Kenyan professionals. From about KES 2,600. Pay via M-Pesa. Book in about two minutes." />
         <meta property="og:url" content="https://www.innersparkafrica.com/kenya" />
         <script type="application/ld+json">{JSON.stringify({
@@ -229,8 +229,8 @@ export default function Kenya() {
           <div>
             <span className="inline-block mb-4 px-2.5 py-0.5 rounded-xl text-[11px] font-medium" style={{ background: "#EEF0FD", color: "#0C447C", border: "0.5px solid #C5CAF5" }}>Kenya</span>
             <h1 className="font-display text-3xl md:text-5xl font-bold leading-tight">
-              Book licensed online therapy in Kenya.<br />
-              Clear price. Private. M-Pesa ready.
+              Book an online therapist in Kenya. From KES 2,600.<br />
+              Nairobi · Mombasa · Kisumu. Private. M-Pesa ready.
             </h1>
             <p className="mt-5 text-base" style={{ color: "#C5CAF5" }}>
               For professionals ready to invest in confidential care.<br />
