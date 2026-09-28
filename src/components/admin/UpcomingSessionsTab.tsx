@@ -285,7 +285,7 @@ const UpcomingSessionsTab = () => {
   const exportCsv = () => {
     const header = [
       "#", "Next session", "Days away", "Attendance", "Outreach count", "Note",
-      "Client", "Client code", "Type", "Phone", "Email", "Therapist", "Session type", "Payment",
+      "Client", "Client code", "Type", "Phone", "Email", "Therapist", "Session type",
     ];
     const lines = filtered.map((r, i) => [
       i + 1,
@@ -301,7 +301,6 @@ const UpcomingSessionsTab = () => {
       r.email || "",
       r.therapist_name,
       r.session_type || "",
-      r.paid_status || "",
     ]);
     const csv = [header, ...lines]
       .map((row) => row.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(","))
@@ -410,7 +409,6 @@ const UpcomingSessionsTab = () => {
                   <TableHead className="text-[11px]">Client</TableHead>
                   <TableHead className="text-[11px]">Therapist</TableHead>
                   <TableHead className="text-[11px]">Session</TableHead>
-                  <TableHead className="text-[11px]">Payment</TableHead>
                   <TableHead className="text-[11px]">Attendance</TableHead>
                   <TableHead className="text-[11px] text-right">Actions</TableHead>
                 </TableRow>
@@ -452,11 +450,6 @@ const UpcomingSessionsTab = () => {
                       </TableCell>
                       <TableCell className="text-muted-foreground whitespace-nowrap">{r.therapist_name}</TableCell>
                       <TableCell className="text-muted-foreground">{r.session_type || "—"}</TableCell>
-                      <TableCell>
-                        <Badge variant={r.paid_status === "paid" ? "default" : "outline"} className="text-[10px]">
-                          {r.paid_status || "not set"}
-                        </Badge>
-                      </TableCell>
                       <TableCell>
                         <div className="flex flex-col gap-1">
                           <Badge variant={meta.variant} className={`w-fit text-[10px] ${meta.className || ""}`}>
