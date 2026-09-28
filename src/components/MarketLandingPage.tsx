@@ -137,6 +137,16 @@ export default function MarketLandingPage({ market: m }: { market: MarketLanding
               >
                 Book a session
               </button>
+              <a
+                href={waHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 font-medium text-white rounded-lg px-6 py-3 text-[15px]"
+                style={{ background: "#25D366" }}
+              >
+                <MessageCircle className="w-4 h-4" />
+                WhatsApp to book
+              </a>
               <Link
                 to={checkPath}
                 className="inline-flex items-center justify-center font-medium rounded-lg px-6 py-3 text-[15px] text-white border-[1.5px]"
@@ -145,6 +155,17 @@ export default function MarketLandingPage({ market: m }: { market: MarketLanding
                 Try free wellbeing check
               </Link>
             </div>
+            <p className="mt-4 text-sm" style={{ color: "#C5CAF5" }}>
+              Android:{" "}
+              <a
+                href="https://play.google.com/store/apps/details?id=com.innersparkafrica.app&hl=en"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-2 hover:text-white"
+              >
+                Get InnerSpark on Google Play
+              </a>
+            </p>
           </div>
           <div className="hidden md:block">
             <div className="rounded-2xl overflow-hidden aspect-[4/3]" style={{ background: "#2A3AAF" }}>
