@@ -346,6 +346,10 @@ const App = () => (
                   element={<LessonViewer />}
                 />
                 <Route path="/blog" element={<Blog />} />
+                {/* Dead high-intent URLs that Google still ranks — send people to real money pages */}
+                <Route path="/blog/find-therapist-kampala" element={<Navigate to="/therapy-in-kampala" replace />} />
+                <Route path="/blog/therapy-cost-uganda" element={<Navigate to="/therapy-in-uganda" replace />} />
+                <Route path="/blog/how-much-does-therapy-cost-in-uganda-price-guide" element={<Navigate to="/therapy-in-uganda" replace />} />
                 <Route path="/wellbeing-check" element={<WellbeingCheck />} />
                 <Route path="/whisper" element={<Whisper />} />
                 <Route path="/whisper/:token" element={<Whisper />} />
