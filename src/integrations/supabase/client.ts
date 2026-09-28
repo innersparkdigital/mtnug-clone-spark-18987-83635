@@ -6,13 +6,28 @@ import { brokeredPreviewStorage } from './previewAuthStorage';
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
+// Live domain uses plain localStorage. The Lovable preview broker is only for
+// editor iframes — on production it contributed to session thrash / reload feel
+// when people switched browsers or tabs and came back.
+const host = typeof window !== 'undefined' ? window.location.hostname : '';
+const isLiveSite =
+  host === 'www.innersparkafrica.com' ||
+  host === 'innersparkafrica.com' ||
+  host.endsWith('.innersparkafrica.com');
+
+const authStorage = isLiveSite
+  ? (typeof localStorage !== 'undefined' ? localStorage : undefined)
+  : brokeredPreviewStorage();
+
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
 
 export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
   auth: {
-    storage: brokeredPreviewStorage(),
+    storage: authStorage,
     persistSession: true,
     autoRefreshToken: true,
-  }
+    detectSessionInUrl: true,
+    flowType: 'pkce',
+  },
 });
