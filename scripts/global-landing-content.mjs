@@ -138,9 +138,9 @@ export const GLOBAL_LANDING_PAGES = {
 
   "online-therapy-diaspora": {
     slug: "online-therapy-diaspora",
-    title: "Book Therapy with an African Therapist Abroad | from $22",
+    title: "Book African Therapist Online | USA UK Canada from $22",
     metaDescription:
-      "Book a licensed African therapist online from the USA, UK, Canada or Gulf. From USD 22. Cultural fit. Visa. WhatsApp +256 792 085 773.",
+      "Looking for a Black or African therapist online abroad? Licensed care from USD 22. USA, UK, Canada, Gulf. WhatsApp +256 792 085 773.",
     keywords:
       "book African therapist USA, African therapist UK, therapy for African diaspora, black therapist online, Nigerian therapist online, Kenyan therapist online",
     h1: "Book therapy with an African therapist — from $22.",
@@ -392,9 +392,9 @@ export const GLOBAL_LANDING_PAGES = {
 
   "online-therapy-nigeria": {
     slug: "online-therapy-nigeria",
-    title: "Book Online Therapy Nigeria | Licensed from ~NGN 27,500 · $22",
+    title: "Book Online Therapy Nigeria | Therapist Lagos & Abuja from ~NGN 27,500",
     metaDescription:
-      "Book a licensed therapist online in Nigeria. Video ~NGN 27,500 / $22 · chat from $9. Lagos, Abuja, Port Harcourt. Card or transfer. WhatsApp +256 792 085 773.",
+      "How much does a therapist cost in Nigeria? Video ~NGN 27,500 · chat from $9. Book online — Lagos, Abuja, Port Harcourt. WhatsApp +256 792 085 773.",
     keywords:
       "book online therapy Nigeria, online therapy Nigeria, therapist in Lagos, counselling Nigeria, psychologist Nigeria online, therapy in Abuja, affordable therapy Nigeria, book therapist Nigeria",
     h1: "Book online therapy in Nigeria. From about NGN 27,500.",
@@ -475,9 +475,9 @@ export const GLOBAL_LANDING_PAGES = {
 
   "online-therapy-ghana": {
     slug: "online-therapy-ghana",
-    title: "Book Online Therapy Ghana | from ~GHS 235 · $22 · MTN MoMo",
+    title: "Book Online Therapy Ghana | Therapist Accra from ~GHS 235",
     metaDescription:
-      "Book a licensed therapist online in Ghana. Video ~GHS 235 / $22 · chat from $9. Accra, Kumasi. MTN or Telecel Mobile Money. WhatsApp +256 792 085 773.",
+      "How much does therapy cost in Ghana? Video ~GHS 235 · chat ~GHS 95. Book a therapist in Accra or Kumasi online. WhatsApp +256 792 085 773.",
     keywords:
       "book online therapy Ghana, online therapy Ghana, therapist in Accra, counselling Ghana, psychologist Ghana, therapy Kumasi, book therapist Accra, affordable therapy Ghana",
     h1: "Book online therapy in Ghana. From about GHS 235.",
@@ -556,9 +556,9 @@ export const GLOBAL_LANDING_PAGES = {
 
   "online-therapy-south-africa": {
     slug: "online-therapy-south-africa",
-    title: "Book Online Therapy South Africa | from $22 · No Medical Aid Needed",
+    title: "Book Online Therapy South Africa | Johannesburg from $22 · No Medical Aid",
     metaDescription:
-      "Book a licensed therapist online in South Africa from $22. No medical aid, no claim record. Johannesburg, Cape Town, Durban. WhatsApp +256 792 085 773.",
+      "How much does therapy cost in South Africa? Online from $22 without medical aid. Johannesburg, Cape Town, Durban. WhatsApp +256 792 085 773.",
     keywords:
       "book online therapy South Africa, online therapy South Africa, therapist Johannesburg online, counselling Cape Town, affordable therapy South Africa, therapy without medical aid",
     h1: "Book online therapy in South Africa. From $22 — no medical aid needed.",
@@ -633,9 +633,9 @@ export const GLOBAL_LANDING_PAGES = {
 
   "online-therapy-tanzania": {
     slug: "online-therapy-tanzania",
-    title: "Book Online Therapy Tanzania | from ~TZS 52,000 · Licensed",
+    title: "Book Online Therapy Tanzania | Dar es Salaam from ~TZS 52,000",
     metaDescription:
-      "Book a licensed therapist online in Tanzania. Video ~TZS 52,000 · chat ~TZS 21,000. Dar es Salaam, Arusha, Mwanza. Visa. WhatsApp +256 792 085 773.",
+      "How much is online therapy in Tanzania? Video ~TZS 52,000 · chat ~TZS 21,000. Dar es Salaam, Arusha, Mwanza. Swahili OK. WhatsApp +256 792 085 773.",
     keywords:
       "book online therapy Tanzania, online therapy Tanzania, therapist Dar es Salaam, counselling Tanzania, Swahili therapist online, book therapist Tanzania",
     h1: "Book online therapy in Tanzania. From about TZS 52,000.",
