@@ -529,8 +529,18 @@ const App = () => (
                 <Route path="/unsubscribe" element={<Unsubscribe />} />
                 <Route path="/feedback" element={<SessionFeedback />} />
                 <Route path="/kenya" element={<Kenya />} />
+                {/* Country money pages — Kenya-style high-intent (local price + Book + WhatsApp) */}
                 <Route path="/tanzania" element={<LocalizedTherapy marketOverride="tanzania" />} />
                 <Route path="/nigeria" element={<LocalizedTherapy marketOverride="nigeria" />} />
+                <Route path="/ghana" element={<LocalizedTherapy marketOverride="ghana" />} />
+                <Route path="/gambia" element={<LocalizedTherapy marketOverride="gambia" />} />
+                <Route path="/usa" element={<LocalizedTherapy marketOverride="usa" />} />
+                <Route path="/online-therapy-nigeria" element={<GlobalLanding slug="online-therapy-nigeria" />} />
+                <Route path="/online-therapy-ghana" element={<GlobalLanding slug="online-therapy-ghana" />} />
+                <Route path="/online-therapy-tanzania" element={<GlobalLanding slug="online-therapy-tanzania" />} />
+                <Route path="/online-therapy-south-africa" element={<GlobalLanding slug="online-therapy-south-africa" />} />
+                <Route path="/online-therapy-africa" element={<GlobalLanding slug="online-therapy-africa" />} />
+                <Route path="/online-therapy-diaspora" element={<GlobalLanding slug="online-therapy-diaspora" />} />
                 <Route path="/ghana" element={<LocalizedTherapy marketOverride="ghana" />} />
                 <Route path="/gambia" element={<LocalizedTherapy marketOverride="gambia" />} />
                 <Route path="/usa" element={<LocalizedTherapy marketOverride="usa" />} />
