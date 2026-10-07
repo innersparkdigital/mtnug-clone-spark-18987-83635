@@ -3899,6 +3899,12 @@ export type Database = {
           referral_code: string | null
           referral_discount_percent: number
           referred_by_client_id: string | null
+          session_attendance_note: string | null
+          session_attendance_status: string | null
+          session_attendance_updated_at: string | null
+          session_attendance_updated_by: string | null
+          session_last_outreach_at: string | null
+          session_outreach_count: number
           session_rating: number | null
           session_type: string | null
           session_type_needs_review: boolean
@@ -3940,6 +3946,12 @@ export type Database = {
           referral_code?: string | null
           referral_discount_percent?: number
           referred_by_client_id?: string | null
+          session_attendance_note?: string | null
+          session_attendance_status?: string | null
+          session_attendance_updated_at?: string | null
+          session_attendance_updated_by?: string | null
+          session_last_outreach_at?: string | null
+          session_outreach_count?: number
           session_rating?: number | null
           session_type?: string | null
           session_type_needs_review?: boolean
@@ -3981,6 +3993,12 @@ export type Database = {
           referral_code?: string | null
           referral_discount_percent?: number
           referred_by_client_id?: string | null
+          session_attendance_note?: string | null
+          session_attendance_status?: string | null
+          session_attendance_updated_at?: string | null
+          session_attendance_updated_by?: string | null
+          session_last_outreach_at?: string | null
+          session_outreach_count?: number
           session_rating?: number | null
           session_type?: string | null
           session_type_needs_review?: boolean
@@ -4623,6 +4641,7 @@ export type Database = {
         Args: { _emoji: string; _note: string; _submission_id: string }
         Returns: string
       }
+      admin_auto_flag_missed_sessions: { Args: never; Returns: number }
       admin_client_detail: { Args: { _client_id: string }; Returns: Json }
       admin_client_homework: { Args: { _client_id: string }; Returns: Json }
       admin_client_session_balances: {
@@ -4758,6 +4777,15 @@ export type Database = {
       admin_set_referral_stage: {
         Args: { _conversion_id: string; _stage: string }
         Returns: Json
+      }
+      admin_set_session_attendance: {
+        Args: {
+          _bump_outreach?: boolean
+          _client_id: string
+          _note?: string
+          _status: string
+        }
+        Returns: boolean
       }
       admin_set_therapist_paid: {
         Args: { _client_id: string; _paid: boolean }
