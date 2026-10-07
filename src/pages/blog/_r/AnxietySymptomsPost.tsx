@@ -1,12 +1,6 @@
-import ArticleByline from "@/components/blog/ArticleByline";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
-import RelatedArticles from "@/components/RelatedArticles";
 import { ArrowLeft, Calendar, Clock, Brain, Heart, Zap, Shield } from "lucide-react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import AppDownload from "@/components/AppDownload";
-import SocialShareButtons from "@/components/SocialShareButtons";
 import { Button } from "@/components/ui/button";
 import anxietyHeroImage from "@/assets/blog/anxiety-management-hero.webp";
 
@@ -150,7 +144,7 @@ const AnxietySymptomsPost = () => {
         <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
       </Helmet>
 
-      <Header />
+      
       
       <main>
         <article className="bg-background">
@@ -185,13 +179,9 @@ const AnxietySymptomsPost = () => {
                     <Clock className="h-5 w-5" />
                     10 min read
                   </span>
-                  <ArticleByline />
+                  
                   <div className="ml-auto">
-                    <SocialShareButtons 
-                      url="https://www.innersparkafrica.com/blog/anxiety-symptoms"
-                      title="Anxiety Symptoms: How to Recognize Anxiety Disorder"
-                      description="Learn to identify the symptoms of anxiety."
-                    />
+                    
                   </div>
                 </div>
               </div>
@@ -365,9 +355,9 @@ const AnxietySymptomsPost = () => {
         </article>
       </main>
 
-      <RelatedArticles currentSlug="anxiety-symptoms" />
-      <AppDownload />
-      <Footer />
+      
+      
+      
     </>
   );
 };

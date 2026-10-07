@@ -1,12 +1,6 @@
-import ArticleByline from "@/components/blog/ArticleByline";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
-import RelatedArticles from "@/components/RelatedArticles";
 import { ArrowLeft, Calendar, Clock } from "lucide-react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import AppDownload from "@/components/AppDownload";
-import SocialShareButtons from "@/components/SocialShareButtons";
 import heroImage from "@/assets/blog/stress-management-hero.jpg";
 import stressTypesImage from "@/assets/blog/stress-types-infographic.png";
 
@@ -137,7 +131,7 @@ const HowToHandleStressPost = () => {
         <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
       </Helmet>
 
-      <Header />
+      
       
       <main>
         {/* Hero Section */}
@@ -172,13 +166,9 @@ const HowToHandleStressPost = () => {
                     <Clock className="h-5 w-5" />
                     8 min read
                   </span>
-                  <ArticleByline />
+                  
                   <div className="ml-auto">
-                    <SocialShareButtons 
-                      url="https://www.innersparkafrica.com/blog/how-to-handle-stress"
-                      title="How Should I Handle Stress? Expert-Backed, Simple & Practical Ways to Regain Control"
-                      description="Discover how to handle stress with practical, expert-approved tools."
-                    />
+                    
                   </div>
                 </div>
               </div>
@@ -528,11 +518,7 @@ const HowToHandleStressPost = () => {
 
                 {/* Share */}
                 <div className="flex items-center justify-center mt-12 pt-8 border-t border-border">
-                  <SocialShareButtons 
-                    url="https://www.innersparkafrica.com/blog/how-to-handle-stress"
-                    title="How Should I Handle Stress? Expert-Backed, Simple & Practical Ways to Regain Control"
-                    description="Discover how to handle stress with practical, expert-approved tools."
-                  />
+                  
                 </div>
               </div>
             </div>
@@ -540,9 +526,9 @@ const HowToHandleStressPost = () => {
         </article>
       </main>
 
-      <RelatedArticles currentSlug="how-to-handle-stress" />
-      <AppDownload />
-      <Footer />
+      
+      
+      
     </>
   );
 };

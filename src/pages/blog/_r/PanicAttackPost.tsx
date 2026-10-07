@@ -1,12 +1,6 @@
-import ArticleByline from "@/components/blog/ArticleByline";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
-import RelatedArticles from "@/components/RelatedArticles";
 import { ArrowLeft, Calendar, Clock } from "lucide-react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import AppDownload from "@/components/AppDownload";
-import SocialShareButtons from "@/components/SocialShareButtons";
 import groundingImage from "@/assets/blog/grounding-5-4-3-2-1-infographic.png";
 import panicHeroImage from "@/assets/blog/panic-attack-hero.jpg";
 
@@ -137,7 +131,7 @@ const PanicAttackPost = () => {
         <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
       </Helmet>
 
-      <Header />
+      
       
       <main>
         {/* Hero Section */}
@@ -172,13 +166,9 @@ const PanicAttackPost = () => {
                     <Clock className="h-5 w-5" />
                     10 min read
                   </span>
-                  <ArticleByline />
+                  
                   <div className="ml-auto">
-                    <SocialShareButtons 
-                      url="https://www.innersparkafrica.com/blog/how-to-stop-a-panic-attack"
-                      title="How Do I Stop a Panic Attack? Simple, Fast Techniques to Regain Control"
-                      description="Learn how to stop or reduce the intensity of a panic attack using grounding techniques."
-                    />
+                    
                   </div>
                 </div>
               </div>
@@ -644,11 +634,7 @@ const PanicAttackPost = () => {
                       <h3 className="text-xl font-semibold text-foreground mb-2">Found this helpful?</h3>
                       <p className="text-muted-foreground">Share it with someone who might need it.</p>
                     </div>
-                    <SocialShareButtons 
-                      url="https://www.innersparkafrica.com/blog/how-to-stop-a-panic-attack"
-                      title="How Do I Stop a Panic Attack? Simple, Fast Techniques to Regain Control"
-                      description="Learn how to stop or reduce the intensity of a panic attack using grounding techniques."
-                    />
+                    
                   </div>
                 </section>
 
@@ -678,9 +664,9 @@ const PanicAttackPost = () => {
         </section>
       </main>
 
-      <RelatedArticles currentSlug="how-to-stop-a-panic-attack" />
-      <AppDownload />
-      <Footer />
+      
+      
+      
     </>
   );
 };

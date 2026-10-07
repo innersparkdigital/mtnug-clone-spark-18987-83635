@@ -1,12 +1,6 @@
-import ArticleByline from "@/components/blog/ArticleByline";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
-import RelatedArticles from "@/components/RelatedArticles";
 import { ArrowLeft, Calendar, Clock, CheckCircle, Brain, MessageCircle, Users, Video, Heart, Lightbulb } from "lucide-react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import AppDownload from "@/components/AppDownload";
-import SocialShareButtons from "@/components/SocialShareButtons";
 import { Button } from "@/components/ui/button";
 import stressHeroImage from "@/assets/blog/stress-management-hero.jpg";
 
@@ -103,7 +97,7 @@ const TypesOfTherapyPost = () => {
         <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
       </Helmet>
 
-      <Header />
+      
       <main>
         <article className="max-w-4xl mx-auto px-4 py-12">
           <nav className="mb-8">
@@ -117,7 +111,7 @@ const TypesOfTherapyPost = () => {
             <h1 className="text-3xl md:text-5xl font-bold text-foreground mt-4 mb-4">Types of Therapy Explained: Which One Is Right for You?</h1>
             <div className="flex items-center gap-4 text-sm text-muted-foreground mb-6">
               <span className="flex items-center gap-1"><Calendar className="h-4 w-4" /> February 22, 2026</span>
-              <span className="flex items-center gap-1"><Clock className="h-4 w-4" /> 12 min read</span><ArticleByline className="text-sm" />
+              <span className="flex items-center gap-1"><Clock className="h-4 w-4" /> 12 min read</span>
             </div>
             <img src={stressHeroImage} alt="Types of therapy explained" className="w-full rounded-xl aspect-video object-cover" />
           </header>
@@ -250,12 +244,12 @@ const TypesOfTherapyPost = () => {
             </div>
           </div>
 
-          <SocialShareButtons title="Types of Therapy Explained" url="https://www.innersparkafrica.com/blog/types-of-therapy" />
-          <RelatedArticles currentSlug="types-of-therapy" />
+          
+          
         </article>
       </main>
-      <AppDownload />
-      <Footer />
+      
+      
     </>
   );
 };

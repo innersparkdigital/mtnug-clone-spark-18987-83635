@@ -1,12 +1,6 @@
-import ArticleByline from "@/components/blog/ArticleByline";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
-import RelatedArticles from "@/components/RelatedArticles";
 import { ArrowLeft, Calendar, Clock, CheckCircle, MapPin } from "lucide-react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import AppDownload from "@/components/AppDownload";
-import SocialShareButtons from "@/components/SocialShareButtons";
 import { Button } from "@/components/ui/button";
 import mentalHealthHeroImage from "@/assets/blog/mental-health-hero.jpg";
 
@@ -73,7 +67,7 @@ const FindTherapistKampalaPost = () => {
         <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
       </Helmet>
 
-      <Header />
+      
       <main>
         <article className="max-w-4xl mx-auto px-4 py-12">
           <nav className="mb-8">
@@ -87,7 +81,7 @@ const FindTherapistKampalaPost = () => {
             <h1 className="text-3xl md:text-5xl font-bold text-foreground mt-4 mb-4">Where to Find a Therapist in Kampala: Top 7 Options in 2026</h1>
             <div className="flex items-center gap-4 text-sm text-muted-foreground mb-6">
               <span className="flex items-center gap-1"><Calendar className="h-4 w-4" /> February 22, 2026</span>
-              <span className="flex items-center gap-1"><Clock className="h-4 w-4" /> 9 min read</span><ArticleByline className="text-sm" />
+              <span className="flex items-center gap-1"><Clock className="h-4 w-4" /> 9 min read</span>
             </div>
             <img src={mentalHealthHeroImage} alt="Finding a therapist in Kampala" className="w-full rounded-xl aspect-video object-cover" />
           </header>
@@ -205,12 +199,12 @@ const FindTherapistKampalaPost = () => {
             </div>
           </div>
 
-          <SocialShareButtons title="Where to Find a Therapist in Kampala" url="https://www.innersparkafrica.com/blog/find-therapist-kampala" />
-          <RelatedArticles currentSlug="find-therapist-kampala" />
+          
+          
         </article>
       </main>
-      <AppDownload />
-      <Footer />
+      
+      
     </>
   );
 };
