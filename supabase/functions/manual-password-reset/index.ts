@@ -237,7 +237,7 @@ Deno.serve(async (req) => {
           }
         }
 
-        return json({ ...okMsg, match_found: matchFound, request_id: reset?.id });
+        return json(okMsg);
       } catch (inner) {
         console.error("manual-password-reset request path", inner);
         return json(okMsg);
