@@ -10,7 +10,7 @@ const checks = [
   [migration.includes("set status='used', consumed_at=now()"), "client temporary passcode is consumed atomically"],
   [migration.includes("set passcode_hash = null"), "client temporary passcode cannot be reused"],
   [service.includes('updateUserById(user.id, { password: generatePassword() })'), "therapist temporary password is invalidated on first login"],
-  [service.includes('message: "If the details match an account'), "request response prevents account discovery"],
+  [service.includes("Staff will contact you if the details match an account") && !service.includes("match_found: matchFound, request_id"), "request response prevents account discovery"],
   [service.includes('action === "reveal"') && service.includes("claim_manual_password_reset"), "admin reveal is one-time and atomic"],
   [client.includes('accountType="client"') && client.includes("client_complete_reset"), "client reset and forced-change flow exists"],
   [therapist.includes('accountType="therapist"') && therapist.includes("consume_therapist"), "therapist reset and forced-change flow exists"],
