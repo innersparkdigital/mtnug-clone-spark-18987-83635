@@ -3,7 +3,7 @@ import ts from 'typescript';
 
 export const SITE = 'https://www.innersparkafrica.com';
 export const canonicalUrl = (route) => `${SITE}${route === '/' ? '/' : `/${route.replace(/^\/+|\/+$/g, '')}/`}`;
-const PRIVATE = new Set(['/auth', '/reset-password', '/app-coming-soon', '/payment-success', '/payment-canceled', '/chat-sessions', '/my-goals', '/mood-check-in', '/profile-settings', '/account-deletion', '/corporate-admin', '/corporate-dashboard', '/corporate-assessments', '/corporate-wellbeing-check', '/wellness-reports', '/therapist', '/client-login', '/client-dashboard', '/admin/finance', '/learning/dashboard', '/learning/student-dashboard', '/learning/admin-dashboard', '/mind-check/analytics', '/unsubscribe', '/feedback', '/corporate/service-request', '/wellbeing-check/embed']);
+const PRIVATE = new Set(['/auth', '/reset-password', '/app-coming-soon', '/payment-success', '/payment-canceled', '/chat-sessions', '/my-goals', '/mood-check-in', '/profile-settings', '/account-deletion', '/corporate-admin', '/corporate-dashboard', '/corporate-assessments', '/corporate-wellbeing-check', '/wellness-reports', '/therapist', '/client-login', '/client-dashboard', '/admin/finance', '/admin/amani', '/amani-embed', '/learning/dashboard', '/learning/student-dashboard', '/learning/admin-dashboard', '/mind-check/analytics', '/unsubscribe', '/feedback', '/corporate/service-request', '/wellbeing-check/embed']);
 
 function parse(file) { return ts.createSourceFile(file, readFileSync(file, 'utf8'), ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX); }
 function walk(node, callback) { callback(node); ts.forEachChild(node, child => walk(child, callback)); }
