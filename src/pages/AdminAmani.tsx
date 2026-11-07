@@ -327,7 +327,7 @@ export default function AdminAmani() {
               </Button>
             </div>
             <p className="mt-3 text-xs text-muted-foreground">
-              A paused organisation keeps working for its visitors, but its counts stop being recorded. The snippet adds the
+              A paused organisation can no longer chat with Amani, so you can switch off a partner at any time. The snippet adds the
               Talk to Amani button to any page. Without the script, an iframe pointing to {SITE}/amani-embed?org=KEY works too.
             </p>
           </CardContent>
