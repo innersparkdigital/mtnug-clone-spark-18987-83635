@@ -13,6 +13,9 @@ test('all 37 Mind-Check routes get their own raw title, description and actual r
     await symlink(path.join(root, 'src'), path.join(fixture, 'src'));
     await symlink(path.join(root, 'public'), path.join(fixture, 'public'));
     await writeFile(path.join(fixture, 'dist/index.html'), await readFile(path.join(root, 'index.html')));
+    for (const file of ['sitemap.xml', 'sitemap-blogs.xml']) {
+      await writeFile(path.join(fixture, 'dist', file), await readFile(path.join(root, 'public', file)));
+    }
     execFileSync(process.execPath, [path.join(root, 'scripts/prerender.mjs')], { cwd: fixture, stdio: 'pipe' });
     const app = await readFile(path.join(root, 'src/App.tsx'), 'utf8');
     const paths = [...app.matchAll(/path="(\/mind-check\/[^"*:]+)"/g)].map(m => m[1]).filter(p => p !== '/mind-check/analytics');
@@ -27,5 +30,8 @@ test('all 37 Mind-Check routes get their own raw title, description and actual r
       assert.ok(html.includes(`href="https://www.innersparkafrica.com${route}/"`), `${route}: wrong canonical`);
       assert.match(html, /<meta name="description" content="[^"]+"/);
     }
+    execFileSync(process.execPath, [path.join(root, 'scripts/prerender-blogs.mjs')], { cwd: fixture, stdio: 'pipe', timeout: 120000 });
+    const output = execFileSync(process.execPath, [path.join(root, 'scripts/validate-seo-output.mjs')], { cwd: fixture, encoding: 'utf8' });
+    console.log(output.trim());
   } finally { await rm(fixture, { recursive: true, force: true }); }
 });
