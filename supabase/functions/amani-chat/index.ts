@@ -184,7 +184,6 @@ Deno.serve(async (req) => {
     if (reply.includes("[[CRISIS]]")) return json({ crisis: true });
     const suggestCounsellor = reply.includes("[[COUNSELLOR]]");
     reply = reply.replace(/\[\[(COUNSELLOR|CRISIS)\]\]/g, "").trim();
-    // Last line of defence: if the model's own reply mentions crisis words about the user's state, show the safety card instead.
     return json({ reply, suggestCounsellor });
   } catch (e) {
     console.error("amani-chat model error", e instanceof Error ? e.message : "unknown");
