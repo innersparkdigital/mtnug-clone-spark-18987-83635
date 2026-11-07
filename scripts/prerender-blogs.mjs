@@ -306,7 +306,7 @@ const sanitize = (html) =>
     .replace(/therapy starting from UGX 30,000 per session/gi, "video therapy at UGX 75,000 per session and chat therapy at UGX 30,000")
     .replace(/video sessions? (?:start at|costs?) UGX 30,000/gi, "video sessions cost UGX 75,000")
     .replace(/sessions? from UGX 30,000/gi, "video sessions at UGX 75,000 or chat sessions at UGX 30,000")
-    .replace(/UGX 30,000\s*[–-]\s*75,000 per session/gi, "UGX 75,000 for video or UGX 30,000 for chat per session");
+    .replace(/UGX 30,000\s*[–-]\s*75,000 per session/gi, "UGX 30,000 for chat or UGX 75,000 for video per session");
 
 function upsert(html, matcher, tag) {
   if (matcher.test(html)) return html.replace(matcher, tag);
