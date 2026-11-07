@@ -4,6 +4,7 @@ import NoIndex from "./NoIndex";
 /** Route prefixes that must never appear in search results. */
 const PRIVATE_PREFIXES = [
   "/admin",
+  "/amani-embed",
   "/therapist-portal",
   "/client-portal",
   "/my-space",
