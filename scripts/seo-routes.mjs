@@ -78,7 +78,7 @@ export function metadataFromSource(route) {
   const assessment = route.path.startsWith('/mind-check/');
   title = assessment ? `${props.title} Test - Free Mental Health Screening | InnerSpark` : title || props.title || props.headline;
   description ||= props.metaDescription || props.description;
-  h1 ||= props.h1 || props.headline || props.title || title;
+  h1 = decode(h1) || props.h1 || props.headline || (title ? String(title).split('|')[0].trim() : props.title);
   if (!title || !description || title.includes('undefined')) throw new Error(`Missing search metadata for ${route.path} (${route.source})`);
   return {
     path: route.path, title: decode(title), description: decode(description), h1: decode(h1),
