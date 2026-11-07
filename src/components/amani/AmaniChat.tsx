@@ -7,13 +7,13 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { cn } from "@/lib/utils";
 import amaniAvatar from "@/assets/amani-avatar.jpg";
 import { DEFAULT_ORG, cleanOrgKey, recordAmaniEvent, type AmaniEvent } from "@/lib/amaniApi";
-import { GREETING, QUICK_REPLIES, demoReply, isCrisisMessage } from "@/lib/amaniDemo";
+import { GREETING, QUICK_REPLIES, isCrisisMessage } from "@/lib/amaniDemo";
 import UrgentHelpModal from "./UrgentHelpModal";
 
 const SITE = "https://www.innersparkafrica.com";
 const COUNSELLOR_PATH = "/teletherapy";
 
-/** Real Amani, when configured. Only https (or localhost) addresses are accepted. */
+/** Optional override: send visitors to another Amani service instead of the built-in one. Only https (or localhost). */
 function getEmbedUrl(): string | null {
   const raw = (import.meta.env.VITE_AMANI_EMBED_URL as string | undefined)?.trim();
   if (!raw) return null;
@@ -21,12 +21,36 @@ function getEmbedUrl(): string | null {
     const url = new URL(raw);
     if (url.protocol === "https:" || (url.protocol === "http:" && url.hostname === "localhost")) return url.toString();
   } catch {
-    /* fall through to demo mode */
+    /* fall through to the built-in Amani service */
   }
   return null;
 }
 
-type Msg = { id: number; role: "user" | "amani" | "crisis"; text: string };
+type Msg = { id: number; role: "user" | "amani" | "crisis" | "notice"; text: string };
+type Turn = { role: "user" | "assistant"; content: string };
+
+const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/amani-chat`;
+
+/** Asks the Amani service for a reply. Message text is sent only to write the reply; it is never stored. */
+async function askAmani(org: string | null, turns: Turn[]): Promise<{ reply?: string; crisis?: boolean; suggestCounsellor?: boolean; error?: string }> {
+  const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string | undefined;
+  try {
+    const ctrl = new AbortController();
+    const timer = window.setTimeout(() => ctrl.abort(), 30000);
+    const r = await fetch(CHAT_URL, {
+      method: "POST",
+      signal: ctrl.signal,
+      headers: { "Content-Type": "application/json", ...(key ? { apikey: key, Authorization: `Bearer ${key}` } : {}) },
+      body: JSON.stringify({ org: org ?? DEFAULT_ORG, messages: turns }),
+    });
+    window.clearTimeout(timer);
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) return { error: (j as { error?: string }).error || "unavailable" };
+    return j as { reply?: string; crisis?: boolean; suggestCounsellor?: boolean };
+  } catch {
+    return { error: "unavailable" };
+  }
+}
 
 export interface AmaniChatProps {
   /** floating = round button + panel (full screen on mobile). inline = fills its container. */
@@ -71,6 +95,8 @@ function AmaniPanel({
   const [input, setInput] = useState("");
   const [userCount, setUserCount] = useState(0);
   const [wantsCounsellor, setWantsCounsellor] = useState(false);
+  const [thinking, setThinking] = useState(false);
+  const history = useRef<Turn[]>([]);
   const [promptDismissed, setPromptDismissed] = useState(false);
   const [urgentOpen, setUrgentOpen] = useState(false);
   const [privacyOpen, setPrivacyOpen] = useState(false);
@@ -117,28 +143,47 @@ function AmaniPanel({
     setUrgentOpen(true);
   };
 
-  const send = (raw: string, viaChip = false) => {
+  const send = async (raw: string, viaChip = false) => {
     const text = raw.trim();
-    if (!text) return;
-    const turn = userCount;
+    if (!text || thinking) return;
     setInput("");
     setUserCount((n) => n + 1);
     setMessages((m) => [...m, { id: idRef.current++, role: "user", text }]);
     count("message_sent");
     if (viaChip) count("chip_used");
 
-    // Safety first: a crisis message gets the safety card only, never a normal reply.
+    // Safety first: a crisis message gets the safety card only and is never sent to the AI.
     if (isCrisisMessage(text)) {
       count("crisis_card_shown");
       setMessages((m) => [...m, { id: idRef.current++, role: "crisis", text: "" }]);
       return;
     }
-    const reply = demoReply(text, turn);
-    if (reply.wantsCounsellor) setWantsCounsellor(true);
-    const t = window.setTimeout(() => {
-      setMessages((m) => [...m, { id: idRef.current++, role: "amani", text: reply.text }]);
-    }, 450);
-    timers.current.push(t);
+
+    history.current = [...history.current, { role: "user" as const, content: text }].slice(-14);
+    setThinking(true);
+    const res = await askAmani(orgKey, history.current);
+    setThinking(false);
+
+    if (res.crisis) {
+      history.current = history.current.slice(0, -1);
+      count("crisis_card_shown");
+      setMessages((m) => [...m, { id: idRef.current++, role: "crisis", text: "" }]);
+      return;
+    }
+    if (res.reply) {
+      history.current = [...history.current, { role: "assistant" as const, content: res.reply }].slice(-14);
+      if (res.suggestCounsellor) setWantsCounsellor(true);
+      setMessages((m) => [...m, { id: idRef.current++, role: "amani", text: res.reply as string }]);
+      return;
+    }
+    history.current = history.current.slice(0, -1);
+    const text2 =
+      res.error === "paused" || res.error === "unknown"
+        ? "Amani is not available on this site right now. If you need support, please use Urgent help or talk to a counsellor."
+        : res.error === "limit" || res.error === "slow_down"
+          ? "Amani is very busy right now. Please try again in a few minutes. If you need help now, tap Urgent help."
+          : "I could not reach Amani just now. Please try again in a moment. If you need help now, tap Urgent help.";
+    setMessages((m) => [...m, { id: idRef.current++, role: "notice", text: text2 }]);
   };
 
   return (
@@ -185,11 +230,6 @@ function AmaniPanel({
       ) : (
         <>
           <div ref={scrollRef} className="min-h-0 flex-1 space-y-3 overflow-y-auto px-4 py-4" aria-live="polite">
-            <div className="flex items-center justify-center gap-2 text-[11px] text-muted-foreground">
-              <Badge variant="outline" className="px-1.5 py-0 text-[10px]">DEMO</Badge>
-              <span>Demo only. Real Amani coming soon.</span>
-            </div>
-
             <Bubble role="amani" text={GREETING} />
 
             {userCount === 0 && (
@@ -227,9 +267,17 @@ function AmaniPanel({
                     </Button>
                   </div>
                 </section>
+              ) : m.role === "notice" ? (
+                <p key={m.id} role="status" className="rounded-xl bg-amber-50 px-3 py-2 text-xs text-amber-900">{m.text}</p>
               ) : (
                 <Bubble key={m.id} role={m.role} text={m.text} />
               ),
+            )}
+
+            {thinking && (
+              <div className="flex justify-start" aria-label="Amani is typing">
+                <span className="rounded-2xl bg-muted px-4 py-2.5 text-sm text-muted-foreground">Amani is thinking…</span>
+              </div>
             )}
 
             {showPrompt && (
@@ -265,12 +313,13 @@ function AmaniPanel({
               id="amani-input"
               value={input}
               onChange={(e) => setInput(e.target.value)}
+              disabled={thinking}
               maxLength={500}
               autoComplete="off"
               placeholder="Type here…"
               className="min-w-0 flex-1 rounded-full border bg-background px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
             />
-            <Button type="submit" size="icon" className="shrink-0 rounded-full" disabled={!input.trim()} aria-label="Send message">
+            <Button type="submit" size="icon" className="shrink-0 rounded-full" disabled={!input.trim() || thinking} aria-label="Send message">
               <Send className="h-4 w-4" />
             </Button>
           </form>
@@ -304,11 +353,15 @@ function AmaniPanel({
           </DialogHeader>
           <ul className="list-disc space-y-2 pl-5 text-sm">
             <li>You do not need an account to talk to Amani.</li>
-            <li>Your conversations are not sold or shared.</li>
+            <li>Your conversations are not sold. They are not shared with sponsors, partners or PurpleMinds.</li>
+            <li>
+              To write a reply, what you type is sent securely to an AI service. InnerSpark does not save your messages
+              in any database.
+            </li>
             <li>No identifiable data is shared with sponsors or PurpleMinds.</li>
             <li>
-              InnerSpark does not store what you type in a database. We only count anonymous actions, such as "a chat was
-              started" or "a next step was clicked". These are numbers, never your words.
+              We only count anonymous actions, such as "a chat was started" or "a next step was clicked". These are
+              numbers, never your words.
             </li>
             <li>Amani is provided by InnerSpark Africa.</li>
           </ul>
