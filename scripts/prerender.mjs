@@ -14,6 +14,7 @@ import { readFile, writeFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 import { ROUTES, GLOBAL_LINKS, SITE } from "./prerender-content.mjs";
 import { GLOBAL_LANDING_PAGES } from "./global-landing-content.mjs";
+import { routeInventory, metadataFromSource } from './seo-routes.mjs';
 
 /**
  * Country / segment landing pages, converted into the same route shape as
@@ -37,7 +38,7 @@ const COUNTRY_ROUTES = Object.values(GLOBAL_LANDING_PAGES).map((page) => ({
 }));
 
 // Safety cap so this can never balloon the published output.
-const MAX_PRERENDER_PAGES = 50;
+const MAX_PRERENDER_PAGES = 500;
 
 const DIST = path.resolve(process.cwd(), "dist");
 
@@ -125,6 +126,9 @@ function buildHead(html, route) {
     /<meta\s+property="og:url"\s+content="[\s\S]*?"\s*\/?>/i,
     `<meta property="og:url" content="${url}" />`,
   );
+  for (const [name, value] of [['twitter:title', route.title], ['twitter:description', route.description], ['twitter:url', url]]) {
+    out = upsert(out, new RegExp(`<meta\\s+name="${name}"\\s+content="[\\s\\S]*?"\\s*\\/?>`, 'i'), `<meta name="${name}" content="${esc(value)}" />`);
+  }
   const schema = schemaForRoute(route, url);
   if (schema) {
     out = out.replace("</head>", `    <script type="application/ld+json">${JSON.stringify(schema)}</script>\n  </head>`);
@@ -220,7 +224,16 @@ async function run() {
   // Keep a clean SPA shell so downstream prerender-blogs.mjs can stamp posts.
   await writeFile(path.join(DIST, "index.template.html"), shell, "utf8");
 
-  const routes = [...ROUTES, ...COUNTRY_ROUTES].slice(0, MAX_PRERENDER_PAGES);
+  const curated = new Map([...ROUTES, ...COUNTRY_ROUTES].map(route => [route.path, route]));
+  const publicPaths = await sitemapRoutes();
+  const inventory = new Map(routeInventory().map(route => [route.path, route]));
+  const routes = publicPaths.map(routePath => {
+    const normalized = routePath === '/' ? '/' : `/${routePath.replace(/^\/+|\/+$/g, '')}`;
+    const route = inventory.get(normalized);
+    if (!route || route.private || route.redirect) throw new Error(`Non-public sitemap route: ${normalized}`);
+    return curated.get(normalized) || metadataFromSource(route);
+  });
+  if (routes.length > MAX_PRERENDER_PAGES) throw new Error('Prerender safety limit exceeded; refusing incomplete output');
   for (const route of routes) {
     const html = buildHead(shell, route).replace(
       ROOT_RE,
@@ -240,7 +253,6 @@ async function run() {
   // Every other public sitemap route receives its own server-visible canonical
   // instead of inheriting the homepage canonical from the SPA shell.
   const richPaths = new Set(routes.map((route) => route.path));
-  const publicPaths = await sitemapRoutes();
   let canonicalShells = 0;
   for (const routePath of publicPaths) {
     const normalizedPath = routePath === "/" ? "/" : `/${routePath.replace(/^\/+|\/+$/g, "")}`;
@@ -255,6 +267,6 @@ async function run() {
 }
 
 run().catch((err) => {
-  // Never fail the production build over SEO markup.
   console.error("[prerender] failed:", err);
+  process.exitCode = 1;
 });

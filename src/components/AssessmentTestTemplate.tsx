@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -81,6 +81,8 @@ const genericReviews = [
 
 const AssessmentTestTemplate = ({ config }: AssessmentTestTemplateProps) => {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const canonical = `https://www.innersparkafrica.com/${pathname.replace(/^\/+|\/+$/g, '')}/`;
   const [emailInput, setEmailInput] = useState('');
   const [emailSubmitted, setEmailSubmitted] = useState(false);
   const [emailSubmitting, setEmailSubmitting] = useState(false);
@@ -290,7 +292,12 @@ const AssessmentTestTemplate = ({ config }: AssessmentTestTemplateProps) => {
       <Helmet>
         <title>{config.title} Test - Free Mental Health Screening | InnerSpark</title>
         <meta name="description" content={config.metaDescription} />
-        <link rel="canonical" href={`https://www.innersparkafrica.com/mind-check/${config.id}`} />
+        <link rel="canonical" href={canonical} />
+        <meta property="og:title" content={`${config.title} Test - Free Mental Health Screening | InnerSpark`} />
+        <meta property="og:description" content={config.metaDescription} />
+        <meta property="og:url" content={canonical} />
+        <meta name="twitter:title" content={`${config.title} Test - Free Mental Health Screening | InnerSpark`} />
+        <meta name="twitter:description" content={config.metaDescription} />
       </Helmet>
       
       <Header />
