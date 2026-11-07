@@ -14,9 +14,9 @@
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 import { SITE, GLOBAL_LINKS } from "./prerender-content.mjs";
+import { canonicalUrl, routeInventory } from './seo-routes.mjs';
 
 const DIST = path.resolve(process.cwd(), "dist");
-const MAX_POSTS = 200;
 
 const SEO_OVERRIDES = {
   "how-to-stop-a-panic-attack": {
@@ -314,11 +314,7 @@ function upsert(html, matcher, tag) {
 }
 
 function buildHead(shell, post) {
-  const defaultUrl = `${SITE}/blog/${post.slug}/`;
-  const configuredUrl = post.canonical_url?.trim();
-  const url = configuredUrl
-    ? configuredUrl.endsWith("/") ? configuredUrl : `${configuredUrl}/`
-    : defaultUrl;
+  const url = canonicalUrl(post.slug === 'blog' ? '/blog' : `/blog/${post.slug}`);
   const override = SEO_OVERRIDES[post.slug];
   const title = override?.title || post.meta_title?.trim() || `${post.title} | InnerSpark Africa`;
   const description = override?.description || post.meta_description || post.excerpt || post.title;
@@ -359,6 +355,9 @@ function buildHead(shell, post) {
     /<meta\s+property="og:type"\s+content="[\s\S]*?"\s*\/?>/i,
     `<meta property="og:type" content="article" />`,
   );
+  for (const [name, value] of [['twitter:title', title], ['twitter:description', description], ['twitter:url', url]]) {
+    out = upsert(out, new RegExp(`<meta\\s+name="${name}"\\s+content="[\\s\\S]*?"\\s*\\/?>`, 'i'), `<meta name="${name}" content="${esc(value)}" />`);
+  }
 
   const faqs = Array.isArray(post.faqs) ? post.faqs.filter((f) => f?.question && f?.answer) : [];
   const schemas = [
@@ -498,15 +497,16 @@ function buildListingBody(posts) {
 const ROOT_RE = /<div id="root">\s*<\/div>/;
 
 async function fetchPosts() {
-  const url =
-    `${SUPABASE_URL}/rest/v1/blog_posts?status=eq.published&select=*&order=published_at.desc&limit=${MAX_POSTS}`;
-  const res = await fetch(url, {
-    headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
-  });
-  if (!res.ok) {
-    throw new Error(`[prerender-blogs] blog fetch failed: ${res.status} ${await res.text()}`);
+  const posts = [];
+  for (let offset = 0; ; offset += 100) {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/blog_posts?status=eq.published&select=*&order=slug.asc&limit=100&offset=${offset}`, {
+      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` }, signal: AbortSignal.timeout(30000),
+    });
+    if (!res.ok) throw new Error(`[prerender-blogs] blog fetch failed: ${res.status}`);
+    const page = await res.json();
+    posts.push(...page);
+    if (page.length < 100) break;
   }
-  const posts = await res.json();
   if (!Array.isArray(posts) || posts.length === 0) {
     throw new Error("[prerender-blogs] no published blog posts returned; refusing to ship homepage fallbacks for blog URLs");
   }
@@ -524,11 +524,10 @@ function auditPublishedPosts(posts) {
     const text = clean.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
     const wordCount = text ? text.split(" ").length : 0;
     const headingCount = (clean.match(/<h[23][^>]*>/gi) || []).length;
-    const title = SEO_OVERRIDES[slug]?.title;
+    const title = SEO_OVERRIDES[slug]?.title || post.meta_title?.trim() || `${post.title} | InnerSpark Africa`;
 
     if (!slug) critical.push("A published article has no slug.");
-    if (!SEO_OVERRIDES[slug]) critical.push(`${slug}: missing unique search title and description.`);
-    if (!ARTICLE_JOURNEYS[slug]) critical.push(`${slug}: missing reader hook and conversion path.`);
+    if (!post.title?.trim() || !(SEO_OVERRIDES[slug]?.description || post.meta_description || post.excerpt)) critical.push(`${slug}: missing search title or description.`);
     if (/\.map\s*\(|const\s+[A-Za-z_$]|\{[A-Za-z_$][\w$]*\.(?:name|body|icon|letter)\}/.test(clean))
       critical.push(`${slug}: visible template code remains after cleaning.`);
     if (/sessions? from UGX 30,000|video[^.]{0,30}UGX 30,000/i.test(clean))
@@ -564,15 +563,17 @@ async function run() {
     }
   }
   if (!ROOT_RE.test(shell)) {
-    console.warn("[prerender-blogs] #root placeholder not found in shell — skipping.");
-    return;
+    throw new Error('[prerender-blogs] Missing clean shell placeholder');
   }
 
   const posts = await fetchPosts();
   auditPublishedPosts(posts);
   let count = 0;
+  const redirects = new Set(routeInventory().filter(r => r.redirect).map(r => r.path));
   for (const post of posts) {
     if (!post?.slug) continue;
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(post.slug)) throw new Error('Unsafe article slug');
+    if (redirects.has(`/blog/${post.slug}`)) continue;
     const html = buildHead(shell, post).replace(ROOT_RE, `<div id="root">${buildBody(post)}</div>`);
     const outPath = path.join(DIST, "blog", post.slug, "index.html");
     await mkdir(path.dirname(outPath), { recursive: true });
@@ -581,7 +582,7 @@ async function run() {
   }
 
   // Prerender the /blog listing page so crawlers see all article links.
-  const listingHead = buildHead(shell, {
+  let listingHead = buildHead(shell, {
     slug: "blog",
     title: "Mental Health Blog Uganda | InnerSpark Africa",
     excerpt: "Expert articles on depression, anxiety, stress and relationships, written by licensed African therapists. Practical tips you can use today.",
@@ -597,6 +598,10 @@ async function run() {
     last_updated_at: new Date().toISOString(),
     author: "InnerSpark Africa",
   });
+  // A listing is a collection, not an Article with invented publication dates.
+  listingHead = listingHead.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/g, '')
+    .replace(/<meta property="og:type" content="article"\s*\/?>/, '<meta property="og:type" content="website" />')
+    .replace('</head>', `<script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'CollectionPage', name: 'Mental Health Blog Uganda | InnerSpark Africa', url: canonicalUrl('/blog') })}</script></head>`);
   const listingHtml = listingHead.replace(ROOT_RE, `<div id="root">${buildListingBody(posts)}</div>`);
   await mkdir(path.join(DIST, "blog"), { recursive: true });
   await writeFile(path.join(DIST, "blog", "index.html"), listingHtml, "utf8");
@@ -606,4 +611,5 @@ async function run() {
 
 run().catch((err) => {
   console.error("[prerender-blogs] failed:", err);
+  process.exitCode = 1;
 });

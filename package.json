@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node scripts/prerender.mjs && node scripts/prerender-blogs.mjs",
+    "build": "vite build && node scripts/prerender.mjs && node scripts/prerender-blogs.mjs && node scripts/validate-seo-output.mjs",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
@@ -13,7 +13,8 @@
     "prebuild": "node scripts/validate-flagged-chat-lock.mjs && node scripts/validate-manual-password-reset.mjs && node scripts/generate-sitemap.mjs && node scripts/generate-blog-sitemap.mjs",
     "postbuild": "node -e \"console.log('SEO prerendering completed during build')\"",
     "test:amani-safety": "node scripts/validate-flagged-chat-lock.mjs",
-    "test:password-reset": "node scripts/validate-manual-password-reset.mjs"
+    "test:password-reset": "node scripts/validate-manual-password-reset.mjs",
+    "test:seo": "node --test scripts/test-seo.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
