@@ -29,7 +29,7 @@ jobs:
           set +e
           npm run test:seo > seo-test.log 2>&1
           code=$?
-          if [ $code -ne 0 ]; then echo "::error title=test:seo failed::$(grep -v '^$' seo-test.log | head -c 2500 | tr '\n' '~')"; fi
+          if [ $code -ne 0 ]; then echo "::error title=test:seo failed::$(grep -v '^$' seo-test.log | grep -vE 'words; expand|fewer than two stored|structured subheadings|no article-specific' | grep -E 'blog-audit|rror|Missing|Invalid|duplicate|failed' | head -c 3000 | tr '\n' '~')"; fi
           exit $code
       - name: Full production build (prerender + sitemap + duplicate/canonical validation)
         run: |
