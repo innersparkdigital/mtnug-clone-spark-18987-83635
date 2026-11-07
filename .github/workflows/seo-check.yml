@@ -8,6 +8,8 @@ on:
       - 'scripts/**'
       - 'src/App.tsx'
       - 'src/pages/**'
+      - 'src/lib/amani*'
+      - 'src/components/amani/**'
       - 'public/**'
       - 'index.html'
       - 'package.json'
@@ -24,6 +26,8 @@ jobs:
           node-version: 22
       - name: Install dependencies
         run: npm ci --legacy-peer-deps || npm install --legacy-peer-deps
+      - name: Amani crisis detection and demo reply checks
+        run: node scripts/test-amani-demo.mjs
       - name: Unit test - Mind-Check routes and raw HTML checks
         run: |
           set +e
