@@ -37,7 +37,8 @@ jobs:
           npm run build > build.log 2>&1
           code=$?
           if [ $code -ne 0 ]; then echo "::error title=build failed::$(grep -v '^$' build.log | tail -c 2500 | tr '\n' '~')"; fi
-          exit $code      - name: Report raw HTML for sample pages
+          exit $code
+      - name: Report raw HTML for sample pages
         run: |
           for p in mind-check/depression blog blog/what-is-therapy online-therapy-nigeria; do
             f="dist/$p/index.html"
