@@ -25,10 +25,19 @@ jobs:
       - name: Install dependencies
         run: npm ci --legacy-peer-deps || npm install --legacy-peer-deps
       - name: Unit test - Mind-Check routes and raw HTML checks
-        run: npm run test:seo
+        run: |
+          set +e
+          npm run test:seo > seo-test.log 2>&1
+          code=$?
+          if [ $code -ne 0 ]; then echo "::error title=test:seo failed::$(grep -v '^$' seo-test.log | head -c 2500 | tr '\n' '~')"; fi
+          exit $code
       - name: Full production build (prerender + sitemap + duplicate/canonical validation)
-        run: npm run build
-      - name: Report raw HTML for sample pages
+        run: |
+          set +e
+          npm run build > build.log 2>&1
+          code=$?
+          if [ $code -ne 0 ]; then echo "::error title=build failed::$(grep -v '^$' build.log | tail -c 2500 | tr '\n' '~')"; fi
+          exit $code      - name: Report raw HTML for sample pages
         run: |
           for p in mind-check/depression blog blog/what-is-therapy online-therapy-nigeria; do
             f="dist/$p/index.html"
