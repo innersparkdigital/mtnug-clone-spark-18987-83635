@@ -127,6 +127,7 @@ const AIChatWidget = lazy(() => import("./components/AIChatWidget"));
 const WhisperFloatingWidget = lazy(() => import("./components/WhisperFloatingWidget"));
 const GlobalBookingModal = lazy(() => import("./components/GlobalBookingModal"));
 import DeferredMount from "./components/DeferredMount";
+import HideOnAmaniPages from "./components/amani/HideOnAmaniPages";
 import RoutePrefetcher from "./components/RoutePrefetcher";
 
 const Learning = lazy(() => import("./pages/Learning"));
@@ -180,6 +181,9 @@ const RelationshipCounsellingUganda = lazy(() => import("./pages/RelationshipCou
 const TherapyForTeensUganda = lazy(() => import("./pages/TherapyForTeensUganda"));
 const TraumaTherapyUganda = lazy(() => import("./pages/TraumaTherapyUganda"));
 const AmaniAI = lazy(() => import("./pages/AmaniAI"));
+const TalkToAmani = lazy(() => import("./pages/TalkToAmani"));
+const AmaniEmbed = lazy(() => import("./pages/AmaniEmbed"));
+const AdminAmani = lazy(() => import("./pages/AdminAmani"));
 const CmsBlogPost = lazy(() => import("./pages/CmsBlogPost"));
 const CmsEventPost = lazy(() => import("./pages/CmsEventPost"));
 const ThankYou = lazy(() => import("./pages/ThankYou"));
@@ -232,8 +236,10 @@ const App = () => (
               <PrivateRouteNoIndex />
               <Suspense fallback={null}>
                 <DeferredMount>
-                  <AIChatWidget />
-                  <WhisperFloatingWidget />
+                  <HideOnAmaniPages>
+                    <AIChatWidget />
+                    <WhisperFloatingWidget />
+                  </HideOnAmaniPages>
                 </DeferredMount>
                 <GlobalBookingModal />
               </Suspense>
@@ -354,6 +360,10 @@ const App = () => (
                 <Route path="/whisper" element={<Whisper />} />
                 <Route path="/whisper/:token" element={<Whisper />} />
                 <Route path="/amani-ai" element={<AmaniAI />} />
+                <Route path="/talk-to-amani" element={<TalkToAmani />} />
+                <Route path="/amani-embed" element={<AmaniEmbed />} />
+                <Route path="/admin/amani" element={<AdminAmani />} />
+                <Route path="/teletherapy" element={<Navigate to="/book-therapist" replace />} />
                 <Route path="/mind-check" element={<MindCheck />} />
                 <Route
                   path="/mind-check/analytics"
