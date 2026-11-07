@@ -3,6 +3,7 @@
 // canonical, indexable pages. Runs before dev and build.
 import { readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { routeInventory, canonicalUrl } from './seo-routes.mjs';
 
 const BASE_URL = "https://www.innersparkafrica.com";
 
@@ -45,15 +46,7 @@ const EXCLUDE = new Set([
 ]);
 
 function routePaths() {
-  const src = readFileSync(resolve("src/App.tsx"), "utf8");
-  const paths = [...src.matchAll(/path="([^"]+)"/g)].map((m) => m[1]);
-  const seen = new Set();
-  return paths.filter((p) => {
-    if (p.includes(":") || EXCLUDE.has(p)) return false;
-    if (seen.has(p)) return false;
-    seen.add(p);
-    return true;
-  });
+  return routeInventory().filter(r => !r.private && !r.redirect && !EXCLUDE.has(r.path)).map(r => r.path);
 }
 
 const paths = routePaths();
@@ -62,7 +55,7 @@ const xml = [
   '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
   ...paths.map((p) => [
     "  <url>",
-    `    <loc>${BASE_URL}${p === "/" ? "/" : p}</loc>`,
+    `    <loc>${canonicalUrl(p)}</loc>`,
     "  </url>",
   ].join("\n")),
   "</urlset>",
