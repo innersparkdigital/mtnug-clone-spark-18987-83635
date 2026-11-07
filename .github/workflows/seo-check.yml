@@ -1,0 +1,37 @@
+name: SEO build check
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/**'
+      - 'src/App.tsx'
+      - 'src/pages/**'
+      - 'public/**'
+      - 'index.html'
+      - 'package.json'
+      - '.github/workflows/seo-check.yml'
+
+jobs:
+  seo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps || npm install --legacy-peer-deps
+      - name: Unit test - Mind-Check routes and raw HTML checks
+        run: npm run test:seo
+      - name: Full production build (prerender + sitemap + duplicate/canonical validation)
+        run: npm run build
+      - name: Report raw HTML for sample pages
+        run: |
+          for p in mind-check/depression blog blog/what-is-therapy online-therapy-nigeria; do
+            f="dist/$p/index.html"
+            echo "== $p"; grep -o '<title>[^<]*</title>' "$f" | head -1; grep -o '<link rel="canonical"[^>]*>' "$f" | head -1
+          done
+          echo "sitemap URLs: $(grep -o '<loc>' dist/sitemap.xml dist/sitemap-blogs.xml | wc -l)"
