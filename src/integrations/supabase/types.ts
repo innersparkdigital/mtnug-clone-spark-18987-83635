@@ -221,6 +221,56 @@ export type Database = {
         }
         Relationships: []
       }
+      amani_event_counts: {
+        Row: {
+          count: number
+          day: string
+          event_type: string
+          org_key: string
+        }
+        Insert: {
+          count?: number
+          day?: string
+          event_type: string
+          org_key: string
+        }
+        Update: {
+          count?: number
+          day?: string
+          event_type?: string
+          org_key?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "amani_event_counts_org_key_fkey"
+            columns: ["org_key"]
+            isOneToOne: false
+            referencedRelation: "amani_partners"
+            referencedColumns: ["org_key"]
+          },
+        ]
+      }
+      amani_partners: {
+        Row: {
+          active: boolean
+          created_at: string
+          name: string
+          org_key: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          name: string
+          org_key: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          name?: string
+          org_key?: string
+        }
+        Relationships: []
+      }
       assessment_emails: {
         Row: {
           consent_given: boolean
@@ -4834,6 +4884,11 @@ export type Database = {
       admin_update_corporate_request: {
         Args: { _request_id: string; _status: string }
         Returns: boolean
+      }
+      amani_is_admin: { Args: never; Returns: boolean }
+      amani_record_event: {
+        Args: { _event: string; _org: string }
+        Returns: undefined
       }
       claim_manual_password_reset: {
         Args: { _admin_id: string; _request_id: string }
