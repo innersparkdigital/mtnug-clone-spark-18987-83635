@@ -1,0 +1,1 @@
+DROP POLICY IF EXISTS "Authenticated can view tax codes" ON public.tax_codes;
