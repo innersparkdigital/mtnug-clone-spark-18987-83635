@@ -204,6 +204,19 @@ export default function MarketLandingPage({ market: m }: { market: MarketLanding
         </div>
       </section>
 
+      <section aria-labelledby="everyone-welcome" className="py-10 bg-white">
+        <div className="container mx-auto px-4 max-w-3xl text-center">
+          <h2 id="everyone-welcome" className="text-[26px] font-semibold" style={{ color: DEEP_NIGHT }}>
+            Everyone is welcome to book.
+          </h2>
+          <p className="text-[15px] mt-4 leading-[1.8]" style={{ color: "#555" }}>
+            You do not need to be African or part of the diaspora. We welcome clients of every race, including white
+            clients, and every nationality, culture, faith and background. Choose a therapist based on the support,
+            language and approach that feel right for you.
+          </p>
+        </div>
+      </section>
+
       <section className="py-14 bg-white">
         <div className="container mx-auto px-4">
           <h2 className="text-[26px] font-semibold text-center mb-10" style={{ color: DEEP_NIGHT }}>
@@ -676,7 +689,7 @@ export default function MarketLandingPage({ market: m }: { market: MarketLanding
         <div className="container mx-auto px-4 grid md:grid-cols-3 gap-6">
           <div>
             <h4 className="font-semibold mb-2" style={{ color: DEEP_NIGHT }}>
-              Serving Africa & diaspora
+              Serving clients worldwide
             </h4>
             <Link to="/" className="hover:underline mr-3">Uganda</Link>
             <Link to="/kenya" className="hover:underline mr-3">Kenya</Link>

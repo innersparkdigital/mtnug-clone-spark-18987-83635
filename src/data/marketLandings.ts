@@ -353,26 +353,26 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     monthlyPrice: "USD 80",
     monthlyNote: "4 sessions · about USD 20 each",
     ugxNote: "~UGX 75,000 video · UGX 30,000 chat",
-    citiesLine: "African immigrants, students and diaspora professionals across the United States",
-    title: "Book African Therapist Online USA | from ~USD 22",
-    description: "Looking for a Black or African therapist online from the USA? Licensed African therapists — video ~USD 22 · chat ~USD 9. Cultural fit. Visa. WhatsApp +256 792 085 773.",
-    h1: "Book an African therapist online from the USA. From ~USD 22.",
-    h1Line2: "Nigerian, Kenyan & African therapists. Cultural fit. Visa ready.",
-    introLine1: "For diaspora professionals ready to invest in confidential care.",
+    citiesLine: "Adults, students and families of every background across the United States",
+    title: "Book Online Therapy USA | Licensed African Therapists from ~USD 22",
+    description: "Online therapy in the USA open to everyone, with licensed African therapists. Video ~USD 22 · chat ~USD 9. Every race, culture and nationality welcome. Visa. WhatsApp +256 792 085 773.",
+    h1: "Book online therapy in the USA. From ~USD 22.",
+    h1Line2: "Open to everyone. Licensed African therapists. Visa ready.",
+    introLine1: "Confidential care for adults of every race, background, culture and nationality.",
     introLine2: "From about USD 22 · Pay by Visa · Book in about 2 minutes.",
     paymentLabel: "Visa / card",
     paymentAccepted: ["Visa", "Card"],
     trustPayment: "Visa accepted",
-    problemHeadline: "You should not spend half the session translating culture, family duty or home to someone who has never lived it.",
-    problemSource: "Paid cultural fit for Africans who can invest in care",
+    problemHeadline: "Whatever you are carrying, you should not have to face it alone.",
+    problemSource: "Professional care open to every background",
     problemBody: [
-      "US directories can be excellent — and still miss migration stress, family obligations back home, or the pressure to look fine on paper.",
-      "InnerSpark connects you with licensed African therapists at a clear USD rate. You book, pay and meet on WhatsApp video or chat.",
+      "You can talk about anxiety, depression, relationships, work pressure, grief, identity or major life changes. Migration stress, family obligations and living between cultures are welcome too, but you do not need to be African to belong here.",
+      "InnerSpark connects clients of every race and nationality with licensed African therapists at a clear USD rate. You book, pay and meet on WhatsApp video or chat.",
     ],
-    howHeadline: "From any US city — therapy with cultural fit in 3 steps.",
+    howHeadline: "From any US city — confidential therapy in 3 steps.",
     howSteps: ["Choose your therapist", "Book and pay by Visa", "Connect on WhatsApp"],
     howBodies: [
-      "Licensed African therapists who understand diaspora life, family duty and living between cultures.",
+      "Choose from licensed African therapists who welcome every background and understand diaspora life, family duty and living between cultures.",
       "Video about USD 22 or chat about USD 9. Transparent pricing before you commit.",
       "Join by video or voice on an app you already use. Private from home after work.",
     ],
@@ -384,15 +384,15 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
       "Message us if anything needs follow-up",
     ],
     paymentTip: "This is cross-border wellbeing support with African therapists — not a US emergency or insurance product.",
-    offerCompare: "A clear USD price for licensed African therapists — without rebuilding your whole cultural context every week.",
-    concerns: ["Diaspora identity and belonging", "Homesickness and adjustment", "Family obligations back home", "International student stress", "Relationships across cultures", "Workplace and racial stress"],
+    offerCompare: "A clear USD price for professional care with licensed African therapists — open to every client, whatever your background.",
+    concerns: ["Anxiety and depression", "Identity and belonging", "Relationships and family pressure", "Workplace stress and burnout", "Grief and life changes", "Migration and cultural adjustment"],
     cities: [
-      { id: "nyc", city: "New York", body: "African professionals and students in NYC — culturally fluent therapist, clear USD rate.", kw: "African therapist New York" },
-      { id: "houston", city: "Houston", body: "Private WhatsApp video for diaspora clients who want African context.", kw: "Therapy for Africans Houston" },
-      { id: "atlanta", city: "Atlanta", body: "Licensed African therapists online. Pay by Visa. Join after work from home.", kw: "African counsellor Atlanta" },
-      { id: "dc", city: "Washington DC", body: "Confidential care for professionals balancing career, family abroad and identity.", kw: "Diaspora therapy DC" },
-      { id: "chicago", city: "Chicago", body: "Students and professionals — clear pricing, cultural fit, private sessions.", kw: "African therapist Chicago" },
-      { id: "nationwide", city: "Across the USA", body: "If you can pay for confidential care and want an African therapist, book this week.", kw: "Online therapy Africans USA" },
+      { id: "nyc", city: "New York", body: "Private online therapy for adults of every background in NYC, with a clear USD rate.", kw: "Online therapy New York" },
+      { id: "houston", city: "Houston", body: "Private WhatsApp video for every client, with African cultural understanding available.", kw: "Online therapy Houston" },
+      { id: "atlanta", city: "Atlanta", body: "Licensed African therapists online. Pay by Visa. Join after work from home.", kw: "Online counsellor Atlanta" },
+      { id: "dc", city: "Washington DC", body: "Confidential care for professionals balancing career, family, identity and life changes.", kw: "Online therapy Washington DC" },
+      { id: "chicago", city: "Chicago", body: "Students and professionals of every background — clear pricing and private sessions.", kw: "Online therapy Chicago" },
+      { id: "nationwide", city: "Across the USA", body: "Whatever your race, nationality or background, you can book confidential online therapy this week.", kw: "Online therapy USA" },
     ],
     testimonials: [
       { quote: "I stopped paying to educate my therapist about African family duty. Here they already knew the terrain.", who: "Professional, New York" },
@@ -402,15 +402,15 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     faqs: [
       { q: "How much does InnerSpark cost in the USA?", a: "Video about USD 22 and chat about USD 9 per session." },
       { q: "Is this a US emergency or insurance service?", a: "No. Cross-border support with African therapists. For crisis in the US, call or text 988." },
-      { q: "Who is this for?", a: "African immigrants, diaspora professionals and students ready to pay for culturally grounded licensed care." },
+      { q: "Who can book?", a: "Everyone. You do not need to be African or part of the diaspora. We welcome clients of every race, including white clients, and every nationality, culture and background." },
       { q: "Will you follow up after I book?", a: "Yes. WhatsApp +256 792 085 773 for payment and scheduling confirmation." },
     ],
     related: [
-      { to: "/online-therapy-diaspora", label: "Therapy for Africans abroad", tag: "Diaspora", blurb: "Why cultural fit changes the first session." },
+      { to: "/online-therapy-diaspora", label: "Online therapy with African therapists", tag: "Diaspora", blurb: "Professional care open to every background." },
       { to: "/specialists", label: "Meet African therapists", tag: "Therapists", blurb: "Licensed profiles before you pay." },
     ],
     finalCta: "Book my first session — from USD 22",
-    whatsappPrefill: "Hi InnerSpark, I am in the USA and want to book a licensed African therapist. Please confirm price and time zones.",
+    whatsappPrefill: "Hi InnerSpark, I am in the USA and want to book licensed online therapy. Please confirm price and time zones.",
     schemaCities: ["New York", "Houston", "Atlanta"],
   },
   rwanda: {
@@ -815,12 +815,12 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "monthlyPrice": "CAD 111",
     "monthlyNote": "4 sessions · small bundle saving",
     "ugxNote": "~UGX 75,000 · ~USD 22",
-    "citiesLine": "African professionals, students and families in Toronto, Calgary, Vancouver and across Canada",
-    "title": "African Therapist Online in Canada | Toronto from ~CAD 30",
-    "description": "Licensed African therapists online for Africans and diaspora in Canada: anxiety and depression, loneliness and isolation, relationship problems, immigration and cultural adjustment. Video ~CAD 30 · chat ~CAD 12. Cultural fit, private, WhatsApp +256 792 085 773.",
-    "h1": "Book an African therapist online in Canada. From ~CAD 30.",
-    "h1Line2": "Toronto · Calgary · Vancouver. Cultural fit. Visa ready.",
-    "introLine1": "For Africans abroad ready to invest in confidential, culturally grounded care.",
+    "citiesLine": "Adults, students and families in Toronto, Calgary, Vancouver and across Canada",
+    "title": "Online Therapy in Canada | Toronto from ~CAD 30",
+    "description": "Licensed African therapists welcome clients of every background in Canada: anxiety and depression, loneliness and isolation, relationship problems, immigration and cultural adjustment. Video ~CAD 30 · chat ~CAD 12. Open to everyone, private, WhatsApp +256 792 085 773.",
+    "h1": "Book online therapy in Canada. From ~CAD 30.",
+    "h1Line2": "Toronto · Calgary · Vancouver. Open to everyone. Visa ready.",
+    "introLine1": "Confidential online therapy for adults of every race, background, culture and nationality.",
     "introLine2": "From about CAD 30 · Pay by Visa · Book in about 2 minutes.",
     "paymentLabel": "Visa / card",
     "paymentAccepted": [
@@ -831,10 +831,10 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "problemHeadline": "Life in Canada can be good on paper — and still leave you carrying anxiety and depression alone.",
     "problemSource": "Common reasons people in Canada seek therapy",
     "problemBody": [
-      "People in Canada most often seek therapy for anxiety and depression, loneliness and isolation, relationship problems, immigration and cultural adjustment. For Africans living there, migration, distance from family and explaining your culture every session can add to it.",
-      "InnerSpark connects you with licensed African therapists who already understand where you come from, at a clear CAD price, by video or chat."
+      "People in Canada most often seek therapy for anxiety and depression, loneliness and isolation, relationship problems, immigration and cultural adjustment. Whatever your background, you can bring anxiety, relationships, work pressure, grief or major life changes into a private, judgement-free session.",
+      "InnerSpark connects you with licensed African therapists who welcome clients of every background, at a clear CAD price, by video or chat."
     ],
-    "howHeadline": "From anywhere in Canada — therapy with cultural fit in 3 steps.",
+    "howHeadline": "From anywhere in Canada — confidential therapy in 3 steps.",
     "howSteps": [
       "Choose your therapist",
       "Book and pay by Visa",
@@ -853,7 +853,7 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
       "Message us if anything needs follow-up"
     ],
     "paymentTip": "This is cross-border support with African therapists — not a Canada emergency or insurance service.",
-    "offerCompare": "A clear price and a therapist who understands African family life — without rebuilding your whole context every week.",
+    "offerCompare": "A clear price for professional, culturally responsive care — open to every client, whatever your background.",
     "concerns": [
       "Anxiety and depression",
       "Loneliness and isolation",
@@ -895,8 +895,8 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
         "a": "Video therapy is about CAD 30 and chat therapy about CAD 12 per session. Your card confirms the final amount."
       },
       {
-        "q": "Are your therapists African?",
-        "a": "Yes. InnerSpark therapists are licensed African professionals who understand migration, family duty and living between cultures."
+        "q": "Can anyone book, even if they are not African?",
+        "a": "Yes. InnerSpark welcomes clients of every race, including white clients, and every nationality, culture and background. Our therapists are licensed African professionals; you do not need to be African to book."
       },
       {
         "q": "What can I get help with?",
@@ -914,9 +914,9 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "related": [
       {
         "to": "/online-therapy-diaspora",
-        "label": "Therapy for Africans abroad",
+        "label": "Online therapy with African therapists",
         "tag": "Diaspora",
-        "blurb": "Why cultural fit changes the first session."
+        "blurb": "Professional care open to every background."
       },
       {
         "to": "/specialists",
@@ -945,12 +945,12 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "monthlyPrice": "GBP 67",
     "monthlyNote": "4 sessions · small bundle saving",
     "ugxNote": "~UGX 75,000 · ~USD 22",
-    "citiesLine": "African professionals, students and families in London, Manchester, Birmingham and across the United Kingdom",
-    "title": "African Therapist Online in the UK | London from ~GBP 18",
-    "description": "Licensed African therapists online for Africans and diaspora in the United Kingdom: anxiety and depression, relationship and marriage problems, workplace burnout, childhood trauma. Video ~GBP 18 · chat ~GBP 7. Cultural fit, private, WhatsApp +256 792 085 773.",
-    "h1": "Book an African therapist online in the United Kingdom. From ~GBP 18.",
-    "h1Line2": "London · Manchester · Birmingham. Cultural fit. Visa ready.",
-    "introLine1": "For Africans abroad ready to invest in confidential, culturally grounded care.",
+    "citiesLine": "Adults, students and families in London, Manchester, Birmingham and across the United Kingdom",
+    "title": "Online Therapy in the UK | London from ~GBP 18",
+    "description": "Licensed African therapists welcome clients of every background in the United Kingdom: anxiety and depression, relationship and marriage problems, workplace burnout, childhood trauma. Video ~GBP 18 · chat ~GBP 7. Open to everyone, private, WhatsApp +256 792 085 773.",
+    "h1": "Book online therapy in the United Kingdom. From ~GBP 18.",
+    "h1Line2": "London · Manchester · Birmingham. Open to everyone. Visa ready.",
+    "introLine1": "Confidential online therapy for adults of every race, background, culture and nationality.",
     "introLine2": "From about GBP 18 · Pay by Visa · Book in about 2 minutes.",
     "paymentLabel": "Visa / card",
     "paymentAccepted": [
@@ -961,10 +961,10 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "problemHeadline": "Life in the United Kingdom can be good on paper — and still leave you carrying anxiety and depression alone.",
     "problemSource": "Common reasons people in the United Kingdom seek therapy",
     "problemBody": [
-      "People in the United Kingdom most often seek therapy for anxiety and depression, relationship and marriage problems, workplace burnout, childhood trauma. For Africans living there, migration, distance from family and explaining your culture every session can add to it.",
-      "InnerSpark connects you with licensed African therapists who already understand where you come from, at a clear GBP price, by video or chat."
+      "People in the United Kingdom most often seek therapy for anxiety and depression, relationship and marriage problems, workplace burnout, childhood trauma. Whatever your background, you can bring anxiety, relationships, work pressure, grief or major life changes into a private, judgement-free session.",
+      "InnerSpark connects you with licensed African therapists who welcome clients of every background, at a clear GBP price, by video or chat."
     ],
-    "howHeadline": "From anywhere in the United Kingdom — therapy with cultural fit in 3 steps.",
+    "howHeadline": "From anywhere in the United Kingdom — confidential therapy in 3 steps.",
     "howSteps": [
       "Choose your therapist",
       "Book and pay by Visa",
@@ -983,7 +983,7 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
       "Message us if anything needs follow-up"
     ],
     "paymentTip": "This is cross-border support with African therapists — not a United Kingdom emergency or insurance service.",
-    "offerCompare": "A clear price and a therapist who understands African family life — without rebuilding your whole context every week.",
+    "offerCompare": "A clear price for professional, culturally responsive care — open to every client, whatever your background.",
     "concerns": [
       "Anxiety and depression",
       "Relationship and marriage problems",
@@ -1025,8 +1025,8 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
         "a": "Video therapy is about GBP 18 and chat therapy about GBP 7 per session. Your card confirms the final amount."
       },
       {
-        "q": "Are your therapists African?",
-        "a": "Yes. InnerSpark therapists are licensed African professionals who understand migration, family duty and living between cultures."
+        "q": "Can anyone book, even if they are not African?",
+        "a": "Yes. InnerSpark welcomes clients of every race, including white clients, and every nationality, culture and background. Our therapists are licensed African professionals; you do not need to be African to book."
       },
       {
         "q": "What can I get help with?",
@@ -1044,9 +1044,9 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "related": [
       {
         "to": "/online-therapy-diaspora",
-        "label": "Therapy for Africans abroad",
+        "label": "Online therapy with African therapists",
         "tag": "Diaspora",
-        "blurb": "Why cultural fit changes the first session."
+        "blurb": "Professional care open to every background."
       },
       {
         "to": "/specialists",
@@ -1075,12 +1075,12 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "monthlyPrice": "EUR 74",
     "monthlyNote": "4 sessions · small bundle saving",
     "ugxNote": "~UGX 75,000 · ~USD 22",
-    "citiesLine": "African professionals, students and families in Dublin, Cork, Galway and across Ireland",
-    "title": "African Therapist Online in Ireland | Dublin from ~EUR 20",
-    "description": "Licensed African therapists online for Africans and diaspora in Ireland: anxiety and depression, relationship difficulties, loneliness, grief. Video ~EUR 20 · chat ~EUR 8. Cultural fit, private, WhatsApp +256 792 085 773.",
-    "h1": "Book an African therapist online in Ireland. From ~EUR 20.",
-    "h1Line2": "Dublin · Cork · Galway. Cultural fit. Visa ready.",
-    "introLine1": "For Africans abroad ready to invest in confidential, culturally grounded care.",
+    "citiesLine": "Adults, students and families in Dublin, Cork, Galway and across Ireland",
+    "title": "Online Therapy in Ireland | Dublin from ~EUR 20",
+    "description": "Licensed African therapists welcome clients of every background in Ireland: anxiety and depression, relationship difficulties, loneliness, grief. Video ~EUR 20 · chat ~EUR 8. Open to everyone, private, WhatsApp +256 792 085 773.",
+    "h1": "Book online therapy in Ireland. From ~EUR 20.",
+    "h1Line2": "Dublin · Cork · Galway. Open to everyone. Visa ready.",
+    "introLine1": "Confidential online therapy for adults of every race, background, culture and nationality.",
     "introLine2": "From about EUR 20 · Pay by Visa · Book in about 2 minutes.",
     "paymentLabel": "Visa / card",
     "paymentAccepted": [
@@ -1091,10 +1091,10 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "problemHeadline": "Life in Ireland can be good on paper — and still leave you carrying anxiety and depression alone.",
     "problemSource": "Common reasons people in Ireland seek therapy",
     "problemBody": [
-      "People in Ireland most often seek therapy for anxiety and depression, relationship difficulties, loneliness, grief. For Africans living there, migration, distance from family and explaining your culture every session can add to it.",
-      "InnerSpark connects you with licensed African therapists who already understand where you come from, at a clear EUR price, by video or chat."
+      "People in Ireland most often seek therapy for anxiety and depression, relationship difficulties, loneliness, grief. Whatever your background, you can bring anxiety, relationships, work pressure, grief or major life changes into a private, judgement-free session.",
+      "InnerSpark connects you with licensed African therapists who welcome clients of every background, at a clear EUR price, by video or chat."
     ],
-    "howHeadline": "From anywhere in Ireland — therapy with cultural fit in 3 steps.",
+    "howHeadline": "From anywhere in Ireland — confidential therapy in 3 steps.",
     "howSteps": [
       "Choose your therapist",
       "Book and pay by Visa",
@@ -1113,7 +1113,7 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
       "Message us if anything needs follow-up"
     ],
     "paymentTip": "This is cross-border support with African therapists — not a Ireland emergency or insurance service.",
-    "offerCompare": "A clear price and a therapist who understands African family life — without rebuilding your whole context every week.",
+    "offerCompare": "A clear price for professional, culturally responsive care — open to every client, whatever your background.",
     "concerns": [
       "Anxiety and depression",
       "Relationship difficulties",
@@ -1155,8 +1155,8 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
         "a": "Video therapy is about EUR 20 and chat therapy about EUR 8 per session. Your card confirms the final amount."
       },
       {
-        "q": "Are your therapists African?",
-        "a": "Yes. InnerSpark therapists are licensed African professionals who understand migration, family duty and living between cultures."
+        "q": "Can anyone book, even if they are not African?",
+        "a": "Yes. InnerSpark welcomes clients of every race, including white clients, and every nationality, culture and background. Our therapists are licensed African professionals; you do not need to be African to book."
       },
       {
         "q": "What can I get help with?",
@@ -1174,9 +1174,9 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "related": [
       {
         "to": "/online-therapy-diaspora",
-        "label": "Therapy for Africans abroad",
+        "label": "Online therapy with African therapists",
         "tag": "Diaspora",
-        "blurb": "Why cultural fit changes the first session."
+        "blurb": "Professional care open to every background."
       },
       {
         "to": "/specialists",
@@ -1205,12 +1205,12 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "monthlyPrice": "EUR 74",
     "monthlyNote": "4 sessions · small bundle saving",
     "ugxNote": "~UGX 75,000 · ~USD 22",
-    "citiesLine": "African professionals, students and families in Berlin, Hamburg, Frankfurt and across Germany",
-    "title": "African Therapist Online in Germany | Berlin from ~EUR 20",
-    "description": "Licensed African therapists online for Africans and diaspora in Germany: depression, anxiety disorders, workplace burnout, social anxiety. Video ~EUR 20 · chat ~EUR 8. Cultural fit, private, WhatsApp +256 792 085 773.",
-    "h1": "Book an African therapist online in Germany. From ~EUR 20.",
-    "h1Line2": "Berlin · Hamburg · Frankfurt. Cultural fit. Visa ready.",
-    "introLine1": "For Africans abroad ready to invest in confidential, culturally grounded care.",
+    "citiesLine": "Adults, students and families in Berlin, Hamburg, Frankfurt and across Germany",
+    "title": "Online Therapy in Germany | Berlin from ~EUR 20",
+    "description": "Licensed African therapists welcome clients of every background in Germany: depression, anxiety disorders, workplace burnout, social anxiety. Video ~EUR 20 · chat ~EUR 8. Open to everyone, private, WhatsApp +256 792 085 773.",
+    "h1": "Book online therapy in Germany. From ~EUR 20.",
+    "h1Line2": "Berlin · Hamburg · Frankfurt. Open to everyone. Visa ready.",
+    "introLine1": "Confidential online therapy for adults of every race, background, culture and nationality.",
     "introLine2": "From about EUR 20 · Pay by Visa · Book in about 2 minutes.",
     "paymentLabel": "Visa / card",
     "paymentAccepted": [
@@ -1221,10 +1221,10 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "problemHeadline": "Life in Germany can be good on paper — and still leave you carrying depression alone.",
     "problemSource": "Common reasons people in Germany seek therapy",
     "problemBody": [
-      "People in Germany most often seek therapy for depression, anxiety disorders, workplace burnout, social anxiety. For Africans living there, migration, distance from family and explaining your culture every session can add to it.",
-      "InnerSpark connects you with licensed African therapists who already understand where you come from, at a clear EUR price, by video or chat."
+      "People in Germany most often seek therapy for depression, anxiety disorders, workplace burnout, social anxiety. Whatever your background, you can bring anxiety, relationships, work pressure, grief or major life changes into a private, judgement-free session.",
+      "InnerSpark connects you with licensed African therapists who welcome clients of every background, at a clear EUR price, by video or chat."
     ],
-    "howHeadline": "From anywhere in Germany — therapy with cultural fit in 3 steps.",
+    "howHeadline": "From anywhere in Germany — confidential therapy in 3 steps.",
     "howSteps": [
       "Choose your therapist",
       "Book and pay by Visa",
@@ -1243,7 +1243,7 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
       "Message us if anything needs follow-up"
     ],
     "paymentTip": "This is cross-border support with African therapists — not a Germany emergency or insurance service.",
-    "offerCompare": "A clear price and a therapist who understands African family life — without rebuilding your whole context every week.",
+    "offerCompare": "A clear price for professional, culturally responsive care — open to every client, whatever your background.",
     "concerns": [
       "Depression",
       "Anxiety disorders",
@@ -1285,8 +1285,8 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
         "a": "Video therapy is about EUR 20 and chat therapy about EUR 8 per session. Your card confirms the final amount."
       },
       {
-        "q": "Are your therapists African?",
-        "a": "Yes. InnerSpark therapists are licensed African professionals who understand migration, family duty and living between cultures."
+        "q": "Can anyone book, even if they are not African?",
+        "a": "Yes. InnerSpark welcomes clients of every race, including white clients, and every nationality, culture and background. Our therapists are licensed African professionals; you do not need to be African to book."
       },
       {
         "q": "What can I get help with?",
@@ -1304,9 +1304,9 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "related": [
       {
         "to": "/online-therapy-diaspora",
-        "label": "Therapy for Africans abroad",
+        "label": "Online therapy with African therapists",
         "tag": "Diaspora",
-        "blurb": "Why cultural fit changes the first session."
+        "blurb": "Professional care open to every background."
       },
       {
         "to": "/specialists",
@@ -1335,12 +1335,12 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "monthlyPrice": "EUR 74",
     "monthlyNote": "4 sessions · small bundle saving",
     "ugxNote": "~UGX 75,000 · ~USD 22",
-    "citiesLine": "African professionals, students and families in Paris, Lyon, Marseille and across France",
-    "title": "African Therapist Online in France | Paris from ~EUR 20",
-    "description": "Licensed African therapists online for Africans and diaspora in France: depression and anxiety, relationship difficulties, family conflict, workplace stress. Video ~EUR 20 · chat ~EUR 8. Cultural fit, private, WhatsApp +256 792 085 773.",
-    "h1": "Book an African therapist online in France. From ~EUR 20.",
-    "h1Line2": "Paris · Lyon · Marseille. Cultural fit. Visa ready.",
-    "introLine1": "For Africans abroad ready to invest in confidential, culturally grounded care.",
+    "citiesLine": "Adults, students and families in Paris, Lyon, Marseille and across France",
+    "title": "Online Therapy in France | Paris from ~EUR 20",
+    "description": "Licensed African therapists welcome clients of every background in France: depression and anxiety, relationship difficulties, family conflict, workplace stress. Video ~EUR 20 · chat ~EUR 8. Open to everyone, private, WhatsApp +256 792 085 773.",
+    "h1": "Book online therapy in France. From ~EUR 20.",
+    "h1Line2": "Paris · Lyon · Marseille. Open to everyone. Visa ready.",
+    "introLine1": "Confidential online therapy for adults of every race, background, culture and nationality.",
     "introLine2": "From about EUR 20 · Pay by Visa · Book in about 2 minutes.",
     "paymentLabel": "Visa / card",
     "paymentAccepted": [
@@ -1351,10 +1351,10 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "problemHeadline": "Life in France can be good on paper — and still leave you carrying depression and anxiety alone.",
     "problemSource": "Common reasons people in France seek therapy",
     "problemBody": [
-      "People in France most often seek therapy for depression and anxiety, relationship difficulties, family conflict, workplace stress. For Africans living there, migration, distance from family and explaining your culture every session can add to it.",
-      "InnerSpark connects you with licensed African therapists who already understand where you come from, at a clear EUR price, by video or chat."
+      "People in France most often seek therapy for depression and anxiety, relationship difficulties, family conflict, workplace stress. Whatever your background, you can bring anxiety, relationships, work pressure, grief or major life changes into a private, judgement-free session.",
+      "InnerSpark connects you with licensed African therapists who welcome clients of every background, at a clear EUR price, by video or chat."
     ],
-    "howHeadline": "From anywhere in France — therapy with cultural fit in 3 steps.",
+    "howHeadline": "From anywhere in France — confidential therapy in 3 steps.",
     "howSteps": [
       "Choose your therapist",
       "Book and pay by Visa",
@@ -1373,7 +1373,7 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
       "Message us if anything needs follow-up"
     ],
     "paymentTip": "This is cross-border support with African therapists — not a France emergency or insurance service.",
-    "offerCompare": "A clear price and a therapist who understands African family life — without rebuilding your whole context every week.",
+    "offerCompare": "A clear price for professional, culturally responsive care — open to every client, whatever your background.",
     "concerns": [
       "Depression and anxiety",
       "Relationship difficulties",
@@ -1415,8 +1415,8 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
         "a": "Video therapy is about EUR 20 and chat therapy about EUR 8 per session. Your card confirms the final amount."
       },
       {
-        "q": "Are your therapists African?",
-        "a": "Yes. InnerSpark therapists are licensed African professionals who understand migration, family duty and living between cultures."
+        "q": "Can anyone book, even if they are not African?",
+        "a": "Yes. InnerSpark welcomes clients of every race, including white clients, and every nationality, culture and background. Our therapists are licensed African professionals; you do not need to be African to book."
       },
       {
         "q": "What can I get help with?",
@@ -1434,9 +1434,9 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "related": [
       {
         "to": "/online-therapy-diaspora",
-        "label": "Therapy for Africans abroad",
+        "label": "Online therapy with African therapists",
         "tag": "Diaspora",
-        "blurb": "Why cultural fit changes the first session."
+        "blurb": "Professional care open to every background."
       },
       {
         "to": "/specialists",
@@ -1465,12 +1465,12 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "monthlyPrice": "EUR 74",
     "monthlyNote": "4 sessions · small bundle saving",
     "ugxNote": "~UGX 75,000 · ~USD 22",
-    "citiesLine": "African professionals, students and families in Amsterdam, Rotterdam, The Hague and across the Netherlands",
-    "title": "African Therapist Online in Netherlands | Amsterdam from ~EUR 20",
-    "description": "Licensed African therapists online for Africans and diaspora in the Netherlands: anxiety and depression, burnout, relationship problems, loneliness. Video ~EUR 20 · chat ~EUR 8. Cultural fit, private, WhatsApp +256 792 085 773.",
-    "h1": "Book an African therapist online in the Netherlands. From ~EUR 20.",
-    "h1Line2": "Amsterdam · Rotterdam · The Hague. Cultural fit. Visa ready.",
-    "introLine1": "For Africans abroad ready to invest in confidential, culturally grounded care.",
+    "citiesLine": "Adults, students and families in Amsterdam, Rotterdam, The Hague and across the Netherlands",
+    "title": "Online Therapy in Netherlands | Amsterdam from ~EUR 20",
+    "description": "Licensed African therapists welcome clients of every background in the Netherlands: anxiety and depression, burnout, relationship problems, loneliness. Video ~EUR 20 · chat ~EUR 8. Open to everyone, private, WhatsApp +256 792 085 773.",
+    "h1": "Book online therapy in the Netherlands. From ~EUR 20.",
+    "h1Line2": "Amsterdam · Rotterdam · The Hague. Open to everyone. Visa ready.",
+    "introLine1": "Confidential online therapy for adults of every race, background, culture and nationality.",
     "introLine2": "From about EUR 20 · Pay by Visa · Book in about 2 minutes.",
     "paymentLabel": "Visa / card",
     "paymentAccepted": [
@@ -1481,10 +1481,10 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "problemHeadline": "Life in the Netherlands can be good on paper — and still leave you carrying anxiety and depression alone.",
     "problemSource": "Common reasons people in the Netherlands seek therapy",
     "problemBody": [
-      "People in the Netherlands most often seek therapy for anxiety and depression, burnout, relationship problems, loneliness. For Africans living there, migration, distance from family and explaining your culture every session can add to it.",
-      "InnerSpark connects you with licensed African therapists who already understand where you come from, at a clear EUR price, by video or chat."
+      "People in the Netherlands most often seek therapy for anxiety and depression, burnout, relationship problems, loneliness. Whatever your background, you can bring anxiety, relationships, work pressure, grief or major life changes into a private, judgement-free session.",
+      "InnerSpark connects you with licensed African therapists who welcome clients of every background, at a clear EUR price, by video or chat."
     ],
-    "howHeadline": "From anywhere in the Netherlands — therapy with cultural fit in 3 steps.",
+    "howHeadline": "From anywhere in the Netherlands — confidential therapy in 3 steps.",
     "howSteps": [
       "Choose your therapist",
       "Book and pay by Visa",
@@ -1503,7 +1503,7 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
       "Message us if anything needs follow-up"
     ],
     "paymentTip": "This is cross-border support with African therapists — not a Netherlands emergency or insurance service.",
-    "offerCompare": "A clear price and a therapist who understands African family life — without rebuilding your whole context every week.",
+    "offerCompare": "A clear price for professional, culturally responsive care — open to every client, whatever your background.",
     "concerns": [
       "Anxiety and depression",
       "Burnout",
@@ -1545,8 +1545,8 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
         "a": "Video therapy is about EUR 20 and chat therapy about EUR 8 per session. Your card confirms the final amount."
       },
       {
-        "q": "Are your therapists African?",
-        "a": "Yes. InnerSpark therapists are licensed African professionals who understand migration, family duty and living between cultures."
+        "q": "Can anyone book, even if they are not African?",
+        "a": "Yes. InnerSpark welcomes clients of every race, including white clients, and every nationality, culture and background. Our therapists are licensed African professionals; you do not need to be African to book."
       },
       {
         "q": "What can I get help with?",
@@ -1564,9 +1564,9 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "related": [
       {
         "to": "/online-therapy-diaspora",
-        "label": "Therapy for Africans abroad",
+        "label": "Online therapy with African therapists",
         "tag": "Diaspora",
-        "blurb": "Why cultural fit changes the first session."
+        "blurb": "Professional care open to every background."
       },
       {
         "to": "/specialists",
@@ -1595,12 +1595,12 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "monthlyPrice": "CHF 74",
     "monthlyNote": "4 sessions · small bundle saving",
     "ugxNote": "~UGX 75,000 · ~USD 22",
-    "citiesLine": "African professionals, students and families in Zurich, Geneva, Basel and across Switzerland",
-    "title": "African Therapist Online in Switzerland | Zurich from ~CHF 20",
-    "description": "Licensed African therapists online for Africans and diaspora in Switzerland: anxiety and depression, workplace stress, perfectionism, relationship difficulties. Video ~CHF 20 · chat ~CHF 8. Cultural fit, private, WhatsApp +256 792 085 773.",
-    "h1": "Book an African therapist online in Switzerland. From ~CHF 20.",
-    "h1Line2": "Zurich · Geneva · Basel. Cultural fit. Visa ready.",
-    "introLine1": "For Africans abroad ready to invest in confidential, culturally grounded care.",
+    "citiesLine": "Adults, students and families in Zurich, Geneva, Basel and across Switzerland",
+    "title": "Online Therapy in Switzerland | Zurich from ~CHF 20",
+    "description": "Licensed African therapists welcome clients of every background in Switzerland: anxiety and depression, workplace stress, perfectionism, relationship difficulties. Video ~CHF 20 · chat ~CHF 8. Open to everyone, private, WhatsApp +256 792 085 773.",
+    "h1": "Book online therapy in Switzerland. From ~CHF 20.",
+    "h1Line2": "Zurich · Geneva · Basel. Open to everyone. Visa ready.",
+    "introLine1": "Confidential online therapy for adults of every race, background, culture and nationality.",
     "introLine2": "From about CHF 20 · Pay by Visa · Book in about 2 minutes.",
     "paymentLabel": "Visa / card",
     "paymentAccepted": [
@@ -1611,10 +1611,10 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "problemHeadline": "Life in Switzerland can be good on paper — and still leave you carrying anxiety and depression alone.",
     "problemSource": "Common reasons people in Switzerland seek therapy",
     "problemBody": [
-      "People in Switzerland most often seek therapy for anxiety and depression, workplace stress, perfectionism, relationship difficulties. For Africans living there, migration, distance from family and explaining your culture every session can add to it.",
-      "InnerSpark connects you with licensed African therapists who already understand where you come from, at a clear CHF price, by video or chat."
+      "People in Switzerland most often seek therapy for anxiety and depression, workplace stress, perfectionism, relationship difficulties. Whatever your background, you can bring anxiety, relationships, work pressure, grief or major life changes into a private, judgement-free session.",
+      "InnerSpark connects you with licensed African therapists who welcome clients of every background, at a clear CHF price, by video or chat."
     ],
-    "howHeadline": "From anywhere in Switzerland — therapy with cultural fit in 3 steps.",
+    "howHeadline": "From anywhere in Switzerland — confidential therapy in 3 steps.",
     "howSteps": [
       "Choose your therapist",
       "Book and pay by Visa",
@@ -1633,7 +1633,7 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
       "Message us if anything needs follow-up"
     ],
     "paymentTip": "This is cross-border support with African therapists — not a Switzerland emergency or insurance service.",
-    "offerCompare": "A clear price and a therapist who understands African family life — without rebuilding your whole context every week.",
+    "offerCompare": "A clear price for professional, culturally responsive care — open to every client, whatever your background.",
     "concerns": [
       "Anxiety and depression",
       "Workplace stress",
@@ -1675,8 +1675,8 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
         "a": "Video therapy is about CHF 20 and chat therapy about CHF 8 per session. Your card confirms the final amount."
       },
       {
-        "q": "Are your therapists African?",
-        "a": "Yes. InnerSpark therapists are licensed African professionals who understand migration, family duty and living between cultures."
+        "q": "Can anyone book, even if they are not African?",
+        "a": "Yes. InnerSpark welcomes clients of every race, including white clients, and every nationality, culture and background. Our therapists are licensed African professionals; you do not need to be African to book."
       },
       {
         "q": "What can I get help with?",
@@ -1694,9 +1694,9 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "related": [
       {
         "to": "/online-therapy-diaspora",
-        "label": "Therapy for Africans abroad",
+        "label": "Online therapy with African therapists",
         "tag": "Diaspora",
-        "blurb": "Why cultural fit changes the first session."
+        "blurb": "Professional care open to every background."
       },
       {
         "to": "/specialists",
@@ -1725,12 +1725,12 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "monthlyPrice": "EUR 74",
     "monthlyNote": "4 sessions · small bundle saving",
     "ugxNote": "~UGX 75,000 · ~USD 22",
-    "citiesLine": "African professionals, students and families in Brussels, Antwerp, Ghent and across Belgium",
-    "title": "African Therapist Online in Belgium | Brussels from ~EUR 20",
-    "description": "Licensed African therapists online for Africans and diaspora in Belgium: depression and anxiety, relationship difficulties, family conflict, workplace burnout. Video ~EUR 20 · chat ~EUR 8. Cultural fit, private, WhatsApp +256 792 085 773.",
-    "h1": "Book an African therapist online in Belgium. From ~EUR 20.",
-    "h1Line2": "Brussels · Antwerp · Ghent. Cultural fit. Visa ready.",
-    "introLine1": "For Africans abroad ready to invest in confidential, culturally grounded care.",
+    "citiesLine": "Adults, students and families in Brussels, Antwerp, Ghent and across Belgium",
+    "title": "Online Therapy in Belgium | Brussels from ~EUR 20",
+    "description": "Licensed African therapists welcome clients of every background in Belgium: depression and anxiety, relationship difficulties, family conflict, workplace burnout. Video ~EUR 20 · chat ~EUR 8. Open to everyone, private, WhatsApp +256 792 085 773.",
+    "h1": "Book online therapy in Belgium. From ~EUR 20.",
+    "h1Line2": "Brussels · Antwerp · Ghent. Open to everyone. Visa ready.",
+    "introLine1": "Confidential online therapy for adults of every race, background, culture and nationality.",
     "introLine2": "From about EUR 20 · Pay by Visa · Book in about 2 minutes.",
     "paymentLabel": "Visa / card",
     "paymentAccepted": [
@@ -1741,10 +1741,10 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "problemHeadline": "Life in Belgium can be good on paper — and still leave you carrying depression and anxiety alone.",
     "problemSource": "Common reasons people in Belgium seek therapy",
     "problemBody": [
-      "People in Belgium most often seek therapy for depression and anxiety, relationship difficulties, family conflict, workplace burnout. For Africans living there, migration, distance from family and explaining your culture every session can add to it.",
-      "InnerSpark connects you with licensed African therapists who already understand where you come from, at a clear EUR price, by video or chat."
+      "People in Belgium most often seek therapy for depression and anxiety, relationship difficulties, family conflict, workplace burnout. Whatever your background, you can bring anxiety, relationships, work pressure, grief or major life changes into a private, judgement-free session.",
+      "InnerSpark connects you with licensed African therapists who welcome clients of every background, at a clear EUR price, by video or chat."
     ],
-    "howHeadline": "From anywhere in Belgium — therapy with cultural fit in 3 steps.",
+    "howHeadline": "From anywhere in Belgium — confidential therapy in 3 steps.",
     "howSteps": [
       "Choose your therapist",
       "Book and pay by Visa",
@@ -1763,7 +1763,7 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
       "Message us if anything needs follow-up"
     ],
     "paymentTip": "This is cross-border support with African therapists — not a Belgium emergency or insurance service.",
-    "offerCompare": "A clear price and a therapist who understands African family life — without rebuilding your whole context every week.",
+    "offerCompare": "A clear price for professional, culturally responsive care — open to every client, whatever your background.",
     "concerns": [
       "Depression and anxiety",
       "Relationship difficulties",
@@ -1805,8 +1805,8 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
         "a": "Video therapy is about EUR 20 and chat therapy about EUR 8 per session. Your card confirms the final amount."
       },
       {
-        "q": "Are your therapists African?",
-        "a": "Yes. InnerSpark therapists are licensed African professionals who understand migration, family duty and living between cultures."
+        "q": "Can anyone book, even if they are not African?",
+        "a": "Yes. InnerSpark welcomes clients of every race, including white clients, and every nationality, culture and background. Our therapists are licensed African professionals; you do not need to be African to book."
       },
       {
         "q": "What can I get help with?",
@@ -1824,9 +1824,9 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "related": [
       {
         "to": "/online-therapy-diaspora",
-        "label": "Therapy for Africans abroad",
+        "label": "Online therapy with African therapists",
         "tag": "Diaspora",
-        "blurb": "Why cultural fit changes the first session."
+        "blurb": "Professional care open to every background."
       },
       {
         "to": "/specialists",
@@ -1855,12 +1855,12 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "monthlyPrice": "EUR 74",
     "monthlyNote": "4 sessions · small bundle saving",
     "ugxNote": "~UGX 75,000 · ~USD 22",
-    "citiesLine": "African professionals, students and families in Madrid, Barcelona, Valencia and across Spain",
-    "title": "African Therapist Online in Spain | Madrid from ~EUR 20",
-    "description": "Licensed African therapists online for Africans and diaspora in Spain: anxiety and depression, relationship and marital problems, family conflict, low self-esteem. Video ~EUR 20 · chat ~EUR 8. Cultural fit, private, WhatsApp +256 792 085 773.",
-    "h1": "Book an African therapist online in Spain. From ~EUR 20.",
-    "h1Line2": "Madrid · Barcelona · Valencia. Cultural fit. Visa ready.",
-    "introLine1": "For Africans abroad ready to invest in confidential, culturally grounded care.",
+    "citiesLine": "Adults, students and families in Madrid, Barcelona, Valencia and across Spain",
+    "title": "Online Therapy in Spain | Madrid from ~EUR 20",
+    "description": "Licensed African therapists welcome clients of every background in Spain: anxiety and depression, relationship and marital problems, family conflict, low self-esteem. Video ~EUR 20 · chat ~EUR 8. Open to everyone, private, WhatsApp +256 792 085 773.",
+    "h1": "Book online therapy in Spain. From ~EUR 20.",
+    "h1Line2": "Madrid · Barcelona · Valencia. Open to everyone. Visa ready.",
+    "introLine1": "Confidential online therapy for adults of every race, background, culture and nationality.",
     "introLine2": "From about EUR 20 · Pay by Visa · Book in about 2 minutes.",
     "paymentLabel": "Visa / card",
     "paymentAccepted": [
@@ -1871,10 +1871,10 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "problemHeadline": "Life in Spain can be good on paper — and still leave you carrying anxiety and depression alone.",
     "problemSource": "Common reasons people in Spain seek therapy",
     "problemBody": [
-      "People in Spain most often seek therapy for anxiety and depression, relationship and marital problems, family conflict, low self-esteem. For Africans living there, migration, distance from family and explaining your culture every session can add to it.",
-      "InnerSpark connects you with licensed African therapists who already understand where you come from, at a clear EUR price, by video or chat."
+      "People in Spain most often seek therapy for anxiety and depression, relationship and marital problems, family conflict, low self-esteem. Whatever your background, you can bring anxiety, relationships, work pressure, grief or major life changes into a private, judgement-free session.",
+      "InnerSpark connects you with licensed African therapists who welcome clients of every background, at a clear EUR price, by video or chat."
     ],
-    "howHeadline": "From anywhere in Spain — therapy with cultural fit in 3 steps.",
+    "howHeadline": "From anywhere in Spain — confidential therapy in 3 steps.",
     "howSteps": [
       "Choose your therapist",
       "Book and pay by Visa",
@@ -1893,7 +1893,7 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
       "Message us if anything needs follow-up"
     ],
     "paymentTip": "This is cross-border support with African therapists — not a Spain emergency or insurance service.",
-    "offerCompare": "A clear price and a therapist who understands African family life — without rebuilding your whole context every week.",
+    "offerCompare": "A clear price for professional, culturally responsive care — open to every client, whatever your background.",
     "concerns": [
       "Anxiety and depression",
       "Relationship and marital problems",
@@ -1935,8 +1935,8 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
         "a": "Video therapy is about EUR 20 and chat therapy about EUR 8 per session. Your card confirms the final amount."
       },
       {
-        "q": "Are your therapists African?",
-        "a": "Yes. InnerSpark therapists are licensed African professionals who understand migration, family duty and living between cultures."
+        "q": "Can anyone book, even if they are not African?",
+        "a": "Yes. InnerSpark welcomes clients of every race, including white clients, and every nationality, culture and background. Our therapists are licensed African professionals; you do not need to be African to book."
       },
       {
         "q": "What can I get help with?",
@@ -1954,9 +1954,9 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "related": [
       {
         "to": "/online-therapy-diaspora",
-        "label": "Therapy for Africans abroad",
+        "label": "Online therapy with African therapists",
         "tag": "Diaspora",
-        "blurb": "Why cultural fit changes the first session."
+        "blurb": "Professional care open to every background."
       },
       {
         "to": "/specialists",
@@ -1985,12 +1985,12 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "monthlyPrice": "EUR 74",
     "monthlyNote": "4 sessions · small bundle saving",
     "ugxNote": "~UGX 75,000 · ~USD 22",
-    "citiesLine": "African professionals, students and families in Lisbon, Porto, Faro and across Portugal",
-    "title": "African Therapist Online in Portugal | Lisbon from ~EUR 20",
-    "description": "Licensed African therapists online for Africans and diaspora in Portugal: anxiety and depression, loneliness, relationship difficulties, workplace stress. Video ~EUR 20 · chat ~EUR 8. Cultural fit, private, WhatsApp +256 792 085 773.",
-    "h1": "Book an African therapist online in Portugal. From ~EUR 20.",
-    "h1Line2": "Lisbon · Porto · Faro. Cultural fit. Visa ready.",
-    "introLine1": "For Africans abroad ready to invest in confidential, culturally grounded care.",
+    "citiesLine": "Adults, students and families in Lisbon, Porto, Faro and across Portugal",
+    "title": "Online Therapy in Portugal | Lisbon from ~EUR 20",
+    "description": "Licensed African therapists welcome clients of every background in Portugal: anxiety and depression, loneliness, relationship difficulties, workplace stress. Video ~EUR 20 · chat ~EUR 8. Open to everyone, private, WhatsApp +256 792 085 773.",
+    "h1": "Book online therapy in Portugal. From ~EUR 20.",
+    "h1Line2": "Lisbon · Porto · Faro. Open to everyone. Visa ready.",
+    "introLine1": "Confidential online therapy for adults of every race, background, culture and nationality.",
     "introLine2": "From about EUR 20 · Pay by Visa · Book in about 2 minutes.",
     "paymentLabel": "Visa / card",
     "paymentAccepted": [
@@ -2001,10 +2001,10 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "problemHeadline": "Life in Portugal can be good on paper — and still leave you carrying anxiety and depression alone.",
     "problemSource": "Common reasons people in Portugal seek therapy",
     "problemBody": [
-      "People in Portugal most often seek therapy for anxiety and depression, loneliness, relationship difficulties, workplace stress. For Africans living there, migration, distance from family and explaining your culture every session can add to it.",
-      "InnerSpark connects you with licensed African therapists who already understand where you come from, at a clear EUR price, by video or chat."
+      "People in Portugal most often seek therapy for anxiety and depression, loneliness, relationship difficulties, workplace stress. Whatever your background, you can bring anxiety, relationships, work pressure, grief or major life changes into a private, judgement-free session.",
+      "InnerSpark connects you with licensed African therapists who welcome clients of every background, at a clear EUR price, by video or chat."
     ],
-    "howHeadline": "From anywhere in Portugal — therapy with cultural fit in 3 steps.",
+    "howHeadline": "From anywhere in Portugal — confidential therapy in 3 steps.",
     "howSteps": [
       "Choose your therapist",
       "Book and pay by Visa",
@@ -2023,7 +2023,7 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
       "Message us if anything needs follow-up"
     ],
     "paymentTip": "This is cross-border support with African therapists — not a Portugal emergency or insurance service.",
-    "offerCompare": "A clear price and a therapist who understands African family life — without rebuilding your whole context every week.",
+    "offerCompare": "A clear price for professional, culturally responsive care — open to every client, whatever your background.",
     "concerns": [
       "Anxiety and depression",
       "Loneliness",
@@ -2065,8 +2065,8 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
         "a": "Video therapy is about EUR 20 and chat therapy about EUR 8 per session. Your card confirms the final amount."
       },
       {
-        "q": "Are your therapists African?",
-        "a": "Yes. InnerSpark therapists are licensed African professionals who understand migration, family duty and living between cultures."
+        "q": "Can anyone book, even if they are not African?",
+        "a": "Yes. InnerSpark welcomes clients of every race, including white clients, and every nationality, culture and background. Our therapists are licensed African professionals; you do not need to be African to book."
       },
       {
         "q": "What can I get help with?",
@@ -2084,9 +2084,9 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "related": [
       {
         "to": "/online-therapy-diaspora",
-        "label": "Therapy for Africans abroad",
+        "label": "Online therapy with African therapists",
         "tag": "Diaspora",
-        "blurb": "Why cultural fit changes the first session."
+        "blurb": "Professional care open to every background."
       },
       {
         "to": "/specialists",
@@ -2115,12 +2115,12 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "monthlyPrice": "EUR 74",
     "monthlyNote": "4 sessions · small bundle saving",
     "ugxNote": "~UGX 75,000 · ~USD 22",
-    "citiesLine": "African professionals, students and families in Rome, Milan, Turin and across Italy",
-    "title": "African Therapist Online in Italy | Rome from ~EUR 20",
-    "description": "Licensed African therapists online for Africans and diaspora in Italy: anxiety and depression, relationship and marriage problems, family conflict, emotional distress. Video ~EUR 20 · chat ~EUR 8. Cultural fit, private, WhatsApp +256 792 085 773.",
-    "h1": "Book an African therapist online in Italy. From ~EUR 20.",
-    "h1Line2": "Rome · Milan · Turin. Cultural fit. Visa ready.",
-    "introLine1": "For Africans abroad ready to invest in confidential, culturally grounded care.",
+    "citiesLine": "Adults, students and families in Rome, Milan, Turin and across Italy",
+    "title": "Online Therapy in Italy | Rome from ~EUR 20",
+    "description": "Licensed African therapists welcome clients of every background in Italy: anxiety and depression, relationship and marriage problems, family conflict, emotional distress. Video ~EUR 20 · chat ~EUR 8. Open to everyone, private, WhatsApp +256 792 085 773.",
+    "h1": "Book online therapy in Italy. From ~EUR 20.",
+    "h1Line2": "Rome · Milan · Turin. Open to everyone. Visa ready.",
+    "introLine1": "Confidential online therapy for adults of every race, background, culture and nationality.",
     "introLine2": "From about EUR 20 · Pay by Visa · Book in about 2 minutes.",
     "paymentLabel": "Visa / card",
     "paymentAccepted": [
@@ -2131,10 +2131,10 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "problemHeadline": "Life in Italy can be good on paper — and still leave you carrying anxiety and depression alone.",
     "problemSource": "Common reasons people in Italy seek therapy",
     "problemBody": [
-      "People in Italy most often seek therapy for anxiety and depression, relationship and marriage problems, family conflict, emotional distress. For Africans living there, migration, distance from family and explaining your culture every session can add to it.",
-      "InnerSpark connects you with licensed African therapists who already understand where you come from, at a clear EUR price, by video or chat."
+      "People in Italy most often seek therapy for anxiety and depression, relationship and marriage problems, family conflict, emotional distress. Whatever your background, you can bring anxiety, relationships, work pressure, grief or major life changes into a private, judgement-free session.",
+      "InnerSpark connects you with licensed African therapists who welcome clients of every background, at a clear EUR price, by video or chat."
     ],
-    "howHeadline": "From anywhere in Italy — therapy with cultural fit in 3 steps.",
+    "howHeadline": "From anywhere in Italy — confidential therapy in 3 steps.",
     "howSteps": [
       "Choose your therapist",
       "Book and pay by Visa",
@@ -2153,7 +2153,7 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
       "Message us if anything needs follow-up"
     ],
     "paymentTip": "This is cross-border support with African therapists — not a Italy emergency or insurance service.",
-    "offerCompare": "A clear price and a therapist who understands African family life — without rebuilding your whole context every week.",
+    "offerCompare": "A clear price for professional, culturally responsive care — open to every client, whatever your background.",
     "concerns": [
       "Anxiety and depression",
       "Relationship and marriage problems",
@@ -2195,8 +2195,8 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
         "a": "Video therapy is about EUR 20 and chat therapy about EUR 8 per session. Your card confirms the final amount."
       },
       {
-        "q": "Are your therapists African?",
-        "a": "Yes. InnerSpark therapists are licensed African professionals who understand migration, family duty and living between cultures."
+        "q": "Can anyone book, even if they are not African?",
+        "a": "Yes. InnerSpark welcomes clients of every race, including white clients, and every nationality, culture and background. Our therapists are licensed African professionals; you do not need to be African to book."
       },
       {
         "q": "What can I get help with?",
@@ -2214,9 +2214,9 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "related": [
       {
         "to": "/online-therapy-diaspora",
-        "label": "Therapy for Africans abroad",
+        "label": "Online therapy with African therapists",
         "tag": "Diaspora",
-        "blurb": "Why cultural fit changes the first session."
+        "blurb": "Professional care open to every background."
       },
       {
         "to": "/specialists",
@@ -2245,12 +2245,12 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "monthlyPrice": "NOK 888",
     "monthlyNote": "4 sessions · small bundle saving",
     "ugxNote": "~UGX 75,000 · ~USD 22",
-    "citiesLine": "African professionals, students and families in Oslo, Bergen, Trondheim and across Norway",
-    "title": "African Therapist Online in Norway | Oslo from ~NOK 240",
-    "description": "Licensed African therapists online for Africans and diaspora in Norway: depression and anxiety, loneliness, seasonal emotional difficulties, relationship problems. Video ~NOK 240 · chat ~NOK 95. Cultural fit, private, WhatsApp +256 792 085 773.",
-    "h1": "Book an African therapist online in Norway. From ~NOK 240.",
-    "h1Line2": "Oslo · Bergen · Trondheim. Cultural fit. Visa ready.",
-    "introLine1": "For Africans abroad ready to invest in confidential, culturally grounded care.",
+    "citiesLine": "Adults, students and families in Oslo, Bergen, Trondheim and across Norway",
+    "title": "Online Therapy in Norway | Oslo from ~NOK 240",
+    "description": "Licensed African therapists welcome clients of every background in Norway: depression and anxiety, loneliness, seasonal emotional difficulties, relationship problems. Video ~NOK 240 · chat ~NOK 95. Open to everyone, private, WhatsApp +256 792 085 773.",
+    "h1": "Book online therapy in Norway. From ~NOK 240.",
+    "h1Line2": "Oslo · Bergen · Trondheim. Open to everyone. Visa ready.",
+    "introLine1": "Confidential online therapy for adults of every race, background, culture and nationality.",
     "introLine2": "From about NOK 240 · Pay by Visa · Book in about 2 minutes.",
     "paymentLabel": "Visa / card",
     "paymentAccepted": [
@@ -2261,10 +2261,10 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "problemHeadline": "Life in Norway can be good on paper — and still leave you carrying depression and anxiety alone.",
     "problemSource": "Common reasons people in Norway seek therapy",
     "problemBody": [
-      "People in Norway most often seek therapy for depression and anxiety, loneliness, seasonal emotional difficulties, relationship problems. For Africans living there, migration, distance from family and explaining your culture every session can add to it.",
-      "InnerSpark connects you with licensed African therapists who already understand where you come from, at a clear NOK price, by video or chat."
+      "People in Norway most often seek therapy for depression and anxiety, loneliness, seasonal emotional difficulties, relationship problems. Whatever your background, you can bring anxiety, relationships, work pressure, grief or major life changes into a private, judgement-free session.",
+      "InnerSpark connects you with licensed African therapists who welcome clients of every background, at a clear NOK price, by video or chat."
     ],
-    "howHeadline": "From anywhere in Norway — therapy with cultural fit in 3 steps.",
+    "howHeadline": "From anywhere in Norway — confidential therapy in 3 steps.",
     "howSteps": [
       "Choose your therapist",
       "Book and pay by Visa",
@@ -2283,7 +2283,7 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
       "Message us if anything needs follow-up"
     ],
     "paymentTip": "This is cross-border support with African therapists — not a Norway emergency or insurance service.",
-    "offerCompare": "A clear price and a therapist who understands African family life — without rebuilding your whole context every week.",
+    "offerCompare": "A clear price for professional, culturally responsive care — open to every client, whatever your background.",
     "concerns": [
       "Depression and anxiety",
       "Loneliness",
@@ -2325,8 +2325,8 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
         "a": "Video therapy is about NOK 240 and chat therapy about NOK 95 per session. Your card confirms the final amount."
       },
       {
-        "q": "Are your therapists African?",
-        "a": "Yes. InnerSpark therapists are licensed African professionals who understand migration, family duty and living between cultures."
+        "q": "Can anyone book, even if they are not African?",
+        "a": "Yes. InnerSpark welcomes clients of every race, including white clients, and every nationality, culture and background. Our therapists are licensed African professionals; you do not need to be African to book."
       },
       {
         "q": "What can I get help with?",
@@ -2344,9 +2344,9 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "related": [
       {
         "to": "/online-therapy-diaspora",
-        "label": "Therapy for Africans abroad",
+        "label": "Online therapy with African therapists",
         "tag": "Diaspora",
-        "blurb": "Why cultural fit changes the first session."
+        "blurb": "Professional care open to every background."
       },
       {
         "to": "/specialists",
@@ -2375,12 +2375,12 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "monthlyPrice": "SEK 870",
     "monthlyNote": "4 sessions · small bundle saving",
     "ugxNote": "~UGX 75,000 · ~USD 22",
-    "citiesLine": "African professionals, students and families in Stockholm, Gothenburg, Malmö and across Sweden",
-    "title": "African Therapist Online in Sweden | Stockholm from ~SEK 235",
-    "description": "Licensed African therapists online for Africans and diaspora in Sweden: anxiety and depression, social isolation, relationship difficulties, workplace burnout. Video ~SEK 235 · chat ~SEK 95. Cultural fit, private, WhatsApp +256 792 085 773.",
-    "h1": "Book an African therapist online in Sweden. From ~SEK 235.",
-    "h1Line2": "Stockholm · Gothenburg · Malmö. Cultural fit. Visa ready.",
-    "introLine1": "For Africans abroad ready to invest in confidential, culturally grounded care.",
+    "citiesLine": "Adults, students and families in Stockholm, Gothenburg, Malmö and across Sweden",
+    "title": "Online Therapy in Sweden | Stockholm from ~SEK 235",
+    "description": "Licensed African therapists welcome clients of every background in Sweden: anxiety and depression, social isolation, relationship difficulties, workplace burnout. Video ~SEK 235 · chat ~SEK 95. Open to everyone, private, WhatsApp +256 792 085 773.",
+    "h1": "Book online therapy in Sweden. From ~SEK 235.",
+    "h1Line2": "Stockholm · Gothenburg · Malmö. Open to everyone. Visa ready.",
+    "introLine1": "Confidential online therapy for adults of every race, background, culture and nationality.",
     "introLine2": "From about SEK 235 · Pay by Visa · Book in about 2 minutes.",
     "paymentLabel": "Visa / card",
     "paymentAccepted": [
@@ -2391,10 +2391,10 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "problemHeadline": "Life in Sweden can be good on paper — and still leave you carrying anxiety and depression alone.",
     "problemSource": "Common reasons people in Sweden seek therapy",
     "problemBody": [
-      "People in Sweden most often seek therapy for anxiety and depression, social isolation, relationship difficulties, workplace burnout. For Africans living there, migration, distance from family and explaining your culture every session can add to it.",
-      "InnerSpark connects you with licensed African therapists who already understand where you come from, at a clear SEK price, by video or chat."
+      "People in Sweden most often seek therapy for anxiety and depression, social isolation, relationship difficulties, workplace burnout. Whatever your background, you can bring anxiety, relationships, work pressure, grief or major life changes into a private, judgement-free session.",
+      "InnerSpark connects you with licensed African therapists who welcome clients of every background, at a clear SEK price, by video or chat."
     ],
-    "howHeadline": "From anywhere in Sweden — therapy with cultural fit in 3 steps.",
+    "howHeadline": "From anywhere in Sweden — confidential therapy in 3 steps.",
     "howSteps": [
       "Choose your therapist",
       "Book and pay by Visa",
@@ -2413,7 +2413,7 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
       "Message us if anything needs follow-up"
     ],
     "paymentTip": "This is cross-border support with African therapists — not a Sweden emergency or insurance service.",
-    "offerCompare": "A clear price and a therapist who understands African family life — without rebuilding your whole context every week.",
+    "offerCompare": "A clear price for professional, culturally responsive care — open to every client, whatever your background.",
     "concerns": [
       "Anxiety and depression",
       "Social isolation",
@@ -2455,8 +2455,8 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
         "a": "Video therapy is about SEK 235 and chat therapy about SEK 95 per session. Your card confirms the final amount."
       },
       {
-        "q": "Are your therapists African?",
-        "a": "Yes. InnerSpark therapists are licensed African professionals who understand migration, family duty and living between cultures."
+        "q": "Can anyone book, even if they are not African?",
+        "a": "Yes. InnerSpark welcomes clients of every race, including white clients, and every nationality, culture and background. Our therapists are licensed African professionals; you do not need to be African to book."
       },
       {
         "q": "What can I get help with?",
@@ -2474,9 +2474,9 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "related": [
       {
         "to": "/online-therapy-diaspora",
-        "label": "Therapy for Africans abroad",
+        "label": "Online therapy with African therapists",
         "tag": "Diaspora",
-        "blurb": "Why cultural fit changes the first session."
+        "blurb": "Professional care open to every background."
       },
       {
         "to": "/specialists",
@@ -2505,12 +2505,12 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "monthlyPrice": "DKK 555",
     "monthlyNote": "4 sessions · small bundle saving",
     "ugxNote": "~UGX 75,000 · ~USD 22",
-    "citiesLine": "African professionals, students and families in Copenhagen, Aarhus, Odense and across Denmark",
-    "title": "African Therapist Online in Denmark | Copenhagen from ~DKK 150",
-    "description": "Licensed African therapists online for Africans and diaspora in Denmark: anxiety and depression, work stress, relationship problems, parenting challenges. Video ~DKK 150 · chat ~DKK 60. Cultural fit, private, WhatsApp +256 792 085 773.",
-    "h1": "Book an African therapist online in Denmark. From ~DKK 150.",
-    "h1Line2": "Copenhagen · Aarhus · Odense. Cultural fit. Visa ready.",
-    "introLine1": "For Africans abroad ready to invest in confidential, culturally grounded care.",
+    "citiesLine": "Adults, students and families in Copenhagen, Aarhus, Odense and across Denmark",
+    "title": "Online Therapy in Denmark | Copenhagen from ~DKK 150",
+    "description": "Licensed African therapists welcome clients of every background in Denmark: anxiety and depression, work stress, relationship problems, parenting challenges. Video ~DKK 150 · chat ~DKK 60. Open to everyone, private, WhatsApp +256 792 085 773.",
+    "h1": "Book online therapy in Denmark. From ~DKK 150.",
+    "h1Line2": "Copenhagen · Aarhus · Odense. Open to everyone. Visa ready.",
+    "introLine1": "Confidential online therapy for adults of every race, background, culture and nationality.",
     "introLine2": "From about DKK 150 · Pay by Visa · Book in about 2 minutes.",
     "paymentLabel": "Visa / card",
     "paymentAccepted": [
@@ -2521,10 +2521,10 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "problemHeadline": "Life in Denmark can be good on paper — and still leave you carrying anxiety and depression alone.",
     "problemSource": "Common reasons people in Denmark seek therapy",
     "problemBody": [
-      "People in Denmark most often seek therapy for anxiety and depression, work stress, relationship problems, parenting challenges. For Africans living there, migration, distance from family and explaining your culture every session can add to it.",
-      "InnerSpark connects you with licensed African therapists who already understand where you come from, at a clear DKK price, by video or chat."
+      "People in Denmark most often seek therapy for anxiety and depression, work stress, relationship problems, parenting challenges. Whatever your background, you can bring anxiety, relationships, work pressure, grief or major life changes into a private, judgement-free session.",
+      "InnerSpark connects you with licensed African therapists who welcome clients of every background, at a clear DKK price, by video or chat."
     ],
-    "howHeadline": "From anywhere in Denmark — therapy with cultural fit in 3 steps.",
+    "howHeadline": "From anywhere in Denmark — confidential therapy in 3 steps.",
     "howSteps": [
       "Choose your therapist",
       "Book and pay by Visa",
@@ -2543,7 +2543,7 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
       "Message us if anything needs follow-up"
     ],
     "paymentTip": "This is cross-border support with African therapists — not a Denmark emergency or insurance service.",
-    "offerCompare": "A clear price and a therapist who understands African family life — without rebuilding your whole context every week.",
+    "offerCompare": "A clear price for professional, culturally responsive care — open to every client, whatever your background.",
     "concerns": [
       "Anxiety and depression",
       "Work stress",
@@ -2585,8 +2585,8 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
         "a": "Video therapy is about DKK 150 and chat therapy about DKK 60 per session. Your card confirms the final amount."
       },
       {
-        "q": "Are your therapists African?",
-        "a": "Yes. InnerSpark therapists are licensed African professionals who understand migration, family duty and living between cultures."
+        "q": "Can anyone book, even if they are not African?",
+        "a": "Yes. InnerSpark welcomes clients of every race, including white clients, and every nationality, culture and background. Our therapists are licensed African professionals; you do not need to be African to book."
       },
       {
         "q": "What can I get help with?",
@@ -2604,9 +2604,9 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "related": [
       {
         "to": "/online-therapy-diaspora",
-        "label": "Therapy for Africans abroad",
+        "label": "Online therapy with African therapists",
         "tag": "Diaspora",
-        "blurb": "Why cultural fit changes the first session."
+        "blurb": "Professional care open to every background."
       },
       {
         "to": "/specialists",
@@ -2635,12 +2635,12 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "monthlyPrice": "EUR 74",
     "monthlyNote": "4 sessions · small bundle saving",
     "ugxNote": "~UGX 75,000 · ~USD 22",
-    "citiesLine": "African professionals, students and families in Helsinki, Espoo, Tampere and across Finland",
-    "title": "African Therapist Online in Finland | Helsinki from ~EUR 20",
-    "description": "Licensed African therapists online for Africans and diaspora in Finland: depression, anxiety, loneliness, social anxiety. Video ~EUR 20 · chat ~EUR 8. Cultural fit, private, WhatsApp +256 792 085 773.",
-    "h1": "Book an African therapist online in Finland. From ~EUR 20.",
-    "h1Line2": "Helsinki · Espoo · Tampere. Cultural fit. Visa ready.",
-    "introLine1": "For Africans abroad ready to invest in confidential, culturally grounded care.",
+    "citiesLine": "Adults, students and families in Helsinki, Espoo, Tampere and across Finland",
+    "title": "Online Therapy in Finland | Helsinki from ~EUR 20",
+    "description": "Licensed African therapists welcome clients of every background in Finland: depression, anxiety, loneliness, social anxiety. Video ~EUR 20 · chat ~EUR 8. Open to everyone, private, WhatsApp +256 792 085 773.",
+    "h1": "Book online therapy in Finland. From ~EUR 20.",
+    "h1Line2": "Helsinki · Espoo · Tampere. Open to everyone. Visa ready.",
+    "introLine1": "Confidential online therapy for adults of every race, background, culture and nationality.",
     "introLine2": "From about EUR 20 · Pay by Visa · Book in about 2 minutes.",
     "paymentLabel": "Visa / card",
     "paymentAccepted": [
@@ -2651,10 +2651,10 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "problemHeadline": "Life in Finland can be good on paper — and still leave you carrying depression alone.",
     "problemSource": "Common reasons people in Finland seek therapy",
     "problemBody": [
-      "People in Finland most often seek therapy for depression, anxiety, loneliness, social anxiety. For Africans living there, migration, distance from family and explaining your culture every session can add to it.",
-      "InnerSpark connects you with licensed African therapists who already understand where you come from, at a clear EUR price, by video or chat."
+      "People in Finland most often seek therapy for depression, anxiety, loneliness, social anxiety. Whatever your background, you can bring anxiety, relationships, work pressure, grief or major life changes into a private, judgement-free session.",
+      "InnerSpark connects you with licensed African therapists who welcome clients of every background, at a clear EUR price, by video or chat."
     ],
-    "howHeadline": "From anywhere in Finland — therapy with cultural fit in 3 steps.",
+    "howHeadline": "From anywhere in Finland — confidential therapy in 3 steps.",
     "howSteps": [
       "Choose your therapist",
       "Book and pay by Visa",
@@ -2673,7 +2673,7 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
       "Message us if anything needs follow-up"
     ],
     "paymentTip": "This is cross-border support with African therapists — not a Finland emergency or insurance service.",
-    "offerCompare": "A clear price and a therapist who understands African family life — without rebuilding your whole context every week.",
+    "offerCompare": "A clear price for professional, culturally responsive care — open to every client, whatever your background.",
     "concerns": [
       "Depression",
       "Anxiety",
@@ -2715,8 +2715,8 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
         "a": "Video therapy is about EUR 20 and chat therapy about EUR 8 per session. Your card confirms the final amount."
       },
       {
-        "q": "Are your therapists African?",
-        "a": "Yes. InnerSpark therapists are licensed African professionals who understand migration, family duty and living between cultures."
+        "q": "Can anyone book, even if they are not African?",
+        "a": "Yes. InnerSpark welcomes clients of every race, including white clients, and every nationality, culture and background. Our therapists are licensed African professionals; you do not need to be African to book."
       },
       {
         "q": "What can I get help with?",
@@ -2734,9 +2734,9 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "related": [
       {
         "to": "/online-therapy-diaspora",
-        "label": "Therapy for Africans abroad",
+        "label": "Online therapy with African therapists",
         "tag": "Diaspora",
-        "blurb": "Why cultural fit changes the first session."
+        "blurb": "Professional care open to every background."
       },
       {
         "to": "/specialists",
@@ -2765,12 +2765,12 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "monthlyPrice": "AUD 126",
     "monthlyNote": "4 sessions · small bundle saving",
     "ugxNote": "~UGX 75,000 · ~USD 22",
-    "citiesLine": "African professionals, students and families in Sydney, Melbourne, Brisbane and across Australia",
-    "title": "African Therapist Online in Australia | Sydney from ~AUD 34",
-    "description": "Licensed African therapists online for Africans and diaspora in Australia: anxiety and depression, relationship and marriage difficulties, workplace burnout, childhood trauma. Video ~AUD 34 · chat ~AUD 14. Cultural fit, private, WhatsApp +256 792 085 773.",
-    "h1": "Book an African therapist online in Australia. From ~AUD 34.",
-    "h1Line2": "Sydney · Melbourne · Brisbane. Cultural fit. Visa ready.",
-    "introLine1": "For Africans abroad ready to invest in confidential, culturally grounded care.",
+    "citiesLine": "Adults, students and families in Sydney, Melbourne, Brisbane and across Australia",
+    "title": "Online Therapy in Australia | Sydney from ~AUD 34",
+    "description": "Licensed African therapists welcome clients of every background in Australia: anxiety and depression, relationship and marriage difficulties, workplace burnout, childhood trauma. Video ~AUD 34 · chat ~AUD 14. Open to everyone, private, WhatsApp +256 792 085 773.",
+    "h1": "Book online therapy in Australia. From ~AUD 34.",
+    "h1Line2": "Sydney · Melbourne · Brisbane. Open to everyone. Visa ready.",
+    "introLine1": "Confidential online therapy for adults of every race, background, culture and nationality.",
     "introLine2": "From about AUD 34 · Pay by Visa · Book in about 2 minutes.",
     "paymentLabel": "Visa / card",
     "paymentAccepted": [
@@ -2781,10 +2781,10 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "problemHeadline": "Life in Australia can be good on paper — and still leave you carrying anxiety and depression alone.",
     "problemSource": "Common reasons people in Australia seek therapy",
     "problemBody": [
-      "People in Australia most often seek therapy for anxiety and depression, relationship and marriage difficulties, workplace burnout, childhood trauma. For Africans living there, migration, distance from family and explaining your culture every session can add to it.",
-      "InnerSpark connects you with licensed African therapists who already understand where you come from, at a clear AUD price, by video or chat."
+      "People in Australia most often seek therapy for anxiety and depression, relationship and marriage difficulties, workplace burnout, childhood trauma. Whatever your background, you can bring anxiety, relationships, work pressure, grief or major life changes into a private, judgement-free session.",
+      "InnerSpark connects you with licensed African therapists who welcome clients of every background, at a clear AUD price, by video or chat."
     ],
-    "howHeadline": "From anywhere in Australia — therapy with cultural fit in 3 steps.",
+    "howHeadline": "From anywhere in Australia — confidential therapy in 3 steps.",
     "howSteps": [
       "Choose your therapist",
       "Book and pay by Visa",
@@ -2803,7 +2803,7 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
       "Message us if anything needs follow-up"
     ],
     "paymentTip": "This is cross-border support with African therapists — not a Australia emergency or insurance service.",
-    "offerCompare": "A clear price and a therapist who understands African family life — without rebuilding your whole context every week.",
+    "offerCompare": "A clear price for professional, culturally responsive care — open to every client, whatever your background.",
     "concerns": [
       "Anxiety and depression",
       "Relationship and marriage difficulties",
@@ -2845,8 +2845,8 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
         "a": "Video therapy is about AUD 34 and chat therapy about AUD 14 per session. Your card confirms the final amount."
       },
       {
-        "q": "Are your therapists African?",
-        "a": "Yes. InnerSpark therapists are licensed African professionals who understand migration, family duty and living between cultures."
+        "q": "Can anyone book, even if they are not African?",
+        "a": "Yes. InnerSpark welcomes clients of every race, including white clients, and every nationality, culture and background. Our therapists are licensed African professionals; you do not need to be African to book."
       },
       {
         "q": "What can I get help with?",
@@ -2864,9 +2864,9 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "related": [
       {
         "to": "/online-therapy-diaspora",
-        "label": "Therapy for Africans abroad",
+        "label": "Online therapy with African therapists",
         "tag": "Diaspora",
-        "blurb": "Why cultural fit changes the first session."
+        "blurb": "Professional care open to every background."
       },
       {
         "to": "/specialists",
@@ -2895,12 +2895,12 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "monthlyPrice": "NZD 137",
     "monthlyNote": "4 sessions · small bundle saving",
     "ugxNote": "~UGX 75,000 · ~USD 22",
-    "citiesLine": "African professionals, students and families in Auckland, Wellington, Christchurch and across New Zealand",
-    "title": "African Therapist Online in New Zealand | Auckland from ~NZD 37",
-    "description": "Licensed African therapists online for Africans and diaspora in New Zealand: depression and anxiety, relationship problems, grief, loneliness. Video ~NZD 37 · chat ~NZD 15. Cultural fit, private, WhatsApp +256 792 085 773.",
-    "h1": "Book an African therapist online in New Zealand. From ~NZD 37.",
-    "h1Line2": "Auckland · Wellington · Christchurch. Cultural fit. Visa ready.",
-    "introLine1": "For Africans abroad ready to invest in confidential, culturally grounded care.",
+    "citiesLine": "Adults, students and families in Auckland, Wellington, Christchurch and across New Zealand",
+    "title": "Online Therapy in New Zealand | Auckland from ~NZD 37",
+    "description": "Licensed African therapists welcome clients of every background in New Zealand: depression and anxiety, relationship problems, grief, loneliness. Video ~NZD 37 · chat ~NZD 15. Open to everyone, private, WhatsApp +256 792 085 773.",
+    "h1": "Book online therapy in New Zealand. From ~NZD 37.",
+    "h1Line2": "Auckland · Wellington · Christchurch. Open to everyone. Visa ready.",
+    "introLine1": "Confidential online therapy for adults of every race, background, culture and nationality.",
     "introLine2": "From about NZD 37 · Pay by Visa · Book in about 2 minutes.",
     "paymentLabel": "Visa / card",
     "paymentAccepted": [
@@ -2911,10 +2911,10 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "problemHeadline": "Life in New Zealand can be good on paper — and still leave you carrying depression and anxiety alone.",
     "problemSource": "Common reasons people in New Zealand seek therapy",
     "problemBody": [
-      "People in New Zealand most often seek therapy for depression and anxiety, relationship problems, grief, loneliness. For Africans living there, migration, distance from family and explaining your culture every session can add to it.",
-      "InnerSpark connects you with licensed African therapists who already understand where you come from, at a clear NZD price, by video or chat."
+      "People in New Zealand most often seek therapy for depression and anxiety, relationship problems, grief, loneliness. Whatever your background, you can bring anxiety, relationships, work pressure, grief or major life changes into a private, judgement-free session.",
+      "InnerSpark connects you with licensed African therapists who welcome clients of every background, at a clear NZD price, by video or chat."
     ],
-    "howHeadline": "From anywhere in New Zealand — therapy with cultural fit in 3 steps.",
+    "howHeadline": "From anywhere in New Zealand — confidential therapy in 3 steps.",
     "howSteps": [
       "Choose your therapist",
       "Book and pay by Visa",
@@ -2933,7 +2933,7 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
       "Message us if anything needs follow-up"
     ],
     "paymentTip": "This is cross-border support with African therapists — not a New Zealand emergency or insurance service.",
-    "offerCompare": "A clear price and a therapist who understands African family life — without rebuilding your whole context every week.",
+    "offerCompare": "A clear price for professional, culturally responsive care — open to every client, whatever your background.",
     "concerns": [
       "Depression and anxiety",
       "Relationship problems",
@@ -2975,8 +2975,8 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
         "a": "Video therapy is about NZD 37 and chat therapy about NZD 15 per session. Your card confirms the final amount."
       },
       {
-        "q": "Are your therapists African?",
-        "a": "Yes. InnerSpark therapists are licensed African professionals who understand migration, family duty and living between cultures."
+        "q": "Can anyone book, even if they are not African?",
+        "a": "Yes. InnerSpark welcomes clients of every race, including white clients, and every nationality, culture and background. Our therapists are licensed African professionals; you do not need to be African to book."
       },
       {
         "q": "What can I get help with?",
@@ -2994,9 +2994,9 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     "related": [
       {
         "to": "/online-therapy-diaspora",
-        "label": "Therapy for Africans abroad",
+        "label": "Online therapy with African therapists",
         "tag": "Diaspora",
-        "blurb": "Why cultural fit changes the first session."
+        "blurb": "Professional care open to every background."
       },
       {
         "to": "/specialists",

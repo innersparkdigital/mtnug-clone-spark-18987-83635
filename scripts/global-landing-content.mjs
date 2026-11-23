@@ -89,7 +89,7 @@ export const GLOBAL_LANDING_PAGES = {
       {
         heading: "Where our clients are",
         paragraphs: [
-          "We work with clients across Kenya, Nigeria, Ghana, South Africa, Tanzania, Rwanda, Zambia, Botswana, Gambia, Ethiopia and Senegal — plus Africans living in the United States, United Kingdom, Canada and the Gulf. Because everything runs online, your location only matters for choosing a comfortable time.",
+          "We work with clients across Kenya, Nigeria, Ghana, South Africa, Tanzania, Rwanda, Zambia, Botswana, Gambia, Ethiopia and Senegal — plus clients of every race, nationality and background in the United States, United Kingdom, Canada, Europe and the Gulf. Because everything runs online, your location only matters for choosing a comfortable time.",
         ],
       },
       paymentSection(
@@ -138,14 +138,14 @@ export const GLOBAL_LANDING_PAGES = {
 
   "online-therapy-diaspora": {
     slug: "online-therapy-diaspora",
-    title: "Book African Therapist Online | USA UK Canada from $22",
+    title: "Online Therapy With African Therapists | Worldwide from $22",
     metaDescription:
-      "Looking for a Black or African therapist online abroad? Licensed care from USD 22. USA, UK, Canada, Gulf. WhatsApp +256 792 085 773.",
+      "Online therapy open to everyone, with licensed African therapists from USD 22. Every race, culture and nationality welcome. USA, UK, Canada, Europe and beyond.",
     keywords:
-      "book African therapist USA, African therapist UK, therapy for African diaspora, black therapist online, Nigerian therapist online, Kenyan therapist online",
-    h1: "Book therapy with an African therapist — from $22.",
+      "online therapy worldwide, online therapy USA, online therapy UK, online therapy Canada, African therapist online, black therapist online, international online counselling",
+    h1: "Book online therapy with an African therapist — everyone welcome, from $22.",
     intro:
-      "If you are African and living in the US, UK, Canada, Europe or the Gulf, you already know how tiring it is to explain your family, your faith and your obligations before therapy can even begin. Our licensed African therapists start where you actually are.",
+      "You do not need to be African or part of the diaspora. InnerSpark welcomes clients of every race, including white clients, and every nationality, culture, faith and background. Our licensed African therapists offer confidential care wherever you live.",
     areaServed: [
       "United States",
       "United Kingdom",
@@ -156,15 +156,15 @@ export const GLOBAL_LANDING_PAGES = {
       "Germany",
       "Australia",
     ],
-    heroBadge: "African therapists · Any time zone · Fully confidential",
+    heroBadge: "Everyone welcome · African therapists · Any time zone · Fully confidential",
     ctaPrice: "from USD 22",
-    serviceName: "Online Therapy for the African Diaspora",
+    serviceName: "Online Therapy With African Therapists Worldwide",
     bodySections: [
       {
-        heading: "What diaspora clients bring to us",
+        heading: "What clients around the world bring to us",
         paragraphs: [
-          "Homesickness that never quite resolves. Guilt about the money you send home, or the money you cannot send. Racism and microaggressions at work you have stopped reporting. Marriages stretched across continents. Children who are culturally nothing like you were at their age. Grief for funerals you could not attend.",
-          "These are not small problems, and they are not well served by a therapist who has never lived them.",
+          "Anxiety, depression, relationship difficulties, grief, work stress, identity questions and major life changes can affect anyone. Whatever your race or background, you can bring your experience here without needing to fit a particular culture or story.",
+          "Clients also come with homesickness, remittance pressure, racism at work, marriages stretched across continents, cross-cultural parenting and grief for funerals they could not attend. Our African therapists understand these experiences without making them a requirement for booking.",
         ],
         bullets: [
           "Identity, belonging and migration stress",
@@ -197,7 +197,7 @@ export const GLOBAL_LANDING_PAGES = {
     faqs: [
       {
         q: "Can I see an African therapist while living in the United States or UK?",
-        a: "Yes. InnerSpark therapists work online with African clients across the US, UK, Canada, Europe, Australia and the Gulf. Sessions run over video, voice or chat at a time that suits your zone.",
+        a: "Yes. InnerSpark welcomes clients of every race, including white clients, and every nationality and background across the US, UK, Canada, Europe, Australia and the Gulf. You do not need to be African. Sessions run over video, voice or chat at a time that suits your zone.",
       },
       {
         q: "How much is a session if I pay from abroad?",

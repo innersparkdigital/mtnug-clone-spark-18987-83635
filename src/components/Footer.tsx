@@ -142,7 +142,7 @@ const Footer = () => {
           <ul className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-muted-foreground">
             {[
               { to: "/online-therapy-africa", label: "Online therapy in Africa" },
-              { to: "/online-therapy-diaspora", label: "Therapy for Africans abroad" },
+              { to: "/online-therapy-diaspora", label: "Online therapy worldwide — everyone welcome" },
               { to: "/online-therapy-nigeria", label: "Therapy in Nigeria" },
               { to: "/online-therapy-ghana", label: "Therapy in Ghana" },
               { to: "/online-therapy-south-africa", label: "Therapy in South Africa" },
@@ -171,7 +171,7 @@ const Footer = () => {
               { to: "/new-zealand", label: "Therapy in New Zealand" },
               { to: "/ghana", label: "Therapy in Ghana — local pricing" },
               { to: "/gambia", label: "Therapy in The Gambia" },
-              { to: "/usa", label: "Therapy for Africans in the USA" },
+              { to: "/usa", label: "Therapy in the USA — everyone welcome" },
               { to: "/therapy-in-uganda", label: "Therapy in Uganda" },
               { to: "/therapy-for-executives", label: "Therapy for executives & leaders" },
               { to: "/therapy-for-students-africa", label: "Therapy for students" },
