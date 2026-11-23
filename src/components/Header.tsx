@@ -112,6 +112,9 @@ const Header = () => {
     gambia: { to: "/gambia", label: "Gambia", flag: "🇬🇲" },
     ghana: { to: "/ghana", label: "Ghana", flag: "🇬🇭" },
     usa: { to: "/usa", label: "USA", flag: "🇺🇸" },
+    rwanda: { to: "/rwanda", label: "Rwanda", flag: "🇷🇼" },
+    botswana: { to: "/botswana", label: "Botswana", flag: "🇧🇼" },
+    namibia: { to: "/namibia", label: "Namibia", flag: "🇳🇦" },
   }[visitorMarket] : null;
   const localLink = marketLink || ((isAdmin || !!user) ? { to: "/kenya", label: "Kenya", flag: "🇰🇪" } : null);
   const closeMobile = () => setIsMenuOpen(false);

@@ -545,6 +545,9 @@ const App = () => (
                 <Route path="/ghana" element={<LocalizedTherapy marketOverride="ghana" />} />
                 <Route path="/gambia" element={<LocalizedTherapy marketOverride="gambia" />} />
                 <Route path="/usa" element={<LocalizedTherapy marketOverride="usa" />} />
+                <Route path="/rwanda" element={<LocalizedTherapy marketOverride="rwanda" />} />
+                <Route path="/botswana" element={<LocalizedTherapy marketOverride="botswana" />} />
+                <Route path="/namibia" element={<LocalizedTherapy marketOverride="namibia" />} />
                 <Route path="/online-therapy-nigeria" element={<GlobalLanding slug="online-therapy-nigeria" />} />
                 <Route path="/online-therapy-ghana" element={<GlobalLanding slug="online-therapy-ghana" />} />
                 <Route path="/online-therapy-tanzania" element={<GlobalLanding slug="online-therapy-tanzania" />} />
@@ -554,6 +557,9 @@ const App = () => (
                 <Route path="/ghana" element={<LocalizedTherapy marketOverride="ghana" />} />
                 <Route path="/gambia" element={<LocalizedTherapy marketOverride="gambia" />} />
                 <Route path="/usa" element={<LocalizedTherapy marketOverride="usa" />} />
+                <Route path="/rwanda" element={<LocalizedTherapy marketOverride="rwanda" />} />
+                <Route path="/botswana" element={<LocalizedTherapy marketOverride="botswana" />} />
+                <Route path="/namibia" element={<LocalizedTherapy marketOverride="namibia" />} />
                 <Route path="/partners" element={<Partners />} />
                 <Route path="/wellbeing-check/embed" element={<WellbeingCheckEmbed />} />
                 <Route path="/corporate-dashboard" element={<CorporateDashboard />} />

@@ -56,3 +56,8 @@
 - Email: info@innersparkafrica.com
 - Android app: https://play.google.com/store/apps/details?id=com.innersparkafrica.app&hl=en
 - Sitemaps: https://www.innersparkafrica.com/sitemap-index.xml
+
+## Country pages
+- Rwanda: https://www.innersparkafrica.com/rwanda/ (video ~RWF 31,000, chat ~RWF 12,500)
+- Botswana: https://www.innersparkafrica.com/botswana/ (video ~BWP 300, chat ~BWP 120)
+- Namibia: https://www.innersparkafrica.com/namibia/ (video ~NAD 400, chat ~NAD 160)

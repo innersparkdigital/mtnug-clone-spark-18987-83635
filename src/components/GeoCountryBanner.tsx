@@ -11,6 +11,9 @@ const MARKETS: Record<VisitorMarket, { country: string; flag: string; path: stri
   gambia: { country: "The Gambia", flag: "🇬🇲", path: "/gambia" },
   ghana: { country: "Ghana", flag: "🇬🇭", path: "/ghana" },
   usa: { country: "the United States", flag: "🇺🇸", path: "/usa" },
+  rwanda: { country: "Rwanda", flag: "🇷🇼", path: "/rwanda" },
+  botswana: { country: "Botswana", flag: "🇧🇼", path: "/botswana" },
+  namibia: { country: "Namibia", flag: "🇳🇦", path: "/namibia" },
 };
 
 export default function GeoCountryBanner() {

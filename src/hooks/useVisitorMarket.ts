@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export type VisitorMarket = "kenya" | "nigeria" | "tanzania" | "gambia" | "ghana" | "usa";
+export type VisitorMarket = "kenya" | "nigeria" | "tanzania" | "gambia" | "ghana" | "usa" | "rwanda" | "botswana" | "namibia";
 
 const COUNTRY_MARKETS: Record<string, VisitorMarket> = {
   KE: "kenya",
@@ -9,6 +9,9 @@ const COUNTRY_MARKETS: Record<string, VisitorMarket> = {
   GM: "gambia",
   GH: "ghana",
   US: "usa",
+  RW: "rwanda",
+  BW: "botswana",
+  NA: "namibia",
 };
 
 const TIMEZONE_MARKETS: Record<string, VisitorMarket> = {
@@ -17,6 +20,9 @@ const TIMEZONE_MARKETS: Record<string, VisitorMarket> = {
   "Africa/Dar_es_Salaam": "tanzania",
   "Africa/Banjul": "gambia",
   "Africa/Accra": "ghana",
+  "Africa/Kigali": "rwanda",
+  "Africa/Gaborone": "botswana",
+  "Africa/Windhoek": "namibia",
 };
 
 /** Privacy-friendly country hint based only on browser locale and timezone. */

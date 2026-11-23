@@ -536,6 +536,7 @@ export default function MarketLandingPage({ market: m }: { market: MarketLanding
         </div>
       </section>
 
+      {m.testimonials.length > 0 && (
       <section className="py-14" style={{ background: "#F5F6FF" }}>
         <div className="container mx-auto px-4">
           <h2 className="text-[26px] font-semibold text-center mb-10" style={{ color: DEEP_NIGHT }}>
@@ -555,6 +556,7 @@ export default function MarketLandingPage({ market: m }: { market: MarketLanding
           </div>
         </div>
       </section>
+      )}
 
       <div style={{ background: WARMTH, height: 4 }} />
       <section id="cities" className="py-14 bg-white">

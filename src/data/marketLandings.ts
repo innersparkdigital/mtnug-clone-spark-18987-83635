@@ -413,4 +413,394 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
     whatsappPrefill: "Hi InnerSpark, I am in the USA and want to book a licensed African therapist. Please confirm price and time zones.",
     schemaCities: ["New York", "Houston", "Atlanta"],
   },
+  rwanda: {
+    "slug": "rwanda",
+    "countryLabel": "Rwanda",
+    "code": "RW",
+    "flag": "RW",
+    "currency": "RWF",
+    "videoPrice": "RWF 31,000",
+    "videoAmount": 31000,
+    "chatPrice": "RWF 12,500",
+    "monthlyPrice": "RWF 115,000",
+    "monthlyNote": "4 sessions · about RWF 28,750 each",
+    "ugxNote": "~UGX 75,000 · ~$22",
+    "citiesLine": "Kigali, Huye, Musanze, Rubavu and across Rwanda",
+    "title": "Book Online Therapy Rwanda | Therapist in Kigali from ~RWF 31,000",
+    "description": "Online therapy in Rwanda: licensed therapists for trauma, grief, anxiety, depression and relationships. Video ~RWF 31,000 · chat ~RWF 12,500. Kigali and nationwide. WhatsApp +256 792 085 773.",
+    "h1": "Book a therapist online in Rwanda. From ~RWF 31,000.",
+    "h1Line2": "Kigali · Huye · Musanze. Trauma-informed. Private.",
+    "introLine1": "For people ready to invest in confidential, licensed care.",
+    "introLine2": "From about RWF 31,000 · Pay by Visa / card · Book in about 2 minutes.",
+    "paymentLabel": "Visa / card",
+    "paymentAccepted": [
+      "Visa",
+      "Card"
+    ],
+    "trustPayment": "Visa accepted",
+    "problemHeadline": "Grief, trauma and the pressure to stay strong can sit quietly for years — even in a busy, high-achieving life in Kigali.",
+    "problemSource": "Common reasons people in Rwanda reach out",
+    "problemBody": [
+      "Many people carry loss, family trauma or relationship strain while working hard, studying or raising a family. Speaking to someone outside your circle can feel safer.",
+      "InnerSpark connects you with licensed, trauma-informed African therapists by video or chat, at a clear price and without a public waiting room."
+    ],
+    "howHeadline": "From anywhere in Rwanda — therapy from your phone in 3 steps.",
+    "howSteps": [
+      "Choose your therapist",
+      "Book and pay by Visa",
+      "Connect on WhatsApp"
+    ],
+    "howBodies": [
+      "Browse licensed African therapists. Filter by concern, gender and language. Pick who feels right.",
+      "Video about RWF 31,000 or chat about RWF 12,500. Your card confirms the final RWF conversion.",
+      "Your therapist sends a WhatsApp video or voice link. No new app, no waiting room."
+    ],
+    "paymentHowTitle": "How payment works in Rwanda",
+    "paymentHowSteps": [
+      "Choose video (~RWF 31,000) or chat (~RWF 12,500) when you book",
+      "Pay by Visa / international card on the secure payment page",
+      "Your bank shows the final RWF amount before you confirm",
+      "Keep your receipt and message WhatsApp if we need to match payment"
+    ],
+    "paymentTip": "Prefer a lower-cost start? Begin with chat at about RWF 12,500, then move to video.",
+    "offerCompare": "One clear price for a licensed therapist — no travel, no queue and no one seeing you walk into a clinic.",
+    "concerns": [
+      "Trauma and painful memories",
+      "Grief and loss",
+      "Anxiety and overthinking",
+      "Depression and low mood",
+      "Relationship and family conflict",
+      "Work and study pressure"
+    ],
+    "cities": [
+      {
+        "id": "kigali",
+        "city": "Kigali",
+        "body": "Private sessions from Kimihurura, Kacyiru, Nyarutarama or anywhere in Kigali — evenings included.",
+        "kw": "Therapist in Kigali"
+      },
+      {
+        "id": "huye",
+        "city": "Huye",
+        "body": "Students and staff can book discreet licensed care online.",
+        "kw": "Counselling in Huye"
+      },
+      {
+        "id": "musanze",
+        "city": "Musanze",
+        "body": "Licensed therapy without travelling to Kigali.",
+        "kw": "Therapy in Musanze"
+      },
+      {
+        "id": "across-rwanda",
+        "city": "Across Rwanda",
+        "body": "If you have a phone and data, you can book this week.",
+        "kw": "Online therapy Rwanda"
+      }
+    ],
+    "testimonials": [],
+    "faqs": [
+      {
+        "q": "How much does therapy cost in Rwanda?",
+        "a": "On InnerSpark, video therapy is about RWF 31,000 per session and chat therapy about RWF 12,500. Your card confirms the final amount."
+      },
+      {
+        "q": "Do you offer trauma-informed therapy?",
+        "a": "Yes. You can choose a therapist experienced in trauma, grief and loss, and share your preferences when you book."
+      },
+      {
+        "q": "Can I find a therapist in Kigali online?",
+        "a": "Yes. Book online and meet your therapist by WhatsApp video or chat from anywhere in Kigali or Rwanda."
+      },
+      {
+        "q": "Is it confidential?",
+        "a": "Yes. Sessions are one-to-one and private. We never contact employers or family."
+      },
+      {
+        "q": "Is this emergency care?",
+        "a": "No. InnerSpark is not emergency care. If you are in immediate danger, contact local emergency services."
+      }
+    ],
+    "related": [
+      {
+        "to": "/specialists",
+        "label": "Meet our licensed therapists",
+        "tag": "Therapists",
+        "blurb": "See profiles before you pay."
+      },
+      {
+        "to": "/wellbeing-check",
+        "label": "Free 2-minute wellbeing check",
+        "tag": "Self-check",
+        "blurb": "A private snapshot before you book."
+      }
+    ],
+    "finalCta": "Book my first session — from RWF 31,000",
+    "whatsappPrefill": "Hi InnerSpark, I am in Rwanda and want to book licensed therapy. Please confirm price and a therapist.",
+    "schemaCities": [
+      "Kigali",
+      "Huye",
+      "Musanze"
+    ]
+  },
+  botswana: {
+    "slug": "botswana",
+    "countryLabel": "Botswana",
+    "code": "BW",
+    "flag": "BW",
+    "currency": "BWP",
+    "videoPrice": "BWP 300",
+    "videoAmount": 300,
+    "chatPrice": "BWP 120",
+    "monthlyPrice": "BWP 1,100",
+    "monthlyNote": "4 sessions · about BWP 275 each",
+    "ugxNote": "~UGX 75,000 · ~$22",
+    "citiesLine": "Gaborone, Francistown, Maun and across Botswana",
+    "title": "Book Online Therapy Botswana | Counsellor in Gaborone from ~BWP 300",
+    "description": "Online counselling in Botswana for relationships, grief, depression, stress and alcohol worries. Video ~BWP 300 · chat ~BWP 120. Licensed therapists. WhatsApp +256 792 085 773.",
+    "h1": "Book a counsellor online in Botswana. From ~BWP 300.",
+    "h1Line2": "Gaborone · Francistown · Maun. Private. Visa ready.",
+    "introLine1": "For people ready to invest in confidential, licensed care.",
+    "introLine2": "From about BWP 300 · Pay by Visa / card · Book in about 2 minutes.",
+    "paymentLabel": "Visa / card",
+    "paymentAccepted": [
+      "Visa",
+      "Card"
+    ],
+    "trustPayment": "Visa accepted",
+    "problemHeadline": "Relationship strain, grief and the pressure to meet family expectations can feel lonely when everyone seems to know everyone.",
+    "problemSource": "Common reasons people in Botswana reach out",
+    "problemBody": [
+      "Loneliness, money pressure, family breakdown and drinking worries often stay hidden. Many people want help but not from someone in their own community.",
+      "InnerSpark gives you a licensed African therapist outside your circle, by video or chat, at a clear pula price."
+    ],
+    "howHeadline": "From anywhere in Botswana — therapy from your phone in 3 steps.",
+    "howSteps": [
+      "Choose your therapist",
+      "Book and pay by Visa",
+      "Connect on WhatsApp"
+    ],
+    "howBodies": [
+      "Browse licensed African therapists. Filter by concern, gender and language. Pick who feels right.",
+      "Video about BWP 300 or chat about BWP 120. Your card confirms the final BWP conversion.",
+      "Your therapist sends a WhatsApp video or voice link. No new app, no waiting room."
+    ],
+    "paymentHowTitle": "How payment works in Botswana",
+    "paymentHowSteps": [
+      "Choose video (~BWP 300) or chat (~BWP 120) when you book",
+      "Pay by Visa / international card on the secure payment page",
+      "Your bank shows the final BWP amount before you confirm",
+      "Keep your receipt and message WhatsApp if we need to match payment"
+    ],
+    "paymentTip": "Prefer a lower-cost start? Begin with chat at about BWP 120, then move to video.",
+    "offerCompare": "One clear price for a licensed therapist — no travel, no queue and no one seeing you walk into a clinic.",
+    "concerns": [
+      "Relationship and marriage difficulties",
+      "Grief and bereavement",
+      "Depression and loneliness",
+      "Stress and anxiety",
+      "Alcohol and substance worries",
+      "Parenting challenges"
+    ],
+    "cities": [
+      {
+        "id": "gaborone",
+        "city": "Gaborone",
+        "body": "Private sessions from home or office anywhere in Gaborone — evenings included.",
+        "kw": "Counsellor in Gaborone"
+      },
+      {
+        "id": "francistown",
+        "city": "Francistown",
+        "body": "Licensed therapy without a long trip or a public waiting room.",
+        "kw": "Therapist in Francistown"
+      },
+      {
+        "id": "maun",
+        "city": "Maun",
+        "body": "Discreet online support wherever you are.",
+        "kw": "Counselling in Maun"
+      },
+      {
+        "id": "across-botswana",
+        "city": "Across Botswana",
+        "body": "If you have a phone and data, you can book this week.",
+        "kw": "Online therapy Botswana"
+      }
+    ],
+    "testimonials": [],
+    "faqs": [
+      {
+        "q": "How much does counselling cost in Botswana?",
+        "a": "On InnerSpark, video therapy is about BWP 300 per session and chat therapy about BWP 120. Your card confirms the final amount."
+      },
+      {
+        "q": "Do you offer couples counselling?",
+        "a": "Yes. Couples sessions are available by video; we confirm the price when you book."
+      },
+      {
+        "q": "Can you help with alcohol worries?",
+        "a": "Our therapists can support you with stress, low mood and drinking habits, and suggest local services when more specialised care is needed."
+      },
+      {
+        "q": "Is it confidential?",
+        "a": "Yes. Sessions are private and one-to-one."
+      },
+      {
+        "q": "Is this emergency care?",
+        "a": "No. InnerSpark is not emergency care. If you are in immediate danger, contact local emergency services."
+      }
+    ],
+    "related": [
+      {
+        "to": "/specialists",
+        "label": "Meet our licensed therapists",
+        "tag": "Therapists",
+        "blurb": "See profiles before you pay."
+      },
+      {
+        "to": "/wellbeing-check",
+        "label": "Free 2-minute wellbeing check",
+        "tag": "Self-check",
+        "blurb": "A private snapshot before you book."
+      }
+    ],
+    "finalCta": "Book my first session — from BWP 300",
+    "whatsappPrefill": "Hi InnerSpark, I am in Botswana and want to book licensed therapy. Please confirm price and a therapist.",
+    "schemaCities": [
+      "Gaborone",
+      "Francistown",
+      "Maun"
+    ]
+  },
+  namibia: {
+    "slug": "namibia",
+    "countryLabel": "Namibia",
+    "code": "NA",
+    "flag": "NA",
+    "currency": "NAD",
+    "videoPrice": "NAD 400",
+    "videoAmount": 400,
+    "chatPrice": "NAD 160",
+    "monthlyPrice": "NAD 1,480",
+    "monthlyNote": "4 sessions · about NAD 370 each",
+    "ugxNote": "~UGX 75,000 · ~$22",
+    "citiesLine": "Windhoek, Walvis Bay, Swakopmund, Oshakati and across Namibia",
+    "title": "Book Online Therapy Namibia | Therapist in Windhoek from ~NAD 400",
+    "description": "Online therapy in Namibia for depression, anxiety, grief, burnout and relationships. Video ~NAD 400 · chat ~NAD 160. Licensed therapists, Windhoek and remote towns. WhatsApp +256 792 085 773.",
+    "h1": "Book a therapist online in Namibia. From ~NAD 400.",
+    "h1Line2": "Windhoek · Walvis Bay · Oshakati. Private. Visa ready.",
+    "introLine1": "For people ready to invest in confidential, licensed care.",
+    "introLine2": "From about NAD 400 · Pay by Visa / card · Book in about 2 minutes.",
+    "paymentLabel": "Visa / card",
+    "paymentAccepted": [
+      "Visa",
+      "Card"
+    ],
+    "trustPayment": "Visa accepted",
+    "problemHeadline": "Long distances and few local therapists mean many people in Namibia carry stress, grief or low mood alone.",
+    "problemSource": "Common reasons people in Namibia reach out",
+    "problemBody": [
+      "Outside Windhoek, finding a private therapist can mean hours of travel. Economic pressure, family conflict and isolation make it harder still.",
+      "InnerSpark brings licensed African therapists to your phone by video or chat, at a clear Namibian dollar price."
+    ],
+    "howHeadline": "From anywhere in Namibia — therapy from your phone in 3 steps.",
+    "howSteps": [
+      "Choose your therapist",
+      "Book and pay by Visa",
+      "Connect on WhatsApp"
+    ],
+    "howBodies": [
+      "Browse licensed African therapists. Filter by concern, gender and language. Pick who feels right.",
+      "Video about NAD 400 or chat about NAD 160. Your card confirms the final NAD conversion.",
+      "Your therapist sends a WhatsApp video or voice link. No new app, no waiting room."
+    ],
+    "paymentHowTitle": "How payment works in Namibia",
+    "paymentHowSteps": [
+      "Choose video (~NAD 400) or chat (~NAD 160) when you book",
+      "Pay by Visa / international card on the secure payment page",
+      "Your bank shows the final NAD amount before you confirm",
+      "Keep your receipt and message WhatsApp if we need to match payment"
+    ],
+    "paymentTip": "Prefer a lower-cost start? Begin with chat at about NAD 160, then move to video.",
+    "offerCompare": "One clear price for a licensed therapist — no travel, no queue and no one seeing you walk into a clinic.",
+    "concerns": [
+      "Depression and anxiety",
+      "Stress and burnout",
+      "Grief and loss",
+      "Relationship difficulties",
+      "Family conflict",
+      "Loneliness and adjustment"
+    ],
+    "cities": [
+      {
+        "id": "windhoek",
+        "city": "Windhoek",
+        "body": "Private sessions from Klein Windhoek, Eros, Olympia or anywhere in the capital.",
+        "kw": "Therapist in Windhoek"
+      },
+      {
+        "id": "walvis-bay",
+        "city": "Walvis Bay",
+        "body": "Licensed therapy online — no trip to Windhoek needed.",
+        "kw": "Counselling in Walvis Bay"
+      },
+      {
+        "id": "oshakati",
+        "city": "Oshakati",
+        "body": "Discreet support for the north without long travel.",
+        "kw": "Therapy in Oshakati"
+      },
+      {
+        "id": "across-namibia",
+        "city": "Across Namibia",
+        "body": "If you have a phone and data, you can book this week.",
+        "kw": "Online therapy Namibia"
+      }
+    ],
+    "testimonials": [],
+    "faqs": [
+      {
+        "q": "How much does therapy cost in Namibia?",
+        "a": "On InnerSpark, video therapy is about NAD 400 per session and chat therapy about NAD 160. Your card confirms the final amount."
+      },
+      {
+        "q": "Can I get therapy outside Windhoek?",
+        "a": "Yes. Sessions are online, so you can join from any town with a phone and data."
+      },
+      {
+        "q": "What can I talk about?",
+        "a": "Depression, anxiety, burnout, grief, relationships, family conflict and more."
+      },
+      {
+        "q": "Is it confidential?",
+        "a": "Yes. Sessions are private and one-to-one."
+      },
+      {
+        "q": "Is this emergency care?",
+        "a": "No. InnerSpark is not emergency care. If you are in immediate danger, contact local emergency services."
+      }
+    ],
+    "related": [
+      {
+        "to": "/specialists",
+        "label": "Meet our licensed therapists",
+        "tag": "Therapists",
+        "blurb": "See profiles before you pay."
+      },
+      {
+        "to": "/wellbeing-check",
+        "label": "Free 2-minute wellbeing check",
+        "tag": "Self-check",
+        "blurb": "A private snapshot before you book."
+      }
+    ],
+    "finalCta": "Book my first session — from NAD 400",
+    "whatsappPrefill": "Hi InnerSpark, I am in Namibia and want to book licensed therapy. Please confirm price and a therapist.",
+    "schemaCities": [
+      "Windhoek",
+      "Walvis Bay",
+      "Oshakati"
+    ]
+  },
 };
