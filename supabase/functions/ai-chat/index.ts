@@ -944,7 +944,21 @@ Deno.serve(async (req) => {
     }
 
     // Step 2: stream the final reply (with tool results in context if applicable).
-    const aiResp = await callGateway(LOVABLE_API_KEY, {
+    // Speed: when no tool was needed, the first answer is already the reply.
+    // Reuse it instead of asking the model a second time (halves wait time).
+    const directText = (!toolCalls || toolCalls.length === 0) && typeof choiceMsg?.content === "string"
+      ? (choiceMsg.content as string).trim() : "";
+    const aiResp = directText ? (() => {
+      const enc = new TextEncoder();
+      const parts = directText.match(/[\s\S]{1,40}/g) || [];
+      return new Response(new ReadableStream({
+        start(c) {
+          for (const part of parts) c.enqueue(enc.encode(`data: ${JSON.stringify({ choices: [{ delta: { content: part } }] })}\n\n`));
+          c.enqueue(enc.encode("data: [DONE]\n\n"));
+          c.close();
+        },
+      }), { status: 200 });
+    })() : await callGateway(LOVABLE_API_KEY, {
       model: Deno.env.get("ANTHROPIC_API_KEY") ? "anthropic/claude-sonnet" : "google/gemini-2.5-flash",
       messages: conversation,
       stream: true,
