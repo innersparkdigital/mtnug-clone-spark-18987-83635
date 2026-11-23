@@ -177,6 +177,8 @@ export default function MarketLandingPage({ market: m }: { market: MarketLanding
         </div>
       </section>
 
+      <ConcernsSection />
+
       <div style={{ background: WARMTH, height: 4 }} />
 
       <section className="bg-white" style={{ borderBottom: "0.5px solid #DDDDEE" }}>
@@ -570,8 +572,6 @@ export default function MarketLandingPage({ market: m }: { market: MarketLanding
           </div>
         </section>
       )}
-
-      <ConcernsSection />
 
       {m.testimonials.length > 0 && (
       <section className="py-14" style={{ background: "#F5F6FF" }}>
