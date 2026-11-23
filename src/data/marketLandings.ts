@@ -40,6 +40,10 @@ export type MarketLanding = {
   finalCta: string;
   whatsappPrefill: string;
   schemaCities: string[];
+  /** Optional overrides used when a segment page reuses this layout. */
+  canonicalUrl?: string;
+  keywords?: string;
+  extraSections?: { heading: string; paragraphs: string[]; bullets?: string[] }[];
 };
 
 export const MARKET_LANDINGS: Record<string, MarketLanding> = {

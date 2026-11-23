@@ -13,6 +13,8 @@ import { getSpecialistImage } from "@/lib/specialistImages";
 import { useBookingFlow } from "@/hooks/useBookingFlow";
 import BookingFormModal from "@/components/BookingFormModal";
 import type { MarketLanding } from "@/data/marketLandings";
+import ConcernsSection from "@/components/ConcernsSection";
+import { Star, Quote } from "lucide-react";
 
 const SPARK_BLUE = "#3B4FD4";
 const WARMTH = "#F2994A";
@@ -64,9 +66,9 @@ export default function MarketLandingPage({ market: m }: { market: MarketLanding
         <meta name="description" content={m.description} />
         <meta
           name="keywords"
-          content={`therapy in ${m.countryLabel}, online therapy ${m.countryLabel}, book therapist ${m.countryLabel}, counselling ${m.countryLabel}, licensed African therapist, mental health support ${m.countryLabel}, ${m.cities.map((c) => c.kw).join(", ")}`}
+          content={m.keywords || `therapy in ${m.countryLabel}, online therapy ${m.countryLabel}, book therapist ${m.countryLabel}, counselling ${m.countryLabel}, licensed African therapist, mental health support ${m.countryLabel}, ${m.cities.map((c) => c.kw).join(", ")}`}
         />
-        <link rel="canonical" href={`${url}/`} />
+        <link rel="canonical" href={m.canonicalUrl || `${url}/`} />
         <meta property="og:title" content={m.title} />
         <meta property="og:description" content={m.description} />
         <meta property="og:url" content={url} />
@@ -549,6 +551,28 @@ export default function MarketLandingPage({ market: m }: { market: MarketLanding
         </div>
       </section>
 
+      {m.extraSections && m.extraSections.length > 0 && (
+        <section className="py-14 bg-white">
+          <div className="container mx-auto px-4 max-w-5xl grid md:grid-cols-2 gap-6">
+            {m.extraSections.map((sec) => (
+              <article key={sec.heading} className="rounded-2xl border p-6" style={{ borderColor: "#E6E8FA" }}>
+                <h2 className="text-xl font-semibold" style={{ color: DEEP_NIGHT }}>{sec.heading}</h2>
+                {sec.paragraphs.map((p) => (
+                  <p key={p} className="text-sm mt-3 leading-relaxed" style={{ color: "#555" }}>{p}</p>
+                ))}
+                {sec.bullets && (
+                  <ul className="text-sm mt-3 space-y-1.5" style={{ color: "#444" }}>
+                    {sec.bullets.map((b) => (<li key={b}><span style={{ color: HEALING_GREEN }}>✓</span> {b}</li>))}
+                  </ul>
+                )}
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <ConcernsSection />
+
       {m.testimonials.length > 0 && (
       <section className="py-14" style={{ background: "#F5F6FF" }}>
         <div className="container mx-auto px-4">
@@ -557,14 +581,30 @@ export default function MarketLandingPage({ market: m }: { market: MarketLanding
           </h2>
           <div className="grid md:grid-cols-3 gap-5 max-w-5xl mx-auto">
             {m.testimonials.map((t) => (
-              <div key={t.who} className="rounded-2xl p-6 border bg-white" style={{ borderColor: "#E6E8FA" }}>
-                <p className="text-sm italic leading-relaxed" style={{ color: "#444" }}>
+              <figure
+                key={t.who}
+                className="rounded-2xl p-6 border bg-white shadow-sm hover:shadow-md transition-shadow flex flex-col"
+                style={{ borderColor: "#E6E8FA" }}
+              >
+                <Quote className="w-7 h-7" style={{ color: SPARK_BLUE, opacity: 0.25 }} />
+                <div className="flex gap-0.5 mt-2" aria-label="5 out of 5">
+                  {[0, 1, 2, 3, 4].map((i) => (
+                    <Star key={i} className="w-4 h-4" style={{ color: WARMTH, fill: WARMTH }} />
+                  ))}
+                </div>
+                <blockquote className="text-[15px] leading-relaxed mt-3 flex-1" style={{ color: "#333" }}>
                   &ldquo;{t.quote}&rdquo;
-                </p>
-                <p className="text-xs mt-4 font-medium" style={{ color: DEEP_NIGHT }}>
-                  — {t.who}
-                </p>
-              </div>
+                </blockquote>
+                <figcaption className="flex items-center gap-3 mt-5 pt-4 border-t" style={{ borderColor: "#EEF0FD" }}>
+                  <span
+                    className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold text-white"
+                    style={{ background: SPARK_BLUE }}
+                  >
+                    {t.who.charAt(0)}
+                  </span>
+                  <span className="text-sm font-medium" style={{ color: DEEP_NIGHT }}>{t.who}</span>
+                </figcaption>
+              </figure>
             ))}
           </div>
         </div>
@@ -572,6 +612,7 @@ export default function MarketLandingPage({ market: m }: { market: MarketLanding
       )}
 
       <div style={{ background: WARMTH, height: 4 }} />
+      {m.cities.length > 0 && (
       <section id="cities" className="py-14 bg-white">
         <div className="container mx-auto px-4 max-w-5xl">
           <h2 className="text-[26px] font-semibold text-center" style={{ color: DEEP_NIGHT }}>
@@ -604,6 +645,8 @@ export default function MarketLandingPage({ market: m }: { market: MarketLanding
           </div>
         </div>
       </section>
+
+      )}
 
       {/* 4. FOLLOW-UP + 5. EXPERIENCE */}
       <div style={{ background: WARMTH, height: 4 }} />
