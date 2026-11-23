@@ -803,4 +803,2214 @@ export const MARKET_LANDINGS: Record<string, MarketLanding> = {
       "Oshakati"
     ]
   },
+  "canada": {
+    "slug": "canada",
+    "countryLabel": "Canada",
+    "code": "CA",
+    "flag": "CA",
+    "currency": "CAD",
+    "videoPrice": "CAD 30",
+    "videoAmount": 30,
+    "chatPrice": "CAD 12",
+    "monthlyPrice": "CAD 111",
+    "monthlyNote": "4 sessions · small bundle saving",
+    "ugxNote": "~UGX 75,000 · ~USD 22",
+    "citiesLine": "African professionals, students and families in Toronto, Calgary, Vancouver and across Canada",
+    "title": "African Therapist Online in Canada | Toronto from ~CAD 30",
+    "description": "Licensed African therapists online for Africans and diaspora in Canada: anxiety and depression, loneliness and isolation, relationship problems, immigration and cultural adjustment. Video ~CAD 30 · chat ~CAD 12. Cultural fit, private, WhatsApp +256 792 085 773.",
+    "h1": "Book an African therapist online in Canada. From ~CAD 30.",
+    "h1Line2": "Toronto · Calgary · Vancouver. Cultural fit. Visa ready.",
+    "introLine1": "For Africans abroad ready to invest in confidential, culturally grounded care.",
+    "introLine2": "From about CAD 30 · Pay by Visa · Book in about 2 minutes.",
+    "paymentLabel": "Visa / card",
+    "paymentAccepted": [
+      "Visa",
+      "Card"
+    ],
+    "trustPayment": "Visa accepted",
+    "problemHeadline": "Life in Canada can be good on paper — and still leave you carrying anxiety and depression alone.",
+    "problemSource": "Common reasons people in Canada seek therapy",
+    "problemBody": [
+      "People in Canada most often seek therapy for anxiety and depression, loneliness and isolation, relationship problems, immigration and cultural adjustment. For Africans living there, migration, distance from family and explaining your culture every session can add to it.",
+      "InnerSpark connects you with licensed African therapists who already understand where you come from, at a clear CAD price, by video or chat."
+    ],
+    "howHeadline": "From anywhere in Canada — therapy with cultural fit in 3 steps.",
+    "howSteps": [
+      "Choose your therapist",
+      "Book and pay by Visa",
+      "Connect on WhatsApp"
+    ],
+    "howBodies": [
+      "Browse licensed African therapists. Filter by concern, gender and language.",
+      "Video about CAD 30 or chat about CAD 12. Your card confirms the final amount.",
+      "Join by WhatsApp video or voice after work, from home. No new app."
+    ],
+    "paymentHowTitle": "How payment works in Canada",
+    "paymentHowSteps": [
+      "Choose video (~CAD 30) or chat (~CAD 12)",
+      "Pay by Visa / international card",
+      "Receive WhatsApp confirmation and your session time",
+      "Message us if anything needs follow-up"
+    ],
+    "paymentTip": "This is cross-border support with African therapists — not a Canada emergency or insurance service.",
+    "offerCompare": "A clear price and a therapist who understands African family life — without rebuilding your whole context every week.",
+    "concerns": [
+      "Anxiety and depression",
+      "Loneliness and isolation",
+      "Relationship problems",
+      "Immigration and cultural adjustment",
+      "Workplace stress",
+      "Grief and bereavement"
+    ],
+    "cities": [
+      {
+        "id": "toronto",
+        "city": "Toronto",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Toronto — evenings included.",
+        "kw": "African therapist Toronto"
+      },
+      {
+        "id": "calgary",
+        "city": "Calgary",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Calgary — evenings included.",
+        "kw": "African therapist Calgary"
+      },
+      {
+        "id": "vancouver",
+        "city": "Vancouver",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Vancouver — evenings included.",
+        "kw": "African therapist Vancouver"
+      },
+      {
+        "id": "ottawa",
+        "city": "Ottawa",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Ottawa — evenings included.",
+        "kw": "African therapist Ottawa"
+      }
+    ],
+    "testimonials": [],
+    "faqs": [
+      {
+        "q": "How much does InnerSpark cost in Canada?",
+        "a": "Video therapy is about CAD 30 and chat therapy about CAD 12 per session. Your card confirms the final amount."
+      },
+      {
+        "q": "Are your therapists African?",
+        "a": "Yes. InnerSpark therapists are licensed African professionals who understand migration, family duty and living between cultures."
+      },
+      {
+        "q": "What can I get help with?",
+        "a": "Anxiety and depression, Loneliness and isolation, Relationship problems, Immigration and cultural adjustment, Workplace stress, Grief and bereavement."
+      },
+      {
+        "q": "How do sessions work across time zones?",
+        "a": "Share your city and availability when you book, and we match you to a practical time in Canada."
+      },
+      {
+        "q": "Is this emergency care?",
+        "a": "No. If you are in immediate danger in Canada, call or text 988."
+      }
+    ],
+    "related": [
+      {
+        "to": "/online-therapy-diaspora",
+        "label": "Therapy for Africans abroad",
+        "tag": "Diaspora",
+        "blurb": "Why cultural fit changes the first session."
+      },
+      {
+        "to": "/specialists",
+        "label": "Meet African therapists",
+        "tag": "Therapists",
+        "blurb": "Licensed profiles before you pay."
+      }
+    ],
+    "finalCta": "Book my first session — from CAD 30",
+    "whatsappPrefill": "Hi InnerSpark, I am in Canada and want to book a licensed African therapist. Please confirm price and time zones.",
+    "schemaCities": [
+      "Toronto",
+      "Calgary",
+      "Vancouver"
+    ]
+  },
+  "uk": {
+    "slug": "uk",
+    "countryLabel": "United Kingdom",
+    "code": "GB",
+    "flag": "GB",
+    "currency": "GBP",
+    "videoPrice": "GBP 18",
+    "videoAmount": 18,
+    "chatPrice": "GBP 7",
+    "monthlyPrice": "GBP 67",
+    "monthlyNote": "4 sessions · small bundle saving",
+    "ugxNote": "~UGX 75,000 · ~USD 22",
+    "citiesLine": "African professionals, students and families in London, Manchester, Birmingham and across the United Kingdom",
+    "title": "African Therapist Online in the UK | London from ~GBP 18",
+    "description": "Licensed African therapists online for Africans and diaspora in the United Kingdom: anxiety and depression, relationship and marriage problems, workplace burnout, childhood trauma. Video ~GBP 18 · chat ~GBP 7. Cultural fit, private, WhatsApp +256 792 085 773.",
+    "h1": "Book an African therapist online in the United Kingdom. From ~GBP 18.",
+    "h1Line2": "London · Manchester · Birmingham. Cultural fit. Visa ready.",
+    "introLine1": "For Africans abroad ready to invest in confidential, culturally grounded care.",
+    "introLine2": "From about GBP 18 · Pay by Visa · Book in about 2 minutes.",
+    "paymentLabel": "Visa / card",
+    "paymentAccepted": [
+      "Visa",
+      "Card"
+    ],
+    "trustPayment": "Visa accepted",
+    "problemHeadline": "Life in the United Kingdom can be good on paper — and still leave you carrying anxiety and depression alone.",
+    "problemSource": "Common reasons people in the United Kingdom seek therapy",
+    "problemBody": [
+      "People in the United Kingdom most often seek therapy for anxiety and depression, relationship and marriage problems, workplace burnout, childhood trauma. For Africans living there, migration, distance from family and explaining your culture every session can add to it.",
+      "InnerSpark connects you with licensed African therapists who already understand where you come from, at a clear GBP price, by video or chat."
+    ],
+    "howHeadline": "From anywhere in the United Kingdom — therapy with cultural fit in 3 steps.",
+    "howSteps": [
+      "Choose your therapist",
+      "Book and pay by Visa",
+      "Connect on WhatsApp"
+    ],
+    "howBodies": [
+      "Browse licensed African therapists. Filter by concern, gender and language.",
+      "Video about GBP 18 or chat about GBP 7. Your card confirms the final amount.",
+      "Join by WhatsApp video or voice after work, from home. No new app."
+    ],
+    "paymentHowTitle": "How payment works in the United Kingdom",
+    "paymentHowSteps": [
+      "Choose video (~GBP 18) or chat (~GBP 7)",
+      "Pay by Visa / international card",
+      "Receive WhatsApp confirmation and your session time",
+      "Message us if anything needs follow-up"
+    ],
+    "paymentTip": "This is cross-border support with African therapists — not a United Kingdom emergency or insurance service.",
+    "offerCompare": "A clear price and a therapist who understands African family life — without rebuilding your whole context every week.",
+    "concerns": [
+      "Anxiety and depression",
+      "Relationship and marriage problems",
+      "Workplace burnout",
+      "Childhood trauma",
+      "Grief and bereavement",
+      "Low self-esteem"
+    ],
+    "cities": [
+      {
+        "id": "london",
+        "city": "London",
+        "body": "Private online sessions with a licensed African therapist from anywhere in London — evenings included.",
+        "kw": "African therapist London"
+      },
+      {
+        "id": "manchester",
+        "city": "Manchester",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Manchester — evenings included.",
+        "kw": "African therapist Manchester"
+      },
+      {
+        "id": "birmingham",
+        "city": "Birmingham",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Birmingham — evenings included.",
+        "kw": "African therapist Birmingham"
+      },
+      {
+        "id": "leeds",
+        "city": "Leeds",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Leeds — evenings included.",
+        "kw": "African therapist Leeds"
+      }
+    ],
+    "testimonials": [],
+    "faqs": [
+      {
+        "q": "How much does InnerSpark cost in the United Kingdom?",
+        "a": "Video therapy is about GBP 18 and chat therapy about GBP 7 per session. Your card confirms the final amount."
+      },
+      {
+        "q": "Are your therapists African?",
+        "a": "Yes. InnerSpark therapists are licensed African professionals who understand migration, family duty and living between cultures."
+      },
+      {
+        "q": "What can I get help with?",
+        "a": "Anxiety and depression, Relationship and marriage problems, Workplace burnout, Childhood trauma, Grief and bereavement, Low self-esteem."
+      },
+      {
+        "q": "How do sessions work across time zones?",
+        "a": "Share your city and availability when you book, and we match you to a practical time in the United Kingdom."
+      },
+      {
+        "q": "Is this emergency care?",
+        "a": "No. If you are in immediate danger in the United Kingdom, call 999 or Samaritans on 116 123."
+      }
+    ],
+    "related": [
+      {
+        "to": "/online-therapy-diaspora",
+        "label": "Therapy for Africans abroad",
+        "tag": "Diaspora",
+        "blurb": "Why cultural fit changes the first session."
+      },
+      {
+        "to": "/specialists",
+        "label": "Meet African therapists",
+        "tag": "Therapists",
+        "blurb": "Licensed profiles before you pay."
+      }
+    ],
+    "finalCta": "Book my first session — from GBP 18",
+    "whatsappPrefill": "Hi InnerSpark, I am in United Kingdom and want to book a licensed African therapist. Please confirm price and time zones.",
+    "schemaCities": [
+      "London",
+      "Manchester",
+      "Birmingham"
+    ]
+  },
+  "ireland": {
+    "slug": "ireland",
+    "countryLabel": "Ireland",
+    "code": "IE",
+    "flag": "IE",
+    "currency": "EUR",
+    "videoPrice": "EUR 20",
+    "videoAmount": 20,
+    "chatPrice": "EUR 8",
+    "monthlyPrice": "EUR 74",
+    "monthlyNote": "4 sessions · small bundle saving",
+    "ugxNote": "~UGX 75,000 · ~USD 22",
+    "citiesLine": "African professionals, students and families in Dublin, Cork, Galway and across Ireland",
+    "title": "African Therapist Online in Ireland | Dublin from ~EUR 20",
+    "description": "Licensed African therapists online for Africans and diaspora in Ireland: anxiety and depression, relationship difficulties, loneliness, grief. Video ~EUR 20 · chat ~EUR 8. Cultural fit, private, WhatsApp +256 792 085 773.",
+    "h1": "Book an African therapist online in Ireland. From ~EUR 20.",
+    "h1Line2": "Dublin · Cork · Galway. Cultural fit. Visa ready.",
+    "introLine1": "For Africans abroad ready to invest in confidential, culturally grounded care.",
+    "introLine2": "From about EUR 20 · Pay by Visa · Book in about 2 minutes.",
+    "paymentLabel": "Visa / card",
+    "paymentAccepted": [
+      "Visa",
+      "Card"
+    ],
+    "trustPayment": "Visa accepted",
+    "problemHeadline": "Life in Ireland can be good on paper — and still leave you carrying anxiety and depression alone.",
+    "problemSource": "Common reasons people in Ireland seek therapy",
+    "problemBody": [
+      "People in Ireland most often seek therapy for anxiety and depression, relationship difficulties, loneliness, grief. For Africans living there, migration, distance from family and explaining your culture every session can add to it.",
+      "InnerSpark connects you with licensed African therapists who already understand where you come from, at a clear EUR price, by video or chat."
+    ],
+    "howHeadline": "From anywhere in Ireland — therapy with cultural fit in 3 steps.",
+    "howSteps": [
+      "Choose your therapist",
+      "Book and pay by Visa",
+      "Connect on WhatsApp"
+    ],
+    "howBodies": [
+      "Browse licensed African therapists. Filter by concern, gender and language.",
+      "Video about EUR 20 or chat about EUR 8. Your card confirms the final amount.",
+      "Join by WhatsApp video or voice after work, from home. No new app."
+    ],
+    "paymentHowTitle": "How payment works in Ireland",
+    "paymentHowSteps": [
+      "Choose video (~EUR 20) or chat (~EUR 8)",
+      "Pay by Visa / international card",
+      "Receive WhatsApp confirmation and your session time",
+      "Message us if anything needs follow-up"
+    ],
+    "paymentTip": "This is cross-border support with African therapists — not a Ireland emergency or insurance service.",
+    "offerCompare": "A clear price and a therapist who understands African family life — without rebuilding your whole context every week.",
+    "concerns": [
+      "Anxiety and depression",
+      "Relationship difficulties",
+      "Loneliness",
+      "Grief",
+      "Family conflict",
+      "Alcohol-related difficulties"
+    ],
+    "cities": [
+      {
+        "id": "dublin",
+        "city": "Dublin",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Dublin — evenings included.",
+        "kw": "African therapist Dublin"
+      },
+      {
+        "id": "cork",
+        "city": "Cork",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Cork — evenings included.",
+        "kw": "African therapist Cork"
+      },
+      {
+        "id": "galway",
+        "city": "Galway",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Galway — evenings included.",
+        "kw": "African therapist Galway"
+      },
+      {
+        "id": "limerick",
+        "city": "Limerick",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Limerick — evenings included.",
+        "kw": "African therapist Limerick"
+      }
+    ],
+    "testimonials": [],
+    "faqs": [
+      {
+        "q": "How much does InnerSpark cost in Ireland?",
+        "a": "Video therapy is about EUR 20 and chat therapy about EUR 8 per session. Your card confirms the final amount."
+      },
+      {
+        "q": "Are your therapists African?",
+        "a": "Yes. InnerSpark therapists are licensed African professionals who understand migration, family duty and living between cultures."
+      },
+      {
+        "q": "What can I get help with?",
+        "a": "Anxiety and depression, Relationship difficulties, Loneliness, Grief, Family conflict, Alcohol-related difficulties."
+      },
+      {
+        "q": "How do sessions work across time zones?",
+        "a": "Share your city and availability when you book, and we match you to a practical time in Ireland."
+      },
+      {
+        "q": "Is this emergency care?",
+        "a": "No. If you are in immediate danger in Ireland, call 112 or 999."
+      }
+    ],
+    "related": [
+      {
+        "to": "/online-therapy-diaspora",
+        "label": "Therapy for Africans abroad",
+        "tag": "Diaspora",
+        "blurb": "Why cultural fit changes the first session."
+      },
+      {
+        "to": "/specialists",
+        "label": "Meet African therapists",
+        "tag": "Therapists",
+        "blurb": "Licensed profiles before you pay."
+      }
+    ],
+    "finalCta": "Book my first session — from EUR 20",
+    "whatsappPrefill": "Hi InnerSpark, I am in Ireland and want to book a licensed African therapist. Please confirm price and time zones.",
+    "schemaCities": [
+      "Dublin",
+      "Cork",
+      "Galway"
+    ]
+  },
+  "germany": {
+    "slug": "germany",
+    "countryLabel": "Germany",
+    "code": "DE",
+    "flag": "DE",
+    "currency": "EUR",
+    "videoPrice": "EUR 20",
+    "videoAmount": 20,
+    "chatPrice": "EUR 8",
+    "monthlyPrice": "EUR 74",
+    "monthlyNote": "4 sessions · small bundle saving",
+    "ugxNote": "~UGX 75,000 · ~USD 22",
+    "citiesLine": "African professionals, students and families in Berlin, Hamburg, Frankfurt and across Germany",
+    "title": "African Therapist Online in Germany | Berlin from ~EUR 20",
+    "description": "Licensed African therapists online for Africans and diaspora in Germany: depression, anxiety disorders, workplace burnout, social anxiety. Video ~EUR 20 · chat ~EUR 8. Cultural fit, private, WhatsApp +256 792 085 773.",
+    "h1": "Book an African therapist online in Germany. From ~EUR 20.",
+    "h1Line2": "Berlin · Hamburg · Frankfurt. Cultural fit. Visa ready.",
+    "introLine1": "For Africans abroad ready to invest in confidential, culturally grounded care.",
+    "introLine2": "From about EUR 20 · Pay by Visa · Book in about 2 minutes.",
+    "paymentLabel": "Visa / card",
+    "paymentAccepted": [
+      "Visa",
+      "Card"
+    ],
+    "trustPayment": "Visa accepted",
+    "problemHeadline": "Life in Germany can be good on paper — and still leave you carrying depression alone.",
+    "problemSource": "Common reasons people in Germany seek therapy",
+    "problemBody": [
+      "People in Germany most often seek therapy for depression, anxiety disorders, workplace burnout, social anxiety. For Africans living there, migration, distance from family and explaining your culture every session can add to it.",
+      "InnerSpark connects you with licensed African therapists who already understand where you come from, at a clear EUR price, by video or chat."
+    ],
+    "howHeadline": "From anywhere in Germany — therapy with cultural fit in 3 steps.",
+    "howSteps": [
+      "Choose your therapist",
+      "Book and pay by Visa",
+      "Connect on WhatsApp"
+    ],
+    "howBodies": [
+      "Browse licensed African therapists. Filter by concern, gender and language.",
+      "Video about EUR 20 or chat about EUR 8. Your card confirms the final amount.",
+      "Join by WhatsApp video or voice after work, from home. No new app."
+    ],
+    "paymentHowTitle": "How payment works in Germany",
+    "paymentHowSteps": [
+      "Choose video (~EUR 20) or chat (~EUR 8)",
+      "Pay by Visa / international card",
+      "Receive WhatsApp confirmation and your session time",
+      "Message us if anything needs follow-up"
+    ],
+    "paymentTip": "This is cross-border support with African therapists — not a Germany emergency or insurance service.",
+    "offerCompare": "A clear price and a therapist who understands African family life — without rebuilding your whole context every week.",
+    "concerns": [
+      "Depression",
+      "Anxiety disorders",
+      "Workplace burnout",
+      "Social anxiety",
+      "Relationship problems",
+      "Trauma and PTSD"
+    ],
+    "cities": [
+      {
+        "id": "berlin",
+        "city": "Berlin",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Berlin — evenings included.",
+        "kw": "African therapist Berlin"
+      },
+      {
+        "id": "hamburg",
+        "city": "Hamburg",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Hamburg — evenings included.",
+        "kw": "African therapist Hamburg"
+      },
+      {
+        "id": "frankfurt",
+        "city": "Frankfurt",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Frankfurt — evenings included.",
+        "kw": "African therapist Frankfurt"
+      },
+      {
+        "id": "munich",
+        "city": "Munich",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Munich — evenings included.",
+        "kw": "African therapist Munich"
+      }
+    ],
+    "testimonials": [],
+    "faqs": [
+      {
+        "q": "How much does InnerSpark cost in Germany?",
+        "a": "Video therapy is about EUR 20 and chat therapy about EUR 8 per session. Your card confirms the final amount."
+      },
+      {
+        "q": "Are your therapists African?",
+        "a": "Yes. InnerSpark therapists are licensed African professionals who understand migration, family duty and living between cultures."
+      },
+      {
+        "q": "What can I get help with?",
+        "a": "Depression, Anxiety disorders, Workplace burnout, Social anxiety, Relationship problems, Trauma and PTSD."
+      },
+      {
+        "q": "How do sessions work across time zones?",
+        "a": "Share your city and availability when you book, and we match you to a practical time in Germany."
+      },
+      {
+        "q": "Is this emergency care?",
+        "a": "No. If you are in immediate danger in Germany, call 112."
+      }
+    ],
+    "related": [
+      {
+        "to": "/online-therapy-diaspora",
+        "label": "Therapy for Africans abroad",
+        "tag": "Diaspora",
+        "blurb": "Why cultural fit changes the first session."
+      },
+      {
+        "to": "/specialists",
+        "label": "Meet African therapists",
+        "tag": "Therapists",
+        "blurb": "Licensed profiles before you pay."
+      }
+    ],
+    "finalCta": "Book my first session — from EUR 20",
+    "whatsappPrefill": "Hi InnerSpark, I am in Germany and want to book a licensed African therapist. Please confirm price and time zones.",
+    "schemaCities": [
+      "Berlin",
+      "Hamburg",
+      "Frankfurt"
+    ]
+  },
+  "france": {
+    "slug": "france",
+    "countryLabel": "France",
+    "code": "FR",
+    "flag": "FR",
+    "currency": "EUR",
+    "videoPrice": "EUR 20",
+    "videoAmount": 20,
+    "chatPrice": "EUR 8",
+    "monthlyPrice": "EUR 74",
+    "monthlyNote": "4 sessions · small bundle saving",
+    "ugxNote": "~UGX 75,000 · ~USD 22",
+    "citiesLine": "African professionals, students and families in Paris, Lyon, Marseille and across France",
+    "title": "African Therapist Online in France | Paris from ~EUR 20",
+    "description": "Licensed African therapists online for Africans and diaspora in France: depression and anxiety, relationship difficulties, family conflict, workplace stress. Video ~EUR 20 · chat ~EUR 8. Cultural fit, private, WhatsApp +256 792 085 773.",
+    "h1": "Book an African therapist online in France. From ~EUR 20.",
+    "h1Line2": "Paris · Lyon · Marseille. Cultural fit. Visa ready.",
+    "introLine1": "For Africans abroad ready to invest in confidential, culturally grounded care.",
+    "introLine2": "From about EUR 20 · Pay by Visa · Book in about 2 minutes.",
+    "paymentLabel": "Visa / card",
+    "paymentAccepted": [
+      "Visa",
+      "Card"
+    ],
+    "trustPayment": "Visa accepted",
+    "problemHeadline": "Life in France can be good on paper — and still leave you carrying depression and anxiety alone.",
+    "problemSource": "Common reasons people in France seek therapy",
+    "problemBody": [
+      "People in France most often seek therapy for depression and anxiety, relationship difficulties, family conflict, workplace stress. For Africans living there, migration, distance from family and explaining your culture every session can add to it.",
+      "InnerSpark connects you with licensed African therapists who already understand where you come from, at a clear EUR price, by video or chat."
+    ],
+    "howHeadline": "From anywhere in France — therapy with cultural fit in 3 steps.",
+    "howSteps": [
+      "Choose your therapist",
+      "Book and pay by Visa",
+      "Connect on WhatsApp"
+    ],
+    "howBodies": [
+      "Browse licensed African therapists. Filter by concern, gender and language.",
+      "Video about EUR 20 or chat about EUR 8. Your card confirms the final amount.",
+      "Join by WhatsApp video or voice after work, from home. No new app."
+    ],
+    "paymentHowTitle": "How payment works in France",
+    "paymentHowSteps": [
+      "Choose video (~EUR 20) or chat (~EUR 8)",
+      "Pay by Visa / international card",
+      "Receive WhatsApp confirmation and your session time",
+      "Message us if anything needs follow-up"
+    ],
+    "paymentTip": "This is cross-border support with African therapists — not a France emergency or insurance service.",
+    "offerCompare": "A clear price and a therapist who understands African family life — without rebuilding your whole context every week.",
+    "concerns": [
+      "Depression and anxiety",
+      "Relationship difficulties",
+      "Family conflict",
+      "Workplace stress",
+      "Emotional dissatisfaction",
+      "Grief"
+    ],
+    "cities": [
+      {
+        "id": "paris",
+        "city": "Paris",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Paris — evenings included.",
+        "kw": "African therapist Paris"
+      },
+      {
+        "id": "lyon",
+        "city": "Lyon",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Lyon — evenings included.",
+        "kw": "African therapist Lyon"
+      },
+      {
+        "id": "marseille",
+        "city": "Marseille",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Marseille — evenings included.",
+        "kw": "African therapist Marseille"
+      },
+      {
+        "id": "lille",
+        "city": "Lille",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Lille — evenings included.",
+        "kw": "African therapist Lille"
+      }
+    ],
+    "testimonials": [],
+    "faqs": [
+      {
+        "q": "How much does InnerSpark cost in France?",
+        "a": "Video therapy is about EUR 20 and chat therapy about EUR 8 per session. Your card confirms the final amount."
+      },
+      {
+        "q": "Are your therapists African?",
+        "a": "Yes. InnerSpark therapists are licensed African professionals who understand migration, family duty and living between cultures."
+      },
+      {
+        "q": "What can I get help with?",
+        "a": "Depression and anxiety, Relationship difficulties, Family conflict, Workplace stress, Emotional dissatisfaction, Grief."
+      },
+      {
+        "q": "How do sessions work across time zones?",
+        "a": "Share your city and availability when you book, and we match you to a practical time in France."
+      },
+      {
+        "q": "Is this emergency care?",
+        "a": "No. If you are in immediate danger in France, call 112 or 3114."
+      }
+    ],
+    "related": [
+      {
+        "to": "/online-therapy-diaspora",
+        "label": "Therapy for Africans abroad",
+        "tag": "Diaspora",
+        "blurb": "Why cultural fit changes the first session."
+      },
+      {
+        "to": "/specialists",
+        "label": "Meet African therapists",
+        "tag": "Therapists",
+        "blurb": "Licensed profiles before you pay."
+      }
+    ],
+    "finalCta": "Book my first session — from EUR 20",
+    "whatsappPrefill": "Hi InnerSpark, I am in France and want to book a licensed African therapist. Please confirm price and time zones.",
+    "schemaCities": [
+      "Paris",
+      "Lyon",
+      "Marseille"
+    ]
+  },
+  "netherlands": {
+    "slug": "netherlands",
+    "countryLabel": "Netherlands",
+    "code": "NL",
+    "flag": "NL",
+    "currency": "EUR",
+    "videoPrice": "EUR 20",
+    "videoAmount": 20,
+    "chatPrice": "EUR 8",
+    "monthlyPrice": "EUR 74",
+    "monthlyNote": "4 sessions · small bundle saving",
+    "ugxNote": "~UGX 75,000 · ~USD 22",
+    "citiesLine": "African professionals, students and families in Amsterdam, Rotterdam, The Hague and across the Netherlands",
+    "title": "African Therapist Online in Netherlands | Amsterdam from ~EUR 20",
+    "description": "Licensed African therapists online for Africans and diaspora in the Netherlands: anxiety and depression, burnout, relationship problems, loneliness. Video ~EUR 20 · chat ~EUR 8. Cultural fit, private, WhatsApp +256 792 085 773.",
+    "h1": "Book an African therapist online in the Netherlands. From ~EUR 20.",
+    "h1Line2": "Amsterdam · Rotterdam · The Hague. Cultural fit. Visa ready.",
+    "introLine1": "For Africans abroad ready to invest in confidential, culturally grounded care.",
+    "introLine2": "From about EUR 20 · Pay by Visa · Book in about 2 minutes.",
+    "paymentLabel": "Visa / card",
+    "paymentAccepted": [
+      "Visa",
+      "Card"
+    ],
+    "trustPayment": "Visa accepted",
+    "problemHeadline": "Life in the Netherlands can be good on paper — and still leave you carrying anxiety and depression alone.",
+    "problemSource": "Common reasons people in the Netherlands seek therapy",
+    "problemBody": [
+      "People in the Netherlands most often seek therapy for anxiety and depression, burnout, relationship problems, loneliness. For Africans living there, migration, distance from family and explaining your culture every session can add to it.",
+      "InnerSpark connects you with licensed African therapists who already understand where you come from, at a clear EUR price, by video or chat."
+    ],
+    "howHeadline": "From anywhere in the Netherlands — therapy with cultural fit in 3 steps.",
+    "howSteps": [
+      "Choose your therapist",
+      "Book and pay by Visa",
+      "Connect on WhatsApp"
+    ],
+    "howBodies": [
+      "Browse licensed African therapists. Filter by concern, gender and language.",
+      "Video about EUR 20 or chat about EUR 8. Your card confirms the final amount.",
+      "Join by WhatsApp video or voice after work, from home. No new app."
+    ],
+    "paymentHowTitle": "How payment works in the Netherlands",
+    "paymentHowSteps": [
+      "Choose video (~EUR 20) or chat (~EUR 8)",
+      "Pay by Visa / international card",
+      "Receive WhatsApp confirmation and your session time",
+      "Message us if anything needs follow-up"
+    ],
+    "paymentTip": "This is cross-border support with African therapists — not a Netherlands emergency or insurance service.",
+    "offerCompare": "A clear price and a therapist who understands African family life — without rebuilding your whole context every week.",
+    "concerns": [
+      "Anxiety and depression",
+      "Burnout",
+      "Relationship problems",
+      "Loneliness",
+      "Social anxiety",
+      "Work-related stress"
+    ],
+    "cities": [
+      {
+        "id": "amsterdam",
+        "city": "Amsterdam",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Amsterdam — evenings included.",
+        "kw": "African therapist Amsterdam"
+      },
+      {
+        "id": "rotterdam",
+        "city": "Rotterdam",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Rotterdam — evenings included.",
+        "kw": "African therapist Rotterdam"
+      },
+      {
+        "id": "the-hague",
+        "city": "The Hague",
+        "body": "Private online sessions with a licensed African therapist from anywhere in The Hague — evenings included.",
+        "kw": "African therapist The Hague"
+      },
+      {
+        "id": "utrecht",
+        "city": "Utrecht",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Utrecht — evenings included.",
+        "kw": "African therapist Utrecht"
+      }
+    ],
+    "testimonials": [],
+    "faqs": [
+      {
+        "q": "How much does InnerSpark cost in the Netherlands?",
+        "a": "Video therapy is about EUR 20 and chat therapy about EUR 8 per session. Your card confirms the final amount."
+      },
+      {
+        "q": "Are your therapists African?",
+        "a": "Yes. InnerSpark therapists are licensed African professionals who understand migration, family duty and living between cultures."
+      },
+      {
+        "q": "What can I get help with?",
+        "a": "Anxiety and depression, Burnout, Relationship problems, Loneliness, Social anxiety, Work-related stress."
+      },
+      {
+        "q": "How do sessions work across time zones?",
+        "a": "Share your city and availability when you book, and we match you to a practical time in the Netherlands."
+      },
+      {
+        "q": "Is this emergency care?",
+        "a": "No. If you are in immediate danger in the Netherlands, call 112 or 113."
+      }
+    ],
+    "related": [
+      {
+        "to": "/online-therapy-diaspora",
+        "label": "Therapy for Africans abroad",
+        "tag": "Diaspora",
+        "blurb": "Why cultural fit changes the first session."
+      },
+      {
+        "to": "/specialists",
+        "label": "Meet African therapists",
+        "tag": "Therapists",
+        "blurb": "Licensed profiles before you pay."
+      }
+    ],
+    "finalCta": "Book my first session — from EUR 20",
+    "whatsappPrefill": "Hi InnerSpark, I am in Netherlands and want to book a licensed African therapist. Please confirm price and time zones.",
+    "schemaCities": [
+      "Amsterdam",
+      "Rotterdam",
+      "The Hague"
+    ]
+  },
+  "switzerland": {
+    "slug": "switzerland",
+    "countryLabel": "Switzerland",
+    "code": "CH",
+    "flag": "CH",
+    "currency": "CHF",
+    "videoPrice": "CHF 20",
+    "videoAmount": 20,
+    "chatPrice": "CHF 8",
+    "monthlyPrice": "CHF 74",
+    "monthlyNote": "4 sessions · small bundle saving",
+    "ugxNote": "~UGX 75,000 · ~USD 22",
+    "citiesLine": "African professionals, students and families in Zurich, Geneva, Basel and across Switzerland",
+    "title": "African Therapist Online in Switzerland | Zurich from ~CHF 20",
+    "description": "Licensed African therapists online for Africans and diaspora in Switzerland: anxiety and depression, workplace stress, perfectionism, relationship difficulties. Video ~CHF 20 · chat ~CHF 8. Cultural fit, private, WhatsApp +256 792 085 773.",
+    "h1": "Book an African therapist online in Switzerland. From ~CHF 20.",
+    "h1Line2": "Zurich · Geneva · Basel. Cultural fit. Visa ready.",
+    "introLine1": "For Africans abroad ready to invest in confidential, culturally grounded care.",
+    "introLine2": "From about CHF 20 · Pay by Visa · Book in about 2 minutes.",
+    "paymentLabel": "Visa / card",
+    "paymentAccepted": [
+      "Visa",
+      "Card"
+    ],
+    "trustPayment": "Visa accepted",
+    "problemHeadline": "Life in Switzerland can be good on paper — and still leave you carrying anxiety and depression alone.",
+    "problemSource": "Common reasons people in Switzerland seek therapy",
+    "problemBody": [
+      "People in Switzerland most often seek therapy for anxiety and depression, workplace stress, perfectionism, relationship difficulties. For Africans living there, migration, distance from family and explaining your culture every session can add to it.",
+      "InnerSpark connects you with licensed African therapists who already understand where you come from, at a clear CHF price, by video or chat."
+    ],
+    "howHeadline": "From anywhere in Switzerland — therapy with cultural fit in 3 steps.",
+    "howSteps": [
+      "Choose your therapist",
+      "Book and pay by Visa",
+      "Connect on WhatsApp"
+    ],
+    "howBodies": [
+      "Browse licensed African therapists. Filter by concern, gender and language.",
+      "Video about CHF 20 or chat about CHF 8. Your card confirms the final amount.",
+      "Join by WhatsApp video or voice after work, from home. No new app."
+    ],
+    "paymentHowTitle": "How payment works in Switzerland",
+    "paymentHowSteps": [
+      "Choose video (~CHF 20) or chat (~CHF 8)",
+      "Pay by Visa / international card",
+      "Receive WhatsApp confirmation and your session time",
+      "Message us if anything needs follow-up"
+    ],
+    "paymentTip": "This is cross-border support with African therapists — not a Switzerland emergency or insurance service.",
+    "offerCompare": "A clear price and a therapist who understands African family life — without rebuilding your whole context every week.",
+    "concerns": [
+      "Anxiety and depression",
+      "Workplace stress",
+      "Perfectionism",
+      "Relationship difficulties",
+      "Loneliness",
+      "Emotional exhaustion"
+    ],
+    "cities": [
+      {
+        "id": "zurich",
+        "city": "Zurich",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Zurich — evenings included.",
+        "kw": "African therapist Zurich"
+      },
+      {
+        "id": "geneva",
+        "city": "Geneva",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Geneva — evenings included.",
+        "kw": "African therapist Geneva"
+      },
+      {
+        "id": "basel",
+        "city": "Basel",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Basel — evenings included.",
+        "kw": "African therapist Basel"
+      },
+      {
+        "id": "lausanne",
+        "city": "Lausanne",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Lausanne — evenings included.",
+        "kw": "African therapist Lausanne"
+      }
+    ],
+    "testimonials": [],
+    "faqs": [
+      {
+        "q": "How much does InnerSpark cost in Switzerland?",
+        "a": "Video therapy is about CHF 20 and chat therapy about CHF 8 per session. Your card confirms the final amount."
+      },
+      {
+        "q": "Are your therapists African?",
+        "a": "Yes. InnerSpark therapists are licensed African professionals who understand migration, family duty and living between cultures."
+      },
+      {
+        "q": "What can I get help with?",
+        "a": "Anxiety and depression, Workplace stress, Perfectionism, Relationship difficulties, Loneliness, Emotional exhaustion."
+      },
+      {
+        "q": "How do sessions work across time zones?",
+        "a": "Share your city and availability when you book, and we match you to a practical time in Switzerland."
+      },
+      {
+        "q": "Is this emergency care?",
+        "a": "No. If you are in immediate danger in Switzerland, call 112 or 143."
+      }
+    ],
+    "related": [
+      {
+        "to": "/online-therapy-diaspora",
+        "label": "Therapy for Africans abroad",
+        "tag": "Diaspora",
+        "blurb": "Why cultural fit changes the first session."
+      },
+      {
+        "to": "/specialists",
+        "label": "Meet African therapists",
+        "tag": "Therapists",
+        "blurb": "Licensed profiles before you pay."
+      }
+    ],
+    "finalCta": "Book my first session — from CHF 20",
+    "whatsappPrefill": "Hi InnerSpark, I am in Switzerland and want to book a licensed African therapist. Please confirm price and time zones.",
+    "schemaCities": [
+      "Zurich",
+      "Geneva",
+      "Basel"
+    ]
+  },
+  "belgium": {
+    "slug": "belgium",
+    "countryLabel": "Belgium",
+    "code": "BE",
+    "flag": "BE",
+    "currency": "EUR",
+    "videoPrice": "EUR 20",
+    "videoAmount": 20,
+    "chatPrice": "EUR 8",
+    "monthlyPrice": "EUR 74",
+    "monthlyNote": "4 sessions · small bundle saving",
+    "ugxNote": "~UGX 75,000 · ~USD 22",
+    "citiesLine": "African professionals, students and families in Brussels, Antwerp, Ghent and across Belgium",
+    "title": "African Therapist Online in Belgium | Brussels from ~EUR 20",
+    "description": "Licensed African therapists online for Africans and diaspora in Belgium: depression and anxiety, relationship difficulties, family conflict, workplace burnout. Video ~EUR 20 · chat ~EUR 8. Cultural fit, private, WhatsApp +256 792 085 773.",
+    "h1": "Book an African therapist online in Belgium. From ~EUR 20.",
+    "h1Line2": "Brussels · Antwerp · Ghent. Cultural fit. Visa ready.",
+    "introLine1": "For Africans abroad ready to invest in confidential, culturally grounded care.",
+    "introLine2": "From about EUR 20 · Pay by Visa · Book in about 2 minutes.",
+    "paymentLabel": "Visa / card",
+    "paymentAccepted": [
+      "Visa",
+      "Card"
+    ],
+    "trustPayment": "Visa accepted",
+    "problemHeadline": "Life in Belgium can be good on paper — and still leave you carrying depression and anxiety alone.",
+    "problemSource": "Common reasons people in Belgium seek therapy",
+    "problemBody": [
+      "People in Belgium most often seek therapy for depression and anxiety, relationship difficulties, family conflict, workplace burnout. For Africans living there, migration, distance from family and explaining your culture every session can add to it.",
+      "InnerSpark connects you with licensed African therapists who already understand where you come from, at a clear EUR price, by video or chat."
+    ],
+    "howHeadline": "From anywhere in Belgium — therapy with cultural fit in 3 steps.",
+    "howSteps": [
+      "Choose your therapist",
+      "Book and pay by Visa",
+      "Connect on WhatsApp"
+    ],
+    "howBodies": [
+      "Browse licensed African therapists. Filter by concern, gender and language.",
+      "Video about EUR 20 or chat about EUR 8. Your card confirms the final amount.",
+      "Join by WhatsApp video or voice after work, from home. No new app."
+    ],
+    "paymentHowTitle": "How payment works in Belgium",
+    "paymentHowSteps": [
+      "Choose video (~EUR 20) or chat (~EUR 8)",
+      "Pay by Visa / international card",
+      "Receive WhatsApp confirmation and your session time",
+      "Message us if anything needs follow-up"
+    ],
+    "paymentTip": "This is cross-border support with African therapists — not a Belgium emergency or insurance service.",
+    "offerCompare": "A clear price and a therapist who understands African family life — without rebuilding your whole context every week.",
+    "concerns": [
+      "Depression and anxiety",
+      "Relationship difficulties",
+      "Family conflict",
+      "Workplace burnout",
+      "Trauma and grief",
+      "Social isolation"
+    ],
+    "cities": [
+      {
+        "id": "brussels",
+        "city": "Brussels",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Brussels — evenings included.",
+        "kw": "African therapist Brussels"
+      },
+      {
+        "id": "antwerp",
+        "city": "Antwerp",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Antwerp — evenings included.",
+        "kw": "African therapist Antwerp"
+      },
+      {
+        "id": "ghent",
+        "city": "Ghent",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Ghent — evenings included.",
+        "kw": "African therapist Ghent"
+      },
+      {
+        "id": "liege",
+        "city": "Liège",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Liège — evenings included.",
+        "kw": "African therapist Liège"
+      }
+    ],
+    "testimonials": [],
+    "faqs": [
+      {
+        "q": "How much does InnerSpark cost in Belgium?",
+        "a": "Video therapy is about EUR 20 and chat therapy about EUR 8 per session. Your card confirms the final amount."
+      },
+      {
+        "q": "Are your therapists African?",
+        "a": "Yes. InnerSpark therapists are licensed African professionals who understand migration, family duty and living between cultures."
+      },
+      {
+        "q": "What can I get help with?",
+        "a": "Depression and anxiety, Relationship difficulties, Family conflict, Workplace burnout, Trauma and grief, Social isolation."
+      },
+      {
+        "q": "How do sessions work across time zones?",
+        "a": "Share your city and availability when you book, and we match you to a practical time in Belgium."
+      },
+      {
+        "q": "Is this emergency care?",
+        "a": "No. If you are in immediate danger in Belgium, call 112."
+      }
+    ],
+    "related": [
+      {
+        "to": "/online-therapy-diaspora",
+        "label": "Therapy for Africans abroad",
+        "tag": "Diaspora",
+        "blurb": "Why cultural fit changes the first session."
+      },
+      {
+        "to": "/specialists",
+        "label": "Meet African therapists",
+        "tag": "Therapists",
+        "blurb": "Licensed profiles before you pay."
+      }
+    ],
+    "finalCta": "Book my first session — from EUR 20",
+    "whatsappPrefill": "Hi InnerSpark, I am in Belgium and want to book a licensed African therapist. Please confirm price and time zones.",
+    "schemaCities": [
+      "Brussels",
+      "Antwerp",
+      "Ghent"
+    ]
+  },
+  "spain": {
+    "slug": "spain",
+    "countryLabel": "Spain",
+    "code": "ES",
+    "flag": "ES",
+    "currency": "EUR",
+    "videoPrice": "EUR 20",
+    "videoAmount": 20,
+    "chatPrice": "EUR 8",
+    "monthlyPrice": "EUR 74",
+    "monthlyNote": "4 sessions · small bundle saving",
+    "ugxNote": "~UGX 75,000 · ~USD 22",
+    "citiesLine": "African professionals, students and families in Madrid, Barcelona, Valencia and across Spain",
+    "title": "African Therapist Online in Spain | Madrid from ~EUR 20",
+    "description": "Licensed African therapists online for Africans and diaspora in Spain: anxiety and depression, relationship and marital problems, family conflict, low self-esteem. Video ~EUR 20 · chat ~EUR 8. Cultural fit, private, WhatsApp +256 792 085 773.",
+    "h1": "Book an African therapist online in Spain. From ~EUR 20.",
+    "h1Line2": "Madrid · Barcelona · Valencia. Cultural fit. Visa ready.",
+    "introLine1": "For Africans abroad ready to invest in confidential, culturally grounded care.",
+    "introLine2": "From about EUR 20 · Pay by Visa · Book in about 2 minutes.",
+    "paymentLabel": "Visa / card",
+    "paymentAccepted": [
+      "Visa",
+      "Card"
+    ],
+    "trustPayment": "Visa accepted",
+    "problemHeadline": "Life in Spain can be good on paper — and still leave you carrying anxiety and depression alone.",
+    "problemSource": "Common reasons people in Spain seek therapy",
+    "problemBody": [
+      "People in Spain most often seek therapy for anxiety and depression, relationship and marital problems, family conflict, low self-esteem. For Africans living there, migration, distance from family and explaining your culture every session can add to it.",
+      "InnerSpark connects you with licensed African therapists who already understand where you come from, at a clear EUR price, by video or chat."
+    ],
+    "howHeadline": "From anywhere in Spain — therapy with cultural fit in 3 steps.",
+    "howSteps": [
+      "Choose your therapist",
+      "Book and pay by Visa",
+      "Connect on WhatsApp"
+    ],
+    "howBodies": [
+      "Browse licensed African therapists. Filter by concern, gender and language.",
+      "Video about EUR 20 or chat about EUR 8. Your card confirms the final amount.",
+      "Join by WhatsApp video or voice after work, from home. No new app."
+    ],
+    "paymentHowTitle": "How payment works in Spain",
+    "paymentHowSteps": [
+      "Choose video (~EUR 20) or chat (~EUR 8)",
+      "Pay by Visa / international card",
+      "Receive WhatsApp confirmation and your session time",
+      "Message us if anything needs follow-up"
+    ],
+    "paymentTip": "This is cross-border support with African therapists — not a Spain emergency or insurance service.",
+    "offerCompare": "A clear price and a therapist who understands African family life — without rebuilding your whole context every week.",
+    "concerns": [
+      "Anxiety and depression",
+      "Relationship and marital problems",
+      "Family conflict",
+      "Low self-esteem",
+      "Loneliness",
+      "Work-related stress"
+    ],
+    "cities": [
+      {
+        "id": "madrid",
+        "city": "Madrid",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Madrid — evenings included.",
+        "kw": "African therapist Madrid"
+      },
+      {
+        "id": "barcelona",
+        "city": "Barcelona",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Barcelona — evenings included.",
+        "kw": "African therapist Barcelona"
+      },
+      {
+        "id": "valencia",
+        "city": "Valencia",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Valencia — evenings included.",
+        "kw": "African therapist Valencia"
+      },
+      {
+        "id": "seville",
+        "city": "Seville",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Seville — evenings included.",
+        "kw": "African therapist Seville"
+      }
+    ],
+    "testimonials": [],
+    "faqs": [
+      {
+        "q": "How much does InnerSpark cost in Spain?",
+        "a": "Video therapy is about EUR 20 and chat therapy about EUR 8 per session. Your card confirms the final amount."
+      },
+      {
+        "q": "Are your therapists African?",
+        "a": "Yes. InnerSpark therapists are licensed African professionals who understand migration, family duty and living between cultures."
+      },
+      {
+        "q": "What can I get help with?",
+        "a": "Anxiety and depression, Relationship and marital problems, Family conflict, Low self-esteem, Loneliness, Work-related stress."
+      },
+      {
+        "q": "How do sessions work across time zones?",
+        "a": "Share your city and availability when you book, and we match you to a practical time in Spain."
+      },
+      {
+        "q": "Is this emergency care?",
+        "a": "No. If you are in immediate danger in Spain, call 112 or 024."
+      }
+    ],
+    "related": [
+      {
+        "to": "/online-therapy-diaspora",
+        "label": "Therapy for Africans abroad",
+        "tag": "Diaspora",
+        "blurb": "Why cultural fit changes the first session."
+      },
+      {
+        "to": "/specialists",
+        "label": "Meet African therapists",
+        "tag": "Therapists",
+        "blurb": "Licensed profiles before you pay."
+      }
+    ],
+    "finalCta": "Book my first session — from EUR 20",
+    "whatsappPrefill": "Hi InnerSpark, I am in Spain and want to book a licensed African therapist. Please confirm price and time zones.",
+    "schemaCities": [
+      "Madrid",
+      "Barcelona",
+      "Valencia"
+    ]
+  },
+  "portugal": {
+    "slug": "portugal",
+    "countryLabel": "Portugal",
+    "code": "PT",
+    "flag": "PT",
+    "currency": "EUR",
+    "videoPrice": "EUR 20",
+    "videoAmount": 20,
+    "chatPrice": "EUR 8",
+    "monthlyPrice": "EUR 74",
+    "monthlyNote": "4 sessions · small bundle saving",
+    "ugxNote": "~UGX 75,000 · ~USD 22",
+    "citiesLine": "African professionals, students and families in Lisbon, Porto, Faro and across Portugal",
+    "title": "African Therapist Online in Portugal | Lisbon from ~EUR 20",
+    "description": "Licensed African therapists online for Africans and diaspora in Portugal: anxiety and depression, loneliness, relationship difficulties, workplace stress. Video ~EUR 20 · chat ~EUR 8. Cultural fit, private, WhatsApp +256 792 085 773.",
+    "h1": "Book an African therapist online in Portugal. From ~EUR 20.",
+    "h1Line2": "Lisbon · Porto · Faro. Cultural fit. Visa ready.",
+    "introLine1": "For Africans abroad ready to invest in confidential, culturally grounded care.",
+    "introLine2": "From about EUR 20 · Pay by Visa · Book in about 2 minutes.",
+    "paymentLabel": "Visa / card",
+    "paymentAccepted": [
+      "Visa",
+      "Card"
+    ],
+    "trustPayment": "Visa accepted",
+    "problemHeadline": "Life in Portugal can be good on paper — and still leave you carrying anxiety and depression alone.",
+    "problemSource": "Common reasons people in Portugal seek therapy",
+    "problemBody": [
+      "People in Portugal most often seek therapy for anxiety and depression, loneliness, relationship difficulties, workplace stress. For Africans living there, migration, distance from family and explaining your culture every session can add to it.",
+      "InnerSpark connects you with licensed African therapists who already understand where you come from, at a clear EUR price, by video or chat."
+    ],
+    "howHeadline": "From anywhere in Portugal — therapy with cultural fit in 3 steps.",
+    "howSteps": [
+      "Choose your therapist",
+      "Book and pay by Visa",
+      "Connect on WhatsApp"
+    ],
+    "howBodies": [
+      "Browse licensed African therapists. Filter by concern, gender and language.",
+      "Video about EUR 20 or chat about EUR 8. Your card confirms the final amount.",
+      "Join by WhatsApp video or voice after work, from home. No new app."
+    ],
+    "paymentHowTitle": "How payment works in Portugal",
+    "paymentHowSteps": [
+      "Choose video (~EUR 20) or chat (~EUR 8)",
+      "Pay by Visa / international card",
+      "Receive WhatsApp confirmation and your session time",
+      "Message us if anything needs follow-up"
+    ],
+    "paymentTip": "This is cross-border support with African therapists — not a Portugal emergency or insurance service.",
+    "offerCompare": "A clear price and a therapist who understands African family life — without rebuilding your whole context every week.",
+    "concerns": [
+      "Anxiety and depression",
+      "Loneliness",
+      "Relationship difficulties",
+      "Workplace stress",
+      "Grief",
+      "Family conflict"
+    ],
+    "cities": [
+      {
+        "id": "lisbon",
+        "city": "Lisbon",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Lisbon — evenings included.",
+        "kw": "African therapist Lisbon"
+      },
+      {
+        "id": "porto",
+        "city": "Porto",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Porto — evenings included.",
+        "kw": "African therapist Porto"
+      },
+      {
+        "id": "faro",
+        "city": "Faro",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Faro — evenings included.",
+        "kw": "African therapist Faro"
+      },
+      {
+        "id": "braga",
+        "city": "Braga",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Braga — evenings included.",
+        "kw": "African therapist Braga"
+      }
+    ],
+    "testimonials": [],
+    "faqs": [
+      {
+        "q": "How much does InnerSpark cost in Portugal?",
+        "a": "Video therapy is about EUR 20 and chat therapy about EUR 8 per session. Your card confirms the final amount."
+      },
+      {
+        "q": "Are your therapists African?",
+        "a": "Yes. InnerSpark therapists are licensed African professionals who understand migration, family duty and living between cultures."
+      },
+      {
+        "q": "What can I get help with?",
+        "a": "Anxiety and depression, Loneliness, Relationship difficulties, Workplace stress, Grief, Family conflict."
+      },
+      {
+        "q": "How do sessions work across time zones?",
+        "a": "Share your city and availability when you book, and we match you to a practical time in Portugal."
+      },
+      {
+        "q": "Is this emergency care?",
+        "a": "No. If you are in immediate danger in Portugal, call 112."
+      }
+    ],
+    "related": [
+      {
+        "to": "/online-therapy-diaspora",
+        "label": "Therapy for Africans abroad",
+        "tag": "Diaspora",
+        "blurb": "Why cultural fit changes the first session."
+      },
+      {
+        "to": "/specialists",
+        "label": "Meet African therapists",
+        "tag": "Therapists",
+        "blurb": "Licensed profiles before you pay."
+      }
+    ],
+    "finalCta": "Book my first session — from EUR 20",
+    "whatsappPrefill": "Hi InnerSpark, I am in Portugal and want to book a licensed African therapist. Please confirm price and time zones.",
+    "schemaCities": [
+      "Lisbon",
+      "Porto",
+      "Faro"
+    ]
+  },
+  "italy": {
+    "slug": "italy",
+    "countryLabel": "Italy",
+    "code": "IT",
+    "flag": "IT",
+    "currency": "EUR",
+    "videoPrice": "EUR 20",
+    "videoAmount": 20,
+    "chatPrice": "EUR 8",
+    "monthlyPrice": "EUR 74",
+    "monthlyNote": "4 sessions · small bundle saving",
+    "ugxNote": "~UGX 75,000 · ~USD 22",
+    "citiesLine": "African professionals, students and families in Rome, Milan, Turin and across Italy",
+    "title": "African Therapist Online in Italy | Rome from ~EUR 20",
+    "description": "Licensed African therapists online for Africans and diaspora in Italy: anxiety and depression, relationship and marriage problems, family conflict, emotional distress. Video ~EUR 20 · chat ~EUR 8. Cultural fit, private, WhatsApp +256 792 085 773.",
+    "h1": "Book an African therapist online in Italy. From ~EUR 20.",
+    "h1Line2": "Rome · Milan · Turin. Cultural fit. Visa ready.",
+    "introLine1": "For Africans abroad ready to invest in confidential, culturally grounded care.",
+    "introLine2": "From about EUR 20 · Pay by Visa · Book in about 2 minutes.",
+    "paymentLabel": "Visa / card",
+    "paymentAccepted": [
+      "Visa",
+      "Card"
+    ],
+    "trustPayment": "Visa accepted",
+    "problemHeadline": "Life in Italy can be good on paper — and still leave you carrying anxiety and depression alone.",
+    "problemSource": "Common reasons people in Italy seek therapy",
+    "problemBody": [
+      "People in Italy most often seek therapy for anxiety and depression, relationship and marriage problems, family conflict, emotional distress. For Africans living there, migration, distance from family and explaining your culture every session can add to it.",
+      "InnerSpark connects you with licensed African therapists who already understand where you come from, at a clear EUR price, by video or chat."
+    ],
+    "howHeadline": "From anywhere in Italy — therapy with cultural fit in 3 steps.",
+    "howSteps": [
+      "Choose your therapist",
+      "Book and pay by Visa",
+      "Connect on WhatsApp"
+    ],
+    "howBodies": [
+      "Browse licensed African therapists. Filter by concern, gender and language.",
+      "Video about EUR 20 or chat about EUR 8. Your card confirms the final amount.",
+      "Join by WhatsApp video or voice after work, from home. No new app."
+    ],
+    "paymentHowTitle": "How payment works in Italy",
+    "paymentHowSteps": [
+      "Choose video (~EUR 20) or chat (~EUR 8)",
+      "Pay by Visa / international card",
+      "Receive WhatsApp confirmation and your session time",
+      "Message us if anything needs follow-up"
+    ],
+    "paymentTip": "This is cross-border support with African therapists — not a Italy emergency or insurance service.",
+    "offerCompare": "A clear price and a therapist who understands African family life — without rebuilding your whole context every week.",
+    "concerns": [
+      "Anxiety and depression",
+      "Relationship and marriage problems",
+      "Family conflict",
+      "Emotional distress",
+      "Work-related stress",
+      "Grief and bereavement"
+    ],
+    "cities": [
+      {
+        "id": "rome",
+        "city": "Rome",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Rome — evenings included.",
+        "kw": "African therapist Rome"
+      },
+      {
+        "id": "milan",
+        "city": "Milan",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Milan — evenings included.",
+        "kw": "African therapist Milan"
+      },
+      {
+        "id": "turin",
+        "city": "Turin",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Turin — evenings included.",
+        "kw": "African therapist Turin"
+      },
+      {
+        "id": "naples",
+        "city": "Naples",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Naples — evenings included.",
+        "kw": "African therapist Naples"
+      }
+    ],
+    "testimonials": [],
+    "faqs": [
+      {
+        "q": "How much does InnerSpark cost in Italy?",
+        "a": "Video therapy is about EUR 20 and chat therapy about EUR 8 per session. Your card confirms the final amount."
+      },
+      {
+        "q": "Are your therapists African?",
+        "a": "Yes. InnerSpark therapists are licensed African professionals who understand migration, family duty and living between cultures."
+      },
+      {
+        "q": "What can I get help with?",
+        "a": "Anxiety and depression, Relationship and marriage problems, Family conflict, Emotional distress, Work-related stress, Grief and bereavement."
+      },
+      {
+        "q": "How do sessions work across time zones?",
+        "a": "Share your city and availability when you book, and we match you to a practical time in Italy."
+      },
+      {
+        "q": "Is this emergency care?",
+        "a": "No. If you are in immediate danger in Italy, call 112."
+      }
+    ],
+    "related": [
+      {
+        "to": "/online-therapy-diaspora",
+        "label": "Therapy for Africans abroad",
+        "tag": "Diaspora",
+        "blurb": "Why cultural fit changes the first session."
+      },
+      {
+        "to": "/specialists",
+        "label": "Meet African therapists",
+        "tag": "Therapists",
+        "blurb": "Licensed profiles before you pay."
+      }
+    ],
+    "finalCta": "Book my first session — from EUR 20",
+    "whatsappPrefill": "Hi InnerSpark, I am in Italy and want to book a licensed African therapist. Please confirm price and time zones.",
+    "schemaCities": [
+      "Rome",
+      "Milan",
+      "Turin"
+    ]
+  },
+  "norway": {
+    "slug": "norway",
+    "countryLabel": "Norway",
+    "code": "NO",
+    "flag": "NO",
+    "currency": "NOK",
+    "videoPrice": "NOK 240",
+    "videoAmount": 240,
+    "chatPrice": "NOK 95",
+    "monthlyPrice": "NOK 888",
+    "monthlyNote": "4 sessions · small bundle saving",
+    "ugxNote": "~UGX 75,000 · ~USD 22",
+    "citiesLine": "African professionals, students and families in Oslo, Bergen, Trondheim and across Norway",
+    "title": "African Therapist Online in Norway | Oslo from ~NOK 240",
+    "description": "Licensed African therapists online for Africans and diaspora in Norway: depression and anxiety, loneliness, seasonal emotional difficulties, relationship problems. Video ~NOK 240 · chat ~NOK 95. Cultural fit, private, WhatsApp +256 792 085 773.",
+    "h1": "Book an African therapist online in Norway. From ~NOK 240.",
+    "h1Line2": "Oslo · Bergen · Trondheim. Cultural fit. Visa ready.",
+    "introLine1": "For Africans abroad ready to invest in confidential, culturally grounded care.",
+    "introLine2": "From about NOK 240 · Pay by Visa · Book in about 2 minutes.",
+    "paymentLabel": "Visa / card",
+    "paymentAccepted": [
+      "Visa",
+      "Card"
+    ],
+    "trustPayment": "Visa accepted",
+    "problemHeadline": "Life in Norway can be good on paper — and still leave you carrying depression and anxiety alone.",
+    "problemSource": "Common reasons people in Norway seek therapy",
+    "problemBody": [
+      "People in Norway most often seek therapy for depression and anxiety, loneliness, seasonal emotional difficulties, relationship problems. For Africans living there, migration, distance from family and explaining your culture every session can add to it.",
+      "InnerSpark connects you with licensed African therapists who already understand where you come from, at a clear NOK price, by video or chat."
+    ],
+    "howHeadline": "From anywhere in Norway — therapy with cultural fit in 3 steps.",
+    "howSteps": [
+      "Choose your therapist",
+      "Book and pay by Visa",
+      "Connect on WhatsApp"
+    ],
+    "howBodies": [
+      "Browse licensed African therapists. Filter by concern, gender and language.",
+      "Video about NOK 240 or chat about NOK 95. Your card confirms the final amount.",
+      "Join by WhatsApp video or voice after work, from home. No new app."
+    ],
+    "paymentHowTitle": "How payment works in Norway",
+    "paymentHowSteps": [
+      "Choose video (~NOK 240) or chat (~NOK 95)",
+      "Pay by Visa / international card",
+      "Receive WhatsApp confirmation and your session time",
+      "Message us if anything needs follow-up"
+    ],
+    "paymentTip": "This is cross-border support with African therapists — not a Norway emergency or insurance service.",
+    "offerCompare": "A clear price and a therapist who understands African family life — without rebuilding your whole context every week.",
+    "concerns": [
+      "Depression and anxiety",
+      "Loneliness",
+      "Seasonal emotional difficulties",
+      "Relationship problems",
+      "Workplace stress",
+      "Family conflict"
+    ],
+    "cities": [
+      {
+        "id": "oslo",
+        "city": "Oslo",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Oslo — evenings included.",
+        "kw": "African therapist Oslo"
+      },
+      {
+        "id": "bergen",
+        "city": "Bergen",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Bergen — evenings included.",
+        "kw": "African therapist Bergen"
+      },
+      {
+        "id": "trondheim",
+        "city": "Trondheim",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Trondheim — evenings included.",
+        "kw": "African therapist Trondheim"
+      },
+      {
+        "id": "stavanger",
+        "city": "Stavanger",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Stavanger — evenings included.",
+        "kw": "African therapist Stavanger"
+      }
+    ],
+    "testimonials": [],
+    "faqs": [
+      {
+        "q": "How much does InnerSpark cost in Norway?",
+        "a": "Video therapy is about NOK 240 and chat therapy about NOK 95 per session. Your card confirms the final amount."
+      },
+      {
+        "q": "Are your therapists African?",
+        "a": "Yes. InnerSpark therapists are licensed African professionals who understand migration, family duty and living between cultures."
+      },
+      {
+        "q": "What can I get help with?",
+        "a": "Depression and anxiety, Loneliness, Seasonal emotional difficulties, Relationship problems, Workplace stress, Family conflict."
+      },
+      {
+        "q": "How do sessions work across time zones?",
+        "a": "Share your city and availability when you book, and we match you to a practical time in Norway."
+      },
+      {
+        "q": "Is this emergency care?",
+        "a": "No. If you are in immediate danger in Norway, call 113."
+      }
+    ],
+    "related": [
+      {
+        "to": "/online-therapy-diaspora",
+        "label": "Therapy for Africans abroad",
+        "tag": "Diaspora",
+        "blurb": "Why cultural fit changes the first session."
+      },
+      {
+        "to": "/specialists",
+        "label": "Meet African therapists",
+        "tag": "Therapists",
+        "blurb": "Licensed profiles before you pay."
+      }
+    ],
+    "finalCta": "Book my first session — from NOK 240",
+    "whatsappPrefill": "Hi InnerSpark, I am in Norway and want to book a licensed African therapist. Please confirm price and time zones.",
+    "schemaCities": [
+      "Oslo",
+      "Bergen",
+      "Trondheim"
+    ]
+  },
+  "sweden": {
+    "slug": "sweden",
+    "countryLabel": "Sweden",
+    "code": "SE",
+    "flag": "SE",
+    "currency": "SEK",
+    "videoPrice": "SEK 235",
+    "videoAmount": 235,
+    "chatPrice": "SEK 95",
+    "monthlyPrice": "SEK 870",
+    "monthlyNote": "4 sessions · small bundle saving",
+    "ugxNote": "~UGX 75,000 · ~USD 22",
+    "citiesLine": "African professionals, students and families in Stockholm, Gothenburg, Malmö and across Sweden",
+    "title": "African Therapist Online in Sweden | Stockholm from ~SEK 235",
+    "description": "Licensed African therapists online for Africans and diaspora in Sweden: anxiety and depression, social isolation, relationship difficulties, workplace burnout. Video ~SEK 235 · chat ~SEK 95. Cultural fit, private, WhatsApp +256 792 085 773.",
+    "h1": "Book an African therapist online in Sweden. From ~SEK 235.",
+    "h1Line2": "Stockholm · Gothenburg · Malmö. Cultural fit. Visa ready.",
+    "introLine1": "For Africans abroad ready to invest in confidential, culturally grounded care.",
+    "introLine2": "From about SEK 235 · Pay by Visa · Book in about 2 minutes.",
+    "paymentLabel": "Visa / card",
+    "paymentAccepted": [
+      "Visa",
+      "Card"
+    ],
+    "trustPayment": "Visa accepted",
+    "problemHeadline": "Life in Sweden can be good on paper — and still leave you carrying anxiety and depression alone.",
+    "problemSource": "Common reasons people in Sweden seek therapy",
+    "problemBody": [
+      "People in Sweden most often seek therapy for anxiety and depression, social isolation, relationship difficulties, workplace burnout. For Africans living there, migration, distance from family and explaining your culture every session can add to it.",
+      "InnerSpark connects you with licensed African therapists who already understand where you come from, at a clear SEK price, by video or chat."
+    ],
+    "howHeadline": "From anywhere in Sweden — therapy with cultural fit in 3 steps.",
+    "howSteps": [
+      "Choose your therapist",
+      "Book and pay by Visa",
+      "Connect on WhatsApp"
+    ],
+    "howBodies": [
+      "Browse licensed African therapists. Filter by concern, gender and language.",
+      "Video about SEK 235 or chat about SEK 95. Your card confirms the final amount.",
+      "Join by WhatsApp video or voice after work, from home. No new app."
+    ],
+    "paymentHowTitle": "How payment works in Sweden",
+    "paymentHowSteps": [
+      "Choose video (~SEK 235) or chat (~SEK 95)",
+      "Pay by Visa / international card",
+      "Receive WhatsApp confirmation and your session time",
+      "Message us if anything needs follow-up"
+    ],
+    "paymentTip": "This is cross-border support with African therapists — not a Sweden emergency or insurance service.",
+    "offerCompare": "A clear price and a therapist who understands African family life — without rebuilding your whole context every week.",
+    "concerns": [
+      "Anxiety and depression",
+      "Social isolation",
+      "Relationship difficulties",
+      "Workplace burnout",
+      "Family problems",
+      "Trauma"
+    ],
+    "cities": [
+      {
+        "id": "stockholm",
+        "city": "Stockholm",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Stockholm — evenings included.",
+        "kw": "African therapist Stockholm"
+      },
+      {
+        "id": "gothenburg",
+        "city": "Gothenburg",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Gothenburg — evenings included.",
+        "kw": "African therapist Gothenburg"
+      },
+      {
+        "id": "malmö",
+        "city": "Malmö",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Malmö — evenings included.",
+        "kw": "African therapist Malmö"
+      },
+      {
+        "id": "uppsala",
+        "city": "Uppsala",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Uppsala — evenings included.",
+        "kw": "African therapist Uppsala"
+      }
+    ],
+    "testimonials": [],
+    "faqs": [
+      {
+        "q": "How much does InnerSpark cost in Sweden?",
+        "a": "Video therapy is about SEK 235 and chat therapy about SEK 95 per session. Your card confirms the final amount."
+      },
+      {
+        "q": "Are your therapists African?",
+        "a": "Yes. InnerSpark therapists are licensed African professionals who understand migration, family duty and living between cultures."
+      },
+      {
+        "q": "What can I get help with?",
+        "a": "Anxiety and depression, Social isolation, Relationship difficulties, Workplace burnout, Family problems, Trauma."
+      },
+      {
+        "q": "How do sessions work across time zones?",
+        "a": "Share your city and availability when you book, and we match you to a practical time in Sweden."
+      },
+      {
+        "q": "Is this emergency care?",
+        "a": "No. If you are in immediate danger in Sweden, call 112."
+      }
+    ],
+    "related": [
+      {
+        "to": "/online-therapy-diaspora",
+        "label": "Therapy for Africans abroad",
+        "tag": "Diaspora",
+        "blurb": "Why cultural fit changes the first session."
+      },
+      {
+        "to": "/specialists",
+        "label": "Meet African therapists",
+        "tag": "Therapists",
+        "blurb": "Licensed profiles before you pay."
+      }
+    ],
+    "finalCta": "Book my first session — from SEK 235",
+    "whatsappPrefill": "Hi InnerSpark, I am in Sweden and want to book a licensed African therapist. Please confirm price and time zones.",
+    "schemaCities": [
+      "Stockholm",
+      "Gothenburg",
+      "Malmö"
+    ]
+  },
+  "denmark": {
+    "slug": "denmark",
+    "countryLabel": "Denmark",
+    "code": "DK",
+    "flag": "DK",
+    "currency": "DKK",
+    "videoPrice": "DKK 150",
+    "videoAmount": 150,
+    "chatPrice": "DKK 60",
+    "monthlyPrice": "DKK 555",
+    "monthlyNote": "4 sessions · small bundle saving",
+    "ugxNote": "~UGX 75,000 · ~USD 22",
+    "citiesLine": "African professionals, students and families in Copenhagen, Aarhus, Odense and across Denmark",
+    "title": "African Therapist Online in Denmark | Copenhagen from ~DKK 150",
+    "description": "Licensed African therapists online for Africans and diaspora in Denmark: anxiety and depression, work stress, relationship problems, parenting challenges. Video ~DKK 150 · chat ~DKK 60. Cultural fit, private, WhatsApp +256 792 085 773.",
+    "h1": "Book an African therapist online in Denmark. From ~DKK 150.",
+    "h1Line2": "Copenhagen · Aarhus · Odense. Cultural fit. Visa ready.",
+    "introLine1": "For Africans abroad ready to invest in confidential, culturally grounded care.",
+    "introLine2": "From about DKK 150 · Pay by Visa · Book in about 2 minutes.",
+    "paymentLabel": "Visa / card",
+    "paymentAccepted": [
+      "Visa",
+      "Card"
+    ],
+    "trustPayment": "Visa accepted",
+    "problemHeadline": "Life in Denmark can be good on paper — and still leave you carrying anxiety and depression alone.",
+    "problemSource": "Common reasons people in Denmark seek therapy",
+    "problemBody": [
+      "People in Denmark most often seek therapy for anxiety and depression, work stress, relationship problems, parenting challenges. For Africans living there, migration, distance from family and explaining your culture every session can add to it.",
+      "InnerSpark connects you with licensed African therapists who already understand where you come from, at a clear DKK price, by video or chat."
+    ],
+    "howHeadline": "From anywhere in Denmark — therapy with cultural fit in 3 steps.",
+    "howSteps": [
+      "Choose your therapist",
+      "Book and pay by Visa",
+      "Connect on WhatsApp"
+    ],
+    "howBodies": [
+      "Browse licensed African therapists. Filter by concern, gender and language.",
+      "Video about DKK 150 or chat about DKK 60. Your card confirms the final amount.",
+      "Join by WhatsApp video or voice after work, from home. No new app."
+    ],
+    "paymentHowTitle": "How payment works in Denmark",
+    "paymentHowSteps": [
+      "Choose video (~DKK 150) or chat (~DKK 60)",
+      "Pay by Visa / international card",
+      "Receive WhatsApp confirmation and your session time",
+      "Message us if anything needs follow-up"
+    ],
+    "paymentTip": "This is cross-border support with African therapists — not a Denmark emergency or insurance service.",
+    "offerCompare": "A clear price and a therapist who understands African family life — without rebuilding your whole context every week.",
+    "concerns": [
+      "Anxiety and depression",
+      "Work stress",
+      "Relationship problems",
+      "Parenting challenges",
+      "Loneliness",
+      "Grief and loss"
+    ],
+    "cities": [
+      {
+        "id": "copenhagen",
+        "city": "Copenhagen",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Copenhagen — evenings included.",
+        "kw": "African therapist Copenhagen"
+      },
+      {
+        "id": "aarhus",
+        "city": "Aarhus",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Aarhus — evenings included.",
+        "kw": "African therapist Aarhus"
+      },
+      {
+        "id": "odense",
+        "city": "Odense",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Odense — evenings included.",
+        "kw": "African therapist Odense"
+      },
+      {
+        "id": "aalborg",
+        "city": "Aalborg",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Aalborg — evenings included.",
+        "kw": "African therapist Aalborg"
+      }
+    ],
+    "testimonials": [],
+    "faqs": [
+      {
+        "q": "How much does InnerSpark cost in Denmark?",
+        "a": "Video therapy is about DKK 150 and chat therapy about DKK 60 per session. Your card confirms the final amount."
+      },
+      {
+        "q": "Are your therapists African?",
+        "a": "Yes. InnerSpark therapists are licensed African professionals who understand migration, family duty and living between cultures."
+      },
+      {
+        "q": "What can I get help with?",
+        "a": "Anxiety and depression, Work stress, Relationship problems, Parenting challenges, Loneliness, Grief and loss."
+      },
+      {
+        "q": "How do sessions work across time zones?",
+        "a": "Share your city and availability when you book, and we match you to a practical time in Denmark."
+      },
+      {
+        "q": "Is this emergency care?",
+        "a": "No. If you are in immediate danger in Denmark, call 112."
+      }
+    ],
+    "related": [
+      {
+        "to": "/online-therapy-diaspora",
+        "label": "Therapy for Africans abroad",
+        "tag": "Diaspora",
+        "blurb": "Why cultural fit changes the first session."
+      },
+      {
+        "to": "/specialists",
+        "label": "Meet African therapists",
+        "tag": "Therapists",
+        "blurb": "Licensed profiles before you pay."
+      }
+    ],
+    "finalCta": "Book my first session — from DKK 150",
+    "whatsappPrefill": "Hi InnerSpark, I am in Denmark and want to book a licensed African therapist. Please confirm price and time zones.",
+    "schemaCities": [
+      "Copenhagen",
+      "Aarhus",
+      "Odense"
+    ]
+  },
+  "finland": {
+    "slug": "finland",
+    "countryLabel": "Finland",
+    "code": "FI",
+    "flag": "FI",
+    "currency": "EUR",
+    "videoPrice": "EUR 20",
+    "videoAmount": 20,
+    "chatPrice": "EUR 8",
+    "monthlyPrice": "EUR 74",
+    "monthlyNote": "4 sessions · small bundle saving",
+    "ugxNote": "~UGX 75,000 · ~USD 22",
+    "citiesLine": "African professionals, students and families in Helsinki, Espoo, Tampere and across Finland",
+    "title": "African Therapist Online in Finland | Helsinki from ~EUR 20",
+    "description": "Licensed African therapists online for Africans and diaspora in Finland: depression, anxiety, loneliness, social anxiety. Video ~EUR 20 · chat ~EUR 8. Cultural fit, private, WhatsApp +256 792 085 773.",
+    "h1": "Book an African therapist online in Finland. From ~EUR 20.",
+    "h1Line2": "Helsinki · Espoo · Tampere. Cultural fit. Visa ready.",
+    "introLine1": "For Africans abroad ready to invest in confidential, culturally grounded care.",
+    "introLine2": "From about EUR 20 · Pay by Visa · Book in about 2 minutes.",
+    "paymentLabel": "Visa / card",
+    "paymentAccepted": [
+      "Visa",
+      "Card"
+    ],
+    "trustPayment": "Visa accepted",
+    "problemHeadline": "Life in Finland can be good on paper — and still leave you carrying depression alone.",
+    "problemSource": "Common reasons people in Finland seek therapy",
+    "problemBody": [
+      "People in Finland most often seek therapy for depression, anxiety, loneliness, social anxiety. For Africans living there, migration, distance from family and explaining your culture every session can add to it.",
+      "InnerSpark connects you with licensed African therapists who already understand where you come from, at a clear EUR price, by video or chat."
+    ],
+    "howHeadline": "From anywhere in Finland — therapy with cultural fit in 3 steps.",
+    "howSteps": [
+      "Choose your therapist",
+      "Book and pay by Visa",
+      "Connect on WhatsApp"
+    ],
+    "howBodies": [
+      "Browse licensed African therapists. Filter by concern, gender and language.",
+      "Video about EUR 20 or chat about EUR 8. Your card confirms the final amount.",
+      "Join by WhatsApp video or voice after work, from home. No new app."
+    ],
+    "paymentHowTitle": "How payment works in Finland",
+    "paymentHowSteps": [
+      "Choose video (~EUR 20) or chat (~EUR 8)",
+      "Pay by Visa / international card",
+      "Receive WhatsApp confirmation and your session time",
+      "Message us if anything needs follow-up"
+    ],
+    "paymentTip": "This is cross-border support with African therapists — not a Finland emergency or insurance service.",
+    "offerCompare": "A clear price and a therapist who understands African family life — without rebuilding your whole context every week.",
+    "concerns": [
+      "Depression",
+      "Anxiety",
+      "Loneliness",
+      "Social anxiety",
+      "Family conflict",
+      "Substance-use difficulties"
+    ],
+    "cities": [
+      {
+        "id": "helsinki",
+        "city": "Helsinki",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Helsinki — evenings included.",
+        "kw": "African therapist Helsinki"
+      },
+      {
+        "id": "espoo",
+        "city": "Espoo",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Espoo — evenings included.",
+        "kw": "African therapist Espoo"
+      },
+      {
+        "id": "tampere",
+        "city": "Tampere",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Tampere — evenings included.",
+        "kw": "African therapist Tampere"
+      },
+      {
+        "id": "turku",
+        "city": "Turku",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Turku — evenings included.",
+        "kw": "African therapist Turku"
+      }
+    ],
+    "testimonials": [],
+    "faqs": [
+      {
+        "q": "How much does InnerSpark cost in Finland?",
+        "a": "Video therapy is about EUR 20 and chat therapy about EUR 8 per session. Your card confirms the final amount."
+      },
+      {
+        "q": "Are your therapists African?",
+        "a": "Yes. InnerSpark therapists are licensed African professionals who understand migration, family duty and living between cultures."
+      },
+      {
+        "q": "What can I get help with?",
+        "a": "Depression, Anxiety, Loneliness, Social anxiety, Family conflict, Substance-use difficulties."
+      },
+      {
+        "q": "How do sessions work across time zones?",
+        "a": "Share your city and availability when you book, and we match you to a practical time in Finland."
+      },
+      {
+        "q": "Is this emergency care?",
+        "a": "No. If you are in immediate danger in Finland, call 112."
+      }
+    ],
+    "related": [
+      {
+        "to": "/online-therapy-diaspora",
+        "label": "Therapy for Africans abroad",
+        "tag": "Diaspora",
+        "blurb": "Why cultural fit changes the first session."
+      },
+      {
+        "to": "/specialists",
+        "label": "Meet African therapists",
+        "tag": "Therapists",
+        "blurb": "Licensed profiles before you pay."
+      }
+    ],
+    "finalCta": "Book my first session — from EUR 20",
+    "whatsappPrefill": "Hi InnerSpark, I am in Finland and want to book a licensed African therapist. Please confirm price and time zones.",
+    "schemaCities": [
+      "Helsinki",
+      "Espoo",
+      "Tampere"
+    ]
+  },
+  "australia": {
+    "slug": "australia",
+    "countryLabel": "Australia",
+    "code": "AU",
+    "flag": "AU",
+    "currency": "AUD",
+    "videoPrice": "AUD 34",
+    "videoAmount": 34,
+    "chatPrice": "AUD 14",
+    "monthlyPrice": "AUD 126",
+    "monthlyNote": "4 sessions · small bundle saving",
+    "ugxNote": "~UGX 75,000 · ~USD 22",
+    "citiesLine": "African professionals, students and families in Sydney, Melbourne, Brisbane and across Australia",
+    "title": "African Therapist Online in Australia | Sydney from ~AUD 34",
+    "description": "Licensed African therapists online for Africans and diaspora in Australia: anxiety and depression, relationship and marriage difficulties, workplace burnout, childhood trauma. Video ~AUD 34 · chat ~AUD 14. Cultural fit, private, WhatsApp +256 792 085 773.",
+    "h1": "Book an African therapist online in Australia. From ~AUD 34.",
+    "h1Line2": "Sydney · Melbourne · Brisbane. Cultural fit. Visa ready.",
+    "introLine1": "For Africans abroad ready to invest in confidential, culturally grounded care.",
+    "introLine2": "From about AUD 34 · Pay by Visa · Book in about 2 minutes.",
+    "paymentLabel": "Visa / card",
+    "paymentAccepted": [
+      "Visa",
+      "Card"
+    ],
+    "trustPayment": "Visa accepted",
+    "problemHeadline": "Life in Australia can be good on paper — and still leave you carrying anxiety and depression alone.",
+    "problemSource": "Common reasons people in Australia seek therapy",
+    "problemBody": [
+      "People in Australia most often seek therapy for anxiety and depression, relationship and marriage difficulties, workplace burnout, childhood trauma. For Africans living there, migration, distance from family and explaining your culture every session can add to it.",
+      "InnerSpark connects you with licensed African therapists who already understand where you come from, at a clear AUD price, by video or chat."
+    ],
+    "howHeadline": "From anywhere in Australia — therapy with cultural fit in 3 steps.",
+    "howSteps": [
+      "Choose your therapist",
+      "Book and pay by Visa",
+      "Connect on WhatsApp"
+    ],
+    "howBodies": [
+      "Browse licensed African therapists. Filter by concern, gender and language.",
+      "Video about AUD 34 or chat about AUD 14. Your card confirms the final amount.",
+      "Join by WhatsApp video or voice after work, from home. No new app."
+    ],
+    "paymentHowTitle": "How payment works in Australia",
+    "paymentHowSteps": [
+      "Choose video (~AUD 34) or chat (~AUD 14)",
+      "Pay by Visa / international card",
+      "Receive WhatsApp confirmation and your session time",
+      "Message us if anything needs follow-up"
+    ],
+    "paymentTip": "This is cross-border support with African therapists — not a Australia emergency or insurance service.",
+    "offerCompare": "A clear price and a therapist who understands African family life — without rebuilding your whole context every week.",
+    "concerns": [
+      "Anxiety and depression",
+      "Relationship and marriage difficulties",
+      "Workplace burnout",
+      "Childhood trauma",
+      "Grief",
+      "Low self-esteem"
+    ],
+    "cities": [
+      {
+        "id": "sydney",
+        "city": "Sydney",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Sydney — evenings included.",
+        "kw": "African therapist Sydney"
+      },
+      {
+        "id": "melbourne",
+        "city": "Melbourne",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Melbourne — evenings included.",
+        "kw": "African therapist Melbourne"
+      },
+      {
+        "id": "brisbane",
+        "city": "Brisbane",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Brisbane — evenings included.",
+        "kw": "African therapist Brisbane"
+      },
+      {
+        "id": "perth",
+        "city": "Perth",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Perth — evenings included.",
+        "kw": "African therapist Perth"
+      }
+    ],
+    "testimonials": [],
+    "faqs": [
+      {
+        "q": "How much does InnerSpark cost in Australia?",
+        "a": "Video therapy is about AUD 34 and chat therapy about AUD 14 per session. Your card confirms the final amount."
+      },
+      {
+        "q": "Are your therapists African?",
+        "a": "Yes. InnerSpark therapists are licensed African professionals who understand migration, family duty and living between cultures."
+      },
+      {
+        "q": "What can I get help with?",
+        "a": "Anxiety and depression, Relationship and marriage difficulties, Workplace burnout, Childhood trauma, Grief, Low self-esteem."
+      },
+      {
+        "q": "How do sessions work across time zones?",
+        "a": "Share your city and availability when you book, and we match you to a practical time in Australia."
+      },
+      {
+        "q": "Is this emergency care?",
+        "a": "No. If you are in immediate danger in Australia, call 000 or Lifeline on 13 11 14."
+      }
+    ],
+    "related": [
+      {
+        "to": "/online-therapy-diaspora",
+        "label": "Therapy for Africans abroad",
+        "tag": "Diaspora",
+        "blurb": "Why cultural fit changes the first session."
+      },
+      {
+        "to": "/specialists",
+        "label": "Meet African therapists",
+        "tag": "Therapists",
+        "blurb": "Licensed profiles before you pay."
+      }
+    ],
+    "finalCta": "Book my first session — from AUD 34",
+    "whatsappPrefill": "Hi InnerSpark, I am in Australia and want to book a licensed African therapist. Please confirm price and time zones.",
+    "schemaCities": [
+      "Sydney",
+      "Melbourne",
+      "Brisbane"
+    ]
+  },
+  "new-zealand": {
+    "slug": "new-zealand",
+    "countryLabel": "New Zealand",
+    "code": "NZ",
+    "flag": "NZ",
+    "currency": "NZD",
+    "videoPrice": "NZD 37",
+    "videoAmount": 37,
+    "chatPrice": "NZD 15",
+    "monthlyPrice": "NZD 137",
+    "monthlyNote": "4 sessions · small bundle saving",
+    "ugxNote": "~UGX 75,000 · ~USD 22",
+    "citiesLine": "African professionals, students and families in Auckland, Wellington, Christchurch and across New Zealand",
+    "title": "African Therapist Online in New Zealand | Auckland from ~NZD 37",
+    "description": "Licensed African therapists online for Africans and diaspora in New Zealand: depression and anxiety, relationship problems, grief, loneliness. Video ~NZD 37 · chat ~NZD 15. Cultural fit, private, WhatsApp +256 792 085 773.",
+    "h1": "Book an African therapist online in New Zealand. From ~NZD 37.",
+    "h1Line2": "Auckland · Wellington · Christchurch. Cultural fit. Visa ready.",
+    "introLine1": "For Africans abroad ready to invest in confidential, culturally grounded care.",
+    "introLine2": "From about NZD 37 · Pay by Visa · Book in about 2 minutes.",
+    "paymentLabel": "Visa / card",
+    "paymentAccepted": [
+      "Visa",
+      "Card"
+    ],
+    "trustPayment": "Visa accepted",
+    "problemHeadline": "Life in New Zealand can be good on paper — and still leave you carrying depression and anxiety alone.",
+    "problemSource": "Common reasons people in New Zealand seek therapy",
+    "problemBody": [
+      "People in New Zealand most often seek therapy for depression and anxiety, relationship problems, grief, loneliness. For Africans living there, migration, distance from family and explaining your culture every session can add to it.",
+      "InnerSpark connects you with licensed African therapists who already understand where you come from, at a clear NZD price, by video or chat."
+    ],
+    "howHeadline": "From anywhere in New Zealand — therapy with cultural fit in 3 steps.",
+    "howSteps": [
+      "Choose your therapist",
+      "Book and pay by Visa",
+      "Connect on WhatsApp"
+    ],
+    "howBodies": [
+      "Browse licensed African therapists. Filter by concern, gender and language.",
+      "Video about NZD 37 or chat about NZD 15. Your card confirms the final amount.",
+      "Join by WhatsApp video or voice after work, from home. No new app."
+    ],
+    "paymentHowTitle": "How payment works in New Zealand",
+    "paymentHowSteps": [
+      "Choose video (~NZD 37) or chat (~NZD 15)",
+      "Pay by Visa / international card",
+      "Receive WhatsApp confirmation and your session time",
+      "Message us if anything needs follow-up"
+    ],
+    "paymentTip": "This is cross-border support with African therapists — not a New Zealand emergency or insurance service.",
+    "offerCompare": "A clear price and a therapist who understands African family life — without rebuilding your whole context every week.",
+    "concerns": [
+      "Depression and anxiety",
+      "Relationship problems",
+      "Grief",
+      "Loneliness",
+      "Workplace stress",
+      "Trauma"
+    ],
+    "cities": [
+      {
+        "id": "auckland",
+        "city": "Auckland",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Auckland — evenings included.",
+        "kw": "African therapist Auckland"
+      },
+      {
+        "id": "wellington",
+        "city": "Wellington",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Wellington — evenings included.",
+        "kw": "African therapist Wellington"
+      },
+      {
+        "id": "christchurch",
+        "city": "Christchurch",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Christchurch — evenings included.",
+        "kw": "African therapist Christchurch"
+      },
+      {
+        "id": "hamilton",
+        "city": "Hamilton",
+        "body": "Private online sessions with a licensed African therapist from anywhere in Hamilton — evenings included.",
+        "kw": "African therapist Hamilton"
+      }
+    ],
+    "testimonials": [],
+    "faqs": [
+      {
+        "q": "How much does InnerSpark cost in New Zealand?",
+        "a": "Video therapy is about NZD 37 and chat therapy about NZD 15 per session. Your card confirms the final amount."
+      },
+      {
+        "q": "Are your therapists African?",
+        "a": "Yes. InnerSpark therapists are licensed African professionals who understand migration, family duty and living between cultures."
+      },
+      {
+        "q": "What can I get help with?",
+        "a": "Depression and anxiety, Relationship problems, Grief, Loneliness, Workplace stress, Trauma."
+      },
+      {
+        "q": "How do sessions work across time zones?",
+        "a": "Share your city and availability when you book, and we match you to a practical time in New Zealand."
+      },
+      {
+        "q": "Is this emergency care?",
+        "a": "No. If you are in immediate danger in New Zealand, call 111 or text 1737."
+      }
+    ],
+    "related": [
+      {
+        "to": "/online-therapy-diaspora",
+        "label": "Therapy for Africans abroad",
+        "tag": "Diaspora",
+        "blurb": "Why cultural fit changes the first session."
+      },
+      {
+        "to": "/specialists",
+        "label": "Meet African therapists",
+        "tag": "Therapists",
+        "blurb": "Licensed profiles before you pay."
+      }
+    ],
+    "finalCta": "Book my first session — from NZD 37",
+    "whatsappPrefill": "Hi InnerSpark, I am in New Zealand and want to book a licensed African therapist. Please confirm price and time zones.",
+    "schemaCities": [
+      "Auckland",
+      "Wellington",
+      "Christchurch"
+    ]
+  },
 };

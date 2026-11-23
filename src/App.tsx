@@ -548,6 +548,23 @@ const App = () => (
                 <Route path="/rwanda" element={<LocalizedTherapy marketOverride="rwanda" />} />
                 <Route path="/botswana" element={<LocalizedTherapy marketOverride="botswana" />} />
                 <Route path="/namibia" element={<LocalizedTherapy marketOverride="namibia" />} />
+                <Route path="/canada" element={<LocalizedTherapy marketOverride="canada" />} />
+                <Route path="/uk" element={<LocalizedTherapy marketOverride="uk" />} />
+                <Route path="/ireland" element={<LocalizedTherapy marketOverride="ireland" />} />
+                <Route path="/germany" element={<LocalizedTherapy marketOverride="germany" />} />
+                <Route path="/france" element={<LocalizedTherapy marketOverride="france" />} />
+                <Route path="/netherlands" element={<LocalizedTherapy marketOverride="netherlands" />} />
+                <Route path="/switzerland" element={<LocalizedTherapy marketOverride="switzerland" />} />
+                <Route path="/belgium" element={<LocalizedTherapy marketOverride="belgium" />} />
+                <Route path="/spain" element={<LocalizedTherapy marketOverride="spain" />} />
+                <Route path="/portugal" element={<LocalizedTherapy marketOverride="portugal" />} />
+                <Route path="/italy" element={<LocalizedTherapy marketOverride="italy" />} />
+                <Route path="/norway" element={<LocalizedTherapy marketOverride="norway" />} />
+                <Route path="/sweden" element={<LocalizedTherapy marketOverride="sweden" />} />
+                <Route path="/denmark" element={<LocalizedTherapy marketOverride="denmark" />} />
+                <Route path="/finland" element={<LocalizedTherapy marketOverride="finland" />} />
+                <Route path="/australia" element={<LocalizedTherapy marketOverride="australia" />} />
+                <Route path="/new-zealand" element={<LocalizedTherapy marketOverride="new-zealand" />} />
                 <Route path="/online-therapy-nigeria" element={<GlobalLanding slug="online-therapy-nigeria" />} />
                 <Route path="/online-therapy-ghana" element={<GlobalLanding slug="online-therapy-ghana" />} />
                 <Route path="/online-therapy-tanzania" element={<GlobalLanding slug="online-therapy-tanzania" />} />
@@ -560,6 +577,23 @@ const App = () => (
                 <Route path="/rwanda" element={<LocalizedTherapy marketOverride="rwanda" />} />
                 <Route path="/botswana" element={<LocalizedTherapy marketOverride="botswana" />} />
                 <Route path="/namibia" element={<LocalizedTherapy marketOverride="namibia" />} />
+                <Route path="/canada" element={<LocalizedTherapy marketOverride="canada" />} />
+                <Route path="/uk" element={<LocalizedTherapy marketOverride="uk" />} />
+                <Route path="/ireland" element={<LocalizedTherapy marketOverride="ireland" />} />
+                <Route path="/germany" element={<LocalizedTherapy marketOverride="germany" />} />
+                <Route path="/france" element={<LocalizedTherapy marketOverride="france" />} />
+                <Route path="/netherlands" element={<LocalizedTherapy marketOverride="netherlands" />} />
+                <Route path="/switzerland" element={<LocalizedTherapy marketOverride="switzerland" />} />
+                <Route path="/belgium" element={<LocalizedTherapy marketOverride="belgium" />} />
+                <Route path="/spain" element={<LocalizedTherapy marketOverride="spain" />} />
+                <Route path="/portugal" element={<LocalizedTherapy marketOverride="portugal" />} />
+                <Route path="/italy" element={<LocalizedTherapy marketOverride="italy" />} />
+                <Route path="/norway" element={<LocalizedTherapy marketOverride="norway" />} />
+                <Route path="/sweden" element={<LocalizedTherapy marketOverride="sweden" />} />
+                <Route path="/denmark" element={<LocalizedTherapy marketOverride="denmark" />} />
+                <Route path="/finland" element={<LocalizedTherapy marketOverride="finland" />} />
+                <Route path="/australia" element={<LocalizedTherapy marketOverride="australia" />} />
+                <Route path="/new-zealand" element={<LocalizedTherapy marketOverride="new-zealand" />} />
                 <Route path="/partners" element={<Partners />} />
                 <Route path="/wellbeing-check/embed" element={<WellbeingCheckEmbed />} />
                 <Route path="/corporate-dashboard" element={<CorporateDashboard />} />
